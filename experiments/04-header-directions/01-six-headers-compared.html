@@ -1,0 +1,1351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WKNDR — Six Header Directions</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0a0a0a;
+    --ink-2: #1a1a1a;
+    --ink-3: #4a4a4a;
+    --ink-4: #8a8a8a;
+    --ink-5: #c4c4c4;
+    --paper: #fafaf7;
+    --paper-2: #f2f2ee;
+    --paper-3: #e8e8e3;
+    --rule: #d8d8d3;
+    --accent: #ff4d1f;
+    --accent-soft: #fff2ec;
+    --kid: #2d5b8a;
+    --hot: #c2310e;
+    --hot-1: #ffe8d0;
+    --hot-2: #ffc890;
+    --hot-3: #ff8a3d;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+  html, body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background: var(--paper-3);
+    color: var(--ink);
+    font-feature-settings: "kern", "liga", "tnum";
+    text-rendering: geometricPrecision;
+  }
+  body { padding: 32px 24px 80px; }
+
+  /* ========= PAGE INTRO ========= */
+  .intro {
+    max-width: 1200px;
+    margin: 0 auto 32px;
+    text-align: center;
+    padding: 24px 0;
+  }
+  .intro-eyebrow {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--ink-3);
+    margin-bottom: 12px;
+    font-weight: 600;
+  }
+  .intro h1 {
+    font-family: 'Fraunces', serif;
+    font-size: 40px;
+    font-weight: 500;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+    margin-bottom: 12px;
+    color: var(--ink);
+  }
+  .intro h1 em { font-style: italic; color: var(--accent); font-weight: 400; }
+  .intro p {
+    font-size: 15px;
+    color: var(--ink-3);
+    line-height: 1.55;
+    max-width: 620px;
+    margin: 0 auto;
+    letter-spacing: -0.005em;
+  }
+
+  /* ========= COMP GRID ========= */
+  .grid {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 32px;
+  }
+  .comp {
+    background: var(--paper);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+  }
+  .comp-label {
+    padding: 18px 24px;
+    border-bottom: 1px solid var(--rule);
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    background: var(--paper);
+  }
+  .comp-num {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 32px;
+    color: var(--accent);
+    line-height: 1;
+    font-weight: 500;
+  }
+  .comp-name {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink);
+  }
+  .comp-tagline {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 14px;
+    color: var(--ink-3);
+    margin-left: auto;
+    font-weight: 400;
+  }
+
+  /* ========= V5 BASE HEADER STRUCTURE (shared across all comps) ========= */
+  .topbar {
+    border-bottom: 1px solid var(--rule);
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--paper);
+  }
+  .mark {
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--ink);
+  }
+  .mark::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
+  }
+  .top-spacer { flex: 1; }
+  .top-icons { display: flex; gap: 6px; }
+  .icon-btn {
+    width: 26px;
+    height: 26px;
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    color: var(--ink-3);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+  }
+  .icon-btn svg { width: 11px; height: 11px; }
+
+  .filters {
+    padding: 10px 24px;
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    flex-wrap: wrap;
+    background: var(--paper);
+    border-bottom: 1px solid var(--rule);
+  }
+  .filter-label {
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-4);
+    font-weight: 500;
+  }
+  .filter-label + .filter-label { margin-left: 10px; }
+  .pill {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 4px 10px;
+    background: transparent;
+    color: var(--ink-3);
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+  }
+  .pill.active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .pill.kids-active {
+    background: var(--kid); color: var(--paper); border-color: var(--kid);
+    display: inline-flex; align-items: center; gap: 5px;
+  }
+  .pill.kids-active::before {
+    content: ''; width: 4px; height: 4px; background: white; border-radius: 50%;
+  }
+
+  .header-area {
+    padding: 36px 24px;
+    position: relative;
+    overflow: hidden;
+    min-height: 360px;
+  }
+
+  /* Standard city name */
+  .city-dateline {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-4);
+    margin-bottom: 12px;
+    font-weight: 500;
+  }
+  .city-dateline b { color: var(--ink-2); }
+  .city-dateline .now {
+    display: inline-block;
+    background: var(--accent);
+    color: white;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-weight: 700;
+    font-size: 9px;
+    margin-right: 6px;
+    letter-spacing: 0.04em;
+  }
+  .city-name {
+    font-size: 56px;
+    font-weight: 600;
+    letter-spacing: -0.045em;
+    line-height: 1;
+    color: var(--ink);
+  }
+
+  /* ========================================================
+     COMP 1 — LIVE WEATHER SCENE
+     The header is a small animated weather diorama
+     ======================================================== */
+  .comp-1 .header-area {
+    background: linear-gradient(180deg, #87b5d8 0%, #b8d4e0 35%, #e8dcc4 70%, #d4c89a 100%);
+    color: white;
+    padding: 36px 24px 28px;
+  }
+  .comp-1 .header-area::before {
+    content: '';
+    position: absolute;
+    top: 24px;
+    right: 70px;
+    width: 90px;
+    height: 90px;
+    background: radial-gradient(circle, #fff8c8 0%, #ffd870 50%, #ff8a3d 90%);
+    border-radius: 50%;
+    box-shadow: 0 0 80px 20px rgba(255, 200, 100, 0.5);
+  }
+  /* Cloud shapes */
+  .comp-1 .cloud {
+    position: absolute;
+    background: rgba(255,255,255,0.7);
+    border-radius: 50%;
+    filter: blur(2px);
+  }
+  .comp-1 .cloud-1 { width: 90px; height: 28px; top: 40px; left: 20px; }
+  .comp-1 .cloud-1::before, .comp-1 .cloud-1::after {
+    content: ''; position: absolute; background: inherit; border-radius: 50%;
+  }
+  .comp-1 .cloud-1::before { width: 50px; height: 50px; top: -22px; left: 20px; }
+  .comp-1 .cloud-1::after { width: 36px; height: 36px; top: -14px; left: 55px; }
+  .comp-1 .cloud-2 { width: 70px; height: 20px; top: 90px; left: 280px; opacity: 0.85; }
+  .comp-1 .cloud-2::before, .comp-1 .cloud-2::after {
+    content: ''; position: absolute; background: inherit; border-radius: 50%;
+  }
+  .comp-1 .cloud-2::before { width: 36px; height: 36px; top: -18px; left: 14px; }
+  .comp-1 .cloud-2::after { width: 28px; height: 28px; top: -10px; left: 38px; }
+  .comp-1 .cloud-3 { width: 60px; height: 16px; top: 70px; right: 200px; opacity: 0.6; }
+  .comp-1 .cloud-3::before {
+    content: ''; position: absolute; background: inherit; border-radius: 50%;
+    width: 28px; height: 28px; top: -14px; left: 14px;
+  }
+  /* Birds */
+  .comp-1 .bird {
+    position: absolute;
+    color: rgba(0,0,0,0.4);
+    font-size: 14px;
+  }
+  .comp-1 .bird-1 { top: 30px; left: 220px; transform: rotate(-8deg); }
+  .comp-1 .bird-2 { top: 50px; left: 250px; transform: rotate(2deg); }
+  .comp-1 .bird-3 { top: 38px; left: 285px; transform: rotate(-2deg); }
+  /* Trees / horizon */
+  .comp-1 .horizon {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 60px;
+    background: linear-gradient(180deg, transparent 0%, rgba(120, 100, 60, 0.15) 100%);
+  }
+  .comp-1 .tree {
+    position: absolute;
+    bottom: 0;
+    background: linear-gradient(180deg, #6a8a48 0%, #4a6a30 100%);
+    width: 30px; height: 40px;
+    border-radius: 50% 50% 30% 30% / 60% 60% 30% 30%;
+    opacity: 0.6;
+  }
+  .comp-1 .tree-1 { left: 40px; bottom: 5px; width: 26px; height: 36px; }
+  .comp-1 .tree-2 { left: 100px; bottom: 0; width: 36px; height: 48px; }
+  .comp-1 .tree-3 { right: 60px; bottom: 3px; width: 32px; height: 42px; }
+  .comp-1 .tree-4 { right: 130px; bottom: 0; width: 28px; height: 38px; }
+
+  .comp-1 .city-text {
+    position: relative;
+    z-index: 2;
+    margin-top: 80px;
+  }
+  .comp-1 .city-dateline { color: rgba(255,255,255,0.85); }
+  .comp-1 .city-dateline b { color: white; }
+  .comp-1 .city-name {
+    color: white;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.18);
+  }
+  .comp-1 .city-temp {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    font-size: 38px;
+    font-weight: 600;
+    color: white;
+    letter-spacing: -0.04em;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.18);
+    z-index: 3;
+    line-height: 1;
+  }
+  .comp-1 .city-temp .deg { opacity: 0.6; font-weight: 400; }
+  .comp-1 .city-temp .small { font-size: 16px; opacity: 0.7; font-weight: 500; display: block; margin-top: 4px; text-align: right; }
+  .comp-1 .scene-label {
+    position: absolute;
+    bottom: 14px;
+    left: 24px;
+    z-index: 3;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-weight: 700;
+    color: rgba(255,255,255,0.85);
+    background: rgba(0,0,0,0.18);
+    backdrop-filter: blur(4px);
+    padding: 4px 9px;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .comp-1 .scene-label .live-dot {
+    width: 6px; height: 6px;
+    background: #4ade80;
+    border-radius: 50%;
+    box-shadow: 0 0 4px #4ade80;
+  }
+
+  /* ========================================================
+     COMP 2 — CLOCK-DRIVEN
+     Time as the primary visual hero
+     ======================================================== */
+  .comp-2 .header-area {
+    background: var(--paper);
+    padding: 28px 24px 24px;
+  }
+  .comp-2 .clock-area {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 28px;
+    align-items: center;
+    margin-bottom: 18px;
+  }
+  .comp-2 .clock-glyph {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 88px;
+    font-weight: 500;
+    letter-spacing: -0.05em;
+    line-height: 0.85;
+    color: var(--ink);
+    font-feature-settings: "tnum";
+  }
+  .comp-2 .clock-glyph .blink {
+    color: var(--accent);
+    animation: blink 1.6s steps(1) infinite;
+  }
+  @keyframes blink {
+    0%, 49% { opacity: 1; }
+    50%, 100% { opacity: 0.3; }
+  }
+  .comp-2 .clock-info {
+    border-left: 2px solid var(--ink);
+    padding-left: 18px;
+  }
+  .comp-2 .clock-info-line {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ink-3);
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .comp-2 .clock-info-line b { color: var(--ink); }
+  .comp-2 .clock-light-left {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 20px;
+    line-height: 1.15;
+    color: var(--ink);
+    font-weight: 500;
+    margin-top: 4px;
+  }
+  .comp-2 .clock-light-left b {
+    font-style: normal;
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .comp-2 .day-arc {
+    margin-top: 16px;
+    position: relative;
+    height: 28px;
+    background: var(--paper-2);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .comp-2 .day-arc-fill {
+    position: absolute;
+    top: 0; left: 0; bottom: 0;
+    width: 38%;
+    background: linear-gradient(90deg, #ffc890 0%, #ff8a3d 100%);
+  }
+  .comp-2 .day-arc-marker {
+    position: absolute;
+    top: -3px; bottom: -3px;
+    left: 38%;
+    width: 3px;
+    background: var(--accent);
+    border-radius: 999px;
+    box-shadow: 0 0 0 3px rgba(255,77,31,0.2);
+  }
+  .comp-2 .day-arc-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5px;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-4);
+    font-weight: 600;
+  }
+  .comp-2 .city-name {
+    font-size: 38px;
+    margin-top: 16px;
+  }
+  .comp-2 .city-name-row {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-top: 14px;
+  }
+  .comp-2 .city-temp-inline {
+    font-size: 18px;
+    color: var(--ink-3);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+  .comp-2 .city-temp-inline b { color: var(--ink); font-weight: 600; }
+
+  /* ========================================================
+     COMP 3 — GENERATIVE COVER
+     Each weekend gets a unique abstract art-directed signature
+     ======================================================== */
+  .comp-3 .header-area {
+    background: var(--paper);
+    padding: 0;
+    min-height: 380px;
+  }
+  .comp-3 .cover {
+    position: relative;
+    height: 280px;
+    overflow: hidden;
+    background: #1a1a1a;
+  }
+  /* Abstract generative shapes */
+  .comp-3 .blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: 0.85;
+  }
+  .comp-3 .blob-1 {
+    width: 380px; height: 380px;
+    background: #ff6b3d;
+    top: -120px; left: -60px;
+  }
+  .comp-3 .blob-2 {
+    width: 320px; height: 320px;
+    background: #ffd870;
+    top: 40px; left: 180px;
+  }
+  .comp-3 .blob-3 {
+    width: 280px; height: 280px;
+    background: #c2310e;
+    top: 120px; right: -40px;
+  }
+  .comp-3 .blob-4 {
+    width: 200px; height: 200px;
+    background: #4a1808;
+    top: -20px; right: 80px;
+    opacity: 0.6;
+  }
+  .comp-3 .grain {
+    position: absolute;
+    inset: 0;
+    opacity: 0.08;
+    background-image:
+      radial-gradient(circle at 20% 30%, white 0%, transparent 1%),
+      radial-gradient(circle at 60% 70%, white 0%, transparent 1%),
+      radial-gradient(circle at 80% 20%, white 0%, transparent 1%),
+      radial-gradient(circle at 30% 80%, white 0%, transparent 1%),
+      radial-gradient(circle at 50% 50%, white 0%, transparent 1%);
+    background-size: 40px 40px, 30px 30px, 50px 50px, 35px 35px, 45px 45px;
+    mix-blend-mode: overlay;
+  }
+  .comp-3 .cover-corner-label {
+    position: absolute;
+    top: 18px;
+    left: 18px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: white;
+    opacity: 0.75;
+    z-index: 2;
+    line-height: 1.5;
+  }
+  .comp-3 .cover-corner-label b { font-weight: 600; opacity: 1; }
+  .comp-3 .cover-corner-right {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.05em;
+    color: white;
+    opacity: 0.75;
+    z-index: 2;
+    text-align: right;
+    line-height: 1.6;
+  }
+  .comp-3 .cover-corner-right b { font-weight: 600; opacity: 1; }
+  .comp-3 .cover-bottom {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 18px 24px;
+    z-index: 2;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .comp-3 .cover-temp-block {
+    color: white;
+    font-size: 56px;
+    font-weight: 600;
+    letter-spacing: -0.04em;
+    line-height: 0.85;
+  }
+  .comp-3 .cover-temp-block .deg { opacity: 0.7; font-weight: 400; }
+  .comp-3 .cover-temp-block .sub {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    opacity: 0.85;
+    margin-top: 8px;
+    display: block;
+  }
+  .comp-3 .cover-mode {
+    color: white;
+    text-align: right;
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 28px;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    font-weight: 500;
+  }
+  .comp-3 .cover-mode-sub {
+    font-family: 'Helvetica Neue', sans-serif;
+    font-style: normal;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-top: 6px;
+    opacity: 0.7;
+    font-weight: 600;
+  }
+  .comp-3 .below-cover {
+    padding: 22px 24px 20px;
+  }
+  .comp-3 .city-dateline { margin-bottom: 8px; }
+  .comp-3 .city-name {
+    font-size: 44px;
+  }
+
+  /* ========================================================
+     COMP 4 — REVEALS ITSELF
+     Composing in front of you with sequential reveal
+     ======================================================== */
+  .comp-4 .header-area {
+    padding: 30px 24px;
+    background: var(--paper);
+  }
+  .comp-4 .reveal-stage {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+  .comp-4 .city-block {
+    /* Already-composed */
+  }
+  .comp-4 .reveal-list {
+    border-left: 1px solid var(--rule);
+    padding-left: 18px;
+    display: grid;
+    gap: 14px;
+  }
+  .comp-4 .reveal-row {
+    display: grid;
+    grid-template-columns: 18px 1fr auto;
+    gap: 10px;
+    align-items: center;
+    font-size: 11px;
+    color: var(--ink-3);
+    font-weight: 500;
+  }
+  .comp-4 .reveal-row.composed {
+    color: var(--ink);
+  }
+  .comp-4 .reveal-row.composing {
+    color: var(--accent);
+  }
+  .comp-4 .reveal-row.pending {
+    opacity: 0.4;
+  }
+  .comp-4 .reveal-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    text-align: right;
+    color: var(--ink-4);
+  }
+  .comp-4 .reveal-row.composed .reveal-num { color: var(--ink); }
+  .comp-4 .reveal-row.composing .reveal-num { color: var(--accent); }
+  .comp-4 .reveal-label {
+    font-size: 12px;
+    letter-spacing: -0.005em;
+  }
+  .comp-4 .reveal-row.composed .reveal-label,
+  .comp-4 .reveal-row.composing .reveal-label {
+    font-weight: 600;
+  }
+  .comp-4 .reveal-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: -0.005em;
+  }
+  .comp-4 .reveal-row.composing .reveal-value::after {
+    content: ' |';
+    color: var(--accent);
+    animation: blink 1s steps(1) infinite;
+  }
+  .comp-4 .reveal-row.pending .reveal-value { color: var(--ink-4); font-weight: 400; }
+  .comp-4 .reveal-row.pending .reveal-value::before {
+    content: '— ';
+    opacity: 0.5;
+  }
+  .comp-4 .reveal-progress {
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid var(--rule);
+    font-size: 10px;
+    color: var(--ink-4);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+    display: flex;
+    justify-content: space-between;
+  }
+  .comp-4 .reveal-progress b { color: var(--accent); }
+  .comp-4 .city-temp-inline {
+    margin-top: 12px;
+    font-size: 16px;
+    color: var(--ink-3);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+  .comp-4 .city-temp-inline b { color: var(--ink); font-weight: 600; }
+  .comp-4 .city-name { font-size: 48px; }
+
+  /* ========================================================
+     COMP 5 — CONTROL SURFACE
+     Header as input dial — drag time/weather to tune picks
+     ======================================================== */
+  .comp-5 .header-area {
+    padding: 28px 24px 24px;
+    background: var(--paper);
+  }
+  .comp-5 .control-row {
+    margin-top: 16px;
+    display: grid;
+    gap: 14px;
+  }
+  .comp-5 .control {
+    background: var(--paper-2);
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
+  .comp-5 .control-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  .comp-5 .control-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-4);
+    font-weight: 700;
+  }
+  .comp-5 .control-value {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: -0.005em;
+  }
+  .comp-5 .control-value b {
+    color: var(--accent);
+  }
+  .comp-5 .slider {
+    position: relative;
+    height: 6px;
+    background: var(--rule);
+    border-radius: 999px;
+    margin-bottom: 6px;
+  }
+  .comp-5 .slider-fill {
+    position: absolute;
+    top: 0; left: 0; bottom: 0;
+    background: var(--ink);
+    border-radius: 999px;
+    width: 45%;
+  }
+  .comp-5 .slider-handle {
+    position: absolute;
+    top: 50%;
+    left: 45%;
+    transform: translate(-50%, -50%);
+    width: 18px;
+    height: 18px;
+    background: var(--ink);
+    border-radius: 50%;
+    border: 3px solid var(--paper);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+  }
+  .comp-5 .slider-ticks {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5px;
+    font-size: 9px;
+    color: var(--ink-4);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+  .comp-5 .temp-track {
+    height: 24px;
+    background: linear-gradient(90deg, #88c0d8 0%, #f5b545 30%, #ff8a3d 60%, #c2310e 100%);
+    border-radius: 4px;
+    position: relative;
+  }
+  .comp-5 .temp-handle {
+    position: absolute;
+    top: -3px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 30px;
+    background: var(--ink);
+    border-radius: 2px;
+  }
+  .comp-5 .temp-handle-label {
+    position: absolute;
+    top: -22px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--ink);
+    color: var(--paper);
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-weight: 700;
+    white-space: nowrap;
+    letter-spacing: -0.005em;
+  }
+  .comp-5 .city-row {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-top: 8px;
+  }
+  .comp-5 .city-name { font-size: 44px; }
+  .comp-5 .city-temp-tiny {
+    font-size: 16px;
+    color: var(--ink-3);
+    font-weight: 500;
+  }
+  .comp-5 .city-temp-tiny b { color: var(--ink); font-weight: 600; }
+  .comp-5 .recompute-tag {
+    margin-top: 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    padding: 4px 9px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .comp-5 .recompute-tag::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+  }
+
+  /* ========================================================
+     COMP 6 — THE MOMENT
+     Time-of-day-aware urgency, action-oriented header
+     ======================================================== */
+  .comp-6 .header-area {
+    padding: 32px 24px 24px;
+    background: linear-gradient(180deg, #fff8ee 0%, var(--paper) 100%);
+  }
+  .comp-6 .now-strip {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+  .comp-6 .now-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .comp-6 .now-tag::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: #4ade80;
+    border-radius: 50%;
+    box-shadow: 0 0 5px #4ade80;
+  }
+  .comp-6 .now-time {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink-3);
+    letter-spacing: 0.04em;
+  }
+  .comp-6 .moment-headline {
+    font-family: 'Fraunces', serif;
+    font-size: 32px;
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 12px;
+    max-width: 480px;
+  }
+  .comp-6 .moment-headline em {
+    font-style: italic;
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .comp-6 .moment-headline .num {
+    font-family: 'JetBrains Mono', monospace;
+    font-style: normal;
+    font-weight: 600;
+    color: var(--accent);
+  }
+  .comp-6 .moment-sub {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--ink-3);
+    margin-bottom: 18px;
+    max-width: 440px;
+    letter-spacing: -0.005em;
+  }
+  .comp-6 .moment-sub b { color: var(--ink); font-weight: 600; }
+  .comp-6 .moment-row {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    padding-top: 16px;
+    border-top: 1px solid var(--rule);
+  }
+  .comp-6 .city-name { font-size: 38px; }
+  .comp-6 .moment-temp {
+    font-size: 14px;
+    color: var(--ink-3);
+    font-weight: 500;
+    letter-spacing: -0.005em;
+  }
+  .comp-6 .moment-temp b { color: var(--ink); font-weight: 600; }
+  .comp-6 .moment-bullets {
+    display: flex;
+    gap: 12px;
+    margin-top: 14px;
+    flex-wrap: wrap;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ink-3);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .comp-6 .moment-bullets span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .comp-6 .moment-bullets b {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--accent);
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  /* ========================================================
+     Footer comparison line
+     ======================================================== */
+  .footer {
+    max-width: 1200px;
+    margin: 48px auto 0;
+    padding: 28px 24px;
+    background: var(--paper);
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+  }
+  .footer-title {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 14px;
+  }
+  .footer p {
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--ink-3);
+    max-width: 920px;
+    letter-spacing: -0.005em;
+  }
+  .footer p b { color: var(--ink); font-weight: 600; }
+  .footer p em {
+    font-family: 'Fraunces', serif;
+    color: var(--accent);
+    font-style: italic;
+    font-weight: 400;
+  }
+
+  @media (max-width: 880px) {
+    .grid { grid-template-columns: 1fr; }
+    .intro h1 { font-size: 28px; }
+    .city-name { font-size: 40px !important; }
+    .comp-1 .city-temp { font-size: 28px; }
+    .comp-1 .header-area::before { width: 60px; height: 60px; right: 30px; }
+    .comp-2 .clock-glyph { font-size: 56px; }
+    .comp-2 .clock-area { grid-template-columns: 1fr; gap: 16px; }
+    .comp-2 .clock-info { border-left: 0; padding-left: 0; border-top: 2px solid var(--ink); padding-top: 14px; }
+    .comp-3 .cover-temp-block { font-size: 40px; }
+    .comp-3 .cover-mode { font-size: 22px; }
+    .comp-4 .reveal-stage { grid-template-columns: 1fr; }
+    .comp-4 .reveal-list { border-left: 0; padding-left: 0; border-top: 1px solid var(--rule); padding-top: 14px; }
+    .comp-6 .moment-headline { font-size: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="intro">
+  <div class="intro-eyebrow">Header Direction Comparison</div>
+  <h1>Six ways the <em>header</em> can carry the moment.</h1>
+  <p>Same v5 layout, same Amsterdam Sunday, same content underneath. The header zone alone is treated six different ways. Scan as objects — which one feels right?</p>
+</div>
+
+<div class="grid">
+
+  <!-- ========================================================
+       COMP 1 — LIVE WEATHER SCENE
+       ======================================================== -->
+  <div class="comp comp-1">
+    <div class="comp-label">
+      <div class="comp-num">I.</div>
+      <div class="comp-name">Live Weather Scene</div>
+      <div class="comp-tagline">— a small atmospheric diorama</div>
+    </div>
+    <div class="topbar">
+      <div class="mark">WKNDR</div>
+      <div class="top-spacer"></div>
+      <div class="top-icons">
+        <button class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></button>
+        <button class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/></svg></button>
+      </div>
+    </div>
+    <div class="filters">
+      <span class="filter-label">When</span>
+      <button class="pill active">Today</button>
+      <span class="filter-label">Who</span>
+      <button class="pill kids-active">Me + kids</button>
+    </div>
+    <div class="header-area">
+      <div class="cloud cloud-1"></div>
+      <div class="cloud cloud-2"></div>
+      <div class="cloud cloud-3"></div>
+      <span class="bird bird-1">≈</span>
+      <span class="bird bird-2">≈</span>
+      <span class="bird bird-3">≈</span>
+      <div class="horizon"></div>
+      <div class="tree tree-1"></div>
+      <div class="tree tree-2"></div>
+      <div class="tree tree-3"></div>
+      <div class="tree tree-4"></div>
+      <div class="city-temp">24<span class="deg">°</span><span class="small">0% rain</span></div>
+      <div class="city-text">
+        <div class="city-dateline"><span class="now">NOW</span> Sunday <b>24 May 2026</b></div>
+        <div class="city-name">Amsterdam</div>
+      </div>
+      <div class="scene-label"><span class="live-dot"></span>Live · drifting clouds, sun west-of-zenith</div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       COMP 2 — CLOCK-DRIVEN
+       ======================================================== -->
+  <div class="comp comp-2">
+    <div class="comp-label">
+      <div class="comp-num">II.</div>
+      <div class="comp-name">Clock-Driven</div>
+      <div class="comp-tagline">— time as the visual hero</div>
+    </div>
+    <div class="topbar">
+      <div class="mark">WKNDR</div>
+      <div class="top-spacer"></div>
+      <div class="top-icons">
+        <button class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></button>
+        <button class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/></svg></button>
+      </div>
+    </div>
+    <div class="filters">
+      <span class="filter-label">When</span>
+      <button class="pill active">Today</button>
+      <span class="filter-label">Who</span>
+      <button class="pill kids-active">Me + kids</button>
+    </div>
+    <div class="header-area">
+      <div class="clock-area">
+        <div class="clock-glyph">11<span class="blink">:</span>32</div>
+        <div class="clock-info">
+          <div class="clock-info-line">Sunday · <b>24 MAY 2026</b> · Whitsun</div>
+          <div class="clock-light-left">
+            <b>3 hrs 28 min</b> of midday sun left.<br>
+            Sun sets at 21:00.
+          </div>
+        </div>
+      </div>
+      <div class="day-arc">
+        <div class="day-arc-fill"></div>
+        <div class="day-arc-marker"></div>
+      </div>
+      <div class="day-arc-labels">
+        <span>05:00 sunrise</span>
+        <span>now</span>
+        <span>21:00 sunset</span>
+      </div>
+      <div class="city-name-row">
+        <span class="city-name">Amsterdam</span>
+        <span class="city-temp-inline"><b>24°</b> / 11° · sunny</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       COMP 3 — GENERATIVE COVER
+       ======================================================== -->
+  <div class="comp comp-3">
+    <div class="comp-label">
+      <div class="comp-num">III.</div>
+      <div class="comp-name">Generative Cover</div>
+      <div class="comp-tagline">— each issue has its own art direction</div>
+    </div>
+    <div class="topbar">
+      <div class="mark">WKNDR</div>
+      <div class="top-spacer"></div>
+      <div class="top-icons">
+        <button class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></button>
+        <button class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/></svg></button>
+      </div>
+    </div>
+    <div class="filters">
+      <span class="filter-label">When</span>
+      <button class="pill active">Today</button>
+      <span class="filter-label">Who</span>
+      <button class="pill kids-active">Me + kids</button>
+    </div>
+    <div class="header-area">
+      <div class="cover">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+        <div class="blob blob-4"></div>
+        <div class="grain"></div>
+        <div class="cover-corner-label">
+          ISSUE 28<br>
+          <b>SUN · 24 · 05 · 26</b>
+        </div>
+        <div class="cover-corner-right">
+          AMS · 52.37°N · 4.89°E<br>
+          <b>WHITSUN WEEKEND</b>
+        </div>
+        <div class="cover-bottom">
+          <div class="cover-temp-block">
+            24<span class="deg">°</span>
+            <span class="sub">High · 0% rain</span>
+          </div>
+          <div class="cover-mode">
+            Hot mode
+            <div class="cover-mode-sub">Cover N° 28 — unique</div>
+          </div>
+        </div>
+      </div>
+      <div class="below-cover">
+        <div class="city-dateline"><span class="now">NOW</span> Sunday <b>24 May 2026</b></div>
+        <div class="city-name">Amsterdam</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       COMP 4 — REVEALS ITSELF
+       ======================================================== -->
+  <div class="comp comp-4">
+    <div class="comp-label">
+      <div class="comp-num">IV.</div>
+      <div class="comp-name">Reveals Itself</div>
+      <div class="comp-tagline">— composes in front of you</div>
+    </div>
+    <div class="topbar">
+      <div class="mark">WKNDR</div>
+      <div class="top-spacer"></div>
+      <div class="top-icons">
+        <button class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></button>
+        <button class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/></svg></button>
+      </div>
+    </div>
+    <div class="filters">
+      <span class="filter-label">When</span>
+      <button class="pill active">Today</button>
+      <span class="filter-label">Who</span>
+      <button class="pill kids-active">Me + kids</button>
+    </div>
+    <div class="header-area">
+      <div class="reveal-stage">
+        <div class="city-block">
+          <div class="city-dateline"><span class="now">NOW</span> Sun <b>24 May</b></div>
+          <div class="city-name">Amsterdam</div>
+          <div class="city-temp-inline"><b>24°</b> / 11° · sunny</div>
+        </div>
+        <div class="reveal-list">
+          <div class="reveal-row composed">
+            <span class="reveal-num">01</span>
+            <span class="reveal-label">City located</span>
+            <span class="reveal-value">52.37°N</span>
+          </div>
+          <div class="reveal-row composed">
+            <span class="reveal-num">02</span>
+            <span class="reveal-label">Buienradar checked</span>
+            <span class="reveal-value">0% rain</span>
+          </div>
+          <div class="reveal-row composed">
+            <span class="reveal-num">03</span>
+            <span class="reveal-label">KNMI forecast</span>
+            <span class="reveal-value">24° high</span>
+          </div>
+          <div class="reveal-row composed">
+            <span class="reveal-num">04</span>
+            <span class="reveal-label">Weather mode</span>
+            <span class="reveal-value">HOT</span>
+          </div>
+          <div class="reveal-row composing">
+            <span class="reveal-num">05</span>
+            <span class="reveal-label">Scanning sources</span>
+            <span class="reveal-value">5 of 7</span>
+          </div>
+          <div class="reveal-row pending">
+            <span class="reveal-num">06</span>
+            <span class="reveal-label">Ranking for kids</span>
+            <span class="reveal-value">pending</span>
+          </div>
+          <div class="reveal-row pending">
+            <span class="reveal-num">07</span>
+            <span class="reveal-label">Drafting picks</span>
+            <span class="reveal-value">pending</span>
+          </div>
+        </div>
+      </div>
+      <div class="reveal-progress">
+        <span>Composing brief · <b>57%</b></span>
+        <span>~12 seconds remaining</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       COMP 5 — CONTROL SURFACE
+       ======================================================== -->
+  <div class="comp comp-5">
+    <div class="comp-label">
+      <div class="comp-num">V.</div>
+      <div class="comp-name">Control Surface</div>
+      <div class="comp-tagline">— drag to tune the brief</div>
+    </div>
+    <div class="topbar">
+      <div class="mark">WKNDR</div>
+      <div class="top-spacer"></div>
+      <div class="top-icons">
+        <button class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></button>
+        <button class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/></svg></button>
+      </div>
+    </div>
+    <div class="filters">
+      <span class="filter-label">When</span>
+      <button class="pill active">Today</button>
+      <span class="filter-label">Who</span>
+      <button class="pill kids-active">Me + kids</button>
+    </div>
+    <div class="header-area">
+      <div class="city-row">
+        <span class="city-name">Amsterdam</span>
+        <span class="city-temp-tiny"><b>24°</b> · sunny</span>
+      </div>
+      <div class="control-row">
+        <div class="control">
+          <div class="control-head">
+            <span class="control-label">Time of day</span>
+            <span class="control-value">11:32 · <b>3hr 28 of light left</b></span>
+          </div>
+          <div class="slider">
+            <div class="slider-fill"></div>
+            <div class="slider-handle"></div>
+          </div>
+          <div class="slider-ticks">
+            <span>5:00</span><span>9:00</span><span>13:00</span><span>17:00</span><span>21:00</span>
+          </div>
+        </div>
+        <div class="control">
+          <div class="control-head">
+            <span class="control-label">Temperature · drag to preview</span>
+            <span class="control-value"><b>24°</b> · Hot mode</span>
+          </div>
+          <div class="temp-track">
+            <div class="temp-handle">
+              <div class="temp-handle-label">24°</div>
+            </div>
+          </div>
+          <div class="slider-ticks" style="margin-top:8px">
+            <span>5°</span><span>12°</span><span>18°</span><span>24°</span><span>30°+</span>
+          </div>
+        </div>
+      </div>
+      <span class="recompute-tag">Picks update live as you tune</span>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       COMP 6 — THE MOMENT
+       ======================================================== -->
+  <div class="comp comp-6">
+    <div class="comp-label">
+      <div class="comp-num">VI.</div>
+      <div class="comp-name">The Moment</div>
+      <div class="comp-tagline">— urgency, action-oriented, time-aware</div>
+    </div>
+    <div class="topbar">
+      <div class="mark">WKNDR</div>
+      <div class="top-spacer"></div>
+      <div class="top-icons">
+        <button class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></button>
+        <button class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/></svg></button>
+      </div>
+    </div>
+    <div class="filters">
+      <span class="filter-label">When</span>
+      <button class="pill active">Today</button>
+      <span class="filter-label">Who</span>
+      <button class="pill kids-active">Me + kids</button>
+    </div>
+    <div class="header-area">
+      <div class="now-strip">
+        <span class="now-tag">Now · live</span>
+        <span class="now-time">11:32 · Sun 24 May</span>
+      </div>
+      <h2 class="moment-headline">
+        <em>Three hours of useful light</em> before the kids fade.<br>
+        Pick one and <em>go now.</em>
+      </h2>
+      <p class="moment-sub">
+        You opened this at 11:32. The morning's already moving. <b>The good outdoor windows close around 15:00</b> when the heat peaks and a four-year-old gives up. Two of the three picks below are still bookable.
+      </p>
+      <div class="moment-row">
+        <span class="city-name">Amsterdam</span>
+        <span class="moment-temp"><b>24°</b> / 11° · 0% rain</span>
+      </div>
+      <div class="moment-bullets">
+        <span><b>03:28</b> of midday sun left</span>
+        <span>·</span>
+        <span><b>09:28</b> until bedtime</span>
+        <span>·</span>
+        <span><b>2/3</b> picks still go</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <div class="footer-title">How to read these six</div>
+  <p>
+    Each comp keeps v5's <b>top bar, filter strip, and the picks below</b> identical — only the header zone changes. <b>I</b> and <b>III</b> are <em>visual</em> moves (atmospheric and generative). <b>II</b> and <b>VI</b> are <em>temporal</em> moves (clock-anchored and moment-aware, with VI adding editorial urgency). <b>IV</b> is a <em>process</em> move (the page showing its work). <b>V</b> is a <em>functional</em> move (the header becomes an input). I-IV-V get more interactive in different ways; II and VI are quieter but lean hard on a single ownable idea. The right answer depends on whether you want the header to be a <em>painting</em>, a <em>clock</em>, a <em>cover</em>, a <em>process</em>, an <em>instrument</em>, or a <em>voice</em>.
+  </p>
+</div>
+
+</body>
+</html>

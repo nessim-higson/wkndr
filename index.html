@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WKNDR — Design Index</title>
+<style>
+  :root {
+    --ink: #0a0a0a;
+    --ink-3: #4a4a4a;
+    --ink-4: #8a8a8a;
+    --paper: #fafaf7;
+    --paper-2: #f2f2ee;
+    --paper-3: #e8e8e3;
+    --rule: #d8d8d3;
+    --accent: #ff4d1f;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+  body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background: var(--paper-3);
+    color: var(--ink);
+    line-height: 1.5;
+    padding: 40px 24px 120px;
+  }
+  .head {
+    max-width: 1280px;
+    margin: 0 auto 40px;
+  }
+  .mark {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    display: flex; align-items: center; gap: 9px;
+  }
+  .mark::before { content:''; width:9px; height:9px; background:var(--accent); border-radius:50%; }
+  .head h1 {
+    font-size: 32px;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    margin: 20px 0 8px;
+  }
+  .head p {
+    font-size: 14px;
+    color: var(--ink-3);
+    max-width: 640px;
+  }
+  .chapter {
+    max-width: 1280px;
+    margin: 0 auto 56px;
+  }
+  .chapter-head {
+    display: flex; align-items: baseline; gap: 14px;
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 10px; margin-bottom: 24px;
+  }
+  .chapter-num {
+    font-size: 13px; font-weight: 700; color: var(--accent);
+    letter-spacing: 0.04em;
+  }
+  .chapter-title {
+    font-size: 14px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .chapter-note { font-size: 12px; color: var(--ink-4); margin-left: auto; }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 24px;
+  }
+  .tile {
+    background: var(--paper);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex; flex-direction: column;
+  }
+  .tile:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(0,0,0,0.1); }
+  .tile-preview {
+    width: 100%; height: 280px;
+    border: 0; border-bottom: 1px solid var(--rule);
+    background: var(--paper-2);
+    pointer-events: none;
+  }
+  .tile-frame-wrap {
+    position: relative;
+    height: 280px;
+    overflow: hidden;
+    border-bottom: 1px solid var(--rule);
+  }
+  .tile-frame-wrap iframe {
+    width: 1280px; height: 1024px;
+    transform: scale(0.34);
+    transform-origin: top left;
+    border: 0;
+    pointer-events: none;
+  }
+  .tile-body { padding: 14px 16px 16px; }
+  .tile-name {
+    font-size: 15px; font-weight: 600; letter-spacing: -0.01em;
+    margin-bottom: 4px;
+  }
+  .tile-note {
+    font-size: 12px; color: var(--ink-3); line-height: 1.45;
+    margin-bottom: 12px;
+  }
+  .tile-actions { display: flex; gap: 8px; }
+  .tile-btn {
+    font-size: 11px; font-weight: 600;
+    padding: 7px 12px; border-radius: 999px;
+    background: var(--ink); color: var(--paper);
+    text-decoration: none; letter-spacing: -0.005em;
+  }
+  .tile-btn.ghost { background: transparent; color: var(--ink-3); border: 1px solid var(--rule); }
+  .tile-btn:hover { background: var(--accent); color: white; }
+  .star { color: var(--accent); font-weight: 700; }
+</style>
+</head>
+<body>
+
+<div class="head">
+  <div class="mark">WKNDR</div>
+  <h1>Design Index</h1>
+  <p>Every experiment, in chronological chapters. The progression is the design record. Hover a tile for a live preview; "Open" launches it full-size. ★ marks current favourites / directions of travel.</p>
+</div>
+
+<!-- 01 -->
+<div class="chapter">
+  <div class="chapter-head">
+    <span class="chapter-num">01</span>
+    <span class="chapter-title">Foundations</span>
+    <span class="chapter-note">early hunt for the right base</span>
+  </div>
+  <div class="grid" id="ch01"></div>
+</div>
+
+<!-- 02 -->
+<div class="chapter">
+  <div class="chapter-head">
+    <span class="chapter-num">02</span>
+    <span class="chapter-title">v5 Family — the working base</span>
+    <span class="chapter-note">v5 is the chosen base</span>
+  </div>
+  <div class="grid" id="ch02"></div>
+</div>
+
+<!-- 03 -->
+<div class="chapter">
+  <div class="chapter-head">
+    <span class="chapter-num">03</span>
+    <span class="chapter-title">Visual Languages</span>
+    <span class="chapter-note">four skins, same content</span>
+  </div>
+  <div class="grid" id="ch03"></div>
+</div>
+
+<!-- 04 -->
+<div class="chapter">
+  <div class="chapter-head">
+    <span class="chapter-num">04</span>
+    <span class="chapter-title">Header Directions</span>
+    <span class="chapter-note">six ways to carry the moment</span>
+  </div>
+  <div class="grid" id="ch04"></div>
+</div>
+
+<!-- 05 -->
+<div class="chapter">
+  <div class="chapter-head">
+    <span class="chapter-num">05</span>
+    <span class="chapter-title">Cover / Hara</span>
+    <span class="chapter-note">most recent thread</span>
+  </div>
+  <div class="grid" id="ch05"></div>
+</div>
+
+<script>
+  const data = {
+    ch01: [
+      ["01-foundations/01-v1-editorial-dark.html", "v1 · Editorial dark", "Fraunces, dark paper. Too magazine.", false],
+      ["01-foundations/02-v2-helvetica.html", "v2 · Helvetica pivot", "The typographic instinct that keeps returning.", false],
+      ["01-foundations/03-v3-appstore-cards.html", "v3 · App-store cards", "Bigger logo, app-store-style cards.", false],
+      ["01-foundations/04-v4-clean-topbar.html", "v4 · Clean top bar", "Clean bar, gradients, pub chips. Became v5.", false],
+      ["01-foundations/05-weather-modes.html", "Weather modes", "The 5 modes compared: HOT/WARM/COOL/COLD_WET/VOLATILE.", false],
+    ],
+    ch02: [
+      ["02-v5-family/01-v5-base.html", "v5 · Base", "THE BASE. v4 layout + weather engine.", true],
+      ["02-v5-family/02-v6-weather-hero-rejected.html", "v6 · Weather hero", "Weather blown up to 96px. Rejected — too big.", false],
+      ["02-v5-family/03-v7-settings-drawer.html", "v7 · Settings drawer", "Back to v5 proportions + settings drawer.", false],
+      ["02-v5-family/04-v8-auro-aura.html", "v8 · Aurō aura", "Soft radial orb behind city. Seed of the cover idea.", false],
+      ["02-v5-family/05-v5-kids.html", "v5 · Kids", "v5 on the real use case: Sunday, 24°, 4yo. Current fav.", true],
+      ["02-v5-family/06-v5-kids-clickable-refresh.html", "v5 · Kids + refresh", "Clickable links + REFRESH button cycling 3 sets.", true],
+    ],
+    ch03: [
+      ["03-visual-languages/01-editorial-sunday.html", "Editorial Sunday", "Printed Sunday-supplement. Air Mail energy.", false],
+      ["03-visual-languages/02-bold-index.html", "Bold Index", "Apartamento/KIOSK indie-magazine.", false],
+      ["03-visual-languages/03-scrollytelling.html", "Scrollytelling", "WePresent-style full-screen chapters.", false],
+      ["03-visual-languages/04-postcards.html", "Postcards", "Tilted postcards on a desk. Stamps, postmarks.", false],
+    ],
+    ch04: [
+      ["04-header-directions/01-six-headers-compared.html", "Six headers compared", "I Weather · II Clock · III Cover · IV Reveal · V Control · VI Moment.", true],
+    ],
+    ch05: [
+      ["05-cover-hara/01-cover-resolved-editorial.html", "Cover · Resolved (editorial)", "III+IV combined. Cover composes from named data.", false],
+      ["05-cover-hara/02-cover-helvetica.html", "Cover · Helvetica", "De-editorialized. + 'later today' affordance.", true],
+      ["05-cover-hara/03-hara.html", "Hara", "Kenya Hara: warm paper, single photo, ma, quiet.", true],
+    ],
+  };
+
+  for (const [chId, items] of Object.entries(data)) {
+    const grid = document.getElementById(chId);
+    grid.innerHTML = items.map(([path, name, note, star]) => `
+      <div class="tile">
+        <div class="tile-frame-wrap">
+          <iframe src="experiments/${path}" loading="lazy" scrolling="no"></iframe>
+        </div>
+        <div class="tile-body">
+          <div class="tile-name">${star ? '<span class="star">★</span> ' : ''}${name}</div>
+          <div class="tile-note">${note}</div>
+          <div class="tile-actions">
+            <a class="tile-btn" href="experiments/${path}" target="_blank">Open ↗</a>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+</script>
+
+</body>
+</html>

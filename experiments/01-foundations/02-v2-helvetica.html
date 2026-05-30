@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WKNDR — 23–24 May, Amsterdam</title>
+<style>
+  :root {
+    --ink: #0a0a0a;
+    --ink-2: #1a1a1a;
+    --ink-3: #4a4a4a;
+    --ink-4: #8a8a8a;
+    --ink-5: #c4c4c4;
+    --paper: #fafaf7;
+    --paper-2: #f2f2ee;
+    --paper-3: #e8e8e3;
+    --rule: #d8d8d3;
+    --accent: #ff4d1f;
+    --accent-soft: #fff2ec;
+    --good: #1a7a5a;
+    --kid: #2d5b8a;
+    --hot: #c2310e;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+  html, body {
+    font-family: 'Helvetica Neue', Helvetica, 'Arial', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    font-feature-settings: "kern", "liga", "tnum";
+    text-rendering: geometricPrecision;
+  }
+  body { min-height: 100vh; }
+  button { font-family: inherit; cursor: pointer; }
+  img { display: block; max-width: 100%; }
+
+  /* MASTHEAD */
+  .masthead {
+    border-bottom: 1px solid var(--rule);
+    padding: 16px 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    background: var(--paper);
+    position: sticky;
+    top: 0;
+    z-index: 20;
+  }
+  .mark {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .mark::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
+  }
+  .mast-meta {
+    font-size: 11px;
+    color: var(--ink-4);
+    letter-spacing: 0.01em;
+    display: flex;
+    gap: 20px;
+    align-items: center;
+  }
+  .mast-meta b { color: var(--ink-2); font-weight: 500; }
+
+  /* TOGGLE BAR */
+  .toggles {
+    border-bottom: 1px solid var(--rule);
+    padding: 12px 28px;
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    flex-wrap: wrap;
+    background: var(--paper);
+    position: sticky;
+    top: 49px;
+    z-index: 15;
+  }
+  .toggle-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-4);
+    font-weight: 500;
+    margin-right: 2px;
+  }
+  .toggle-label + .toggle-label { margin-left: 14px; }
+  .toggle {
+    font-size: 12px;
+    font-weight: 500;
+    padding: 5px 11px;
+    background: var(--paper);
+    color: var(--ink-3);
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    transition: all 0.12s ease;
+    letter-spacing: -0.005em;
+  }
+  .toggle:hover { color: var(--ink); border-color: var(--ink-4); background: var(--paper-2); }
+  .toggle.active {
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+  }
+  .spacer { flex: 1; }
+  .icon-btn {
+    width: 32px;
+    height: 32px;
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    background: var(--paper);
+    color: var(--ink-3);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.12s ease;
+  }
+  .icon-btn:hover { color: var(--ink); border-color: var(--ink-4); background: var(--paper-2); }
+  .icon-btn svg { width: 14px; height: 14px; }
+  .ask {
+    font-size: 12px;
+    font-weight: 500;
+    padding: 6px 13px;
+    background: var(--ink);
+    color: var(--paper);
+    border: 1px solid var(--ink);
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.12s ease;
+  }
+  .ask:hover { background: var(--accent); border-color: var(--accent); }
+  .ask svg { width: 11px; height: 11px; }
+
+  /* MAIN COLUMN */
+  .col {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 48px 28px 120px;
+  }
+
+  /* WEATHER STRIP */
+  .weather {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 24px;
+  }
+  .weather .temp {
+    font-size: 28px;
+    font-weight: 300;
+    letter-spacing: -0.04em;
+    color: var(--ink);
+  }
+  .weather .deg { font-size: 18px; color: var(--ink-4); font-weight: 300; }
+  .weather .desc {
+    font-size: 12px;
+    color: var(--ink-3);
+    letter-spacing: -0.005em;
+  }
+  .weather .desc b { color: var(--accent); font-weight: 600; }
+
+  /* HEADLINE */
+  .dateline {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-4);
+    margin-bottom: 12px;
+    font-weight: 500;
+  }
+  .dateline b { color: var(--ink-2); }
+  h1 {
+    font-size: 36px;
+    line-height: 1.08;
+    letter-spacing: -0.035em;
+    font-weight: 500;
+    margin-bottom: 18px;
+    max-width: 640px;
+  }
+  .lede {
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--ink-3);
+    font-weight: 400;
+    letter-spacing: -0.005em;
+    margin-bottom: 48px;
+    max-width: 600px;
+  }
+  .lede b { color: var(--ink); font-weight: 600; }
+
+  /* PICK */
+  .pick {
+    margin-bottom: 48px;
+    padding-bottom: 48px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .pick:last-of-type { border-bottom: 0; }
+  .pick-num {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-4);
+    font-weight: 600;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .pick-num .when {
+    color: var(--ink-3);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+  }
+  .pick-num .sep { color: var(--rule); }
+
+  .photo {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: var(--paper-3);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 18px;
+    position: relative;
+  }
+  .photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: contrast(1.02);
+  }
+  .photo .credit {
+    position: absolute;
+    bottom: 8px;
+    right: 10px;
+    font-size: 9px;
+    color: rgba(255,255,255,0.7);
+    background: rgba(0,0,0,0.35);
+    padding: 2px 6px;
+    border-radius: 3px;
+    letter-spacing: 0.02em;
+    backdrop-filter: blur(4px);
+  }
+
+  .pick-tags {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+  .tag {
+    font-size: 9.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 3px 7px;
+    border-radius: 2px;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+  .tag.hot { background: var(--hot); color: white; }
+  .tag.new { background: var(--ink); color: var(--paper); }
+  .tag.kid { background: var(--kid); color: white; }
+  .tag.weather-pick { background: var(--accent); color: white; }
+  .tag.critic { background: var(--paper-3); color: var(--ink-2); }
+  .tag.outline { background: var(--paper); color: var(--ink-3); border: 1px solid var(--rule); }
+
+  h2 {
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 1.18;
+    letter-spacing: -0.025em;
+    margin-bottom: 4px;
+  }
+  h2 a {
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.12s;
+  }
+  h2 a:hover { border-bottom-color: var(--ink); }
+  .venue {
+    font-size: 12px;
+    color: var(--ink-4);
+    margin-bottom: 14px;
+    letter-spacing: -0.005em;
+  }
+  .venue .sep { margin: 0 7px; color: var(--ink-5); }
+  .body {
+    font-size: 14.5px;
+    line-height: 1.55;
+    color: var(--ink-2);
+    letter-spacing: -0.005em;
+    font-weight: 400;
+  }
+  .body p + p { margin-top: 10px; }
+  .body em { color: var(--ink-3); font-style: italic; }
+
+  .why {
+    margin-top: 16px;
+    padding: 12px 14px;
+    background: var(--paper-2);
+    border-radius: 3px;
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: var(--ink-3);
+    letter-spacing: -0.005em;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .why::before {
+    content: '✦';
+    color: var(--accent);
+    font-size: 11px;
+    line-height: 1.5;
+    flex-shrink: 0;
+  }
+
+  .actions {
+    margin-top: 16px;
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .action {
+    font-size: 11px;
+    padding: 6px 11px;
+    color: var(--ink-3);
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    transition: all 0.12s;
+    font-weight: 500;
+    letter-spacing: -0.005em;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .action:hover { color: var(--ink); border-color: var(--ink-4); background: var(--paper-2); }
+  .action.primary {
+    color: var(--paper);
+    background: var(--ink);
+    border-color: var(--ink);
+  }
+  .action.primary:hover { background: var(--ink-2); }
+  .action.saved {
+    color: var(--accent);
+    border-color: var(--accent);
+    background: var(--accent-soft);
+  }
+  .action svg { width: 11px; height: 11px; }
+  .action-divider { width: 1px; height: 16px; background: var(--rule); margin: 0 6px; }
+
+  /* SHUFFLE BAR */
+  .shuffle-bar {
+    margin: 48px 0 32px;
+    padding: 16px 18px;
+    background: var(--paper-2);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .shuffle-icon {
+    width: 36px;
+    height: 36px;
+    background: var(--ink);
+    color: var(--paper);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .shuffle-icon svg { width: 16px; height: 16px; }
+  .shuffle-text {
+    flex: 1;
+    font-size: 13px;
+    color: var(--ink-3);
+    letter-spacing: -0.005em;
+  }
+  .shuffle-text b { color: var(--ink); font-weight: 600; }
+  .shuffle-btn {
+    font-size: 12px;
+    font-weight: 500;
+    padding: 8px 14px;
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    border-radius: 999px;
+    letter-spacing: -0.005em;
+  }
+  .shuffle-btn:hover { background: var(--accent); }
+
+  /* SECTION HEAD */
+  .section-head {
+    margin: 24px 0 20px;
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--ink);
+  }
+  .section-head h3 {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: -0.005em;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .section-head .count {
+    font-size: 11px;
+    color: var(--ink-4);
+    margin-left: auto;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  /* COMPACT LIST */
+  .compact { list-style: none; }
+  .compact-item {
+    padding: 14px 0;
+    border-bottom: 1px solid var(--rule);
+    display: grid;
+    grid-template-columns: 80px 56px 1fr auto auto;
+    gap: 16px;
+    align-items: center;
+  }
+  .compact-item:last-child { border-bottom: 0; }
+  .compact-item:hover { background: var(--paper-2); margin: 0 -12px; padding-left: 12px; padding-right: 12px; }
+  .c-time {
+    font-size: 11px;
+    color: var(--ink-4);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 500;
+  }
+  .c-time b { color: var(--ink); font-weight: 600; display: block; font-size: 13px; letter-spacing: -0.01em; }
+  .c-thumb {
+    width: 56px;
+    height: 56px;
+    border-radius: 3px;
+    overflow: hidden;
+    background: var(--paper-3);
+  }
+  .c-thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .c-title {
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+  .c-title .v {
+    display: block;
+    font-size: 11px;
+    color: var(--ink-4);
+    margin-top: 2px;
+    font-weight: 400;
+    letter-spacing: -0.005em;
+  }
+  .c-tags { display: flex; gap: 4px; }
+  .c-action {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1px solid var(--rule);
+    background: var(--paper);
+    color: var(--ink-4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .c-action:hover { color: var(--accent); border-color: var(--accent); }
+  .c-action svg { width: 12px; height: 12px; }
+
+  /* ESCAPE */
+  .escape {
+    margin-top: 56px;
+    padding: 24px;
+    background: var(--ink);
+    color: var(--paper);
+    border-radius: 4px;
+    display: grid;
+    grid-template-columns: 1fr 200px;
+    gap: 24px;
+    align-items: center;
+  }
+  .escape-photo {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 3px;
+    overflow: hidden;
+    background: var(--ink-2);
+  }
+  .escape-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+  .escape h3 {
+    font-size: 22px;
+    font-weight: 500;
+    line-height: 1.15;
+    letter-spacing: -0.025em;
+    margin-bottom: 10px;
+  }
+  .escape p {
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--ink-5);
+    letter-spacing: -0.005em;
+  }
+  .escape .escape-action {
+    margin-top: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--paper);
+    background: transparent;
+    border: 1px solid var(--ink-3);
+    padding: 7px 13px;
+    border-radius: 999px;
+    font-weight: 500;
+  }
+  .escape .escape-action:hover { background: var(--accent); border-color: var(--accent); }
+
+  /* SHARE TOAST DEMO */
+  .share-toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(120%);
+    background: var(--ink);
+    color: var(--paper);
+    padding: 12px 20px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: -0.005em;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    z-index: 100;
+  }
+  .share-toast.show { transform: translateX(-50%) translateY(0); }
+  .share-toast svg { width: 14px; height: 14px; color: var(--accent); }
+
+  /* COLOPHON */
+  .colophon {
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 1px solid var(--rule);
+    font-size: 11px;
+    color: var(--ink-4);
+    line-height: 1.7;
+    letter-spacing: -0.005em;
+  }
+  .colophon-title {
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 600;
+    color: var(--ink-3);
+    margin-bottom: 10px;
+    font-size: 10px;
+  }
+  .sources { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 6px; }
+  .source-chip {
+    padding: 3px 8px;
+    background: var(--paper-2);
+    color: var(--ink-3);
+    border-radius: 2px;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: -0.005em;
+  }
+
+  @media (max-width: 720px) {
+    .col { padding: 32px 18px 80px; }
+    h1 { font-size: 28px; }
+    .toggles { padding: 10px 16px; gap: 5px; }
+    .toggle { padding: 5px 10px; font-size: 11.5px; }
+    .toggle-label { display: none; }
+    .toggle-label.show-mobile { display: inline; }
+    .masthead { padding: 14px 16px; }
+    .compact-item { grid-template-columns: 60px 48px 1fr auto; gap: 12px; }
+    .c-action { display: none; }
+    .escape { grid-template-columns: 1fr; }
+    .escape-photo { order: -1; aspect-ratio: 16/9; }
+  }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="mark">WKNDR</div>
+  <div class="mast-meta">
+    <span>Brief №27</span>
+    <span>Amsterdam <b>· Ness</b></span>
+    <span>Refreshed Thu 21:14</span>
+  </div>
+</header>
+
+<div class="toggles">
+  <span class="toggle-label">Weekend</span>
+  <button class="toggle active">23–24 May</button>
+  <button class="toggle">30–31 May →</button>
+  <span class="toggle-label">Who</span>
+  <button class="toggle active">Me</button>
+  <button class="toggle active">Partner</button>
+  <button class="toggle active">Kids</button>
+  <span class="toggle-label">Range</span>
+  <button class="toggle active">City</button>
+  <button class="toggle">≤1h</button>
+  <button class="toggle">≤3h</button>
+  <span class="spacer"></span>
+  <button class="icon-btn" title="Saved" onclick="document.getElementById('saved').scrollIntoView({behavior:'smooth'})">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+  </button>
+  <button class="icon-btn" title="Share brief" onclick="showShare()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13"/></svg>
+  </button>
+  <button class="ask">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+    Ask
+  </button>
+</div>
+
+<main class="col">
+
+  <!-- WEATHER + LEDE -->
+  <div class="weather">
+    <span class="temp">30<span class="deg">°</span></span>
+    <span class="desc">clear sky, no rain · <b>first true summer day of the year</b> · sun cools to 26° tomorrow</span>
+  </div>
+
+  <div class="dateline"><b>Weekend of</b> 23–24 May 2026 · written for Ness, partner, kids</div>
+  <h1>The year's first hot Saturday hits, and the city is already outside.</h1>
+  <p class="lede">
+    <b>This is a terrace-and-water weekend, not a museum weekend.</b> Two things shape what's worth your time: the weather (30°, no rain, the kind of day Amsterdam waits eight months for), and that you've got the kids both days. Below: three picks worth getting on the calendar, then a deeper list if those don't fit, and one escape if you'd rather flip the whole thing.
+  </p>
+
+  <!-- PICK 1 -->
+  <article class="pick">
+    <div class="pick-num">№ 01 <span class="sep">/</span> <span class="when">SAT MORNING → AFTERNOON</span></div>
+    <div class="photo">
+      <img src="https://images.unsplash.com/photo-1530541930197-ff16ac917b0e?w=1200&q=80" alt="Hortus Botanicus greenhouse interior" loading="lazy">
+      <span class="credit">Unsplash</span>
+    </div>
+    <div class="pick-tags">
+      <span class="tag weather-pick">Weather pick</span>
+      <span class="tag kid">Kids</span>
+      <span class="tag outline">Outdoors · Free swim</span>
+    </div>
+    <h2><a href="#">Hortus Botanicus, then a swim at Marineterrein</a></h2>
+    <div class="venue">Plantage Middenlaan <span class="sep">·</span> Kattenburgerstraat <span class="sep">·</span> 20 min between on bikes</div>
+    <div class="body">
+      <p>Hortus opens at 10. The butterfly greenhouse is the part the kids will remember for a week — go straight there, then loop through the medicinal garden while they're still patient. By 12:30 they'll be done. Bike north to Marineterrein, where the harbor swim opens this weekend for the season. Bring towels and the bucket. It's the closest thing the city has to a beach moment without driving to IJburg.</p>
+    </div>
+    <div class="why">
+      <div>You've saved three Hortus posts on Instagram since February and never been with them. Marineterrein opens for swimming this exact weekend — first chance of the year. Both free or near it.</div>
+    </div>
+    <div class="actions">
+      <button class="action primary">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+        Save
+      </button>
+      <button class="action">Did it</button>
+      <button class="action">Not this</button>
+      <span class="action-divider"></span>
+      <button class="action">Map</button>
+      <button class="action" onclick="showShare()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13"/></svg>
+        Share
+      </button>
+    </div>
+  </article>
+
+  <!-- PICK 2 -->
+  <article class="pick">
+    <div class="pick-num">№ 02 <span class="sep">/</span> <span class="when">SAT 20:30 · PARADISO</span></div>
+    <div class="photo">
+      <img src="https://images.unsplash.com/photo-1501386761578-eac5c94b800a?w=1200&q=80" alt="Intimate live music venue" loading="lazy">
+      <span class="credit">Unsplash</span>
+    </div>
+    <div class="pick-tags">
+      <span class="tag hot">Sold out · waitlist</span>
+      <span class="tag critic">Critic's pick</span>
+      <span class="tag outline">Live music</span>
+    </div>
+    <h2><a href="#">Nectar Woode + Arno Sacco</a></h2>
+    <div class="venue">Paradiso Upstairs <span class="sep">·</span> Weteringschans 6–8 <span class="sep">·</span> in collab with NOTION</div>
+    <div class="body">
+      <p>Ghanaian-British jazz-soul singer, the kind of voice that makes a room hold its breath. Booked into the small hall, which is the point — she'll be three meters from you. NOTION programming means the warm-up will be worth showing up early for. Sold out, but the waitlist usually moves: enable notifications and check at 19:00.</p>
+      <p><em>If you can't get in:</em> KC Lights is at Thuishaven Sunday afternoon, day-into-night, softer landing for a hot weekend than a club Saturday anyway.</p>
+    </div>
+    <div class="why">
+      <div>Your top Spotify weeks all skew voice-forward soul (Cleo Sol, Snoh Aalegra, Kelela). Nectar Woode sits exactly in that pocket. Paradiso Upstairs is where you spent two Saturdays in March.</div>
+    </div>
+    <div class="actions">
+      <button class="action primary">Join waitlist</button>
+      <button class="action saved">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+        Saved
+      </button>
+      <button class="action">Not this</button>
+      <span class="action-divider"></span>
+      <button class="action" onclick="showShare()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13"/></svg>
+        Share
+      </button>
+    </div>
+  </article>
+
+  <!-- PICK 3 -->
+  <article class="pick">
+    <div class="pick-num">№ 03 <span class="sep">/</span> <span class="when">SUN LUNCH · NOORD</span></div>
+    <div class="photo">
+      <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1200&q=80" alt="Sunny restaurant terrace with wine" loading="lazy">
+      <span class="credit">Unsplash</span>
+    </div>
+    <div class="pick-tags">
+      <span class="tag new">New · Opened March</span>
+      <span class="tag critic">Eater Hit List</span>
+      <span class="tag outline">Terrace</span>
+    </div>
+    <h2><a href="#">Papillon</a></h2>
+    <div class="venue">Amsterdam Noord <span class="sep">·</span> all-day · walk-in lunch, book for dinner</div>
+    <div class="body">
+      <p>The all-day place in Noord everyone's been talking about since spring. Sourdough and pastries in the morning, wood-fired plates and natural wines as the day shifts. The terrace is the reason to go this Sunday — south-facing, properly sunny, glass of something cold, kids can roam. Cross on the ferry from Centraal, make a morning of it.</p>
+    </div>
+    <div class="why">
+      <div>You've never been and it's been featured by three writers you follow this spring (Eater, We Like Amsterdam, Your Little Black Book). Sunday brunch + a real terrace fits the weather perfectly.</div>
+    </div>
+    <div class="actions">
+      <button class="action primary">Directions</button>
+      <button class="action">Book a table</button>
+      <button class="action">Save</button>
+      <span class="action-divider"></span>
+      <button class="action" onclick="showShare()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13"/></svg>
+        Share
+      </button>
+    </div>
+  </article>
+
+  <!-- SHUFFLE -->
+  <div class="shuffle-bar">
+    <div class="shuffle-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
+    </div>
+    <div class="shuffle-text">
+      <b>None of these hit?</b> Roll one new pick from everything else we found.
+    </div>
+    <button class="shuffle-btn">Surprise me ↻</button>
+  </div>
+
+  <!-- ALSO ON -->
+  <div class="section-head">
+    <h3>Also on</h3>
+    <span class="count">9 more</span>
+  </div>
+
+  <ul class="compact">
+    <li class="compact-item">
+      <div class="c-time">SAT<b>10:00</b></div>
+      <div class="c-thumb"><img src="https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=200&q=80" alt=""></div>
+      <div class="c-title">Pluk de Dag kids' fair at Westergas
+        <span class="v">Westerpark · free · until 16:00</span>
+      </div>
+      <div class="c-tags"><span class="tag kid">Kids</span></div>
+      <button class="c-action" title="Save"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></button>
+    </li>
+    <li class="compact-item">
+      <div class="c-time">SAT<b>14:00</b></div>
+      <div class="c-thumb"><img src="https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=200&q=80" alt=""></div>
+      <div class="c-title">NDSM flea + harborside afternoon
+        <span class="v">IJ Hallen weekend · €5 entry · ferry from Centraal</span>
+      </div>
+      <div class="c-tags"><span class="tag outline">Browse</span></div>
+      <button class="c-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></button>
+    </li>
+    <li class="compact-item">
+      <div class="c-time">SAT<b>19:30</b></div>
+      <div class="c-thumb"><img src="https://images.unsplash.com/photo-1429962714451-bb934ecdc4ec?w=200&q=80" alt=""></div>
+      <div class="c-title">Live rave group, album launch
+        <span class="v">Paradiso Main · €22 · for after the kids are down</span>
+      </div>
+      <div class="c-tags"><span class="tag outline">Music</span></div>
+      <button class="c-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></button>
+    </li>
+    <li class="compact-item">
+      <div class="c-time">SAT<b>23:00</b></div>
+      <div class="c-thumb"><img src="https://images.unsplash.com/photo-1571266028243-d220bc562d1f?w=200&q=80" alt=""></div>
+      <div class="c-title">Lentekabinet × Ineffekt, all night
+        <span class="v">undisclosed · €30 · UK bass + dub leaning</span>
+      </div>
+      <div class="c-tags"><span class="tag outline">Late</span></div>
+      <button class="c-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></button>
+    </li>
+    <li class="compact-item">
+      <div class="c-time">SUN<b>11:00</b></div>
+      <div class="c-thumb"><img src="https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=200&q=80" alt=""></div>
+      <div class="c-title">Pancakes on the Amstel by bike
+        <span class="v">Pannenkoekenboot · slow Sunday default</span>
+      </div>
+      <div class="c-tags"><span class="tag kid">Kids</span></div>
+      <button class="c-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></button>
+    </li>
+    <li class="compact-item">
+      <div class="c-time">SUN<b>14:00</b></div>
+      <div class="c-thumb"><img src="https://images.unsplash.com/photo-1577720580479-7d839d829c73?w=200&q=80" alt=""></div>
+      <div class="c-title">Foam · new Wolfgang Tillmans rooms
+        <span class="v">Keizersgracht 609 · opened 2 weeks ago · €15</span>
+      </div>
+      <div class="c-tags"><span class="tag new">New</span></div>
+      <button class="c-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></button>
+    </li>
+    <li class="compact-item">
+      <div class="c-time">SUN<b>15:00</b></div>
+      <div class="c-thumb"><img src="https://images.unsplash.com/photo-1493676304819-0d7a8d026dcf?w=200&q=80" alt=""></div>
+      <div class="c-title">KC Lights, day-into-night
+        <span class="v">Thuishaven · outdoor · house and disco</span>
+      </div>
+      <div class="c-tags"><span class="tag outline">Music</span></div>
+      <button class="c-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></button>
+    </li>
+    <li class="compact-item">
+      <div class="c-time">SUN<b>17:00</b></div>
+      <div class="c-thumb"><img src="https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=200&q=80" alt=""></div>
+      <div class="c-title">Sunset on the Schinkel from a sloep
+        <span class="v">rent at Boaty · €90/3hr · book before noon</span>
+      </div>
+      <div class="c-tags"><span class="tag weather-pick">Weather</span></div>
+      <button class="c-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></button>
+    </li>
+    <li class="compact-item">
+      <div class="c-time">SUN<b>20:00</b></div>
+      <div class="c-thumb"><img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=200&q=80" alt=""></div>
+      <div class="c-title">Kovacs at Carré
+        <span class="v">Koninklijk Theater Carré · €45 · seated, ends 22:30</span>
+      </div>
+      <div class="c-tags"><span class="tag outline">Music</span></div>
+      <button class="c-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></button>
+    </li>
+  </ul>
+
+  <!-- SAVED PREVIEW -->
+  <div id="saved" class="section-head" style="margin-top: 56px;">
+    <h3>Your saved</h3>
+    <span class="count">3 across 2 weekends</span>
+  </div>
+
+  <ul class="compact">
+    <li class="compact-item">
+      <div class="c-time">THIS WKND<b>SAT</b></div>
+      <div class="c-thumb"><img src="https://images.unsplash.com/photo-1501386761578-eac5c94b800a?w=200&q=80" alt=""></div>
+      <div class="c-title">Nectar Woode + Arno Sacco
+        <span class="v">Paradiso · saved Thu · waitlist active</span>
+      </div>
+      <div class="c-tags"><span class="tag hot">Hot</span></div>
+      <button class="c-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button>
+    </li>
+    <li class="compact-item">
+      <div class="c-time">30 MAY<b>SAT</b></div>
+      <div class="c-thumb"><img src="https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=200&q=80" alt=""></div>
+      <div class="c-title">Felbm at Zonzij, Tolhuistuin
+        <span class="v">saved last week · we'll remind you Thu</span>
+      </div>
+      <div class="c-tags"><span class="tag outline">Watching</span></div>
+      <button class="c-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button>
+    </li>
+    <li class="compact-item">
+      <div class="c-time">JUN 5<b>FRI</b></div>
+      <div class="c-thumb"><img src="https://images.unsplash.com/photo-1571266028243-d220bc562d1f?w=200&q=80" alt=""></div>
+      <div class="c-title">Max Cooper · Dramatic Synthesis
+        <span class="v">Paradiso · tickets going fast</span>
+      </div>
+      <div class="c-tags"><span class="tag hot">Hot</span></div>
+      <button class="c-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button>
+    </li>
+  </ul>
+
+  <!-- ESCAPE -->
+  <div class="escape">
+    <div>
+      <div class="escape-label">↳ If you want to flip the script</div>
+      <h3>One escape: Texel, two days, ferry from Den Helder</h3>
+      <p>The first heat of the year is also the first weekend the Wadden makes sense again. Train to Den Helder 90 min, ferry 20. The kids will lose their minds on the beach. Boutique stays in Den Burg still had weekend rooms at 21:00 — three within budget. Back Sunday evening, no work day lost.</p>
+      <button class="escape-action">Build me this weekend →</button>
+    </div>
+    <div class="escape-photo">
+      <img src="https://images.unsplash.com/photo-1509316785289-025f5b846b35?w=600&q=80" alt="Wadden coast beach scene" loading="lazy">
+    </div>
+  </div>
+
+  <!-- COLOPHON -->
+  <div class="colophon">
+    <div class="colophon-title">Sources read this week</div>
+    <div class="sources">
+      <span class="source-chip">resident advisor</span>
+      <span class="source-chip">paradiso</span>
+      <span class="source-chip">melkweg</span>
+      <span class="source-chip">songkick</span>
+      <span class="source-chip">eater amsterdam</span>
+      <span class="source-chip">we like amsterdam</span>
+      <span class="source-chip">your little black book</span>
+      <span class="source-chip">time out</span>
+      <span class="source-chip">i amsterdam</span>
+      <span class="source-chip">kidsproof</span>
+      <span class="source-chip">foam</span>
+      <span class="source-chip">stedelijk</span>
+      <span class="source-chip">eye filmmuseum</span>
+      <span class="source-chip">knmi weather</span>
+      <span class="source-chip">spotify · your taste</span>
+    </div>
+    <div style="margin-top: 18px; font-size: 11px;">WKNDR is a weekly brief, not a feed. Mark items as <i>did it</i> or <i>not this</i> — your next brief gets sharper.</div>
+  </div>
+
+</main>
+
+<!-- SHARE TOAST -->
+<div class="share-toast" id="shareToast">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+  Share link copied
+</div>
+
+<script>
+  function showShare() {
+    const t = document.getElementById('shareToast');
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2200);
+  }
+</script>
+
+</body>
+</html>

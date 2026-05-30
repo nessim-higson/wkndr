@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WKNDR — Brief for the weekend of May 23–24</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700;9..144,900&family=JetBrains+Mono:wght@400;500&family=Inter+Tight:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #f4f1ea;
+    --ink-dim: #a8a39a;
+    --ink-faint: #6b6660;
+    --paper: #14130f;
+    --paper-2: #1c1a15;
+    --paper-3: #252217;
+    --rule: #2e2a22;
+    --accent: #e8c547;
+    --accent-2: #ff6b35;
+    --accent-3: #7fb3a5;
+    --hot: #ff4d3a;
+    --new: #e8c547;
+    --kid: #7fb3a5;
+    --weather: #f4f1ea;
+    --serif: 'Fraunces', Georgia, serif;
+    --sans: 'Inter Tight', -apple-system, sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--serif);
+    font-feature-settings: "ss01", "ss02";
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    background-image:
+      radial-gradient(ellipse 800px 600px at 80% -10%, rgba(232,197,71,0.04), transparent 60%),
+      radial-gradient(ellipse 600px 400px at -10% 30%, rgba(127,179,165,0.03), transparent 60%);
+    min-height: 100vh;
+  }
+
+  /* MASTHEAD */
+  .masthead {
+    border-bottom: 1px solid var(--rule);
+    padding: 20px 32px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .mark {
+    font-family: var(--serif);
+    font-weight: 900;
+    font-size: 28px;
+    letter-spacing: -0.04em;
+    font-style: italic;
+    line-height: 0.9;
+  }
+  .mark .dot { color: var(--accent); font-style: normal; }
+  .mast-meta {
+    font-family: var(--mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    letter-spacing: 0.12em;
+    display: flex;
+    gap: 18px;
+    align-items: center;
+  }
+  .mast-meta b { color: var(--ink); font-weight: 500; }
+  .mast-meta .pulse {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent-3);
+    box-shadow: 0 0 0 0 rgba(127,179,165,0.6);
+    animation: pulse 2.4s infinite;
+    display: inline-block;
+  }
+  @keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(127,179,165,0.5); }
+    70% { box-shadow: 0 0 0 8px rgba(127,179,165,0); }
+    100% { box-shadow: 0 0 0 0 rgba(127,179,165,0); }
+  }
+
+  /* TOGGLE BAR */
+  .toggles {
+    border-bottom: 1px solid var(--rule);
+    padding: 14px 32px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+    background: var(--paper-2);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    backdrop-filter: blur(8px);
+    background-color: rgba(20,19,15,0.92);
+  }
+  .toggle-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ink-faint);
+    margin-right: 4px;
+  }
+  .toggle {
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 500;
+    padding: 6px 12px;
+    background: transparent;
+    color: var(--ink-dim);
+    border: 1px solid var(--rule);
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: -0.005em;
+  }
+  .toggle:hover { color: var(--ink); border-color: var(--ink-faint); }
+  .toggle.active {
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+  }
+  .toggle .x { opacity: 0.5; margin-left: 4px; }
+  .ask {
+    margin-left: auto;
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 500;
+    padding: 6px 14px 6px 10px;
+    background: transparent;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    border-radius: 100px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.15s;
+  }
+  .ask:hover { background: var(--accent); color: var(--paper); }
+
+  /* MAIN COLUMN */
+  .col {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 56px 32px 120px;
+  }
+
+  /* WEATHER HEADER */
+  .weather {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    font-family: var(--mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ink-faint);
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .weather b {
+    color: var(--accent);
+    font-weight: 500;
+    font-size: 14px;
+  }
+  .weather .temp {
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: -0.02em;
+    margin-right: 8px;
+  }
+
+  /* LEDE */
+  .dateline {
+    font-family: var(--mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--ink-faint);
+    margin-bottom: 12px;
+  }
+  .dateline span { color: var(--accent); }
+  h1 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(36px, 5.5vw, 56px);
+    line-height: 1.02;
+    letter-spacing: -0.035em;
+    margin-bottom: 24px;
+  }
+  h1 em { font-style: italic; color: var(--accent); }
+  .lede {
+    font-family: var(--serif);
+    font-size: 19px;
+    line-height: 1.55;
+    color: var(--ink-dim);
+    font-weight: 300;
+    letter-spacing: -0.005em;
+    margin-bottom: 48px;
+    max-width: 620px;
+  }
+  .lede strong { color: var(--ink); font-weight: 500; }
+
+  /* PICK */
+  .pick {
+    margin-bottom: 56px;
+    position: relative;
+  }
+  .pick + .pick { padding-top: 56px; border-top: 1px solid var(--rule); }
+  .pick-num {
+    position: absolute;
+    left: -52px;
+    top: 4px;
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 300;
+    font-size: 32px;
+    color: var(--accent);
+    line-height: 1;
+    letter-spacing: -0.04em;
+  }
+  .pick-meta {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
+  .tag {
+    font-family: var(--mono);
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    padding: 3px 8px;
+    border-radius: 2px;
+    font-weight: 500;
+  }
+  .tag.hot { background: var(--hot); color: var(--paper); }
+  .tag.new { background: var(--new); color: var(--paper); }
+  .tag.kid { background: var(--kid); color: var(--paper); }
+  .tag.weather-pick { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
+  .tag.critic { background: var(--paper-3); color: var(--accent); border: 1px solid var(--paper-3); }
+  .tag.outline { background: transparent; color: var(--ink-dim); border: 1px solid var(--rule); }
+  .when {
+    font-family: var(--mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--ink-faint);
+    margin-left: auto;
+  }
+  h2 {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 30px;
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    margin-bottom: 6px;
+  }
+  h2 a { color: var(--ink); text-decoration: none; border-bottom: 1px solid transparent; transition: border-color 0.15s; }
+  h2 a:hover { border-bottom-color: var(--accent); }
+  .venue {
+    font-family: var(--sans);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-faint);
+    margin-bottom: 18px;
+    font-weight: 500;
+  }
+  .venue .sep { margin: 0 8px; color: var(--rule); }
+  .body {
+    font-family: var(--serif);
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--ink);
+    font-weight: 300;
+    letter-spacing: -0.003em;
+  }
+  .body p + p { margin-top: 14px; }
+  .body em { color: var(--ink-dim); }
+  .why {
+    margin-top: 18px;
+    padding: 14px 16px;
+    background: var(--paper-2);
+    border-left: 2px solid var(--accent);
+    font-family: var(--sans);
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--ink-dim);
+    font-weight: 400;
+    letter-spacing: -0.005em;
+  }
+  .why b { color: var(--accent); font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.14em; display: block; margin-bottom: 4px; font-weight: 500; }
+  .actions {
+    margin-top: 18px;
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .action {
+    font-family: var(--mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    padding: 6px 10px;
+    color: var(--ink-dim);
+    background: transparent;
+    border: 1px solid var(--rule);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .action:hover { color: var(--ink); border-color: var(--ink-dim); }
+  .action.primary { color: var(--ink); border-color: var(--ink); }
+  .action.primary:hover { background: var(--ink); color: var(--paper); }
+
+  /* SECTION HEADER */
+  .section-head {
+    margin: 72px 0 32px;
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+  }
+  .section-head h3 {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 24px;
+    letter-spacing: -0.02em;
+  }
+  .section-head .rule {
+    flex: 1;
+    height: 1px;
+    background: var(--rule);
+  }
+  .section-head .count {
+    font-family: var(--mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    letter-spacing: 0.14em;
+  }
+
+  /* COMPACT LIST */
+  .compact { padding-left: 0; }
+  .compact-item {
+    padding: 18px 0;
+    border-bottom: 1px solid var(--rule);
+    display: grid;
+    grid-template-columns: 70px 1fr auto;
+    gap: 20px;
+    align-items: baseline;
+  }
+  .compact-item:last-child { border-bottom: none; }
+  .c-time {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .c-time b { color: var(--ink); font-weight: 500; display: block; font-size: 12px; }
+  .c-title {
+    font-family: var(--serif);
+    font-size: 17px;
+    font-weight: 400;
+    letter-spacing: -0.015em;
+    line-height: 1.3;
+  }
+  .c-title .v {
+    display: block;
+    font-family: var(--sans);
+    font-size: 11px;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-top: 3px;
+    font-weight: 500;
+  }
+  .c-tags {
+    display: flex;
+    gap: 4px;
+    justify-self: end;
+  }
+
+  /* ESCAPE BOX */
+  .escape {
+    margin-top: 64px;
+    padding: 32px;
+    background: linear-gradient(135deg, var(--paper-3) 0%, var(--paper-2) 100%);
+    border: 1px solid var(--rule);
+    position: relative;
+    overflow: hidden;
+  }
+  .escape::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle at 90% 20%, rgba(232,197,71,0.08), transparent 50%);
+    pointer-events: none;
+  }
+  .escape-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+  .escape h3 {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 28px;
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    margin-bottom: 14px;
+  }
+  .escape p {
+    font-family: var(--serif);
+    font-size: 16px;
+    line-height: 1.55;
+    color: var(--ink-dim);
+    font-weight: 300;
+    max-width: 540px;
+  }
+  .escape p + p { margin-top: 12px; }
+
+  /* FOOTER */
+  .colophon {
+    margin-top: 88px;
+    padding-top: 32px;
+    border-top: 1px solid var(--rule);
+    font-family: var(--mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--ink-faint);
+    line-height: 1.8;
+  }
+  .colophon a { color: var(--ink-dim); text-decoration: none; border-bottom: 1px dotted var(--ink-faint); }
+  .colophon a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+  .sources { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+  .source-chip {
+    padding: 3px 7px;
+    background: var(--paper-2);
+    border: 1px solid var(--rule);
+    color: var(--ink-faint);
+    border-radius: 2px;
+    font-size: 9px;
+  }
+
+  @media (max-width: 720px) {
+    .col { padding: 40px 22px 80px; }
+    .pick-num { position: static; display: inline-block; margin-bottom: 4px; }
+    h1 { font-size: 36px; }
+    .compact-item { grid-template-columns: 1fr; gap: 6px; }
+    .c-tags { justify-self: start; }
+    .toggles { padding: 12px 16px; }
+    .masthead { padding: 16px 18px 12px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="mark">WKNDR<span class="dot">.</span></div>
+  <div class="mast-meta">
+    <span><span class="pulse"></span> refreshed Thu 21:14</span>
+    <span>Amsterdam · <b>Ness</b></span>
+    <span>Brief №27</span>
+  </div>
+</header>
+
+<div class="toggles">
+  <span class="toggle-label">This weekend</span>
+  <button class="toggle active">Sat 23<span class="x">·</span>Sun 24</button>
+  <button class="toggle">Next →</button>
+  <span class="toggle-label" style="margin-left:12px">Who</span>
+  <button class="toggle active">Me</button>
+  <button class="toggle active">Partner</button>
+  <button class="toggle active">Kid (4)</button>
+  <span class="toggle-label" style="margin-left:12px">Range</span>
+  <button class="toggle active">City</button>
+  <button class="toggle">≤1h</button>
+  <button class="toggle">≤3h</button>
+  <button class="ask">↳ tell it something</button>
+</div>
+
+<main class="col">
+
+  <div class="weather">
+    <span class="temp">30°</span>
+    <span>clear sky · sat — <b>first true summer day</b> · sun cools to 26°, still terrace weather</span>
+  </div>
+
+  <div class="dateline">Brief №27 · for the weekend of <span>23–24 May 2026</span></div>
+
+  <h1>The year's <em>first hot Saturday</em> hits, and the city is already outside.</h1>
+
+  <p class="lede">
+    <strong>Read in: this is a terrace-and-water weekend, not a museum weekend.</strong> Two things shape what's worth your time: the weather (30°, no rain, the kind of day Amsterdam waits eight months for), and that you've got the 4-year-old both days. Below: one move per slot — Saturday morning with the kid, Saturday night for you and her after bedtime, Sunday slow. One escape option if you want to flip the script entirely. Tulip season's over; berry-and-festival season starts now.
+  </p>
+
+  <!-- PICK 1 -->
+  <article class="pick">
+    <span class="pick-num">№1</span>
+    <div class="pick-meta">
+      <span class="tag weather-pick">Weather pick</span>
+      <span class="tag kid">Kid-friendly</span>
+      <span class="tag outline">Outdoors</span>
+      <span class="when">Sat morning → afternoon</span>
+    </div>
+    <h2><a href="#">Hortus Botanicus, then a swim at Marineterrein</a></h2>
+    <div class="venue">Plantage Middenlaan<span class="sep">·</span>Kattenburgerstraat<span class="sep">·</span>20 min on bikes between them</div>
+    <div class="body">
+      <p>Hortus opens at 10. The butterfly greenhouse is the part a 4-year-old will remember for a week — go straight there, then loop through the medicinal garden while she's still patient. By 12:30 she'll be done. Bike north to Marineterrein, where the harbor swim opens this weekend for the season. Bring a towel and the bucket. It's the closest thing the city has to a real beach moment without the IJburg drive.</p>
+    </div>
+    <div class="why">
+      <b>Why this fits</b>
+      You've saved 3 Hortus posts on Instagram since February and never been with her. Marineterrein opens for swimming this exact weekend — first chance of the year. Both are free or near-free.
+    </div>
+    <div class="actions">
+      <button class="action primary">Save to plan</button>
+      <button class="action">Did it</button>
+      <button class="action">Not this</button>
+      <button class="action">Show on map</button>
+    </div>
+  </article>
+
+  <!-- PICK 2 -->
+  <article class="pick">
+    <span class="pick-num">№2</span>
+    <div class="pick-meta">
+      <span class="tag hot">Sold out · waitlist</span>
+      <span class="tag critic">Critic's pick</span>
+      <span class="tag outline">Live music</span>
+      <span class="when">Sat 20:30 — Paradiso</span>
+    </div>
+    <h2><a href="#">Nectar Woode + Arno Sacco</a></h2>
+    <div class="venue">Paradiso Upstairs<span class="sep">·</span>Weteringschans 6–8<span class="sep">·</span>in collab with NOTION</div>
+    <div class="body">
+      <p>Ghanaian-British jazz-soul singer, the kind of voice that makes a room hold its breath. Booked into the small hall, which is the point — she'll be three meters from you. NOTION programming means the warm-up will be worth showing up early for. Sold out, but the waitlist usually moves: enable notifications and check at 19:00.</p>
+      <p><em>If you can't get in:</em> KC Lights is at Thuishaven Sunday for an outdoor day-into-night thing, which is a softer landing for a hot Sunday than a sweaty club Saturday anyway.</p>
+    </div>
+    <div class="why">
+      <b>Why this fits</b>
+      Your top Spotify weeks all skew toward voice-forward soul (Cleo Sol, Snoh Aalegra, Kelela). Nectar Woode sits exactly in that pocket. Paradiso Upstairs is the room where you spent two Saturdays in March.
+    </div>
+    <div class="actions">
+      <button class="action primary">Join waitlist</button>
+      <button class="action">Watching</button>
+      <button class="action">Not this</button>
+    </div>
+  </article>
+
+  <!-- PICK 3 -->
+  <article class="pick">
+    <span class="pick-num">№3</span>
+    <div class="pick-meta">
+      <span class="tag new">New</span>
+      <span class="tag critic">Eater Hit List</span>
+      <span class="tag outline">Terrace</span>
+      <span class="when">Sun lunch — Noord</span>
+    </div>
+    <h2><a href="#">Papillon</a></h2>
+    <div class="venue">Amsterdam Noord<span class="sep">·</span>opened March<span class="sep">·</span>walk-in lunch, book for dinner</div>
+    <div class="body">
+      <p>The all-day place in Noord everyone's been talking about since spring. Sourdough and pastries in the morning, wood-fired plates and natural wines as the day shifts. The terrace is the reason to go this Sunday — south-facing, properly sunny, glass of something cold, kid can roam. Cross on the ferry from Centraal, make a morning of it.</p>
+    </div>
+    <div class="why">
+      <b>Why this fits</b>
+      You've never been to Papillon and it's been on three of the writers you follow (Eater, We Like Amsterdam, Your Little Black Book). Sunday brunch with the kid + a real terrace fits the weather signal perfectly.
+    </div>
+    <div class="actions">
+      <button class="action primary">Get directions</button>
+      <button class="action">Book a table</button>
+      <button class="action">Watching</button>
+    </div>
+  </article>
+
+  <!-- ALSO ON -->
+  <div class="section-head">
+    <h3>Also on, if the top three don't land</h3>
+    <span class="rule"></span>
+    <span class="count">9 picks</span>
+  </div>
+
+  <ul class="compact">
+    <li class="compact-item">
+      <div class="c-time">SAT<b>10:00</b></div>
+      <div class="c-title">Pluk de Dag kids' fair at Westergas
+        <span class="v">Westerpark · free · runs until 16:00</span>
+      </div>
+      <div class="c-tags"><span class="tag kid">Kid</span></div>
+    </li>
+    <li class="compact-item">
+      <div class="c-time">SAT<b>14:00</b></div>
+      <div class="c-title">NDSM flea + harborside afternoon
+        <span class="v">IJ Hallen weekend · 5€ entry · ferry from Centraal</span>
+      </div>
+      <div class="c-tags"><span class="tag outline">Browse</span></div>
+    </li>
+    <li class="compact-item">
+      <div class="c-time">SAT<b>19:30</b></div>
+      <div class="c-title">Live rave group, album launch
+        <span class="v">Paradiso Main · €22 · for after the kid's down</span>
+      </div>
+      <div class="c-tags"><span class="tag outline">Music</span></div>
+    </li>
+    <li class="compact-item">
+      <div class="c-time">SAT<b>23:00</b></div>
+      <div class="c-title">Lentekabinet × Ineffekt (all-night)
+        <span class="v">undisclosed location · €30 · UK bass + dub leaning</span>
+      </div>
+      <div class="c-tags"><span class="tag outline">Late</span></div>
+    </li>
+    <li class="compact-item">
+      <div class="c-time">SUN<b>11:00</b></div>
+      <div class="c-title">Pancakes on the Amstel by bike
+        <span class="v">Pannenkoekenboot or De Carrousel · slow Sunday default</span>
+      </div>
+      <div class="c-tags"><span class="tag kid">Kid</span></div>
+    </li>
+    <li class="compact-item">
+      <div class="c-time">SUN<b>14:00</b></div>
+      <div class="c-title">Foam — new Wolfgang Tillmans rooms
+        <span class="v">Keizersgracht 609 · opened 2 weeks ago · €15</span>
+      </div>
+      <div class="c-tags"><span class="tag new">New</span></div>
+    </li>
+    <li class="compact-item">
+      <div class="c-time">SUN<b>15:00</b></div>
+      <div class="c-title">KC Lights, day-into-night
+        <span class="v">Thuishaven · outdoor · house and disco</span>
+      </div>
+      <div class="c-tags"><span class="tag outline">Music</span></div>
+    </li>
+    <li class="compact-item">
+      <div class="c-time">SUN<b>17:00</b></div>
+      <div class="c-title">Sunset on the Schinkel from a sloep
+        <span class="v">rent at Boaty · 90€/3hr · book before noon</span>
+      </div>
+      <div class="c-tags"><span class="tag weather-pick">Weather</span></div>
+    </li>
+    <li class="compact-item">
+      <div class="c-time">SUN<b>20:00</b></div>
+      <div class="c-title">Kovacs at Carré
+        <span class="v">Koninklijk Theater Carré · €45 · seated, ends 22:30</span>
+      </div>
+      <div class="c-tags"><span class="tag outline">Music</span></div>
+    </li>
+  </ul>
+
+  <!-- ESCAPE -->
+  <div class="escape">
+    <div class="escape-label">↳ if you want to flip the script</div>
+    <h3>One escape: Texel, two days, ferry from Den Helder</h3>
+    <p>The first heat of the year is also the first weekend the Wadden makes sense again. Train to Den Helder is 90 min, ferry 20. The 4-year-old will lose her mind on the beach. Boutique stays in Den Burg still have weekend rooms (checked at 21:00, 3 within budget). Back Sunday evening, no work day lost.</p>
+    <p>Flip the "Range" toggle above to ≤3h to see this slotted into the main brief — with restaurants, a swim spot, and the seal sanctuary worked in.</p>
+  </div>
+
+  <!-- COLOPHON -->
+  <div class="colophon">
+    <div>WKNDR is a weekly brief, not a feed. Tap a pick to tell us how it landed — the next brief gets sharper.</div>
+    <div style="margin-top:16px">Sources read this week</div>
+    <div class="sources">
+      <span class="source-chip">resident advisor</span>
+      <span class="source-chip">paradiso</span>
+      <span class="source-chip">melkweg</span>
+      <span class="source-chip">songkick</span>
+      <span class="source-chip">eater amsterdam</span>
+      <span class="source-chip">we like amsterdam</span>
+      <span class="source-chip">your little black book</span>
+      <span class="source-chip">time out</span>
+      <span class="source-chip">i amsterdam</span>
+      <span class="source-chip">kidsproof</span>
+      <span class="source-chip">foam</span>
+      <span class="source-chip">stedelijk</span>
+      <span class="source-chip">eye filmmuseum</span>
+      <span class="source-chip">knmi weather</span>
+      <span class="source-chip">spotify (your taste)</span>
+    </div>
+  </div>
+
+</main>
+
+</body>
+</html>

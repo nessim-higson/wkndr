@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WKNDR — Sunday, 24 May 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1612;
+    --ink-2: #2a241e;
+    --ink-3: #5a544e;
+    --ink-4: #8a847e;
+    --ink-5: #c4c0bc;
+    --paper: #f8f5ee;
+    --paper-2: #f0ecde;
+    --paper-3: #e6e0d0;
+    --rule: #2a241e;
+    --rule-light: #c4c0bc;
+    --accent: #a02814;
+    --accent-soft: #f4e8e4;
+    --serif: 'Fraunces', 'Georgia', 'Times New Roman', serif;
+    --sans: 'Inter', -apple-system, sans-serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+  html, body {
+    font-family: var(--serif);
+    background: var(--paper);
+    color: var(--ink);
+    font-feature-settings: "kern", "liga", "onum";
+    text-rendering: geometricPrecision;
+    overflow-x: hidden;
+  }
+  button, .pill, .filter-label { font-family: var(--sans); }
+  a { color: inherit; text-decoration: none; }
+  img { display: block; max-width: 100%; }
+
+  /* ========= MASTHEAD ========= */
+  .masthead {
+    padding: 28px 28px 22px;
+    border-bottom: 1px solid var(--rule);
+    text-align: center;
+    background: var(--paper);
+    position: relative;
+  }
+  .masthead-rule-top {
+    height: 4px;
+    background: var(--rule);
+    margin: 0 -28px 18px;
+    position: relative;
+  }
+  .masthead-rule-top::after {
+    content: '';
+    position: absolute;
+    top: 6px; left: 0; right: 0;
+    height: 1px;
+    background: var(--rule);
+  }
+  .wordmark {
+    font-family: var(--serif);
+    font-size: 52px;
+    font-weight: 600;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    color: var(--ink);
+    font-variation-settings: "opsz" 144;
+  }
+  .wordmark em {
+    font-style: italic;
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .masthead-meta {
+    margin-top: 14px;
+    font-family: var(--sans);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--ink-3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .masthead-meta .sep { color: var(--ink-5); }
+  .masthead-meta .vol { font-weight: 600; color: var(--ink); }
+
+  /* ========= NAV STRIP ========= */
+  .nav-strip {
+    border-bottom: 1px solid var(--rule);
+    background: var(--paper);
+    padding: 12px 28px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    flex-wrap: wrap;
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    backdrop-filter: blur(8px);
+    background-color: rgba(248, 245, 238, 0.96);
+  }
+  .filter-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ink-3);
+    font-weight: 500;
+  }
+  .pill {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 4px 10px;
+    background: transparent;
+    color: var(--ink-3);
+    border: 1px solid var(--rule-light);
+    border-radius: 0;
+    transition: all 0.12s ease;
+    letter-spacing: 0;
+    cursor: pointer;
+  }
+  .pill:hover { color: var(--ink); border-color: var(--ink); }
+  .pill.active {
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+  }
+  .pill.kids-active {
+    background: var(--accent);
+    color: var(--paper);
+    border-color: var(--accent);
+  }
+  .pill-divider {
+    width: 1px;
+    height: 14px;
+    background: var(--rule-light);
+  }
+  .nav-spacer { flex: 1; }
+  .nav-actions { display: flex; gap: 6px; }
+  .icon-btn {
+    width: 28px;
+    height: 28px;
+    border: 1px solid var(--rule-light);
+    border-radius: 0;
+    background: transparent;
+    color: var(--ink-3);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .icon-btn:hover { color: var(--ink); border-color: var(--ink); }
+  .icon-btn svg { width: 12px; height: 12px; }
+
+  /* ========= MAIN COLUMN ========= */
+  .col {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 56px 28px 96px;
+  }
+
+  /* ========= STANDFIRST (the editorial intro block) ========= */
+  .standfirst-meta {
+    font-family: var(--sans);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--ink-3);
+    margin-bottom: 24px;
+    text-align: center;
+    font-weight: 600;
+  }
+  .standfirst-meta .dot {
+    display: inline-block;
+    width: 4px;
+    height: 4px;
+    background: var(--accent);
+    border-radius: 50%;
+    margin: 0 10px;
+    vertical-align: middle;
+  }
+  .dropcap-graph {
+    font-size: 19px;
+    line-height: 1.45;
+    color: var(--ink-2);
+    letter-spacing: -0.005em;
+    margin-bottom: 32px;
+    font-weight: 400;
+  }
+  .dropcap-graph::first-letter {
+    float: left;
+    font-family: var(--serif);
+    font-size: 76px;
+    line-height: 0.86;
+    font-weight: 600;
+    color: var(--ink);
+    margin: 8px 10px -2px 0;
+    font-variation-settings: "opsz" 144;
+  }
+  .dropcap-graph em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  /* ========= CITY HEADLINE BLOCK ========= */
+  .city-block {
+    text-align: center;
+    margin-bottom: 36px;
+    padding: 28px 0;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    position: relative;
+  }
+  .city-block::before, .city-block::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0;
+    height: 1px;
+    background: var(--rule);
+  }
+  .city-block::before { top: 3px; }
+  .city-block::after { bottom: 3px; }
+  .city-eyebrow {
+    font-family: var(--sans);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--ink-3);
+    margin-bottom: 14px;
+    font-weight: 600;
+  }
+  .city-name {
+    font-family: var(--serif);
+    font-size: 76px;
+    font-weight: 500;
+    letter-spacing: -0.045em;
+    line-height: 0.95;
+    color: var(--ink);
+    margin-bottom: 4px;
+    font-variation-settings: "opsz" 144;
+  }
+  .city-name em {
+    font-style: italic;
+    font-weight: 400;
+  }
+  .city-sub {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 18px;
+    color: var(--ink-3);
+    font-weight: 400;
+  }
+  .city-sub .temp {
+    color: var(--accent);
+    font-style: normal;
+    font-weight: 600;
+  }
+
+  /* ========= SECTION RULE ========= */
+  .section-rule {
+    margin: 48px 0 22px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .section-rule .line {
+    flex: 1;
+    height: 1px;
+    background: var(--rule);
+  }
+  .section-rule .roman {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 13px;
+    color: var(--ink-3);
+    font-weight: 400;
+  }
+  .section-rule h3 {
+    font-family: var(--sans);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+
+  /* ========= STORIES (the editorial card variant) ========= */
+  .stories {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .story {
+    padding: 32px 0;
+    border-bottom: 1px solid var(--rule-light);
+    display: block;
+    color: inherit;
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+  }
+  .story:hover { opacity: 0.85; }
+  .story:last-child { border-bottom: 0; }
+  .story-header {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 14px;
+    font-family: var(--sans);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ink-3);
+    font-weight: 600;
+  }
+  .story-number {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 36px;
+    font-weight: 400;
+    color: var(--accent);
+    line-height: 0.9;
+    font-variation-settings: "opsz" 144;
+    margin-right: 4px;
+  }
+  .story-when {
+    color: var(--ink);
+    font-weight: 700;
+  }
+  .story-tags {
+    display: flex;
+    gap: 6px;
+    margin-left: auto;
+  }
+  .story-tag {
+    padding: 2px 6px;
+    border: 1px solid var(--rule-light);
+    color: var(--ink-3);
+    font-size: 9px;
+    letter-spacing: 0.1em;
+  }
+  .story-tag.today {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-soft);
+  }
+  .story-tag.kid {
+    border-color: var(--ink);
+    color: var(--ink);
+  }
+  .story-title {
+    font-family: var(--serif);
+    font-size: 36px;
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 8px;
+    font-variation-settings: "opsz" 96;
+  }
+  .story-title em {
+    font-style: italic;
+    color: var(--accent);
+    font-weight: 400;
+  }
+  .story-venue {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 14px;
+    color: var(--ink-3);
+    margin-bottom: 18px;
+  }
+  .story-venue .sep { margin: 0 8px; color: var(--ink-5); }
+  .story-photo {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    margin-bottom: 18px;
+    position: relative;
+    background: var(--paper-2);
+    filter: contrast(1.05) saturate(0.92);
+  }
+  .story-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+  }
+  .story:hover .story-photo img {
+    transform: scale(1.02);
+  }
+  .story-photo-caption {
+    margin-top: 6px;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 11px;
+    color: var(--ink-4);
+    line-height: 1.4;
+  }
+  .story-body {
+    font-family: var(--serif);
+    font-size: 16px;
+    line-height: 1.55;
+    color: var(--ink-2);
+    letter-spacing: -0.005em;
+    font-weight: 400;
+  }
+  .story-body p + p { margin-top: 12px; }
+  .story-footer {
+    margin-top: 22px;
+    padding-top: 18px;
+    border-top: 1px solid var(--rule-light);
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    font-family: var(--sans);
+    font-size: 11px;
+    color: var(--ink-3);
+  }
+  .story-footer .price b {
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .story-pubs {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+  .pub-chip {
+    font-family: var(--sans);
+    font-size: 10px;
+    padding: 2px 6px;
+    border: 1px solid var(--rule-light);
+    color: var(--ink-3);
+    text-decoration: none;
+    letter-spacing: 0.02em;
+  }
+  .pub-chip:hover { color: var(--accent); border-color: var(--accent); }
+  .story-fit {
+    margin-top: 14px;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 14px;
+    color: var(--ink-3);
+    line-height: 1.45;
+    padding-left: 14px;
+    border-left: 2px solid var(--accent);
+  }
+  .story-fit b {
+    font-style: normal;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  /* ========= REFRESH ========= */
+  .refresh-rule {
+    margin: 56px 0 28px;
+    text-align: center;
+    position: relative;
+  }
+  .refresh-rule::before, .refresh-rule::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: calc(50% - 70px);
+    height: 1px;
+    background: var(--rule);
+  }
+  .refresh-rule::before { left: 0; }
+  .refresh-rule::after { right: 0; }
+  .refresh-ornament {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 18px;
+    color: var(--ink-3);
+    font-weight: 400;
+  }
+  .refresh-box {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+  .refresh-eyebrow {
+    font-family: var(--sans);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--ink-3);
+    margin-bottom: 12px;
+    font-weight: 600;
+  }
+  .refresh-prompt {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 22px;
+    color: var(--ink);
+    margin-bottom: 18px;
+    line-height: 1.3;
+    font-weight: 500;
+  }
+  .refresh-btn {
+    font-family: var(--sans);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    font-weight: 600;
+    padding: 14px 28px;
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    cursor: pointer;
+    transition: background 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .refresh-btn:hover { background: var(--accent); }
+  .refresh-btn svg {
+    width: 12px;
+    height: 12px;
+    transition: transform 0.4s ease;
+  }
+  .refresh-btn.spinning svg { transform: rotate(360deg); }
+  .refresh-counter {
+    margin-top: 14px;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 12px;
+    color: var(--ink-4);
+  }
+
+  /* ========= ALSO ON (compact listings) ========= */
+  .listings {
+    list-style: none;
+    margin-bottom: 48px;
+  }
+  .listing-item {
+    padding: 16px 0;
+    border-bottom: 1px solid var(--rule-light);
+    display: grid;
+    grid-template-columns: 72px 1fr auto;
+    gap: 16px;
+    align-items: baseline;
+    color: inherit;
+    text-decoration: none;
+    transition: opacity 0.15s;
+  }
+  .listing-item:hover { opacity: 0.7; }
+  .listing-item:last-child { border-bottom: 0; }
+  .listing-time {
+    font-family: var(--sans);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ink-3);
+    font-weight: 600;
+  }
+  .listing-time b {
+    color: var(--ink);
+    font-weight: 700;
+    display: block;
+    font-size: 12px;
+    margin-top: 1px;
+  }
+  .listing-title {
+    font-family: var(--serif);
+    font-size: 17px;
+    font-weight: 500;
+    line-height: 1.3;
+    letter-spacing: -0.015em;
+    color: var(--ink);
+  }
+  .listing-title .ext {
+    color: var(--ink-4);
+    margin-left: 4px;
+    font-size: 13px;
+  }
+  .listing-item:hover .listing-title .ext { color: var(--accent); }
+  .listing-venue {
+    display: block;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 12px;
+    color: var(--ink-3);
+    margin-top: 2px;
+    font-weight: 400;
+  }
+  .listing-tag {
+    font-family: var(--sans);
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 2px 6px;
+    border: 1px solid var(--rule-light);
+    color: var(--ink-3);
+    font-weight: 600;
+  }
+  .listing-tag.weather { border-color: var(--accent); color: var(--accent); }
+
+  /* ========= AFTERHOURS ========= */
+  .afterhours {
+    margin-top: 32px;
+    padding: 32px 28px;
+    background: var(--ink);
+    color: var(--paper);
+    text-decoration: none;
+    display: block;
+    transition: opacity 0.2s;
+  }
+  .afterhours:hover { opacity: 0.95; }
+  .afterhours-eyebrow {
+    font-family: var(--sans);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: #d4a574;
+    margin-bottom: 12px;
+    font-weight: 600;
+  }
+  .afterhours-headline {
+    font-family: var(--serif);
+    font-size: 28px;
+    line-height: 1.15;
+    letter-spacing: -0.025em;
+    font-weight: 500;
+    margin-bottom: 14px;
+  }
+  .afterhours-headline em {
+    font-style: italic;
+    color: #d4a574;
+  }
+  .afterhours-body {
+    font-family: var(--serif);
+    font-size: 15px;
+    line-height: 1.55;
+    color: #c4bcb0;
+    font-weight: 400;
+    max-width: 520px;
+  }
+  .afterhours-link {
+    margin-top: 16px;
+    font-family: var(--sans);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: #d4a574;
+    font-weight: 600;
+    display: inline-block;
+    border-bottom: 1px solid #d4a574;
+    padding-bottom: 2px;
+  }
+
+  /* ========= COLOPHON ========= */
+  .colophon {
+    margin-top: 64px;
+    padding-top: 28px;
+    border-top: 3px double var(--rule);
+    text-align: center;
+  }
+  .colophon-rule {
+    width: 60px;
+    height: 1px;
+    background: var(--ink);
+    margin: 0 auto 18px;
+  }
+  .colophon-title {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 14px;
+    color: var(--ink-3);
+    margin-bottom: 16px;
+    font-weight: 400;
+  }
+  .sources {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 18px;
+  }
+  .source-chip {
+    font-family: var(--sans);
+    padding: 3px 8px;
+    background: var(--paper-2);
+    color: var(--ink-3);
+    border: none;
+    font-size: 10px;
+    font-weight: 500;
+    text-decoration: none;
+    letter-spacing: 0.02em;
+  }
+  .source-chip:hover { color: var(--accent); background: var(--accent-soft); }
+  .colophon-note {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 12px;
+    color: var(--ink-4);
+    line-height: 1.55;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+  .colophon-note a { color: var(--accent); border-bottom: 1px solid var(--accent); }
+
+  @media (max-width: 720px) {
+    .col { padding: 36px 22px 80px; }
+    .wordmark { font-size: 38px; }
+    .city-name { font-size: 54px; }
+    .story-title { font-size: 26px; }
+    .nav-strip { padding: 10px 16px; gap: 10px; }
+    .filter-label { display: none; }
+    .pill-divider { display: none; }
+    .masthead { padding: 22px 18px 18px; }
+    .listing-item { grid-template-columns: 60px 1fr auto; gap: 12px; }
+    .listing-tag { display: none; }
+    .afterhours { padding: 24px 18px; }
+    .afterhours-headline { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ========= MASTHEAD ========= -->
+<header class="masthead">
+  <div class="masthead-rule-top"></div>
+  <div class="wordmark">The <em>WKNDR</em></div>
+  <div class="masthead-meta">
+    <span class="vol">Vol. III · No. 28</span>
+    <span class="sep">·</span>
+    <span>Sunday, 24 May 2026</span>
+    <span class="sep">·</span>
+    <span>Edited for <b>Ness</b></span>
+  </div>
+</header>
+
+<!-- ========= NAV ========= -->
+<nav class="nav-strip">
+  <span class="filter-label">When</span>
+  <button class="pill active">Today</button>
+  <button class="pill">Mon (holiday)</button>
+  <span class="pill-divider"></span>
+  <span class="filter-label">Who</span>
+  <button class="pill kids-active">Me + kids</button>
+  <span class="pill-divider"></span>
+  <span class="filter-label">Range</span>
+  <button class="pill active">City + 1h</button>
+  <button class="pill">≤ 3h</button>
+  <div class="nav-spacer"></div>
+  <div class="nav-actions">
+    <button class="icon-btn" title="Saved">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+    </button>
+    <button class="icon-btn" title="Share">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13"/></svg>
+    </button>
+    <button class="icon-btn" title="Settings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/></svg>
+    </button>
+  </div>
+</nav>
+
+<main class="col">
+
+  <!-- ========= STANDFIRST ========= -->
+  <div class="standfirst-meta">
+    The Sunday Brief
+    <span class="dot"></span>
+    Whitsun Weekend
+    <span class="dot"></span>
+    24°, clear skies, fleeting
+  </div>
+
+  <p class="dropcap-graph">
+    It is gorgeous outside. The kind of Sunday that arrives a week early in the Amsterdam calendar and then disappears by Tuesday. There is a four-year-old to entertain, a Monday holiday to plan for, and roughly eight hours of daylight remaining. <em>The day, in short, shapes itself.</em>
+  </p>
+
+  <!-- ========= CITY BLOCK ========= -->
+  <div class="city-block">
+    <div class="city-eyebrow">Today, in</div>
+    <h1 class="city-name"><em>Amsterdam</em></h1>
+    <div class="city-sub">
+      Now <span class="temp">20°</span> · High <span class="temp">24°</span> · sunny intervals until 21:00
+    </div>
+  </div>
+
+  <!-- ========= THE THREE STORIES ========= -->
+  <div class="section-rule">
+    <span class="line"></span>
+    <h3>The Three Picks</h3>
+    <span class="roman">i, ii, iii</span>
+    <span class="line"></span>
+  </div>
+
+  <div class="stories" id="stories">
+
+    <a href="https://www.muiderslot.nl/en/" target="_blank" rel="noopener" class="story">
+      <div class="story-header">
+        <span class="story-number">I.</span>
+        <span class="story-when">Today + Monday only</span>
+        <span class="story-tags">
+          <span class="story-tag today">Today only</span>
+          <span class="story-tag kid">For the kids</span>
+        </span>
+      </div>
+      <h2 class="story-title">A medieval day at the <em>Muiderslot</em></h2>
+      <div class="story-venue">Muiden <span class="sep">·</span> 25 minutes by train + walk <span class="sep">·</span> 10:30 — 16:30</div>
+      <div class="story-photo">
+        <img src="https://images.unsplash.com/photo-1564604761579-ec1ec3d2bb98?w=1200&h=675&fit=crop&q=80" alt="">
+      </div>
+      <div class="story-photo-caption">The Muiderslot, the original moated castle outside Amsterdam, hosts two days of medieval-era reenactment for the Whit holiday.</div>
+      <div class="story-body">
+        <p>The castle goes fully medieval for two days only — sword-fighting school for children, fire shows, troubadours, knightings in the courtyard. The Bataille Knight School will dub a four-year-old, supply the cardboard sword, and send them out to dispatch imaginary dragons in the workshop afterwards. The grounds themselves are large enough to wander all day, with water on three sides, picnic spots in the shade, and a working castle to climb around.</p>
+        <p>Bring lunch, sunhats, and lower expectations for how much medieval history the child will retain.</p>
+      </div>
+      <div class="story-fit"><b>Why now:</b> Two-day-only event · the knighting works from age four · castle grounds reward a sunny day.</div>
+      <div class="story-footer">
+        <div class="price">Walk-in admission · <b>€18 adults / €12 children</b></div>
+        <div class="story-pubs">
+          <a href="https://www.yourlittleblackbook.me/en/weekendtips-amsterdam/" target="_blank" rel="noopener" onclick="event.stopPropagation()" class="pub-chip">Little Black Book</a>
+          <a href="https://www.muiderslot.nl/en/" target="_blank" rel="noopener" onclick="event.stopPropagation()" class="pub-chip">Muiderslot</a>
+          <a href="https://kidsproof.nl/amsterdam/" target="_blank" rel="noopener" onclick="event.stopPropagation()" class="pub-chip">Kidsproof</a>
+        </div>
+      </div>
+    </a>
+
+    <a href="https://www.amsterdamsebos.nl/" target="_blank" rel="noopener" class="story">
+      <div class="story-header">
+        <span class="story-number">II.</span>
+        <span class="story-when">Season just opened</span>
+        <span class="story-tags">
+          <span class="story-tag">Outdoor</span>
+          <span class="story-tag kid">For the kids</span>
+        </span>
+      </div>
+      <h2 class="story-title">The <em>Fluistervink</em> silent boat, through the Bos</h2>
+      <div class="story-venue">Amsterdamse Bos <span class="sep">·</span> 25 min by bike from Centrum <span class="sep">·</span> hourly departures</div>
+      <div class="story-photo">
+        <img src="https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=1200&h=675&fit=crop&q=80" alt="">
+      </div>
+      <div class="story-photo-caption">The Fluistervink, an electric whisper-boat, returned to the Amsterdamse Bos this week for its summer season.</div>
+      <div class="story-body">
+        <p>An electric whisper-boat through the forest waterways — no engine noise, just water, birds, the occasional deer at the shore. It is, plainly, one of the most peaceful hours the city can offer, and the variety of small things to look at keeps a four-year-old fixed to the window. The season opened only this week.</p>
+        <p>Trips run roughly an hour. Bring snacks. Afterwards, the rowing lake at Bosbaan is a five-minute walk for ice cream, kayak rentals, or a flat patch of grass to recover on.</p>
+      </div>
+      <div class="story-fit"><b>Why now:</b> First weekend of the season · the forest stays cool while the city warms · sustains a small child's attention.</div>
+      <div class="story-footer">
+        <div class="price">Book ahead · <b>€14 adults / €9 children</b></div>
+        <div class="story-pubs">
+          <a href="https://www.yourlittleblackbook.me/en/weekendtips-amsterdam/" target="_blank" rel="noopener" onclick="event.stopPropagation()" class="pub-chip">Little Black Book</a>
+          <a href="https://www.iamsterdam.com/" target="_blank" rel="noopener" onclick="event.stopPropagation()" class="pub-chip">I amsterdam</a>
+        </div>
+      </div>
+    </a>
+
+    <a href="https://www.pannenkoekenboot.nl/en/amsterdam/" target="_blank" rel="noopener" class="story">
+      <div class="story-header">
+        <span class="story-number">III.</span>
+        <span class="story-when">The classic Sunday loop</span>
+        <span class="story-tags">
+          <span class="story-tag">In-city</span>
+          <span class="story-tag kid">For the kids</span>
+        </span>
+      </div>
+      <h2 class="story-title">Vondelpark, then <em>pancakes on the Amstel</em></h2>
+      <div class="story-venue">Vondelpark + Pannenkoekenboot <span class="sep">·</span> 15 minutes by bike</div>
+      <div class="story-photo">
+        <img src="https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=1200&h=675&fit=crop&q=80" alt="">
+      </div>
+      <div class="story-photo-caption">The Pannenkoekenboot, the Amstel's all-you-can-eat pancake cruise, the Sunday family default.</div>
+      <div class="story-body">
+        <p>The standing Amsterdam Sunday: bike Vondelpark, release the child onto the playground at the Groot Melkhuis, then ferry across to the Pannenkoekenboot for lunch on the water. The boat does a 75-minute loop down the Amstel while you eat all-you-can-eat pancakes — children get windows full of boats and bridges, the boat itself is the adventure, the parents get to sit down.</p>
+        <p>IJscuypje at the Apollolaan on the way home, if the kid has earned it. The kid will have earned it.</p>
+      </div>
+      <div class="story-fit"><b>Why now:</b> Park weather · the boat contains the child · pancakes are the bribe.</div>
+      <div class="story-footer">
+        <div class="price">Walk-in park · <b>~€30 family lunch</b></div>
+        <div class="story-pubs">
+          <a href="https://mommypoppins.com/anywhere-kids/best-things-to-do-amsterdam-kids-itinerary" target="_blank" rel="noopener" onclick="event.stopPropagation()" class="pub-chip">Mommy Poppins</a>
+          <a href="https://www.iamsterdam.com/" target="_blank" rel="noopener" onclick="event.stopPropagation()" class="pub-chip">I amsterdam</a>
+        </div>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- ========= REFRESH ========= -->
+  <div class="refresh-rule">
+    <span class="refresh-ornament">~ § ~</span>
+  </div>
+  <div class="refresh-box">
+    <div class="refresh-eyebrow">If none of these will do</div>
+    <div class="refresh-prompt">Try a different cut of the same Sunday.</div>
+    <button class="refresh-btn" id="refreshBtn" onclick="cycleSet()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+      Refresh the brief
+    </button>
+    <div class="refresh-counter">Showing set <span id="setNum">1</span> of 3</div>
+  </div>
+
+  <!-- ========= ALSO ON ========= -->
+  <div class="section-rule">
+    <span class="line"></span>
+    <h3>Also on Today</h3>
+    <span class="roman">notably</span>
+    <span class="line"></span>
+  </div>
+
+  <ul class="listings">
+    <a href="https://www.artis.nl/en/" target="_blank" rel="noopener" class="listing-item">
+      <div class="listing-time">SUN<b>open</b></div>
+      <div>
+        <div class="listing-title">Artis Royal Zoo + planetarium <span class="ext">↗</span></div>
+        <span class="listing-venue">Plantage <span class="sep">·</span> €25 adults / €22 children <span class="sep">·</span> 9:00–18:00</span>
+      </div>
+      <span class="listing-tag">Kids</span>
+    </a>
+    <a href="https://www.nemosciencemuseum.nl/en/visit/" target="_blank" rel="noopener" class="listing-item">
+      <div class="listing-time">SUN<b>open</b></div>
+      <div>
+        <div class="listing-title">NEMO Science Museum, rooftop terrace open <span class="ext">↗</span></div>
+        <span class="listing-venue">Oosterdok <span class="sep">·</span> €18.50 <span class="sep">·</span> indoor + outdoor</span>
+      </div>
+      <span class="listing-tag weather">Sunny</span>
+    </a>
+    <a href="https://westergas.nl/en/" target="_blank" rel="noopener" class="listing-item">
+      <div class="listing-time">SUN<b>9:00</b></div>
+      <div>
+        <div class="listing-title">Westerpark Sunday market & petting zoo <span class="ext">↗</span></div>
+        <span class="listing-venue">Westergas <span class="sep">·</span> free <span class="sep">·</span> outdoor</span>
+      </div>
+      <span class="listing-tag">Kids</span>
+    </a>
+    <a href="https://www.dehortus.nl/en/" target="_blank" rel="noopener" class="listing-item">
+      <div class="listing-time">SUN<b>10:30</b></div>
+      <div>
+        <div class="listing-title">Hortus Botanicus, butterfly house <span class="ext">↗</span></div>
+        <span class="listing-venue">Plantage <span class="sep">·</span> €12.50 <span class="sep">·</span> 30 min visit + garden</span>
+      </div>
+      <span class="listing-tag">Kids</span>
+    </a>
+    <a href="https://www.amsterdam.nl/en/sport-leisure/swimming/" target="_blank" rel="noopener" class="listing-item">
+      <div class="listing-time">SUN<b>11:00</b></div>
+      <div>
+        <div class="listing-title">Sloterplas swim lake (season just opened) <span class="ext">↗</span></div>
+        <span class="listing-venue">Sloterpark <span class="sep">·</span> free <span class="sep">·</span> paddling area for under-fives</span>
+      </div>
+      <span class="listing-tag weather">Hot day</span>
+    </a>
+    <a href="https://kinderkookkafe.nl/" target="_blank" rel="noopener" class="listing-item">
+      <div class="listing-time">SUN<b>13:00</b></div>
+      <div>
+        <div class="listing-title">Kinderkookkafé, in Vondelpark <span class="ext">↗</span></div>
+        <span class="listing-venue">Vondelpark <span class="sep">·</span> €15 <span class="sep">·</span> children cook and serve their own lunch</span>
+      </div>
+      <span class="listing-tag">Kids</span>
+    </a>
+    <a href="https://www.fun-forest.nl/en/amsterdam/" target="_blank" rel="noopener" class="listing-item">
+      <div class="listing-time">SUN<b>15:00</b></div>
+      <div>
+        <div class="listing-title">Fun Forest treetop climbing <span class="ext">↗</span></div>
+        <span class="listing-venue">Amsterdamse Bos <span class="sep">·</span> €15 children <span class="sep">·</span> ropes course from age four</span>
+      </div>
+      <span class="listing-tag">Active</span>
+    </a>
+  </ul>
+
+  <!-- ========= AFTERHOURS ========= -->
+  <a href="https://fete-du-champagne.nl/" target="_blank" rel="noopener" class="afterhours">
+    <div class="afterhours-eyebrow">Once the child is down</div>
+    <div class="afterhours-headline">The <em>Fête du Champagne</em> opens late in Rembrandtpark.</div>
+    <div class="afterhours-body">
+      Open until 23:00 tonight — over 100 champagnes and wines, French bistro plates, in the park. A ten-minute walk from yours. If one of you can take bath duty, the other can pour a glass before sunset (21:30 today).
+    </div>
+    <span class="afterhours-link">See the lineup ↗</span>
+  </a>
+
+  <!-- ========= COLOPHON ========= -->
+  <div class="colophon">
+    <div class="colophon-rule"></div>
+    <div class="colophon-title">Read and watched this week</div>
+    <div class="sources">
+      <a href="https://www.buienradar.nl/" target="_blank" rel="noopener" class="source-chip">Buienradar</a>
+      <a href="https://www.knmi.nl/" target="_blank" rel="noopener" class="source-chip">KNMI</a>
+      <a href="https://www.yourlittleblackbook.me/en/weekendtips-amsterdam/" target="_blank" rel="noopener" class="source-chip">Little Black Book</a>
+      <a href="https://www.iamsterdam.com/" target="_blank" rel="noopener" class="source-chip">I amsterdam</a>
+      <a href="https://kidsproof.nl/amsterdam/" target="_blank" rel="noopener" class="source-chip">Kidsproof</a>
+      <a href="https://mommypoppins.com/" target="_blank" rel="noopener" class="source-chip">Mommy Poppins</a>
+      <a href="https://www.muiderslot.nl/en/" target="_blank" rel="noopener" class="source-chip">Muiderslot</a>
+      <a href="https://www.amsterdamsebos.nl/" target="_blank" rel="noopener" class="source-chip">Amsterdamse Bos</a>
+    </div>
+    <p class="colophon-note">
+      Brief generated Sunday at 09:00 · weather updated 11:00 · seven sources read for today's kid-appropriate options. The Muiderslot medieval day and the Fluistervink season opening surfaced this week from <a href="https://www.yourlittleblackbook.me/en/weekendtips-amsterdam/" target="_blank" rel="noopener">Little Black Book's Whitsun roundup</a>.
+    </p>
+  </div>
+
+</main>
+
+<script>
+  const SETS = [
+    [], // Set 1 is rendered statically above
+    [
+      { title: "A morning at the <em>Sloterplas</em> swim lake", venue: "Sloterpark · free · paddling for under-fives", body: "Amsterdam's largest swim lake reopened for the season after last week's warm stretch. The west bank has a proper sand beach and a roped-off paddling area for small children. Bring a picnic, the inflatables, and SPF. Trees on the south side give shade by midday; the lake will fill by 14:00." },
+      { title: "Treetops at the <em>Fun Forest</em>", venue: "Amsterdamse Bos · €15 children · 1.5–2 hours", body: "Treetop ropes course tucked into the forest canopy — the Kids Course (age 4+) is properly designed for small humans, with low platforms, harnesses, helmets, and a guide who knows how to coax a four-year-old across a wobbly bridge." },
+      { title: "An afternoon among the goats at <em>Ridammerhoeve</em>", venue: "Amsterdamse Bos · free entry · €2.50 for a bottle", body: "A working goat farm inside the Bos — more than a hundred goats, plus sheep, chickens, pigs. Children feed the babies from bottles. The shop sells the farm's own ice cream, cheese, stroopwafels. It is the kind of small, free Amsterdam afternoon that gives the city back its scale." }
+    ],
+    [
+      { title: "<em>NEMO</em>, with the rooftop open", venue: "Oosterdok · €18.50 · museum + free rooftop water-play", body: "The green-roofed wedge sticking out of the IJ — five floors of science to set off and a rooftop with city views and a free open-air water playground. On a sunny Sunday the rooftop is the reason to go; the museum becomes the bonus when small batteries run out." },
+      { title: "A morning at <em>Artis</em>, with the new planetarium", venue: "Plantage · €25 adults / €22 children · 3+ hours", body: "Amsterdam's oldest zoo, properly outdoor, properly walkable, and a four-year-old's perfect storm. The aquarium and reptile house give you indoor breaks when the sun gets too much. The planetarium is included. There's a real playground near the elephant house — aim for it at thirteen-hundred, when an adult will need to sit." },
+      { title: "Lunch at the <em>Kinderkookkafé</em>", venue: "Vondelpark · €15 per child · 90 min experience", body: "The four-year-old becomes the chef. Aprons, mini-cutting boards, a small pizza or sandwich to assemble, served back to the parents at the table. It is the only Amsterdam lunch that involves the child being busy, useful, and quiet for forty-five minutes." }
+    ]
+  ];
+  let currentSet = 0;
+
+  function cycleSet() {
+    const btn = document.getElementById('refreshBtn');
+    const stories = document.getElementById('stories');
+    btn.classList.add('spinning');
+    stories.style.transition = 'opacity 0.3s ease';
+    stories.style.opacity = '0';
+
+    setTimeout(() => {
+      currentSet = (currentSet + 1) % SETS.length;
+      document.getElementById('setNum').textContent = currentSet + 1;
+      // Just animate back in — full set swap would need re-render
+      stories.style.opacity = '1';
+      setTimeout(() => btn.classList.remove('spinning'), 400);
+    }, 400);
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WKNDR — Cover, helvetica</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0a0a0a;
+    --ink-2: #1a1a1a;
+    --ink-3: #4a4a4a;
+    --ink-4: #8a8a8a;
+    --ink-5: #c4c4c4;
+    --paper: #fafaf7;
+    --paper-2: #f2f2ee;
+    --paper-3: #e8e8e3;
+    --rule: #d8d8d3;
+    --accent: #ff4d1f;
+    --accent-soft: #fff2ec;
+    --kid: #2d5b8a;
+    --kid-soft: #e4eef7;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+  html, body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background: var(--paper-3);
+    color: var(--ink);
+    font-feature-settings: "kern", "liga", "tnum";
+    text-rendering: geometricPrecision;
+  }
+  body { padding: 32px 24px 80px; }
+
+  /* ========= PAGE INTRO ========= */
+  .intro {
+    max-width: 880px;
+    margin: 0 auto 32px;
+    text-align: center;
+    padding: 16px 0;
+  }
+  .intro-eyebrow {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--ink-3);
+    margin-bottom: 10px;
+    font-weight: 600;
+  }
+  .intro h1 {
+    font-size: 28px;
+    font-weight: 600;
+    letter-spacing: -0.035em;
+    line-height: 1.05;
+    margin-bottom: 10px;
+    color: var(--ink);
+  }
+  .intro p {
+    font-size: 14px;
+    color: var(--ink-3);
+    line-height: 1.55;
+    max-width: 580px;
+    margin: 0 auto;
+    letter-spacing: -0.005em;
+  }
+
+  /* ========= COMP CONTAINER ========= */
+  .comp-stack {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    max-width: 1600px;
+    margin: 0 auto;
+  }
+  @media (max-width: 1100px) {
+    .comp-stack { grid-template-columns: 1fr; }
+  }
+
+  .comp {
+    background: var(--paper);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+  }
+  .comp-label {
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--rule);
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    background: var(--paper);
+  }
+  .comp-num {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+  .comp-name {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink);
+  }
+  .comp-tagline {
+    font-size: 12px;
+    color: var(--ink-4);
+    margin-left: auto;
+    font-weight: 500;
+    letter-spacing: -0.005em;
+  }
+
+  /* ========= TOPBAR ========= */
+  .topbar {
+    border-bottom: 1px solid var(--rule);
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--paper);
+  }
+  .mark {
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--ink);
+  }
+  .mark::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
+  }
+  .topbar .divider {
+    width: 1px;
+    height: 16px;
+    background: var(--rule);
+  }
+  .ness {
+    font-size: 11px;
+    color: var(--ink-3);
+    font-weight: 500;
+  }
+  .ness b { color: var(--ink); font-weight: 600; }
+  .top-spacer { flex: 1; }
+  .top-icons { display: flex; gap: 6px; }
+  .icon-btn {
+    width: 28px;
+    height: 28px;
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    color: var(--ink-3);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+  }
+  .icon-btn svg { width: 12px; height: 12px; }
+
+  /* ========= FILTERS ========= */
+  .filters {
+    padding: 10px 24px;
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    flex-wrap: wrap;
+    background: var(--paper);
+    border-bottom: 1px solid var(--rule);
+  }
+  .filter-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-4);
+    font-weight: 500;
+  }
+  .filter-label + .filter-label { margin-left: 10px; }
+  .pill {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 4px 10px;
+    background: transparent;
+    color: var(--ink-3);
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+  }
+  .pill.active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .pill.kids-active {
+    background: var(--kid); color: var(--paper); border-color: var(--kid);
+    display: inline-flex; align-items: center; gap: 5px;
+  }
+  .pill.kids-active::before {
+    content: ''; width: 4px; height: 4px; background: white; border-radius: 50%;
+  }
+
+  /* ========= GENERATIVE COVER ========= */
+  .cover {
+    position: relative;
+    height: 320px;
+    overflow: hidden;
+    background: #0a0a0a;
+  }
+  .cover-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 25% 35%, #ff8a3d 0%, transparent 55%),
+      radial-gradient(ellipse 60% 50% at 75% 70%, #c2310e 0%, transparent 55%),
+      radial-gradient(ellipse 50% 40% at 60% 20%, #ffd870 0%, transparent 50%),
+      radial-gradient(ellipse 40% 30% at 10% 80%, #4a1808 0%, transparent 60%);
+    filter: blur(40px);
+  }
+  .cover-grain {
+    position: absolute;
+    inset: 0;
+    opacity: 0.1;
+    background-image:
+      radial-gradient(circle at 20% 30%, white 0%, transparent 1%),
+      radial-gradient(circle at 60% 70%, white 0%, transparent 1%),
+      radial-gradient(circle at 80% 20%, white 0%, transparent 1%),
+      radial-gradient(circle at 30% 80%, white 0%, transparent 1%),
+      radial-gradient(circle at 50% 50%, white 0%, transparent 1%),
+      radial-gradient(circle at 90% 90%, white 0%, transparent 1%),
+      radial-gradient(circle at 10% 10%, white 0%, transparent 1%);
+    background-size: 40px 40px, 30px 30px, 50px 50px, 35px 35px, 45px 45px, 28px 28px, 38px 38px;
+    mix-blend-mode: overlay;
+  }
+  .cover-lines {
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent 0 3px,
+      rgba(255,255,255,0.015) 3px 4px
+    );
+    pointer-events: none;
+  }
+
+  /* The city sits big, centered, as the only typographic event on the cover */
+  .cover-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    z-index: 2;
+    width: 100%;
+    padding: 0 24px;
+  }
+  .cover-city {
+    font-size: 76px;
+    line-height: 0.9;
+    letter-spacing: -0.05em;
+    font-weight: 600;
+    color: white;
+    text-shadow: 0 2px 32px rgba(0,0,0,0.25);
+  }
+
+  /* Bottom-anchored data line */
+  .cover-bottom {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 16px 22px;
+    z-index: 2;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+    color: white;
+  }
+  .cover-temp {
+    font-size: 44px;
+    font-weight: 600;
+    letter-spacing: -0.04em;
+    line-height: 0.85;
+  }
+  .cover-temp .deg { opacity: 0.6; font-weight: 400; }
+  .cover-temp-sub {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-top: 8px;
+    opacity: 0.75;
+    font-weight: 600;
+  }
+  .cover-mode-block { text-align: right; }
+  .cover-mode {
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    line-height: 1;
+  }
+  .cover-mode-sub {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-top: 6px;
+    opacity: 0.7;
+    font-weight: 600;
+  }
+
+  .cover::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 60px;
+    background: linear-gradient(180deg, transparent 0%, rgba(10,10,10,0.55) 100%);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* ========= SOURCE TRACE ========= */
+  .source-trace {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 14px 22px 16px;
+    font-family: 'JetBrains Mono', monospace;
+    border-bottom: 1px solid var(--rule);
+  }
+  .trace-row {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    flex-wrap: wrap;
+    font-size: 10px;
+    letter-spacing: 0.04em;
+    line-height: 1.7;
+  }
+  .trace-label {
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+  }
+  .trace-step {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--paper);
+    font-weight: 500;
+  }
+  .trace-step::before {
+    content: '✓';
+    color: #4ade80;
+    font-size: 9px;
+    font-weight: 700;
+  }
+  .trace-step b {
+    color: #ffaa70;
+    font-weight: 600;
+    margin-left: 2px;
+  }
+  .trace-sep {
+    color: rgba(255,255,255,0.25);
+  }
+  .trace-meta {
+    margin-left: auto;
+    color: rgba(255,255,255,0.45);
+    font-size: 9px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .trace-meta b { color: #ffaa70; font-weight: 600; }
+
+  /* ========= MAIN COLUMN ========= */
+  .col {
+    padding: 28px 24px 32px;
+  }
+
+  .city-dateline {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-4);
+    margin-bottom: 14px;
+    font-weight: 500;
+  }
+  .city-dateline b { color: var(--ink-2); }
+  .city-dateline .now {
+    display: inline-block;
+    background: var(--accent);
+    color: white;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-weight: 700;
+    font-size: 9px;
+    margin-right: 6px;
+    letter-spacing: 0.04em;
+  }
+
+  .pretitle {
+    margin-top: 12px;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ink-4);
+    font-weight: 600;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .pretitle .kid-badge {
+    background: var(--kid);
+    color: var(--paper);
+    padding: 3px 7px;
+    border-radius: 3px;
+    font-size: 8px;
+    letter-spacing: 0.06em;
+  }
+  /* Helvetica headline — confident, no italic accent */
+  h1 {
+    font-size: 32px;
+    line-height: 1.05;
+    letter-spacing: -0.035em;
+    font-weight: 600;
+    margin-bottom: 14px;
+    color: var(--ink);
+  }
+  .lede {
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--ink-3);
+    font-weight: 400;
+    letter-spacing: -0.005em;
+    margin-bottom: 28px;
+  }
+  .lede b { color: var(--ink); font-weight: 600; }
+
+  /* ========= LATER TODAY AFFORDANCE ========= */
+  .time-window {
+    margin-bottom: 24px;
+    padding: 12px 14px;
+    background: var(--paper-2);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .time-window-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-3);
+    font-weight: 700;
+  }
+  .time-window-pills {
+    display: inline-flex;
+    gap: 4px;
+    background: var(--paper);
+    padding: 3px;
+    border-radius: 8px;
+    border: 1px solid var(--rule);
+  }
+  .time-pill {
+    font-size: 11px;
+    padding: 5px 11px;
+    border-radius: 6px;
+    border: none;
+    background: transparent;
+    color: var(--ink-3);
+    font-weight: 600;
+    letter-spacing: -0.005em;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .time-pill.active {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .time-pill .tm {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    opacity: 0.7;
+    font-weight: 500;
+  }
+  .time-pill.active .tm { opacity: 0.9; }
+  .time-window-note {
+    margin-left: auto;
+    font-size: 12px;
+    color: var(--ink-3);
+    font-weight: 500;
+  }
+  .time-window-note b {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  /* ========= SECTION HEAD ========= */
+  .section-head {
+    margin: 4px 0 16px;
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+  .section-head h3 {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-2);
+  }
+  .section-head .rule { flex: 1; height: 1px; background: var(--ink); }
+  .section-head .count {
+    font-size: 10px;
+    color: var(--ink-4);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  /* ========= CARDS ========= */
+  .cards { display: grid; gap: 14px; }
+  .card {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 14px;
+    overflow: hidden;
+    position: relative;
+  }
+  .card-img {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    position: relative;
+    background: var(--paper-3);
+  }
+  .card-img img {
+    width: 100%; height: 100%; object-fit: cover;
+  }
+  .card-img::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 50%, rgba(0,0,0,0.5) 100%);
+  }
+  .card-tag-overlay {
+    position: absolute;
+    top: 10px; left: 10px;
+    display: flex; gap: 4px;
+    z-index: 2;
+  }
+  .tag {
+    font-size: 8.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 3px 6px;
+    border-radius: 3px;
+    font-weight: 600;
+    backdrop-filter: blur(4px);
+  }
+  .tag.today { background: rgba(194,49,14,0.95); color: white; }
+  .tag.kid { background: rgba(45,91,138,0.95); color: white; }
+  .tag.new { background: rgba(10,10,10,0.85); color: var(--paper); }
+  .tag.window { background: rgba(255,255,255,0.92); color: var(--ink); }
+  .card-eyebrow {
+    position: absolute;
+    bottom: 10px; left: 12px; right: 12px;
+    color: rgba(255,255,255,0.95);
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+    z-index: 2;
+  }
+  .card-body { padding: 14px 14px 16px; }
+  .card-title {
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    margin-bottom: 4px;
+    color: var(--ink);
+  }
+  .card-venue {
+    font-size: 11px;
+    color: var(--ink-4);
+    margin-bottom: 8px;
+  }
+  .card-snippet {
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--ink-3);
+  }
+  .card-fit {
+    margin-top: 9px;
+    padding: 7px 10px;
+    background: var(--kid-soft);
+    border-radius: 5px;
+    font-size: 10px;
+    color: var(--ink-3);
+    line-height: 1.4;
+  }
+  .card-fit b { color: var(--ink); font-weight: 600; }
+  .card-fit::before {
+    content: '✦ ';
+    color: var(--kid);
+    margin-right: 3px;
+  }
+
+  .card-time-hint {
+    margin-top: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10px;
+    color: var(--ink-3);
+    font-weight: 500;
+    padding: 4px 8px;
+    border-radius: 999px;
+    background: var(--paper-2);
+    letter-spacing: -0.005em;
+  }
+  .card-time-hint .icon {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .card-time-hint b { color: var(--ink); font-weight: 700; }
+  .card-time-hint.warn { background: #fff4e6; color: #8a4a10; }
+  .card-time-hint.warn b { color: #8a4a10; }
+  .card-time-hint.warn .icon { color: #c2310e; }
+
+  /* ========= FOOTER ========= */
+  .footer {
+    max-width: 1100px;
+    margin: 40px auto 0;
+    padding: 24px 28px;
+    background: var(--paper);
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+  }
+  .footer-title {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 12px;
+  }
+  .footer p {
+    font-size: 13px;
+    line-height: 1.65;
+    color: var(--ink-3);
+    letter-spacing: -0.005em;
+  }
+  .footer p b { color: var(--ink); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<div class="intro">
+  <div class="intro-eyebrow">Cover · less editorial · helvetica</div>
+  <h1>The cover stays. The publishing costume comes off.</h1>
+  <p>No issue numbers, no italics, no "Vol. III." Helvetica throughout. The cover earns its space by being a strong visual moment — the typography around it just gets out of the way.</p>
+</div>
+
+<div class="comp-stack">
+
+  <!-- ========================================================
+       VARIANT A — RESOLVED, HELVETICA
+       ======================================================== -->
+  <div class="comp">
+    <div class="comp-label">
+      <div class="comp-num">A</div>
+      <div class="comp-name">Resolved · helvetica</div>
+      <div class="comp-tagline">default morning state</div>
+    </div>
+
+    <div class="topbar">
+      <div class="mark">WKNDR</div>
+      <div class="divider"></div>
+      <div class="ness">Sunday brief · for <b>Ness</b></div>
+      <div class="top-spacer"></div>
+      <div class="top-icons">
+        <button class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></button>
+        <button class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/></svg></button>
+      </div>
+    </div>
+
+    <div class="filters">
+      <span class="filter-label">When</span>
+      <button class="pill active">Today</button>
+      <button class="pill">Mon (holiday)</button>
+      <span class="filter-label">Who</span>
+      <button class="pill kids-active">Me + kids</button>
+    </div>
+
+    <!-- COVER: just the city, big -->
+    <div class="cover">
+      <div class="cover-bg"></div>
+      <div class="cover-grain"></div>
+      <div class="cover-lines"></div>
+
+      <div class="cover-center">
+        <div class="cover-city">Amsterdam</div>
+      </div>
+
+      <div class="cover-bottom">
+        <div>
+          <div class="cover-temp">24<span class="deg">°</span></div>
+          <div class="cover-temp-sub">High · 0% rain</div>
+        </div>
+        <div class="cover-mode-block">
+          <div class="cover-mode">Hot mode</div>
+          <div class="cover-mode-sub">today — go</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SOURCE TRACE -->
+    <div class="source-trace">
+      <div class="trace-row">
+        <span class="trace-label">Built from</span>
+        <span class="trace-step">Buienradar<b>0%</b></span>
+        <span class="trace-sep">/</span>
+        <span class="trace-step">KNMI<b>24°</b></span>
+        <span class="trace-sep">/</span>
+        <span class="trace-step">Little Black Book</span>
+        <span class="trace-sep">/</span>
+        <span class="trace-step">Kidsproof</span>
+        <span class="trace-sep">/</span>
+        <span class="trace-step">I amsterdam</span>
+        <span class="trace-sep">/</span>
+        <span class="trace-step">Mommy Poppins</span>
+        <span class="trace-sep">/</span>
+        <span class="trace-step">Muiderslot</span>
+        <span class="trace-meta">7 SOURCES · RANKED FOR KIDS · <b>11:32</b></span>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="city-dateline"><span class="now">NOW</span> Sunday <b>24 May 2026</b> · 11:30</div>
+
+      <div class="pretitle">
+        <span class="kid-badge">KIDS · 4 YRS</span>
+        SUNDAY BRIEF
+      </div>
+      <h1>A four-year-old, 24° and clear skies, and a Whit Sunday on the calendar. The day shapes itself.</h1>
+      <p class="lede">
+        <b>This is a get-out-the-door morning.</b> Three picks for today, all weather-perfect, all kid-tested. Two are happening today only — Muiderslot's medieval day and the season's first silent boat. Pick one and go now; you've got eight hours of light.
+      </p>
+
+      <div class="section-head">
+        <h3>The three picks · today only</h3>
+        <span class="rule"></span>
+        <span class="count">HOT · KIDS</span>
+      </div>
+
+      <div class="cards">
+        <article class="card">
+          <div class="card-img">
+            <img src="https://images.unsplash.com/photo-1564604761579-ec1ec3d2bb98?w=800&h=450&fit=crop&q=80" alt="">
+            <div class="card-tag-overlay">
+              <span class="tag today">Today + Mon only</span>
+              <span class="tag kid">Kids</span>
+            </div>
+            <div class="card-eyebrow">10:30 → 16:30 · 25 MIN BY TRAIN</div>
+          </div>
+          <div class="card-body">
+            <div class="card-title">Medieval Days at Muiderslot</div>
+            <div class="card-venue">Muiden · outdoor castle grounds · €18 / €12 kids</div>
+            <p class="card-snippet">The castle goes full medieval — sword-fighting school, fire shows, kid-knighting at the Bataille Knight School. Grounds big enough to wander all day.</p>
+            <div class="card-fit"><b>Why now:</b> two-day-only event · knighting from age 4 · outdoor in sunshine</div>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-img">
+            <img src="https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=800&h=450&fit=crop&q=80" alt="">
+            <div class="card-tag-overlay">
+              <span class="tag new">Season opens</span>
+              <span class="tag kid">Kids</span>
+            </div>
+            <div class="card-eyebrow">HOURLY · 25 MIN BY BIKE</div>
+          </div>
+          <div class="card-body">
+            <div class="card-title">The Fluistervink silent boat</div>
+            <div class="card-venue">Amsterdamse Bos · electric boat · €14 / €9 kids</div>
+            <p class="card-snippet">Whisper-boat through forest waterways — no engine noise, just water and birds. Just opened for the season this week.</p>
+            <div class="card-fit"><b>Why now:</b> first weekend of season · forest stays cool · holds a kid's attention</div>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-img">
+            <img src="https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=800&h=450&fit=crop&q=80" alt="">
+            <div class="card-tag-overlay">
+              <span class="tag kid">Kids</span>
+            </div>
+            <div class="card-eyebrow">SUNDAY LAZY · 15 MIN BY BIKE</div>
+          </div>
+          <div class="card-body">
+            <div class="card-title">Vondelpark + pancakes on the Amstel</div>
+            <div class="card-venue">Vondelpark + Pannenkoekenboot · ~€30 family lunch</div>
+            <p class="card-snippet">Bike the park, then ferry to the Pannenkoekenboot for a 75-min Amstel loop while you eat all-you-can-eat pancakes.</p>
+            <div class="card-fit"><b>Why now:</b> sunny park weather · the boat contains the child · pancakes are the bribe</div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ========================================================
+       VARIANT B — WITH LATER-TODAY
+       ======================================================== -->
+  <div class="comp">
+    <div class="comp-label">
+      <div class="comp-num">B</div>
+      <div class="comp-name">Resolved · with later-today</div>
+      <div class="comp-tagline">time-shifted to afternoon</div>
+    </div>
+
+    <div class="topbar">
+      <div class="mark">WKNDR</div>
+      <div class="divider"></div>
+      <div class="ness">Sunday brief · for <b>Ness</b></div>
+      <div class="top-spacer"></div>
+      <div class="top-icons">
+        <button class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></button>
+        <button class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/></svg></button>
+      </div>
+    </div>
+
+    <div class="filters">
+      <span class="filter-label">When</span>
+      <button class="pill active">Today</button>
+      <button class="pill">Mon (holiday)</button>
+      <span class="filter-label">Who</span>
+      <button class="pill kids-active">Me + kids</button>
+    </div>
+
+    <div class="cover">
+      <div class="cover-bg"></div>
+      <div class="cover-grain"></div>
+      <div class="cover-lines"></div>
+
+      <div class="cover-center">
+        <div class="cover-city">Amsterdam</div>
+      </div>
+
+      <div class="cover-bottom">
+        <div>
+          <div class="cover-temp">24<span class="deg">°</span></div>
+          <div class="cover-temp-sub">High · 0% rain</div>
+        </div>
+        <div class="cover-mode-block">
+          <div class="cover-mode">Hot mode</div>
+          <div class="cover-mode-sub">later — 14:00 on</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="source-trace">
+      <div class="trace-row">
+        <span class="trace-label">Built from</span>
+        <span class="trace-step">Buienradar<b>0%</b></span>
+        <span class="trace-sep">/</span>
+        <span class="trace-step">KNMI<b>24°</b></span>
+        <span class="trace-sep">/</span>
+        <span class="trace-step">Little Black Book</span>
+        <span class="trace-sep">/</span>
+        <span class="trace-step">Kidsproof</span>
+        <span class="trace-sep">/</span>
+        <span class="trace-step">I amsterdam</span>
+        <span class="trace-sep">/</span>
+        <span class="trace-step">Mommy Poppins</span>
+        <span class="trace-sep">/</span>
+        <span class="trace-step">Muiderslot</span>
+        <span class="trace-meta">7 SOURCES · RANKED FOR KIDS · <b>11:32</b></span>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="city-dateline"><span class="now">NOW</span> Sunday <b>24 May 2026</b> · 11:30</div>
+
+      <div class="pretitle">
+        <span class="kid-badge">KIDS · 4 YRS</span>
+        SUNDAY BRIEF
+      </div>
+      <h1>A four-year-old, 24° and clear skies. Showing picks from 14:00 onward.</h1>
+      <p class="lede">
+        <b>You won't leave the house till after lunch.</b> Three picks for the afternoon window — re-ranked from the same seven sources, weather still holds, the day's not gone. Hot mode still in effect till sundown at 21:00.
+      </p>
+
+      <div class="time-window">
+        <span class="time-window-label">When today</span>
+        <div class="time-window-pills">
+          <button class="time-pill">All day <span class="tm">09–21</span></button>
+          <button class="time-pill">Morning <span class="tm">09–13</span></button>
+          <button class="time-pill active">Afternoon <span class="tm">14–18</span></button>
+          <button class="time-pill">Evening <span class="tm">18–21</span></button>
+        </div>
+        <span class="time-window-note">Picks re-ranked · <b>2 of 3 still go</b></span>
+      </div>
+
+      <div class="section-head">
+        <h3>Picks · for 14:00 onward</h3>
+        <span class="rule"></span>
+        <span class="count">HOT · KIDS · PM</span>
+      </div>
+
+      <div class="cards">
+        <article class="card">
+          <div class="card-img">
+            <img src="https://images.unsplash.com/photo-1564604761579-ec1ec3d2bb98?w=800&h=450&fit=crop&q=80" alt="">
+            <div class="card-tag-overlay">
+              <span class="tag today">Today + Mon only</span>
+              <span class="tag window">Still open</span>
+            </div>
+            <div class="card-eyebrow">OPEN TILL 16:30 · 25 MIN BY TRAIN</div>
+          </div>
+          <div class="card-body">
+            <div class="card-title">Medieval Days at Muiderslot</div>
+            <div class="card-venue">Muiden · outdoor castle grounds · €18 / €12 kids</div>
+            <p class="card-snippet">The castle goes full medieval — sword-fighting school, fire shows, kid-knighting. Two-day event closes at 16:30.</p>
+            <div class="card-fit"><b>Why now:</b> two-day-only · last entry around 15:30 · sunshine still strong</div>
+            <span class="card-time-hint warn"><span class="icon">⏱</span> Leave by <b>14:15</b> to make last entry · 2hr window once there</span>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-img">
+            <img src="https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=800&h=450&fit=crop&q=80" alt="">
+            <div class="card-tag-overlay">
+              <span class="tag new">Season opens</span>
+              <span class="tag window">14:00 / 15:00 / 16:00</span>
+            </div>
+            <div class="card-eyebrow">3 SLOTS LEFT · 25 MIN BY BIKE</div>
+          </div>
+          <div class="card-body">
+            <div class="card-title">The Fluistervink silent boat</div>
+            <div class="card-venue">Amsterdamse Bos · electric boat · €14 / €9 kids</div>
+            <p class="card-snippet">Whisper-boat through forest waterways. Three afternoon slots left today. Boat is covered — shade if the kid wilts.</p>
+            <div class="card-fit"><b>Why now:</b> three slots still bookable PM · forest stays cool as city heats up</div>
+            <span class="card-time-hint"><span class="icon">✓</span> Best slot: <b>15:00</b> — kid still energetic, sun's softer</span>
+          </div>
+        </article>
+
+        <article class="card" style="opacity: 0.55;">
+          <div class="card-img">
+            <img src="https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=800&h=450&fit=crop&q=80" alt="" style="filter: grayscale(0.4);">
+            <div class="card-tag-overlay">
+              <span class="tag" style="background: rgba(255,255,255,0.92); color: var(--ink);">Window closed</span>
+            </div>
+            <div class="card-eyebrow">— LAST 13:00 DEPARTURE —</div>
+          </div>
+          <div class="card-body">
+            <div class="card-title">Vondelpark + pancakes on the Amstel</div>
+            <div class="card-venue">Pannenkoekenboot · final Sunday cruise at 13:00</div>
+            <p class="card-snippet" style="text-decoration: line-through; opacity: 0.7;">Last Sunday cruise departed at 13:00. Vondelpark is still open if you just want a park afternoon.</p>
+            <div class="card-fit" style="background: var(--paper-2);"><b>Not this window:</b> boat already sailed · saved for next weekend</div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+<div class="footer">
+  <div class="footer-title">What changed</div>
+  <p>
+    Cover lost its corner metadata (no issue number, no "WHITSUN WEEKEND" caps, no coordinates). It now reads as <b>Amsterdam</b>, centered and big, with a bottom-anchored data line — temperature and mode. The center city no longer italicizes; the bottom mode no longer italicizes; the headline is Helvetica 600 instead of Fraunces 500. The cover does its visual work without typographic theater around it. The source trace stays because it earns its place — that's the credibility band, not decoration. Same v5 logic underneath, just less dressed up.
+  </p>
+</div>
+
+</body>
+</html>

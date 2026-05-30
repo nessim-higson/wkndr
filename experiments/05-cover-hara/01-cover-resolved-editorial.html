@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WKNDR — III + IV resolved (+ later-today variant)</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0a0a0a;
+    --ink-2: #1a1a1a;
+    --ink-3: #4a4a4a;
+    --ink-4: #8a8a8a;
+    --ink-5: #c4c4c4;
+    --paper: #fafaf7;
+    --paper-2: #f2f2ee;
+    --paper-3: #e8e8e3;
+    --rule: #d8d8d3;
+    --accent: #ff4d1f;
+    --accent-soft: #fff2ec;
+    --kid: #2d5b8a;
+    --kid-soft: #e4eef7;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+  html, body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background: var(--paper-3);
+    color: var(--ink);
+    font-feature-settings: "kern", "liga", "tnum";
+    text-rendering: geometricPrecision;
+  }
+  body { padding: 32px 24px 80px; }
+
+  /* ========= PAGE INTRO ========= */
+  .intro {
+    max-width: 880px;
+    margin: 0 auto 32px;
+    text-align: center;
+    padding: 16px 0;
+  }
+  .intro-eyebrow {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--ink-3);
+    margin-bottom: 10px;
+    font-weight: 600;
+  }
+  .intro h1 {
+    font-family: 'Fraunces', serif;
+    font-size: 32px;
+    font-weight: 500;
+    letter-spacing: -0.025em;
+    line-height: 1.05;
+    margin-bottom: 10px;
+    color: var(--ink);
+  }
+  .intro h1 em { font-style: italic; color: var(--accent); font-weight: 400; }
+  .intro p {
+    font-size: 14px;
+    color: var(--ink-3);
+    line-height: 1.55;
+    max-width: 580px;
+    margin: 0 auto;
+    letter-spacing: -0.005em;
+  }
+
+  /* ========= COMP CONTAINER ========= */
+  .comp-stack {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    max-width: 1600px;
+    margin: 0 auto;
+  }
+  @media (max-width: 1100px) {
+    .comp-stack { grid-template-columns: 1fr; }
+  }
+
+  .comp {
+    background: var(--paper);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+  }
+  .comp-label {
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--rule);
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    background: var(--paper);
+  }
+  .comp-num {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 28px;
+    color: var(--accent);
+    line-height: 1;
+    font-weight: 500;
+  }
+  .comp-name {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink);
+  }
+  .comp-tagline {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 13px;
+    color: var(--ink-3);
+    margin-left: auto;
+    font-weight: 400;
+  }
+
+  /* ========= TOPBAR ========= */
+  .topbar {
+    border-bottom: 1px solid var(--rule);
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--paper);
+  }
+  .mark {
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--ink);
+  }
+  .mark::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
+  }
+  .topbar .divider {
+    width: 1px;
+    height: 16px;
+    background: var(--rule);
+  }
+  .ness {
+    font-size: 11px;
+    color: var(--ink-3);
+    font-weight: 500;
+  }
+  .ness b { color: var(--ink); font-weight: 600; }
+  .top-spacer { flex: 1; }
+  .top-icons { display: flex; gap: 6px; }
+  .icon-btn {
+    width: 28px;
+    height: 28px;
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    color: var(--ink-3);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+  }
+  .icon-btn svg { width: 12px; height: 12px; }
+
+  /* ========= FILTERS ========= */
+  .filters {
+    padding: 10px 24px;
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    flex-wrap: wrap;
+    background: var(--paper);
+    border-bottom: 1px solid var(--rule);
+  }
+  .filter-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-4);
+    font-weight: 500;
+  }
+  .filter-label + .filter-label { margin-left: 10px; }
+  .pill {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 4px 10px;
+    background: transparent;
+    color: var(--ink-3);
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+  }
+  .pill.active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .pill.kids-active {
+    background: var(--kid); color: var(--paper); border-color: var(--kid);
+    display: inline-flex; align-items: center; gap: 5px;
+  }
+  .pill.kids-active::before {
+    content: ''; width: 4px; height: 4px; background: white; border-radius: 50%;
+  }
+
+  /* ========= GENERATIVE COVER (III) ========= */
+  .cover {
+    position: relative;
+    height: 320px;
+    overflow: hidden;
+    background: #0a0a0a;
+  }
+  /* Abstract gradient fields — softer, more abstract than the first III */
+  .cover-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 25% 35%, #ff8a3d 0%, transparent 55%),
+      radial-gradient(ellipse 60% 50% at 75% 70%, #c2310e 0%, transparent 55%),
+      radial-gradient(ellipse 50% 40% at 60% 20%, #ffd870 0%, transparent 50%),
+      radial-gradient(ellipse 40% 30% at 10% 80%, #4a1808 0%, transparent 60%);
+    filter: blur(40px);
+  }
+  .cover-grain {
+    position: absolute;
+    inset: 0;
+    opacity: 0.1;
+    background-image:
+      radial-gradient(circle at 20% 30%, white 0%, transparent 1%),
+      radial-gradient(circle at 60% 70%, white 0%, transparent 1%),
+      radial-gradient(circle at 80% 20%, white 0%, transparent 1%),
+      radial-gradient(circle at 30% 80%, white 0%, transparent 1%),
+      radial-gradient(circle at 50% 50%, white 0%, transparent 1%),
+      radial-gradient(circle at 90% 90%, white 0%, transparent 1%),
+      radial-gradient(circle at 10% 10%, white 0%, transparent 1%);
+    background-size: 40px 40px, 30px 30px, 50px 50px, 35px 35px, 45px 45px, 28px 28px, 38px 38px;
+    mix-blend-mode: overlay;
+  }
+  /* Subtle scan line texture */
+  .cover-lines {
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent 0 3px,
+      rgba(255,255,255,0.015) 3px 4px
+    );
+    pointer-events: none;
+  }
+
+  .cover-corner-tl {
+    position: absolute;
+    top: 18px;
+    left: 18px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    color: white;
+    opacity: 0.85;
+    z-index: 2;
+    line-height: 1.6;
+  }
+  .cover-corner-tl .num {
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .cover-corner-tl .small {
+    opacity: 0.65;
+    margin-top: 4px;
+    display: block;
+  }
+
+  .cover-corner-tr {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.05em;
+    color: white;
+    opacity: 0.85;
+    z-index: 2;
+    text-align: right;
+    line-height: 1.6;
+  }
+  .cover-corner-tr .small {
+    opacity: 0.65;
+    margin-top: 4px;
+    display: block;
+  }
+
+  .cover-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    z-index: 2;
+    color: white;
+  }
+  .cover-city {
+    font-family: 'Fraunces', serif;
+    font-size: 56px;
+    line-height: 0.95;
+    letter-spacing: -0.045em;
+    font-weight: 500;
+    color: white;
+    text-shadow: 0 2px 24px rgba(0,0,0,0.3);
+    font-variation-settings: "opsz" 144;
+    margin-bottom: 4px;
+  }
+  .cover-city em {
+    font-style: italic;
+    color: rgba(255, 255, 220, 0.95);
+    font-weight: 400;
+  }
+  .cover-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: rgba(255,255,255,0.85);
+    font-weight: 500;
+  }
+
+  .cover-bottom-left {
+    position: absolute;
+    bottom: 18px;
+    left: 22px;
+    z-index: 2;
+    color: white;
+  }
+  .cover-temp {
+    font-family: 'Fraunces', serif;
+    font-size: 56px;
+    font-weight: 500;
+    letter-spacing: -0.04em;
+    line-height: 0.85;
+    font-variation-settings: "opsz" 144;
+  }
+  .cover-temp .deg { opacity: 0.65; font-weight: 400; font-style: italic; }
+  .cover-temp-sub {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-top: 8px;
+    opacity: 0.75;
+    font-weight: 500;
+  }
+
+  .cover-bottom-right {
+    position: absolute;
+    bottom: 18px;
+    right: 22px;
+    z-index: 2;
+    color: white;
+    text-align: right;
+  }
+  .cover-mode {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 22px;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    font-weight: 500;
+    font-variation-settings: "opsz" 144;
+  }
+  .cover-mode-sub {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-top: 6px;
+    opacity: 0.7;
+    font-weight: 500;
+    font-style: normal;
+  }
+
+  /* Cover edge fade — soft transition to the source trace below */
+  .cover::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 60px;
+    background: linear-gradient(180deg, transparent 0%, rgba(10,10,10,0.6) 100%);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* ========= SOURCE TRACE (IV resolved) ========= */
+  /* The composing checklist, in its resolved state.
+     A horizontal monospace trace showing what was used to build this brief.
+     Sits as the bridge between cover and content. */
+  .source-trace {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 14px 22px 16px;
+    font-family: 'JetBrains Mono', monospace;
+    border-bottom: 1px solid var(--rule);
+  }
+  .trace-row {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    flex-wrap: wrap;
+    font-size: 10px;
+    letter-spacing: 0.04em;
+    line-height: 1.7;
+  }
+  .trace-label {
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+  }
+  .trace-step {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--paper);
+    font-weight: 500;
+  }
+  .trace-step::before {
+    content: '✓';
+    color: #4ade80;
+    font-size: 9px;
+    font-weight: 700;
+  }
+  .trace-step b {
+    color: #ffaa70;
+    font-weight: 600;
+    margin-left: 2px;
+  }
+  .trace-sep {
+    color: rgba(255,255,255,0.25);
+  }
+  .trace-meta {
+    margin-left: auto;
+    color: rgba(255,255,255,0.45);
+    font-size: 9px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .trace-meta b { color: #ffaa70; font-weight: 600; }
+
+  /* ========= MAIN COLUMN (below the cover) ========= */
+  .col {
+    padding: 28px 24px 32px;
+  }
+
+  .city-dateline {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-4);
+    margin-bottom: 10px;
+    font-weight: 500;
+  }
+  .city-dateline b { color: var(--ink-2); }
+  .city-dateline .now {
+    display: inline-block;
+    background: var(--accent);
+    color: white;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-weight: 700;
+    font-size: 9px;
+    margin-right: 6px;
+    letter-spacing: 0.04em;
+  }
+
+  .pretitle {
+    margin-top: 14px;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ink-4);
+    font-weight: 600;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .pretitle .kid-badge {
+    background: var(--kid);
+    color: var(--paper);
+    padding: 3px 7px;
+    border-radius: 3px;
+    font-size: 8px;
+    letter-spacing: 0.06em;
+  }
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-size: 28px;
+    line-height: 1.08;
+    letter-spacing: -0.025em;
+    font-weight: 500;
+    margin-bottom: 14px;
+    max-width: 100%;
+    font-variation-settings: "opsz" 144;
+  }
+  h1 em { font-style: italic; color: var(--accent); font-weight: 400; }
+  .lede {
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--ink-3);
+    font-weight: 400;
+    letter-spacing: -0.005em;
+    margin-bottom: 28px;
+  }
+  .lede b { color: var(--ink); font-weight: 600; }
+
+  /* ========= LATER TODAY AFFORDANCE (the rescued V idea) ========= */
+  /* A small smart toggle that appears with the picks — not in the header.
+     "What's good when?" — pick a window of the day, picks re-rank. */
+  .time-window {
+    margin-bottom: 24px;
+    padding: 12px 14px;
+    background: var(--paper-2);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .time-window-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-3);
+    font-weight: 700;
+  }
+  .time-window-pills {
+    display: inline-flex;
+    gap: 4px;
+    background: var(--paper);
+    padding: 3px;
+    border-radius: 8px;
+    border: 1px solid var(--rule);
+  }
+  .time-pill {
+    font-size: 11px;
+    padding: 5px 11px;
+    border-radius: 6px;
+    border: none;
+    background: transparent;
+    color: var(--ink-3);
+    font-weight: 600;
+    letter-spacing: -0.005em;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .time-pill.active {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .time-pill .tm {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    opacity: 0.7;
+    font-weight: 500;
+  }
+  .time-pill.active .tm { opacity: 0.9; }
+  .time-window-note {
+    margin-left: auto;
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 12px;
+    color: var(--ink-3);
+    font-weight: 400;
+  }
+  .time-window-note b {
+    font-style: normal;
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  /* ========= SECTION HEAD ========= */
+  .section-head {
+    margin: 4px 0 16px;
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+  .section-head h3 {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-2);
+  }
+  .section-head .rule { flex: 1; height: 1px; background: var(--ink); }
+  .section-head .count {
+    font-size: 10px;
+    color: var(--ink-4);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  /* ========= CARDS ========= */
+  .cards { display: grid; gap: 14px; }
+  .card {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 14px;
+    overflow: hidden;
+    position: relative;
+  }
+  .card-img {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    position: relative;
+    background: var(--paper-3);
+  }
+  .card-img img {
+    width: 100%; height: 100%; object-fit: cover;
+  }
+  .card-img::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 50%, rgba(0,0,0,0.5) 100%);
+  }
+  .card-tag-overlay {
+    position: absolute;
+    top: 10px; left: 10px;
+    display: flex; gap: 4px;
+    z-index: 2;
+  }
+  .tag {
+    font-size: 8.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 3px 6px;
+    border-radius: 3px;
+    font-weight: 600;
+    backdrop-filter: blur(4px);
+  }
+  .tag.today { background: rgba(194,49,14,0.95); color: white; }
+  .tag.kid { background: rgba(45,91,138,0.95); color: white; }
+  .tag.new { background: rgba(10,10,10,0.85); color: var(--paper); }
+  .tag.window { background: rgba(255,255,255,0.92); color: var(--ink); }
+  .card-eyebrow {
+    position: absolute;
+    bottom: 10px; left: 12px; right: 12px;
+    color: rgba(255,255,255,0.95);
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+    z-index: 2;
+  }
+  .card-body { padding: 14px 14px 16px; }
+  .card-title {
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    margin-bottom: 4px;
+    color: var(--ink);
+    font-variation-settings: "opsz" 96;
+  }
+  .card-title em { font-style: italic; color: var(--accent); font-weight: 400; }
+  .card-venue {
+    font-size: 11px;
+    color: var(--ink-4);
+    margin-bottom: 8px;
+  }
+  .card-snippet {
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--ink-3);
+  }
+  .card-fit {
+    margin-top: 9px;
+    padding: 7px 10px;
+    background: var(--kid-soft);
+    border-radius: 5px;
+    font-size: 10px;
+    color: var(--ink-3);
+    line-height: 1.4;
+  }
+  .card-fit b { color: var(--ink); font-weight: 600; }
+  .card-fit::before {
+    content: '✦ ';
+    color: var(--kid);
+    margin-right: 3px;
+  }
+
+  /* Card-level time hint (variant 2 only) */
+  .card-time-hint {
+    margin-top: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10px;
+    color: var(--ink-3);
+    font-weight: 500;
+    padding: 4px 8px;
+    border-radius: 999px;
+    background: var(--paper-2);
+    letter-spacing: -0.005em;
+  }
+  .card-time-hint .icon {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .card-time-hint b { color: var(--ink); font-weight: 700; }
+  .card-time-hint.warn { background: #fff4e6; color: #8a4a10; }
+  .card-time-hint.warn b { color: #8a4a10; }
+  .card-time-hint.warn .icon { color: #c2310e; }
+
+  /* ========= FOOTER COMPARISON ========= */
+  .footer {
+    max-width: 1100px;
+    margin: 40px auto 0;
+    padding: 24px 28px;
+    background: var(--paper);
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+  }
+  .footer-title {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 12px;
+  }
+  .footer p {
+    font-size: 13px;
+    line-height: 1.65;
+    color: var(--ink-3);
+    letter-spacing: -0.005em;
+  }
+  .footer p b { color: var(--ink); font-weight: 600; }
+  .footer p em {
+    font-family: 'Fraunces', serif;
+    color: var(--accent);
+    font-style: italic;
+    font-weight: 400;
+  }
+</style>
+</head>
+<body>
+
+<div class="intro">
+  <div class="intro-eyebrow">III + IV resolved · with later-today variant</div>
+  <h1>The cover <em>is</em> the data — and it shows you the work it did.</h1>
+  <p>Left: the resolved state of III+IV. Right: the same, with V's useful idea (time-shifting the day) folded in as a small affordance with the picks, not as a header slider.</p>
+</div>
+
+<div class="comp-stack">
+
+  <!-- ========================================================
+       VARIANT A — III + IV RESOLVED STATE
+       ======================================================== -->
+  <div class="comp">
+    <div class="comp-label">
+      <div class="comp-num">A.</div>
+      <div class="comp-name">III + IV · Resolved</div>
+      <div class="comp-tagline">— the cover, settled</div>
+    </div>
+
+    <!-- top bar -->
+    <div class="topbar">
+      <div class="mark">WKNDR</div>
+      <div class="divider"></div>
+      <div class="ness">Sunday brief · for <b>Ness</b></div>
+      <div class="top-spacer"></div>
+      <div class="top-icons">
+        <button class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></button>
+        <button class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/></svg></button>
+      </div>
+    </div>
+
+    <!-- filters -->
+    <div class="filters">
+      <span class="filter-label">When</span>
+      <button class="pill active">Today</button>
+      <button class="pill">Mon (holiday)</button>
+      <span class="filter-label">Who</span>
+      <button class="pill kids-active">Me + kids</button>
+    </div>
+
+    <!-- GENERATIVE COVER -->
+    <div class="cover">
+      <div class="cover-bg"></div>
+      <div class="cover-grain"></div>
+      <div class="cover-lines"></div>
+
+      <div class="cover-corner-tl">
+        <span class="num">ISSUE 28</span>
+        <span class="small">SUN · 24 · 05 · 26</span>
+      </div>
+      <div class="cover-corner-tr">
+        AMS · 52.37°N · 4.89°E
+        <span class="small">WHITSUN WEEKEND</span>
+      </div>
+
+      <div class="cover-center">
+        <div class="cover-city"><em>Amsterdam</em></div>
+        <div class="cover-tag">today — go</div>
+      </div>
+
+      <div class="cover-bottom-left">
+        <div class="cover-temp">24<span class="deg">°</span></div>
+        <div class="cover-temp-sub">High · 0% rain</div>
+      </div>
+      <div class="cover-bottom-right">
+        <div class="cover-mode">Hot mode</div>
+        <div class="cover-mode-sub">Cover N° 28</div>
+      </div>
+    </div>
+
+    <!-- SOURCE TRACE (resolved IV) -->
+    <div class="source-trace">
+      <div class="trace-row">
+        <span class="trace-label">Built from</span>
+        <span class="trace-step">Buienradar<b>0%</b></span>
+        <span class="trace-sep">/</span>
+        <span class="trace-step">KNMI<b>24°</b></span>
+        <span class="trace-sep">/</span>
+        <span class="trace-step">Little Black Book</span>
+        <span class="trace-sep">/</span>
+        <span class="trace-step">Kidsproof</span>
+        <span class="trace-sep">/</span>
+        <span class="trace-step">I amsterdam</span>
+        <span class="trace-sep">/</span>
+        <span class="trace-step">Mommy Poppins</span>
+        <span class="trace-sep">/</span>
+        <span class="trace-step">Muiderslot</span>
+        <span class="trace-meta">7 SOURCES · RANKED FOR KIDS · <b>11:32</b></span>
+      </div>
+    </div>
+
+    <!-- main column -->
+    <div class="col">
+      <div class="city-dateline"><span class="now">NOW</span> Sunday <b>24 May 2026</b> · 11:30 · whitsun weekend</div>
+
+      <div class="pretitle">
+        <span class="kid-badge">KIDS · 4 YRS</span>
+        SUNDAY BRIEF
+      </div>
+      <h1>A four-year-old, <em>24° and clear skies,</em> and a Whit Sunday on the calendar. The day shapes itself.</h1>
+      <p class="lede">
+        <b>This is a get-out-the-door morning.</b> Three picks for today, all weather-perfect, all kid-tested. Two are happening today only — Muiderslot's medieval day and the season's first silent boat. Pick one and go now; you've got eight hours of light.
+      </p>
+
+      <div class="section-head">
+        <h3>The three picks · today only</h3>
+        <span class="rule"></span>
+        <span class="count">HOT · KIDS</span>
+      </div>
+
+      <div class="cards">
+        <article class="card">
+          <div class="card-img">
+            <img src="https://images.unsplash.com/photo-1564604761579-ec1ec3d2bb98?w=800&h=450&fit=crop&q=80" alt="">
+            <div class="card-tag-overlay">
+              <span class="tag today">Today + Mon only</span>
+              <span class="tag kid">Kids</span>
+            </div>
+            <div class="card-eyebrow">10:30 → 16:30 · 25 MIN BY TRAIN</div>
+          </div>
+          <div class="card-body">
+            <div class="card-title">Medieval Days at <em>Muiderslot</em></div>
+            <div class="card-venue">Muiden · outdoor castle grounds · €18 / €12 kids</div>
+            <p class="card-snippet">The castle goes full medieval — sword-fighting school, fire shows, kid-knighting at the Bataille Knight School. Grounds big enough to wander all day.</p>
+            <div class="card-fit"><b>Why now:</b> two-day-only event · knighting from age 4 · outdoor in sunshine</div>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-img">
+            <img src="https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=800&h=450&fit=crop&q=80" alt="">
+            <div class="card-tag-overlay">
+              <span class="tag new">Season opens</span>
+              <span class="tag kid">Kids</span>
+            </div>
+            <div class="card-eyebrow">HOURLY · 25 MIN BY BIKE</div>
+          </div>
+          <div class="card-body">
+            <div class="card-title">The <em>Fluistervink</em> silent boat</div>
+            <div class="card-venue">Amsterdamse Bos · electric boat · €14 / €9 kids</div>
+            <p class="card-snippet">Whisper-boat through forest waterways — no engine noise, just water and birds. Just opened for the season this week.</p>
+            <div class="card-fit"><b>Why now:</b> first weekend of season · forest stays cool · holds a kid's attention</div>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-img">
+            <img src="https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=800&h=450&fit=crop&q=80" alt="">
+            <div class="card-tag-overlay">
+              <span class="tag kid">Kids</span>
+            </div>
+            <div class="card-eyebrow">SUNDAY LAZY · 15 MIN BY BIKE</div>
+          </div>
+          <div class="card-body">
+            <div class="card-title">Vondelpark + <em>pancakes on the Amstel</em></div>
+            <div class="card-venue">Vondelpark + Pannenkoekenboot · ~€30 family lunch</div>
+            <p class="card-snippet">Bike the park, then ferry to the Pannenkoekenboot for a 75-min Amstel loop while you eat all-you-can-eat pancakes.</p>
+            <div class="card-fit"><b>Why now:</b> sunny park weather · the boat contains the child · pancakes are the bribe</div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ========================================================
+       VARIANT B — III + IV + LATER-TODAY (V rescued)
+       ======================================================== -->
+  <div class="comp">
+    <div class="comp-label">
+      <div class="comp-num">B.</div>
+      <div class="comp-name">III + IV · with "later today"</div>
+      <div class="comp-tagline">— time-shift, not a header slider</div>
+    </div>
+
+    <!-- top bar -->
+    <div class="topbar">
+      <div class="mark">WKNDR</div>
+      <div class="divider"></div>
+      <div class="ness">Sunday brief · for <b>Ness</b></div>
+      <div class="top-spacer"></div>
+      <div class="top-icons">
+        <button class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></button>
+        <button class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/></svg></button>
+      </div>
+    </div>
+
+    <!-- filters -->
+    <div class="filters">
+      <span class="filter-label">When</span>
+      <button class="pill active">Today</button>
+      <button class="pill">Mon (holiday)</button>
+      <span class="filter-label">Who</span>
+      <button class="pill kids-active">Me + kids</button>
+    </div>
+
+    <!-- GENERATIVE COVER (same) -->
+    <div class="cover">
+      <div class="cover-bg"></div>
+      <div class="cover-grain"></div>
+      <div class="cover-lines"></div>
+
+      <div class="cover-corner-tl">
+        <span class="num">ISSUE 28</span>
+        <span class="small">SUN · 24 · 05 · 26</span>
+      </div>
+      <div class="cover-corner-tr">
+        AMS · 52.37°N · 4.89°E
+        <span class="small">WHITSUN WEEKEND</span>
+      </div>
+
+      <div class="cover-center">
+        <div class="cover-city"><em>Amsterdam</em></div>
+        <div class="cover-tag">later — 14:00 onward</div>
+      </div>
+
+      <div class="cover-bottom-left">
+        <div class="cover-temp">24<span class="deg">°</span></div>
+        <div class="cover-temp-sub">High · 0% rain</div>
+      </div>
+      <div class="cover-bottom-right">
+        <div class="cover-mode">Hot mode</div>
+        <div class="cover-mode-sub">Cover N° 28</div>
+      </div>
+    </div>
+
+    <!-- SOURCE TRACE -->
+    <div class="source-trace">
+      <div class="trace-row">
+        <span class="trace-label">Built from</span>
+        <span class="trace-step">Buienradar<b>0%</b></span>
+        <span class="trace-sep">/</span>
+        <span class="trace-step">KNMI<b>24°</b></span>
+        <span class="trace-sep">/</span>
+        <span class="trace-step">Little Black Book</span>
+        <span class="trace-sep">/</span>
+        <span class="trace-step">Kidsproof</span>
+        <span class="trace-sep">/</span>
+        <span class="trace-step">I amsterdam</span>
+        <span class="trace-sep">/</span>
+        <span class="trace-step">Mommy Poppins</span>
+        <span class="trace-sep">/</span>
+        <span class="trace-step">Muiderslot</span>
+        <span class="trace-meta">7 SOURCES · RANKED FOR KIDS · <b>11:32</b></span>
+      </div>
+    </div>
+
+    <!-- main column -->
+    <div class="col">
+      <div class="city-dateline"><span class="now">NOW</span> Sunday <b>24 May 2026</b> · 11:30 · whitsun weekend</div>
+
+      <div class="pretitle">
+        <span class="kid-badge">KIDS · 4 YRS</span>
+        SUNDAY BRIEF
+      </div>
+      <h1>A four-year-old, <em>24° and clear skies.</em> Showing picks <em>from 14:00 onward.</em></h1>
+      <p class="lede">
+        <b>You won't leave the house till after lunch.</b> Three picks for the afternoon window — re-ranked from the same seven sources, weather still holds, the day's not gone. Hot mode still in effect till sundown at 21:00.
+      </p>
+
+      <!-- LATER-TODAY AFFORDANCE -->
+      <div class="time-window">
+        <span class="time-window-label">When today</span>
+        <div class="time-window-pills">
+          <button class="time-pill">All day <span class="tm">09–21</span></button>
+          <button class="time-pill">Morning <span class="tm">09–13</span></button>
+          <button class="time-pill active">Afternoon <span class="tm">14–18</span></button>
+          <button class="time-pill">Evening <span class="tm">18–21</span></button>
+        </div>
+        <span class="time-window-note">Picks re-ranked · <b>2 of 3 still go</b></span>
+      </div>
+
+      <div class="section-head">
+        <h3>Picks · for 14:00 onward</h3>
+        <span class="rule"></span>
+        <span class="count">HOT · KIDS · PM</span>
+      </div>
+
+      <div class="cards">
+        <article class="card">
+          <div class="card-img">
+            <img src="https://images.unsplash.com/photo-1564604761579-ec1ec3d2bb98?w=800&h=450&fit=crop&q=80" alt="">
+            <div class="card-tag-overlay">
+              <span class="tag today">Today + Mon only</span>
+              <span class="tag window">Still open</span>
+            </div>
+            <div class="card-eyebrow">OPEN TILL 16:30 · 25 MIN BY TRAIN</div>
+          </div>
+          <div class="card-body">
+            <div class="card-title">Medieval Days at <em>Muiderslot</em></div>
+            <div class="card-venue">Muiden · outdoor castle grounds · €18 / €12 kids</div>
+            <p class="card-snippet">The castle goes full medieval — sword-fighting school, fire shows, kid-knighting. Two-day event closes at 16:30.</p>
+            <div class="card-fit"><b>Why now:</b> two-day-only · last entry around 15:30 · sunshine still strong</div>
+            <span class="card-time-hint warn"><span class="icon">⏱</span> Leave by <b>14:15</b> to make last entry · 2hr window once there</span>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-img">
+            <img src="https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=800&h=450&fit=crop&q=80" alt="">
+            <div class="card-tag-overlay">
+              <span class="tag new">Season opens</span>
+              <span class="tag window">14:00 / 15:00 / 16:00</span>
+            </div>
+            <div class="card-eyebrow">3 SLOTS LEFT · 25 MIN BY BIKE</div>
+          </div>
+          <div class="card-body">
+            <div class="card-title">The <em>Fluistervink</em> silent boat</div>
+            <div class="card-venue">Amsterdamse Bos · electric boat · €14 / €9 kids</div>
+            <p class="card-snippet">Whisper-boat through forest waterways. Three afternoon slots left today. Boat is covered — shade if the kid wilts.</p>
+            <div class="card-fit"><b>Why now:</b> three slots still bookable PM · forest stays cool as city heats up</div>
+            <span class="card-time-hint"><span class="icon">✓</span> Best slot: <b>15:00</b> — kid still energetic, sun's softer</span>
+          </div>
+        </article>
+
+        <article class="card" style="opacity: 0.55;">
+          <div class="card-img">
+            <img src="https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=800&h=450&fit=crop&q=80" alt="" style="filter: grayscale(0.4);">
+            <div class="card-tag-overlay">
+              <span class="tag" style="background: rgba(255,255,255,0.92); color: var(--ink);">Window closed</span>
+            </div>
+            <div class="card-eyebrow">— LAST 13:00 DEPARTURE —</div>
+          </div>
+          <div class="card-body">
+            <div class="card-title">Vondelpark + <em>pancakes on the Amstel</em></div>
+            <div class="card-venue">Pannenkoekenboot · final Sunday cruise at 13:00</div>
+            <p class="card-snippet" style="text-decoration: line-through; opacity: 0.7;">Last Sunday cruise departed at 13:00. Vondelpark is still open if you just want a park afternoon.</p>
+            <div class="card-fit" style="background: var(--paper-2);"><b>Not this window:</b> boat already sailed · saved for next weekend</div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- ========= FOOTER COMPARISON ========= -->
+<div class="footer">
+  <div class="footer-title">A vs B — what's different</div>
+  <p>
+    <b>A is the default resting state.</b> The generative cover sits resolved, the source trace below it names what was used to build the brief, the picks are the morning's three. The cover and the trace together do IV's job — <em>showing the work</em> — without animation, because the named sources are themselves the proof.<br><br>
+    <b>B folds in V's useful idea.</b> A "When today" toggle sits with the picks, not in the header. Tap <em>Afternoon</em> and three things change: the cover's small tag reads "later — 14:00 onward," the lede rewrites for the afternoon framing, and the picks re-rank with a third now greyed out (the pancake boat sailed at 13:00, so it's struck through and saved for next weekend). The "leave by 14:15" and "best slot 15:00" hints give back what the temp slider couldn't — <em>real, actionable, time-aware advice.</em><br><br>
+    The cover stays the same in both — same weekend, same data, same Cover N° 28. The page <b>responds to your time choice without losing its identity.</b>
+  </p>
+</div>
+
+</body>
+</html>

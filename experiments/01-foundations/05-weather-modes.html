@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WKNDR — Weather Modes</title>
+<style>
+  :root {
+    --ink: #0a0a0a;
+    --ink-2: #1a1a1a;
+    --ink-3: #4a4a4a;
+    --ink-4: #8a8a8a;
+    --ink-5: #c4c4c4;
+    --paper: #fafaf7;
+    --paper-2: #f2f2ee;
+    --paper-3: #e8e8e3;
+    --rule: #d8d8d3;
+    --accent: #ff4d1f;
+    --accent-soft: #fff2ec;
+    --hot: #ff6b3d;
+    --warm: #f5a623;
+    --cool: #7fa8b0;
+    --cold: #4a6080;
+    --volatile: #b5895a;
+    --kid: #2d5b8a;
+    --kid-light: #d4e0ec;
+    --transition: all 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+  html, body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    font-feature-settings: "kern", "liga", "tnum";
+    overflow-x: hidden;
+    transition: var(--transition);
+  }
+  body { min-height: 100vh; }
+  button { font-family: inherit; cursor: pointer; }
+
+  /* ========= TOP CONTROLLER ========= */
+  .controller {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    background: rgba(250, 250, 247, 0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--rule);
+    padding: 14px 28px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .controller-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ink-4);
+    font-weight: 600;
+    margin-right: 4px;
+  }
+  .mode-btn {
+    font-size: 12px;
+    font-weight: 500;
+    padding: 7px 14px;
+    background: transparent;
+    color: var(--ink-3);
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    transition: all 0.2s ease;
+    letter-spacing: -0.005em;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .mode-btn:hover { color: var(--ink); border-color: var(--ink-4); background: var(--paper-2); }
+  .mode-btn.active {
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+  }
+  .mode-btn .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+  }
+  .mode-btn[data-mode="HOT"] .dot { background: var(--hot); }
+  .mode-btn[data-mode="WARM"] .dot { background: var(--warm); }
+  .mode-btn[data-mode="COOL"] .dot { background: var(--cool); }
+  .mode-btn[data-mode="COLD_WET"] .dot { background: var(--cold); }
+  .mode-btn[data-mode="VOLATILE"] .dot { background: var(--volatile); }
+  .info-tag {
+    margin-left: auto;
+    font-size: 11px;
+    color: var(--ink-4);
+    letter-spacing: -0.005em;
+  }
+  .info-tag b { color: var(--ink-2); font-weight: 600; }
+
+  /* ========= MAIN COLUMN ========= */
+  .col {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 48px 28px 120px;
+    transition: var(--transition);
+  }
+
+  /* ========= MODE-AWARE BACKGROUND ========= */
+  body[data-mode="HOT"] { background: linear-gradient(180deg, #fffaf3 0%, #fafaf7 400px); }
+  body[data-mode="WARM"] { background: linear-gradient(180deg, #fffcf0 0%, #fafaf7 400px); }
+  body[data-mode="COOL"] { background: linear-gradient(180deg, #f5f7f8 0%, #fafaf7 400px); }
+  body[data-mode="COLD_WET"] { background: linear-gradient(180deg, #ebeef2 0%, #f4f4f0 400px); }
+  body[data-mode="VOLATILE"] { background: linear-gradient(180deg, #faf5ed 0%, #fafaf7 400px); }
+
+  /* ========= CITY HERO ========= */
+  .city-hero { margin-bottom: 22px; }
+  .city-dateline {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-4);
+    margin-bottom: 14px;
+    font-weight: 500;
+  }
+  .city-dateline b { color: var(--ink-2); }
+  .city-name {
+    font-size: 64px;
+    font-weight: 600;
+    letter-spacing: -0.045em;
+    line-height: 1;
+    color: var(--ink);
+    display: inline-block;
+  }
+
+  /* ========= WEATHER BANNER (MODE-AWARE HERO) ========= */
+  .weather-banner {
+    margin-top: 22px;
+    padding: 22px 26px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    transition: var(--transition);
+    border: 1px solid transparent;
+  }
+  body[data-mode="HOT"] .weather-banner {
+    background: linear-gradient(135deg, #ffe8d8 0%, #ffd4b8 100%);
+    color: #4a2010;
+  }
+  body[data-mode="WARM"] .weather-banner {
+    background: linear-gradient(135deg, #fff0d0 0%, #ffe0a8 100%);
+    color: #4a3010;
+  }
+  body[data-mode="COOL"] .weather-banner {
+    background: linear-gradient(135deg, #dde6ea 0%, #c0d4dc 100%);
+    color: #1a2830;
+  }
+  body[data-mode="COLD_WET"] .weather-banner {
+    background: linear-gradient(135deg, #c8d0dc 0%, #a8b4c8 100%);
+    color: #1a2030;
+  }
+  body[data-mode="VOLATILE"] .weather-banner {
+    background: linear-gradient(135deg, #f0e0c0 0%, #e0c898 100%);
+    color: #3a2810;
+    position: relative;
+    overflow: hidden;
+  }
+  body[data-mode="VOLATILE"] .weather-banner::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(45deg, transparent 0 12px, rgba(74,40,16,0.04) 12px 13px);
+    pointer-events: none;
+  }
+  .weather-icon {
+    font-size: 42px;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+  .weather-body { flex: 1; }
+  .weather-temps {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: -0.005em;
+    margin-bottom: 4px;
+    opacity: 0.7;
+  }
+  .weather-headline {
+    font-size: 19px;
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+  }
+  .weather-tag {
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: rgba(0,0,0,0.12);
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    flex-shrink: 0;
+  }
+
+  /* ========= HEADLINE + LEDE ========= */
+  .pretitle {
+    margin-top: 36px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ink-4);
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+  h1 {
+    font-size: 40px;
+    line-height: 1.05;
+    letter-spacing: -0.035em;
+    font-weight: 500;
+    margin-bottom: 18px;
+    max-width: 720px;
+    transition: var(--transition);
+  }
+  .lede {
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--ink-3);
+    font-weight: 400;
+    letter-spacing: -0.005em;
+    margin-bottom: 40px;
+    max-width: 620px;
+  }
+  .lede b { color: var(--ink); font-weight: 600; }
+
+  /* ========= SECTION HEAD ========= */
+  .section-head {
+    margin: 8px 0 20px;
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+  }
+  .section-head h3 {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-2);
+  }
+  .section-head .rule { flex: 1; height: 1px; background: var(--ink); }
+  .section-head .count {
+    font-size: 11px;
+    color: var(--ink-4);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  /* ========= CARDS ========= */
+  .cards {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .card {
+    position: relative;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: var(--transition);
+  }
+  .card-img {
+    width: 100%;
+    aspect-ratio: 21 / 9;
+    overflow: hidden;
+    position: relative;
+    transition: var(--transition);
+  }
+  .card-img::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.55) 100%);
+  }
+  .card-tag-overlay {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+    z-index: 2;
+  }
+  .card-eyebrow {
+    position: absolute;
+    bottom: 14px;
+    left: 16px;
+    right: 16px;
+    color: rgba(255,255,255,0.95);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+    z-index: 2;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+  }
+  .card-body {
+    padding: 16px 18px 18px;
+  }
+  .card-title {
+    font-size: 21px;
+    font-weight: 600;
+    line-height: 1.18;
+    letter-spacing: -0.025em;
+    margin-bottom: 6px;
+    color: var(--ink);
+  }
+  .card-venue {
+    font-size: 12px;
+    color: var(--ink-4);
+    letter-spacing: -0.005em;
+    margin-bottom: 10px;
+  }
+  .card-venue .sep { margin: 0 6px; color: var(--ink-5); }
+  .card-snippet {
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--ink-3);
+    letter-spacing: -0.005em;
+  }
+  .card-weatherfit {
+    margin-top: 12px;
+    padding: 8px 12px;
+    background: var(--paper-2);
+    border-radius: 6px;
+    font-size: 11px;
+    color: var(--ink-3);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-weatherfit b { color: var(--ink); font-weight: 600; }
+  .fit-bar {
+    flex: 1;
+    height: 4px;
+    background: var(--rule);
+    border-radius: 999px;
+    overflow: hidden;
+    max-width: 100px;
+  }
+  .fit-bar-fill {
+    height: 100%;
+    width: 80%;
+    background: var(--accent);
+    border-radius: 999px;
+    transition: var(--transition);
+  }
+
+  .tag {
+    font-size: 9.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 4px 8px;
+    border-radius: 3px;
+    font-weight: 600;
+    line-height: 1.4;
+    backdrop-filter: blur(4px);
+  }
+  .tag.hot { background: rgba(255,107,61,0.95); color: white; }
+  .tag.weather-pick { background: rgba(255,77,31,0.95); color: white; }
+  .tag.indoor { background: rgba(74,96,128,0.95); color: white; }
+  .tag.cultural { background: rgba(127,168,176,0.95); color: white; }
+  .tag.flex { background: rgba(181,137,90,0.95); color: white; }
+  .tag.new { background: rgba(10,10,10,0.85); color: var(--paper); }
+  .tag.kid { background: rgba(45,91,138,0.95); color: white; }
+  .tag.critic { background: rgba(255,255,255,0.92); color: var(--ink-2); }
+  .tag.outline { background: rgba(255,255,255,0.9); color: var(--ink-3); }
+
+  /* ========= IMAGERY (CSS gradients per venue type, mode-aware) ========= */
+  /* HOT mode visuals: warm, sunny, outdoor */
+  .img-terrace-hot { background: linear-gradient(135deg, #ffd49a 0%, #f0a05a 50%, #b06830 100%); position: relative; overflow: hidden; }
+  .img-terrace-hot::before { content: ''; position: absolute; top: 0; right: 0; width: 60%; height: 60%; background: radial-gradient(circle, rgba(255,240,180,0.7) 0%, transparent 70%); filter: blur(20px); }
+  .img-water-hot { background: linear-gradient(180deg, #c8e4f0 0%, #88c0d8 40%, #4090b8 100%); position: relative; }
+  .img-water-hot::before { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 30%; background: repeating-linear-gradient(180deg, transparent 0 8px, rgba(255,255,255,0.15) 8px 10px); }
+  .img-park-hot { background: linear-gradient(180deg, #c8d8a0 0%, #88a868 50%, #5a7a3a 100%); position: relative; }
+  .img-park-hot::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 30%; background: linear-gradient(180deg, rgba(255,230,150,0.5) 0%, transparent 100%); }
+
+  /* WARM mode visuals: pleasant, flexible */
+  .img-flexible { background: linear-gradient(135deg, #f0d8a0 0%, #d8a878 50%, #a07848 100%); position: relative; }
+  .img-flexible::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 50% 40% at 30% 30%, rgba(255,255,220,0.4) 0%, transparent 70%); }
+  .img-evening-warm { background: linear-gradient(135deg, #f8c890 0%, #c88060 50%, #604030 100%); position: relative; }
+  .img-evening-warm::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 40%; background: radial-gradient(circle 80px at 30% 80%, rgba(255,180,80,0.6) 0%, transparent 70%), radial-gradient(circle 60px at 70% 70%, rgba(255,160,60,0.5) 0%, transparent 70%); }
+  .img-market { background: linear-gradient(135deg, #e0c8a0 0%, #a88858 50%, #604838 100%); }
+
+  /* COOL mode visuals: crisp, cultural */
+  .img-museum-cool { background: linear-gradient(135deg, #d8dce0 0%, #a8b0b8 50%, #686870 100%); position: relative; }
+  .img-museum-cool::before { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(255,255,255,0.2) 0%, transparent 50%); }
+  .img-cinema-cool { background: linear-gradient(135deg, #5a4858 0%, #3a2838 50%, #1a1018 100%); position: relative; }
+  .img-cinema-cool::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle 3px at 30% 40%, rgba(255,200,100,0.7) 0%, transparent 100%), radial-gradient(circle 2px at 60% 30%, rgba(255,180,80,0.6) 0%, transparent 100%); }
+  .img-lunch-cool { background: linear-gradient(135deg, #d8c8b0 0%, #a88858 50%, #604030 100%); }
+
+  /* COLD_WET mode visuals: indoor, cozy */
+  .img-museum-cold { background: linear-gradient(180deg, #2a3848 0%, #4a5868 50%, #6a7888 100%); position: relative; }
+  .img-museum-cold::before { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, transparent 50%); }
+  .img-bar-cold { background: radial-gradient(circle at 50% 50%, #6a4a3a 0%, #3a2818 60%, #1a0a08 100%); position: relative; }
+  .img-bar-cold::after { content: ''; position: absolute; inset: 0; background: radial-gradient(circle 100px at 50% 50%, rgba(255,150,80,0.5) 0%, transparent 70%); filter: blur(10px); }
+  .img-cinema-cold { background: linear-gradient(180deg, #1a1820 0%, #2a2030 50%, #3a2840 100%); position: relative; }
+  .img-cinema-cold::after { content: ''; position: absolute; top: 30%; left: 20%; width: 60%; height: 30%; background: linear-gradient(180deg, rgba(255,220,180,0.3) 0%, transparent 100%); filter: blur(15px); }
+
+  /* VOLATILE mode visuals: hedge, flexible */
+  .img-volatile-1 { background: linear-gradient(135deg, #ffd49a 0%, #c8c0a8 50%, #a0a0b0 100%); position: relative; }
+  .img-volatile-1::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 50% at 30% 30%, rgba(255,230,180,0.5) 0%, transparent 60%); }
+  .img-volatile-2 { background: linear-gradient(135deg, #d4c8b8 0%, #b8a898 50%, #808080 100%); }
+  .img-volatile-3 { background: linear-gradient(135deg, #f0d8a0 0%, #c0b8a8 50%, #686878 100%); }
+
+  /* ========= ENGINE PEEK ========= */
+  .engine-peek {
+    margin-top: 56px;
+    padding: 20px;
+    background: var(--ink);
+    color: var(--paper);
+    border-radius: 12px;
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    font-size: 12px;
+    line-height: 1.6;
+    overflow-x: auto;
+  }
+  .engine-peek-title {
+    font-family: 'Helvetica Neue', sans-serif;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    margin-bottom: 12px;
+    font-weight: 600;
+  }
+  .engine-peek code { color: #ff8a5a; }
+  .engine-peek .k { color: #88c0d0; }
+  .engine-peek .s { color: #a3be8c; }
+  .engine-peek .n { color: #d08770; }
+  .engine-peek .c { color: #616e88; }
+
+  /* ========= TRANSITION HIGHLIGHT ========= */
+  .changing {
+    animation: shimmer 0.6s ease;
+  }
+  @keyframes shimmer {
+    0% { background-color: rgba(255, 77, 31, 0); }
+    50% { background-color: rgba(255, 77, 31, 0.08); }
+    100% { background-color: rgba(255, 77, 31, 0); }
+  }
+
+  @media (max-width: 720px) {
+    .col { padding: 36px 18px 80px; }
+    h1 { font-size: 30px; }
+    .city-name { font-size: 44px; }
+    .controller { padding: 10px 16px; gap: 6px; }
+    .info-tag { display: none; }
+    .controller-label { display: none; }
+    .mode-btn { padding: 6px 11px; font-size: 11px; }
+    .weather-banner { padding: 16px 18px; gap: 14px; }
+    .weather-icon { font-size: 32px; }
+    .weather-headline { font-size: 16px; }
+    .weather-tag { display: none; }
+  }
+</style>
+</head>
+<body data-mode="WARM">
+
+<!-- ========= MODE CONTROLLER ========= -->
+<header class="controller">
+  <span class="controller-label">Weather mode</span>
+  <button class="mode-btn" data-mode="HOT" onclick="setMode('HOT')">
+    <span class="dot"></span> ☀️ Hot
+  </button>
+  <button class="mode-btn active" data-mode="WARM" onclick="setMode('WARM')">
+    <span class="dot"></span> 🌤️ Warm
+  </button>
+  <button class="mode-btn" data-mode="COOL" onclick="setMode('COOL')">
+    <span class="dot"></span> 🍂 Cool
+  </button>
+  <button class="mode-btn" data-mode="COLD_WET" onclick="setMode('COLD_WET')">
+    <span class="dot"></span> 🌧️ Cold/Wet
+  </button>
+  <button class="mode-btn" data-mode="VOLATILE" onclick="setMode('VOLATILE')">
+    <span class="dot"></span> ⚡ Volatile
+  </button>
+  <span class="info-tag">Same Amsterdam, same weekend → <b>different brief</b></span>
+</header>
+
+<main class="col">
+
+  <!-- ========= CITY HERO ========= -->
+  <div class="city-hero">
+    <div class="city-dateline">Weekend of <b id="dateRange">30–31 May 2026</b></div>
+    <span class="city-name">Amsterdam</span>
+  </div>
+
+  <!-- ========= WEATHER BANNER ========= -->
+  <div class="weather-banner">
+    <span class="weather-icon" id="weatherIcon">🌤️</span>
+    <div class="weather-body">
+      <div class="weather-temps" id="weatherTemps">Sat 20° · Sun 19° · 30% rain</div>
+      <div class="weather-headline" id="weatherHeadline">Pleasant weekend — the kind that lets you choose your own adventure.</div>
+    </div>
+    <span class="weather-tag" id="weatherTag">WARM MODE</span>
+  </div>
+
+  <!-- ========= HEADLINE ========= -->
+  <div class="pretitle" id="pretitle">FOR YOU + PARTNER + KIDS · ISSUE 28</div>
+  <h1 id="h1">A weekend that lets you choose your own adventure — flexible enough for outdoor lunches and indoor culture both.</h1>
+  <p class="lede" id="lede">
+    <b>Mid-range weather is freedom.</b> Three picks that work whatever you decide on the day — one outdoor lean, one indoor lean, one go-either-way. The shape of this weekend is up to you.
+  </p>
+
+  <!-- ========= SECTION ========= -->
+  <div class="section-head">
+    <h3 id="sectionLabel">The three picks</h3>
+    <span class="rule"></span>
+    <span class="count" id="modeCount">WARM MODE · re-ranked</span>
+  </div>
+
+  <!-- ========= CARDS (populated by JS) ========= -->
+  <div class="cards" id="cards"></div>
+
+  <!-- ========= ENGINE PEEK ========= -->
+  <div class="engine-peek">
+    <div class="engine-peek-title">↳ What the engine decided</div>
+<pre id="engineOutput"><span class="c">// Thursday 21:14 — Amsterdam weekend classifier ran</span>
+<span class="k">classifyWeekend</span>(sat, sun, <span class="s">"Amsterdam"</span>)
+
+→ {
+  mode: <span class="s">"WARM"</span>,
+  headline: <span class="s">"Pleasant weekend — choose your own adventure."</span>,
+  rationale: <span class="s">"Avg high 19.5°, low rain. Flexible."</span>,
+  pivotRisk: <span class="n">false</span>
+}
+
+<span class="k">rankByWeather</span>(150 candidates, signal, userProfile)
+  → top 3 selected, weather scores [<span class="n">+12, +14, +11</span>]
+  → re-ordered: <span class="s">"Vondelpark Open Air Theatre, Tolhuistuin gardens, NDSM brunch"</span></pre>
+  </div>
+
+</main>
+
+<script>
+  // ============================================================
+  // MODE DATA: same Amsterdam, same weekend, 5 different briefs
+  // ============================================================
+  const MODES = {
+    HOT: {
+      icon: "☀️",
+      tag: "HOT MODE",
+      temps: "Sat 30° · Sun 28° · 0% rain · clear sky",
+      headline: "The year's first hot Saturday hits, and the city is already outside.",
+      pretitle: "FOR YOU + PARTNER + KIDS · ISSUE 28",
+      h1: "Terrace-and-water weekend. The city emptied indoors and ran for the harbour.",
+      lede: "<b>This is not a museum weekend.</b> Three picks that lean into the heat — water access, south-facing terraces, day-into-night programming. Indoor culture gets benched until next week.",
+      sectionLabel: "The three picks",
+      modeCount: "HOT MODE · weather-ranked",
+      engineOutput: `<span class="c">// Thursday 21:14 — Amsterdam weekend classifier ran</span>
+<span class="k">classifyWeekend</span>(sat, sun, <span class="s">"Amsterdam"</span>)
+
+→ {
+  mode: <span class="s">"HOT"</span>,
+  headline: <span class="s">"First true summer day of the year."</span>,
+  rationale: <span class="s">"Avg high 29°, &lt;5% rain. First warm weekend of season."</span>,
+  cityContext: <span class="s">"Amsterdam terraces full by noon, Marineterrein swim opens."</span>,
+  pivotRisk: <span class="n">false</span>
+}
+
+<span class="k">rankByWeather</span>(150 candidates, signal, userProfile)
+  → museums penalized (-2), terraces +3, water +3, outdoor music +2
+  → top 3: <span class="s">"Hortus + Marineterrein, Papillon terrace, Thuishaven day-into-night"</span>`,
+      cards: [
+        {
+          imgClass: "img-water-hot",
+          eyebrow: "SAT 10:00 → 16:00",
+          tags: ['<span class="tag weather-pick">Weather pick</span>', '<span class="tag kid">Kids</span>'],
+          title: "Hortus Botanicus, then a swim at Marineterrein",
+          venue: "Plantage <span class='sep'>·</span> Kattenburg <span class='sep'>·</span> bikeable",
+          snippet: "Butterfly greenhouse first, then bike north for the harbour swim that opens this exact weekend. Bring the bucket.",
+          fitLabel: "Why now: harbour swim opens · 30° outdoor day",
+          fitWidth: 95
+        },
+        {
+          imgClass: "img-terrace-hot",
+          eyebrow: "SUN LUNCH · NOORD",
+          tags: ['<span class="tag weather-pick">Weather pick</span>', '<span class="tag new">New</span>', '<span class="tag critic">Eater Hit List</span>'],
+          title: "Papillon, south-facing terrace",
+          venue: "Amsterdam Noord <span class='sep'>·</span> all-day <span class='sep'>·</span> walk-in",
+          snippet: "The all-day place in Noord with the right kind of terrace for this weather. Cross on the ferry, make a morning of it.",
+          fitLabel: "Why now: south-facing terrace · 28° Sunday",
+          fitWidth: 92
+        },
+        {
+          imgClass: "img-park-hot",
+          eyebrow: "SUN 15:00 → 22:00",
+          tags: ['<span class="tag weather-pick">Weather pick</span>', '<span class="tag outline">Outdoor</span>'],
+          title: "KC Lights at Thuishaven, day-into-night",
+          venue: "Thuishaven <span class='sep'>·</span> outdoor <span class='sep'>·</span> house + disco",
+          snippet: "House outside in the sun, into a warm Amsterdam evening. The softer landing for a hot Sunday than any indoor club.",
+          fitLabel: "Why now: outdoor venue · day-into-night",
+          fitWidth: 88
+        }
+      ]
+    },
+
+    WARM: {
+      icon: "🌤️",
+      tag: "WARM MODE",
+      temps: "Sat 20° · Sun 19° · 30% rain · partly cloudy",
+      headline: "Pleasant weekend — the kind that lets you choose your own adventure.",
+      pretitle: "FOR YOU + PARTNER + KIDS · ISSUE 28",
+      h1: "A weekend that lets you choose your own adventure — flexible enough for outdoor lunches and indoor culture both.",
+      lede: "<b>Mid-range weather is freedom.</b> Three picks that work whatever you decide on the day — one outdoor lean, one indoor lean, one go-either-way. The shape of this weekend is up to you.",
+      sectionLabel: "The three picks",
+      modeCount: "WARM MODE · re-ranked",
+      engineOutput: `<span class="c">// Thursday 21:14 — Amsterdam weekend classifier ran</span>
+<span class="k">classifyWeekend</span>(sat, sun, <span class="s">"Amsterdam"</span>)
+
+→ {
+  mode: <span class="s">"WARM"</span>,
+  headline: <span class="s">"Pleasant weekend — choose your own adventure."</span>,
+  rationale: <span class="s">"Avg high 19.5°, low rain. Flexible."</span>,
+  pivotRisk: <span class="n">false</span>
+}
+
+<span class="k">rankByWeather</span>(150 candidates, signal, userProfile)
+  → balanced ranking, no strong weather penalties or bonuses
+  → top 3 reflect taste signals: <span class="s">"Tolhuistuin gardens, Foam, Papillon walk-in"</span>`,
+      cards: [
+        {
+          imgClass: "img-flexible",
+          eyebrow: "SAT AFTERNOON",
+          tags: ['<span class="tag flex">Flexible</span>', '<span class="tag kid">Kids</span>'],
+          title: "Tolhuistuin gardens + Felbm at Zonzij",
+          venue: "Noord <span class='sep'>·</span> garden + venue combo",
+          snippet: "Garden in the afternoon with the kids, Felbm playing the bar after they're picked up. Two adjacent things, half a day each.",
+          fitLabel: "Works in any weather · indoor backup nearby",
+          fitWidth: 75
+        },
+        {
+          imgClass: "img-market",
+          eyebrow: "SAT 10:00 → 16:00",
+          tags: ['<span class="tag flex">Flexible</span>', '<span class="tag outline">Browse</span>'],
+          title: "NDSM flea + harbourside afternoon",
+          venue: "NDSM <span class='sep'>·</span> IJ Hallen weekend <span class='sep'>·</span> €5",
+          snippet: "Indoor hangar flea market with outdoor harbour wandering. Covered when you need it, open when you want it.",
+          fitLabel: "Indoor + outdoor mix · weather-agnostic",
+          fitWidth: 70
+        },
+        {
+          imgClass: "img-evening-warm",
+          eyebrow: "SAT 20:30 · PARADISO",
+          tags: ['<span class="tag hot">Sold out · waitlist</span>', '<span class="tag critic">Critic\'s pick</span>'],
+          title: "Nectar Woode + Arno Sacco",
+          venue: "Paradiso Upstairs <span class='sep'>·</span> with NOTION",
+          snippet: "Ghanaian-British jazz-soul singer, small hall — three meters from you. Weather-neutral and worth getting on the waitlist.",
+          fitLabel: "Indoor venue · weather doesn't matter",
+          fitWidth: 65
+        }
+      ]
+    },
+
+    COOL: {
+      icon: "🍂",
+      tag: "COOL MODE",
+      temps: "Sat 12° · Sun 11° · 20% rain · clear and crisp",
+      headline: "Crisp weekend. Long lunches, gallery rooms, intimate venues.",
+      pretitle: "FOR YOU + PARTNER + KIDS · ISSUE 28",
+      h1: "Crisp weekend — the city's interiors do the work. Long lunches, gallery rooms, music in small spaces.",
+      lede: "<b>Cool clear days are the city's most underrated mode.</b> Three picks that lean into the right kind of indoor — warm rooms, considered spaces, conversation-friendly venues. Bring a layer for the walks between.",
+      sectionLabel: "The three picks",
+      modeCount: "COOL MODE · re-ranked",
+      engineOutput: `<span class="c">// Thursday 21:14 — Amsterdam weekend classifier ran</span>
+<span class="k">classifyWeekend</span>(sat, sun, <span class="s">"Amsterdam"</span>)
+
+→ {
+  mode: <span class="s">"COOL"</span>,
+  headline: <span class="s">"Crisp weekend. Long lunches, gallery rooms."</span>,
+  rationale: <span class="s">"Avg high 11.5°, low rain. Cool but dry — cultural pace."</span>,
+  pivotRisk: <span class="n">false</span>
+}
+
+<span class="k">rankByWeather</span>(150 candidates, signal, userProfile)
+  → terraces neutral, museums +2, intimate venues +2, long lunches +2
+  → top 3: <span class="s">"Foam Tillmans, Eye retrospective, Papillon dinner booking"</span>`,
+      cards: [
+        {
+          imgClass: "img-museum-cool",
+          eyebrow: "SUN 14:00 · FOAM",
+          tags: ['<span class="tag new">New rooms</span>', '<span class="tag cultural">Cultural</span>'],
+          title: "Foam — Wolfgang Tillmans, new rooms",
+          venue: "Keizersgracht 609 <span class='sep'>·</span> opened 2 weeks <span class='sep'>·</span> €15",
+          snippet: "The new Tillmans rooms are the show of the spring. Cool days are the right weather for museum-pace — you'll actually slow down.",
+          fitLabel: "Indoor cultural · perfect for 11° days",
+          fitWidth: 90
+        },
+        {
+          imgClass: "img-cinema-cool",
+          eyebrow: "SAT EVENING · EYE",
+          tags: ['<span class="tag cultural">Cultural</span>', '<span class="tag critic">Critic\'s pick</span>'],
+          title: "Eye Filmmuseum · Chantal Akerman retrospective",
+          venue: "Eye <span class='sep'>·</span> across the IJ <span class='sep'>·</span> ferry from Centraal",
+          snippet: "Akerman retrospective running through the month — 'Jeanne Dielman' on Saturday at 20:00. The cinema bar overlooks the water; arrive early.",
+          fitLabel: "Indoor venue · warm + considered",
+          fitWidth: 92
+        },
+        {
+          imgClass: "img-lunch-cool",
+          eyebrow: "SUN LUNCH",
+          tags: ['<span class="tag new">New</span>', '<span class="tag critic">Eater Hit List</span>'],
+          title: "Papillon — book the dining room, not the terrace",
+          venue: "Noord <span class='sep'>·</span> all-day <span class='sep'>·</span> reservation recommended",
+          snippet: "Wood-fired room is the right Papillon for cool weather. Long lunch with a glass of red, made for sitting still in.",
+          fitLabel: "Warm interior · slow-pace fit",
+          fitWidth: 85
+        }
+      ]
+    },
+
+    COLD_WET: {
+      icon: "🌧️",
+      tag: "COLD/WET MODE",
+      temps: "Sat 6° · Sun 5° · 85% rain · grey all weekend",
+      headline: "Indoor weekend. The city's hidden corners are waiting.",
+      pretitle: "FOR YOU + PARTNER + KIDS · ISSUE 28",
+      h1: "Indoor weekend. Time for the places you keep meaning to go to but never do because it's too nice outside.",
+      lede: "<b>Bad weather is the city's invitation to slow down.</b> Three picks that lean fully indoor — culture, cocktails, comfort. Anything with a terrace gets pushed to next week. Bring boots; book ahead.",
+      sectionLabel: "The three picks",
+      modeCount: "COLD/WET MODE · re-ranked",
+      engineOutput: `<span class="c">// Thursday 21:14 — Amsterdam weekend classifier ran</span>
+<span class="k">classifyWeekend</span>(sat, sun, <span class="s">"Amsterdam"</span>)
+
+→ {
+  mode: <span class="s">"COLD_WET"</span>,
+  headline: <span class="s">"Indoor weekend. The city's hidden corners are waiting."</span>,
+  rationale: <span class="s">"Avg high 5.5°, 14mm rain forecast. Indoor required."</span>,
+  pivotRisk: <span class="n">false</span>
+}
+
+<span class="k">rankByWeather</span>(150 candidates, signal, userProfile)
+  → terraces penalized (-3), outdoor events (-3), museums +3, bars +2
+  → top 3: <span class="s">"Stedelijk Saturday, Eye retrospective, Pulitzer bar Sunday"</span>`,
+      cards: [
+        {
+          imgClass: "img-museum-cold",
+          eyebrow: "SAT MORNING · STEDELIJK",
+          tags: ['<span class="tag indoor">Indoor</span>', '<span class="tag kid">Kids OK</span>'],
+          title: "Stedelijk — three new exhibitions, full morning",
+          venue: "Museumplein <span class='sep'>·</span> opens 10:00 <span class='sep'>·</span> €22",
+          snippet: "Big enough to fill four hours with the kids and still see real art. Café for lunch, then home before the worst rain hits at 14:00.",
+          fitLabel: "Fully indoor · book early for rainy Saturday",
+          fitWidth: 95
+        },
+        {
+          imgClass: "img-cinema-cold",
+          eyebrow: "SAT EVENING · EYE",
+          tags: ['<span class="tag indoor">Indoor</span>', '<span class="tag critic">Critic\'s pick</span>'],
+          title: "Eye Filmmuseum · Chantal Akerman, 'Jeanne Dielman'",
+          venue: "Eye <span class='sep'>·</span> across the IJ <span class='sep'>·</span> ferry covered",
+          snippet: "Long film in a warm room while the rain comes down. Bar afterward overlooks the IJ — exactly the weather for it.",
+          fitLabel: "Indoor cinema · cinematic weather match",
+          fitWidth: 90
+        },
+        {
+          imgClass: "img-bar-cold",
+          eyebrow: "SUN EVENING",
+          tags: ['<span class="tag indoor">Indoor</span>', '<span class="tag outline">Cosy</span>'],
+          title: "Pulitzer's bar — long cocktail evening",
+          venue: "Pulitzer Amsterdam <span class='sep'>·</span> Prinsengracht <span class='sep'>·</span> walk-in possible",
+          snippet: "Wood, fireplace, properly made drinks. The kind of place you stay three hours in when it's pouring. Book if you can.",
+          fitLabel: "Fireplace · cocktail-pace · weather-perfect",
+          fitWidth: 92
+        }
+      ]
+    },
+
+    VOLATILE: {
+      icon: "⚡",
+      tag: "VOLATILE MODE",
+      temps: "Sat 22° / 10% rain · Sun 14° / 70% rain · big swing",
+      headline: "Hedge your bets — the weekend wants Plan A and Plan B.",
+      pretitle: "FOR YOU + PARTNER + KIDS · ISSUE 28",
+      h1: "Two different weekends in one. Saturday rewards outdoors; Sunday goes indoor. Plan both.",
+      lede: "<b>Use Saturday for the outdoor things while you can.</b> Three picks structured for the swing — front-load the outdoor on Saturday, pivot indoor on Sunday. We'll notify you if the forecast tightens.",
+      sectionLabel: "The three picks · Plan A/B",
+      modeCount: "VOLATILE MODE · re-ranked",
+      engineOutput: `<span class="c">// Thursday 21:14 — Amsterdam weekend classifier ran</span>
+<span class="k">classifyWeekend</span>(sat, sun, <span class="s">"Amsterdam"</span>)
+
+→ {
+  mode: <span class="s">"VOLATILE"</span>,
+  headline: <span class="s">"Hedge your bets — Plan A and Plan B."</span>,
+  rationale: <span class="s">"Sat 22°/10% rain · Sun 14°/70% rain. Mixed signals."</span>,
+  pivotRisk: <span class="n">true</span>
+}
+
+<span class="k">rankByWeather</span>(150 candidates, signal, userProfile)
+  → flexibility bonus +8, indoor-backup-within-2-blocks bonus +5
+  → top 3: <span class="s">"Vondelpark Sat, indoor pivot ready, Sun museum locked"</span>
+
+<span class="c">// Pivot notification scheduled: Sat 11:00 if forecast changes</span>`,
+      cards: [
+        {
+          imgClass: "img-volatile-1",
+          eyebrow: "SAT MORNING → AFTERNOON",
+          tags: ['<span class="tag flex">Plan A: outdoor</span>', '<span class="tag kid">Kids</span>'],
+          title: "Vondelpark + ice cream at IJscuypje · with backup",
+          venue: "Vondelpark <span class='sep'>·</span> Plan B: NEMO 8 min away",
+          snippet: "Saturday is the day to use outdoor — park morning, ice cream, picnic. If the forecast tightens on Friday night, we'll swap to NEMO and ping you.",
+          fitLabel: "Outdoor-first · indoor backup within reach",
+          fitWidth: 80
+        },
+        {
+          imgClass: "img-volatile-2",
+          eyebrow: "SAT EVENING",
+          tags: ['<span class="tag flex">Flexible</span>', '<span class="tag outline">Music</span>'],
+          title: "Tolhuistuin garden bar (covered) → indoor venue",
+          venue: "Tolhuistuin <span class='sep'>·</span> Noord <span class='sep'>·</span> walk-in",
+          snippet: "Garden bar with covered seating means you don't have to commit to outdoor until you're there. Music in the venue starts at 21:00 if the weather turns.",
+          fitLabel: "Covered outdoor · pivot-ready",
+          fitWidth: 78
+        },
+        {
+          imgClass: "img-volatile-3",
+          eyebrow: "SUN ALL DAY",
+          tags: ['<span class="tag indoor">Plan B: indoor</span>', '<span class="tag cultural">Cultural</span>'],
+          title: "Foam Tillmans + long lunch nearby",
+          venue: "Keizersgracht <span class='sep'>·</span> rainy Sunday locked",
+          snippet: "Sunday is forecast wet — lock the indoor plan now. Foam opens 10:00, lunch at Toki around the corner, home by 16:00 before the worst.",
+          fitLabel: "Locked indoor · matches Sunday rain forecast",
+          fitWidth: 88
+        }
+      ]
+    }
+  };
+
+  // ============================================================
+  // RENDERING
+  // ============================================================
+  function setMode(mode) {
+    const data = MODES[mode];
+
+    // Update active button
+    document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector(`.mode-btn[data-mode="${mode}"]`).classList.add('active');
+
+    // Update body data-mode (drives CSS theming)
+    document.body.setAttribute('data-mode', mode);
+
+    // Update text elements
+    document.getElementById('weatherIcon').textContent = data.icon;
+    document.getElementById('weatherTag').textContent = data.tag;
+    document.getElementById('weatherTemps').textContent = data.temps;
+    document.getElementById('weatherHeadline').textContent = data.headline;
+    document.getElementById('pretitle').textContent = data.pretitle;
+    document.getElementById('h1').textContent = data.h1;
+    document.getElementById('lede').innerHTML = data.lede;
+    document.getElementById('sectionLabel').textContent = data.sectionLabel;
+    document.getElementById('modeCount').textContent = data.modeCount;
+    document.getElementById('engineOutput').innerHTML = data.engineOutput;
+
+    // Re-render cards
+    const cardsEl = document.getElementById('cards');
+    cardsEl.innerHTML = data.cards.map(c => `
+      <article class="card">
+        <div class="card-img ${c.imgClass}">
+          <div class="card-tag-overlay">${c.tags.join('')}</div>
+          <div class="card-eyebrow">${c.eyebrow}</div>
+        </div>
+        <div class="card-body">
+          <div class="card-title">${c.title}</div>
+          <div class="card-venue">${c.venue}</div>
+          <p class="card-snippet">${c.snippet}</p>
+          <div class="card-weatherfit">
+            <b>Weather fit:</b>
+            <div class="fit-bar"><div class="fit-bar-fill" style="width: ${c.fitWidth}%"></div></div>
+            <span>${c.fitLabel}</span>
+          </div>
+        </div>
+      </article>
+    `).join('');
+
+    // Shimmer effect on transition
+    document.querySelector('main').classList.add('changing');
+    setTimeout(() => document.querySelector('main').classList.remove('changing'), 600);
+  }
+
+  // Initial render
+  setMode('WARM');
+</script>
+
+</body>
+</html>

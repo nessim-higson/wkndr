@@ -1,0 +1,1691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WKNDR — Amsterdam, 23–24 May</title>
+<style>
+  :root {
+    --ink: #0a0a0a;
+    --ink-2: #1a1a1a;
+    --ink-3: #4a4a4a;
+    --ink-4: #8a8a8a;
+    --ink-5: #c4c4c4;
+    --paper: #fafaf7;
+    --paper-2: #f2f2ee;
+    --paper-3: #e8e8e3;
+    --rule: #d8d8d3;
+    --accent: #ff4d1f;
+    --accent-soft: #fff2ec;
+    --kid: #2d5b8a;
+    --hot: #c2310e;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+  html, body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    font-feature-settings: "kern", "liga", "tnum";
+    text-rendering: geometricPrecision;
+    overflow-x: hidden;
+  }
+  body { min-height: 100vh; }
+  button { font-family: inherit; cursor: pointer; }
+  img { display: block; max-width: 100%; }
+
+  /* ========= TOP BAR (consolidated, cleaner) ========= */
+  .topbar {
+    border-bottom: 1px solid var(--rule);
+    padding: 16px 28px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: var(--paper);
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    backdrop-filter: blur(10px);
+    background-color: rgba(250, 250, 247, 0.92);
+  }
+  .mark {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: var(--ink);
+  }
+  .mark::before {
+    content: '';
+    width: 9px;
+    height: 9px;
+    background: var(--accent);
+    border-radius: 50%;
+  }
+  .topbar .divider {
+    width: 1px;
+    height: 18px;
+    background: var(--rule);
+    margin: 0 4px;
+  }
+  .ness {
+    font-size: 12px;
+    color: var(--ink-3);
+    font-weight: 500;
+    letter-spacing: -0.005em;
+  }
+  .ness b { color: var(--ink); font-weight: 600; }
+  .spacer { flex: 1; }
+  .icon-btn {
+    width: 34px;
+    height: 34px;
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--ink-3);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.12s ease;
+  }
+  .icon-btn:hover { color: var(--ink); border-color: var(--ink-4); background: var(--paper-2); }
+  .icon-btn svg { width: 14px; height: 14px; }
+  .ask {
+    font-size: 12px;
+    font-weight: 500;
+    padding: 7px 14px;
+    background: var(--ink);
+    color: var(--paper);
+    border: 1px solid var(--ink);
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.12s ease;
+  }
+  .ask:hover { background: var(--accent); border-color: var(--accent); }
+  .ask svg { width: 11px; height: 11px; }
+
+  /* ========= FILTER STRIP (subtler, less sticky chrome) ========= */
+  .filters {
+    padding: 12px 28px;
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    flex-wrap: wrap;
+    background: var(--paper);
+    border-bottom: 1px solid var(--rule);
+  }
+  .filter-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-4);
+    font-weight: 500;
+  }
+  .filter-label + .filter-label { margin-left: 12px; }
+  .pill {
+    font-size: 12px;
+    font-weight: 500;
+    padding: 6px 12px;
+    background: transparent;
+    color: var(--ink-3);
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    transition: all 0.12s ease;
+    letter-spacing: -0.005em;
+  }
+  .pill:hover { color: var(--ink); border-color: var(--ink-4); background: var(--paper-2); }
+  .pill.active {
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+  }
+  .dropdown {
+    position: relative;
+    display: inline-block;
+  }
+  .dd-btn {
+    font-size: 12px;
+    font-weight: 500;
+    padding: 6px 10px 6px 12px;
+    background: var(--ink);
+    color: var(--paper);
+    border: 1px solid var(--ink);
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    letter-spacing: -0.005em;
+  }
+  .dd-btn .chev {
+    width: 8px;
+    height: 8px;
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    transform: rotate(45deg) translate(-1px, -1px);
+    transition: transform 0.18s ease;
+  }
+  .dropdown.open .dd-btn .chev { transform: rotate(-135deg) translate(-1px, -1px); }
+  .dd-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    min-width: 200px;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    padding: 6px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-4px);
+    transition: opacity 0.15s ease, transform 0.15s ease, visibility 0.15s;
+    z-index: 100;
+  }
+  .dropdown.open .dd-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+  .dd-item {
+    padding: 9px 10px;
+    font-size: 13px;
+    color: var(--ink-2);
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    letter-spacing: -0.005em;
+  }
+  .dd-item:hover { background: var(--paper-2); }
+  .dd-item .check {
+    width: 16px;
+    height: 16px;
+    border: 1.5px solid var(--rule);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .dd-item.checked .check {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--paper);
+  }
+  .dd-item.checked .check::after {
+    content: '';
+    width: 8px;
+    height: 4px;
+    border-left: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    transform: rotate(-45deg) translateY(-1px);
+  }
+  .dd-item .age {
+    margin-left: auto;
+    font-size: 11px;
+    color: var(--ink-4);
+  }
+  .dd-divider { height: 1px; background: var(--rule); margin: 6px 0; }
+
+  /* ========= MAIN COLUMN ========= */
+  .col {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 56px 28px 120px;
+  }
+
+  /* ========= CITY HERO ========= */
+  .city-hero { margin-bottom: 22px; }
+  .city-dateline {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-4);
+    margin-bottom: 14px;
+    font-weight: 500;
+  }
+  .city-dateline b { color: var(--ink-2); }
+  .city-select {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: none;
+    border: none;
+    padding: 0;
+    font-family: inherit;
+    color: var(--ink);
+    cursor: pointer;
+    position: relative;
+  }
+  .city-name {
+    font-size: 64px;
+    font-weight: 600;
+    letter-spacing: -0.045em;
+    line-height: 1;
+    color: var(--ink);
+    position: relative;
+    transition: color 0.15s;
+  }
+  .city-name::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 3px;
+    height: 3px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .city-select:hover .city-name::after { transform: scaleX(1); }
+  .city-select .city-chev {
+    width: 14px;
+    height: 14px;
+    border-right: 2px solid var(--ink-4);
+    border-bottom: 2px solid var(--ink-4);
+    transform: rotate(45deg);
+    margin-left: 14px;
+    margin-bottom: 14px;
+    transition: transform 0.18s ease, border-color 0.15s;
+  }
+  .city-select:hover .city-chev { border-color: var(--accent); }
+  .city-select.open .city-chev { transform: rotate(-135deg); margin-bottom: 6px; }
+  .city-dropdown {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 0;
+    min-width: 290px;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    padding: 8px;
+    box-shadow: 0 14px 40px rgba(0,0,0,0.12);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-6px);
+    transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s;
+    z-index: 50;
+    text-align: left;
+  }
+  .city-select.open .city-dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+  .city-search {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 13px;
+    background: var(--paper-2);
+    color: var(--ink);
+    margin-bottom: 6px;
+    outline: none;
+  }
+  .city-search:focus { border-color: var(--ink-4); background: var(--paper); }
+  .city-section {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-4);
+    padding: 10px 10px 4px;
+    font-weight: 600;
+  }
+  .city-item {
+    padding: 9px 10px;
+    font-size: 14px;
+    color: var(--ink-2);
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    text-align: left;
+    border: none;
+    background: none;
+    width: 100%;
+    font-family: inherit;
+  }
+  .city-item:hover { background: var(--paper-2); }
+  .city-item.active { background: var(--paper-2); color: var(--ink); font-weight: 500; }
+  .city-item .check-mark {
+    color: var(--accent);
+    opacity: 0;
+    font-size: 14px;
+  }
+  .city-item.active .check-mark { opacity: 1; }
+  .city-item .country {
+    font-size: 11px;
+    color: var(--ink-4);
+    font-weight: 400;
+    margin-left: 6px;
+  }
+  .city-add {
+    padding: 9px 10px;
+    font-size: 13px;
+    color: var(--accent);
+    border-radius: 6px;
+    cursor: pointer;
+    text-align: left;
+    border: none;
+    background: none;
+    width: 100%;
+    font-family: inherit;
+    font-weight: 500;
+  }
+  .city-add:hover { background: var(--accent-soft); }
+
+  /* ========= WEATHER STRIP ========= */
+  .weather {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    padding: 18px 0;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 36px;
+  }
+  .weather .temp {
+    font-size: 32px;
+    font-weight: 300;
+    letter-spacing: -0.04em;
+    color: var(--ink);
+  }
+  .weather .deg { font-size: 20px; color: var(--ink-4); font-weight: 300; }
+  .weather .desc {
+    font-size: 13px;
+    color: var(--ink-3);
+    letter-spacing: -0.005em;
+  }
+  .weather .desc b { color: var(--accent); font-weight: 600; }
+
+  /* ========= HEADLINE ========= */
+  h1 {
+    font-size: 40px;
+    line-height: 1.05;
+    letter-spacing: -0.035em;
+    font-weight: 500;
+    margin-bottom: 18px;
+    max-width: 700px;
+  }
+  .lede {
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--ink-3);
+    font-weight: 400;
+    letter-spacing: -0.005em;
+    margin-bottom: 40px;
+    max-width: 620px;
+  }
+  .lede b { color: var(--ink); font-weight: 600; }
+
+  /* ========= SECTION HEAD ========= */
+  .section-head {
+    margin: 8px 0 20px;
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+  }
+  .section-head h3 {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-2);
+  }
+  .section-head .rule { flex: 1; height: 1px; background: var(--ink); }
+  .section-head .count {
+    font-size: 11px;
+    color: var(--ink-4);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  /* ========= CARDS ========= */
+  .cards {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 18px;
+    margin-bottom: 48px;
+  }
+  .card {
+    position: relative;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 18px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.28s ease;
+    will-change: transform;
+  }
+  .card:hover {
+    transform: translateY(-3px) scale(1.005);
+    box-shadow: 0 14px 40px rgba(0,0,0,0.08);
+  }
+  .card:active { transform: scale(0.99); }
+  .card-img {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    position: relative;
+  }
+  .card-img::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 35%, rgba(0,0,0,0.55) 100%);
+    pointer-events: none;
+  }
+  .card-tag-overlay {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+    z-index: 2;
+  }
+  .card-eyebrow {
+    position: absolute;
+    bottom: 14px;
+    left: 16px;
+    right: 16px;
+    color: rgba(255,255,255,0.95);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+    z-index: 2;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+  }
+  .card-body {
+    padding: 18px 18px 20px;
+  }
+  .card-title {
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 1.18;
+    letter-spacing: -0.025em;
+    margin-bottom: 6px;
+    color: var(--ink);
+  }
+  .card-venue {
+    font-size: 12px;
+    color: var(--ink-4);
+    letter-spacing: -0.005em;
+    margin-bottom: 10px;
+  }
+  .card-venue .sep { margin: 0 7px; color: var(--ink-5); }
+  .card-snippet {
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--ink-3);
+    letter-spacing: -0.005em;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .card-pubs {
+    display: flex;
+    gap: 4px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+  }
+  .pub-chip {
+    font-size: 10px;
+    padding: 2px 7px;
+    background: var(--paper-2);
+    color: var(--ink-3);
+    border-radius: 3px;
+    font-weight: 500;
+    letter-spacing: -0.005em;
+    text-transform: uppercase;
+  }
+  .pub-chip b { color: var(--accent); margin-right: 3px; font-weight: 600; }
+  .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid var(--paper-2);
+  }
+  .card-footer-meta {
+    font-size: 11px;
+    color: var(--ink-4);
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+  .card-footer-meta b { color: var(--ink-2); }
+  .card-footer-actions {
+    display: flex;
+    gap: 4px;
+  }
+  .mini-action {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--paper-2);
+    color: var(--ink-3);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.12s;
+  }
+  .mini-action:hover { background: var(--ink); color: var(--paper); }
+  .mini-action.saved { background: var(--accent-soft); color: var(--accent); }
+  .mini-action svg { width: 13px; height: 13px; }
+
+  .tag {
+    font-size: 9.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 4px 8px;
+    border-radius: 3px;
+    font-weight: 600;
+    line-height: 1.4;
+    backdrop-filter: blur(4px);
+  }
+  .tag.hot { background: rgba(194,49,14,0.95); color: white; }
+  .tag.new { background: rgba(10,10,10,0.85); color: var(--paper); }
+  .tag.kid { background: rgba(45,91,138,0.95); color: white; }
+  .tag.weather-pick { background: rgba(255,77,31,0.95); color: white; }
+  .tag.critic { background: rgba(255,255,255,0.92); color: var(--ink-2); }
+  .tag.outline { background: rgba(255,255,255,0.9); color: var(--ink-3); }
+
+  /* ========= MODAL ========= */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(20, 20, 20, 0.55);
+    backdrop-filter: blur(6px);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s;
+    z-index: 200;
+  }
+  .modal-backdrop.show { opacity: 1; visibility: visible; }
+  .modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.92);
+    width: min(820px, calc(100vw - 32px));
+    max-height: calc(100vh - 48px);
+    background: var(--paper);
+    border-radius: 22px;
+    overflow: hidden;
+    z-index: 210;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.32s cubic-bezier(0.22, 1, 0.36, 1), transform 0.32s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.32s;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.25);
+    display: flex;
+    flex-direction: column;
+  }
+  .modal.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  .modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(8px);
+    color: white;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .modal-close:hover { background: rgba(0,0,0,0.7); }
+  .modal-close svg { width: 16px; height: 16px; }
+  .modal-scroll { overflow-y: auto; flex: 1; -webkit-overflow-scrolling: touch; }
+  .modal-hero {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    position: relative;
+  }
+  .modal-hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 60%, rgba(0,0,0,0.5) 100%);
+  }
+  .modal-hero-tags {
+    position: absolute;
+    top: 18px;
+    left: 18px;
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+    z-index: 2;
+  }
+  .modal-body {
+    padding: 28px 36px 36px;
+  }
+  .modal-meta {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-4);
+    font-weight: 500;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .modal-meta .sep { color: var(--rule); }
+  .modal-meta .when { color: var(--ink-2); font-weight: 600; }
+  .modal h2 {
+    font-size: 32px;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: var(--ink);
+  }
+  .modal-venue {
+    font-size: 13px;
+    color: var(--ink-3);
+    margin-bottom: 24px;
+  }
+  .modal-venue .sep { margin: 0 8px; color: var(--ink-5); }
+  .modal-body-text {
+    font-size: 15.5px;
+    line-height: 1.6;
+    color: var(--ink-2);
+    letter-spacing: -0.005em;
+    font-weight: 400;
+  }
+  .modal-body-text p + p { margin-top: 14px; }
+  .modal-body-text em { color: var(--ink-3); font-style: italic; }
+  .modal-pubs {
+    margin-top: 22px;
+    padding: 16px 18px;
+    background: var(--paper-2);
+    border-radius: 8px;
+  }
+  .modal-pubs-title {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-4);
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .pub-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--rule);
+    font-size: 13px;
+    color: var(--ink-2);
+    text-decoration: none;
+    transition: color 0.12s;
+  }
+  .pub-link:last-child { border-bottom: 0; }
+  .pub-link:hover { color: var(--accent); }
+  .pub-link .pub-name { font-weight: 500; }
+  .pub-link .pub-blurb { font-size: 11px; color: var(--ink-4); margin-top: 2px; }
+  .pub-link .pub-arrow { font-size: 16px; color: var(--ink-4); }
+  .pub-link:hover .pub-arrow { color: var(--accent); }
+  .modal-why {
+    margin-top: 18px;
+    padding: 16px 18px;
+    background: var(--accent-soft);
+    border-radius: 8px;
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: var(--ink-3);
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .modal-why::before {
+    content: '✦';
+    color: var(--accent);
+    font-size: 13px;
+    flex-shrink: 0;
+  }
+  .modal-actions {
+    margin-top: 28px;
+    padding-top: 24px;
+    border-top: 1px solid var(--rule);
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .m-action {
+    font-size: 12px;
+    padding: 9px 16px;
+    color: var(--ink-3);
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    font-weight: 500;
+    letter-spacing: -0.005em;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.12s;
+  }
+  .m-action:hover { color: var(--ink); border-color: var(--ink-4); background: var(--paper-2); }
+  .m-action.primary {
+    background: var(--ink); color: var(--paper); border-color: var(--ink);
+  }
+  .m-action.primary:hover { background: var(--ink-2); }
+  .m-action svg { width: 12px; height: 12px; }
+
+  /* ========= SHUFFLE ========= */
+  .shuffle-bar {
+    margin: 16px 0 32px;
+    padding: 16px 20px;
+    background: var(--paper-2);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .shuffle-icon {
+    width: 36px;
+    height: 36px;
+    background: var(--ink);
+    color: var(--paper);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .shuffle-icon svg { width: 16px; height: 16px; }
+  .shuffle-text {
+    flex: 1;
+    font-size: 13px;
+    color: var(--ink-3);
+    letter-spacing: -0.005em;
+  }
+  .shuffle-text b { color: var(--ink); font-weight: 600; }
+  .shuffle-btn {
+    font-size: 12px;
+    font-weight: 500;
+    padding: 8px 14px;
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    border-radius: 999px;
+  }
+  .shuffle-btn:hover { background: var(--accent); }
+
+  /* ========= COMPACT LIST ========= */
+  .compact { list-style: none; }
+  .compact-item {
+    padding: 14px 0;
+    border-bottom: 1px solid var(--rule);
+    display: grid;
+    grid-template-columns: 80px 56px 1fr auto auto;
+    gap: 16px;
+    align-items: center;
+    cursor: pointer;
+    transition: background 0.12s;
+  }
+  .compact-item:hover { background: var(--paper-2); margin: 0 -12px; padding-left: 12px; padding-right: 12px; }
+  .compact-item:last-child { border-bottom: 0; }
+  .c-time {
+    font-size: 11px;
+    color: var(--ink-4);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 500;
+  }
+  .c-time b { color: var(--ink); font-weight: 600; display: block; font-size: 13px; letter-spacing: -0.01em; }
+  .c-thumb {
+    width: 56px;
+    height: 56px;
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .c-title {
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+  .c-title .v {
+    display: block;
+    font-size: 11px;
+    color: var(--ink-4);
+    margin-top: 2px;
+    font-weight: 400;
+    letter-spacing: -0.005em;
+  }
+  .c-tags { display: flex; gap: 4px; }
+  .c-action {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1px solid var(--rule);
+    background: var(--paper);
+    color: var(--ink-4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .c-action:hover { color: var(--accent); border-color: var(--accent); }
+  .c-action svg { width: 12px; height: 12px; }
+
+  /* ========= IMAGERY: CSS-generated, reliable ========= */
+  .img-greenhouse {
+    background:
+      radial-gradient(ellipse 60% 80% at 35% 70%, rgba(180, 220, 140, 0.7) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 70% at 70% 50%, rgba(120, 180, 100, 0.6) 0%, transparent 55%),
+      linear-gradient(135deg, #4a6b3a 0%, #6b8a4f 35%, #8aa566 70%, #c8d9a3 100%);
+    position: relative;
+    overflow: hidden;
+  }
+  .img-greenhouse::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      repeating-linear-gradient(90deg, rgba(255,255,255,0.06) 0 1px, transparent 1px 80px),
+      repeating-linear-gradient(0deg, rgba(255,255,255,0.06) 0 1px, transparent 1px 80px);
+  }
+  .img-greenhouse::after {
+    content: '';
+    position: absolute;
+    top: 20%;
+    left: 20%;
+    width: 60%;
+    height: 60%;
+    background: radial-gradient(circle, rgba(255, 230, 150, 0.4) 0%, transparent 70%);
+    filter: blur(20px);
+  }
+
+  .img-paradiso {
+    background:
+      radial-gradient(ellipse 80% 50% at 50% 50%, rgba(120, 30, 80, 0.8) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 30% at 50% 70%, rgba(255, 80, 50, 0.5) 0%, transparent 50%),
+      linear-gradient(180deg, #1a0810 0%, #2d0e1f 40%, #4a1530 70%, #1a0810 100%);
+    position: relative;
+    overflow: hidden;
+  }
+  .img-paradiso::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle 3px at 30% 40%, rgba(255, 200, 100, 0.9) 0%, transparent 100%),
+      radial-gradient(circle 2px at 50% 35%, rgba(255, 180, 80, 0.8) 0%, transparent 100%),
+      radial-gradient(circle 4px at 70% 45%, rgba(255, 160, 60, 0.7) 0%, transparent 100%),
+      radial-gradient(circle 2px at 25% 60%, rgba(255, 200, 100, 0.6) 0%, transparent 100%),
+      radial-gradient(circle 3px at 75% 65%, rgba(255, 180, 80, 0.6) 0%, transparent 100%);
+  }
+  .img-paradiso::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 30%;
+    background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.4) 100%);
+  }
+
+  .img-papillon {
+    background:
+      radial-gradient(ellipse 70% 40% at 30% 30%, rgba(255, 220, 180, 0.6) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 70% at 75% 60%, rgba(220, 160, 100, 0.5) 0%, transparent 60%),
+      linear-gradient(160deg, #f5d9a8 0%, #e8b878 30%, #d49459 60%, #a16a3c 100%);
+    position: relative;
+    overflow: hidden;
+  }
+  .img-papillon::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle 80px at 20% 40%, rgba(255, 250, 240, 0.3) 0%, transparent 70%),
+      radial-gradient(circle 60px at 60% 25%, rgba(255, 245, 230, 0.25) 0%, transparent 70%);
+    filter: blur(10px);
+  }
+
+  .img-texel {
+    background:
+      linear-gradient(180deg, #a8c8d8 0%, #c8d8d8 35%, #e8d4a8 60%, #d4b888 100%);
+    position: relative;
+    overflow: hidden;
+  }
+  .img-texel::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 60%;
+    background:
+      radial-gradient(ellipse 40% 30% at 70% 40%, rgba(255,255,255,0.5) 0%, transparent 60%),
+      radial-gradient(ellipse 30% 20% at 30% 50%, rgba(255,255,255,0.4) 0%, transparent 60%);
+    filter: blur(8px);
+  }
+  .img-texel::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 5%;
+    background: linear-gradient(0deg, rgba(150,120,80,0.3) 0%, transparent 100%);
+  }
+
+  /* Thumbnails: smaller CSS swatches */
+  .thumb-1 { background: linear-gradient(135deg, #b8d4a0 0%, #88a868 50%, #5a7a3a 100%); }
+  .thumb-2 { background: linear-gradient(135deg, #d4b888 0%, #a08458 50%, #6a5430 100%); }
+  .thumb-3 { background: linear-gradient(180deg, #2d0e1f 0%, #4a1530 50%, #6a2040 100%); position: relative; }
+  .thumb-3::after { content: ''; position: absolute; inset: 0; background: radial-gradient(circle 3px at 50% 40%, rgba(255,200,100,0.8) 0%, transparent 100%), radial-gradient(circle 2px at 30% 60%, rgba(255,180,80,0.7) 0%, transparent 100%); }
+  .thumb-4 { background: radial-gradient(circle at 50% 30%, #c8a890 0%, #a07868 40%, #503838 100%); }
+  .thumb-5 { background: linear-gradient(135deg, #f5d9a8 0%, #c89858 70%, #8a6438 100%); }
+  .thumb-6 { background: linear-gradient(45deg, #e8d4b8 0%, #b8a888 50%, #786858 100%); }
+  .thumb-7 { background: linear-gradient(180deg, #ff8a5a 0%, #d4684a 50%, #6a3828 100%); }
+  .thumb-8 { background: linear-gradient(180deg, #b8c8d8 0%, #6890b0 50%, #305878 100%); }
+  .thumb-9 { background: linear-gradient(135deg, #6a4858 0%, #3a2838 50%, #1a1018 100%); }
+
+  /* ========= ESCAPE ========= */
+  .escape {
+    margin-top: 48px;
+    padding: 28px;
+    background: var(--ink);
+    color: var(--paper);
+    border-radius: 18px;
+    display: grid;
+    grid-template-columns: 1fr 200px;
+    gap: 24px;
+    align-items: center;
+  }
+  .escape-photo {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .escape-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+  .escape h3 {
+    font-size: 22px;
+    font-weight: 500;
+    line-height: 1.15;
+    letter-spacing: -0.025em;
+    margin-bottom: 10px;
+  }
+  .escape p {
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--ink-5);
+    letter-spacing: -0.005em;
+  }
+  .escape .escape-action {
+    margin-top: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--paper);
+    background: transparent;
+    border: 1px solid var(--ink-3);
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-weight: 500;
+  }
+  .escape .escape-action:hover { background: var(--accent); border-color: var(--accent); }
+
+  /* ========= SHARE TOAST ========= */
+  .share-toast {
+    position: fixed;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%) translateY(150%);
+    background: var(--ink);
+    color: var(--paper);
+    padding: 12px 22px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: -0.005em;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    z-index: 300;
+  }
+  .share-toast.show { transform: translateX(-50%) translateY(0); }
+  .share-toast svg { width: 14px; height: 14px; color: var(--accent); }
+
+  /* ========= COLOPHON ========= */
+  .colophon {
+    margin-top: 56px;
+    padding-top: 24px;
+    border-top: 1px solid var(--rule);
+    font-size: 11px;
+    color: var(--ink-4);
+    line-height: 1.7;
+  }
+  .colophon-title {
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 600;
+    color: var(--ink-3);
+    margin-bottom: 10px;
+    font-size: 10px;
+  }
+  .sources { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 6px; }
+  .source-chip {
+    padding: 3px 8px;
+    background: var(--paper-2);
+    color: var(--ink-3);
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: 500;
+  }
+
+  @media (max-width: 720px) {
+    .col { padding: 36px 18px 80px; }
+    h1 { font-size: 30px; }
+    .city-name { font-size: 44px; }
+    .topbar { padding: 12px 16px; gap: 10px; }
+    .filters { padding: 10px 16px; gap: 5px; }
+    .filter-label { display: none; }
+    .ness { display: none; }
+    .topbar .divider { display: none; }
+    .modal { width: 100vw; height: 100vh; max-height: 100vh; border-radius: 0; top: 0; left: 0; transform: scale(0.92); }
+    .modal.show { transform: scale(1); }
+    .modal-body { padding: 24px 22px 32px; }
+    .modal h2 { font-size: 26px; }
+    .compact-item { grid-template-columns: 60px 48px 1fr auto; gap: 12px; }
+    .c-action { display: none; }
+    .escape { grid-template-columns: 1fr; }
+    .escape-photo { order: -1; aspect-ratio: 16/9; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ========= TOP BAR (cleaned) ========= -->
+<header class="topbar">
+  <div class="mark">WKNDR</div>
+  <div class="divider"></div>
+  <div class="ness">Issue 27 · for <b>Ness</b></div>
+  <div class="spacer"></div>
+  <button class="icon-btn" title="Saved" onclick="document.getElementById('saved').scrollIntoView({behavior:'smooth'})">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+  </button>
+  <button class="icon-btn" title="Share" onclick="showShare()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13"/></svg>
+  </button>
+  <button class="ask">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+    Ask
+  </button>
+</header>
+
+<!-- ========= FILTERS ========= -->
+<div class="filters">
+  <span class="filter-label">Weekend</span>
+  <button class="pill active">23–24 May</button>
+  <button class="pill">30–31 May</button>
+
+  <span class="filter-label">Who</span>
+  <div class="dropdown" id="whoDD">
+    <button class="dd-btn" onclick="toggleDD('whoDD')">
+      <span id="whoLabel">Me, partner & kids</span>
+      <span class="chev"></span>
+    </button>
+    <div class="dd-menu">
+      <div class="dd-item checked" onclick="toggleWho(this)"><span class="check"></span>Me</div>
+      <div class="dd-item checked" onclick="toggleWho(this)"><span class="check"></span>Partner</div>
+      <div class="dd-item checked" onclick="toggleWho(this)"><span class="check"></span>Kids <span class="age">4 yrs</span></div>
+      <div class="dd-divider"></div>
+      <div class="dd-item" onclick="setPreset('solo')"><span class="check"></span>Just me</div>
+      <div class="dd-item" onclick="setPreset('date')"><span class="check"></span>Date night</div>
+    </div>
+  </div>
+
+  <span class="filter-label">Range</span>
+  <button class="pill active">City</button>
+  <button class="pill">≤1h</button>
+  <button class="pill">≤3h</button>
+</div>
+
+<main class="col">
+
+  <!-- ========= CITY HERO ========= -->
+  <div class="city-hero">
+    <div class="city-dateline">Weekend of <b>23–24 May 2026</b></div>
+    <button class="city-select" id="citySelect" onclick="toggleCity(event)">
+      <span class="city-name" id="cityName">Amsterdam</span>
+      <span class="city-chev"></span>
+      <div class="city-dropdown" id="cityDD" onclick="event.stopPropagation()">
+        <input class="city-search" placeholder="Search any city…" oninput="filterCities(this.value)">
+        <div class="city-section">Your cities</div>
+        <button class="city-item active" onclick="selectCity('Amsterdam')">
+          <span>Amsterdam <span class="country">NL</span></span>
+          <span class="check-mark">✓</span>
+        </button>
+        <button class="city-item" onclick="selectCity('New Orleans')">
+          <span>New Orleans <span class="country">US</span></span>
+          <span class="check-mark">✓</span>
+        </button>
+        <div class="city-section">Recent</div>
+        <button class="city-item" onclick="selectCity('Berlin')">
+          <span>Berlin <span class="country">DE</span></span>
+          <span class="check-mark">✓</span>
+        </button>
+        <button class="city-item" onclick="selectCity('Tokyo')">
+          <span>Tokyo <span class="country">JP</span></span>
+          <span class="check-mark">✓</span>
+        </button>
+        <div class="dd-divider"></div>
+        <button class="city-add">＋ Add another city</button>
+      </div>
+    </button>
+  </div>
+
+  <!-- ========= WEATHER ========= -->
+  <div class="weather">
+    <span class="temp">30<span class="deg">°</span></span>
+    <span class="desc">clear sky, no rain · <b>first true summer day of the year</b> · sun cools to 26° tomorrow</span>
+  </div>
+
+  <h1>The year's first hot Saturday hits, and the city is already outside.</h1>
+  <p class="lede">
+    <b>This is a terrace-and-water weekend, not a museum weekend.</b> Three picks worth getting on the calendar, then a deeper list if those don't fit, and one escape if you'd rather flip the whole thing.
+  </p>
+
+  <!-- ========= SECTION ========= -->
+  <div class="section-head">
+    <h3>The three picks</h3>
+    <span class="rule"></span>
+    <span class="count">For you, this weekend</span>
+  </div>
+
+  <!-- ========= CARDS ========= -->
+  <div class="cards">
+
+    <article class="card" onclick="openCard('pick1')">
+      <div class="card-img img-greenhouse">
+        <div class="card-tag-overlay">
+          <span class="tag weather-pick">Weather pick</span>
+          <span class="tag kid">Kids</span>
+        </div>
+        <div class="card-eyebrow">Sat morning → afternoon</div>
+      </div>
+      <div class="card-body">
+        <div class="card-title">Hortus Botanicus, then a swim at Marineterrein</div>
+        <div class="card-venue">Plantage Middenlaan <span class="sep">·</span> Kattenburgerstraat <span class="sep">·</span> bikeable</div>
+        <p class="card-snippet">Butterfly greenhouse first — go straight there. Then bike north to the harbor swim that opens for the season this exact weekend.</p>
+        <div class="card-pubs">
+          <span class="pub-chip"><b>↳</b> I amsterdam</span>
+          <span class="pub-chip"><b>↳</b> Kidsproof</span>
+        </div>
+        <div class="card-footer">
+          <div class="card-footer-meta">Free <b>· €15 total</b></div>
+          <div class="card-footer-actions">
+            <button class="mini-action" onclick="event.stopPropagation(); this.classList.toggle('saved')" title="Save">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+            </button>
+            <button class="mini-action" onclick="event.stopPropagation(); showShare()" title="Share">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <article class="card" onclick="openCard('pick2')">
+      <div class="card-img img-paradiso">
+        <div class="card-tag-overlay">
+          <span class="tag hot">Sold out · waitlist</span>
+          <span class="tag critic">Critic's pick</span>
+        </div>
+        <div class="card-eyebrow">Sat 20:30 · Paradiso</div>
+      </div>
+      <div class="card-body">
+        <div class="card-title">Nectar Woode + Arno Sacco</div>
+        <div class="card-venue">Paradiso Upstairs <span class="sep">·</span> in collab with NOTION</div>
+        <p class="card-snippet">Ghanaian-British jazz-soul singer, the kind of voice that makes a room hold its breath. Booked into the small hall — she'll be three meters from you.</p>
+        <div class="card-pubs">
+          <span class="pub-chip"><b>↳</b> Resident Advisor</span>
+          <span class="pub-chip"><b>↳</b> Paradiso</span>
+          <span class="pub-chip"><b>↳</b> NOTION</span>
+        </div>
+        <div class="card-footer">
+          <div class="card-footer-meta"><b>€22</b> · waitlist active</div>
+          <div class="card-footer-actions">
+            <button class="mini-action saved" onclick="event.stopPropagation(); this.classList.toggle('saved')" title="Saved">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+            </button>
+            <button class="mini-action" onclick="event.stopPropagation(); showShare()" title="Share">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <article class="card" onclick="openCard('pick3')">
+      <div class="card-img img-papillon">
+        <div class="card-tag-overlay">
+          <span class="tag new">New · Opened March</span>
+          <span class="tag critic">Eater Hit List</span>
+        </div>
+        <div class="card-eyebrow">Sun lunch · Noord</div>
+      </div>
+      <div class="card-body">
+        <div class="card-title">Papillon</div>
+        <div class="card-venue">Amsterdam Noord <span class="sep">·</span> all-day <span class="sep">·</span> south-facing terrace</div>
+        <p class="card-snippet">Sourdough and pastries in the morning, wood-fired plates and natural wines as the day shifts. Cross on the ferry from Centraal, make a morning of it.</p>
+        <div class="card-pubs">
+          <span class="pub-chip"><b>↳</b> Eater</span>
+          <span class="pub-chip"><b>↳</b> Little Black Book</span>
+          <span class="pub-chip"><b>↳</b> We Like Amsterdam</span>
+        </div>
+        <div class="card-footer">
+          <div class="card-footer-meta">Walk-in <b>· book for dinner</b></div>
+          <div class="card-footer-actions">
+            <button class="mini-action" onclick="event.stopPropagation(); this.classList.toggle('saved')" title="Save">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+            </button>
+            <button class="mini-action" onclick="event.stopPropagation(); showShare()" title="Share">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </article>
+
+  </div>
+
+  <!-- ========= SHUFFLE ========= -->
+  <div class="shuffle-bar">
+    <div class="shuffle-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
+    </div>
+    <div class="shuffle-text"><b>None of these hit?</b> Roll one new pick from everything else we found.</div>
+    <button class="shuffle-btn">Surprise me ↻</button>
+  </div>
+
+  <!-- ========= ALSO ON ========= -->
+  <div class="section-head">
+    <h3>Also on</h3>
+    <span class="rule"></span>
+    <span class="count">9 more</span>
+  </div>
+
+  <ul class="compact">
+    <li class="compact-item">
+      <div class="c-time">SAT<b>10:00</b></div>
+      <div class="c-thumb thumb-1"></div>
+      <div class="c-title">Pluk de Dag kids' fair at Westergas
+        <span class="v">Westerpark · free · until 16:00</span>
+      </div>
+      <div class="c-tags"><span class="tag kid">Kids</span></div>
+      <button class="c-action"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></button>
+    </li>
+    <li class="compact-item">
+      <div class="c-time">SAT<b>14:00</b></div>
+      <div class="c-thumb thumb-2"></div>
+      <div class="c-title">NDSM flea + harborside afternoon
+        <span class="v">IJ Hallen weekend · €5 entry · ferry from Centraal</span>
+      </div>
+      <div class="c-tags"><span class="tag outline" style="color:var(--ink-3); background:var(--paper-2)">Browse</span></div>
+      <button class="c-action"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></button>
+    </li>
+    <li class="compact-item">
+      <div class="c-time">SAT<b>19:30</b></div>
+      <div class="c-thumb thumb-3"></div>
+      <div class="c-title">Live rave group, album launch
+        <span class="v">Paradiso Main · €22 · for after the kids are down</span>
+      </div>
+      <div class="c-tags"><span class="tag outline" style="color:var(--ink-3); background:var(--paper-2)">Music</span></div>
+      <button class="c-action"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></button>
+    </li>
+    <li class="compact-item">
+      <div class="c-time">SAT<b>23:00</b></div>
+      <div class="c-thumb thumb-9"></div>
+      <div class="c-title">Lentekabinet × Ineffekt, all night
+        <span class="v">undisclosed · €30 · UK bass + dub leaning</span>
+      </div>
+      <div class="c-tags"><span class="tag outline" style="color:var(--ink-3); background:var(--paper-2)">Late</span></div>
+      <button class="c-action"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></button>
+    </li>
+    <li class="compact-item">
+      <div class="c-time">SUN<b>11:00</b></div>
+      <div class="c-thumb thumb-5"></div>
+      <div class="c-title">Pancakes on the Amstel by bike
+        <span class="v">Pannenkoekenboot · slow Sunday default</span>
+      </div>
+      <div class="c-tags"><span class="tag kid">Kids</span></div>
+      <button class="c-action"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></button>
+    </li>
+    <li class="compact-item">
+      <div class="c-time">SUN<b>14:00</b></div>
+      <div class="c-thumb thumb-6"></div>
+      <div class="c-title">Foam · new Wolfgang Tillmans rooms
+        <span class="v">Keizersgracht 609 · opened 2 weeks ago · €15</span>
+      </div>
+      <div class="c-tags"><span class="tag new" style="background:var(--ink); color:var(--paper)">New</span></div>
+      <button class="c-action"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></button>
+    </li>
+    <li class="compact-item">
+      <div class="c-time">SUN<b>15:00</b></div>
+      <div class="c-thumb thumb-4"></div>
+      <div class="c-title">KC Lights, day-into-night
+        <span class="v">Thuishaven · outdoor · house and disco</span>
+      </div>
+      <div class="c-tags"><span class="tag outline" style="color:var(--ink-3); background:var(--paper-2)">Music</span></div>
+      <button class="c-action"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></button>
+    </li>
+    <li class="compact-item">
+      <div class="c-time">SUN<b>17:00</b></div>
+      <div class="c-thumb thumb-7"></div>
+      <div class="c-title">Sunset on the Schinkel from a sloep
+        <span class="v">rent at Boaty · €90/3hr · book before noon</span>
+      </div>
+      <div class="c-tags"><span class="tag weather-pick" style="background:var(--accent); color:white">Weather</span></div>
+      <button class="c-action"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></button>
+    </li>
+    <li class="compact-item">
+      <div class="c-time">SUN<b>20:00</b></div>
+      <div class="c-thumb thumb-8"></div>
+      <div class="c-title">Kovacs at Carré
+        <span class="v">Koninklijk Theater Carré · €45 · seated, ends 22:30</span>
+      </div>
+      <div class="c-tags"><span class="tag outline" style="color:var(--ink-3); background:var(--paper-2)">Music</span></div>
+      <button class="c-action"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></button>
+    </li>
+  </ul>
+
+  <!-- ========= SAVED ========= -->
+  <div id="saved" class="section-head" style="margin-top: 48px;">
+    <h3>Your saved</h3>
+    <span class="rule"></span>
+    <span class="count">3 across 2 weekends</span>
+  </div>
+
+  <ul class="compact">
+    <li class="compact-item">
+      <div class="c-time">THIS WKND<b>SAT</b></div>
+      <div class="c-thumb thumb-3"></div>
+      <div class="c-title">Nectar Woode + Arno Sacco
+        <span class="v">Paradiso · saved Thu · waitlist active</span>
+      </div>
+      <div class="c-tags"><span class="tag hot" style="background:var(--hot); color:white">Hot</span></div>
+      <button class="c-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button>
+    </li>
+    <li class="compact-item">
+      <div class="c-time">30 MAY<b>SAT</b></div>
+      <div class="c-thumb thumb-1"></div>
+      <div class="c-title">Felbm at Zonzij, Tolhuistuin
+        <span class="v">saved last week · we'll remind you Thu</span>
+      </div>
+      <div class="c-tags"><span class="tag outline" style="color:var(--ink-3); background:var(--paper-2)">Watching</span></div>
+      <button class="c-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button>
+    </li>
+    <li class="compact-item">
+      <div class="c-time">JUN 5<b>FRI</b></div>
+      <div class="c-thumb thumb-9"></div>
+      <div class="c-title">Max Cooper · Dramatic Synthesis
+        <span class="v">Paradiso · tickets going fast</span>
+      </div>
+      <div class="c-tags"><span class="tag hot" style="background:var(--hot); color:white">Hot</span></div>
+      <button class="c-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button>
+    </li>
+  </ul>
+
+  <!-- ========= ESCAPE ========= -->
+  <div class="escape">
+    <div>
+      <div class="escape-label">↳ If you want to flip the script</div>
+      <h3>One escape: Texel, two days, ferry from Den Helder</h3>
+      <p>The first heat of the year is also the first weekend the Wadden makes sense again. Train to Den Helder 90 min, ferry 20. Boutique stays in Den Burg still had weekend rooms at 21:00. Back Sunday evening, no work day lost.</p>
+      <button class="escape-action">Build me this weekend →</button>
+    </div>
+    <div class="escape-photo img-texel"></div>
+  </div>
+
+  <!-- ========= COLOPHON ========= -->
+  <div class="colophon">
+    <div class="colophon-title">Read this week, linked to where it matters</div>
+    <div class="sources">
+      <span class="source-chip">resident advisor</span>
+      <span class="source-chip">paradiso</span>
+      <span class="source-chip">melkweg</span>
+      <span class="source-chip">songkick</span>
+      <span class="source-chip">eater amsterdam</span>
+      <span class="source-chip">little black book</span>
+      <span class="source-chip">we like amsterdam</span>
+      <span class="source-chip">i amsterdam</span>
+      <span class="source-chip">kidsproof</span>
+      <span class="source-chip">foam</span>
+      <span class="source-chip">stedelijk</span>
+      <span class="source-chip">knmi weather</span>
+      <span class="source-chip">spotify · your taste</span>
+    </div>
+    <div style="margin-top: 18px; font-size: 11px;">WKNDR reads the city's writers for you, then points you to them. Your next issue gets sharper each time you mark something <i>did it</i> or <i>not this</i>.</div>
+  </div>
+
+</main>
+
+<!-- ========= MODAL ========= -->
+<div class="modal-backdrop" id="modalBackdrop" onclick="closeCard()"></div>
+<div class="modal" id="modal">
+  <button class="modal-close" onclick="closeCard()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </button>
+  <div class="modal-scroll">
+    <div class="modal-hero" id="modalHero">
+      <div class="modal-hero-tags" id="modalTags"></div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-meta">
+        <span class="when" id="modalWhen">SAT MORNING</span>
+        <span class="sep">/</span>
+        <span id="modalLocation">CITY</span>
+      </div>
+      <h2 id="modalTitle">Title</h2>
+      <div class="modal-venue" id="modalVenue">venue</div>
+      <div class="modal-body-text" id="modalText">body</div>
+
+      <div class="modal-pubs" id="modalPubs">
+        <div class="modal-pubs-title">Where the city's writers landed</div>
+        <div id="modalPubsList"></div>
+      </div>
+
+      <div class="modal-why" id="modalWhy">why</div>
+
+      <div class="modal-actions">
+        <button class="m-action primary">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+          Save
+        </button>
+        <button class="m-action">Did it</button>
+        <button class="m-action">Not this</button>
+        <button class="m-action">Map</button>
+        <button class="m-action">Tickets</button>
+        <button class="m-action" onclick="showShare()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13"/></svg>
+          Share
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SHARE TOAST -->
+<div class="share-toast" id="shareToast">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+  Share link copied
+</div>
+
+<script>
+  const cardData = {
+    pick1: {
+      title: "Hortus Botanicus, then a swim at Marineterrein",
+      when: "SAT MORNING → AFTERNOON",
+      location: "PLANTAGE + KATTENBURG",
+      venue: "Plantage Middenlaan · Kattenburgerstraat · 20 min between on bikes",
+      heroClass: "img-greenhouse",
+      tags: ['<span class="tag weather-pick">Weather pick</span>', '<span class="tag kid">Kids</span>', '<span class="tag outline">Outdoors · Free swim</span>'],
+      body: `<p>Hortus opens at 10. The butterfly greenhouse is the part the kids will remember for a week — go straight there, then loop through the medicinal garden while they're still patient. By 12:30 they'll be done.</p><p>Bike north to Marineterrein, where the harbor swim opens this weekend for the season. Bring towels and the bucket. It's the closest thing the city has to a beach moment without driving to IJburg.</p>`,
+      pubs: [
+        { name: "I amsterdam", blurb: "Listed in this week's family roundup" },
+        { name: "Kidsproof Amsterdam", blurb: "Marineterrein swim season launch noted" }
+      ],
+      why: "You've saved three Hortus posts on Instagram since February and never been with them. Marineterrein opens for swimming this exact weekend — first chance of the year."
+    },
+    pick2: {
+      title: "Nectar Woode + Arno Sacco",
+      when: "SAT 20:30",
+      location: "PARADISO · CENTRUM",
+      venue: "Paradiso Upstairs · Weteringschans 6–8 · in collab with NOTION",
+      heroClass: "img-paradiso",
+      tags: ['<span class="tag hot">Sold out · waitlist</span>', '<span class="tag critic">Critic\'s pick</span>', '<span class="tag outline">Live music</span>'],
+      body: `<p>Ghanaian-British jazz-soul singer, the kind of voice that makes a room hold its breath. Booked into the small hall, which is the point — she'll be three meters from you. NOTION programming means the warm-up will be worth showing up early for.</p><p><em>If you can't get in:</em> KC Lights is at Thuishaven Sunday afternoon, day-into-night, softer landing for a hot weekend than a club Saturday anyway.</p>`,
+      pubs: [
+        { name: "Resident Advisor", blurb: "Listed in Amsterdam this weekend" },
+        { name: "Paradiso program", blurb: "Sold out · waitlist open" },
+        { name: "NOTION", blurb: "Co-programmed by the publication" }
+      ],
+      why: "Your top Spotify weeks all skew voice-forward soul (Cleo Sol, Snoh Aalegra, Kelela). Nectar Woode sits exactly in that pocket. Paradiso Upstairs is where you spent two Saturdays in March."
+    },
+    pick3: {
+      title: "Papillon",
+      when: "SUN LUNCH",
+      location: "AMSTERDAM NOORD",
+      venue: "Amsterdam Noord · all-day · walk-in lunch, book for dinner",
+      heroClass: "img-papillon",
+      tags: ['<span class="tag new">New · Opened March</span>', '<span class="tag critic">Eater Hit List</span>', '<span class="tag outline">Terrace</span>'],
+      body: `<p>The all-day place in Noord everyone's been talking about since spring. Sourdough and pastries in the morning, wood-fired plates and natural wines as the day shifts.</p><p>The terrace is the reason to go this Sunday — south-facing, properly sunny, glass of something cold, kids can roam. Cross on the ferry from Centraal, make a morning of it.</p>`,
+      pubs: [
+        { name: "Eater Amsterdam", blurb: "Added to Hit List this spring" },
+        { name: "Little Black Book", blurb: "Featured in new openings roundup" },
+        { name: "We Like Amsterdam", blurb: "Recommended in monthly newsletter" }
+      ],
+      why: "You've never been and it's been featured by three writers you follow this spring. Sunday brunch + a real terrace fits the weather perfectly."
+    }
+  };
+
+  function openCard(id) {
+    const d = cardData[id];
+    if (!d) return;
+    const hero = document.getElementById('modalHero');
+    hero.className = 'modal-hero ' + d.heroClass;
+    document.getElementById('modalTitle').textContent = d.title;
+    document.getElementById('modalWhen').textContent = d.when;
+    document.getElementById('modalLocation').textContent = d.location;
+    document.getElementById('modalVenue').textContent = d.venue;
+    document.getElementById('modalText').innerHTML = d.body;
+    document.getElementById('modalWhy').innerHTML = '<div>' + d.why + '</div>';
+    document.getElementById('modalTags').innerHTML = d.tags.join('');
+    document.getElementById('modalPubsList').innerHTML = d.pubs.map(p =>
+      `<a class="pub-link" href="#"><span><span class="pub-name">${p.name}</span><div class="pub-blurb">${p.blurb}</div></span><span class="pub-arrow">↗</span></a>`
+    ).join('');
+    document.getElementById('modalBackdrop').classList.add('show');
+    document.getElementById('modal').classList.add('show');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeCard() {
+    document.getElementById('modalBackdrop').classList.remove('show');
+    document.getElementById('modal').classList.remove('show');
+    document.body.style.overflow = '';
+  }
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeCard(); });
+
+  function toggleCity(e) {
+    e.stopPropagation();
+    document.getElementById('citySelect').classList.toggle('open');
+  }
+  function selectCity(name) {
+    document.getElementById('cityName').textContent = name;
+    document.querySelectorAll('.city-item').forEach(i => i.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+    document.getElementById('citySelect').classList.remove('open');
+  }
+  function filterCities(q) {
+    q = q.toLowerCase();
+    document.querySelectorAll('.city-item').forEach(item => {
+      const text = item.textContent.toLowerCase();
+      item.style.display = text.includes(q) ? '' : 'none';
+    });
+  }
+  document.addEventListener('click', (e) => {
+    const cs = document.getElementById('citySelect');
+    if (cs && !cs.contains(e.target)) cs.classList.remove('open');
+    const wd = document.getElementById('whoDD');
+    if (wd && !wd.contains(e.target)) wd.classList.remove('open');
+  });
+
+  function toggleDD(id) { document.getElementById(id).classList.toggle('open'); }
+  function toggleWho(el) {
+    el.classList.toggle('checked');
+    updateWhoLabel();
+  }
+  function setPreset(preset) {
+    const items = document.querySelectorAll('#whoDD .dd-item');
+    items.forEach(i => i.classList.remove('checked'));
+    if (preset === 'solo') {
+      items[0].classList.add('checked');
+      document.getElementById('whoLabel').textContent = 'Just me';
+    } else if (preset === 'date') {
+      items[0].classList.add('checked');
+      items[1].classList.add('checked');
+      document.getElementById('whoLabel').textContent = 'Date night';
+    }
+    document.getElementById('whoDD').classList.remove('open');
+  }
+  function updateWhoLabel() {
+    const checked = Array.from(document.querySelectorAll('#whoDD .dd-item.checked')).slice(0, 3);
+    const names = checked.map(c => c.textContent.trim().split(/\s+/)[0]);
+    let label = '';
+    if (names.length === 0) label = 'Nobody?';
+    else if (names.length === 1) label = names[0];
+    else if (names.length === 2) label = names.join(' & ');
+    else label = names.slice(0, -1).join(', ') + ' & ' + names[names.length - 1].toLowerCase();
+    document.getElementById('whoLabel').textContent = label;
+  }
+
+  function showShare() {
+    const t = document.getElementById('shareToast');
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2200);
+  }
+</script>
+
+</body>
+</html>

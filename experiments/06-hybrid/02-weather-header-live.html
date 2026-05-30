@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WKNDR — Live weather-adaptive header</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* =========================================================
+     LIVE WEATHER HEADER
+     A header that adapts fluidly to the weather wherever you are.
+       · browser geolocation        → lat/lon (falls back to Amsterdam)
+       · Open-Meteo (free, no key)   → live temp / hi-lo / wind / precip / code
+       · BigDataCloud (free, no key) → reverse-geocode the city name
+       · 5-mode classifier           → HOT / WARM / COOL / COLD_WET / VOLATILE
+     The gradient, temperature, condition line and phrase all shift with the
+     mode, crossfading over ~1.2s. Demo buttons flip modes without live data.
+     Mono (JetBrains) = machine output. Helvetica = the city + the phrase.
+     ========================================================= */
+  :root {
+    --paper: #faf8f3;
+    --paper-2: #f1efe8;
+    --ink: #1a1a1a;
+    --ink-3: #5a5a5a;
+    --ink-4: #9a9a96;
+    --rule: #ddd9cf;
+
+    /* per-mode tokens — overwritten by [data-mode] below */
+    --cover-text: #fbf7ef;        /* type colour on the gradient */
+    --phrase: #8a2818;            /* condition-phrase colour on paper */
+    --grad: radial-gradient(ellipse 90% 70% at 50% 8%, #ffd166 0%, transparent 55%),
+            radial-gradient(ellipse 80% 70% at 70% 60%, #ff7a2f 0%, transparent 60%),
+            radial-gradient(ellipse 70% 60% at 20% 90%, #7a1f0c 0%, transparent 65%),
+            linear-gradient(180deg, #ff9a3d 0%, #c2310e 55%, #5a1606 100%);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+  html, body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    font-feature-settings: "kern", "liga", "tnum";
+    text-rendering: geometricPrecision;
+  }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+
+  /* ========= HERO (the adaptive gradient block) ========= */
+  .hero {
+    position: relative;
+    min-height: 540px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 40px 44px 36px;
+    color: var(--cover-text);
+    transition: color 1.2s ease;
+  }
+  /* Two stacked gradient layers we crossfade for fluid mode changes.
+     Selector is intentionally specific (.hero > .grad-layer) so it beats the
+     `.hero > *` content rule below, which would otherwise force these absolute
+     layers to position:relative and collapse them to 0 height. */
+  .hero > .grad-layer {
+    position: absolute; inset: 0;
+    background: var(--grad);
+    transition: opacity 1.2s ease;
+    z-index: 0;
+  }
+  .hero > .grad-layer.b { opacity: 0; }
+  /* grain + subtle scanlines for the "generated cover" texture */
+  .hero::before {
+    content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(255,255,255,.5) 0, transparent 1%),
+      radial-gradient(circle at 70% 60%, rgba(255,255,255,.5) 0, transparent 1%),
+      radial-gradient(circle at 85% 20%, rgba(255,255,255,.5) 0, transparent 1%),
+      radial-gradient(circle at 35% 80%, rgba(255,255,255,.5) 0, transparent 1%);
+    background-size: 42px 42px, 32px 32px, 50px 50px, 38px 38px;
+    opacity: .08; mix-blend-mode: overlay;
+  }
+  .hero::after {
+    content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+    background: linear-gradient(180deg, transparent 50%, rgba(0,0,0,.28) 100%);
+  }
+  .hero > * { position: relative; z-index: 2; }
+
+  /* top row: date (left) + temp block (right) */
+  .hero-top {
+    position: absolute; top: 36px; left: 44px; right: 44px; z-index: 2;
+    display: flex; justify-content: space-between; align-items: flex-start;
+  }
+  .hero-date {
+    font-size: 13px; letter-spacing: 0.18em; text-transform: uppercase;
+    opacity: 0.85; font-weight: 500;
+  }
+  .hero-temp { text-align: right; line-height: 1; }
+  .hero-temp .big { font-size: 56px; font-weight: 400; letter-spacing: -0.02em; opacity: 0.92; }
+  .hero-temp .big .d { opacity: 0.5; }
+  .hero-hilo { font-size: 15px; letter-spacing: 0.14em; opacity: 0.7; margin-top: 8px; font-weight: 500; }
+
+  /* the city — the one big typographic event */
+  .hero-city {
+    font-size: clamp(64px, 12vw, 132px);
+    line-height: 0.86;
+    letter-spacing: -0.05em;
+    font-weight: 600;
+    text-shadow: 0 2px 40px rgba(0,0,0,0.18);
+  }
+  .hero-cond {
+    margin-top: 18px;
+    font-size: 16px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    opacity: 0.88;
+    font-weight: 500;
+  }
+
+  /* ========= SOURCE TRACE (on paper, like the screenshot) ========= */
+  .trace {
+    background: var(--paper-2);
+    padding: 22px 44px 24px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .trace-label { font-size: 12px; letter-spacing: 0.18em; color: var(--ink-4); text-transform: uppercase; }
+  .trace-sources {
+    margin-top: 14px; font-size: 16px; color: var(--ink-3);
+    line-height: 1.5; letter-spacing: 0.01em;
+  }
+  .trace-meta { margin-top: 8px; font-size: 14px; color: var(--ink-4); letter-spacing: 0.02em; }
+
+  /* ========= CONDITION PHRASE (the emotional hero) ========= */
+  .phrase-wrap { padding: 40px 44px 48px; display: flex; gap: 22px; align-items: flex-start; }
+  .phrase-dash { color: var(--phrase); font-size: 30px; line-height: 1; transition: color 1.2s ease; flex-shrink: 0; }
+  .phrase {
+    font-size: 30px; line-height: 1.25; letter-spacing: -0.02em; font-weight: 500;
+    color: var(--phrase); max-width: 640px; transition: color 1.2s ease;
+  }
+
+  /* ========= DEMO CONTROLS (not part of the component) ========= */
+  .demo {
+    position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
+    display: flex; gap: 6px; align-items: center;
+    background: rgba(26,26,26,0.92); backdrop-filter: blur(8px);
+    padding: 8px 10px; border-radius: 999px; z-index: 50;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+  }
+  .demo button {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; letter-spacing: 0.04em;
+    padding: 7px 12px; border-radius: 999px; border: none; cursor: pointer;
+    background: transparent; color: rgba(255,255,255,0.6); font-weight: 500;
+    transition: all 0.15s ease;
+  }
+  .demo button:hover { color: #fff; }
+  .demo button.on { background: #fff; color: #1a1a1a; }
+  .demo .sep { width: 1px; height: 18px; background: rgba(255,255,255,0.2); margin: 0 4px; }
+  .demo .locate { background: rgba(255,255,255,0.12); color: #fff; }
+  .demo .locate:hover { background: rgba(255,255,255,0.24); }
+  .demo .status { font-size: 10px; color: rgba(255,255,255,0.45); padding: 0 8px; max-width: 220px; }
+
+  /* =========================================================
+     MODE PALETTES — each sets the gradient, text + phrase colour
+     ========================================================= */
+  [data-mode="HOT"] {
+    --cover-text: #fbf7ef; --phrase: #8a2818;
+    --grad:
+      radial-gradient(ellipse 90% 70% at 50% 8%, #ffd166 0%, transparent 55%),
+      radial-gradient(ellipse 80% 70% at 70% 60%, #ff7a2f 0%, transparent 60%),
+      radial-gradient(ellipse 70% 60% at 20% 90%, #7a1f0c 0%, transparent 65%),
+      linear-gradient(180deg, #ff9a3d 0%, #c2310e 55%, #5a1606 100%);
+  }
+  [data-mode="WARM"] {
+    --cover-text: #fffdf6; --phrase: #4a6a2a;
+    --grad:
+      radial-gradient(ellipse 90% 70% at 40% 10%, #fff0b0 0%, transparent 55%),
+      radial-gradient(ellipse 80% 70% at 75% 65%, #9bc56a 0%, transparent 60%),
+      radial-gradient(ellipse 70% 60% at 15% 90%, #2f5a2a 0%, transparent 65%),
+      linear-gradient(180deg, #d8e08a 0%, #6fa24a 55%, #2c4a26 100%);
+  }
+  [data-mode="COOL"] {
+    --cover-text: #f4f8f7; --phrase: #2a5a55;
+    --grad:
+      radial-gradient(ellipse 90% 70% at 50% 10%, #cfe6df 0%, transparent 55%),
+      radial-gradient(ellipse 80% 70% at 70% 65%, #6f9b94 0%, transparent 60%),
+      radial-gradient(ellipse 70% 60% at 18% 90%, #1f3a3a 0%, transparent 65%),
+      linear-gradient(180deg, #9fc0b8 0%, #4a716b 55%, #1e3433 100%);
+  }
+  [data-mode="COLD_WET"] {
+    --cover-text: #eef2f7; --phrase: #2a3f63;
+    --grad:
+      radial-gradient(ellipse 90% 70% at 45% 12%, #9fb2cc 0%, transparent 55%),
+      radial-gradient(ellipse 80% 70% at 72% 65%, #4a5f80 0%, transparent 60%),
+      radial-gradient(ellipse 70% 60% at 16% 92%, #14203a 0%, transparent 65%),
+      linear-gradient(180deg, #6c7e9c 0%, #313f5e 55%, #121a2e 100%);
+  }
+  [data-mode="VOLATILE"] {
+    --cover-text: #f6f1ee; --phrase: #6a3a52;
+    --grad:
+      radial-gradient(ellipse 70% 80% at 20% 15%, #ffcf8a 0%, transparent 50%),
+      radial-gradient(ellipse 70% 80% at 85% 70%, #3a4f80 0%, transparent 55%),
+      radial-gradient(ellipse 60% 60% at 55% 95%, #2a1830 0%, transparent 65%),
+      linear-gradient(125deg, #e08a4a 0%, #7a5a7a 50%, #2a3358 100%);
+  }
+
+  @media (max-width: 640px) {
+    .hero { padding: 28px 22px 26px; min-height: 460px; }
+    .hero-top { top: 22px; left: 22px; right: 22px; }
+    .hero-temp .big { font-size: 40px; }
+    .trace, .phrase-wrap { padding-left: 22px; padding-right: 22px; }
+    .phrase, .phrase-dash { font-size: 23px; }
+    .demo .status { display: none; }
+  }
+</style>
+</head>
+<body data-mode="HOT">
+
+  <!-- ========= HERO ========= -->
+  <div class="hero">
+    <div class="grad-layer a"></div>
+    <div class="grad-layer b"></div>
+
+    <div class="hero-top">
+      <div class="hero-date mono" id="date">SUN · 1 JUNE</div>
+      <div class="hero-temp">
+        <div class="big mono"><span id="temp">27</span><span class="d">°</span></div>
+        <div class="hero-hilo mono"><span id="hi">31°</span> / <span id="lo">19°</span></div>
+      </div>
+    </div>
+
+    <div class="hero-city" id="city">Amsterdam</div>
+    <div class="hero-cond mono" id="cond">HOT · DRY · LIGHT NW WIND · FEELS 29°</div>
+  </div>
+
+  <!-- ========= SOURCE TRACE ========= -->
+  <div class="trace">
+    <div class="trace-label mono">Built from</div>
+    <div class="trace-sources mono" id="sources">Iamsterdam · Het Parool · PS · Amsterdam Mamas · Kidsproof Amsterdam · Time Out Amsterdam · Uitkrant · The Dutch Review</div>
+    <div class="trace-meta mono" id="meta">7 sources · re-ranked for HOT + 4yo · Thu 18:02</div>
+  </div>
+
+  <!-- ========= CONDITION PHRASE ========= -->
+  <div class="phrase-wrap">
+    <span class="phrase-dash">—</span>
+    <div class="phrase" id="phrase">It turns properly hot by two. Chase the shade, and keep water close.</div>
+  </div>
+
+  <!-- ========= DEMO CONTROLS ========= -->
+  <div class="demo">
+    <button data-set="HOT" class="on">HOT</button>
+    <button data-set="WARM">WARM</button>
+    <button data-set="COOL">COOL</button>
+    <button data-set="COLD_WET">COLD/WET</button>
+    <button data-set="VOLATILE">VOLATILE</button>
+    <span class="sep"></span>
+    <button class="locate" id="locate">⌖ use my weather</button>
+    <span class="status mono" id="status"></span>
+  </div>
+
+<script>
+/* ---------- per-mode copy banks (production: LLM narration) ---------- */
+const PHRASES = {
+  HOT:      "It turns properly hot by two. Chase the shade, and keep water close.",
+  WARM:     "A soft, generous day — the kind that lets you choose your own adventure.",
+  COOL:     "Crisp and clear. Layer up and the whole city is walkable.",
+  COLD_WET: "Grey and wet through the afternoon. Today is an indoor day, well spent.",
+  VOLATILE: "It can't decide. Keep a backup plan and a rain layer in the bag."
+};
+const COND_PREFIX = {
+  HOT: "HOT", WARM: "WARM", COOL: "COOL", COLD_WET: "COLD · WET", VOLATILE: "VOLATILE"
+};
+/* representative figures per mode — used only when flipping demo buttons
+   (the live path rebuilds all of this from real Open-Meteo data) */
+const DEMO = {
+  HOT:      { cond: "HOT · DRY · LIGHT NW WIND · FEELS 29°",      temp: 27, hi: 31, lo: 19 },
+  WARM:     { cond: "WARM · DRY · GENTLE BREEZE · FEELS 19°",     temp: 19, hi: 22, lo: 12 },
+  COOL:     { cond: "COOL · CLEAR · CRISP AIR · FEELS 10°",       temp: 11, hi: 13, lo: 6  },
+  COLD_WET: { cond: "COLD · WET · RAIN 80% · FEELS 5°",           temp: 7,  hi: 9,  lo: 4  },
+  VOLATILE: { cond: "VOLATILE · SUN THEN STORMS · GUSTY · 16–24°", temp: 21, hi: 24, lo: 15 }
+};
+
+/* ---------- 5-mode classifier (thresholds from weather-engine.ts) ---------- */
+function classify({ high, precipProb, swing }) {
+  if (swing >= 9) return "VOLATILE";
+  if (high >= 24 && precipProb < 30) return "HOT";
+  if (high >= 16 && precipProb < 40) return "WARM";
+  if (high < 10 || precipProb > 65) return "COLD_WET";
+  if (high >= 8 && high <= 14) return "COOL";
+  return "WARM";
+}
+
+/* ---------- fluid mode application (crossfade gradient layers) ---------- */
+let frontIsA = true;
+function applyMode(mode, data) {
+  const body = document.body;
+  // 1. swap the inactive gradient layer to the new mode, then crossfade
+  const a = document.querySelector('.grad-layer.a');
+  const b = document.querySelector('.grad-layer.b');
+  const incoming = frontIsA ? b : a;
+  const outgoing = frontIsA ? a : b;
+  body.setAttribute('data-mode', mode);          // updates --grad + text/phrase colours
+  // force the incoming layer to read the *new* --grad, the outgoing keeps the old via inline
+  outgoing.style.background = getComputedStyle(outgoing).background;
+  incoming.style.background = '';                // inherits new --grad
+  requestAnimationFrame(() => {
+    incoming.style.opacity = 1;
+    outgoing.style.opacity = 0;
+  });
+  frontIsA = !frontIsA;
+
+  // 2. copy
+  document.getElementById('cond-fill');
+  document.getElementById('phrase').textContent = PHRASES[mode];
+  if (data) {
+    document.getElementById('city').textContent = data.city;
+    document.getElementById('temp').textContent = Math.round(data.temp);
+    document.getElementById('hi').textContent = Math.round(data.high) + '°';
+    document.getElementById('lo').textContent = Math.round(data.low) + '°';
+    document.getElementById('date').textContent = data.date;
+    document.getElementById('cond').textContent =
+      `${COND_PREFIX[mode]} · ${data.dry ? 'DRY' : 'RAIN ' + data.precipProb + '%'} · ${data.wind} · FEELS ${Math.round(data.feels)}°`;
+    document.getElementById('meta').textContent =
+      `live · ${data.city} · re-ranked for ${mode} · ${data.stamp}`;
+  } else {
+    // demo: show a coherent representative line + temps for this mode
+    const d = DEMO[mode];
+    document.getElementById('cond').textContent = d.cond;
+    document.getElementById('temp').textContent = d.temp;
+    document.getElementById('hi').textContent = d.hi + '°';
+    document.getElementById('lo').textContent = d.lo + '°';
+    document.getElementById('meta').textContent = `7 sources · re-ranked for ${mode} + 4yo · Thu 18:02`;
+  }
+
+  // sync demo buttons
+  document.querySelectorAll('.demo [data-set]').forEach(btn =>
+    btn.classList.toggle('on', btn.dataset.set === mode));
+}
+
+/* ---------- demo buttons ---------- */
+document.querySelectorAll('.demo [data-set]').forEach(btn =>
+  btn.addEventListener('click', () => applyMode(btn.dataset.set, null)));
+
+/* ---------- live weather: geolocate → Open-Meteo → reverse geocode ---------- */
+function windWord(kmh) {
+  if (kmh < 12) return 'LIGHT WIND';
+  if (kmh < 28) return 'BREEZY';
+  return 'STRONG WIND';
+}
+function setStatus(t) { document.getElementById('status').textContent = t; }
+
+async function goLive(lat, lon) {
+  try {
+    setStatus('reading the sky…');
+    const w = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}`
+      + `&current=temperature_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m`
+      + `&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max`
+      + `&timezone=auto&forecast_days=1`).then(r => r.json());
+    let city = 'Here';
+    try {
+      const g = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}`)
+        .then(r => r.json());
+      city = g.city || g.locality || g.principalSubdivision || 'Here';
+    } catch (e) {}
+
+    const high = w.daily.temperature_2m_max[0];
+    const low = w.daily.temperature_2m_min[0];
+    const precipProb = w.daily.precipitation_probability_max[0] ?? 0;
+    const data = {
+      city,
+      temp: w.current.temperature_2m,
+      feels: w.current.apparent_temperature,
+      high, low, precipProb,
+      dry: (w.current.precipitation ?? 0) < 0.1 && precipProb < 40,
+      wind: windWord(w.current.wind_speed_10m),
+      swing: high - low,
+      date: new Date().toLocaleDateString('en-GB',
+              { weekday: 'short', day: 'numeric', month: 'long' }).toUpperCase().replace(',', ' ·'),
+      stamp: new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })
+    };
+    const mode = classify(data);
+    applyMode(mode, data);
+    setStatus(`live: ${city} ${Math.round(data.temp)}° → ${mode}`);
+  } catch (e) {
+    setStatus('weather fetch failed — showing demo');
+  }
+}
+
+document.getElementById('locate').addEventListener('click', () => {
+  if (!navigator.geolocation) { setStatus('no geolocation — demo only'); return; }
+  setStatus('asking for location…');
+  navigator.geolocation.getCurrentPosition(
+    pos => goLive(pos.coords.latitude, pos.coords.longitude),
+    ()  => { setStatus('location denied — using Amsterdam'); goLive(52.37, 4.89); },
+    { timeout: 8000 }
+  );
+});
+</script>
+</body>
+</html>

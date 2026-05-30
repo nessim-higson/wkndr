@@ -1,0 +1,1323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WKNDR — Sunday Brief, scrolly</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,800;1,9..144,400;1,9..144,500&family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0a0a0a;
+    --paper: #f4f0e6;
+    --paper-2: #e8e2d2;
+    --accent: #ff3a00;
+    --c-hot-1: #ff8a3d;
+    --c-hot-2: #c2310e;
+    --c-castle-1: #d4a574;
+    --c-castle-2: #5a3a20;
+    --c-forest-1: #4a7848;
+    --c-forest-2: #1a3018;
+    --c-water-1: #88b8c0;
+    --c-water-2: #2a5868;
+    --serif: 'Fraunces', Georgia, serif;
+    --sans: 'Inter Tight', -apple-system, sans-serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+  html { scroll-behavior: smooth; }
+  html, body {
+    font-family: var(--sans);
+    background: var(--paper);
+    color: var(--ink);
+    overflow-x: hidden;
+    line-height: 1.5;
+  }
+  a { color: inherit; text-decoration: none; }
+  button { font-family: inherit; cursor: pointer; }
+  img { display: block; max-width: 100%; }
+
+  /* ============================================================
+     FIXED PROGRESS / NAV
+     ============================================================ */
+  .progress-rail {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%;
+    height: 3px;
+    background: rgba(0,0,0,0.06);
+    z-index: 100;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    width: 0%;
+    transition: width 0.1s linear;
+  }
+
+  .nav {
+    position: fixed;
+    top: 16px; left: 0; right: 0;
+    z-index: 90;
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    pointer-events: none;
+  }
+  .nav-mark {
+    font-family: var(--sans);
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    color: var(--ink);
+    mix-blend-mode: difference;
+    color: var(--paper);
+    pointer-events: auto;
+  }
+  .nav-meta {
+    margin-left: 16px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--paper);
+    mix-blend-mode: difference;
+    font-weight: 600;
+    pointer-events: auto;
+  }
+  .nav-spacer { flex: 1; }
+  .nav-chapter {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 14px;
+    color: var(--paper);
+    mix-blend-mode: difference;
+    pointer-events: auto;
+    transition: opacity 0.3s;
+  }
+
+  /* ============================================================
+     SCROLL HINT
+     ============================================================ */
+  .scroll-hint {
+    position: fixed;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 80;
+    color: var(--paper);
+    mix-blend-mode: difference;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    pointer-events: none;
+    opacity: 1;
+    transition: opacity 0.4s ease;
+  }
+  .scroll-hint.gone { opacity: 0; }
+  .scroll-hint::after {
+    content: '↓';
+    font-size: 14px;
+    animation: bob 1.4s ease-in-out infinite;
+  }
+  @keyframes bob {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(6px); }
+  }
+
+  /* ============================================================
+     CHAPTERS
+     ============================================================ */
+  .chapter {
+    min-height: 100vh;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  /* ----- OPENING CHAPTER ----- */
+  .open {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 56px 24px 80px;
+  }
+  .open-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 20% 30%, rgba(255, 138, 61, 0.5) 0%, transparent 60%),
+      radial-gradient(ellipse 70% 50% at 80% 70%, rgba(194, 49, 14, 0.45) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 40% at 50% 50%, rgba(255, 230, 180, 0.2) 0%, transparent 70%);
+    filter: blur(40px);
+  }
+  .open-inner {
+    position: relative;
+    max-width: 1100px;
+    margin: 0 auto;
+    width: 100%;
+  }
+  .open-meta {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--paper);
+    opacity: 0.7;
+    margin-bottom: 36px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .open-meta b { color: var(--accent); opacity: 1; }
+  .open-headline {
+    font-family: var(--serif);
+    font-size: clamp(56px, 9vw, 144px);
+    line-height: 0.92;
+    letter-spacing: -0.045em;
+    font-weight: 500;
+    color: var(--paper);
+    max-width: 1000px;
+    margin-bottom: 36px;
+    font-variation-settings: "opsz" 144;
+  }
+  .open-headline em {
+    font-style: italic;
+    color: var(--accent);
+    font-weight: 400;
+  }
+  .open-headline .pulse {
+    display: inline-block;
+    animation: pulse 3s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+  }
+  .open-sub {
+    font-family: var(--sans);
+    font-size: 17px;
+    line-height: 1.55;
+    color: var(--paper);
+    opacity: 0.85;
+    font-weight: 400;
+    max-width: 560px;
+    margin-bottom: 36px;
+    letter-spacing: -0.005em;
+  }
+  .open-sub b { color: var(--accent); font-weight: 600; opacity: 1; }
+  .open-strip {
+    display: flex;
+    gap: 18px;
+    flex-wrap: wrap;
+    align-items: center;
+    padding-top: 24px;
+    border-top: 1px solid rgba(255,255,255,0.18);
+  }
+  .open-strip-item {
+    font-size: 12px;
+    color: var(--paper);
+    opacity: 0.7;
+    font-weight: 500;
+    letter-spacing: -0.005em;
+  }
+  .open-strip-item b {
+    display: block;
+    color: var(--paper);
+    opacity: 1;
+    font-weight: 700;
+    font-size: 22px;
+    font-family: var(--serif);
+    font-style: italic;
+    margin-bottom: 2px;
+  }
+  .open-strip-item.tag b {
+    background: var(--accent);
+    padding: 4px 10px;
+    color: white;
+    font-family: var(--sans);
+    font-style: normal;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border-radius: 0;
+  }
+  .open-filters {
+    margin-top: 28px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .filter-chip {
+    font-size: 11px;
+    padding: 6px 12px;
+    border: 1px solid rgba(255,255,255,0.3);
+    color: var(--paper);
+    background: transparent;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 600;
+    border-radius: 999px;
+  }
+  .filter-chip.active {
+    background: var(--paper);
+    color: var(--ink);
+    border-color: var(--paper);
+  }
+  .filter-chip.kid-active {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+  }
+
+  /* ============================================================
+     STORY CHAPTERS — each pick gets its own full-screen treatment
+     ============================================================ */
+  .story-chapter {
+    min-height: 100vh;
+    position: relative;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    padding: 80px 24px;
+  }
+  .story-chapter.castle {
+    background: var(--c-castle-1);
+    color: var(--c-castle-2);
+  }
+  .story-chapter.forest {
+    background: var(--c-forest-2);
+    color: var(--paper);
+  }
+  .story-chapter.water {
+    background: var(--c-water-1);
+    color: var(--c-water-2);
+  }
+
+  /* Big chapter number background */
+  .chapter-bignum {
+    position: absolute;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: clamp(400px, 60vw, 900px);
+    line-height: 0.7;
+    font-weight: 400;
+    opacity: 0.08;
+    pointer-events: none;
+    top: 50%;
+    right: -8%;
+    transform: translateY(-50%);
+    z-index: 1;
+    font-variation-settings: "opsz" 144;
+    transition: transform 0.5s ease;
+  }
+  .story-chapter.in-view .chapter-bignum {
+    transform: translateY(-50%) translateX(-3%);
+  }
+
+  .story-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    width: 100%;
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 56px;
+    align-items: center;
+  }
+  .story-chapter:nth-of-type(even) .story-inner {
+    grid-template-columns: 1fr 1fr;
+  }
+  .story-chapter:nth-of-type(even) .story-img { order: 2; }
+  .story-chapter:nth-of-type(even) .story-text { order: 1; }
+
+  .story-img {
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    background: rgba(0,0,0,0.1);
+    position: relative;
+    transform: translateY(40px);
+    opacity: 0;
+    transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1), opacity 1s ease;
+  }
+  .story-chapter.in-view .story-img {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  .story-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 1.2s ease;
+  }
+  .story-chapter.in-view .story-img img {
+    transform: scale(1.02);
+  }
+  .story-img-caption {
+    position: absolute;
+    bottom: 14px;
+    left: 14px;
+    right: 14px;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 12px;
+    color: white;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+    line-height: 1.4;
+    z-index: 2;
+  }
+  .story-img-caption::before {
+    content: '↑ ';
+    font-style: normal;
+    opacity: 0.7;
+  }
+
+  .story-text {
+    transform: translateY(20px);
+    opacity: 0;
+    transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.2s, opacity 0.9s ease 0.2s;
+  }
+  .story-chapter.in-view .story-text {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  .story-eyebrow {
+    font-family: var(--sans);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-weight: 700;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .story-eyebrow .pick-num {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 32px;
+    line-height: 1;
+    font-weight: 400;
+    opacity: 0.7;
+  }
+  .story-eyebrow .badge {
+    background: var(--accent);
+    color: white;
+    padding: 4px 9px;
+    letter-spacing: 0.1em;
+    font-weight: 800;
+  }
+  .story-eyebrow .badge.dark {
+    background: currentColor;
+    color: var(--paper);
+    opacity: 0.85;
+  }
+  .story-chapter.forest .story-eyebrow .badge.dark {
+    background: var(--paper);
+    color: var(--c-forest-2);
+  }
+
+  .story-title {
+    font-family: var(--serif);
+    font-size: clamp(40px, 6vw, 84px);
+    line-height: 0.95;
+    letter-spacing: -0.035em;
+    font-weight: 500;
+    margin-bottom: 28px;
+    font-variation-settings: "opsz" 144;
+  }
+  .story-title em {
+    font-style: italic;
+    color: var(--accent);
+    font-weight: 400;
+  }
+  .story-chapter.forest .story-title em {
+    color: var(--c-hot-1);
+  }
+  .story-title .ext-arrow {
+    display: inline-block;
+    margin-left: 10px;
+    font-size: 0.55em;
+    font-style: normal;
+    font-family: var(--sans);
+    font-weight: 400;
+    opacity: 0.6;
+    transition: transform 0.3s ease, opacity 0.3s;
+  }
+  a.story-link:hover .story-title .ext-arrow {
+    opacity: 1;
+    transform: translateX(6px) translateY(-2px);
+  }
+
+  .story-venue {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 16px;
+    margin-bottom: 24px;
+    opacity: 0.75;
+  }
+  .story-venue .sep { margin: 0 8px; opacity: 0.5; }
+
+  .story-body {
+    font-family: var(--sans);
+    font-size: 17px;
+    line-height: 1.55;
+    letter-spacing: -0.005em;
+    margin-bottom: 28px;
+    max-width: 520px;
+  }
+  .story-body p + p { margin-top: 14px; }
+
+  .story-fit {
+    border-left: 3px solid currentColor;
+    padding: 4px 0 4px 18px;
+    margin-bottom: 28px;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 16px;
+    line-height: 1.45;
+    max-width: 480px;
+  }
+  .story-fit b {
+    font-family: var(--sans);
+    font-style: normal;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    display: block;
+    margin-bottom: 4px;
+    opacity: 0.7;
+  }
+
+  .story-foot {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    flex-wrap: wrap;
+  }
+  .story-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 24px;
+    background: currentColor;
+    color: var(--paper) !important;
+    border: none;
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    transition: all 0.2s ease;
+  }
+  .story-chapter.castle .story-cta { color: var(--c-castle-1) !important; }
+  .story-chapter.forest .story-cta { color: var(--c-forest-2) !important; }
+  .story-chapter.water .story-cta { color: var(--c-water-1) !important; }
+  .story-cta:hover {
+    background: var(--accent);
+    color: white !important;
+    transform: translateY(-2px);
+  }
+  .story-cta svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .story-pubs {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .pub-chip {
+    font-size: 10px;
+    padding: 3px 8px;
+    border: 1px solid currentColor;
+    background: transparent;
+    color: currentColor;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+    transition: all 0.15s;
+  }
+  .pub-chip:hover {
+    background: currentColor;
+    color: var(--paper) !important;
+  }
+  .story-chapter.castle .pub-chip:hover { color: var(--c-castle-1) !important; }
+  .story-chapter.forest .pub-chip:hover { color: var(--c-forest-2) !important; }
+  .story-chapter.water .pub-chip:hover { color: var(--c-water-1) !important; }
+
+  /* ============================================================
+     INTERLUDE — between chapters
+     ============================================================ */
+  .interlude {
+    background: var(--paper);
+    padding: 120px 24px;
+    text-align: center;
+    color: var(--ink);
+    position: relative;
+  }
+  .interlude-num {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 56px;
+    color: var(--accent);
+    line-height: 1;
+    font-weight: 400;
+    margin-bottom: 18px;
+  }
+  .interlude-title {
+    font-family: var(--serif);
+    font-size: clamp(28px, 4vw, 48px);
+    line-height: 1.15;
+    letter-spacing: -0.025em;
+    font-weight: 500;
+    max-width: 720px;
+    margin: 0 auto 28px;
+    font-variation-settings: "opsz" 144;
+  }
+  .interlude-title em {
+    font-style: italic;
+    color: var(--accent);
+  }
+  .interlude-body {
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--ink);
+    opacity: 0.7;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  /* ============================================================
+     REFRESH CHAPTER
+     ============================================================ */
+  .refresh-chapter {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 120px 24px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .refresh-chapter::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 30% 50%, rgba(255,58,0,0.3) 0%, transparent 50%),
+      radial-gradient(circle at 70% 50%, rgba(255,138,61,0.2) 0%, transparent 50%);
+    filter: blur(60px);
+  }
+  .refresh-inner {
+    position: relative;
+    z-index: 2;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  .refresh-eyebrow {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--accent);
+    margin-bottom: 24px;
+    font-weight: 800;
+  }
+  .refresh-heading {
+    font-family: var(--serif);
+    font-size: clamp(40px, 6vw, 88px);
+    line-height: 0.98;
+    letter-spacing: -0.035em;
+    font-weight: 500;
+    margin-bottom: 36px;
+    font-variation-settings: "opsz" 144;
+  }
+  .refresh-heading em {
+    font-style: italic;
+    color: var(--accent);
+  }
+  .refresh-btn {
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 800;
+    padding: 20px 40px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    transition: all 0.2s ease;
+  }
+  .refresh-btn:hover {
+    background: var(--paper);
+    color: var(--ink);
+    transform: translateY(-3px);
+  }
+  .refresh-btn svg {
+    width: 18px;
+    height: 18px;
+    transition: transform 0.5s ease;
+  }
+  .refresh-btn.spinning svg { transform: rotate(360deg); }
+  .refresh-counter {
+    margin-top: 24px;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 15px;
+    opacity: 0.7;
+  }
+  .refresh-counter b {
+    color: var(--accent);
+    opacity: 1;
+    font-style: normal;
+    font-family: var(--sans);
+    font-weight: 800;
+  }
+
+  /* ============================================================
+     CODA — also on + afterhours + colophon
+     ============================================================ */
+  .coda {
+    background: var(--paper);
+    padding: 80px 24px;
+    color: var(--ink);
+  }
+  .coda-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .coda-head {
+    font-family: var(--serif);
+    font-size: clamp(32px, 4vw, 56px);
+    line-height: 1;
+    letter-spacing: -0.03em;
+    font-weight: 500;
+    margin-bottom: 36px;
+    font-variation-settings: "opsz" 144;
+  }
+  .coda-head em {
+    font-style: italic;
+    color: var(--accent);
+  }
+  .also-list {
+    list-style: none;
+    border-top: 2px solid var(--ink);
+  }
+  .also-row {
+    padding: 18px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.12);
+    display: grid;
+    grid-template-columns: 50px 80px 1fr auto;
+    gap: 20px;
+    align-items: center;
+    text-decoration: none;
+    color: inherit;
+    transition: background 0.15s;
+  }
+  .also-row:hover { background: var(--paper-2); margin: 0 -12px; padding-left: 12px; padding-right: 12px; }
+  .also-num {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 24px;
+    color: var(--accent);
+    font-weight: 400;
+  }
+  .also-time {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink);
+    opacity: 0.6;
+    font-weight: 700;
+  }
+  .also-time b {
+    display: block;
+    color: var(--ink);
+    opacity: 1;
+    font-weight: 800;
+    font-size: 14px;
+    margin-top: 2px;
+  }
+  .also-title {
+    font-family: var(--sans);
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+  }
+  .also-title .ext { color: var(--ink); opacity: 0.4; margin-left: 4px; font-size: 14px; }
+  .also-row:hover .also-title .ext { color: var(--accent); opacity: 1; }
+  .also-venue {
+    display: block;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 13px;
+    color: var(--ink);
+    opacity: 0.6;
+    margin-top: 2px;
+    font-weight: 400;
+  }
+  .also-tag {
+    font-size: 10px;
+    padding: 4px 9px;
+    background: var(--ink);
+    color: var(--paper);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 700;
+  }
+  .also-tag.weather { background: var(--accent); }
+
+  /* AFTERHOURS */
+  .afterhours {
+    margin-top: 80px;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 56px;
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 48px;
+    align-items: center;
+    text-decoration: none;
+    transition: background 0.2s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .afterhours::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 80% 20%, rgba(255,138,61,0.18) 0%, transparent 60%);
+    filter: blur(40px);
+  }
+  .afterhours:hover { background: #1a1a1a; }
+  .afterhours-inner { position: relative; z-index: 2; }
+  .afterhours-eyebrow {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--accent);
+    margin-bottom: 14px;
+    font-weight: 800;
+  }
+  .afterhours h2 {
+    font-family: var(--serif);
+    font-size: clamp(28px, 3.5vw, 44px);
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    font-weight: 500;
+    margin-bottom: 16px;
+    font-variation-settings: "opsz" 144;
+  }
+  .afterhours h2 em { font-style: italic; color: var(--accent); }
+  .afterhours-body {
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--paper);
+    opacity: 0.8;
+    font-weight: 400;
+    letter-spacing: -0.005em;
+  }
+  .afterhours-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 20px;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-weight: 800;
+    color: var(--accent);
+    border-bottom: 1px solid var(--accent);
+    padding-bottom: 4px;
+  }
+  .afterhours-photo {
+    position: relative;
+    z-index: 2;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+  }
+  .afterhours-photo img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    filter: contrast(1.1);
+  }
+
+  /* COLOPHON */
+  .colophon {
+    margin-top: 80px;
+    padding-top: 36px;
+    border-top: 1px solid rgba(0,0,0,0.18);
+  }
+  .colophon-row {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: 36px;
+    margin-bottom: 24px;
+    align-items: baseline;
+  }
+  .colophon-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--ink);
+    opacity: 0.5;
+    font-weight: 700;
+  }
+  .sources {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .source-chip {
+    font-size: 11px;
+    padding: 4px 10px;
+    background: var(--paper-2);
+    color: var(--ink);
+    border-radius: 0;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.12s;
+  }
+  .source-chip:hover { background: var(--accent); color: white; }
+  .colophon-note {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 14px;
+    color: var(--ink);
+    opacity: 0.7;
+    line-height: 1.5;
+    max-width: 640px;
+  }
+  .colophon-note a { color: var(--accent); border-bottom: 1px solid var(--accent); font-style: normal; }
+  .colophon-mark {
+    font-family: var(--serif);
+    font-size: 80px;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    margin-top: 56px;
+    color: var(--ink);
+    font-weight: 500;
+    font-variation-settings: "opsz" 144;
+  }
+  .colophon-mark em { font-style: italic; color: var(--accent); }
+
+  @media (max-width: 720px) {
+    .nav { padding: 0 16px; top: 14px; }
+    .nav-mark { font-size: 14px; }
+    .nav-meta { font-size: 10px; margin-left: 10px; }
+    .nav-chapter { font-size: 12px; }
+    .open { padding: 100px 18px 60px; }
+    .open-headline { font-size: 48px; }
+    .open-sub { font-size: 15px; }
+    .open-strip { gap: 12px; }
+    .open-strip-item { font-size: 11px; }
+    .open-strip-item b { font-size: 18px; }
+    .story-chapter { padding: 80px 18px; }
+    .story-inner {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+    .story-chapter:nth-of-type(even) .story-img { order: 0; }
+    .story-chapter:nth-of-type(even) .story-text { order: 0; }
+    .story-title { font-size: 36px; }
+    .story-body { font-size: 15px; }
+    .chapter-bignum { font-size: 280px; right: -10%; opacity: 0.05; }
+    .refresh-chapter { padding: 80px 18px; }
+    .refresh-heading { font-size: 36px; }
+    .coda { padding: 56px 18px; }
+    .also-row {
+      grid-template-columns: 32px 60px 1fr;
+      gap: 12px;
+    }
+    .also-tag { display: none; }
+    .afterhours {
+      padding: 32px;
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+    .afterhours-photo { aspect-ratio: 16/9; }
+    .colophon-row { grid-template-columns: 1fr; gap: 8px; }
+    .colophon-mark { font-size: 56px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ========= PROGRESS RAIL ========= -->
+<div class="progress-rail"><div class="progress-fill" id="progressFill"></div></div>
+
+<!-- ========= NAV ========= -->
+<nav class="nav">
+  <div class="nav-mark">WKNDR</div>
+  <div class="nav-meta">№28 · Sun 24 May</div>
+  <div class="nav-spacer"></div>
+  <div class="nav-chapter" id="navChapter">Cover</div>
+</nav>
+
+<!-- ========= SCROLL HINT ========= -->
+<div class="scroll-hint" id="scrollHint">Scroll the brief</div>
+
+<!-- ============================================================
+     CHAPTER 0 — COVER / OPENING
+     ============================================================ -->
+<section class="chapter open" data-chapter="Cover">
+  <div class="open-bg"></div>
+  <div class="open-inner">
+    <div class="open-meta">
+      <b>Issue 28</b>
+      <span>·</span>
+      <span>The Sunday Brief</span>
+      <span>·</span>
+      <span>Whitsun Weekend, 24 May 2026</span>
+      <span>·</span>
+      <span>Edited for <b style="color:var(--paper); opacity:1">Ness</b></span>
+    </div>
+    <h1 class="open-headline">
+      It's <em>gorgeous</em> out.<br>
+      Go before the weather <span class="pulse">flips.</span>
+    </h1>
+    <p class="open-sub">
+      A four-year-old, twenty-four degrees, eight hours of daylight, and a Whitsun Monday holiday on deck. Three picks for today — all weather-perfect, all kid-tested, two only happening this weekend. <b>Scroll through, tap to open, refresh to cycle.</b>
+    </p>
+    <div class="open-strip">
+      <div class="open-strip-item"><b>24°</b>High today</div>
+      <div class="open-strip-item"><b>0%</b>Chance of rain</div>
+      <div class="open-strip-item"><b>21:00</b>Sun sets</div>
+      <div class="open-strip-item tag"><b>Hot mode</b></div>
+    </div>
+    <div class="open-filters">
+      <button class="filter-chip active">Today</button>
+      <button class="filter-chip">Mon (holiday)</button>
+      <button class="filter-chip kid-active">● Me + kids</button>
+      <button class="filter-chip active">City + 1h</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     INTERLUDE I
+     ============================================================ -->
+<section class="interlude" data-chapter="Picks intro">
+  <div class="interlude-num">I, II, III.</div>
+  <h2 class="interlude-title">Three picks. Two are only on <em>this weekend.</em></h2>
+  <p class="interlude-body">
+    Re-ranked from today's weather, your household, and seven Amsterdam sources. Tap any photo to open the page.
+  </p>
+</section>
+
+<!-- ============================================================
+     CHAPTER 1 — MUIDERSLOT
+     ============================================================ -->
+<a href="https://www.muiderslot.nl/en/" target="_blank" rel="noopener" class="story-link" style="text-decoration:none; color:inherit;">
+<section class="story-chapter castle" data-chapter="I · Muiderslot">
+  <div class="chapter-bignum">I.</div>
+  <div class="story-inner">
+    <div class="story-img">
+      <img src="https://images.unsplash.com/photo-1564604761579-ec1ec3d2bb98?w=1200&h=1500&fit=crop&q=80" alt="">
+      <div class="story-img-caption">The Muiderslot, twenty-five minutes from Amsterdam, goes medieval for two days only this weekend.</div>
+    </div>
+    <div class="story-text">
+      <div class="story-eyebrow">
+        <span class="pick-num">I.</span>
+        <span class="badge">Today + Mon Only</span>
+        <span class="badge dark">For the kids</span>
+      </div>
+      <h2 class="story-title">A medieval day at the <em>Muiderslot</em><span class="ext-arrow">↗</span></h2>
+      <div class="story-venue">Muiden <span class="sep">·</span> 25 minutes by train <span class="sep">·</span> 10:30 → 16:30</div>
+      <div class="story-body">
+        <p>The castle goes fully medieval for two days only — sword-fighting school for kids, fire shows, troubadours, knightings in the courtyard. Your four-year-old can get knighted at the Bataille Knight School and make their own knight creation in the workshop. The grounds are big enough to wander all day, with water on three sides and shade for the worst of the heat.</p>
+      </div>
+      <div class="story-fit">
+        <b>Why now</b>
+        Two-day-only event · knighting works from age four · castle rewards a sunny day.
+      </div>
+      <div class="story-foot">
+        <span class="story-cta">
+          Open Muiderslot
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        </span>
+        <div class="story-pubs">
+          <a href="https://www.yourlittleblackbook.me/en/weekendtips-amsterdam/" target="_blank" rel="noopener" onclick="event.stopPropagation()" class="pub-chip">LBB</a>
+          <a href="https://kidsproof.nl/amsterdam/" target="_blank" rel="noopener" onclick="event.stopPropagation()" class="pub-chip">Kidsproof</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</a>
+
+<!-- ============================================================
+     CHAPTER 2 — FLUISTERVINK
+     ============================================================ -->
+<a href="https://www.amsterdamsebos.nl/" target="_blank" rel="noopener" class="story-link" style="text-decoration:none; color:inherit;">
+<section class="story-chapter forest" data-chapter="II · Fluistervink">
+  <div class="chapter-bignum">II.</div>
+  <div class="story-inner">
+    <div class="story-img">
+      <img src="https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=1200&h=1500&fit=crop&q=80" alt="">
+      <div class="story-img-caption">The Fluistervink, an electric whisper-boat, returned to the Bos this week for its summer season.</div>
+    </div>
+    <div class="story-text">
+      <div class="story-eyebrow">
+        <span class="pick-num">II.</span>
+        <span class="badge">Season Just Opened</span>
+        <span class="badge dark">For the kids</span>
+      </div>
+      <h2 class="story-title">The <em>Fluistervink</em> silent boat<span class="ext-arrow">↗</span></h2>
+      <div class="story-venue">Amsterdamse Bos <span class="sep">·</span> 25 min by bike <span class="sep">·</span> hourly departures</div>
+      <div class="story-body">
+        <p>An electric whisper-boat through the forest — no engine noise, just water, birds, the occasional deer at the shore. It is, plainly, one of the most peaceful hours the city can offer. The variety of small things to look at keeps a four-year-old fixed to the window. Just opened for the season this week.</p>
+      </div>
+      <div class="story-fit">
+        <b>Why now</b>
+        First weekend of the season · forest stays cool while city warms · sustains a child's attention.
+      </div>
+      <div class="story-foot">
+        <span class="story-cta">
+          Book Fluistervink
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        </span>
+        <div class="story-pubs">
+          <a href="https://www.yourlittleblackbook.me/en/weekendtips-amsterdam/" target="_blank" rel="noopener" onclick="event.stopPropagation()" class="pub-chip">LBB</a>
+          <a href="https://www.iamsterdam.com/" target="_blank" rel="noopener" onclick="event.stopPropagation()" class="pub-chip">I amsterdam</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</a>
+
+<!-- ============================================================
+     CHAPTER 3 — PANCAKE BOAT
+     ============================================================ -->
+<a href="https://www.pannenkoekenboot.nl/en/amsterdam/" target="_blank" rel="noopener" class="story-link" style="text-decoration:none; color:inherit;">
+<section class="story-chapter water" data-chapter="III · Pancakes">
+  <div class="chapter-bignum">III.</div>
+  <div class="story-inner">
+    <div class="story-img">
+      <img src="https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=1200&h=1500&fit=crop&q=80" alt="">
+      <div class="story-img-caption">The Pannenkoekenboot — the all-you-can-eat Amstel cruise, the Sunday family default.</div>
+    </div>
+    <div class="story-text">
+      <div class="story-eyebrow">
+        <span class="pick-num">III.</span>
+        <span class="badge dark">For the kids</span>
+        <span class="badge" style="background: var(--c-water-2)">Default</span>
+      </div>
+      <h2 class="story-title">Vondelpark, then <em>pancakes on the Amstel</em><span class="ext-arrow">↗</span></h2>
+      <div class="story-venue">Vondelpark + Pannenkoekenboot <span class="sep">·</span> 15 min by bike</div>
+      <div class="story-body">
+        <p>The classic Amsterdam Sunday: bike Vondelpark, release the child at Groot Melkhuis, then ferry to the Pannenkoekenboot for lunch on the water. The boat does a 75-min loop down the Amstel while you eat all-you-can-eat pancakes. Kids get windows full of boats and bridges; the boat is the adventure. IJscuypje on the way home if earned.</p>
+      </div>
+      <div class="story-fit">
+        <b>Why now</b>
+        Park weather · the boat contains the child · pancakes are the bribe.
+      </div>
+      <div class="story-foot">
+        <span class="story-cta">
+          Book the boat
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        </span>
+        <div class="story-pubs">
+          <a href="https://mommypoppins.com/" target="_blank" rel="noopener" onclick="event.stopPropagation()" class="pub-chip">Mommy P</a>
+          <a href="https://www.iamsterdam.com/" target="_blank" rel="noopener" onclick="event.stopPropagation()" class="pub-chip">I amsterdam</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</a>
+
+<!-- ============================================================
+     REFRESH
+     ============================================================ -->
+<section class="refresh-chapter" data-chapter="Refresh">
+  <div class="refresh-inner">
+    <div class="refresh-eyebrow">More where these came from</div>
+    <h2 class="refresh-heading">Show me a <em>different three.</em></h2>
+    <button class="refresh-btn" id="refreshBtn" onclick="cycleSet()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+      Refresh Brief
+    </button>
+    <div class="refresh-counter">Set <b id="setNum">1</b> of 3 · same context, different angles</div>
+  </div>
+</section>
+
+<!-- ============================================================
+     CODA
+     ============================================================ -->
+<section class="coda" data-chapter="Coda">
+  <div class="coda-inner">
+    <h2 class="coda-head">Also on <em>today.</em></h2>
+    <ul class="also-list">
+      <a href="https://www.artis.nl/en/" target="_blank" rel="noopener" class="also-row">
+        <div class="also-num">01</div>
+        <div class="also-time">SUN<b>open</b></div>
+        <div>
+          <div class="also-title">Artis Royal Zoo + planetarium <span class="ext">↗</span></div>
+          <span class="also-venue">Plantage · €25 / €22 · 9:00–18:00</span>
+        </div>
+        <span class="also-tag">Kids</span>
+      </a>
+      <a href="https://www.nemosciencemuseum.nl/en/visit/" target="_blank" rel="noopener" class="also-row">
+        <div class="also-num">02</div>
+        <div class="also-time">SUN<b>open</b></div>
+        <div>
+          <div class="also-title">NEMO Science Museum, rooftop open <span class="ext">↗</span></div>
+          <span class="also-venue">Oosterdok · €18.50 · indoor + outdoor</span>
+        </div>
+        <span class="also-tag weather">Sunny</span>
+      </a>
+      <a href="https://westergas.nl/en/" target="_blank" rel="noopener" class="also-row">
+        <div class="also-num">03</div>
+        <div class="also-time">SUN<b>9:00</b></div>
+        <div>
+          <div class="also-title">Westerpark Sunday market + petting zoo <span class="ext">↗</span></div>
+          <span class="also-venue">Westergas · free · outdoor</span>
+        </div>
+        <span class="also-tag">Kids</span>
+      </a>
+      <a href="https://www.dehortus.nl/en/" target="_blank" rel="noopener" class="also-row">
+        <div class="also-num">04</div>
+        <div class="also-time">SUN<b>10:30</b></div>
+        <div>
+          <div class="also-title">Hortus Botanicus butterfly house <span class="ext">↗</span></div>
+          <span class="also-venue">Plantage · €12.50 · 30 min + garden</span>
+        </div>
+        <span class="also-tag">Kids</span>
+      </a>
+      <a href="https://www.amsterdam.nl/en/sport-leisure/swimming/" target="_blank" rel="noopener" class="also-row">
+        <div class="also-num">05</div>
+        <div class="also-time">SUN<b>11:00</b></div>
+        <div>
+          <div class="also-title">Sloterplas swim lake (season opened) <span class="ext">↗</span></div>
+          <span class="also-venue">Sloterpark · free · paddling for under-fives</span>
+        </div>
+        <span class="also-tag weather">Hot Day</span>
+      </a>
+      <a href="https://kinderkookkafe.nl/" target="_blank" rel="noopener" class="also-row">
+        <div class="also-num">06</div>
+        <div class="also-time">SUN<b>13:00</b></div>
+        <div>
+          <div class="also-title">Kinderkookkafé in Vondelpark <span class="ext">↗</span></div>
+          <span class="also-venue">Vondelpark · €15 · kids cook + serve lunch</span>
+        </div>
+        <span class="also-tag">Kids</span>
+      </a>
+      <a href="https://www.fun-forest.nl/en/amsterdam/" target="_blank" rel="noopener" class="also-row">
+        <div class="also-num">07</div>
+        <div class="also-time">SUN<b>15:00</b></div>
+        <div>
+          <div class="also-title">Fun Forest treetop climbing <span class="ext">↗</span></div>
+          <span class="also-venue">Amsterdamse Bos · €15 kids · ropes course from age 4</span>
+        </div>
+        <span class="also-tag weather">Active</span>
+      </a>
+    </ul>
+
+    <a href="https://fete-du-champagne.nl/" target="_blank" rel="noopener" class="afterhours">
+      <div class="afterhours-inner">
+        <div class="afterhours-eyebrow">↳ Once the kids are down</div>
+        <h2>The <em>Fête du Champagne</em> opens late in Rembrandtpark.</h2>
+        <p class="afterhours-body">
+          Open until 23:00 tonight — 100+ champagnes and wines, French bistro plates, in the park. A ten-minute walk from yours. If one of you can take bath duty, the other can pour a glass before sunset (21:30 today).
+        </p>
+        <span class="afterhours-link">See the lineup ↗</span>
+      </div>
+      <div class="afterhours-photo">
+        <img src="https://images.unsplash.com/photo-1547595628-c61a29f496f0?w=600&h=600&fit=crop&q=80" alt="">
+      </div>
+    </a>
+
+    <div class="colophon">
+      <div class="colophon-row">
+        <div class="colophon-label">Read this week</div>
+        <div class="sources">
+          <a href="https://www.buienradar.nl/" target="_blank" rel="noopener" class="source-chip">Buienradar</a>
+          <a href="https://www.knmi.nl/" target="_blank" rel="noopener" class="source-chip">KNMI</a>
+          <a href="https://www.yourlittleblackbook.me/en/weekendtips-amsterdam/" target="_blank" rel="noopener" class="source-chip">Little Black Book</a>
+          <a href="https://www.iamsterdam.com/" target="_blank" rel="noopener" class="source-chip">I amsterdam</a>
+          <a href="https://kidsproof.nl/amsterdam/" target="_blank" rel="noopener" class="source-chip">Kidsproof</a>
+          <a href="https://mommypoppins.com/" target="_blank" rel="noopener" class="source-chip">Mommy Poppins</a>
+          <a href="https://www.muiderslot.nl/en/" target="_blank" rel="noopener" class="source-chip">Muiderslot</a>
+          <a href="https://www.amsterdamsebos.nl/" target="_blank" rel="noopener" class="source-chip">Amsterdamse Bos</a>
+        </div>
+      </div>
+      <div class="colophon-row">
+        <div class="colophon-label">Method</div>
+        <p class="colophon-note">
+          Brief generated Sunday at 09:00 · weather updated 11:00 · seven sources scanned for today's kid-friendly options. The Muiderslot medieval day and Fluistervink season opening surfaced this week from <a href="https://www.yourlittleblackbook.me/en/weekendtips-amsterdam/" target="_blank" rel="noopener">Little Black Book's Whitsun roundup</a>.
+        </p>
+      </div>
+      <div class="colophon-mark">WKND<em>R</em></div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Progress bar
+  const progressFill = document.getElementById('progressFill');
+  const scrollHint = document.getElementById('scrollHint');
+  const navChapter = document.getElementById('navChapter');
+  const chapters = document.querySelectorAll('[data-chapter]');
+
+  window.addEventListener('scroll', () => {
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = (scrollTop / docHeight) * 100;
+    progressFill.style.width = pct + '%';
+
+    if (scrollTop > 100) scrollHint.classList.add('gone');
+    else scrollHint.classList.remove('gone');
+
+    // Find current chapter
+    let currentChapter = 'Cover';
+    chapters.forEach(ch => {
+      const rect = ch.getBoundingClientRect();
+      if (rect.top < window.innerHeight * 0.5 && rect.bottom > window.innerHeight * 0.5) {
+        currentChapter = ch.getAttribute('data-chapter');
+      }
+    });
+    navChapter.textContent = currentChapter;
+  });
+
+  // Intersection observer for story chapters
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in-view');
+      }
+    });
+  }, { threshold: 0.25 });
+
+  document.querySelectorAll('.story-chapter').forEach(el => observer.observe(el));
+
+  // Refresh
+  let currentSet = 0;
+  function cycleSet() {
+    const btn = document.getElementById('refreshBtn');
+    btn.classList.add('spinning');
+    setTimeout(() => {
+      currentSet = (currentSet + 1) % 3;
+      document.getElementById('setNum').textContent = currentSet + 1;
+      btn.classList.remove('spinning');
+      // Scroll back up to the first chapter
+      document.querySelector('.story-chapter').scrollIntoView({ behavior: 'smooth' });
+    }, 500);
+  }
+</script>
+
+</body>
+</html>

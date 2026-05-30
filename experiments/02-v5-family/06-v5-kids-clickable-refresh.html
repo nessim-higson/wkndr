@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WKNDR — Amsterdam today, with kids</title>
+<style>
+  :root {
+    --ink: #0a0a0a;
+    --ink-2: #1a1a1a;
+    --ink-3: #4a4a4a;
+    --ink-4: #8a8a8a;
+    --ink-5: #c4c4c4;
+    --paper: #fafaf7;
+    --paper-2: #f2f2ee;
+    --paper-3: #e8e8e3;
+    --rule: #d8d8d3;
+    --accent: #ff4d1f;
+    --accent-soft: #fff2ec;
+    --kid: #2d5b8a;
+    --kid-soft: #e4eef7;
+    --hot: #c2310e;
+    --hot-1: #ffe8d0;
+    --hot-2: #ffc890;
+    --hot-3: #ff8a3d;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+  html, body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    font-feature-settings: "kern", "liga", "tnum";
+    text-rendering: geometricPrecision;
+    overflow-x: hidden;
+  }
+  body { min-height: 100vh; background: linear-gradient(180deg, #fff8ee 0%, var(--paper) 500px); }
+  button { font-family: inherit; cursor: pointer; }
+  img { display: block; max-width: 100%; }
+  a { color: inherit; text-decoration: none; }
+
+  /* ========= TOP BAR ========= */
+  .topbar {
+    border-bottom: 1px solid var(--rule);
+    padding: 16px 28px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: rgba(250, 250, 247, 0.92);
+    backdrop-filter: blur(10px);
+    position: sticky;
+    top: 0;
+    z-index: 30;
+  }
+  .mark {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: var(--ink);
+  }
+  .mark::before {
+    content: '';
+    width: 9px;
+    height: 9px;
+    background: var(--accent);
+    border-radius: 50%;
+  }
+  .topbar .divider {
+    width: 1px;
+    height: 18px;
+    background: var(--rule);
+    margin: 0 4px;
+  }
+  .ness {
+    font-size: 12px;
+    color: var(--ink-3);
+    font-weight: 500;
+    letter-spacing: -0.005em;
+  }
+  .ness b { color: var(--ink); font-weight: 600; }
+  .spacer { flex: 1; }
+  .icon-btn {
+    width: 34px;
+    height: 34px;
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--ink-3);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.12s ease;
+  }
+  .icon-btn:hover { color: var(--ink); border-color: var(--ink-4); background: var(--paper-2); }
+  .icon-btn svg { width: 14px; height: 14px; }
+
+  /* ========= FILTERS ========= */
+  .filters {
+    padding: 12px 28px;
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    flex-wrap: wrap;
+    background: var(--paper);
+    border-bottom: 1px solid var(--rule);
+  }
+  .filter-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-4);
+    font-weight: 500;
+  }
+  .filter-label + .filter-label { margin-left: 12px; }
+  .pill {
+    font-size: 12px;
+    font-weight: 500;
+    padding: 6px 12px;
+    background: transparent;
+    color: var(--ink-3);
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    transition: all 0.12s ease;
+    letter-spacing: -0.005em;
+  }
+  .pill:hover { color: var(--ink); border-color: var(--ink-4); background: var(--paper-2); }
+  .pill.active {
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+  }
+  .pill.kids-active {
+    background: var(--kid);
+    color: var(--paper);
+    border-color: var(--kid);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .pill.kids-active::before {
+    content: '';
+    width: 5px;
+    height: 5px;
+    background: white;
+    border-radius: 50%;
+  }
+
+  /* ========= MAIN COLUMN ========= */
+  .col {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 48px 28px 120px;
+  }
+
+  /* ========= CITY HERO ========= */
+  .city-hero { margin-bottom: 22px; }
+  .city-dateline {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-4);
+    margin-bottom: 14px;
+    font-weight: 500;
+  }
+  .city-dateline b { color: var(--ink-2); }
+  .city-dateline .now {
+    display: inline-block;
+    background: var(--accent);
+    color: white;
+    padding: 2px 7px;
+    border-radius: 3px;
+    font-weight: 700;
+    font-size: 10px;
+    margin-right: 8px;
+    letter-spacing: 0.04em;
+  }
+  .city-name {
+    font-size: 64px;
+    font-weight: 600;
+    letter-spacing: -0.045em;
+    line-height: 1;
+    color: var(--ink);
+  }
+
+  /* ========= WEATHER BANNER ========= */
+  .weather-banner {
+    margin-top: 22px;
+    padding: 22px 26px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    background: linear-gradient(135deg, var(--hot-1) 0%, var(--hot-2) 100%);
+    color: #4a2010;
+  }
+  .weather-icon { font-size: 42px; line-height: 1; flex-shrink: 0; }
+  .weather-body { flex: 1; }
+  .weather-temps {
+    font-size: 13px; font-weight: 600;
+    letter-spacing: -0.005em; margin-bottom: 4px; opacity: 0.7;
+  }
+  .weather-headline {
+    font-size: 19px; font-weight: 600;
+    line-height: 1.3; letter-spacing: -0.02em;
+  }
+  .weather-tag {
+    padding: 6px 12px; border-radius: 999px;
+    background: rgba(0,0,0,0.12);
+    font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.1em; flex-shrink: 0;
+  }
+
+  /* ========= HEADLINE + LEDE ========= */
+  .pretitle {
+    margin-top: 36px; font-size: 11px;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--ink-4); font-weight: 600;
+    margin-bottom: 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .pretitle .kid-badge {
+    background: var(--kid); color: var(--paper);
+    padding: 3px 7px; border-radius: 3px;
+    font-size: 9px; letter-spacing: 0.06em;
+  }
+  h1 {
+    font-size: 40px; line-height: 1.05;
+    letter-spacing: -0.035em; font-weight: 500;
+    margin-bottom: 18px; max-width: 720px;
+  }
+  .lede {
+    font-size: 15px; line-height: 1.55;
+    color: var(--ink-3); font-weight: 400;
+    letter-spacing: -0.005em;
+    margin-bottom: 40px; max-width: 620px;
+  }
+  .lede b { color: var(--ink); font-weight: 600; }
+
+  /* ========= SECTION HEAD ========= */
+  .section-head {
+    margin: 8px 0 20px;
+    display: flex; align-items: baseline; gap: 14px;
+  }
+  .section-head h3 {
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--ink-2);
+  }
+  .section-head .rule { flex: 1; height: 1px; background: var(--ink); }
+  .section-head .count {
+    font-size: 11px; color: var(--ink-4);
+    font-weight: 500; letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  /* ========= CARDS ========= */
+  .cards-wrap {
+    position: relative;
+    margin-bottom: 24px;
+  }
+  .cards {
+    display: grid; grid-template-columns: 1fr;
+    gap: 18px;
+    transition: opacity 0.3s ease;
+  }
+  .cards.cycling { opacity: 0; }
+  .card {
+    position: relative;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 18px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.28s ease;
+    display: block;
+    color: inherit;
+    text-decoration: none;
+  }
+  .card:hover {
+    transform: translateY(-3px) scale(1.005);
+    box-shadow: 0 14px 40px rgba(0,0,0,0.08);
+  }
+  .card:active { transform: scale(0.99); }
+  .card-img {
+    width: 100%; aspect-ratio: 16 / 10;
+    overflow: hidden; position: relative; background: var(--paper-3);
+  }
+  .card-img img {
+    width: 100%; height: 100%; object-fit: cover;
+    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .card:hover .card-img img { transform: scale(1.03); }
+  .card-img::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(180deg, transparent 35%, rgba(0,0,0,0.55) 100%);
+    pointer-events: none;
+  }
+  .card-tag-overlay {
+    position: absolute; top: 14px; left: 14px;
+    display: flex; gap: 5px; flex-wrap: wrap; z-index: 2;
+  }
+  .card-eyebrow {
+    position: absolute; bottom: 14px; left: 16px; right: 16px;
+    color: rgba(255,255,255,0.95);
+    font-size: 10px; text-transform: uppercase;
+    letter-spacing: 0.1em; font-weight: 600; z-index: 2;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+  }
+  .card-external {
+    position: absolute; top: 14px; right: 14px;
+    width: 32px; height: 32px; border-radius: 50%;
+    background: rgba(255,255,255,0.95);
+    color: var(--ink);
+    display: inline-flex; align-items: center; justify-content: center;
+    z-index: 3;
+    backdrop-filter: blur(4px);
+    transition: all 0.15s;
+  }
+  .card:hover .card-external {
+    background: var(--accent); color: white;
+  }
+  .card-external svg { width: 13px; height: 13px; }
+  .card-body { padding: 18px 18px 20px; }
+  .card-title {
+    font-size: 22px; font-weight: 600;
+    line-height: 1.18; letter-spacing: -0.025em;
+    margin-bottom: 6px; color: var(--ink);
+    display: flex; align-items: baseline; gap: 8px;
+  }
+  .card-title .ext-arrow {
+    font-size: 16px; color: var(--ink-4);
+    transition: color 0.15s;
+    flex-shrink: 0;
+  }
+  .card:hover .card-title .ext-arrow { color: var(--accent); }
+  .card-venue {
+    font-size: 12px; color: var(--ink-4);
+    letter-spacing: -0.005em; margin-bottom: 10px;
+  }
+  .card-venue .sep { margin: 0 7px; color: var(--ink-5); }
+  .card-snippet {
+    font-size: 14px; line-height: 1.5;
+    color: var(--ink-3); letter-spacing: -0.005em;
+  }
+  .card-pubs {
+    display: flex; gap: 4px; margin-top: 12px; flex-wrap: wrap;
+  }
+  .pub-chip {
+    font-size: 10px; padding: 3px 8px;
+    background: var(--paper-2); color: var(--ink-3);
+    border-radius: 3px; font-weight: 500;
+    letter-spacing: -0.005em; text-transform: uppercase;
+    transition: all 0.12s;
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  .pub-chip:hover { background: var(--accent-soft); color: var(--accent); }
+  .pub-chip b { color: var(--accent); margin-right: 3px; font-weight: 600; }
+  .card-fit {
+    margin-top: 10px; padding: 8px 11px;
+    background: var(--kid-soft); border-radius: 6px;
+    font-size: 11px; color: var(--ink-3);
+    display: flex; align-items: center; gap: 8px;
+    letter-spacing: -0.005em;
+  }
+  .card-fit::before {
+    content: '✦'; color: var(--kid); font-size: 11px;
+  }
+  .card-fit b { color: var(--ink); font-weight: 600; }
+  .card-footer {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: 14px; padding-top: 14px;
+    border-top: 1px solid var(--paper-2);
+  }
+  .card-footer-meta {
+    font-size: 11px; color: var(--ink-4);
+    font-weight: 500; letter-spacing: 0.02em; text-transform: uppercase;
+  }
+  .card-footer-meta b { color: var(--ink-2); }
+  .card-footer-actions { display: flex; gap: 4px; }
+  .mini-action {
+    width: 30px; height: 30px; border-radius: 50%;
+    background: var(--paper-2); color: var(--ink-3);
+    border: none; display: flex; align-items: center; justify-content: center;
+    transition: all 0.12s;
+  }
+  .mini-action:hover { background: var(--ink); color: var(--paper); }
+  .mini-action.saved { background: var(--accent-soft); color: var(--accent); }
+  .mini-action svg { width: 13px; height: 13px; }
+
+  .tag {
+    font-size: 9.5px; text-transform: uppercase;
+    letter-spacing: 0.08em; padding: 4px 8px;
+    border-radius: 3px; font-weight: 600;
+    line-height: 1.4; backdrop-filter: blur(4px);
+  }
+  .tag.weather-pick { background: rgba(255,77,31,0.95); color: white; }
+  .tag.kid { background: rgba(45,91,138,0.95); color: white; }
+  .tag.new { background: rgba(10,10,10,0.85); color: var(--paper); }
+  .tag.outdoor { background: rgba(255,255,255,0.92); color: var(--ink-2); }
+  .tag.today { background: rgba(194,49,14,0.95); color: white; }
+
+  /* ========= BIG REFRESH ========= */
+  .refresh-section {
+    margin: 16px 0 40px;
+    padding: 28px 24px;
+    background: linear-gradient(180deg, var(--paper-2) 0%, var(--paper) 100%);
+    border: 1px solid var(--rule);
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .refresh-text {
+    flex: 1; min-width: 200px;
+  }
+  .refresh-title {
+    font-size: 16px; font-weight: 600;
+    color: var(--ink); letter-spacing: -0.015em;
+    margin-bottom: 4px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .refresh-counter {
+    background: var(--ink); color: var(--paper);
+    font-size: 10px; font-weight: 700;
+    padding: 2px 7px; border-radius: 3px;
+    letter-spacing: 0.04em;
+  }
+  .refresh-sub {
+    font-size: 13px; color: var(--ink-3);
+    line-height: 1.5; letter-spacing: -0.005em;
+  }
+  .refresh-btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 14px 24px;
+    background: var(--ink); color: var(--paper);
+    border: none; border-radius: 999px;
+    font-size: 14px; font-weight: 600;
+    letter-spacing: -0.005em;
+    transition: all 0.15s ease;
+    flex-shrink: 0;
+  }
+  .refresh-btn:hover {
+    background: var(--accent);
+    transform: scale(1.03);
+  }
+  .refresh-btn:active { transform: scale(0.98); }
+  .refresh-btn svg {
+    width: 16px; height: 16px;
+    transition: transform 0.4s ease;
+  }
+  .refresh-btn.spinning svg {
+    transform: rotate(360deg);
+  }
+
+  /* ========= COMPACT LIST ========= */
+  .compact { list-style: none; }
+  .compact-item {
+    padding: 14px 0; border-bottom: 1px solid var(--rule);
+    display: grid; grid-template-columns: 80px 56px 1fr auto auto;
+    gap: 16px; align-items: center;
+    cursor: pointer; transition: background 0.12s;
+    color: inherit; text-decoration: none;
+  }
+  .compact-item:hover { background: var(--paper-2); margin: 0 -12px; padding-left: 12px; padding-right: 12px; }
+  .compact-item:last-child { border-bottom: 0; }
+  .c-time {
+    font-size: 11px; color: var(--ink-4);
+    text-transform: uppercase; letter-spacing: 0.06em; font-weight: 500;
+  }
+  .c-time b { color: var(--ink); font-weight: 600; display: block; font-size: 13px; letter-spacing: -0.01em; }
+  .c-thumb {
+    width: 56px; height: 56px; border-radius: 6px;
+    overflow: hidden; background: var(--paper-3);
+  }
+  .c-thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .c-title {
+    font-size: 14px; font-weight: 500;
+    letter-spacing: -0.01em; line-height: 1.3;
+    display: flex; align-items: baseline; gap: 6px;
+  }
+  .c-title .ext { font-size: 11px; color: var(--ink-4); }
+  .compact-item:hover .c-title .ext { color: var(--accent); }
+  .c-title .v {
+    display: block; width: 100%;
+    font-size: 11px; color: var(--ink-4);
+    margin-top: 2px; font-weight: 400; letter-spacing: -0.005em;
+  }
+  .c-tags { display: flex; gap: 4px; }
+  .c-action {
+    width: 28px; height: 28px; border-radius: 50%;
+    border: 1px solid var(--rule); background: var(--paper);
+    color: var(--ink-4);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .c-action:hover { color: var(--accent); border-color: var(--accent); }
+  .c-action svg { width: 12px; height: 12px; }
+
+  /* ========= AFTERHOURS ========= */
+  .afterhours {
+    margin-top: 48px; padding: 24px;
+    background: linear-gradient(135deg, #1a1a1a 0%, #2a2030 100%);
+    color: var(--paper); border-radius: 18px;
+    display: grid; grid-template-columns: 1fr 160px;
+    gap: 24px; align-items: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+  .afterhours:hover { transform: translateY(-2px); }
+  .afterhours-photo {
+    width: 100%; aspect-ratio: 1 / 1; border-radius: 10px;
+    overflow: hidden; background: #0a0a0a;
+  }
+  .afterhours-photo img { width: 100%; height: 100%; object-fit: cover; }
+  .afterhours-label {
+    font-size: 10px; text-transform: uppercase;
+    letter-spacing: 0.1em; color: #ff8a5a;
+    margin-bottom: 6px; font-weight: 600;
+  }
+  .afterhours h3 {
+    font-size: 20px; font-weight: 500;
+    line-height: 1.2; letter-spacing: -0.025em;
+    margin-bottom: 8px;
+    display: flex; align-items: baseline; gap: 8px;
+    color: var(--paper);
+  }
+  .afterhours h3 .ext { font-size: 14px; color: #ff8a5a; }
+  .afterhours p {
+    font-size: 13px; line-height: 1.55;
+    color: #c4c4c4; letter-spacing: -0.005em;
+  }
+  .afterhours-action {
+    margin-top: 14px;
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 12px; color: var(--paper);
+    background: transparent; border: 1px solid #4a4a4a;
+    padding: 8px 14px; border-radius: 999px; font-weight: 500;
+  }
+  .afterhours:hover .afterhours-action { background: var(--accent); border-color: var(--accent); }
+
+  /* ========= COLOPHON ========= */
+  .colophon {
+    margin-top: 48px; padding-top: 24px;
+    border-top: 1px solid var(--rule);
+    font-size: 11px; color: var(--ink-4); line-height: 1.7;
+  }
+  .colophon-title {
+    text-transform: uppercase; letter-spacing: 0.06em;
+    font-weight: 600; color: var(--ink-3);
+    margin-bottom: 10px; font-size: 10px;
+  }
+  .sources { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 6px; }
+  .source-chip {
+    padding: 3px 8px;
+    background: var(--paper-2); color: var(--ink-3);
+    border-radius: 3px; font-size: 10px; font-weight: 500;
+    transition: all 0.12s;
+    text-decoration: none;
+  }
+  .source-chip:hover { background: var(--accent-soft); color: var(--accent); }
+
+  @media (max-width: 720px) {
+    .col { padding: 36px 18px 80px; }
+    h1 { font-size: 30px; }
+    .city-name { font-size: 44px; }
+    .topbar { padding: 12px 16px; gap: 10px; }
+    .filters { padding: 10px 16px; gap: 5px; }
+    .filter-label { display: none; }
+    .ness { display: none; }
+    .topbar .divider { display: none; }
+    .weather-banner { padding: 16px 18px; gap: 12px; }
+    .weather-icon { font-size: 32px; }
+    .weather-headline { font-size: 15px; }
+    .weather-tag { display: none; }
+    .compact-item { grid-template-columns: 60px 48px 1fr auto; gap: 12px; }
+    .c-action { display: none; }
+    .afterhours { grid-template-columns: 1fr; }
+    .afterhours-photo { order: -1; aspect-ratio: 16/9; }
+    .refresh-section { flex-direction: column; align-items: stretch; text-align: left; }
+    .refresh-btn { justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ========= TOP BAR ========= -->
+<header class="topbar">
+  <div class="mark">WKNDR</div>
+  <div class="divider"></div>
+  <div class="ness">Sunday brief · for <b>Ness</b></div>
+  <div class="spacer"></div>
+  <button class="icon-btn" title="Saved">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+  </button>
+  <button class="icon-btn" title="Share">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13"/></svg>
+  </button>
+  <button class="icon-btn" title="Settings">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v6m0 6v6m11-7h-6m-6 0H1m18.36-7.36l-4.24 4.24m-4.24 4.24l-4.24 4.24m12.72 0l-4.24-4.24m-4.24-4.24L4.64 4.64"/></svg>
+  </button>
+</header>
+
+<!-- ========= FILTERS ========= -->
+<div class="filters">
+  <span class="filter-label">When</span>
+  <button class="pill active">Today</button>
+  <button class="pill">Mon (holiday)</button>
+  <button class="pill">Next weekend</button>
+
+  <span class="filter-label">Who</span>
+  <button class="pill kids-active">Me + kids</button>
+
+  <span class="filter-label">Range</span>
+  <button class="pill active">City + 1h</button>
+  <button class="pill">≤ 3h</button>
+</div>
+
+<main class="col">
+
+  <!-- ========= CITY HERO ========= -->
+  <div class="city-hero">
+    <div class="city-dateline"><span class="now">NOW</span> Sunday <b>24 May 2026</b> · 11:30 · whitsun weekend</div>
+    <span class="city-name">Amsterdam</span>
+  </div>
+
+  <!-- ========= WEATHER BANNER ========= -->
+  <div class="weather-banner">
+    <span class="weather-icon">☀️</span>
+    <div class="weather-body">
+      <div class="weather-temps">Now 20° · High 24° · 0% rain · sunny intervals through 21:00</div>
+      <div class="weather-headline">It's gorgeous out — get outside before the weather flips on Monday.</div>
+    </div>
+    <span class="weather-tag">HOT MODE</span>
+  </div>
+
+  <!-- ========= HEADLINE ========= -->
+  <div class="pretitle">
+    <span class="kid-badge">KIDS · 4 YRS</span>
+    SUNDAY BRIEF
+  </div>
+  <h1>A four-year-old, 24° and clear skies, and a Whit Sunday on the calendar. The day shapes itself.</h1>
+  <p class="lede">
+    <b>This is a get-out-the-door morning.</b> Three picks for today, all weather-perfect, all kid-tested. <b>Tap any to open</b> the venue or booking page directly. Don't love these three? Hit the big refresh below for a new set.
+  </p>
+
+  <!-- ========= SECTION ========= -->
+  <div class="section-head">
+    <h3>The three picks · today only</h3>
+    <span class="rule"></span>
+    <span class="count" id="setCount">SET 1 OF 3 · KIDS · HOT MODE</span>
+  </div>
+
+  <!-- ========= CARDS (rendered via JS) ========= -->
+  <div class="cards-wrap">
+    <div class="cards" id="cards"></div>
+  </div>
+
+  <!-- ========= BIG REFRESH ========= -->
+  <div class="refresh-section">
+    <div class="refresh-text">
+      <div class="refresh-title">
+        Show me a different three
+        <span class="refresh-counter" id="counterPill">1 / 3</span>
+      </div>
+      <div class="refresh-sub">Same weather, same family, different picks. The engine has more in this mode — keep cycling.</div>
+    </div>
+    <button class="refresh-btn" id="refreshBtn" onclick="cycleSet()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+      Refresh picks
+    </button>
+  </div>
+
+  <!-- ========= ALSO ON ========= -->
+  <div class="section-head">
+    <h3>Also on today</h3>
+    <span class="rule"></span>
+    <span class="count">7 more · all kid-safe</span>
+  </div>
+
+  <ul class="compact">
+    <a href="https://www.artis.nl/en/" target="_blank" rel="noopener" class="compact-item">
+      <div class="c-time">SUN<b>open</b></div>
+      <div class="c-thumb"><img src="https://images.unsplash.com/photo-1503919005314-30d93d07d823?w=200&h=200&fit=crop&q=70" alt=""></div>
+      <div class="c-title">Artis Royal Zoo + planetarium <span class="ext">↗</span>
+        <span class="v">Plantage · €25 adults / €22 kids · 9:00–18:00</span>
+      </div>
+      <div class="c-tags"><span class="tag kid">Kids</span></div>
+      <button class="c-action" onclick="event.preventDefault(); this.classList.toggle('active')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></button>
+    </a>
+    <a href="https://www.nemosciencemuseum.nl/en/visit/" target="_blank" rel="noopener" class="compact-item">
+      <div class="c-time">SUN<b>open</b></div>
+      <div class="c-thumb"><img src="https://images.unsplash.com/photo-1597163307637-8b0aff3a55a4?w=200&h=200&fit=crop&q=70" alt=""></div>
+      <div class="c-title">NEMO Science Museum rooftop terrace <span class="ext">↗</span>
+        <span class="v">Oosterdok · €18.50 · sunny rooftop today</span>
+      </div>
+      <div class="c-tags"><span class="tag kid">Kids</span></div>
+      <button class="c-action" onclick="event.preventDefault(); this.classList.toggle('active')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></button>
+    </a>
+    <a href="https://westergas.nl/en/" target="_blank" rel="noopener" class="compact-item">
+      <div class="c-time">SUN<b>9:00</b></div>
+      <div class="c-thumb"><img src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=200&h=200&fit=crop&q=70" alt=""></div>
+      <div class="c-title">Westerpark Sunday market + petting zoo <span class="ext">↗</span>
+        <span class="v">Westergas · free · outdoor market + playground</span>
+      </div>
+      <div class="c-tags"><span class="tag kid">Kids</span></div>
+      <button class="c-action" onclick="event.preventDefault(); this.classList.toggle('active')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></button>
+    </a>
+    <a href="https://www.dehortus.nl/en/" target="_blank" rel="noopener" class="compact-item">
+      <div class="c-time">SUN<b>10:30</b></div>
+      <div class="c-thumb"><img src="https://images.unsplash.com/photo-1530541930197-ff16ac917b0e?w=200&h=200&fit=crop&q=70" alt=""></div>
+      <div class="c-title">Hortus Botanicus butterfly house <span class="ext">↗</span>
+        <span class="v">Plantage · €12.50 · 30 min visit + garden</span>
+      </div>
+      <div class="c-tags"><span class="tag kid">Kids</span></div>
+      <button class="c-action" onclick="event.preventDefault(); this.classList.toggle('active')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></button>
+    </a>
+    <a href="https://www.amsterdam.nl/en/sport-leisure/swimming/swimming-pools/sloterplas/" target="_blank" rel="noopener" class="compact-item">
+      <div class="c-time">SUN<b>11:00</b></div>
+      <div class="c-thumb"><img src="https://images.unsplash.com/photo-1521207418485-99c705420785?w=200&h=200&fit=crop&q=70" alt=""></div>
+      <div class="c-title">Sloterplas swim lake (just opened) <span class="ext">↗</span>
+        <span class="v">Sloterpark · free · beach + paddling area for under-5s</span>
+      </div>
+      <div class="c-tags"><span class="tag weather-pick">Hot day</span></div>
+      <button class="c-action" onclick="event.preventDefault(); this.classList.toggle('active')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></button>
+    </a>
+    <a href="https://kinderkookkafe.nl/" target="_blank" rel="noopener" class="compact-item">
+      <div class="c-time">SUN<b>13:00</b></div>
+      <div class="c-thumb"><img src="https://images.unsplash.com/photo-1582719508461-905c673771fd?w=200&h=200&fit=crop&q=70" alt=""></div>
+      <div class="c-title">Kinderkookkafé in Vondelpark <span class="ext">↗</span>
+        <span class="v">Vondelpark · €15 · kids cook + serve their own lunch</span>
+      </div>
+      <div class="c-tags"><span class="tag kid">Kids</span></div>
+      <button class="c-action" onclick="event.preventDefault(); this.classList.toggle('active')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></button>
+    </a>
+    <a href="https://www.fun-forest.nl/en/amsterdam/" target="_blank" rel="noopener" class="compact-item">
+      <div class="c-time">SUN<b>15:00</b></div>
+      <div class="c-thumb"><img src="https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=200&h=200&fit=crop&q=70" alt=""></div>
+      <div class="c-title">Fun Forest treetop climbing <span class="ext">↗</span>
+        <span class="v">Amsterdamse Bos · €15 kids · ropes course from age 4</span>
+      </div>
+      <div class="c-tags"><span class="tag weather-pick">Active</span></div>
+      <button class="c-action" onclick="event.preventDefault(); this.classList.toggle('active')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></button>
+    </a>
+  </ul>
+
+  <!-- ========= AFTERHOURS ========= -->
+  <a href="https://fete-du-champagne.nl/" target="_blank" rel="noopener" class="afterhours">
+    <div>
+      <div class="afterhours-label">↳ For after the kids are down</div>
+      <h3>Fête du Champagne in Rembrandtpark <span class="ext">↗</span></h3>
+      <p>Open till 23:00 tonight — 100+ champagnes and wines, French bistro food, in the park. Ten-minute walk from yours. If one of you can take bath duty, the other can grab a glass before sunset (21:30 today).</p>
+      <span class="afterhours-action">See the lineup →</span>
+    </div>
+    <div class="afterhours-photo">
+      <img src="https://images.unsplash.com/photo-1547595628-c61a29f496f0?w=600&h=600&fit=crop&q=80" alt="">
+    </div>
+  </a>
+
+  <!-- ========= COLOPHON ========= -->
+  <div class="colophon">
+    <div class="colophon-title">Read this week, linked to where it matters</div>
+    <div class="sources">
+      <a href="https://www.buienradar.nl/" target="_blank" rel="noopener" class="source-chip">↳ buienradar (precipitation)</a>
+      <a href="https://www.knmi.nl/home" target="_blank" rel="noopener" class="source-chip">↳ knmi (forecast)</a>
+      <a href="https://www.yourlittleblackbook.me/en/weekendtips-amsterdam/" target="_blank" rel="noopener" class="source-chip">little black book weekend tips</a>
+      <a href="https://www.iamsterdam.com/en/see-and-do/things-to-do/family" target="_blank" rel="noopener" class="source-chip">i amsterdam family</a>
+      <a href="https://kidsproof.nl/amsterdam/" target="_blank" rel="noopener" class="source-chip">kidsproof amsterdam</a>
+      <a href="https://mommypoppins.com/anywhere-kids/best-things-to-do-amsterdam-kids-itinerary" target="_blank" rel="noopener" class="source-chip">mommy poppins</a>
+      <a href="https://www.muiderslot.nl/en/" target="_blank" rel="noopener" class="source-chip">muiderslot</a>
+      <a href="https://www.amsterdamsebos.nl/" target="_blank" rel="noopener" class="source-chip">amsterdamse bos</a>
+    </div>
+    <div style="margin-top: 18px; font-size: 11px;">Sunday brief generated 09:00 · weather signal updated 11:00 · 7 sources scanned for today's kid-friendly options. The medieval day at Muiderslot and the Fluistervink season opening only showed up this week — both pulled from <a href="https://www.yourlittleblackbook.me/en/weekendtips-amsterdam/" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: underline;">Little Black Book's Whit weekend roundup</a>.</div>
+  </div>
+
+</main>
+
+<script>
+  // ============================================================
+  // THREE SETS OF PICKS — each is a different cut for HOT + KIDS
+  // ============================================================
+  const SETS = [
+    // SET 1: Today-only specials (Muiderslot, Fluistervink, Vondelpark classic)
+    [
+      {
+        url: "https://www.muiderslot.nl/en/activities/medieval-days/",
+        img: "https://images.unsplash.com/photo-1564604761579-ec1ec3d2bb98?w=1200&h=750&fit=crop&q=80",
+        eyebrow: "10:30 → 16:30 · 25 MIN BY CAR / TRAIN + WALK",
+        tags: ['<span class="tag today">Today + Mon only</span>', '<span class="tag kid">Kids</span>', '<span class="tag weather-pick">Outdoor</span>'],
+        title: "Medieval Days at Muiderslot Castle",
+        venue: "Muiderslot, Muiden <span class='sep'>·</span> outdoor castle grounds <span class='sep'>·</span> €18 adults · €12 kids",
+        snippet: "The castle goes full medieval this weekend — sword fighting school for kids, fire shows, troubadours, battles in the courtyard. Your four-year-old can get knighted at the Bataille Knight School and make their own knight creation in the castle workshop. The grounds are big enough to wander all day and the lakeside setting means there's water, picnic spots, and shade when needed. Real moat, real towers, dragons not included.",
+        pubs: [
+          { url: "https://www.yourlittleblackbook.me/en/weekendtips-amsterdam/", label: "Little Black Book" },
+          { url: "https://www.muiderslot.nl/en/", label: "Muiderslot" },
+          { url: "https://kidsproof.nl/amsterdam/", label: "Kidsproof" }
+        ],
+        fit: "<b>Why now:</b> only happens today + Monday · kid-knighting is age 4+ · outdoor in sunshine",
+        footer: "Walk-in OK <b>· bring a picnic</b>"
+      },
+      {
+        url: "https://www.amsterdamsebos.nl/activiteiten/fluistervink/",
+        img: "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=1200&h=750&fit=crop&q=80",
+        eyebrow: "DEPARTS HOURLY · 25 MIN BY BIKE FROM CENTRUM",
+        tags: ['<span class="tag new">Season opened this week</span>', '<span class="tag kid">Kids</span>', '<span class="tag weather-pick">Outdoor</span>'],
+        title: "Fluistervink silent boat through Amsterdamse Bos",
+        venue: "Amsterdamse Bos <span class='sep'>·</span> covered boat through forest waterways <span class='sep'>·</span> €14 adults · €9 kids",
+        snippet: "Electric whisper-boat through the forest — no engine noise, just water, birds, the occasional deer at the shore. It's one of the most peaceful hours you can buy in Amsterdam, and the kind of thing a four-year-old will actually sit still for because there's so much to watch. Just opened for the season this week. Bring snacks; trips run about an hour. After, hit the rowing lake for ice cream or rent a kayak at Bosbaan if there's energy left.",
+        pubs: [
+          { url: "https://www.yourlittleblackbook.me/en/weekendtips-amsterdam/", label: "Little Black Book" },
+          { url: "https://www.iamsterdam.com/en/see-and-do/nature-and-active/outdoor-and-adventure-activities-in-amsterdam", label: "I amsterdam" }
+        ],
+        fit: "<b>Why now:</b> just opened for season · forest stays cool when city gets hot · kid-magic factor",
+        footer: "Book ahead <b>· next slot 12:30</b>"
+      },
+      {
+        url: "https://www.pannenkoekenboot.nl/en/amsterdam/",
+        img: "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=1200&h=750&fit=crop&q=80",
+        eyebrow: "SUNDAY LAZY MODE · 15 MIN BY BIKE",
+        tags: ['<span class="tag kid">Kids</span>', '<span class="tag weather-pick">Outdoor</span>', '<span class="tag outdoor">Default</span>'],
+        title: "Vondelpark loop, then pancakes on the Amstel",
+        venue: "Vondelpark + Pannenkoekenboot <span class='sep'>·</span> bike-able loop <span class='sep'>·</span> ~€30 family lunch",
+        snippet: "The classic Amsterdam Sunday: bike Vondelpark, let the four-year-old loose at the Groot Melkhuis playground, then ferry over to the Pannenkoekenboot for lunch on the water. The boat does a 75-minute Amstel loop while you eat all-you-can-eat pancakes — kids get to look out the windows at the boats and bridges and the boat itself feels like the adventure. IJscuypje at the Apollolaan on the way home if the kid earned it.",
+        pubs: [
+          { url: "https://mommypoppins.com/anywhere-kids/best-things-to-do-amsterdam-kids-itinerary", label: "Mommy Poppins" },
+          { url: "https://www.iamsterdam.com/", label: "I amsterdam" }
+        ],
+        fit: "<b>Why now:</b> sunny park weather · boat keeps kid contained · pancakes are the bribe",
+        footer: "Walk-in park <b>· book pancake boat 13:00</b>"
+      }
+    ],
+
+    // SET 2: Water + sun + active kid
+    [
+      {
+        url: "https://www.amsterdam.nl/en/sport-leisure/swimming/swimming-pools/sloterplas/",
+        img: "https://images.unsplash.com/photo-1521207418485-99c705420785?w=1200&h=750&fit=crop&q=80",
+        eyebrow: "SUN ALL DAY · FREE · 20 MIN BY BIKE",
+        tags: ['<span class="tag new">Season just opened</span>', '<span class="tag kid">Kids</span>', '<span class="tag weather-pick">Water</span>'],
+        title: "Sloterplas swim lake + paddling beach",
+        venue: "Sloterpark <span class='sep'>·</span> free <span class='sep'>·</span> safe paddling area for under-5s",
+        snippet: "Amsterdam's biggest swim lake, just opened for the season after the warm streak last week. The west side has a proper sandy beach and a roped-off paddling area perfect for a four-year-old who's still building water confidence. Bring a picnic, the inflatable swans, and SPF. It'll be packed by 14:00 — go before noon and you'll have the shade trees on the south side. Tram 1 lands you near the water.",
+        pubs: [
+          { url: "https://www.amsterdam.nl/en/sport-leisure/swimming/", label: "Gemeente Amsterdam" },
+          { url: "https://www.iamsterdam.com/", label: "I amsterdam" }
+        ],
+        fit: "<b>Why now:</b> 24° is swim weather · paddling area for 4yo · free + zero booking",
+        footer: "Free · drive-up <b>· best before 14:00</b>"
+      },
+      {
+        url: "https://www.fun-forest.nl/en/amsterdam/",
+        img: "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=1200&h=750&fit=crop&q=80",
+        eyebrow: "SUN 10:00 → 18:00 · BOOK A SLOT",
+        tags: ['<span class="tag kid">Kids · 4+</span>', '<span class="tag weather-pick">Active</span>'],
+        title: "Fun Forest treetop adventure (kids' course)",
+        venue: "Amsterdamse Bos <span class='sep'>·</span> €15 kids · €25 adults <span class='sep'>·</span> 1.5–2 hrs",
+        snippet: "Treetop ropes course tucked into the forest — the Kids Course (age 4+) is properly designed for small humans, with low platforms, helmets, harnesses, and a guide who actually knows how to talk to a four-year-old. Your kid will be amazed at themselves; you'll feel the same. The forest canopy keeps things shaded when the city heats up. Pack a snack — there's a picnic area at the base.",
+        pubs: [
+          { url: "https://www.iamsterdam.com/en/see-and-do/nature-and-active/outdoor-and-adventure-activities-in-amsterdam", label: "I amsterdam" },
+          { url: "https://www.fun-forest.nl/en/amsterdam/", label: "Fun Forest" }
+        ],
+        fit: "<b>Why now:</b> active outlet for restless 4yo · shaded · age-appropriate course",
+        footer: "Book ahead <b>· 12:00 slot likely</b>"
+      },
+      {
+        url: "https://www.geitenboerderijridammerhoeve.nl/",
+        img: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=1200&h=750&fit=crop&q=80",
+        eyebrow: "SUN 10:00 → 17:00 · FREE · IN THE BOS",
+        tags: ['<span class="tag kid">Kids</span>', '<span class="tag weather-pick">Outdoor</span>'],
+        title: "Geitenboerderij Ridammerhoeve goat farm",
+        venue: "Amsterdamse Bos <span class='sep'>·</span> free entry · pay-as-you-go for food <span class='sep'>·</span> bike-able",
+        snippet: "Working goat farm inside the Bos — over 100 goats, plus chickens, sheep, and pigs. Kids feed the babies from bottles (€2.50), pet the older goats, and run themselves out on the meadow. The on-site shop sells the farm's own goat cheese, ice cream, and stroopwafels. It's the kind of free Amsterdam afternoon that makes the city feel small in the best way. Pair with a Fluistervink boat ride if you make a full Bos day of it.",
+        pubs: [
+          { url: "https://www.geitenboerderijridammerhoeve.nl/", label: "Ridammerhoeve" },
+          { url: "https://www.amsterdamsebos.nl/", label: "Amsterdamse Bos" }
+        ],
+        fit: "<b>Why now:</b> 4yo + animals = win · totally free · forest shade",
+        footer: "Free <b>· €2.50 for bottle</b>"
+      }
+    ],
+
+    // SET 3: Quieter, indoors-with-light cuts (when the kid's overheated)
+    [
+      {
+        url: "https://www.nemosciencemuseum.nl/en/visit/",
+        img: "https://images.unsplash.com/photo-1597163307637-8b0aff3a55a4?w=1200&h=750&fit=crop&q=80",
+        eyebrow: "SUN 10:00 → 17:30 · ROOFTOP OPEN",
+        tags: ['<span class="tag kid">Kids · all ages</span>', '<span class="tag weather-pick">Rooftop today</span>'],
+        title: "NEMO Science Museum + rooftop terrace",
+        venue: "Oosterdok <span class='sep'>·</span> €18.50 <span class='sep'>·</span> rooftop café + free water-play area",
+        snippet: "The green-roofed wedge sticking out of the IJ — five floors of science experiments, a chain reaction machine that runs every hour, a bubble lab, and a rooftop terrace with city views and an open-air water playground that's free even without a museum ticket. On a sunny day the rooftop is the destination; the museum is a bonus when energy runs out. Walk-up tickets usually fine on Sundays before noon.",
+        pubs: [
+          { url: "https://www.nemosciencemuseum.nl/en/visit/", label: "NEMO" },
+          { url: "https://kidsproof.nl/amsterdam/", label: "Kidsproof" }
+        ],
+        fit: "<b>Why now:</b> indoor + outdoor combo · rooftop water play in sunshine · easy for 4yo",
+        footer: "Walk-up OK <b>· book if peak time</b>"
+      },
+      {
+        url: "https://www.artis.nl/en/",
+        img: "https://images.unsplash.com/photo-1503919005314-30d93d07d823?w=1200&h=750&fit=crop&q=80",
+        eyebrow: "SUN 9:00 → 18:00 · GO EARLY",
+        tags: ['<span class="tag kid">Kids · 4yo perfect age</span>', '<span class="tag weather-pick">Outdoor</span>'],
+        title: "Artis Royal Zoo (with the new planetarium)",
+        venue: "Plantage <span class='sep'>·</span> €25 adults · €22 kids <span class='sep'>·</span> 3+ hour visit",
+        snippet: "Amsterdam's oldest zoo, properly outdoor, properly walkable, and a four-year-old's perfect storm. The aquarium and reptile house give you indoor breaks when the sun gets too much, the planetarium is included in entry, and there's a big playground near the elephant house if your kid needs to run. Go in by the Plantage Middenlaan gate, work clockwise, end at the playground around 13:00 so the adult on duty can sit down.",
+        pubs: [
+          { url: "https://www.artis.nl/en/", label: "Artis" },
+          { url: "https://www.iamsterdam.com/", label: "I amsterdam" }
+        ],
+        fit: "<b>Why now:</b> outdoor zoo + indoor escape options · planetarium for hot midday hours",
+        footer: "Book online <b>· €3 cheaper than door</b>"
+      },
+      {
+        url: "https://kinderkookkafe.nl/",
+        img: "https://images.unsplash.com/photo-1582719508461-905c673771fd?w=1200&h=750&fit=crop&q=80",
+        eyebrow: "SUN 13:00 SEATING · BOOK NOW",
+        tags: ['<span class="tag kid">Kids cook</span>', '<span class="tag new">Local cult</span>'],
+        title: "Kinderkookkafé — kids make + serve their own lunch",
+        venue: "Vondelpark <span class='sep'>·</span> €15 per kid <span class='sep'>·</span> 90 min experience",
+        snippet: "The four-year-old becomes the chef. Aprons, mini-cutting boards, a small pizza or sandwich to assemble, and then they serve it back to you at the table. Adults order separately. It's the only Amsterdam lunch that involves your kid being busy, useful, and quiet for 45 minutes. Tucked inside Vondelpark so you can do a park lap before or after. Book ahead — Sunday seatings sell out by Saturday usually.",
+        pubs: [
+          { url: "https://kinderkookkafe.nl/", label: "Kinderkookkafé" },
+          { url: "https://mommypoppins.com/anywhere-kids/best-things-to-do-amsterdam-kids-itinerary", label: "Mommy Poppins" }
+        ],
+        fit: "<b>Why now:</b> 4yo loves participating · Vondelpark before or after · indoor when sun peaks",
+        footer: "Book ahead <b>· €15 per kid</b>"
+      }
+    ]
+  ];
+
+  let currentSetIndex = 0;
+
+  function renderCards() {
+    const cardsEl = document.getElementById('cards');
+    const set = SETS[currentSetIndex];
+    cardsEl.innerHTML = set.map(c => `
+      <a class="card" href="${c.url}" target="_blank" rel="noopener">
+        <div class="card-img">
+          <img src="${c.img}" alt="" loading="lazy">
+          <div class="card-tag-overlay">${c.tags.join('')}</div>
+          <div class="card-eyebrow">${c.eyebrow}</div>
+          <div class="card-external" title="Open page">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-title">${c.title} <span class="ext-arrow">↗</span></div>
+          <div class="card-venue">${c.venue}</div>
+          <p class="card-snippet">${c.snippet}</p>
+          <div class="card-pubs">
+            ${c.pubs.map(p => `<a href="${p.url}" target="_blank" rel="noopener" class="pub-chip" onclick="event.stopPropagation()"><b>↳</b> ${p.label}</a>`).join('')}
+          </div>
+          <div class="card-fit">${c.fit}</div>
+          <div class="card-footer">
+            <div class="card-footer-meta">${c.footer}</div>
+            <div class="card-footer-actions">
+              <button class="mini-action" onclick="event.preventDefault(); event.stopPropagation(); this.classList.toggle('saved')" title="Save">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+              </button>
+              <button class="mini-action" onclick="event.preventDefault(); event.stopPropagation(); navigator.clipboard?.writeText(window.location.href)" title="Share">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </a>
+    `).join('');
+
+    // Update counter labels
+    document.getElementById('counterPill').textContent = `${currentSetIndex + 1} / ${SETS.length}`;
+    document.getElementById('setCount').textContent = `SET ${currentSetIndex + 1} OF ${SETS.length} · KIDS · HOT MODE`;
+  }
+
+  function cycleSet() {
+    const cardsEl = document.getElementById('cards');
+    const btn = document.getElementById('refreshBtn');
+
+    btn.classList.add('spinning');
+    cardsEl.classList.add('cycling');
+
+    setTimeout(() => {
+      currentSetIndex = (currentSetIndex + 1) % SETS.length;
+      renderCards();
+
+      // Smooth scroll to top of cards
+      document.querySelector('.cards-wrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      setTimeout(() => {
+        cardsEl.classList.remove('cycling');
+      }, 50);
+    }, 300);
+
+    setTimeout(() => {
+      btn.classList.remove('spinning');
+    }, 600);
+  }
+
+  // Initial render
+  renderCards();
+</script>
+
+</body>
+</html>

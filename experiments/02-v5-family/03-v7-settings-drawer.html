@@ -1,0 +1,2015 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WKNDR — Amsterdam, 30–31 May</title>
+<style>
+  :root {
+    --ink: #0a0a0a;
+    --ink-2: #1a1a1a;
+    --ink-3: #4a4a4a;
+    --ink-4: #8a8a8a;
+    --ink-5: #c4c4c4;
+    --paper: #fafaf7;
+    --paper-2: #f2f2ee;
+    --paper-3: #e8e8e3;
+    --rule: #d8d8d3;
+    --accent: #ff4d1f;
+    --accent-soft: #fff2ec;
+    --kid: #2d5b8a;
+    --transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+  html, body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    font-feature-settings: "kern", "liga", "tnum";
+    text-rendering: geometricPrecision;
+    overflow-x: hidden;
+  }
+  body { min-height: 100vh; }
+  button { font-family: inherit; cursor: pointer; }
+  img { display: block; max-width: 100%; }
+
+  /* Mode-driven palette */
+  body[data-mode="HOT"] { --mode-1: #ff8a3d; --mode-2: #ff4d1f; --mode-3: #c2310e; --mode-soft: #fff2ec; --mode-tint: linear-gradient(180deg, #fff5ec 0%, #fafaf7 400px); }
+  body[data-mode="WARM"] { --mode-1: #f5b545; --mode-2: #e8932a; --mode-3: #b87010; --mode-soft: #fff8e8; --mode-tint: linear-gradient(180deg, #fffaf0 0%, #fafaf7 400px); }
+  body[data-mode="COOL"] { --mode-1: #88b8c0; --mode-2: #5a8a98; --mode-3: #3a6878; --mode-soft: #eaf2f4; --mode-tint: linear-gradient(180deg, #f0f5f6 0%, #fafaf7 400px); }
+  body[data-mode="COLD_WET"] { --mode-1: #6a85a0; --mode-2: #4a6580; --mode-3: #2a3a55; --mode-soft: #e8ecf2; --mode-tint: linear-gradient(180deg, #e8edf2 0%, #f4f4f0 400px); }
+  body[data-mode="VOLATILE"] { --mode-1: #c8a050; --mode-2: #a07838; --mode-3: #685028; --mode-soft: #faf2e0; --mode-tint: linear-gradient(180deg, #fbf5e8 0%, #fafaf7 400px); }
+
+  body { background: var(--mode-tint); transition: background 0.5s ease; }
+
+  /* ========= TOP ========= */
+  .top {
+    border-bottom: 1px solid var(--rule);
+    padding: 14px 28px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(250, 250, 247, 0.92);
+    backdrop-filter: blur(12px);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .mark {
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--ink);
+  }
+  .mark::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
+  }
+  .top-divider { width: 1px; height: 18px; background: var(--rule); }
+  .ness-mini { font-size: 11px; color: var(--ink-4); letter-spacing: -0.005em; }
+  .ness-mini b { color: var(--ink-2); font-weight: 600; }
+  .top-spacer { flex: 1; }
+  .icon-btn {
+    width: 32px;
+    height: 32px;
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--ink-3);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.12s ease;
+    position: relative;
+  }
+  .icon-btn:hover { color: var(--ink); border-color: var(--ink-4); background: var(--paper-2); }
+  .icon-btn svg { width: 14px; height: 14px; }
+  .icon-btn.active { color: var(--ink); border-color: var(--ink); background: var(--paper-2); }
+  .ask {
+    font-size: 12px;
+    font-weight: 500;
+    padding: 7px 14px;
+    background: var(--ink);
+    color: var(--paper);
+    border: 1px solid var(--ink);
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.12s ease;
+  }
+  .ask:hover { background: var(--accent); border-color: var(--accent); }
+  .ask svg { width: 11px; height: 11px; }
+
+  /* ========= MAIN COLUMN ========= */
+  .col {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 48px 28px 120px;
+  }
+
+  /* ========= HEADER: city + temp inline, condition as hero ========= */
+  .header { margin-bottom: 36px; }
+
+  .dateline {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-4);
+    margin-bottom: 14px;
+    font-weight: 500;
+  }
+  .dateline b { color: var(--ink-2); }
+
+  .city-line {
+    display: flex;
+    align-items: baseline;
+    gap: 18px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+  }
+  .city-select {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: none;
+    border: none;
+    padding: 0;
+    font-family: inherit;
+    color: var(--ink);
+    cursor: pointer;
+    position: relative;
+  }
+  .city-name {
+    font-size: 64px;
+    font-weight: 600;
+    letter-spacing: -0.045em;
+    line-height: 1;
+    color: var(--ink);
+    position: relative;
+  }
+  .city-name::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 3px;
+    height: 3px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .city-select:hover .city-name::after { transform: scaleX(1); }
+  .city-select .city-chev {
+    width: 12px;
+    height: 12px;
+    border-right: 2px solid var(--ink-4);
+    border-bottom: 2px solid var(--ink-4);
+    transform: rotate(45deg);
+    margin-left: 12px;
+    margin-bottom: 14px;
+    transition: transform 0.18s ease, border-color 0.15s;
+  }
+  .city-select:hover .city-chev { border-color: var(--accent); }
+  .city-select.open .city-chev { transform: rotate(-135deg); margin-bottom: 6px; }
+  .city-dropdown {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 0;
+    min-width: 280px;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    padding: 8px;
+    box-shadow: 0 14px 40px rgba(0,0,0,0.12);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-6px);
+    transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s;
+    z-index: 50;
+    text-align: left;
+  }
+  .city-select.open .city-dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+  .city-search {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 13px;
+    background: var(--paper-2);
+    color: var(--ink);
+    margin-bottom: 6px;
+    outline: none;
+  }
+  .city-search:focus { border-color: var(--ink-4); background: var(--paper); }
+  .city-section {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-4);
+    padding: 10px 10px 4px;
+    font-weight: 600;
+  }
+  .city-item {
+    padding: 9px 10px;
+    font-size: 14px;
+    color: var(--ink-2);
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    text-align: left;
+    border: none;
+    background: none;
+    width: 100%;
+    font-family: inherit;
+  }
+  .city-item:hover { background: var(--paper-2); }
+  .city-item.active { background: var(--paper-2); color: var(--ink); font-weight: 500; }
+  .city-item .check-mark { color: var(--accent); opacity: 0; font-size: 14px; }
+  .city-item.active .check-mark { opacity: 1; }
+  .city-item .country { font-size: 11px; color: var(--ink-4); font-weight: 400; margin-left: 6px; }
+  .city-add {
+    padding: 9px 10px;
+    font-size: 13px;
+    color: var(--accent);
+    border-radius: 6px;
+    cursor: pointer;
+    text-align: left;
+    border: none;
+    background: none;
+    width: 100%;
+    font-family: inherit;
+    font-weight: 500;
+  }
+  .city-add:hover { background: var(--accent-soft); }
+
+  /* Inline temp + icon — sits right next to Amsterdam */
+  .temp-inline {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 6px;
+    font-size: 26px;
+    font-weight: 400;
+    letter-spacing: -0.03em;
+    color: var(--mode-3);
+    padding-bottom: 6px;
+  }
+  .temp-inline .icon {
+    font-size: 22px;
+    line-height: 1;
+    margin-right: 4px;
+  }
+  .temp-inline .high { color: var(--ink); font-weight: 600; }
+  .temp-inline .low { color: var(--ink-4); font-size: 18px; }
+  .temp-inline .deg { font-weight: 300; opacity: 0.6; }
+
+  /* The HERO — the weather condition phrase, oversized */
+  .hero-phrase {
+    font-size: clamp(32px, 4.8vw, 48px);
+    line-height: 1.05;
+    letter-spacing: -0.035em;
+    font-weight: 500;
+    color: var(--ink);
+    margin-top: 8px;
+    margin-bottom: 22px;
+    max-width: 720px;
+    transition: var(--transition);
+  }
+  .hero-phrase em {
+    font-style: normal;
+    background: linear-gradient(120deg, transparent 0%, transparent 5%, var(--mode-soft) 5%, var(--mode-soft) 95%, transparent 95%);
+    padding: 0 4px;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+    color: var(--mode-3);
+  }
+
+  /* Buienradar row — under the hero phrase, compact */
+  .rain-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 16px;
+    background: var(--paper-2);
+    border-radius: 10px;
+    margin-bottom: 24px;
+    border-left: 3px solid var(--mode-2);
+    transition: border-color 0.4s ease;
+  }
+  .rain-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 700;
+    color: var(--ink-4);
+    flex-shrink: 0;
+    line-height: 1.3;
+  }
+  .rain-label b {
+    display: block;
+    font-size: 12px;
+    color: var(--ink);
+    letter-spacing: -0.005em;
+    text-transform: none;
+    font-weight: 600;
+    margin-top: 2px;
+  }
+  .rain-bars {
+    flex: 1;
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: 24px;
+    min-width: 0;
+  }
+  .rain-bar {
+    flex: 1;
+    background: var(--mode-2);
+    opacity: 0.7;
+    border-radius: 1px 1px 0 0;
+    min-height: 2px;
+    transition: height 0.4s ease, background 0.4s ease;
+  }
+  .rain-source {
+    font-size: 9px;
+    color: var(--ink-4);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    flex-shrink: 0;
+    font-weight: 600;
+  }
+
+  /* ========= LEDE ========= */
+  .lede {
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--ink-3);
+    font-weight: 400;
+    letter-spacing: -0.005em;
+    margin-bottom: 44px;
+    max-width: 620px;
+  }
+  .lede b { color: var(--ink); font-weight: 600; }
+
+  /* ========= SECTION ========= */
+  .section-head {
+    margin: 8px 0 20px;
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+  }
+  .section-head h3 {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-2);
+  }
+  .section-head .rule { flex: 1; height: 1px; background: var(--ink); }
+  .section-head .count {
+    font-size: 11px;
+    color: var(--ink-4);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  /* ========= CARDS ========= */
+  .cards {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 18px;
+    margin-bottom: 40px;
+  }
+  .card {
+    position: relative;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 18px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.28s ease;
+  }
+  .card:hover {
+    transform: translateY(-3px) scale(1.005);
+    box-shadow: 0 14px 40px rgba(0,0,0,0.08);
+  }
+  .card:active { transform: scale(0.99); }
+  .card-img {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    position: relative;
+    background: var(--paper-3);
+  }
+  .card-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .card:hover .card-img img { transform: scale(1.03); }
+  .card-img::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 35%, rgba(0,0,0,0.55) 100%);
+    pointer-events: none;
+  }
+  .card-tag-overlay {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+    z-index: 2;
+  }
+  .card-eyebrow {
+    position: absolute;
+    bottom: 14px;
+    left: 16px;
+    right: 16px;
+    color: rgba(255,255,255,0.95);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+    z-index: 2;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+  }
+  .card-body { padding: 18px 18px 20px; }
+  .card-title {
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 1.18;
+    letter-spacing: -0.025em;
+    margin-bottom: 6px;
+    color: var(--ink);
+  }
+  .card-venue {
+    font-size: 12px;
+    color: var(--ink-4);
+    letter-spacing: -0.005em;
+    margin-bottom: 10px;
+  }
+  .card-venue .sep { margin: 0 7px; color: var(--ink-5); }
+  .card-snippet {
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--ink-3);
+    letter-spacing: -0.005em;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .card-pubs {
+    display: flex;
+    gap: 4px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+  }
+  .pub-chip {
+    font-size: 10px;
+    padding: 2px 7px;
+    background: var(--paper-2);
+    color: var(--ink-3);
+    border-radius: 3px;
+    font-weight: 500;
+    letter-spacing: -0.005em;
+    text-transform: uppercase;
+  }
+  .pub-chip b { color: var(--accent); margin-right: 3px; font-weight: 600; }
+  .card-fit {
+    margin-top: 10px;
+    padding: 7px 10px;
+    background: var(--mode-soft);
+    border-radius: 5px;
+    font-size: 10.5px;
+    color: var(--ink-3);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    letter-spacing: -0.005em;
+    transition: background 0.4s ease;
+  }
+  .card-fit::before {
+    content: '✦';
+    color: var(--mode-2);
+    font-size: 10px;
+    transition: color 0.4s ease;
+  }
+  .card-fit b { color: var(--ink); font-weight: 600; }
+  .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid var(--paper-2);
+  }
+  .card-footer-meta {
+    font-size: 11px;
+    color: var(--ink-4);
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+  .card-footer-meta b { color: var(--ink-2); }
+  .card-footer-actions { display: flex; gap: 4px; }
+  .mini-action {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--paper-2);
+    color: var(--ink-3);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.12s;
+  }
+  .mini-action:hover { background: var(--ink); color: var(--paper); }
+  .mini-action.saved { background: var(--accent-soft); color: var(--accent); }
+  .mini-action svg { width: 13px; height: 13px; }
+
+  .tag {
+    font-size: 9.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 4px 8px;
+    border-radius: 3px;
+    font-weight: 600;
+    line-height: 1.4;
+    backdrop-filter: blur(4px);
+  }
+  .tag.hot { background: rgba(194,49,14,0.95); color: white; }
+  .tag.new { background: rgba(10,10,10,0.85); color: var(--paper); }
+  .tag.kid { background: rgba(45,91,138,0.95); color: white; }
+  .tag.weather-pick { background: rgba(255,77,31,0.95); color: white; }
+  .tag.indoor { background: rgba(74,96,128,0.95); color: white; }
+  .tag.cultural { background: rgba(127,168,176,0.95); color: white; }
+  .tag.flex { background: rgba(181,137,90,0.95); color: white; }
+  .tag.critic { background: rgba(255,255,255,0.92); color: var(--ink-2); }
+
+  /* ========= SETTINGS DRAWER (the collapsible menu of all controls) ========= */
+  .settings-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(20,20,20,0.4);
+    backdrop-filter: blur(4px);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.25s ease, visibility 0.25s;
+    z-index: 150;
+  }
+  .settings-overlay.show { opacity: 1; visibility: visible; }
+  .settings-panel {
+    position: fixed;
+    top: 56px;
+    right: 16px;
+    width: min(360px, calc(100vw - 32px));
+    max-height: calc(100vh - 80px);
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 14px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.18);
+    z-index: 160;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-8px) scale(0.96);
+    transform-origin: top right;
+    transition: opacity 0.22s cubic-bezier(0.22, 1, 0.36, 1), transform 0.22s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.22s;
+    overflow-y: auto;
+  }
+  .settings-panel.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+  }
+  .settings-section {
+    padding: 16px 18px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .settings-section:last-child { border-bottom: 0; }
+  .settings-section-title {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-4);
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+  .settings-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .settings-pill {
+    font-size: 12px;
+    font-weight: 500;
+    padding: 6px 12px;
+    background: transparent;
+    color: var(--ink-3);
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    transition: all 0.12s ease;
+    letter-spacing: -0.005em;
+    font-family: inherit;
+    cursor: pointer;
+  }
+  .settings-pill:hover { color: var(--ink); border-color: var(--ink-4); background: var(--paper-2); }
+  .settings-pill.active {
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+  }
+  .settings-mode-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--rule);
+    font-size: 13px;
+    color: var(--ink-2);
+    cursor: pointer;
+    border: none;
+    background: none;
+    width: 100%;
+    font-family: inherit;
+    text-align: left;
+  }
+  .settings-mode-row:last-child { border-bottom: 0; }
+  .settings-mode-row:hover { color: var(--ink); }
+  .settings-mode-row.active { font-weight: 600; }
+  .smr-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .smr-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .smr-dot.HOT { background: #ff8a3d; }
+  .smr-dot.WARM { background: #f5b545; }
+  .smr-dot.COOL { background: #88b8c0; }
+  .smr-dot.COLD_WET { background: #6a85a0; }
+  .smr-dot.VOLATILE { background: #c8a050; }
+  .smr-right {
+    font-size: 11px;
+    color: var(--ink-4);
+  }
+  .settings-mode-row.active .smr-right { color: var(--accent); }
+  .settings-check {
+    width: 18px;
+    height: 18px;
+    border: 1.5px solid var(--rule);
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .settings-mode-row.checked .settings-check,
+  .settings-pill-toggle.checked .settings-check {
+    background: var(--ink);
+    border-color: var(--ink);
+  }
+  .settings-mode-row.checked .settings-check::after,
+  .settings-pill-toggle.checked .settings-check::after {
+    content: '';
+    width: 9px;
+    height: 5px;
+    border-left: 1.5px solid var(--paper);
+    border-bottom: 1.5px solid var(--paper);
+    transform: rotate(-45deg) translateY(-1px);
+  }
+  .settings-divider-mini {
+    margin: 12px 0 8px;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-4);
+    font-weight: 600;
+  }
+
+  /* ========= SHUFFLE ========= */
+  .shuffle-bar {
+    margin: 16px 0 32px;
+    padding: 16px 20px;
+    background: var(--paper-2);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .shuffle-icon {
+    width: 36px;
+    height: 36px;
+    background: var(--ink);
+    color: var(--paper);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .shuffle-icon svg { width: 16px; height: 16px; }
+  .shuffle-text {
+    flex: 1;
+    font-size: 13px;
+    color: var(--ink-3);
+    letter-spacing: -0.005em;
+  }
+  .shuffle-text b { color: var(--ink); font-weight: 600; }
+  .shuffle-btn {
+    font-size: 12px;
+    font-weight: 500;
+    padding: 8px 14px;
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    border-radius: 999px;
+  }
+  .shuffle-btn:hover { background: var(--accent); }
+
+  /* ========= COMPACT LIST ========= */
+  .compact { list-style: none; }
+  .compact-item {
+    padding: 14px 0;
+    border-bottom: 1px solid var(--rule);
+    display: grid;
+    grid-template-columns: 80px 56px 1fr auto auto;
+    gap: 16px;
+    align-items: center;
+    cursor: pointer;
+    transition: background 0.12s;
+  }
+  .compact-item:hover { background: var(--paper-2); margin: 0 -12px; padding-left: 12px; padding-right: 12px; }
+  .compact-item:last-child { border-bottom: 0; }
+  .c-time {
+    font-size: 11px;
+    color: var(--ink-4);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 500;
+  }
+  .c-time b { color: var(--ink); font-weight: 600; display: block; font-size: 13px; letter-spacing: -0.01em; }
+  .c-thumb {
+    width: 56px;
+    height: 56px;
+    border-radius: 6px;
+    overflow: hidden;
+    background: var(--paper-3);
+  }
+  .c-thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .c-title {
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+  .c-title .v {
+    display: block;
+    font-size: 11px;
+    color: var(--ink-4);
+    margin-top: 2px;
+    font-weight: 400;
+    letter-spacing: -0.005em;
+  }
+  .c-tags { display: flex; gap: 4px; }
+  .c-action {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1px solid var(--rule);
+    background: var(--paper);
+    color: var(--ink-4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .c-action:hover { color: var(--accent); border-color: var(--accent); }
+  .c-action svg { width: 12px; height: 12px; }
+
+  /* ========= ESCAPE ========= */
+  .escape {
+    margin-top: 48px;
+    padding: 28px;
+    background: var(--ink);
+    color: var(--paper);
+    border-radius: 18px;
+    display: grid;
+    grid-template-columns: 1fr 200px;
+    gap: 24px;
+    align-items: center;
+  }
+  .escape-photo {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--ink-2);
+  }
+  .escape-photo img { width: 100%; height: 100%; object-fit: cover; }
+  .escape-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+  .escape h3 {
+    font-size: 22px;
+    font-weight: 500;
+    line-height: 1.15;
+    letter-spacing: -0.025em;
+    margin-bottom: 10px;
+  }
+  .escape p {
+    font-size: 13px;
+    line-height: 1.55;
+    color: #c4c4c4;
+    letter-spacing: -0.005em;
+  }
+  .escape .escape-action {
+    margin-top: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--paper);
+    background: transparent;
+    border: 1px solid #4a4a4a;
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-weight: 500;
+  }
+  .escape .escape-action:hover { background: var(--accent); border-color: var(--accent); }
+
+  /* ========= MODAL ========= */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(20, 20, 20, 0.55);
+    backdrop-filter: blur(6px);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s;
+    z-index: 200;
+  }
+  .modal-backdrop.show { opacity: 1; visibility: visible; }
+  .modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.92);
+    width: min(820px, calc(100vw - 32px));
+    max-height: calc(100vh - 48px);
+    background: var(--paper);
+    border-radius: 22px;
+    overflow: hidden;
+    z-index: 210;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.32s cubic-bezier(0.22, 1, 0.36, 1), transform 0.32s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.32s;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.25);
+    display: flex;
+    flex-direction: column;
+  }
+  .modal.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  .modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(8px);
+    color: white;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+    cursor: pointer;
+  }
+  .modal-close:hover { background: rgba(0,0,0,0.7); }
+  .modal-close svg { width: 16px; height: 16px; }
+  .modal-scroll { overflow-y: auto; flex: 1; -webkit-overflow-scrolling: touch; }
+  .modal-hero {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    position: relative;
+    background: var(--paper-3);
+  }
+  .modal-hero img { width: 100%; height: 100%; object-fit: cover; }
+  .modal-hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 60%, rgba(0,0,0,0.5) 100%);
+  }
+  .modal-hero-tags {
+    position: absolute;
+    top: 18px;
+    left: 18px;
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+    z-index: 2;
+  }
+  .modal-body { padding: 28px 36px 36px; }
+  .modal-meta {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-4);
+    font-weight: 500;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .modal-meta .sep { color: var(--rule); }
+  .modal-meta .when { color: var(--ink-2); font-weight: 600; }
+  .modal h2 {
+    font-size: 32px;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: var(--ink);
+  }
+  .modal-venue {
+    font-size: 13px;
+    color: var(--ink-3);
+    margin-bottom: 24px;
+  }
+  .modal-venue .sep { margin: 0 8px; color: var(--ink-5); }
+  .modal-body-text {
+    font-size: 15.5px;
+    line-height: 1.6;
+    color: var(--ink-2);
+    letter-spacing: -0.005em;
+  }
+  .modal-body-text p + p { margin-top: 14px; }
+  .modal-body-text em { color: var(--ink-3); font-style: italic; }
+  .modal-pubs {
+    margin-top: 22px;
+    padding: 16px 18px;
+    background: var(--paper-2);
+    border-radius: 8px;
+  }
+  .modal-pubs-title {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-4);
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .pub-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--rule);
+    font-size: 13px;
+    color: var(--ink-2);
+    text-decoration: none;
+  }
+  .pub-link:last-child { border-bottom: 0; }
+  .pub-link:hover { color: var(--accent); }
+  .pub-link .pub-name { font-weight: 500; }
+  .pub-link .pub-blurb { font-size: 11px; color: var(--ink-4); margin-top: 2px; }
+  .pub-link .pub-arrow { font-size: 16px; color: var(--ink-4); }
+  .modal-why {
+    margin-top: 18px;
+    padding: 16px 18px;
+    background: var(--mode-soft);
+    border-radius: 8px;
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: var(--ink-3);
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    transition: background 0.4s ease;
+  }
+  .modal-why::before {
+    content: '✦';
+    color: var(--mode-2);
+    font-size: 13px;
+    flex-shrink: 0;
+    transition: color 0.4s ease;
+  }
+  .modal-actions {
+    margin-top: 28px;
+    padding-top: 24px;
+    border-top: 1px solid var(--rule);
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .m-action {
+    font-size: 12px;
+    padding: 9px 16px;
+    color: var(--ink-3);
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    font-weight: 500;
+    letter-spacing: -0.005em;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.12s;
+  }
+  .m-action:hover { color: var(--ink); border-color: var(--ink-4); background: var(--paper-2); }
+  .m-action.primary { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .m-action.primary:hover { background: var(--ink-2); }
+  .m-action svg { width: 12px; height: 12px; }
+
+  .share-toast {
+    position: fixed;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%) translateY(150%);
+    background: var(--ink);
+    color: var(--paper);
+    padding: 12px 22px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: -0.005em;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    z-index: 300;
+  }
+  .share-toast.show { transform: translateX(-50%) translateY(0); }
+  .share-toast svg { width: 14px; height: 14px; color: var(--accent); }
+
+  .colophon {
+    margin-top: 56px;
+    padding-top: 24px;
+    border-top: 1px solid var(--rule);
+    font-size: 11px;
+    color: var(--ink-4);
+    line-height: 1.7;
+  }
+  .colophon-title {
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 600;
+    color: var(--ink-3);
+    margin-bottom: 10px;
+    font-size: 10px;
+  }
+  .sources { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 6px; }
+  .source-chip {
+    padding: 3px 8px;
+    background: var(--paper-2);
+    color: var(--ink-3);
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: 500;
+  }
+  .source-chip.weather {
+    background: var(--mode-soft);
+    color: var(--mode-3);
+    font-weight: 600;
+    transition: all 0.4s ease;
+  }
+
+  @media (max-width: 720px) {
+    .col { padding: 36px 18px 80px; }
+    .city-name { font-size: 44px; }
+    .temp-inline { font-size: 20px; }
+    .temp-inline .low { font-size: 15px; }
+    .temp-inline .icon { font-size: 18px; }
+    .hero-phrase { font-size: 26px; }
+    .top { padding: 12px 16px; gap: 8px; }
+    .ness-mini, .top-divider { display: none; }
+    .settings-panel { top: 50px; right: 8px; left: 8px; width: auto; }
+    .modal { width: 100vw; height: 100vh; max-height: 100vh; border-radius: 0; top: 0; left: 0; }
+    .modal-body { padding: 24px 22px 32px; }
+    .modal h2 { font-size: 26px; }
+    .compact-item { grid-template-columns: 60px 48px 1fr auto; gap: 12px; }
+    .c-action { display: none; }
+    .escape { grid-template-columns: 1fr; }
+    .escape-photo { order: -1; aspect-ratio: 16/9; }
+  }
+</style>
+</head>
+<body data-mode="WARM">
+
+<!-- ========= TOP ========= -->
+<header class="top">
+  <div class="mark">WKNDR</div>
+  <div class="top-divider"></div>
+  <div class="ness-mini">Issue 28 · for <b>Ness</b></div>
+  <div class="top-spacer"></div>
+  <button class="icon-btn" title="Saved" onclick="document.getElementById('saved').scrollIntoView({behavior:'smooth'})">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+  </button>
+  <button class="icon-btn" title="Share" onclick="showShare()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13"/></svg>
+  </button>
+  <button class="icon-btn" id="settingsBtn" title="Settings" onclick="toggleSettings(event)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+  </button>
+  <button class="ask">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+    Ask
+  </button>
+</header>
+
+<main class="col">
+
+  <!-- ========= HEADER ========= -->
+  <div class="header">
+
+    <div class="dateline">Weekend of <b>30–31 May 2026</b> · Issue 28</div>
+
+    <div class="city-line">
+      <button class="city-select" id="citySelect" onclick="toggleCity(event)">
+        <span class="city-name">Amsterdam</span>
+        <span class="city-chev"></span>
+        <div class="city-dropdown" id="cityDD" onclick="event.stopPropagation()">
+          <input class="city-search" placeholder="Search any city…" oninput="filterCities(this.value)">
+          <div class="city-section">Your cities</div>
+          <button class="city-item active" onclick="selectCity('Amsterdam', event)">
+            <span>Amsterdam <span class="country">NL</span></span>
+            <span class="check-mark">✓</span>
+          </button>
+          <button class="city-item" onclick="selectCity('New Orleans', event)">
+            <span>New Orleans <span class="country">US</span></span>
+            <span class="check-mark">✓</span>
+          </button>
+          <div class="city-section">Recent</div>
+          <button class="city-item" onclick="selectCity('Berlin', event)">
+            <span>Berlin <span class="country">DE</span></span>
+            <span class="check-mark">✓</span>
+          </button>
+          <button class="city-item" onclick="selectCity('Tokyo', event)">
+            <span>Tokyo <span class="country">JP</span></span>
+            <span class="check-mark">✓</span>
+          </button>
+          <button class="city-add">＋ Add another city</button>
+        </div>
+      </button>
+
+      <div class="temp-inline">
+        <span class="icon" id="tempIcon">🌤️</span>
+        <span class="high"><span id="tempHigh">20</span><span class="deg">°</span></span>
+        <span class="low">/ <span id="tempLow">11</span>°</span>
+      </div>
+    </div>
+
+    <!-- THE HERO PHRASE — this is the new emphasis -->
+    <h1 class="hero-phrase" id="heroPhrase">A weekend that lets you <em>choose your own adventure</em>.</h1>
+
+    <!-- Buienradar row -->
+    <div class="rain-row">
+      <div class="rain-label">
+        Next 2h
+        <b id="rainNote">No rain expected</b>
+      </div>
+      <div class="rain-bars" id="rainBars"></div>
+      <div class="rain-source">↳ Buienradar</div>
+    </div>
+
+  </div>
+
+  <p class="lede" id="lede">
+    <b>Mid-range weather is freedom.</b> Three picks that work whatever you decide on the day — one outdoor lean, one indoor lean, one go-either-way. The shape of the weekend is up to you.
+  </p>
+
+  <div class="section-head">
+    <h3 id="sectionLabel">The three picks</h3>
+    <span class="rule"></span>
+    <span class="count" id="modeCount">WARM · re-ranked</span>
+  </div>
+
+  <div class="cards" id="cards"></div>
+
+  <!-- SHUFFLE -->
+  <div class="shuffle-bar">
+    <div class="shuffle-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
+    </div>
+    <div class="shuffle-text"><b>None of these hit?</b> Roll one new pick weighted for this weather.</div>
+    <button class="shuffle-btn">Surprise me ↻</button>
+  </div>
+
+  <!-- ALSO ON -->
+  <div class="section-head">
+    <h3>Also on</h3>
+    <span class="rule"></span>
+    <span class="count">9 more · weather-tagged</span>
+  </div>
+
+  <ul class="compact">
+    <li class="compact-item">
+      <div class="c-time">SAT<b>10:00</b></div>
+      <div class="c-thumb"><img src="https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=200&h=200&fit=crop&q=70" alt=""></div>
+      <div class="c-title">Pluk de Dag kids' fair at Westergas
+        <span class="v">Westerpark · free · outdoor — best in dry weather</span>
+      </div>
+      <div class="c-tags"><span class="tag kid">Kids</span></div>
+      <button class="c-action"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></button>
+    </li>
+    <li class="compact-item">
+      <div class="c-time">SAT<b>14:00</b></div>
+      <div class="c-thumb"><img src="https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=200&h=200&fit=crop&q=70" alt=""></div>
+      <div class="c-title">NDSM flea + harbourside afternoon
+        <span class="v">IJ Hallen weekend · €5 · indoor + outdoor mix</span>
+      </div>
+      <div class="c-tags"><span class="tag flex">Flexible</span></div>
+      <button class="c-action"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></button>
+    </li>
+    <li class="compact-item">
+      <div class="c-time">SAT<b>19:30</b></div>
+      <div class="c-thumb"><img src="https://images.unsplash.com/photo-1429962714451-bb934ecdc4ec?w=200&h=200&fit=crop&q=70" alt=""></div>
+      <div class="c-title">Live rave group, album launch
+        <span class="v">Paradiso Main · €22 · indoor · weather-neutral</span>
+      </div>
+      <div class="c-tags"><span class="tag indoor">Indoor</span></div>
+      <button class="c-action"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></button>
+    </li>
+    <li class="compact-item">
+      <div class="c-time">SAT<b>23:00</b></div>
+      <div class="c-thumb"><img src="https://images.unsplash.com/photo-1571266028243-d220bc562d1f?w=200&h=200&fit=crop&q=70" alt=""></div>
+      <div class="c-title">Lentekabinet × Ineffekt, all night
+        <span class="v">undisclosed · €30 · UK bass + dub leaning</span>
+      </div>
+      <div class="c-tags"><span class="tag indoor">Late</span></div>
+      <button class="c-action"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></button>
+    </li>
+    <li class="compact-item">
+      <div class="c-time">SUN<b>11:00</b></div>
+      <div class="c-thumb"><img src="https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=200&h=200&fit=crop&q=70" alt=""></div>
+      <div class="c-title">Pancakes on the Amstel by bike
+        <span class="v">Pannenkoekenboot · slow Sunday default</span>
+      </div>
+      <div class="c-tags"><span class="tag kid">Kids</span></div>
+      <button class="c-action"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></button>
+    </li>
+    <li class="compact-item">
+      <div class="c-time">SUN<b>14:00</b></div>
+      <div class="c-thumb"><img src="https://images.unsplash.com/photo-1577720580479-7d839d829c73?w=200&h=200&fit=crop&q=70" alt=""></div>
+      <div class="c-title">Foam · new Wolfgang Tillmans rooms
+        <span class="v">Keizersgracht 609 · €15 · indoor — perfect for any weather</span>
+      </div>
+      <div class="c-tags"><span class="tag new">New</span></div>
+      <button class="c-action"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></button>
+    </li>
+    <li class="compact-item">
+      <div class="c-time">SUN<b>15:00</b></div>
+      <div class="c-thumb"><img src="https://images.unsplash.com/photo-1493676304819-0d7a8d026dcf?w=200&h=200&fit=crop&q=70" alt=""></div>
+      <div class="c-title">KC Lights, day-into-night
+        <span class="v">Thuishaven · outdoor · best in warm dry conditions</span>
+      </div>
+      <div class="c-tags"><span class="tag flex">Outdoor</span></div>
+      <button class="c-action"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></button>
+    </li>
+    <li class="compact-item">
+      <div class="c-time">SUN<b>17:00</b></div>
+      <div class="c-thumb"><img src="https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=200&h=200&fit=crop&q=70" alt=""></div>
+      <div class="c-title">Sunset on the Schinkel from a sloep
+        <span class="v">rent at Boaty · €90/3hr · book if dry forecast holds</span>
+      </div>
+      <div class="c-tags"><span class="tag weather-pick">Weather</span></div>
+      <button class="c-action"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></button>
+    </li>
+    <li class="compact-item">
+      <div class="c-time">SUN<b>20:00</b></div>
+      <div class="c-thumb"><img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=200&h=200&fit=crop&q=70" alt=""></div>
+      <div class="c-title">Kovacs at Carré
+        <span class="v">Koninklijk Theater Carré · €45 · indoor seated</span>
+      </div>
+      <div class="c-tags"><span class="tag indoor">Indoor</span></div>
+      <button class="c-action"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></button>
+    </li>
+  </ul>
+
+  <!-- SAVED -->
+  <div id="saved" class="section-head" style="margin-top: 48px;">
+    <h3>Your saved</h3>
+    <span class="rule"></span>
+    <span class="count">2 across 2 weekends</span>
+  </div>
+
+  <ul class="compact">
+    <li class="compact-item">
+      <div class="c-time">THIS WKND<b>SAT</b></div>
+      <div class="c-thumb"><img src="https://images.unsplash.com/photo-1501386761578-eac5c94b800a?w=200&h=200&fit=crop&q=70" alt=""></div>
+      <div class="c-title">Nectar Woode + Arno Sacco
+        <span class="v">Paradiso · saved Thu · waitlist active</span>
+      </div>
+      <div class="c-tags"><span class="tag hot">Hot</span></div>
+      <button class="c-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button>
+    </li>
+    <li class="compact-item">
+      <div class="c-time">JUN 5<b>FRI</b></div>
+      <div class="c-thumb"><img src="https://images.unsplash.com/photo-1571266028243-d220bc562d1f?w=200&h=200&fit=crop&q=70" alt=""></div>
+      <div class="c-title">Max Cooper · Dramatic Synthesis
+        <span class="v">Paradiso · tickets going fast</span>
+      </div>
+      <div class="c-tags"><span class="tag hot">Hot</span></div>
+      <button class="c-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button>
+    </li>
+  </ul>
+
+  <!-- ESCAPE -->
+  <div class="escape">
+    <div>
+      <div class="escape-label">↳ If you want to flip the script</div>
+      <h3>One escape: Texel, two days, ferry from Den Helder</h3>
+      <p>The first heat of the year is also the first weekend the Wadden makes sense again. Train to Den Helder 90 min, ferry 20. Boutique stays in Den Burg still had weekend rooms at 21:00.</p>
+      <button class="escape-action">Build me this weekend →</button>
+    </div>
+    <div class="escape-photo">
+      <img src="https://images.unsplash.com/photo-1509316785289-025f5b846b35?w=600&h=600&fit=crop&q=80" alt="">
+    </div>
+  </div>
+
+  <!-- COLOPHON -->
+  <div class="colophon">
+    <div class="colophon-title">Read this week, linked to where it matters</div>
+    <div class="sources">
+      <span class="source-chip weather">↳ buienradar (precipitation)</span>
+      <span class="source-chip weather">↳ knmi (forecast)</span>
+      <span class="source-chip">resident advisor</span>
+      <span class="source-chip">paradiso</span>
+      <span class="source-chip">melkweg</span>
+      <span class="source-chip">eater amsterdam</span>
+      <span class="source-chip">little black book</span>
+      <span class="source-chip">we like amsterdam</span>
+      <span class="source-chip">i amsterdam</span>
+      <span class="source-chip">kidsproof</span>
+      <span class="source-chip">foam</span>
+      <span class="source-chip">spotify · your taste</span>
+    </div>
+    <div style="margin-top: 18px; font-size: 11px;">WKNDR reads the city's writers for you and re-ranks for the weather. Buienradar gives 5-minute precipitation accuracy. Your next issue gets sharper each time you mark something <i>did it</i> or <i>not this</i>.</div>
+  </div>
+
+</main>
+
+<!-- ========= SETTINGS DRAWER ========= -->
+<div class="settings-overlay" id="settingsOverlay" onclick="closeSettings()"></div>
+<div class="settings-panel" id="settingsPanel" onclick="event.stopPropagation()">
+
+  <div class="settings-section">
+    <div class="settings-section-title">Weekend</div>
+    <div class="settings-pills">
+      <button class="settings-pill active">30–31 May</button>
+      <button class="settings-pill">6–7 Jun</button>
+      <button class="settings-pill">13–14 Jun</button>
+      <button class="settings-pill">+3 wknds →</button>
+    </div>
+  </div>
+
+  <div class="settings-section">
+    <div class="settings-section-title">Who's with you</div>
+    <div class="settings-pills">
+      <button class="settings-pill active" onclick="this.classList.toggle('active')">Me</button>
+      <button class="settings-pill active" onclick="this.classList.toggle('active')">Partner</button>
+      <button class="settings-pill active" onclick="this.classList.toggle('active')">Kids · 4 yrs</button>
+    </div>
+    <div class="settings-divider-mini">Or one-tap presets</div>
+    <div class="settings-pills">
+      <button class="settings-pill">Just me</button>
+      <button class="settings-pill">Date night</button>
+      <button class="settings-pill">Whole family</button>
+    </div>
+  </div>
+
+  <div class="settings-section">
+    <div class="settings-section-title">How far?</div>
+    <div class="settings-pills">
+      <button class="settings-pill active">City only</button>
+      <button class="settings-pill">≤ 1 hour</button>
+      <button class="settings-pill">≤ 3 hours</button>
+      <button class="settings-pill">Weekend trip</button>
+    </div>
+  </div>
+
+  <div class="settings-section">
+    <div class="settings-section-title">Preview a forecast</div>
+    <button class="settings-mode-row" onclick="setMode('HOT')">
+      <span class="smr-left"><span class="smr-dot HOT"></span>Hot ☀️</span>
+      <span class="smr-right">+28° clear</span>
+    </button>
+    <button class="settings-mode-row active" onclick="setMode('WARM')">
+      <span class="smr-left"><span class="smr-dot WARM"></span>Warm 🌤️</span>
+      <span class="smr-right">actual</span>
+    </button>
+    <button class="settings-mode-row" onclick="setMode('COOL')">
+      <span class="smr-left"><span class="smr-dot COOL"></span>Cool 🍂</span>
+      <span class="smr-right">11° dry</span>
+    </button>
+    <button class="settings-mode-row" onclick="setMode('COLD_WET')">
+      <span class="smr-left"><span class="smr-dot COLD_WET"></span>Cold/Wet 🌧️</span>
+      <span class="smr-right">5° rain</span>
+    </button>
+    <button class="settings-mode-row" onclick="setMode('VOLATILE')">
+      <span class="smr-left"><span class="smr-dot VOLATILE"></span>Volatile ⚡</span>
+      <span class="smr-right">big swing</span>
+    </button>
+  </div>
+
+</div>
+
+<!-- MODAL -->
+<div class="modal-backdrop" id="modalBackdrop" onclick="closeCard()"></div>
+<div class="modal" id="modal">
+  <button class="modal-close" onclick="closeCard()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </button>
+  <div class="modal-scroll">
+    <div class="modal-hero">
+      <div class="modal-hero-tags" id="modalTags"></div>
+      <img id="modalImg" src="" alt="">
+    </div>
+    <div class="modal-body">
+      <div class="modal-meta">
+        <span class="when" id="modalWhen">SAT MORNING</span>
+        <span class="sep">/</span>
+        <span id="modalLocation">CITY</span>
+      </div>
+      <h2 id="modalTitle">Title</h2>
+      <div class="modal-venue" id="modalVenue">venue</div>
+      <div class="modal-body-text" id="modalText">body</div>
+      <div class="modal-pubs">
+        <div class="modal-pubs-title">Where the city's writers landed</div>
+        <div id="modalPubsList"></div>
+      </div>
+      <div class="modal-why" id="modalWhy">why</div>
+      <div class="modal-actions">
+        <button class="m-action primary">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+          Save
+        </button>
+        <button class="m-action">Did it</button>
+        <button class="m-action">Not this</button>
+        <button class="m-action">Map</button>
+        <button class="m-action">Tickets</button>
+        <button class="m-action" onclick="showShare()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13"/></svg>
+          Share
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="share-toast" id="shareToast">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+  Share link copied
+</div>
+
+<script>
+  const MODES = {
+    HOT: {
+      icon: "☀️", tempHigh: 30, tempLow: 18,
+      heroPhrase: 'The year\'s first <em>hot Saturday</em> hits, and the city is already outside.',
+      lede: "<b>This is not a museum weekend.</b> Three picks that lean into the heat — water access, south-facing terraces, day-into-night programming. Indoor culture gets benched until next week.",
+      modeCount: "HOT · weather-ranked",
+      rainNote: "No rain · 30°+ all day",
+      rainBars: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      cards: [
+        {
+          id: 'hot1',
+          img: "https://images.unsplash.com/photo-1530541930197-ff16ac917b0e?w=1200&h=750&fit=crop&q=80",
+          eyebrow: "SAT 10:00 → 16:00",
+          tags: ['<span class="tag weather-pick">Weather pick</span>', '<span class="tag kid">Kids</span>'],
+          title: "Hortus Botanicus, then a swim at Marineterrein",
+          venue: "Plantage <span class='sep'>·</span> Kattenburg <span class='sep'>·</span> bikeable",
+          snippet: "Butterfly greenhouse first, then bike north for the harbour swim that opens this exact weekend.",
+          fit: "<b>Why now:</b> harbour swim opens · 30° outdoor day",
+          pubs: ['<span class="pub-chip"><b>↳</b> I amsterdam</span>', '<span class="pub-chip"><b>↳</b> Kidsproof</span>'],
+          footer: "Free <b>· €15 total</b>",
+          modal: {
+            when: "SAT MORNING → AFTERNOON",
+            location: "PLANTAGE + KATTENBURG",
+            body: "<p>Hortus opens at 10. The butterfly greenhouse is the part the kids will remember for a week — go straight there, then loop through the medicinal garden while they're still patient.</p><p>Bike north to Marineterrein, where the harbor swim opens this weekend for the season.</p>",
+            why: "Weather is HOT (30° Sat, Buienradar shows 0mm rain through 18:00). Marineterrein swim opens this exact weekend.",
+            pubLinks: [
+              { name: "I amsterdam", blurb: "Listed in this week's family roundup" },
+              { name: "Kidsproof Amsterdam", blurb: "Marineterrein swim season launch noted" }
+            ]
+          }
+        },
+        {
+          id: 'hot2',
+          img: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1200&h=750&fit=crop&q=80",
+          eyebrow: "SUN LUNCH · NOORD",
+          tags: ['<span class="tag weather-pick">Weather pick</span>', '<span class="tag new">New</span>', '<span class="tag critic">Eater Hit List</span>'],
+          title: "Papillon, south-facing terrace",
+          venue: "Amsterdam Noord <span class='sep'>·</span> all-day <span class='sep'>·</span> walk-in",
+          snippet: "The all-day place in Noord with the right kind of terrace for this weather. Cross on the ferry, make a morning of it.",
+          fit: "<b>Why now:</b> south-facing terrace · 28° Sunday",
+          pubs: ['<span class="pub-chip"><b>↳</b> Eater</span>', '<span class="pub-chip"><b>↳</b> Little Black Book</span>', '<span class="pub-chip"><b>↳</b> We Like Amsterdam</span>'],
+          footer: "Walk-in <b>· book for dinner</b>",
+          modal: {
+            when: "SUN LUNCH",
+            location: "AMSTERDAM NOORD",
+            body: "<p>The all-day place in Noord everyone's been talking about since spring. Sourdough and pastries in the morning, wood-fired plates and natural wines as the day shifts.</p><p>The terrace is the reason to go this Sunday — south-facing, properly sunny.</p>",
+            why: "Weather is HOT. South-facing terrace specifically scored — Papillon's orientation matches the sun trajectory at 28°.",
+            pubLinks: [
+              { name: "Eater Amsterdam", blurb: "Added to Hit List this spring" },
+              { name: "Little Black Book", blurb: "Featured in new openings roundup" },
+              { name: "We Like Amsterdam", blurb: "Recommended in monthly newsletter" }
+            ]
+          }
+        },
+        {
+          id: 'hot3',
+          img: "https://images.unsplash.com/photo-1493676304819-0d7a8d026dcf?w=1200&h=750&fit=crop&q=80",
+          eyebrow: "SUN 15:00 → 22:00",
+          tags: ['<span class="tag weather-pick">Weather pick</span>', '<span class="tag flex">Outdoor</span>'],
+          title: "KC Lights at Thuishaven, day-into-night",
+          venue: "Thuishaven <span class='sep'>·</span> outdoor <span class='sep'>·</span> house + disco",
+          snippet: "House outside in the sun, into a warm Amsterdam evening. The softer landing for a hot Sunday than any indoor club.",
+          fit: "<b>Why now:</b> outdoor venue · day-into-night",
+          pubs: ['<span class="pub-chip"><b>↳</b> Resident Advisor</span>'],
+          footer: "€25 <b>· in/out wristband</b>",
+          modal: {
+            when: "SUN AFTERNOON → EVENING",
+            location: "THUISHAVEN · WESTPOORT",
+            body: "<p>House and disco outside in the sun, programming that warms into a proper Amsterdam evening.</p><p>Wristband lets you in and out — pop home to put the kids to bed and come back if you want the late set.</p>",
+            why: "Weather is HOT. Indoor clubs get penalized; outdoor venues get +3. Matches your Spotify house leaning.",
+            pubLinks: [{ name: "Resident Advisor", blurb: "Featured in Amsterdam this weekend" }]
+          }
+        }
+      ]
+    },
+    WARM: {
+      icon: "🌤️", tempHigh: 20, tempLow: 11,
+      heroPhrase: 'A weekend that lets you <em>choose your own adventure</em>.',
+      lede: "<b>Mid-range weather is freedom.</b> Three picks that work whatever you decide on the day — one outdoor lean, one indoor lean, one go-either-way. The shape of the weekend is up to you.",
+      modeCount: "WARM · re-ranked",
+      rainNote: "No rain expected",
+      rainBars: [0, 0, 0, 0, 0, 0, 1, 2, 3, 2, 1, 1],
+      cards: [
+        {
+          id: 'warm1',
+          img: "https://images.unsplash.com/photo-1551845728-6820a30c64e1?w=1200&h=750&fit=crop&q=80",
+          eyebrow: "SAT AFTERNOON",
+          tags: ['<span class="tag flex">Flexible</span>', '<span class="tag kid">Kids</span>'],
+          title: "Tolhuistuin gardens + Felbm at Zonzij",
+          venue: "Noord <span class='sep'>·</span> garden + venue combo",
+          snippet: "Garden in the afternoon with the kids, Felbm playing the bar after they're picked up. Two adjacent things, half a day each.",
+          fit: "<b>Why now:</b> works in any weather · indoor backup nearby",
+          pubs: ['<span class="pub-chip"><b>↳</b> Tolhuistuin</span>', '<span class="pub-chip"><b>↳</b> Resident Advisor</span>'],
+          footer: "Free entry <b>· €12 show</b>",
+          modal: {
+            when: "SAT AFTERNOON → EVENING",
+            location: "TOLHUISTUIN · NOORD",
+            body: "<p>Tolhuistuin's gardens are kid-perfect on warm afternoons — open lawn, bar with covered seating, the IJ right there.</p><p>Felbm is the kind of band you stand close to. Walk-in works most weeks.</p>",
+            why: "Weather is WARM and flexible. This pick has both outdoor (gardens) and covered indoor (Zonzij venue) within 50 meters.",
+            pubLinks: [
+              { name: "Tolhuistuin", blurb: "Garden + program this weekend" },
+              { name: "Resident Advisor", blurb: "Felbm Saturday listing" }
+            ]
+          }
+        },
+        {
+          id: 'warm2',
+          img: "https://images.unsplash.com/photo-1542838132-92c53300491e?w=1200&h=750&fit=crop&q=80",
+          eyebrow: "SAT 10:00 → 16:00",
+          tags: ['<span class="tag flex">Flexible</span>', '<span class="tag critic">Critic\'s pick</span>'],
+          title: "NDSM flea + harbourside afternoon",
+          venue: "NDSM <span class='sep'>·</span> IJ Hallen weekend <span class='sep'>·</span> €5",
+          snippet: "Indoor hangar flea market with outdoor harbour wandering. Covered when you need it, open when you want it.",
+          fit: "<b>Why now:</b> indoor + outdoor mix · weather-agnostic",
+          pubs: ['<span class="pub-chip"><b>↳</b> IJ Hallen</span>', '<span class="pub-chip"><b>↳</b> I amsterdam</span>'],
+          footer: "€5 entry <b>· kids free</b>",
+          modal: {
+            when: "SAT 10:00 → 16:00",
+            location: "NDSM · NOORD",
+            body: "<p>Europe's biggest flea market. Inside the hangar is dry and properly lit; outside is the harbour and food trucks.</p>",
+            why: "Weather is WARM, 30% rain possible. Mixed indoor/outdoor venues score highest in this mode.",
+            pubLinks: [
+              { name: "IJ Hallen", blurb: "Weekend schedule confirmed" },
+              { name: "I amsterdam", blurb: "Listed in family roundup" }
+            ]
+          }
+        },
+        {
+          id: 'warm3',
+          img: "https://images.unsplash.com/photo-1501386761578-eac5c94b800a?w=1200&h=750&fit=crop&q=80",
+          eyebrow: "SAT 20:30 · PARADISO",
+          tags: ['<span class="tag hot">Sold out · waitlist</span>', '<span class="tag critic">Critic\'s pick</span>'],
+          title: "Nectar Woode + Arno Sacco",
+          venue: "Paradiso Upstairs <span class='sep'>·</span> with NOTION",
+          snippet: "Ghanaian-British jazz-soul singer, small hall — three meters from you. Weather-neutral and worth getting on the waitlist.",
+          fit: "<b>Why now:</b> indoor venue · weather doesn't matter",
+          pubs: ['<span class="pub-chip"><b>↳</b> Resident Advisor</span>', '<span class="pub-chip"><b>↳</b> Paradiso</span>', '<span class="pub-chip"><b>↳</b> NOTION</span>'],
+          footer: "€22 <b>· waitlist active</b>",
+          modal: {
+            when: "SAT 20:30",
+            location: "PARADISO · CENTRUM",
+            body: "<p>Ghanaian-British jazz-soul singer, the kind of voice that makes a room hold its breath. Booked into the small hall, which is the point.</p>",
+            why: "Your top Spotify weeks all skew voice-forward soul (Cleo Sol, Snoh Aalegra, Kelela).",
+            pubLinks: [
+              { name: "Resident Advisor", blurb: "Listed in Amsterdam this weekend" },
+              { name: "Paradiso program", blurb: "Sold out · waitlist open" },
+              { name: "NOTION", blurb: "Co-programmed by the publication" }
+            ]
+          }
+        }
+      ]
+    },
+    COOL: {
+      icon: "🍂", tempHigh: 12, tempLow: 6,
+      heroPhrase: 'Crisp weekend — the city\'s <em>interiors do the work</em>.',
+      lede: "<b>Cool clear days are the city's most underrated mode.</b> Three picks that lean into the right kind of indoor — warm rooms, considered spaces, conversation-friendly venues.",
+      modeCount: "COOL · re-ranked",
+      rainNote: "Brief shower at 18:00",
+      rainBars: [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
+      cards: [
+        {
+          id: 'cool1',
+          img: "https://images.unsplash.com/photo-1577720580479-7d839d829c73?w=1200&h=750&fit=crop&q=80",
+          eyebrow: "SUN 14:00 · FOAM",
+          tags: ['<span class="tag new">New rooms</span>', '<span class="tag cultural">Cultural</span>'],
+          title: "Foam — Wolfgang Tillmans, new rooms",
+          venue: "Keizersgracht 609 <span class='sep'>·</span> opened 2 weeks <span class='sep'>·</span> €15",
+          snippet: "The new Tillmans rooms are the show of the spring. Cool days are the right weather for museum-pace.",
+          fit: "<b>Why now:</b> indoor cultural · perfect for 11° days",
+          pubs: ['<span class="pub-chip"><b>↳</b> Foam</span>', '<span class="pub-chip"><b>↳</b> NRC</span>', '<span class="pub-chip"><b>↳</b> Het Parool</span>'],
+          footer: "€15 <b>· allow 90 min</b>",
+          modal: {
+            when: "SUN 14:00",
+            location: "FOAM · KEIZERSGRACHT",
+            body: "<p>The new Tillmans rooms are the show of the spring. Cool days are the right weather for museum-pace — you'll actually slow down.</p>",
+            why: "Weather is COOL. Museums score +2. Foam's Tillmans show is highest-scoring by writer signal density.",
+            pubLinks: [
+              { name: "Foam", blurb: "Exhibition page + hours" },
+              { name: "NRC Handelsblad", blurb: "Reviewed in last weekend's culture section" },
+              { name: "Het Parool", blurb: "Highlighted in Saturday supplement" }
+            ]
+          }
+        },
+        {
+          id: 'cool2',
+          img: "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=1200&h=750&fit=crop&q=80",
+          eyebrow: "SAT EVENING · EYE",
+          tags: ['<span class="tag cultural">Cultural</span>', '<span class="tag critic">Critic\'s pick</span>'],
+          title: "Eye Filmmuseum · Chantal Akerman retrospective",
+          venue: "Eye <span class='sep'>·</span> across the IJ <span class='sep'>·</span> ferry from Centraal",
+          snippet: "Akerman retrospective running through the month — 'Jeanne Dielman' Saturday at 20:00.",
+          fit: "<b>Why now:</b> indoor venue · warm + considered",
+          pubs: ['<span class="pub-chip"><b>↳</b> Eye</span>', '<span class="pub-chip"><b>↳</b> Filmkrant</span>'],
+          footer: "€13 <b>· 201 min</b>",
+          modal: {
+            when: "SAT 20:00",
+            location: "EYE FILMMUSEUM · NOORD",
+            body: "<p>Akerman retrospective running through the month — Jeanne Dielman on Saturday at 20:00.</p><p>The cinema bar overlooks the IJ; get there 30 minutes early for a drink.</p>",
+            why: "Weather is COOL. Indoor cultural venues +2. Akerman retrospective rated highly by the critic signals you follow.",
+            pubLinks: [
+              { name: "Eye Filmmuseum", blurb: "Akerman retrospective schedule" },
+              { name: "Filmkrant", blurb: "Featured in monthly retrospective overview" }
+            ]
+          }
+        },
+        {
+          id: 'cool3',
+          img: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1200&h=750&fit=crop&q=80",
+          eyebrow: "SUN LUNCH",
+          tags: ['<span class="tag new">New</span>', '<span class="tag critic">Eater Hit List</span>'],
+          title: "Papillon — book the dining room, not the terrace",
+          venue: "Noord <span class='sep'>·</span> all-day <span class='sep'>·</span> reservation recommended",
+          snippet: "Wood-fired room is the right Papillon for cool weather. Long lunch with a glass of red, made for sitting still in.",
+          fit: "<b>Why now:</b> warm interior · slow-pace fit",
+          pubs: ['<span class="pub-chip"><b>↳</b> Eater</span>', '<span class="pub-chip"><b>↳</b> Little Black Book</span>'],
+          footer: "Book <b>· dining room</b>",
+          modal: {
+            when: "SUN LUNCH",
+            location: "PAPILLON · NOORD",
+            body: "<p>Wood-fired room is the right Papillon for cool weather. Long lunch with a glass of red, made for sitting still in.</p>",
+            why: "Weather is COOL. Same restaurant as HOT mode, but the engine flipped the recommendation from terrace to dining room.",
+            pubLinks: [
+              { name: "Eater Amsterdam", blurb: "Added to Hit List this spring" },
+              { name: "Little Black Book", blurb: "Featured in new openings roundup" }
+            ]
+          }
+        }
+      ]
+    },
+    COLD_WET: {
+      icon: "🌧️", tempHigh: 6, tempLow: 3,
+      heroPhrase: '<em>Indoor weekend</em>. The city\'s hidden corners are waiting.',
+      lede: "<b>Bad weather is the city's invitation to slow down.</b> Three picks that lean fully indoor — culture, cocktails, comfort. Anything with a terrace gets pushed to next week. Bring boots; book ahead.",
+      modeCount: "COLD/WET · re-ranked",
+      rainNote: "Rain through Sunday evening",
+      rainBars: [4, 5, 6, 7, 8, 7, 6, 8, 9, 7, 5, 4],
+      cards: [
+        {
+          id: 'cold1',
+          img: "https://images.unsplash.com/photo-1565060169187-5284a3f97ad8?w=1200&h=750&fit=crop&q=80",
+          eyebrow: "SAT MORNING · STEDELIJK",
+          tags: ['<span class="tag indoor">Indoor</span>', '<span class="tag kid">Kids OK</span>'],
+          title: "Stedelijk — three new exhibitions, full morning",
+          venue: "Museumplein <span class='sep'>·</span> opens 10:00 <span class='sep'>·</span> €22",
+          snippet: "Big enough to fill four hours with the kids and still see real art. Café for lunch, then home before the worst rain hits at 14:00.",
+          fit: "<b>Why now:</b> fully indoor · book early for rainy Saturday",
+          pubs: ['<span class="pub-chip"><b>↳</b> Stedelijk</span>', '<span class="pub-chip"><b>↳</b> Het Parool</span>'],
+          footer: "€22 <b>· kids free</b>",
+          modal: {
+            when: "SAT MORNING",
+            location: "STEDELIJK · MUSEUMPLEIN",
+            body: "<p>Big enough to fill four hours with the kids and still see real art. Three new shows up — the contemporary wing has the most kid-tolerant work right now.</p>",
+            why: "Weather is COLD/WET. Museums score +3 (the highest possible bonus). Stedelijk is large enough to be a full half-day.",
+            pubLinks: [
+              { name: "Stedelijk", blurb: "Current exhibitions + family info" },
+              { name: "Het Parool", blurb: "Latest exhibition review" }
+            ]
+          }
+        },
+        {
+          id: 'cold2',
+          img: "https://images.unsplash.com/photo-1542204165-65bf26472b9b?w=1200&h=750&fit=crop&q=80",
+          eyebrow: "SAT EVENING · EYE",
+          tags: ['<span class="tag indoor">Indoor</span>', '<span class="tag critic">Critic\'s pick</span>'],
+          title: "Eye Filmmuseum · 'Jeanne Dielman'",
+          venue: "Eye <span class='sep'>·</span> across the IJ <span class='sep'>·</span> ferry covered",
+          snippet: "Long film in a warm room while the rain comes down. Bar afterward overlooks the IJ — exactly the weather for it.",
+          fit: "<b>Why now:</b> indoor cinema · cinematic weather match",
+          pubs: ['<span class="pub-chip"><b>↳</b> Eye</span>', '<span class="pub-chip"><b>↳</b> Filmkrant</span>'],
+          footer: "€13 <b>· 201 min</b>",
+          modal: {
+            when: "SAT 20:00",
+            location: "EYE FILMMUSEUM · NOORD",
+            body: "<p>Long film in a warm room while the rain comes down. Bar afterward overlooks the IJ — exactly the weather for it.</p>",
+            why: "Weather is COLD/WET. Cinemas score +3, especially long films (the 'commitment to indoor' bonus).",
+            pubLinks: [
+              { name: "Eye Filmmuseum", blurb: "Akerman retrospective schedule" },
+              { name: "Filmkrant", blurb: "Featured in monthly retrospective overview" }
+            ]
+          }
+        },
+        {
+          id: 'cold3',
+          img: "https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=1200&h=750&fit=crop&q=80",
+          eyebrow: "SUN EVENING",
+          tags: ['<span class="tag indoor">Indoor</span>', '<span class="tag flex">Cosy</span>'],
+          title: "Pulitzer's bar — long cocktail evening",
+          venue: "Pulitzer Amsterdam <span class='sep'>·</span> Prinsengracht <span class='sep'>·</span> walk-in possible",
+          snippet: "Wood, fireplace, properly made drinks. The kind of place you stay three hours in when it's pouring.",
+          fit: "<b>Why now:</b> fireplace · cocktail-pace · weather-perfect",
+          pubs: ['<span class="pub-chip"><b>↳</b> Pulitzer</span>', '<span class="pub-chip"><b>↳</b> Little Black Book</span>'],
+          footer: "Walk-in <b>· book if you can</b>",
+          modal: {
+            when: "SUN EVENING",
+            location: "PULITZER · PRINSENGRACHT",
+            body: "<p>Wood, fireplace, properly made drinks. The kind of place you stay three hours in when it's pouring outside.</p>",
+            why: "Weather is COLD/WET. Bars with fireplaces score top of category. Cold-weather-only pick.",
+            pubLinks: [
+              { name: "Pulitzer Amsterdam", blurb: "Bar program + hours" },
+              { name: "Little Black Book", blurb: "Featured in cosy-bars roundup last winter" }
+            ]
+          }
+        }
+      ]
+    },
+    VOLATILE: {
+      icon: "⚡", tempHigh: 22, tempLow: 8,
+      heroPhrase: 'Two different weekends in one — <em>Plan A and Plan B</em>.',
+      lede: "<b>Use Saturday for the outdoor things while you can.</b> Three picks structured for the swing — front-load the outdoor on Saturday, pivot indoor on Sunday. We'll notify you Saturday morning if the forecast tightens.",
+      modeCount: "VOLATILE · re-ranked",
+      rainNote: "Dry now, rain by Sunday",
+      rainBars: [0, 0, 0, 1, 0, 0, 2, 4, 6, 7, 5, 3],
+      cards: [
+        {
+          id: 'vol1',
+          img: "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=1200&h=750&fit=crop&q=80",
+          eyebrow: "SAT MORNING → AFTERNOON",
+          tags: ['<span class="tag flex">Plan A: outdoor</span>', '<span class="tag kid">Kids</span>'],
+          title: "Vondelpark + ice cream · with NEMO backup",
+          venue: "Vondelpark <span class='sep'>·</span> Plan B: NEMO 8 min away",
+          snippet: "Saturday is the day to use outdoor — park morning, ice cream, picnic. If the forecast tightens, we swap to NEMO and ping you.",
+          fit: "<b>Why now:</b> outdoor-first · indoor backup within reach",
+          pubs: ['<span class="pub-chip"><b>↳</b> I amsterdam</span>', '<span class="pub-chip"><b>↳</b> Kidsproof</span>'],
+          footer: "Free <b>· NEMO €18.50</b>",
+          modal: {
+            when: "SAT MORNING → AFTERNOON",
+            location: "VONDELPARK + NEMO (BACKUP)",
+            body: "<p>Saturday is the day to use outdoor. Backup plan if Buienradar changes: NEMO Science Museum, 8 minutes by tram. We'll send a notification by 10:00 if the call needs to change.</p>",
+            why: "Weather is VOLATILE. Highest-scoring picks combine outdoor-Plan-A with indoor-Plan-B within 10 minutes.",
+            pubLinks: [
+              { name: "I amsterdam", blurb: "Park + NEMO both listed in family section" },
+              { name: "Kidsproof Amsterdam", blurb: "Both options independently recommended" }
+            ]
+          }
+        },
+        {
+          id: 'vol2',
+          img: "https://images.unsplash.com/photo-1551845728-6820a30c64e1?w=1200&h=750&fit=crop&q=80",
+          eyebrow: "SAT EVENING",
+          tags: ['<span class="tag flex">Flexible</span>', '<span class="tag critic">Music</span>'],
+          title: "Tolhuistuin garden bar (covered) → indoor venue",
+          venue: "Tolhuistuin <span class='sep'>·</span> Noord <span class='sep'>·</span> walk-in",
+          snippet: "Garden bar with covered seating means you don't have to commit to outdoor until you're there.",
+          fit: "<b>Why now:</b> covered outdoor · pivot-ready",
+          pubs: ['<span class="pub-chip"><b>↳</b> Tolhuistuin</span>'],
+          footer: "Free entry <b>· €12 show</b>",
+          modal: {
+            when: "SAT EVENING",
+            location: "TOLHUISTUIN · NOORD",
+            body: "<p>Garden bar with covered seating means you don't have to commit to outdoor until you're there.</p>",
+            why: "Weather is VOLATILE. Tolhuistuin scores highest because the venue itself is a hedge.",
+            pubLinks: [{ name: "Tolhuistuin", blurb: "Garden + program this weekend" }]
+          }
+        },
+        {
+          id: 'vol3',
+          img: "https://images.unsplash.com/photo-1577720580479-7d839d829c73?w=1200&h=750&fit=crop&q=80",
+          eyebrow: "SUN ALL DAY",
+          tags: ['<span class="tag indoor">Plan B: indoor</span>', '<span class="tag cultural">Cultural</span>'],
+          title: "Foam Tillmans + long lunch nearby",
+          venue: "Keizersgracht <span class='sep'>·</span> rainy Sunday locked",
+          snippet: "Sunday is forecast wet — lock the indoor plan now. Foam opens 10:00, lunch at Toki around the corner.",
+          fit: "<b>Why now:</b> locked indoor · matches Sunday rain forecast",
+          pubs: ['<span class="pub-chip"><b>↳</b> Foam</span>', '<span class="pub-chip"><b>↳</b> Toki</span>'],
+          footer: "€15 + lunch <b>· €60 all-in</b>",
+          modal: {
+            when: "SUN ALL DAY",
+            location: "FOAM + TOKI · CENTRUM",
+            body: "<p>Sunday is forecast wet (Buienradar shows 70% precip 12:00–18:00) — lock the indoor plan now.</p>",
+            why: "Weather is VOLATILE. Sunday-specific forecast is 70% rain — so Sunday is locked as indoor.",
+            pubLinks: [
+              { name: "Foam", blurb: "Tillmans exhibition + hours" },
+              { name: "Toki", blurb: "Sunday lunch + counter info" }
+            ]
+          }
+        }
+      ]
+    }
+  };
+
+  let currentMode = 'WARM';
+
+  function setMode(mode) {
+    currentMode = mode;
+    const data = MODES[mode];
+
+    document.body.setAttribute('data-mode', mode);
+
+    document.getElementById('tempIcon').textContent = data.icon;
+    document.getElementById('tempHigh').textContent = data.tempHigh;
+    document.getElementById('tempLow').textContent = data.tempLow;
+    document.getElementById('heroPhrase').innerHTML = data.heroPhrase;
+    document.getElementById('lede').innerHTML = data.lede;
+    document.getElementById('modeCount').textContent = data.modeCount;
+    document.getElementById('rainNote').textContent = data.rainNote;
+
+    const rainBarsEl = document.getElementById('rainBars');
+    rainBarsEl.innerHTML = data.rainBars.map(v => `<div class="rain-bar" style="height: ${4 + v * 2.5}px;"></div>`).join('');
+
+    // Active mode row in settings panel
+    document.querySelectorAll('.settings-mode-row').forEach(row => {
+      const dot = row.querySelector('.smr-dot');
+      if (dot && dot.classList.contains(mode)) row.classList.add('active');
+      else row.classList.remove('active');
+    });
+
+    const cardsEl = document.getElementById('cards');
+    cardsEl.innerHTML = data.cards.map(c => `
+      <article class="card" onclick="openCard('${c.id}')">
+        <div class="card-img">
+          <img src="${c.img}" alt="" loading="lazy">
+          <div class="card-tag-overlay">${c.tags.join('')}</div>
+          <div class="card-eyebrow">${c.eyebrow}</div>
+        </div>
+        <div class="card-body">
+          <div class="card-title">${c.title}</div>
+          <div class="card-venue">${c.venue}</div>
+          <p class="card-snippet">${c.snippet}</p>
+          <div class="card-pubs">${c.pubs.join('')}</div>
+          <div class="card-fit">${c.fit}</div>
+          <div class="card-footer">
+            <div class="card-footer-meta">${c.footer}</div>
+            <div class="card-footer-actions">
+              <button class="mini-action" onclick="event.stopPropagation(); this.classList.toggle('saved')" title="Save">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+              </button>
+              <button class="mini-action" onclick="event.stopPropagation(); showShare()" title="Share">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </article>
+    `).join('');
+  }
+
+  function openCard(id) {
+    const data = MODES[currentMode];
+    const c = data.cards.find(card => card.id === id);
+    if (!c) return;
+    document.getElementById('modalImg').src = c.img;
+    document.getElementById('modalTitle').textContent = c.title.replace(/<[^>]*>/g, '');
+    document.getElementById('modalWhen').textContent = c.modal.when;
+    document.getElementById('modalLocation').textContent = c.modal.location;
+    document.getElementById('modalVenue').innerHTML = c.venue;
+    document.getElementById('modalText').innerHTML = c.modal.body;
+    document.getElementById('modalWhy').innerHTML = '<div>' + c.modal.why + '</div>';
+    document.getElementById('modalTags').innerHTML = c.tags.join('');
+    document.getElementById('modalPubsList').innerHTML = c.modal.pubLinks.map(p =>
+      `<a class="pub-link" href="#"><span><span class="pub-name">${p.name}</span><div class="pub-blurb">${p.blurb}</div></span><span class="pub-arrow">↗</span></a>`
+    ).join('');
+    document.getElementById('modalBackdrop').classList.add('show');
+    document.getElementById('modal').classList.add('show');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeCard() {
+    document.getElementById('modalBackdrop').classList.remove('show');
+    document.getElementById('modal').classList.remove('show');
+    document.body.style.overflow = '';
+  }
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') { closeCard(); closeSettings(); }
+  });
+
+  function toggleSettings(e) {
+    e.stopPropagation();
+    const panel = document.getElementById('settingsPanel');
+    const overlay = document.getElementById('settingsOverlay');
+    const btn = document.getElementById('settingsBtn');
+    const willOpen = !panel.classList.contains('show');
+    panel.classList.toggle('show');
+    overlay.classList.toggle('show');
+    btn.classList.toggle('active', willOpen);
+  }
+  function closeSettings() {
+    document.getElementById('settingsPanel').classList.remove('show');
+    document.getElementById('settingsOverlay').classList.remove('show');
+    document.getElementById('settingsBtn').classList.remove('active');
+  }
+
+  function toggleCity(e) {
+    e.stopPropagation();
+    document.getElementById('citySelect').classList.toggle('open');
+  }
+  function selectCity(name, e) {
+    e.stopPropagation();
+    document.querySelector('.city-name').textContent = name;
+    document.querySelectorAll('.city-item').forEach(i => i.classList.remove('active'));
+    e.currentTarget.classList.add('active');
+    document.getElementById('citySelect').classList.remove('open');
+  }
+  function filterCities(q) {
+    q = q.toLowerCase();
+    document.querySelectorAll('.city-item').forEach(item => {
+      const text = item.textContent.toLowerCase();
+      item.style.display = text.includes(q) ? '' : 'none';
+    });
+  }
+  document.addEventListener('click', (e) => {
+    const cs = document.getElementById('citySelect');
+    if (cs && !cs.contains(e.target)) cs.classList.remove('open');
+  });
+
+  function showShare() {
+    const t = document.getElementById('shareToast');
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2200);
+  }
+
+  setMode('WARM');
+</script>
+
+</body>
+</html>
