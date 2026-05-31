@@ -10,20 +10,23 @@ import { InputsSheet } from './components/InputsSheet'
 import { FilterSheet } from './components/FilterSheet'
 import { SOURCE_COUNT } from './data/sources'
 import { CATEGORY_LABEL, type Category } from './types'
+import {
+  type Taste, applySwipe, hasTaste, loadSaved, loadTaste, persistSaved, persistTaste,
+} from './taste'
 import './App.css'
 
 // sources actually used in the current snapshot (vs the full roster)
 const ACTIVE_SOURCES = new Set(PICKS.map((p) => p.source)).size
 
-// filters available = 'all' + 'kids' (cross-cut) + the categories actually present
-type Filter = 'all' | 'kids' | Category
+// filters available = 'all' + 'saved' + 'kids' (cross-cut) + the categories present
+type Filter = 'all' | 'saved' | 'kids' | Category
 const PRESENT: Category[] = [...new Set(PICKS.map((p) => p.category))]
 const FILTERS: { key: Filter; label: string; count: number }[] = [
   { key: 'all', label: 'Everything', count: PICKS.length },
   ...(PICKS.some((p) => p.kid) ? [{ key: 'kids' as Filter, label: 'Kids', count: PICKS.filter((p) => p.kid).length }] : []),
   ...PRESENT.map((c) => ({ key: c as Filter, label: CATEGORY_LABEL[c], count: PICKS.filter((p) => p.category === c).length })),
 ]
-const filterLabel = (f: Filter) => FILTERS.find((x) => x.key === f)?.label ?? 'Everything'
+const filterLabel = (f: Filter) => f === 'saved' ? 'Saved' : (FILTERS.find((x) => x.key === f)?.label ?? 'Everything')
 
 type View = 'stack' | 'list'
 interface Wx { temp: number; hi: number; lo: number; city: string }
@@ -50,7 +53,8 @@ export default function App() {
   const [wx, setWx] = useState<Wx>(DEMO.HOT)
   const [live, setLive] = useState(false)        // true once the real forecast loads
   const [swiped, setSwiped] = useState<Set<string>>(new Set())
-  const [saved, setSaved] = useState<Set<string>>(new Set())
+  const [saved, setSaved] = useState<Set<string>>(() => loadSaved())   // persisted
+  const [taste, setTaste] = useState<Taste>(() => loadTaste())         // persisted taste profile
   const [showAdjust, setShowAdjust] = useState(false)
   const [toast, setToast] = useState('')
   const [seed, setSeed] = useState(0)            // 0 = forecast order; bumped by Refresh
@@ -61,6 +65,8 @@ export default function App() {
   const [filterOpen, setFilterOpen] = useState(false)      // filter sheet
 
   useEffect(() => { applyMode(mode) }, [mode])
+  useEffect(() => { persistSaved(saved) }, [saved])   // your list survives reloads
+  useEffect(() => { persistTaste(taste) }, [taste])   // your taste accumulates over time
 
   // Default to the real Amsterdam forecast on load — weather is a fact, not a toggle.
   const didInit = useRef(false)
@@ -81,10 +87,17 @@ export default function App() {
   // Refresh reshuffles the whole pool (within weather tiers) so BOTH views reorder,
   // then re-ranks. List + stack both change; the stack re-deals with a toast.
   const pool = useMemo(() => (seed === 0 ? PICKS : shuffle(PICKS, seed)), [seed])
-  const rankedAll = useMemo(() => rankPicks(pool, mode), [pool, mode])
+  const rankedAll = useMemo(
+    () => rankPicks(pool, mode, hasTaste(taste) ? taste : undefined),
+    [pool, mode, taste],
+  )
   const shown = useMemo(
-    () => rankedAll.filter((p) => filter === 'all' || (filter === 'kids' ? p.kid : p.category === filter)),
-    [rankedAll, filter],
+    () => rankedAll.filter((p) =>
+      filter === 'all' ? true
+        : filter === 'saved' ? saved.has(p.id)
+        : filter === 'kids' ? p.kid
+        : p.category === filter),
+    [rankedAll, filter, saved],
   )
   const deck = useMemo(() => shown.filter((p) => !swiped.has(p.id)), [shown, swiped])
 
@@ -98,6 +111,7 @@ export default function App() {
   function handleStackSwipe(p: Pick, dir: SwipeDir) {
     setSwiped((s) => new Set(s).add(p.id))
     if (dir === 'like' || dir === 'save') setSaved((s) => new Set(s).add(p.id))
+    setTaste((t) => applySwipe(t, p, dir))   // every swipe teaches it
   }
   function handleListToggle(p: Pick, dir: SwipeDir) {
     setSaved((s) => {
@@ -105,13 +119,16 @@ export default function App() {
       if (dir === 'save') next.add(p.id); else next.delete(p.id)
       return next
     })
+    if (dir === 'save') setTaste((t) => applySwipe(t, p, 'save'))
   }
   function toggleSave(p: Pick) {
+    const wasSaved = saved.has(p.id)
     setSaved((s) => {
       const next = new Set(s)
-      if (next.has(p.id)) next.delete(p.id); else next.add(p.id)
+      if (wasSaved) next.delete(p.id); else next.add(p.id)
       return next
     })
+    if (!wasSaved) setTaste((t) => applySwipe(t, p, 'save'))
   }
 
   // "preview a different forecast" — explicitly a what-if, not the real weather
@@ -158,7 +175,11 @@ export default function App() {
           <div className="brand">WKNDR</div>
           <div className="head-right">
             <button className="refresh-btn" onClick={refresh} title="Refresh picks" aria-label="Refresh picks">↻</button>
-            <span className="saved-count">★ {saved.size}</span>
+            <button
+              className={`saved-count${filter === 'saved' ? ' on' : ''}`}
+              onClick={() => { setFilter('saved'); setView('list') }}
+              title="Your saved list"
+            >★ {saved.size}</button>
             <div className="toggle" role="tablist">
               <button className={view === 'stack' ? 'on' : ''} onClick={() => setView('stack')}>Stack</button>
               <button className={view === 'list' ? 'on' : ''} onClick={() => setView('list')}>List</button>
@@ -178,7 +199,7 @@ export default function App() {
         </section>
         <p className="wx-phrase">{MODE_META[mode].phrase}</p>
         <button className="built-from" onClick={() => setInputsOpen(true)}>
-          ⓘ Built from {SOURCE_COUNT} sources · weather × freshness
+          ⓘ Built from {SOURCE_COUNT} sources · weather × freshness{hasTaste(taste) ? ' × you' : ''}
         </button>
 
         <button
@@ -245,7 +266,7 @@ export default function App() {
       <FilterSheet
         open={filterOpen}
         onClose={() => setFilterOpen(false)}
-        options={FILTERS}
+        options={[FILTERS[0], { key: 'saved' as Filter, label: '★ Saved', count: saved.size }, ...FILTERS.slice(1)]}
         active={filter}
         onSelect={setFilter}
       />

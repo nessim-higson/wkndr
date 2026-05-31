@@ -47,7 +47,17 @@
 }
 .refresh-btn:hover { background: rgba(0, 0, 0, 0.3); }
 .refresh-btn:active { transform: rotate(180deg); }
-.saved-count { font-size: 13px; opacity: 0.85; letter-spacing: 0.02em; }
+.saved-count {
+  font-size: 13px;
+  opacity: 0.85;
+  letter-spacing: 0.02em;
+  color: var(--field-text);
+  padding: 5px 10px;
+  border-radius: 999px;
+  transition: all 0.15s var(--ease-out);
+}
+.saved-count:hover { opacity: 1; background: rgba(0, 0, 0, 0.18); }
+.saved-count.on { background: var(--field-text); color: #1a1a1a; opacity: 1; }
 
 .toggle {
   display: inline-flex;

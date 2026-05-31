@@ -1,4 +1,5 @@
 import type { Mode, Pick } from '../types'
+import { tasteScore, type Taste } from '../taste'
 
 export const MODES: Mode[] = ['HOT', 'WARM', 'COOL', 'COLD_WET', 'VOLATILE']
 
@@ -90,9 +91,10 @@ export function shuffle<T>(arr: T[], seed: number): T[] {
  * weather-fit (picks that peak in the current mode first), then nudge fresh
  * and ending-soon items up. The taste term arrives in Phase 4.
  */
-export function rankPicks(picks: Pick[], mode: Mode): Pick[] {
+export function rankPicks(picks: Pick[], mode: Mode, taste?: Taste): Pick[] {
   const freshBoost = (p: Pick) =>
     p.freshness === 'new' ? 1.5 : p.freshness === 'ending' ? 1.2 : p.freshness === 'weekend' ? 1 : 0.6
-  const score = (p: Pick) => (p.weatherFit.includes(mode) ? 10 : 0) + freshBoost(p)
+  const score = (p: Pick) =>
+    (p.weatherFit.includes(mode) ? 10 : 0) + freshBoost(p) + (taste ? tasteScore(p, taste) : 0)
   return [...picks].sort((a, b) => score(b) - score(a))
 }
