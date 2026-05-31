@@ -5,7 +5,12 @@ import { PICKS } from './data/picks'
 import { WeatherField } from './weather/WeatherField'
 import { SwipeStack } from './components/SwipeStack'
 import { ListView } from './components/ListView'
+import { CardDetail } from './components/CardDetail'
+import { InputsSheet } from './components/InputsSheet'
 import './App.css'
+
+// every distinct source feeding the pool — for the "built from" trace
+const SOURCES = [...new Set(PICKS.map((p) => p.source))]
 
 type View = 'stack' | 'list'
 interface Wx { temp: number; hi: number; lo: number; city: string }
@@ -37,6 +42,8 @@ export default function App() {
   const [toast, setToast] = useState('')
   const [seed, setSeed] = useState(0)            // 0 = forecast order; bumped by Refresh
   const [dealKey, setDealKey] = useState(0)      // bump → stack re-deals (refresh signal)
+  const [detail, setDetail] = useState<Pick | null>(null)  // open card detail
+  const [inputsOpen, setInputsOpen] = useState(false)      // "what's feeding this" sheet
 
   useEffect(() => { applyMode(mode) }, [mode])
 
@@ -77,6 +84,13 @@ export default function App() {
     setSaved((s) => {
       const next = new Set(s)
       if (dir === 'save') next.add(p.id); else next.delete(p.id)
+      return next
+    })
+  }
+  function toggleSave(p: Pick) {
+    setSaved((s) => {
+      const next = new Set(s)
+      if (next.has(p.id)) next.delete(p.id); else next.add(p.id)
       return next
     })
   }
@@ -144,11 +158,14 @@ export default function App() {
           </div>
         </section>
         <p className="wx-phrase">{MODE_META[mode].phrase}</p>
+        <button className="built-from" onClick={() => setInputsOpen(true)}>
+          ⓘ Built from {SOURCES.length} sources · weather × freshness
+        </button>
 
         <main className={`main main-${view}`}>
           {view === 'stack'
-            ? <SwipeStack key={dealKey} picks={deck} onSwipe={handleStackSwipe} onRefresh={refresh} />
-            : <ListView picks={rankedAll} savedIds={saved} onSwipe={handleListToggle} />}
+            ? <SwipeStack key={dealKey} picks={deck} onSwipe={handleStackSwipe} onRefresh={refresh} onOpen={setDetail} />
+            : <ListView picks={rankedAll} savedIds={saved} onSwipe={handleListToggle} onOpen={setDetail} />}
         </main>
 
         <div className="controls">
@@ -172,6 +189,23 @@ export default function App() {
       </div>
 
       {toast && <div className="toast">↻ {toast}</div>}
+
+      <CardDetail
+        pick={detail}
+        saved={detail ? saved.has(detail.id) : false}
+        onClose={() => setDetail(null)}
+        onToggleSave={toggleSave}
+      />
+      <InputsSheet
+        open={inputsOpen}
+        onClose={() => setInputsOpen(false)}
+        mode={mode}
+        temp={wx.temp}
+        hi={wx.hi}
+        lo={wx.lo}
+        live={live}
+        sources={SOURCES}
+      />
     </>
   )
 }

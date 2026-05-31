@@ -24,10 +24,11 @@ interface SwipeCardProps {
   interactive: boolean
   depth: number // 0 = top
   onSwipe: (p: Pick, dir: SwipeDir) => void
+  onOpen?: (p: Pick) => void
 }
 
 const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
-  { pick, interactive, depth, onSwipe }, ref,
+  { pick, interactive, depth, onSwipe, onOpen }, ref,
 ) {
   const x = useMotionValue(0)
   const y = useMotionValue(0)
@@ -68,6 +69,7 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
       dragSnapToOrigin
       dragElastic={0.6}
       onDragEnd={interactive ? onDragEnd : undefined}
+      onTap={interactive ? () => onOpen?.(pick) : undefined}
       whileTap={interactive ? { cursor: 'grabbing' } : undefined}
     >
       {interactive && (
@@ -84,8 +86,13 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
 })
 
 export function SwipeStack({
-  picks, onSwipe, onRefresh,
-}: { picks: Pick[]; onSwipe: (p: Pick, dir: SwipeDir) => void; onRefresh?: () => void }) {
+  picks, onSwipe, onRefresh, onOpen,
+}: {
+  picks: Pick[]
+  onSwipe: (p: Pick, dir: SwipeDir) => void
+  onRefresh?: () => void
+  onOpen?: (p: Pick) => void
+}) {
   const topRef = useRef<CardHandle>(null)
   const visible = picks.slice(0, 3)
 
@@ -111,6 +118,7 @@ export function SwipeStack({
             depth={i}
             interactive={i === 0}
             onSwipe={onSwipe}
+            onOpen={onOpen}
           />
         )).reverse()}
       </div>

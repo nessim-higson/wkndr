@@ -4,18 +4,19 @@ import './ListView.css'
 
 /** The scannable posture — same ranked pool, compact rows. */
 export function ListView({
-  picks, savedIds, onSwipe,
+  picks, savedIds, onSwipe, onOpen,
 }: {
   picks: Pick[]
   savedIds: Set<string>
   onSwipe: (p: Pick, dir: SwipeDir) => void
+  onOpen?: (p: Pick) => void
 }) {
   return (
     <div className="list">
       {picks.map((p) => {
         const saved = savedIds.has(p.id)
         return (
-          <article className="row" key={p.id}>
+          <article className="row" key={p.id} onClick={() => onOpen?.(p)}>
             <div className="row-thumb" style={{ backgroundImage: `url(${p.image})` }} />
             <div className="row-main">
               <div className="row-tags mono">
@@ -30,7 +31,7 @@ export function ListView({
             </div>
             <button
               className={`row-save${saved ? ' on' : ''}`}
-              onClick={() => onSwipe(p, saved ? 'skip' : 'save')}
+              onClick={(e) => { e.stopPropagation(); onSwipe(p, saved ? 'skip' : 'save') }}
               aria-label={saved ? 'Saved' : 'Save'}
             >★</button>
           </article>

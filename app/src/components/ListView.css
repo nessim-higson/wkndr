@@ -17,7 +17,9 @@
   backdrop-filter: blur(8px);
   border-radius: 14px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
 }
+.row:hover { background: rgba(255, 255, 255, 0.98); }
 .row-thumb {
   width: 84px;
   height: 84px;
