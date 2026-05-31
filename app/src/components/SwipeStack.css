@@ -77,3 +77,14 @@
 }
 .stack-empty p { font-size: 18px; letter-spacing: 0.08em; }
 .stack-empty span { font-size: 13px; opacity: 0.8; line-height: 1.5; }
+.stack-refresh {
+  margin-top: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 10px 18px;
+  border-radius: 999px;
+  background: var(--field-text);
+  color: #1a1a1a;
+  transition: transform 0.12s var(--ease-out);
+}
+.stack-refresh:hover { transform: translateY(-2px); }

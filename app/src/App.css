@@ -15,8 +15,38 @@
   justify-content: space-between;
   flex-shrink: 0;
 }
-.brand { font-size: 15px; font-weight: 600; letter-spacing: 0.06em; }
+/* wordmark — matches the comps: bold Helvetica + the orange dot */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+}
+.brand::before {
+  content: '';
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+}
 .head-right { display: flex; align-items: center; gap: 12px; }
+.refresh-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  font-size: 15px;
+  line-height: 1;
+  color: var(--field-text);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  background: rgba(0, 0, 0, 0.18);
+  backdrop-filter: blur(8px);
+  transition: transform 0.3s var(--ease-out), background 0.15s;
+}
+.refresh-btn:hover { background: rgba(0, 0, 0, 0.3); }
+.refresh-btn:active { transform: rotate(180deg); }
 .saved-count { font-size: 13px; opacity: 0.85; letter-spacing: 0.02em; }
 
 .toggle {

@@ -20,7 +20,9 @@ function gradient(mode: Mode): string {
  */
 export function WeatherField({ mode }: { mode: Mode }) {
   return (
-    <div className="field" aria-hidden>
+    // static base gradient guarantees the field is never blank, even before/if
+    // the crossfade animation runs; the motion layers ride on top for transitions.
+    <div className="field" aria-hidden style={{ background: gradient(mode) }}>
       <AnimatePresence>
         <motion.div
           key={mode}

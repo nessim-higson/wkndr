@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { Mode, Pick, SwipeDir } from './types'
-import { MODES, MODE_META, classify, applyMode, rankPicks } from './weather/modes'
+import { MODES, MODE_META, classify, applyMode, rankPicks, shuffle } from './weather/modes'
 import { PICKS } from './data/picks'
 import { WeatherField } from './weather/WeatherField'
 import { SwipeStack } from './components/SwipeStack'
@@ -30,11 +30,26 @@ export default function App() {
   const [swiped, setSwiped] = useState<Set<string>>(new Set())
   const [saved, setSaved] = useState<Set<string>>(new Set())
   const [status, setStatus] = useState('')
+  const [seed, setSeed] = useState(0)   // 0 = original order; bumped by Refresh
 
   useEffect(() => { applyMode(mode) }, [mode])
 
+  // List stays in stable weather rank. The stack deck brings skipped items back
+  // and, on Refresh, shuffles the strongest tier so the lead card varies each
+  // time (a "surprise me among the best" — still weather-appropriate).
   const rankedAll = useMemo(() => rankPicks(PICKS, mode), [mode])
-  const deck = useMemo(() => rankedAll.filter((p) => !swiped.has(p.id)), [rankedAll, swiped])
+  const deck = useMemo(() => {
+    const d = rankedAll.filter((p) => !swiped.has(p.id))
+    if (seed === 0) return d
+    const head = shuffle(d.slice(0, 6), seed)
+    return [...head, ...d.slice(6)]
+  }, [rankedAll, swiped, seed])
+
+  function refresh() {
+    setSwiped(new Set())
+    setSeed((s) => s + 1)
+    setStatus('refreshed · new order')
+  }
 
   function handleStackSwipe(p: Pick, dir: SwipeDir) {
     setSwiped((s) => new Set(s).add(p.id))
@@ -92,8 +107,9 @@ export default function App() {
 
       <div className="app">
         <header className="app-head">
-          <div className="brand mono">● WKNDR</div>
+          <div className="brand">WKNDR</div>
           <div className="head-right">
+            <button className="refresh-btn" onClick={refresh} title="Refresh picks" aria-label="Refresh picks">↻</button>
             <span className="saved-count">★ {saved.size}</span>
             <div className="toggle" role="tablist">
               <button className={view === 'stack' ? 'on' : ''} onClick={() => setView('stack')}>Stack</button>
@@ -113,7 +129,7 @@ export default function App() {
 
         <main className={`main main-${view}`}>
           {view === 'stack'
-            ? <SwipeStack picks={deck} onSwipe={handleStackSwipe} />
+            ? <SwipeStack picks={deck} onSwipe={handleStackSwipe} onRefresh={refresh} />
             : <ListView picks={rankedAll} savedIds={saved} onSwipe={handleListToggle} />}
         </main>
 

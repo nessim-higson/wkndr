@@ -81,8 +81,8 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
 })
 
 export function SwipeStack({
-  picks, onSwipe,
-}: { picks: Pick[]; onSwipe: (p: Pick, dir: SwipeDir) => void }) {
+  picks, onSwipe, onRefresh,
+}: { picks: Pick[]; onSwipe: (p: Pick, dir: SwipeDir) => void; onRefresh?: () => void }) {
   const topRef = useRef<CardHandle>(null)
   const visible = picks.slice(0, 3)
 
@@ -90,7 +90,8 @@ export function SwipeStack({
     return (
       <div className="stack-empty">
         <p className="mono">That's the weekend.</p>
-        <span>You've been through every pick. Switch to List, or check back as the week refreshes.</span>
+        <span>You've been through every pick. Refresh for a new order, or switch to List.</span>
+        {onRefresh && <button className="stack-refresh" onClick={onRefresh}>↻ Refresh the weekend</button>}
       </div>
     )
   }

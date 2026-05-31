@@ -47,7 +47,9 @@ body {
   overflow: hidden;            /* the app owns its own scroll regions */
   overscroll-behavior: none;
 }
-.mono { font-family: 'JetBrains Mono', monospace; }
+/* All type is Helvetica for now. `.mono` is kept as a hook (it still carries the
+   letter-spaced/uppercase label styling at call sites) but no longer switches font. */
+.mono { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; }
 button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
 img { display: block; max-width: 100%; }
 a { color: inherit; }
