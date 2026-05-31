@@ -65,20 +65,47 @@ Each stage, concretely:
 
 ---
 
-## Sources by category (the ~15-source Amsterdam MVP)
+## Sources by category (the curated Amsterdam roster)
 
-| Category | Candidate sources | Method |
+Comprehensive on what matters, **deliberately not infinite** — raw source count is what
+kills upkeep; curation + dedup is the moat. Target ~15–20 reliable sources, weighted to the
+categories with the most churn (Eat, Art, Live).
+
+| Category | Sources | Method |
 |---|---|---|
-| Live & gigs | Songkick ✓, Bandsintown, RA (auth), Paradiso/Melkweg feeds | API / scrape |
-| Eat / Drink | Eater Amsterdam (RSS), Het Parool, Little Black Book | RSS / LLM-read |
-| Art & galleries | De Nieuwe Kerk ✓, H'ART ✓, Foam, Stedelijk, Eye | scrape run-dates |
-| Stage & screen | Holland Festival ✓, Uitkrant, ITA, Eye | scrape / LLM-read |
-| Out / Markets | I amsterdam, IJ-Hallen ✓ (dated), Pekmarkt, Gemeente | scrape |
-| Day-trips | The Dutch Review, NS, regional sites | LLM-read |
-| Weather | Buienradar JSON ✓ + KNMI (already in the app) | API |
+| Live & gigs | Songkick ✓, Bandsintown, Resident Advisor (auth), Paradiso / Melkweg / Tolhuistuin / AFAS / Ziggo Dome programmes | API / scrape |
+| Eat & drink | **Eater Amsterdam** (RSS + the Hit List / new-openings lists) ✓, **Your Little Black Book** (weekend tips, openings), Het Parool PS, The Infatuation | RSS / LLM-read |
+| Art & museums | **All majors** — Rijksmuseum, Van Gogh, Stedelijk, Moco, H'ART ✓, Foam, Huis Marseille, Eye, NEMO, Rembrandthuis, Anne Frank, Het Scheepvaartmuseum, Tropenmuseum, Nxt, STRAAT, A'DAM; De Nieuwe Kerk ✓; + the I amsterdam / museum.nl aggregator as a backstop | scrape run-dates |
+| Stage & screen | Holland Festival ✓, Internationaal Theater Amsterdam, Uitkrant, Eye programme | scrape / LLM-read |
+| Out / Markets | I amsterdam, IJ-Hallen ✓ (dated), Pekmarkt / Nieuwmarkt, Westergas, Gemeente (swim/parks) | scrape |
+| Day-trips | The Dutch Review, NS, regional tourism sites | LLM-read |
 | Kids (cross-cut) | Kidsproof, Amsterdam Mamas, I amsterdam family | LLM-read |
+| Weather | Buienradar JSON ✓ + KNMI (already wired in the app) | API |
 
 (✓ = confirmed reachable during the 31 May hand-curation.)
+
+**Museums are the easiest win:** stable sites, real run-dates, fully signal+link-friendly.
+Build the museum scrapers first — high yield, low fragility. Eater's recurring lists are the
+best Eat source; LBB is the best cross-category weekend-tips source.
+
+## Instagram & social — the honest constraint (do NOT build a scraper)
+
+Instagram is where a lot of Amsterdam buzz lives, but it should be a **manual
+lead-discovery input only**, never an automated source:
+
+- **No legitimate API** for arbitrary accounts (Basic Display API deprecated; Graph API
+  reads only accounts you own/manage). There's no sanctioned read path.
+- **Scraping / screenshotting violates IG's ToS**, is login-walled + actively blocked, and
+  is brittle — it would break constantly and carries real legal risk (Meta litigates scrapers).
+- **It breaks our own legal spine.** Screenshotting and displaying a post *is republishing
+  their content* — exactly what "signal + link, never republish" forbids. Strategically
+  inconsistent, not just risky.
+
+**The compliant value path:** almost every IG-first publisher also has a website/newsletter
+(LBB, venues, museums all do) — pull from those. Use IG only as a human research lead: spot
+what's buzzing, then enter the underlying *fact* (event/date/venue) sourced + linked to the
+primary page. For a specific public post you have a URL for, IG's official **oEmbed** is the
+only sanctioned embed — per-post, limited, not a feed.
 
 ---
 
