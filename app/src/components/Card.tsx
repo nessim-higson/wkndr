@@ -8,9 +8,9 @@ export function Card({ pick }: { pick: Pick }) {
     <article className="card">
       <div className="card-img" style={{ backgroundImage: `url(${pick.image})` }}>
         <div className="card-tags">
-          <span className="chip chip-fresh">{FRESHNESS_LABEL[pick.freshness]}</span>
-          <span className="chip">{CATEGORY_LABEL[pick.category]}</span>
-          {pick.outdoor && <span className="chip chip-light">Outdoor</span>}
+          <span className={`chip chip-fresh chip-fresh--${pick.freshness}`}>{FRESHNESS_LABEL[pick.freshness]}</span>
+          <span className="chip chip-cat">{CATEGORY_LABEL[pick.category]}</span>
+          {pick.outdoor && <span className="chip chip-outdoor">Outdoor</span>}
           {pick.kid && <span className="chip chip-kid">Kids</span>}
         </div>
         <div className="card-img-foot mono">{pick.area} · {pick.price}</div>

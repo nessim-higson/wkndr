@@ -81,7 +81,16 @@
 .wx-temp .deg { opacity: 0.5; }
 .wx-meta { padding-top: 6px; }
 .wx-city { font-size: 26px; font-weight: 600; letter-spacing: -0.03em; line-height: 1; }
-.wx-cond { margin-top: 7px; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; opacity: 0.82; }
+.wx-cond {
+  margin-top: 7px; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; opacity: 0.82;
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+}
+.wx-src {
+  font-size: 9px; letter-spacing: 0.08em; padding: 2px 7px; border-radius: 999px;
+  background: rgba(255, 255, 255, 0.16); opacity: 0.9;
+}
+.wx-src.is-live { background: rgba(80, 220, 130, 0.22); }
+.wx-src.is-live::before { content: '● '; color: #6ee7a0; }
 .wx-phrase {
   margin-top: 14px;
   font-size: 17px;
@@ -104,25 +113,42 @@
 .main-stack { justify-content: center; align-items: center; }
 .main-list { overflow-y: auto; -webkit-overflow-scrolling: touch; }
 
-/* ===== controls ===== */
+/* ===== controls — weather is a fact; adjusting is tucked behind a disclosure ===== */
 .controls {
   flex-shrink: 0;
   display: flex;
+  flex-direction: column;
   align-items: center;
   gap: 10px;
-  flex-wrap: wrap;
-  justify-content: center;
   margin-top: 14px;
   padding-top: 12px;
 }
-.mode-pills {
-  display: inline-flex;
-  gap: 3px;
-  background: rgba(0, 0, 0, 0.28);
+.adjust-toggle {
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  padding: 7px 14px;
   border-radius: 999px;
-  padding: 4px;
+  color: var(--field-text);
+  opacity: 0.7;
+  background: rgba(0, 0, 0, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(8px);
+  transition: opacity 0.15s, background 0.15s;
 }
+.adjust-toggle:hover { opacity: 1; }
+.adjust-toggle.on { opacity: 1; background: rgba(0, 0, 0, 0.32); }
+.adjust-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(10px);
+}
+.adjust-label { font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.6; }
+.mode-pills { display: inline-flex; gap: 3px; }
 .mode-pills button {
   font-size: 11px;
   padding: 6px 11px;
@@ -134,7 +160,7 @@
 .mode-pills button.on { background: var(--field-text); color: #1a1a1a; opacity: 1; }
 .locate {
   font-size: 11px;
-  padding: 8px 13px;
+  padding: 8px 14px;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.16);
   color: var(--field-text);
@@ -142,7 +168,28 @@
   transition: background 0.15s;
 }
 .locate:hover { background: rgba(255, 255, 255, 0.28); }
-.status { font-size: 10px; opacity: 0.6; }
+
+/* ===== refresh toast ===== */
+.toast {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 200;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  padding: 11px 18px;
+  border-radius: 999px;
+  background: #1a1a1a;
+  color: #faf8f3;
+  box-shadow: 0 10px 34px rgba(0, 0, 0, 0.32);
+  animation: toast-in 0.32s var(--ease-spring);
+}
+@keyframes toast-in {
+  from { opacity: 0; transform: translate(-50%, 16px) scale(0.96); }
+  to { opacity: 1; transform: translate(-50%, 0) scale(1); }
+}
 
 @media (max-width: 560px) {
   .wx-temp { font-size: 48px; }

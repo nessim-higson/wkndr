@@ -59,7 +59,10 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
     <motion.div
       className="swipe-card"
       style={interactive ? { x, y, rotate, zIndex: 10 } : { zIndex: 10 - depth }}
-      animate={interactive ? undefined : { scale: 1 - depth * 0.045, y: depth * 16 }}
+      initial={{ opacity: 0, scale: 0.94 }}
+      animate={interactive
+        ? { opacity: 1, scale: 1 }
+        : { opacity: 1, scale: 1 - depth * 0.045, y: depth * 16 }}
       transition={{ type: 'spring', stiffness: 300, damping: 30 }}
       drag={interactive}
       dragSnapToOrigin

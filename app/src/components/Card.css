@@ -42,13 +42,33 @@
   letter-spacing: 0.06em;
   padding: 4px 8px;
   border-radius: 4px;
-  background: rgba(26, 26, 26, 0.82);
-  color: var(--paper);
   backdrop-filter: blur(4px);
 }
-.chip-fresh { background: var(--accent); color: #fff; }
-.chip-light { background: rgba(255, 255, 255, 0.9); color: var(--ink); }
-.chip-kid   { background: var(--kid); color: #fff; }
+/* THREE visual roles, so the row is scannable:
+   1) freshness = a solid status chip (colour encodes urgency/recency)
+   2) category  = a quiet glassy classifier
+   3) context   = outlined flags (outdoor / kids) */
+.chip-fresh { color: #fff; }
+.chip-fresh--new     { background: var(--accent); }            /* orange — just landed */
+.chip-fresh--ending  { background: #d2402e; }                  /* red — urgency */
+.chip-fresh--weekend { background: rgba(26, 26, 26, 0.86); }   /* ink — the decisive view */
+.chip-fresh--always  { background: rgba(26, 26, 26, 0.55); }   /* muted — evergreen */
+
+.chip-cat {
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.32);
+}
+.chip-outdoor {
+  background: rgba(110, 200, 120, 0.22);
+  color: #eafff0;
+  border: 1px solid rgba(150, 230, 170, 0.5);
+}
+.chip-kid {
+  background: rgba(120, 150, 210, 0.28);
+  color: #eef3ff;
+  border: 1px solid rgba(150, 175, 230, 0.55);
+}
 
 .card-img-foot {
   position: absolute;
