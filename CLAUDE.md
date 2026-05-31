@@ -29,6 +29,29 @@ What changed, in one breath:
 
 ---
 
+## The build (`/app`) — Phase 1, in progress
+
+The product lives in **`/app`** — a **Vite + React + TypeScript + Framer Motion** app
+(run with **Bun**: `cd app && bun install && bun run dev`). Plain CSS with the design-token
+system (no utility framework). Chosen for slick animation/micro-interaction headroom; wraps
+cleanly to iOS via Capacitor later if ever needed. `/experiments` stays as the design archive.
+
+Phase 1 (validate) is built and working:
+- `weather/WeatherField.tsx` — full-screen weather-reactive background, crossfades between
+  modes (~1.2s) + slow breathing drift. The seam where the WebGL shader drops in at Phase 3.
+- `weather/modes.ts` — 5-mode classifier + palettes + `rankPicks()` (weather × freshness;
+  taste term arrives Phase 4).
+- `components/SwipeStack.tsx` — Framer Motion drag deck, L/R/up/down = like/nope/save/skip,
+  drag indicators + action buttons.
+- `components/ListView.tsx` + the `App.tsx` Stack↔List toggle — the list/stack duality.
+- `data/picks.ts` — Phase-1 sample Amsterdam pool (picsum images; real pipeline = Phase 5).
+- Live weather via Open-Meteo + BigDataCloud reverse-geocode ("use my weather"); demo mode
+  pills flip all 5 modes.
+
+Verified: boots, swipe + buttons work, ranking visibly re-ranks per mode, saved count
+persists across mode changes, crossfade works. Next per discovery-direction §9: Phase 2
+(polish the swipe feel) only once it's proven sticky.
+
 ## What WKNDR was (the original brief framing — now one *view* within the engine)
 
 A personalized weekly **weekend brief** for a city, re-ranked by the weather, written

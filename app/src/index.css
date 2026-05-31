@@ -1,0 +1,53 @@
+/* =========================================================
+   WKNDR — global tokens + base reset
+   The design-token system carried over from /experiments.
+   Weather-mode tokens (--field-*, --accent dynamic) are set on
+   [data-mode] in src/weather/modes.ts → applied to <html>.
+   ========================================================= */
+:root {
+  /* ink */
+  --ink: #1a1a1a;
+  --ink-2: #2a2a2a;
+  --ink-3: #5a5a5a;
+  --ink-4: #9a9a96;
+  --ink-5: #c4c4c0;
+  /* paper (warm Muji) */
+  --paper: #faf8f3;
+  --paper-2: #f1efe8;
+  --paper-3: #e7e4db;
+  --rule: #ddd9cf;
+  /* accents */
+  --accent: #ff4d1f;        /* energetic orange */
+  --accent-deep: #8a2818;   /* Hara brick-red */
+  --kid: #4a5a7a;
+  /* motion */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* weather-field defaults (HOT) — overwritten per mode */
+  --field-text: #fbf7ef;
+  --field-1: #ff9a3d;
+  --field-2: #c2310e;
+  --field-3: #5a1606;
+  --field-glow: #ffd166;
+  color-scheme: light;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+
+html, body, #root {
+  height: 100%;
+}
+body {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  font-feature-settings: "kern", "liga", "tnum";
+  text-rendering: geometricPrecision;
+  overflow: hidden;            /* the app owns its own scroll regions */
+  overscroll-behavior: none;
+}
+.mono { font-family: 'JetBrains Mono', monospace; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+img { display: block; max-width: 100%; }
+a { color: inherit; }

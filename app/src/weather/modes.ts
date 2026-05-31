@@ -1,0 +1,81 @@
+import type { Mode, Pick } from '../types'
+
+export const MODES: Mode[] = ['HOT', 'WARM', 'COOL', 'COLD_WET', 'VOLATILE']
+
+export interface ModeMeta {
+  label: string
+  /** condition descriptor shown in the mono line */
+  cond: string
+  /** the emotional condition phrase (production: LLM narration) */
+  phrase: string
+  /** weather-field palette */
+  field: { text: string; c1: string; c2: string; c3: string; glow: string }
+}
+
+// Palettes carried over from experiments/06-hybrid/02-weather-header-live.html
+export const MODE_META: Record<Mode, ModeMeta> = {
+  HOT: {
+    label: 'Hot',
+    cond: 'HOT · DRY · keep water close',
+    phrase: 'It turns properly hot by two. Chase the shade, and keep water close.',
+    field: { text: '#fbf7ef', c1: '#ff9a3d', c2: '#c2310e', c3: '#5a1606', glow: '#ffd166' },
+  },
+  WARM: {
+    label: 'Warm',
+    cond: 'WARM · DRY · gentle breeze',
+    phrase: 'A soft, generous day — the kind that lets you choose your own adventure.',
+    field: { text: '#fffdf6', c1: '#d8e08a', c2: '#6fa24a', c3: '#2c4a26', glow: '#fff0b0' },
+  },
+  COOL: {
+    label: 'Cool',
+    cond: 'COOL · CLEAR · crisp air',
+    phrase: 'Crisp and clear. Layer up and the whole city is walkable.',
+    field: { text: '#f4f8f7', c1: '#9fc0b8', c2: '#4a716b', c3: '#1e3433', glow: '#cfe6df' },
+  },
+  COLD_WET: {
+    label: 'Cold & wet',
+    cond: 'COLD · WET · an indoor day',
+    phrase: 'Grey and wet through the afternoon. Today is an indoor day, well spent.',
+    field: { text: '#eef2f7', c1: '#6c7e9c', c2: '#313f5e', c3: '#121a2e', glow: '#9fb2cc' },
+  },
+  VOLATILE: {
+    label: 'Volatile',
+    cond: 'VOLATILE · sun then storms',
+    phrase: "It can't decide. Keep a backup plan and a rain layer in the bag.",
+    field: { text: '#f6f1ee', c1: '#e08a4a', c2: '#7a5a7a', c3: '#2a3358', glow: '#ffcf8a' },
+  },
+}
+
+/** Rule-based classifier (thresholds from engine/weather-engine.ts) */
+export function classify(high: number, precipProb: number, swing: number): Mode {
+  if (swing >= 9) return 'VOLATILE'
+  if (high >= 24 && precipProb < 30) return 'HOT'
+  if (high >= 16 && precipProb < 40) return 'WARM'
+  if (high < 10 || precipProb > 65) return 'COLD_WET'
+  if (high >= 8 && high <= 14) return 'COOL'
+  return 'WARM'
+}
+
+/** Push the mode palette into CSS custom properties on <html>. */
+export function applyMode(mode: Mode) {
+  const m = MODE_META[mode].field
+  const r = document.documentElement
+  r.setAttribute('data-mode', mode)
+  r.style.setProperty('--field-text', m.text)
+  r.style.setProperty('--field-1', m.c1)
+  r.style.setProperty('--field-2', m.c2)
+  r.style.setProperty('--field-3', m.c3)
+  r.style.setProperty('--field-glow', m.glow)
+}
+
+/**
+ * Weather × taste ranking. Phase 1 has no taste model yet, so we rank by
+ * weather-fit (picks that peak in the current mode first), then nudge fresh
+ * and ending-soon items up. The taste term arrives in Phase 4.
+ */
+export function rankPicks(picks: Pick[], mode: Mode): Pick[] {
+  const freshBoost = (p: Pick) =>
+    p.freshness === 'new' ? 1.5 : p.freshness === 'ending' ? 1.2 : p.freshness === 'weekend' ? 1 : 0.6
+  const score = (p: Pick) => (p.weatherFit.includes(mode) ? 10 : 0) + freshBoost(p)
+  return [...picks].sort((a, b) => score(b) - score(a))
+}
