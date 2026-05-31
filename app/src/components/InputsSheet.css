@@ -45,6 +45,16 @@
 .sheet-block p { font-size: 14px; line-height: 1.55; color: var(--ink-2); }
 .sheet-block p b { font-weight: 600; }
 
+.sheet-note { font-size: 12px; color: var(--ink-4); margin-bottom: 12px; line-height: 1.4; }
+.sheet-group { margin-bottom: 12px; }
+.sheet-group-label {
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-4);
+  opacity: 0.8;
+  margin-bottom: 5px;
+}
 .sheet-sources { display: flex; flex-wrap: wrap; gap: 6px; }
 .sheet-src {
   font-size: 12px;

@@ -7,10 +7,21 @@ import { SwipeStack } from './components/SwipeStack'
 import { ListView } from './components/ListView'
 import { CardDetail } from './components/CardDetail'
 import { InputsSheet } from './components/InputsSheet'
+import { SOURCE_COUNT } from './data/sources'
+import { CATEGORY_LABEL, type Category } from './types'
 import './App.css'
 
-// every distinct source feeding the pool — for the "built from" trace
-const SOURCES = [...new Set(PICKS.map((p) => p.source))]
+// sources actually used in the current snapshot (vs the full roster)
+const ACTIVE_SOURCES = new Set(PICKS.map((p) => p.source)).size
+
+// filters available = 'all' + 'kids' (cross-cut) + the categories actually present
+type Filter = 'all' | 'kids' | Category
+const PRESENT: Category[] = [...new Set(PICKS.map((p) => p.category))]
+const FILTERS: { key: Filter; label: string }[] = [
+  { key: 'all', label: 'All' },
+  ...(PICKS.some((p) => p.kid) ? [{ key: 'kids' as Filter, label: 'Kids' }] : []),
+  ...PRESENT.map((c) => ({ key: c as Filter, label: CATEGORY_LABEL[c] })),
+]
 
 type View = 'stack' | 'list'
 interface Wx { temp: number; hi: number; lo: number; city: string }
@@ -44,6 +55,7 @@ export default function App() {
   const [dealKey, setDealKey] = useState(0)      // bump → stack re-deals (refresh signal)
   const [detail, setDetail] = useState<Pick | null>(null)  // open card detail
   const [inputsOpen, setInputsOpen] = useState(false)      // "what's feeding this" sheet
+  const [filter, setFilter] = useState<Filter>('all')      // category / kids filter
 
   useEffect(() => { applyMode(mode) }, [mode])
 
@@ -67,7 +79,11 @@ export default function App() {
   // then re-ranks. List + stack both change; the stack re-deals with a toast.
   const pool = useMemo(() => (seed === 0 ? PICKS : shuffle(PICKS, seed)), [seed])
   const rankedAll = useMemo(() => rankPicks(pool, mode), [pool, mode])
-  const deck = useMemo(() => rankedAll.filter((p) => !swiped.has(p.id)), [rankedAll, swiped])
+  const shown = useMemo(
+    () => rankedAll.filter((p) => filter === 'all' || (filter === 'kids' ? p.kid : p.category === filter)),
+    [rankedAll, filter],
+  )
+  const deck = useMemo(() => shown.filter((p) => !swiped.has(p.id)), [shown, swiped])
 
   function refresh() {
     setSwiped(new Set())
@@ -159,13 +175,23 @@ export default function App() {
         </section>
         <p className="wx-phrase">{MODE_META[mode].phrase}</p>
         <button className="built-from" onClick={() => setInputsOpen(true)}>
-          ⓘ Built from {SOURCES.length} sources · weather × freshness
+          ⓘ Built from {SOURCE_COUNT} sources · weather × freshness
         </button>
+
+        <div className="filter-bar">
+          {FILTERS.map((f) => (
+            <button
+              key={f.key}
+              className={`filter-chip${filter === f.key ? ' on' : ''}`}
+              onClick={() => setFilter(f.key)}
+            >{f.label}</button>
+          ))}
+        </div>
 
         <main className={`main main-${view}`}>
           {view === 'stack'
-            ? <SwipeStack key={dealKey} picks={deck} onSwipe={handleStackSwipe} onRefresh={refresh} onOpen={setDetail} />
-            : <ListView picks={rankedAll} savedIds={saved} onSwipe={handleListToggle} onOpen={setDetail} />}
+            ? <SwipeStack key={`${dealKey}-${filter}`} picks={deck} onSwipe={handleStackSwipe} onRefresh={refresh} onOpen={setDetail} />
+            : <ListView picks={shown} savedIds={saved} onSwipe={handleListToggle} onOpen={setDetail} />}
         </main>
 
         <div className="controls">
@@ -204,7 +230,7 @@ export default function App() {
         hi={wx.hi}
         lo={wx.lo}
         live={live}
-        sources={SOURCES}
+        activeCount={ACTIVE_SOURCES}
       />
     </>
   )

@@ -33,6 +33,7 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
   const x = useMotionValue(0)
   const y = useMotionValue(0)
   const rotate = useTransform(x, [-220, 220], [-13, 13])
+  const dragged = useRef(false)  // true once a real drag begins → suppresses the tap-to-open
 
   // directional indicator opacities driven by the drag
   const likeOp = useTransform(x, [40, 150], [0, 1])
@@ -68,8 +69,10 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
       drag={interactive}
       dragSnapToOrigin
       dragElastic={0.6}
+      onTapStart={interactive ? () => { dragged.current = false } : undefined}
+      onDragStart={interactive ? () => { dragged.current = true } : undefined}
       onDragEnd={interactive ? onDragEnd : undefined}
-      onTap={interactive ? () => onOpen?.(pick) : undefined}
+      onTap={interactive ? () => { if (!dragged.current) onOpen?.(pick) } : undefined}
       whileTap={interactive ? { cursor: 'grabbing' } : undefined}
     >
       {interactive && (

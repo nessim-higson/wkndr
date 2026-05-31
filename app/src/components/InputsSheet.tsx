@@ -1,11 +1,12 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import type { Mode } from '../types'
 import { MODE_META } from '../weather/modes'
+import { SOURCE_ROSTER, SOURCE_COUNT } from '../data/sources'
 import './InputsSheet.css'
 
 /** Exposes every input feeding the recommendations — the credibility / source-trace. */
 export function InputsSheet({
-  open, onClose, mode, temp, hi, lo, live, sources,
+  open, onClose, mode, temp, hi, lo, live, activeCount,
 }: {
   open: boolean
   onClose: () => void
@@ -14,7 +15,7 @@ export function InputsSheet({
   hi: number
   lo: number
   live: boolean
-  sources: string[]
+  activeCount: number
 }) {
   return (
     <AnimatePresence>
@@ -44,10 +45,16 @@ export function InputsSheet({
             </section>
 
             <section className="sheet-block">
-              <h4>Sources · {sources.length}</h4>
-              <div className="sheet-sources">
-                {sources.map((s) => <span key={s} className="sheet-src">↳ {s}</span>)}
-              </div>
+              <h4>Sources · {SOURCE_COUNT} in the roster</h4>
+              <p className="sheet-note">This weekend’s brief drew on {activeCount}. The full roster WKNDR reads from:</p>
+              {Object.entries(SOURCE_ROSTER).map(([group, list]) => (
+                <div className="sheet-group" key={group}>
+                  <div className="sheet-group-label">{group}</div>
+                  <div className="sheet-sources">
+                    {list.map((s) => <span key={s} className="sheet-src">↳ {s}</span>)}
+                  </div>
+                </div>
+              ))}
             </section>
 
             <section className="sheet-block">
