@@ -8,7 +8,7 @@ import { ListView } from './components/ListView'
 import { CardDetail } from './components/CardDetail'
 import { InputsSheet } from './components/InputsSheet'
 import { FilterSheet } from './components/FilterSheet'
-import { GuideView } from './components/GuideView'
+import type { Freshness } from './types'
 import { SOURCE_COUNT } from './data/sources'
 import { CATEGORY_LABEL, type Category } from './types'
 import {
@@ -29,7 +29,18 @@ const FILTERS: { key: Filter; label: string; count: number }[] = [
 ]
 const filterLabel = (f: Filter) => f === 'saved' ? 'Saved' : (FILTERS.find((x) => x.key === f)?.label ?? 'Everything')
 
-type View = 'stack' | 'list' | 'guide'
+// the WHEN axis — time-sensitivity, incl. the evergreen canon. Maps to freshness.
+type When = 'all' | Freshness
+const WHEN_FILTERS = ([
+  { key: 'all', label: 'Any time', count: PICKS.length },
+  { key: 'weekend', label: 'This weekend', count: PICKS.filter((p) => p.freshness === 'weekend').length },
+  { key: 'new', label: 'New this week', count: PICKS.filter((p) => p.freshness === 'new').length },
+  { key: 'always', label: 'Evergreen canon', count: PICKS.filter((p) => p.freshness === 'always').length },
+  { key: 'ending', label: 'Ending soon', count: PICKS.filter((p) => p.freshness === 'ending').length },
+] as { key: When; label: string; count: number }[]).filter((o) => o.count > 0)
+const whenLabel = (w: When) => WHEN_FILTERS.find((x) => x.key === w)?.label ?? 'Any time'
+
+type View = 'stack' | 'list'
 interface Wx { temp: number; hi: number; lo: number; city: string }
 
 // Amsterdam — the product's home city. The app defaults to its live forecast.
@@ -62,8 +73,10 @@ export default function App() {
   const [dealKey, setDealKey] = useState(0)      // bump → stack re-deals (refresh signal)
   const [detail, setDetail] = useState<Pick | null>(null)  // open card detail
   const [inputsOpen, setInputsOpen] = useState(false)      // "what's feeding this" sheet
-  const [filter, setFilter] = useState<Filter>('all')      // category / kids filter
-  const [filterOpen, setFilterOpen] = useState(false)      // filter sheet
+  const [filter, setFilter] = useState<Filter>('all')      // What: category / kids / saved
+  const [when, setWhen] = useState<When>('all')            // When: time-sensitivity / canon
+  const [filterOpen, setFilterOpen] = useState(false)      // What sheet
+  const [whenOpen, setWhenOpen] = useState(false)          // When sheet
 
   useEffect(() => { applyMode(mode) }, [mode])
   useEffect(() => { persistSaved(saved) }, [saved])   // your list survives reloads
@@ -93,13 +106,17 @@ export default function App() {
     [pool, mode, taste],
   )
   const shown = useMemo(
-    () => rankedAll.filter((p) =>
-      filter === 'all' ? true
+    () => rankedAll.filter((p) => {
+      const whatOk = filter === 'all' ? true
         : filter === 'saved' ? saved.has(p.id)
         : filter === 'kids' ? p.kid
-        : p.category === filter),
-    [rankedAll, filter, saved],
+        : p.category === filter
+      const whenOk = when === 'all' ? true : p.freshness === when
+      return whatOk && whenOk
+    }),
+    [rankedAll, filter, when, saved],
   )
+  const filterActive = filter !== 'all' || when !== 'all'
   const deck = useMemo(() => shown.filter((p) => !swiped.has(p.id)), [shown, swiped])
 
   function refresh() {
@@ -184,7 +201,6 @@ export default function App() {
             <div className="toggle" role="tablist">
               <button className={view === 'stack' ? 'on' : ''} onClick={() => setView('stack')}>Stack</button>
               <button className={view === 'list' ? 'on' : ''} onClick={() => setView('list')}>List</button>
-              <button className={view === 'guide' ? 'on' : ''} onClick={() => setView('guide')}>Guide</button>
             </div>
           </div>
         </header>
@@ -204,40 +220,36 @@ export default function App() {
           ⓘ Built from {SOURCE_COUNT} sources · weather × freshness{hasTaste(taste) ? ' × you' : ''}
         </button>
 
-        {view !== 'guide' && (
+        <div className="filter-bar">
+          <button
+            className={`filter-trigger${when !== 'all' ? ' on' : ''}`}
+            onClick={() => setWhenOpen(true)}
+          >
+            <span className="ft-icon">◷</span> {whenLabel(when)}<span className="ft-caret">⌄</span>
+          </button>
           <button
             className={`filter-trigger${filter !== 'all' ? ' on' : ''}`}
             onClick={() => setFilterOpen(true)}
           >
-            <span className="ft-icon">⊞</span> {filter === 'all' ? 'Show everything' : `Showing: ${filterLabel(filter)}`}
-            <span className="ft-caret">⌄</span>
+            <span className="ft-icon">⊞</span> {filter === 'all' ? 'Everything' : filterLabel(filter)}<span className="ft-caret">⌄</span>
           </button>
-        )}
+        </div>
 
         <main className={`main main-${view}`}>
           {view === 'stack' && (
             <SwipeStack
-              key={`${dealKey}-${filter}`}
+              key={`${dealKey}-${filter}-${when}`}
               picks={deck}
               onSwipe={handleStackSwipe}
               onRefresh={refresh}
               onOpen={setDetail}
-              filterLabel={filter === 'all' ? null : filterLabel(filter)}
-              onClearFilter={() => setFilter('all')}
+              filterLabel={filterActive ? 'this filter' : null}
+              onClearFilter={() => { setFilter('all'); setWhen('all') }}
               onSeeList={() => setView('list')}
             />
           )}
           {view === 'list' && (
             <ListView picks={shown} savedIds={saved} onSwipe={handleListToggle} onOpen={setDetail} />
-          )}
-          {view === 'guide' && (
-            <GuideView
-              picks={rankedAll.filter((p) => p.freshness === 'always')}
-              mode={mode}
-              savedIds={saved}
-              onOpen={setDetail}
-              onToggleSave={toggleSave}
-            />
           )}
         </main>
 
@@ -280,8 +292,17 @@ export default function App() {
         activeCount={ACTIVE_SOURCES}
       />
       <FilterSheet
+        open={whenOpen}
+        onClose={() => setWhenOpen(false)}
+        title="When"
+        options={WHEN_FILTERS}
+        active={when}
+        onSelect={setWhen}
+      />
+      <FilterSheet
         open={filterOpen}
         onClose={() => setFilterOpen(false)}
+        title="Show me"
         options={[FILTERS[0], { key: 'saved' as Filter, label: '★ Saved', count: saved.size }, ...FILTERS.slice(1)]}
         active={filter}
         onSelect={setFilter}

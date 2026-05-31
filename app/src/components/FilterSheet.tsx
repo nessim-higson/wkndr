@@ -5,13 +5,14 @@ export interface FilterOption<K extends string> { key: K; label: string; count?:
 
 /** Buckets the category/kids filters into a tucked-away sheet instead of a chip row. */
 export function FilterSheet<K extends string>({
-  open, onClose, options, active, onSelect,
+  open, onClose, options, active, onSelect, title = 'Show me',
 }: {
   open: boolean
   onClose: () => void
   options: FilterOption<K>[]
   active: K
   onSelect: (k: K) => void
+  title?: string
 }) {
   return (
     <AnimatePresence>
@@ -29,7 +30,7 @@ export function FilterSheet<K extends string>({
             transition={{ type: 'spring', stiffness: 320, damping: 34 }}
           >
             <div className="fs-handle" />
-            <h3 className="fs-title">Show me</h3>
+            <h3 className="fs-title">{title}</h3>
             <div className="fs-options">
               {options.map((o) => (
                 <button

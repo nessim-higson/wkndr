@@ -127,13 +127,19 @@
 }
 .built-from:hover { opacity: 1; }
 
-/* ===== filter trigger — one pill that opens the filter sheet ===== */
-.filter-trigger {
-  align-self: flex-start;
-  display: inline-flex;
-  align-items: center;
+/* ===== filter bar — two pills (When · What), each opens a sheet ===== */
+.filter-bar {
+  display: flex;
   gap: 8px;
   margin-top: 14px;
+  align-self: flex-start;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+.filter-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
   flex-shrink: 0;
   font-size: 13px;
   font-weight: 500;

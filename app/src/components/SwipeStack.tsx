@@ -61,10 +61,10 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
     <motion.div
       className="swipe-card"
       style={interactive ? { x, y, rotate, zIndex: 10 } : { zIndex: 10 - depth }}
-      initial={{ opacity: 0, scale: 0.94 }}
+      initial={{ scale: 0.94 }}
       animate={interactive
-        ? { opacity: 1, scale: 1 }
-        : { opacity: 1, scale: 1 - depth * 0.045, y: depth * 16 }}
+        ? { scale: 1 }
+        : { scale: 1 - depth * 0.045, y: depth * 16 }}
       transition={{ type: 'spring', stiffness: 300, damping: 30 }}
       drag={interactive}
       dragSnapToOrigin
@@ -106,16 +106,16 @@ export function SwipeStack({
     return (
       <div className="stack-empty">
         <p className="stack-empty-title">
-          {filterLabel ? `That’s every ${filterLabel.toLowerCase()} pick.` : 'That’s the weekend.'}
+          {filterLabel ? 'That’s everything in this filter.' : 'That’s the weekend.'}
         </p>
         <span>
           {filterLabel
-            ? 'Clear the filter for the full set, or check back as the week refreshes.'
+            ? 'Clear the filters for the full set, or check back as the week refreshes.'
             : 'You’ve seen every pick. Fresh ones land each week — run through again, or browse the full list.'}
         </span>
         <div className="stack-empty-actions">
           {filterLabel && onClearFilter && (
-            <button className="stack-btn primary" onClick={onClearFilter}>Clear filter</button>
+            <button className="stack-btn primary" onClick={onClearFilter}>Clear filters</button>
           )}
           {onSeeList && <button className="stack-btn" onClick={onSeeList}>See all in List</button>}
           {onRefresh && <button className="stack-btn" onClick={onRefresh}>↻ Refresh</button>}

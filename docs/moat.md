@@ -64,12 +64,20 @@ Polishing the experience *feeds the flywheel*; it isn't vanity.
 
 ---
 
-## 4. The evergreen "Guide / Canon" mode (recommended)
+## 4. The evergreen canon — as a FILTER, not a separate mode (built)
 
-A deliberate, curated, ranked repository of the durable good stuff — every museum,
-best bars, parks, Eater-ranked restaurants, etc. A **third mode** beside the weekend
-Stack/List: *"show me the definitive good stuff"* (reference) vs *"what should I do
-this weekend"* (decide).
+The durable good stuff — every museum, best bars, parks, Eater-ranked restaurants.
+**Decision (revised):** a separate "Guide" view felt like a bolt-on *wedge* —
+Stack/List are cojoined (same pool, two postures) and a third view that changed both
+the *dataset* (evergreen-only) and the *structure* (grouped) read as a different app.
+
+So the canon is implemented as a **filter**, not a mode. There are **two axes**:
+- **When** (time-sensitivity): Any time · This weekend · New · **Evergreen canon** · Ending
+- **What** (category / kids / saved)
+
+…and **two postures**: **Stack** (swipe) · **List** (scan). The evergreen canon is just
+`When = Evergreen` — reachable in *either* posture. Everything stays cojoined: one pool,
+narrow it on two axes, choose a posture.
 
 **Why it's strong (compounding):**
 1. **The safety net / bottomless floor** — fixes the "ran out of things to swipe"
@@ -134,8 +142,8 @@ anyone wants to live there. But *do* lay moat-forming foundations so defensibili
 form once it sticks.
 
 **Sequence (all after a couple of weekends of real use):**
-1. **Evergreen "Guide" mode** — cheapest high-impact; fixes run-dry; makes the app feel
-   complete for validation.
+1. ✅ **Evergreen canon** — done, as a `When` filter (not a separate view); fixes run-dry,
+   keeps Stack/List cojoined.
 2. **"My Weekend" share card** — serves the partner-coordination JTBD + seeds distribution.
 3. **"Wrapped" retrospective** — once there's enough history to sing.
 4. Outcome-data loop · collaborative filtering · the pipeline — as it earns them.
