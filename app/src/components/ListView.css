@@ -36,6 +36,14 @@
   gap: 6px;
 }
 .row-fresh { color: var(--accent); font-weight: 600; }
+.row-when { color: var(--ink-3); }
+.row-verify {
+  color: var(--ink-4);
+  background: var(--paper-2);
+  padding: 0 5px;
+  border-radius: 3px;
+  letter-spacing: 0.04em;
+}
 .row-title {
   margin-top: 3px;
   font-size: 16px;

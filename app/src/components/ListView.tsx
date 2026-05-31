@@ -21,6 +21,8 @@ export function ListView({
               <div className="row-tags mono">
                 <span className="row-fresh">{FRESHNESS_LABEL[p.freshness]}</span>
                 <span>· {CATEGORY_LABEL[p.category]}</span>
+                <span className="row-when">· {p.when}</span>
+                {p.verify && <span className="row-verify">verify</span>}
               </div>
               <h3 className="row-title">{p.title}</h3>
               <div className="row-meta">{p.venue} · {p.area} · {p.price}</div>

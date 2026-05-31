@@ -23,6 +23,7 @@ export interface Pick {
   title: string
   venue: string
   area: string
+  when: string         // human date/time, e.g. "Sun 31 May · 20:00" or "Thu–Fri 4–5 Jun"
   category: Category
   freshness: Freshness
   outdoor: boolean
@@ -32,7 +33,9 @@ export interface Pick {
   blurb: string
   why: string          // "why this fits you / now" reasoning
   source: string       // publication credited (signal + link model)
+  link: string         // link out to the source/booking page (never republish)
   weatherFit: Mode[]   // modes this pick peaks in
+  verify?: boolean     // true = detail (venue/time) needs confirming before relying
 }
 
 export const CATEGORY_LABEL: Record<Category, string> = {

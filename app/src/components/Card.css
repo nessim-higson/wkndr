@@ -63,8 +63,26 @@
 }
 
 .card-body {
-  padding: 18px 20px 22px;
+  padding: 16px 20px 20px;
   background: var(--paper);
+}
+.card-when {
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent-deep);
+  font-weight: 600;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.card-when .verify {
+  color: var(--ink-4);
+  background: var(--paper-2);
+  padding: 1px 6px;
+  border-radius: 4px;
+  letter-spacing: 0.04em;
 }
 .card-title {
   font-size: 23px;
@@ -102,9 +120,12 @@
 }
 .card-why span { color: var(--accent-deep); }
 .card-source {
+  display: inline-block;
   margin-top: 12px;
   font-size: 10px;
   letter-spacing: 0.04em;
   color: var(--ink-4);
   text-transform: uppercase;
+  text-decoration: none;
 }
+.card-source:hover { color: var(--accent); }

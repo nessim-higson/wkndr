@@ -44,7 +44,10 @@ Phase 1 (validate) is built and working:
 - `components/SwipeStack.tsx` — Framer Motion drag deck, L/R/up/down = like/nope/save/skip,
   drag indicators + action buttons.
 - `components/ListView.tsx` + the `App.tsx` Stack↔List toggle — the list/stack duality.
-- `data/picks.ts` — Phase-1 sample Amsterdam pool (picsum images; real pipeline = Phase 5).
+- `data/picks.ts` — **hand-curated real Amsterdam events** (snapshot 31 May 2026: this
+  weekend + coming weekend, from Songkick / Holland Festival / museums / I amsterdam, each
+  credited + linked). A manual snapshot — the automated refresh is `docs/content-pipeline.md`
+  (Phase 5). `verify:true` marks details (venue/time) still to confirm. Images still picsum.
 - Live weather via Open-Meteo + BigDataCloud reverse-geocode ("use my weather"); demo mode
   pills flip all 5 modes.
 
