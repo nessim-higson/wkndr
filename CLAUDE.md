@@ -6,20 +6,43 @@
 
 ---
 
-## What WKNDR is
+## ⚠️ DIRECTION UPDATE (current source of truth: `docs/discovery-direction.md`)
+
+**WKNDR pivoted from "curated weekend brief" → "weather-aware, swipe-trained discovery
+engine for Amsterdam."** Read [`docs/discovery-direction.md`](docs/discovery-direction.md)
+first — it is the locked, canonical product direction. The sections below this banner are
+still valid as the **design-lineage history** (the visual exploration that got us here),
+but where the *product thesis* differs, the discovery-direction doc wins.
+
+What changed, in one breath:
+- **Swipe is the taste engine.** Tinder-style L/R/up/down; every swipe is a labeled
+  training signal; onboarding is a meaty ~30-card round (not 3).
+- **List ↔ Stack duality.** Same weather×taste-ranked pool, two postures, a per-session toggle.
+- **Weather is demoted from *thesis* to *sharpest ranking lens*** over a broad pool
+  (9 categories × 4 freshness buckets). The weather engine did NOT disappear.
+- **Tech: PWA (not native iOS) · DOM + Framer Motion for cards · WebGL shader for the
+  weather-field only (polish-phase, bounded spec).**
+- **Build order: validate before depth.** Phase 1 = weekend-only swipe stack, CSS gradient
+  bg, basic swipe, list/stack toggle stubbed. Goal: do Ness + partner open it for ~8 weekends?
+- **The honest risk is the living content pipeline, not design.** Go deep in ONE city first.
+- **Amsterdam only. Build for self + partner.** New Orleans / multi-city is shelved until validated.
+
+---
+
+## What WKNDR was (the original brief framing — now one *view* within the engine)
 
 A personalized weekly **weekend brief** for a city, re-ranked by the weather, written
 with an editorial voice. It synthesizes the city's existing publications (event guides,
 listings, blogs) and re-presents the best options for *this* weekend, *this* weather,
-*this* household — as a considered brief, not an infinite feed.
+*this* household — as a considered brief, not an infinite feed. **This now lives as the
+"This weekend" freshness view inside the discovery engine** (see discovery-direction.md §6).
 
-**The wedge: discovery, not community.** Every competitor is either a social/community
-play or a weather-blind event aggregator. WKNDR's defensible angle is **weather as the
-organizing principle** — "the weekend guide that knows what the weather's about to do."
+**The wedge: weather.** Every competitor (Bigfoot, dammie, Time Out, Fever, I amsterdam)
+is either a weather-blind event aggregator or a community play. WKNDR's defensible angle is
+**weather as the organizing ranking lens** + a swipe-trained taste profile + craft.
 
-**First user: Ness + partner + one young child (~4) in Amsterdam.** The build-for-self
-phase comes first (8–12 weeks of personal validation, ~$10/mo infra) before any product
-ambitions. New Orleans is the second city to prove the multi-city moat.
+**First user: Ness + partner in Amsterdam** (the ~4yo kid use-case is now a *cross-cut*
+"With kids" lens, not the whole product). Build-for-self first (~8–12 weeks validation).
 
 ---
 

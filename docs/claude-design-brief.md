@@ -1,5 +1,11 @@
 # WKNDR — Claude Design brief
 
+> ⚠️ **Partly superseded.** WKNDR pivoted to a swipe-trained discovery engine — for the
+> *current* Claude Design exploration list (stack/card, weather-field, list↔stack toggle,
+> onboarding swipe), use **§10 of `docs/discovery-direction.md`**. The token system, type
+> rules, and source-trace notes below are still accurate; the "hybrid weekend-brief page"
+> framing is now just one view within the engine.
+
 > Paste this into a fresh Claude Design session to start from WKNDR's real design
 > language instead of a blank page. It distills the locked direction, the token
 > system, the page anatomy, and exactly what to explore. Reference prototype:

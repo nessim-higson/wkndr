@@ -1,10 +1,12 @@
 # WKNDR
 
-A weather-aware weekend brief for a city. Personalized, re-ranked by the forecast,
-written with an editorial voice. Discovery, not community.
+A **weather-aware, swipe-trained discovery engine for Amsterdam.** Learns your taste
+through a Tinder-style swipe and surfaces what's alive in the city right now — events,
+food, galleries, day-trips — re-ranked by the weather and by what it's learned about you.
+(It began as a curated weekend *brief*; that's now one view within the engine.)
 
-**Start here:** open `CLAUDE.md` (full project context) and `index.html` (browse all
-the design experiments). Workflow + Figma loop in `docs/SETUP.md`.
+**Start here:** read `docs/discovery-direction.md` (the locked product direction), then
+`CLAUDE.md` (working memory / design lineage) and `index.html` (browse the experiments).
 
 ```
 wkndr/
@@ -31,6 +33,9 @@ python3 -m http.server 8000   # → http://localhost:8000
 
 ## Status
 
-Exploration phase. v5 is the chosen base. Open question: v5-helvetica (energetic product)
-vs. Hara (quiet publication) vs. a hybrid. Generative cover + Midjourney art-direction
-pass is the next big build. See the "Open questions" section of CLAUDE.md.
+**Concept locked (discovery engine), entering Phase 1 — validate.** Next build is the
+weekend-only swipe stack: CSS gradient weather background, basic DOM swipe, list/stack
+toggle stubbed, weather-ranked picks for the coming weekend. Goal: do Ness + partner
+actually open it for ~8 weekends? Visual exploration in `/experiments` (v5 base; Hara,
+cover-helvetica, and the 06-hybrid live weather header are the latest threads) feeds the
+card + weather-field design. See `docs/discovery-direction.md` §9 for the full build order.
