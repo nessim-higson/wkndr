@@ -51,7 +51,11 @@ export function InputsSheet({
                 <div className="sheet-group" key={group}>
                   <div className="sheet-group-label">{group}</div>
                   <div className="sheet-sources">
-                    {list.map((s) => <span key={s} className="sheet-src">↳ {s}</span>)}
+                    {list.map((s) => (
+                      <a key={s.name} className="sheet-src" href={s.url} target="_blank" rel="noreferrer">
+                        ↳ {s.name}
+                      </a>
+                    ))}
                   </div>
                 </div>
               ))}

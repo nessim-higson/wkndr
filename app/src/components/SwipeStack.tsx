@@ -89,12 +89,15 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
 })
 
 export function SwipeStack({
-  picks, onSwipe, onRefresh, onOpen,
+  picks, onSwipe, onRefresh, onOpen, filterLabel, onClearFilter, onSeeList,
 }: {
   picks: Pick[]
   onSwipe: (p: Pick, dir: SwipeDir) => void
   onRefresh?: () => void
   onOpen?: (p: Pick) => void
+  filterLabel?: string | null
+  onClearFilter?: () => void
+  onSeeList?: () => void
 }) {
   const topRef = useRef<CardHandle>(null)
   const visible = picks.slice(0, 3)
@@ -102,9 +105,21 @@ export function SwipeStack({
   if (visible.length === 0) {
     return (
       <div className="stack-empty">
-        <p className="mono">That's the weekend.</p>
-        <span>You've been through every pick. Refresh for a new order, or switch to List.</span>
-        {onRefresh && <button className="stack-refresh" onClick={onRefresh}>↻ Refresh the weekend</button>}
+        <p className="stack-empty-title">
+          {filterLabel ? `That’s every ${filterLabel.toLowerCase()} pick.` : 'That’s the weekend.'}
+        </p>
+        <span>
+          {filterLabel
+            ? 'Clear the filter for the full set, or check back as the week refreshes.'
+            : 'You’ve seen every pick. Fresh ones land each week — run through again, or browse the full list.'}
+        </span>
+        <div className="stack-empty-actions">
+          {filterLabel && onClearFilter && (
+            <button className="stack-btn primary" onClick={onClearFilter}>Clear filter</button>
+          )}
+          {onSeeList && <button className="stack-btn" onClick={onSeeList}>See all in List</button>}
+          {onRefresh && <button className="stack-btn" onClick={onRefresh}>↻ Refresh</button>}
+        </div>
       </div>
     )
   }

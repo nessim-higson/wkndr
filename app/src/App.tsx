@@ -7,6 +7,7 @@ import { SwipeStack } from './components/SwipeStack'
 import { ListView } from './components/ListView'
 import { CardDetail } from './components/CardDetail'
 import { InputsSheet } from './components/InputsSheet'
+import { FilterSheet } from './components/FilterSheet'
 import { SOURCE_COUNT } from './data/sources'
 import { CATEGORY_LABEL, type Category } from './types'
 import './App.css'
@@ -17,11 +18,12 @@ const ACTIVE_SOURCES = new Set(PICKS.map((p) => p.source)).size
 // filters available = 'all' + 'kids' (cross-cut) + the categories actually present
 type Filter = 'all' | 'kids' | Category
 const PRESENT: Category[] = [...new Set(PICKS.map((p) => p.category))]
-const FILTERS: { key: Filter; label: string }[] = [
-  { key: 'all', label: 'All' },
-  ...(PICKS.some((p) => p.kid) ? [{ key: 'kids' as Filter, label: 'Kids' }] : []),
-  ...PRESENT.map((c) => ({ key: c as Filter, label: CATEGORY_LABEL[c] })),
+const FILTERS: { key: Filter; label: string; count: number }[] = [
+  { key: 'all', label: 'Everything', count: PICKS.length },
+  ...(PICKS.some((p) => p.kid) ? [{ key: 'kids' as Filter, label: 'Kids', count: PICKS.filter((p) => p.kid).length }] : []),
+  ...PRESENT.map((c) => ({ key: c as Filter, label: CATEGORY_LABEL[c], count: PICKS.filter((p) => p.category === c).length })),
 ]
+const filterLabel = (f: Filter) => FILTERS.find((x) => x.key === f)?.label ?? 'Everything'
 
 type View = 'stack' | 'list'
 interface Wx { temp: number; hi: number; lo: number; city: string }
@@ -56,6 +58,7 @@ export default function App() {
   const [detail, setDetail] = useState<Pick | null>(null)  // open card detail
   const [inputsOpen, setInputsOpen] = useState(false)      // "what's feeding this" sheet
   const [filter, setFilter] = useState<Filter>('all')      // category / kids filter
+  const [filterOpen, setFilterOpen] = useState(false)      // filter sheet
 
   useEffect(() => { applyMode(mode) }, [mode])
 
@@ -178,19 +181,26 @@ export default function App() {
           ⓘ Built from {SOURCE_COUNT} sources · weather × freshness
         </button>
 
-        <div className="filter-bar">
-          {FILTERS.map((f) => (
-            <button
-              key={f.key}
-              className={`filter-chip${filter === f.key ? ' on' : ''}`}
-              onClick={() => setFilter(f.key)}
-            >{f.label}</button>
-          ))}
-        </div>
+        <button
+          className={`filter-trigger${filter !== 'all' ? ' on' : ''}`}
+          onClick={() => setFilterOpen(true)}
+        >
+          <span className="ft-icon">⊞</span> {filter === 'all' ? 'Show everything' : `Showing: ${filterLabel(filter)}`}
+          <span className="ft-caret">⌄</span>
+        </button>
 
         <main className={`main main-${view}`}>
           {view === 'stack'
-            ? <SwipeStack key={`${dealKey}-${filter}`} picks={deck} onSwipe={handleStackSwipe} onRefresh={refresh} onOpen={setDetail} />
+            ? <SwipeStack
+                key={`${dealKey}-${filter}`}
+                picks={deck}
+                onSwipe={handleStackSwipe}
+                onRefresh={refresh}
+                onOpen={setDetail}
+                filterLabel={filter === 'all' ? null : filterLabel(filter)}
+                onClearFilter={() => setFilter('all')}
+                onSeeList={() => setView('list')}
+              />
             : <ListView picks={shown} savedIds={saved} onSwipe={handleListToggle} onOpen={setDetail} />}
         </main>
 
@@ -231,6 +241,13 @@ export default function App() {
         lo={wx.lo}
         live={live}
         activeCount={ACTIVE_SOURCES}
+      />
+      <FilterSheet
+        open={filterOpen}
+        onClose={() => setFilterOpen(false)}
+        options={FILTERS}
+        active={filter}
+        onSelect={setFilter}
       />
     </>
   )

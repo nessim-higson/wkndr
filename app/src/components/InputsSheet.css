@@ -62,7 +62,10 @@
   border-radius: 999px;
   background: var(--paper-2);
   color: var(--ink-3);
+  text-decoration: none;
+  transition: all 0.12s var(--ease-out);
 }
+.sheet-src:hover { background: var(--accent); color: #fff; }
 
 .sheet-done {
   margin-top: 26px;

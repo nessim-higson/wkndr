@@ -117,34 +117,29 @@
 }
 .built-from:hover { opacity: 1; }
 
-/* ===== filter bar — primary content control ===== */
-.filter-bar {
-  display: flex;
-  gap: 6px;
+/* ===== filter trigger — one pill that opens the filter sheet ===== */
+.filter-trigger {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   margin-top: 14px;
-  overflow-x: auto;
-  scrollbar-width: none;
-  -webkit-overflow-scrolling: touch;
   flex-shrink: 0;
-  padding-bottom: 2px;
-}
-.filter-bar::-webkit-scrollbar { display: none; }
-.filter-chip {
-  flex-shrink: 0;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 500;
   letter-spacing: -0.005em;
-  padding: 7px 13px;
+  padding: 9px 15px;
   border-radius: 999px;
-  white-space: nowrap;
   color: var(--field-text);
   background: rgba(0, 0, 0, 0.2);
   border: 1px solid rgba(255, 255, 255, 0.22);
   backdrop-filter: blur(8px);
   transition: all 0.15s var(--ease-out);
 }
-.filter-chip:hover { background: rgba(0, 0, 0, 0.3); }
-.filter-chip.on { background: var(--field-text); color: #1a1a1a; border-color: var(--field-text); }
+.filter-trigger:hover { background: rgba(0, 0, 0, 0.3); }
+.filter-trigger.on { background: var(--field-text); color: #1a1a1a; border-color: var(--field-text); }
+.ft-icon { font-size: 14px; }
+.ft-caret { opacity: 0.6; font-size: 11px; }
 
 /* ===== main ===== */
 .main {
