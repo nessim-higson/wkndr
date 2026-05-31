@@ -160,7 +160,7 @@
   flex-direction: column;
 }
 .main-stack { justify-content: center; align-items: center; }
-.main-list { overflow-y: auto; -webkit-overflow-scrolling: touch; }
+.main-list, .main-guide { overflow-y: auto; -webkit-overflow-scrolling: touch; }
 
 /* ===== controls — weather is a fact; adjusting is tucked behind a disclosure ===== */
 .controls {

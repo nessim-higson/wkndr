@@ -8,6 +8,7 @@ import { ListView } from './components/ListView'
 import { CardDetail } from './components/CardDetail'
 import { InputsSheet } from './components/InputsSheet'
 import { FilterSheet } from './components/FilterSheet'
+import { GuideView } from './components/GuideView'
 import { SOURCE_COUNT } from './data/sources'
 import { CATEGORY_LABEL, type Category } from './types'
 import {
@@ -28,7 +29,7 @@ const FILTERS: { key: Filter; label: string; count: number }[] = [
 ]
 const filterLabel = (f: Filter) => f === 'saved' ? 'Saved' : (FILTERS.find((x) => x.key === f)?.label ?? 'Everything')
 
-type View = 'stack' | 'list'
+type View = 'stack' | 'list' | 'guide'
 interface Wx { temp: number; hi: number; lo: number; city: string }
 
 // Amsterdam — the product's home city. The app defaults to its live forecast.
@@ -183,6 +184,7 @@ export default function App() {
             <div className="toggle" role="tablist">
               <button className={view === 'stack' ? 'on' : ''} onClick={() => setView('stack')}>Stack</button>
               <button className={view === 'list' ? 'on' : ''} onClick={() => setView('list')}>List</button>
+              <button className={view === 'guide' ? 'on' : ''} onClick={() => setView('guide')}>Guide</button>
             </div>
           </div>
         </header>
@@ -202,27 +204,41 @@ export default function App() {
           ⓘ Built from {SOURCE_COUNT} sources · weather × freshness{hasTaste(taste) ? ' × you' : ''}
         </button>
 
-        <button
-          className={`filter-trigger${filter !== 'all' ? ' on' : ''}`}
-          onClick={() => setFilterOpen(true)}
-        >
-          <span className="ft-icon">⊞</span> {filter === 'all' ? 'Show everything' : `Showing: ${filterLabel(filter)}`}
-          <span className="ft-caret">⌄</span>
-        </button>
+        {view !== 'guide' && (
+          <button
+            className={`filter-trigger${filter !== 'all' ? ' on' : ''}`}
+            onClick={() => setFilterOpen(true)}
+          >
+            <span className="ft-icon">⊞</span> {filter === 'all' ? 'Show everything' : `Showing: ${filterLabel(filter)}`}
+            <span className="ft-caret">⌄</span>
+          </button>
+        )}
 
         <main className={`main main-${view}`}>
-          {view === 'stack'
-            ? <SwipeStack
-                key={`${dealKey}-${filter}`}
-                picks={deck}
-                onSwipe={handleStackSwipe}
-                onRefresh={refresh}
-                onOpen={setDetail}
-                filterLabel={filter === 'all' ? null : filterLabel(filter)}
-                onClearFilter={() => setFilter('all')}
-                onSeeList={() => setView('list')}
-              />
-            : <ListView picks={shown} savedIds={saved} onSwipe={handleListToggle} onOpen={setDetail} />}
+          {view === 'stack' && (
+            <SwipeStack
+              key={`${dealKey}-${filter}`}
+              picks={deck}
+              onSwipe={handleStackSwipe}
+              onRefresh={refresh}
+              onOpen={setDetail}
+              filterLabel={filter === 'all' ? null : filterLabel(filter)}
+              onClearFilter={() => setFilter('all')}
+              onSeeList={() => setView('list')}
+            />
+          )}
+          {view === 'list' && (
+            <ListView picks={shown} savedIds={saved} onSwipe={handleListToggle} onOpen={setDetail} />
+          )}
+          {view === 'guide' && (
+            <GuideView
+              picks={rankedAll.filter((p) => p.freshness === 'always')}
+              mode={mode}
+              savedIds={saved}
+              onOpen={setDetail}
+              onToggleSave={toggleSave}
+            />
+          )}
         </main>
 
         <div className="controls">
