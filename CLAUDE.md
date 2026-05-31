@@ -10,7 +10,10 @@
 
 **WKNDR pivoted from "curated weekend brief" → "weather-aware, swipe-trained discovery
 engine for Amsterdam."** Read [`docs/discovery-direction.md`](docs/discovery-direction.md)
-first — it is the locked, canonical product direction. The sections below this banner are
+first — it is the locked, canonical product direction. Companion strategy docs:
+[`docs/moat.md`](docs/moat.md) (defensibility + content model: two-axis content, the
+evergreen "Guide" mode, shareable artifacts) and [`docs/content-pipeline.md`](docs/content-pipeline.md)
+(the living-events plan). The sections below this banner are
 still valid as the **design-lineage history** (the visual exploration that got us here),
 but where the *product thesis* differs, the discovery-direction doc wins.
 
