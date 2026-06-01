@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
 import type { Mode, Pick, SwipeDir } from './types'
 import { MODES, MODE_META, classify, applyMode, rankPicks, shuffle } from './weather/modes'
 import { PICKS } from './data/picks'
@@ -84,7 +85,6 @@ export default function App() {
   const [swiped, setSwiped] = useState<Set<string>>(new Set())
   const [saved, setSaved] = useState<Set<string>>(() => loadSaved())   // persisted
   const [taste, setTaste] = useState<Taste>(() => loadTaste())         // persisted taste profile
-  const [showAdjust, setShowAdjust] = useState(false)
   const [toast, setToast] = useState('')
   const [seed, setSeed] = useState(0)            // 0 = forecast order; bumped by Refresh
   const [dealKey, setDealKey] = useState(0)      // bump → stack re-deals (refresh signal)
@@ -96,6 +96,7 @@ export default function App() {
   const [filterOpen, setFilterOpen] = useState(false)      // What sheet
   const [whenOpen, setWhenOpen] = useState(false)          // When sheet
   const [look, setLook] = useState<Look>(() => (localStorage.getItem('wkndr.field') as Look) || 'warp')  // ambient field
+  const [barOpen, setBarOpen] = useState(false)            // command bar expanded?
 
   useEffect(() => { applyMode(mode) }, [mode])
   useEffect(() => { persistSaved(saved) }, [saved])   // your list survives reloads
@@ -210,20 +211,107 @@ export default function App() {
       <AmbientField mode={mode} look={look} onLookChange={setLook} />
 
       <div className="app">
-        <header className="app-head">
-          <div className="brand">WKNDR<span className="brand-sub">weekend brief</span></div>
-          <div className="head-right">
-            <button className="refresh-btn" onClick={refresh} title="Refresh picks" aria-label="Refresh picks">↻</button>
+        <header className="bar-wrap">
+          <div className={`bar${barOpen ? ' open' : ''}`}>
+            <div className="brand">WKNDR<span className="brand-sub">weekend brief</span></div>
             <button
-              className={`saved-count${filter === 'saved' ? ' on' : ''}`}
-              onClick={() => { setFilter('saved'); setView('list') }}
-              title="Your saved list"
-            >★ {saved.size}</button>
-            <div className="toggle" role="tablist">
-              <button className={view === 'stack' ? 'on' : ''} onClick={() => setView('stack')}>Stack</button>
-              <button className={view === 'list' ? 'on' : ''} onClick={() => setView('list')}>List</button>
-            </div>
+              className={`bar-trigger${barOpen ? ' on' : ''}${!barOpen && filterActive ? ' dot' : ''}`}
+              onClick={() => setBarOpen((v) => !v)}
+              aria-label={barOpen ? 'Close controls' : 'Open controls'}
+              aria-expanded={barOpen}
+            >
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden>
+                <line x1="2" y1="5" x2="16" y2="5" /><circle cx="12" cy="5" r="2.2" />
+                <line x1="2" y1="13" x2="16" y2="13" /><circle cx="6" cy="13" r="2.2" />
+              </svg>
+            </button>
           </div>
+
+          <AnimatePresence>
+            {barOpen && (
+              <>
+                <motion.div
+                  className="bar-scrim"
+                  onClick={() => setBarOpen(false)}
+                  initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                  transition={{ duration: 0.18 }}
+                />
+                <motion.div
+                  className="bar-panel"
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ type: 'spring', stiffness: 420, damping: 38 }}
+                >
+                  <div className="bar-panel-inner">
+                    <div className="bar-group">
+                      <span className="bar-label">View</span>
+                      <div className="bar-row">
+                        <div className="toggle" role="tablist">
+                          <button className={view === 'stack' ? 'on' : ''} onClick={() => setView('stack')}>Stack</button>
+                          <button className={view === 'list' ? 'on' : ''} onClick={() => setView('list')}>List</button>
+                        </div>
+                        <button className="bar-pill" onClick={refresh}>↻ Shuffle</button>
+                      </div>
+                    </div>
+
+                    <div className="bar-group">
+                      <span className="bar-label">Filter</span>
+                      <div className="bar-row">
+                        <button className={`filter-trigger${when !== 'all' ? ' on' : ''}`} onClick={() => setWhenOpen(true)}>
+                          <span className="ft-icon">◷</span> {whenLabel(when)}<span className="ft-caret">⌄</span>
+                        </button>
+                        <button className={`filter-trigger${filter !== 'all' && filter !== 'saved' ? ' on' : ''}`} onClick={() => setFilterOpen(true)}>
+                          <span className="ft-icon">⊞</span> {filter === 'all' || filter === 'saved' ? 'Everything' : filterLabel(filter)}<span className="ft-caret">⌄</span>
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="bar-group">
+                      <span className="bar-label">Your list</span>
+                      <div className="bar-row">
+                        <button
+                          className={`bar-pill${filter === 'saved' ? ' on' : ''}`}
+                          onClick={() => { setFilter('saved'); setView('list'); setBarOpen(false) }}
+                        >★ Saved · {saved.size}</button>
+                        {saved.size > 0 && <button className="bar-pill" onClick={() => { setShareOpen(true); setBarOpen(false) }}>Share ↗</button>}
+                      </div>
+                    </div>
+
+                    <div className="bar-group">
+                      <span className="bar-label">Weather</span>
+                      <div className="bar-row">
+                        <button className="bar-pill" onClick={() => { locate(); setBarOpen(false) }}>⌖ Use my location</button>
+                      </div>
+                      <span className="bar-sublabel">Preview a forecast</span>
+                      <div className="mode-pills">
+                        {MODES.map((m) => (
+                          <button key={m} className={!live && m === mode ? 'on' : ''} onClick={() => previewMode(m)}>
+                            {MODE_META[m].label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="bar-group">
+                      <span className="bar-label">Ambient field</span>
+                      <div className="mode-pills field-pills">
+                        {FIELD_OPTS.map((o) => (
+                          <button key={o.key} className={o.key === look ? 'on' : ''} onClick={() => setLook(o.key)}>
+                            {o.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <button className="bar-foot" onClick={() => { setInputsOpen(true); setBarOpen(false) }}>
+                      ⓘ Built from {SOURCE_COUNT} sources · weather × freshness{hasTaste(taste) ? ' × you' : ''}
+                    </button>
+                  </div>
+                </motion.div>
+              </>
+            )}
+          </AnimatePresence>
         </header>
 
         <section className="wx">
@@ -236,24 +324,6 @@ export default function App() {
             </div>
           </div>
         </section>
-        <button className="built-from" onClick={() => setInputsOpen(true)}>
-          ⓘ Built from {SOURCE_COUNT} sources · weather × freshness{hasTaste(taste) ? ' × you' : ''}
-        </button>
-
-        <div className="filter-bar">
-          <button
-            className={`filter-trigger${when !== 'all' ? ' on' : ''}`}
-            onClick={() => setWhenOpen(true)}
-          >
-            <span className="ft-icon">◷</span> {whenLabel(when)}<span className="ft-caret">⌄</span>
-          </button>
-          <button
-            className={`filter-trigger${filter !== 'all' ? ' on' : ''}`}
-            onClick={() => setFilterOpen(true)}
-          >
-            <span className="ft-icon">⊞</span> {filter === 'all' ? 'Everything' : filterLabel(filter)}<span className="ft-caret">⌄</span>
-          </button>
-        </div>
 
         {filter === 'saved' && saved.size > 0 && (
           <div className="ctx-bar">
@@ -285,33 +355,6 @@ export default function App() {
             <ListView picks={shown} savedIds={saved} onSwipe={handleListToggle} onOpen={setDetail} />
           )}
         </main>
-
-        <div className="controls">
-          <button className={`adjust-toggle${showAdjust ? ' on' : ''}`} onClick={() => setShowAdjust((v) => !v)}>
-            ⚙ Adjust
-          </button>
-          {showAdjust && (
-            <div className="adjust-panel">
-              <button className="locate" onClick={locate}>⌖ Use my location</button>
-              <span className="adjust-label">Preview a different forecast</span>
-              <div className="mode-pills">
-                {MODES.map((m) => (
-                  <button key={m} className={!live && m === mode ? 'on' : ''} onClick={() => previewMode(m)}>
-                    {MODE_META[m].label}
-                  </button>
-                ))}
-              </div>
-              <span className="adjust-label">Ambient field</span>
-              <div className="mode-pills field-pills">
-                {FIELD_OPTS.map((o) => (
-                  <button key={o.key} className={o.key === look ? 'on' : ''} onClick={() => setLook(o.key)}>
-                    {o.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
       </div>
 
       {toast && <div className="toast">↻ {toast}</div>}

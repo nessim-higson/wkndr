@@ -8,16 +8,88 @@
   padding: max(16px, env(safe-area-inset-top)) 20px 16px;
 }
 
-/* ===== nav bar (WePresent-style: split, minimal, hairline divider) ===== */
-.app-head {
+/* ===== command bar — minimal top bar that expands into a control panel ===== */
+.bar-wrap { position: relative; z-index: 20; flex-shrink: 0; }
+.bar {
+  position: relative;
+  z-index: 3;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  flex-shrink: 0;
   padding-bottom: 13px;
   margin-bottom: 4px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  transition: border-color 0.25s;
 }
+.bar.open { border-bottom-color: transparent; }
+
+.bar-trigger {
+  position: relative;
+  width: 38px; height: 38px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 12px;
+  color: var(--field-text);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  background: rgba(0, 0, 0, 0.18);
+  backdrop-filter: blur(8px);
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.bar-trigger svg { stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; }
+.bar-trigger svg circle { fill: currentColor; stroke: none; }
+.bar-trigger:hover { background: rgba(0, 0, 0, 0.3); }
+.bar-trigger.on { background: var(--field-text); color: #1a1a1a; border-color: var(--field-text); }
+.bar-trigger.dot::after {
+  content: ''; position: absolute; top: 5px; right: 5px;
+  width: 7px; height: 7px; border-radius: 50%; background: var(--accent);
+}
+
+.bar-scrim {
+  position: fixed; inset: 0; z-index: 1;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(1.5px);
+}
+.bar-panel {
+  position: absolute; left: 0; right: 0; top: 100%;
+  z-index: 2;
+  overflow: hidden;
+  border-radius: 0 0 18px 18px;
+  background: rgba(12, 14, 20, 0.72);
+  backdrop-filter: blur(20px) saturate(1.3);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-top: none;
+  box-shadow: 0 26px 64px rgba(0, 0, 0, 0.45);
+}
+.bar-panel-inner {
+  display: flex; flex-direction: column; gap: 14px;
+  padding: 16px 16px 15px;
+  max-height: min(72vh, 600px); overflow-y: auto;
+}
+.bar-group {
+  display: flex; flex-direction: column; gap: 9px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.bar-group:last-of-type { border-bottom: none; padding-bottom: 0; }
+.bar-label { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; opacity: 0.5; font-weight: 600; }
+.bar-sublabel { font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.42; margin-top: 3px; }
+.bar-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.bar-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 13px; font-weight: 500; letter-spacing: -0.005em;
+  padding: 9px 15px; border-radius: 999px;
+  color: var(--field-text);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  transition: all 0.15s var(--ease-out);
+}
+.bar-pill:hover { background: rgba(255, 255, 255, 0.14); }
+.bar-pill.on { background: var(--field-text); color: #1a1a1a; border-color: var(--field-text); }
+.bar-foot {
+  margin-top: 2px; align-self: flex-start;
+  font-size: 11px; letter-spacing: 0.01em; opacity: 0.6; color: var(--field-text);
+  transition: opacity 0.15s;
+}
+.bar-foot:hover { opacity: 0.92; }
 /* wordmark + descriptor (à la "by WeTransfer") */
 .brand {
   display: flex;
