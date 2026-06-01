@@ -5,26 +5,26 @@
   background: rgba(10, 10, 10, 0.55);
   backdrop-filter: blur(6px);
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: center;
-  padding: 0;
+  padding: 16px;
 }
 @media (min-width: 600px) {
-  .detail-backdrop { align-items: center; padding: 24px; }
+  .detail-backdrop { padding: 24px; }
 }
 
 .detail {
   position: relative;
   width: 100%;
   max-width: 460px;
-  max-height: 92vh;
+  max-height: 90vh;
   overflow-y: auto;
   background: var(--paper);
   color: var(--ink);
-  border-radius: 22px 22px 0 0;
-  box-shadow: 0 -10px 50px rgba(0, 0, 0, 0.35);
+  border-radius: 22px;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.4);
 }
-@media (min-width: 600px) { .detail { border-radius: 22px; max-width: 540px; } }
+@media (min-width: 600px) { .detail { max-width: 540px; } }
 @media (min-width: 1100px) { .detail { max-width: 600px; } }
 
 .detail-close {

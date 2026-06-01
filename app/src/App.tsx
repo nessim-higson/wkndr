@@ -357,21 +357,38 @@ export default function App() {
         )}
 
         <main className={`main main-${view}`}>
-          {view === 'stack' && (
-            <SwipeStack
-              key={`${dealKey}-${filter}-${when}`}
-              picks={deck}
-              onSwipe={handleStackSwipe}
-              onRefresh={refresh}
-              onOpen={setDetail}
-              filterLabel={filterActive ? 'this filter' : null}
-              onClearFilter={() => { setFilter('all'); setWhen('all') }}
-              onSeeList={() => setView('list')}
-            />
-          )}
-          {view === 'list' && (
-            <ListView picks={shown} savedIds={saved} onSwipe={handleListToggle} onOpen={setDetail} />
-          )}
+          <AnimatePresence mode="wait" initial={false}>
+            {view === 'stack' ? (
+              <motion.div
+                key="stack" className="view-pane"
+                initial={{ opacity: 0, scale: 0.97 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.97 }}
+                transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
+              >
+                <SwipeStack
+                  key={`${dealKey}-${filter}-${when}`}
+                  picks={deck}
+                  onSwipe={handleStackSwipe}
+                  onRefresh={refresh}
+                  onOpen={setDetail}
+                  filterLabel={filterActive ? 'this filter' : null}
+                  onClearFilter={() => { setFilter('all'); setWhen('all') }}
+                  onSeeList={() => setView('list')}
+                />
+              </motion.div>
+            ) : (
+              <motion.div
+                key="list" className="view-pane view-pane--scroll"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 6 }}
+                transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+              >
+                <ListView picks={shown} savedIds={saved} onSwipe={handleListToggle} onOpen={setDetail} />
+              </motion.div>
+            )}
+          </AnimatePresence>
         </main>
       </div>
 

@@ -59,8 +59,8 @@
   border-radius: 22px;
   pointer-events: none;
 }
-.swipe-tint.red { background: #ec3b22; }
-.swipe-tint.green { background: #16a85a; }
+.swipe-tint.red { background: linear-gradient(to bottom, #ec3b22 0%, rgba(236, 59, 34, 0.7) 28%, transparent 80%); }
+.swipe-tint.green { background: linear-gradient(to bottom, #16a85a 0%, rgba(22, 168, 90, 0.7) 28%, transparent 80%); }
 
 /* action buttons */
 .stack-actions {
