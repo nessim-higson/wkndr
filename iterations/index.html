@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>WKNDR — bar iterations</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background: #cfccc4; color: #1c1c1a;
+    min-height: 100vh; padding: 40px 20px 60px;
+    display: flex; flex-direction: column; align-items: center;
+  }
+  .head { text-align: center; margin-bottom: 34px; }
+  .dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: #ff4d1f; margin-right: 8px; vertical-align: middle; }
+  h1 { font-size: 24px; font-weight: 800; letter-spacing: -0.04em; }
+  .sub { margin-top: 8px; font-size: 13px; letter-spacing: 0.02em; opacity: 0.55; }
+  .grid { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; max-width: 760px; width: 100%; }
+  a.card {
+    flex: 1 1 320px; max-width: 360px;
+    display: block; text-decoration: none; color: inherit;
+    background: #faf8f3; border-radius: 22px; padding: 24px;
+    box-shadow: 0 18px 48px rgba(0,0,0,0.18), 0 2px 6px rgba(0,0,0,0.08);
+    border: 1px solid rgba(255,255,255,0.7);
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+  }
+  a.card:hover { transform: translateY(-3px); box-shadow: 0 26px 64px rgba(0,0,0,0.24), 0 3px 8px rgba(0,0,0,0.1); }
+  .tag { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 600; opacity: 0.45; }
+  .card h2 { margin-top: 10px; font-size: 20px; font-weight: 800; letter-spacing: -0.03em; }
+  .card p { margin-top: 10px; font-size: 13.5px; line-height: 1.5; opacity: 0.7; }
+  .go { margin-top: 18px; font-size: 13px; font-weight: 600; color: #ff4d1f; }
+  .foot { margin-top: 30px; font-size: 11px; opacity: 0.45; text-align: center; }
+  .foot a { color: inherit; }
+</style>
+</head>
+<body>
+  <div class="head">
+    <h1><span class="dot"></span>WKNDR — bar iterations</h1>
+    <div class="sub">Two directions for the top bar, side by side. Open each on your phone.</div>
+  </div>
+
+  <div class="grid">
+    <a class="card" href="./floating/">
+      <div class="tag">Light · editorial</div>
+      <h2>Floating module</h2>
+      <p>WePresent-style. A centered, cream product card that floats above the field with a drop shadow; WKNDR centered with the live weather; the menu overlays on top.</p>
+      <div class="go">Open →</div>
+    </a>
+
+    <a class="card" href="./command-bar/">
+      <div class="tag">Dark · immersive</div>
+      <h2>Command bar</h2>
+      <p>A minimal dark, frosted bar that blends into the weather field; wordmark left, sliders trigger. Expands a dark control drawer. Moody and atmospheric.</p>
+      <div class="go">Open →</div>
+    </a>
+  </div>
+
+  <div class="foot">Snapshots pinned from commits · <a href="/wkndr/">back to the live app</a></div>
+</body>
+</html>

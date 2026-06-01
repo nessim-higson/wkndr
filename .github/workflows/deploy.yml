@@ -30,6 +30,8 @@ jobs:
           cp -r app/dist/* site/
           mkdir -p site/experiments
           cp -r experiments/* site/experiments/
+          mkdir -p site/iterations
+          cp -r iterations/* site/iterations/
           cp index.html site/archive.html
       - uses: actions/upload-pages-artifact@v3
         with:
