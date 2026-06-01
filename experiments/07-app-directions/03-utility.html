@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WKNDR direction C — Utility</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--ink:#1a1a1a;--paper:#fafaf8;--paper2:#f0efe9;--ink3:#5a5a5a;--ink4:#9a9a96;--rule:#e4e2da;--accent:#ff4d1f;--kid:#4a5a7a}
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased}
+  body{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;background:#d9d6cf;display:flex;flex-direction:column;align-items:center;gap:14px;padding:28px 16px 60px;color:var(--ink)}
+  .label{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#6a6a64}
+  .desc{font-size:13px;color:#6a6a64;max-width:390px;text-align:center;line-height:1.5;margin-bottom:6px}
+  .phone{width:390px;max-width:100%;background:var(--paper);border-radius:30px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.28)}
+  .mono{font-family:'JetBrains Mono',monospace}
+  /* slim top bar */
+  .bar{display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--rule)}
+  .mk{font-weight:800;letter-spacing:-.03em;font-size:15px;display:flex;align-items:center;gap:7px}
+  .mk::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--accent)}
+  .wxchip{margin-left:auto;display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;background:var(--paper2);padding:5px 11px;border-radius:999px}
+  .wxchip .dot{width:7px;height:7px;border-radius:50%;background:linear-gradient(135deg,#ff9a3d,#c2310e)}
+  /* filter row */
+  .filters{display:flex;gap:6px;padding:10px 16px;overflow-x:auto;border-bottom:1px solid var(--rule)}
+  .chip{flex-shrink:0;font-size:12px;font-weight:500;padding:5px 11px;border-radius:999px;border:1px solid var(--rule);color:var(--ink3)}
+  .chip.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  /* dense rows */
+  .row{display:grid;grid-template-columns:64px 1fr auto;gap:12px;align-items:center;padding:11px 16px;border-bottom:1px solid var(--rule)}
+  .rthumb{width:64px;height:64px;border-radius:8px;background-size:cover;background-position:center}
+  .rtag{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink4)}
+  .rtag b{color:var(--accent)}
+  .rtitle{font-size:15px;font-weight:600;letter-spacing:-.02em;margin-top:2px;line-height:1.2}
+  .rmeta{font-size:11px;color:var(--ink4);margin-top:2px}
+  .rsave{width:34px;height:34px;border-radius:50%;background:var(--paper2);color:var(--ink4);display:grid;place-items:center;font-size:14px}
+</style></head>
+<body>
+  <div class="label">Direction C · Utility / control-surface</div>
+  <div class="desc">Dense and app-like. Slim bar with weather as a compact chip, filters always visible, content maximized as a scannable list. Prioritizes speed and function over atmosphere — a sharp tool.</div>
+  <div class="phone">
+    <div class="bar"><span class="mk">WKNDR</span><span class="wxchip"><span class="dot"></span>24° · Hot · Amsterdam</span></div>
+    <div class="filters"><span class="chip on">This weekend</span><span class="chip">Kids</span><span class="chip">Eat</span><span class="chip">Live</span><span class="chip">Art</span><span class="chip">Out</span></div>
+    <div class="row"><div class="rthumb" style="background:linear-gradient(135deg,#3a2f5a,#c2310e)"></div><div><div class="rtag mono"><b>Tonight</b> · LIVE &amp; GIGS</div><div class="rtitle">TWICE — READY TO BE</div><div class="rmeta">Ziggo Dome · from €65</div></div><div class="rsave">♥</div></div>
+    <div class="row"><div class="rthumb" style="background:linear-gradient(135deg,#2a3358,#7a5a7a)"></div><div><div class="rtag mono"><b>New</b> · STAGE</div><div class="rtitle">Holland Festival opens</div><div class="rmeta">Multi-venue · 3–28 Jun</div></div><div class="rsave">♥</div></div>
+    <div class="row"><div class="rthumb" style="background:linear-gradient(135deg,#b9c79a,#6f8a4a)"></div><div><div class="rtag mono">OUT &amp; ABOUT · today</div><div class="rtitle">Sloterplas city beach</div><div class="rmeta">Nieuw-West · free</div></div><div class="rsave">♥</div></div>
+    <div class="row"><div class="rthumb" style="background:linear-gradient(135deg,#8a7a6a,#3a2f2a)"></div><div><div class="rtag mono">ART · until 27 Sep</div><div class="rtitle">World Press Photo</div><div class="rmeta">De Nieuwe Kerk · €16</div></div><div class="rsave">♥</div></div>
+  </div>
+</body></html>

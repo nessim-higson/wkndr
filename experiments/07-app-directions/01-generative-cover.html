@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WKNDR direction A — Generative cover</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--ink:#1a1a1a;--paper:#faf8f3;--paper2:#f1efe8;--ink3:#5a5a5a;--ink4:#9a9a96;--accent:#ff4d1f;--brick:#8a2818}
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased}
+  body{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;background:#d9d6cf;display:flex;flex-direction:column;align-items:center;gap:14px;padding:28px 16px 60px;color:var(--ink)}
+  .label{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#6a6a64}
+  .desc{font-size:13px;color:#6a6a64;max-width:390px;text-align:center;line-height:1.5;margin-bottom:6px}
+  .phone{width:390px;max-width:100%;background:var(--paper);border-radius:30px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.28)}
+  .mono{font-family:'JetBrains Mono',monospace}
+  /* cover */
+  .cover{position:relative;height:380px;overflow:hidden;color:#fbf7ef;background:
+     radial-gradient(ellipse 90% 60% at 50% 6%,#ffd166 0%,transparent 55%),
+     radial-gradient(ellipse 85% 70% at 74% 60%,#c2310e 0%,transparent 60%),
+     linear-gradient(180deg,#ff9a3d 0%,#c2310e 56%,#5a1606 100%)}
+  .cover::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(0,0,0,.3))}
+  .ctop{position:absolute;top:20px;left:20px;right:20px;display:flex;justify-content:space-between;align-items:flex-start;z-index:2}
+  .cdate{font-size:11px;letter-spacing:.18em;text-transform:uppercase;opacity:.85}
+  .ctemp{text-align:right;line-height:1}
+  .ctemp b{font-size:40px;font-weight:400}
+  .ctemp .hl{font-size:12px;letter-spacing:.12em;opacity:.7;display:block;margin-top:4px}
+  .cmid{position:absolute;bottom:64px;left:20px;z-index:2}
+  .ccity{font-size:64px;font-weight:600;letter-spacing:-.05em;line-height:.9}
+  .ccond{margin-top:10px;font-size:13px;letter-spacing:.12em;text-transform:uppercase;opacity:.9}
+  .wmark{position:absolute;top:20px;left:50%;transform:translateX(-50%);font-weight:800;letter-spacing:-.03em;font-size:15px;display:none}
+  /* source trace */
+  .trace{background:var(--ink);color:var(--paper);padding:12px 18px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.04em;line-height:1.7}
+  .trace .lab{color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.1em}
+  .trace b{color:#ffaa70}
+  /* content */
+  .col{padding:20px}
+  .lede{font-size:14px;line-height:1.55;color:var(--ink3);margin-bottom:18px}
+  .lede b{color:var(--ink)}
+  .card{border-radius:16px;overflow:hidden;background:var(--paper);box-shadow:0 8px 26px rgba(0,0,0,.1);margin-bottom:14px}
+  .cimg{height:150px;background-size:cover;background-position:center;position:relative}
+  .tags{position:absolute;top:10px;left:10px;display:flex;gap:5px}
+  .tag{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;padding:3px 7px;border-radius:4px;background:var(--accent);color:#fff}
+  .tag.g{background:rgba(255,255,255,.9);color:var(--ink)}
+  .cbody{padding:14px 16px 16px}
+  .ctitle{font-size:19px;font-weight:600;letter-spacing:-.02em;line-height:1.15}
+  .cmeta{font-size:11px;color:var(--ink4);margin-top:4px}
+  .cwhy{margin-top:10px;font-size:11px;color:var(--ink3);background:var(--paper2);padding:8px 11px;border-radius:7px}
+  .cwhy b{color:var(--brick)}
+</style></head>
+<body>
+  <div class="label">Direction A · Generative weather cover</div>
+  <div class="desc">The weather field becomes the hero. Every weekend a unique cover composed from the data, with the source-trace beneath it. Content scrolls under. The signature, brand-defining look.</div>
+  <div class="phone">
+    <div class="cover">
+      <div class="ctop"><span class="cdate mono">SUN · 1 JUN</span><span class="ctemp mono"><b>24°</b><span class="hl">31° / 19°</span></span></div>
+      <div class="cmid"><div class="ccity">Amsterdam</div><div class="ccond mono">HOT · DRY · LIGHT NW WIND</div></div>
+    </div>
+    <div class="trace"><span class="lab">Built from</span> &nbsp;✓ Buienradar<b>0%</b> / ✓ KNMI<b>24°</b> / Songkick / Holland Festival / I amsterdam &nbsp;· 7 sources · 11:32</div>
+    <div class="col">
+      <p class="lede"><b>It turns properly hot by two.</b> Five picks for the weekend, weather-ranked. Chase the shade and keep water close.</p>
+      <div class="card">
+        <div class="cimg" style="background:linear-gradient(135deg,#3a2f5a,#c2310e)"><div class="tags"><span class="tag">Tonight</span><span class="tag g">Live & gigs</span></div></div>
+        <div class="cbody"><div class="ctitle">TWICE — READY TO BE</div><div class="cmeta">Ziggo Dome · from €65</div><div class="cwhy"><b>✦ Why now:</b> tonight · indoor · weather-proof</div></div>
+      </div>
+      <div class="card">
+        <div class="cimg" style="background:linear-gradient(135deg,#2a3358,#7a5a7a)"><div class="tags"><span class="tag">New this week</span><span class="tag g">Stage</span></div></div>
+        <div class="cbody"><div class="ctitle">Holland Festival opens</div><div class="cmeta">Across the city · 3–28 Jun</div></div>
+      </div>
+    </div>
+  </div>
+</body></html>
