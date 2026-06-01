@@ -5,6 +5,7 @@ import { MODES, MODE_META, classify, applyMode, rankPicks, shuffle } from './wea
 import { PICKS } from './data/picks'
 import { AmbientField } from './weather/AmbientField'
 import type { Look } from './weather/ambientEngine'
+import { APP_VERSION, BUILD } from './version'
 import { SwipeStack } from './components/SwipeStack'
 import { ListView } from './components/ListView'
 import { CardDetail } from './components/CardDetail'
@@ -71,6 +72,9 @@ const FIELD_OPTS: { key: Look; label: string }[] = [
   { key: 'warp', label: 'Warp' },
   { key: 'aurora', label: 'Aurora' },
   { key: 'mesh', label: 'Mesh' },
+  { key: 'contour', label: 'Contour' },
+  { key: 'particles', label: 'Particles' },
+  { key: 'rain', label: 'Rain' },
   { key: 'metaball', label: 'Metaball' },
   { key: 'off', label: 'Static' },
 ]
@@ -336,6 +340,7 @@ export default function App() {
                     <button className="bar-foot" onClick={() => { setInputsOpen(true); setBarOpen(false) }}>
                       ⓘ Built from {SOURCE_COUNT} sources · weather × freshness{hasTaste(taste) ? ' × you' : ''}
                     </button>
+                    <span className="bar-build">v{APP_VERSION} · build {BUILD}</span>
                   </div>
                 </motion.div>
               )}

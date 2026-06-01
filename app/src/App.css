@@ -104,6 +104,7 @@
   transition: opacity 0.15s;
 }
 .bar-foot:hover { opacity: 0.85; }
+.bar-build { font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; opacity: 0.32; font-variant-numeric: tabular-nums; }
 
 /* re-theme the reused controls for the light surface */
 .topbar-module .toggle { background: rgba(0, 0, 0, 0.05); border-color: rgba(0, 0, 0, 0.1); }
