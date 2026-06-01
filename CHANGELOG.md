@@ -5,6 +5,14 @@ Format loosely follows [Keep a Changelog](https://keepachangelog.com/). The vers
 shown in the app's "What's feeding this" sheet matches the latest tag here.
 
 ## [Unreleased]
+- **Content refresh (1 Jun 2026)** — listings re-cut for the coming weekend (Fri 5–Sun 7 Jun):
+  web-researched real events (Amsterdam Open Air, FKA twigs + Yves Tumor @ Ziggo, Harry Styles +
+  Robyn, Jungle by Night, Holland Festival, Bacchus, Red Light Jazz, Danh Vo @ Stedelijk); removed
+  past/unverifiable entries (Iron Maiden, Ben Howard, Hayley Williams, the 31 May / 1 Jun items).
+- **Imagery accuracy pass** — replaced generic keyword stand-ins + weak shots with real, HTTP-verified
+  Wikimedia photos of the actual places (De Nieuwe Kerk, Van Gogh building, Foam, Hortus, Marineterrein,
+  IJ-Hallen, Albert Cuyp, Noordermarkt, Westergas, Zaanse Schans, Haarlem, Volendam, Muiderslot).
+  Venues without a Commons photo (new bars/restaurants, one-off festivals) keep flagged placeholders.
 - (next up — choose the default ambient field · the content pipeline · "Wrapped" retrospective)
 
 ## [0.6.0] — 2026-06-01 — "Living field"
