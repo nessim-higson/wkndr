@@ -240,7 +240,8 @@
   backdrop-filter: blur(10px);
 }
 .adjust-label { font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.6; }
-.mode-pills { display: inline-flex; gap: 3px; }
+.mode-pills { display: inline-flex; gap: 3px; flex-wrap: wrap; justify-content: center; }
+.field-pills button.on { background: var(--accent); color: #fff; opacity: 1; }
 .mode-pills button {
   font-size: 11px;
   padding: 6px 11px;

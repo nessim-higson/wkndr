@@ -3,6 +3,7 @@ import type { Mode, Pick, SwipeDir } from './types'
 import { MODES, MODE_META, classify, applyMode, rankPicks, shuffle } from './weather/modes'
 import { PICKS } from './data/picks'
 import { AmbientField } from './weather/AmbientField'
+import type { Look } from './weather/ambientEngine'
 import { SwipeStack } from './components/SwipeStack'
 import { ListView } from './components/ListView'
 import { CardDetail } from './components/CardDetail'
@@ -67,6 +68,14 @@ const today = new Date().toLocaleDateString('en-GB', {
   weekday: 'short', day: 'numeric', month: 'long',
 }).toUpperCase()
 
+// the ambient field looks the user can switch between (persisted to localStorage)
+const FIELD_OPTS: { key: Look; label: string }[] = [
+  { key: 'aura', label: 'Aura' },
+  { key: 'warp', label: 'Warp' },
+  { key: 'metaball', label: 'Metaball' },
+  { key: 'off', label: 'Static' },
+]
+
 export default function App() {
   const [mode, setMode] = useState<Mode>('HOT')
   const [view, setView] = useState<View>(SHARED_IDS ? 'list' : 'stack')
@@ -86,10 +95,12 @@ export default function App() {
   const [when, setWhen] = useState<When>('all')            // When: time-sensitivity / canon
   const [filterOpen, setFilterOpen] = useState(false)      // What sheet
   const [whenOpen, setWhenOpen] = useState(false)          // When sheet
+  const [look, setLook] = useState<Look>(() => (localStorage.getItem('wkndr.field') as Look) || 'warp')  // ambient field
 
   useEffect(() => { applyMode(mode) }, [mode])
   useEffect(() => { persistSaved(saved) }, [saved])   // your list survives reloads
   useEffect(() => { persistTaste(taste) }, [taste])   // your taste accumulates over time
+  useEffect(() => { localStorage.setItem('wkndr.field', look) }, [look])   // your ambient-field choice sticks
 
   // Default to the real Amsterdam forecast on load — weather is a fact, not a toggle.
   const didInit = useRef(false)
@@ -196,7 +207,7 @@ export default function App() {
 
   return (
     <>
-      <AmbientField mode={mode} />
+      <AmbientField mode={mode} look={look} onLookChange={setLook} />
 
       <div className="app">
         <header className="app-head">
@@ -277,7 +288,7 @@ export default function App() {
 
         <div className="controls">
           <button className={`adjust-toggle${showAdjust ? ' on' : ''}`} onClick={() => setShowAdjust((v) => !v)}>
-            ⚙ Adjust weather
+            ⚙ Adjust
           </button>
           {showAdjust && (
             <div className="adjust-panel">
@@ -287,6 +298,14 @@ export default function App() {
                 {MODES.map((m) => (
                   <button key={m} className={!live && m === mode ? 'on' : ''} onClick={() => previewMode(m)}>
                     {MODE_META[m].label}
+                  </button>
+                ))}
+              </div>
+              <span className="adjust-label">Ambient field</span>
+              <div className="mode-pills field-pills">
+                {FIELD_OPTS.map((o) => (
+                  <button key={o.key} className={o.key === look ? 'on' : ''} onClick={() => setLook(o.key)}>
+                    {o.label}
                   </button>
                 ))}
               </div>

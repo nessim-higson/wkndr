@@ -47,13 +47,18 @@ export const MODE_META: Record<Mode, ModeMeta> = {
   },
 }
 
-/** Rule-based classifier (thresholds from engine/weather-engine.ts) */
+/**
+ * Rule-based classifier (thresholds from engine/weather-engine.ts).
+ * Temperature gates the cold bucket — "wet" alone never means "cold". A warm rainy
+ * day is changeable (VOLATILE: "keep a rain layer in the bag"), not COLD_WET.
+ */
 export function classify(high: number, precipProb: number, swing: number): Mode {
   if (swing >= 9) return 'VOLATILE'
+  if (high < 10) return 'COLD_WET'                                  // genuinely cold
+  if (precipProb > 65) return high < 16 ? 'COLD_WET' : 'VOLATILE'   // wet: cold→cold&wet, warm→changeable
   if (high >= 24 && precipProb < 30) return 'HOT'
-  if (high >= 16 && precipProb < 40) return 'WARM'
-  if (high < 10 || precipProb > 65) return 'COLD_WET'
-  if (high >= 8 && high <= 14) return 'COOL'
+  if (high >= 16) return 'WARM'
+  if (high >= 10 && high <= 15) return 'COOL'
   return 'WARM'
 }
 

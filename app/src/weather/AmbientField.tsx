@@ -27,8 +27,7 @@ const DEV = import.meta.env.DEV
  * real production WeatherField, so the dev panel is a true A/B. The engine handles
  * all the perf-budget concerns (see ambientEngine.ts).
  */
-export function AmbientField({ mode }: { mode: Mode }) {
-  const [look, setLook] = useState<Look>(() => (localStorage.getItem('wkndr.field') as Look) || 'warp')
+export function AmbientField({ mode, look, onLookChange }: { mode: Mode; look: Look; onLookChange?: (l: Look) => void }) {
   const [stats, setStats] = useState<FieldStats | null>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const engineRef = useRef<FieldEngine | null>(null)
@@ -47,7 +46,6 @@ export function AmbientField({ mode }: { mode: Mode }) {
   }, [look])
 
   useEffect(() => { engineRef.current?.setMode(mode) }, [mode])
-  useEffect(() => { localStorage.setItem('wkndr.field', look) }, [look])
 
   return (
     <>
@@ -65,7 +63,7 @@ export function AmbientField({ mode }: { mode: Mode }) {
         <div className="field-dev">
           <div className="field-dev-looks">
             {LOOKS.map((l) => (
-              <button key={l} className={l === look ? 'on' : ''} onClick={() => setLook(l)}>{LOOK_LABEL[l]}</button>
+              <button key={l} className={l === look ? 'on' : ''} onClick={() => onLookChange?.(l)}>{LOOK_LABEL[l]}</button>
             ))}
           </div>
           <div className="field-dev-stats">

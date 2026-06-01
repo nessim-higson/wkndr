@@ -98,7 +98,16 @@ export class FieldEngine {
     for (let i = 0; i < 7; i++) this.balls.push({ px: this.n.rand(), py: this.n.rand(), sx: this.n.rand() - 0.5, sy: this.n.rand() - 0.5, ph: this.n.rand() * 6.28, ci: 1 + (i % 3) })
   }
 
-  setMode(mode: Mode) { this.tgt = modeColors(mode) }              // crossfades over ~1s
+  setMode(mode: Mode) {
+    this.tgt = modeColors(mode)                                    // crossfades over ~1s while visible
+    // If the animation loop can't advance the crossfade right now (reduced-motion,
+    // tab hidden, or not yet started) it would otherwise stay stuck on the boot
+    // palette — snap to the real mode and paint one correct frame.
+    if (this.reduced || document.hidden || !this.running) {
+      this.cur = this.tgt.map((c) => ({ ...c }))
+      this.renderFrame()
+    }
+  }
   setLook(look: Look) {
     if (look === this.look) return
     this.look = look

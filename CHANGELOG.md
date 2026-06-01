@@ -5,7 +5,17 @@ Format loosely follows [Keep a Changelog](https://keepachangelog.com/). The vers
 shown in the app's "What's feeding this" sheet matches the latest tag here.
 
 ## [Unreleased]
-- (next up — UI/header design direction · the content pipeline · "Wrapped" retrospective)
+- (next up — choose the default ambient field · the content pipeline · "Wrapped" retrospective)
+
+## [0.6.0] — 2026-06-01 — "Living field"
+- **Generative ambient field** — a weather-driven canvas backdrop (palette follows the live mode),
+  perf-budgeted: low-res buffer GPU-upscaled, ~30fps cap, freezes during swipes, pauses when hidden,
+  falls back to the CSS gradient under reduced-motion or if canvas is unavailable.
+- **Ambient-field selector** — ⚙ Adjust now lets you switch the look (Aura / Warp / Metaball / Static)
+  live; the choice persists per device.
+- **WePresent-style nav bar** — wordmark + "weekend brief" descriptor + hairline divider, controls right.
+- Fixes: the classifier no longer mislabels a warm-but-wet day as "COLD" (→ VOLATILE, "keep a rain
+  layer in the bag"); reduced-motion users now get the correct field palette instead of the boot color.
 
 ## [0.5.0] — 2026-06-01 — "Share my weekend"
 - **"My Weekend" share card** — tap ★ → Saved → Share → a weather-tinted card of your saved
