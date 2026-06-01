@@ -35,11 +35,10 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
   const rotate = useTransform(x, [-220, 220], [-13, 13])
   const dragged = useRef(false)  // true once a real drag begins → suppresses the tap-to-open
 
-  // directional indicator opacities driven by the drag
-  const likeOp = useTransform(x, [40, 150], [0, 1])
-  const nopeOp = useTransform(x, [-150, -40], [1, 0])
+  // drag feedback: left → red wash (dismiss), right → green wash (keep), up → SAVE
+  const redOp = useTransform(x, [-160, -25], [0.5, 0])
+  const greenOp = useTransform(x, [25, 160], [0, 0.5])
   const saveOp = useTransform(y, [-150, -40], [1, 0])
-  const skipOp = useTransform(y, [40, 150], [0, 1])
 
   function fling(dir: SwipeDir) {
     const t = FLING[dir]
@@ -77,10 +76,9 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
     >
       {interactive && (
         <>
-          <motion.div className="ind ind-like" style={{ opacity: likeOp }}>LIKE</motion.div>
-          <motion.div className="ind ind-nope" style={{ opacity: nopeOp }}>NOPE</motion.div>
+          <motion.div className="swipe-tint red" style={{ opacity: redOp }} aria-hidden />
+          <motion.div className="swipe-tint green" style={{ opacity: greenOp }} aria-hidden />
           <motion.div className="ind ind-save" style={{ opacity: saveOp }}>SAVE</motion.div>
-          <motion.div className="ind ind-skip" style={{ opacity: skipOp }}>SKIP</motion.div>
         </>
       )}
       <Card pick={pick} />
@@ -143,9 +141,7 @@ export function SwipeStack({
 
       <div className="stack-actions">
         <button className="act act-nope" onClick={() => topRef.current?.fling('nope')} aria-label="Not for me">✕</button>
-        <button className="act act-skip" onClick={() => topRef.current?.fling('skip')} aria-label="Skip">↓</button>
         <button className="act act-save" onClick={() => topRef.current?.fling('save')} aria-label="Save">★</button>
-        <button className="act act-like" onClick={() => topRef.current?.fling('like')} aria-label="Like">♥</button>
       </div>
     </div>
   )

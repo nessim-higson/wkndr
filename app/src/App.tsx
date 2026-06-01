@@ -225,7 +225,7 @@ export default function App() {
 
               <div className="tb-center">
                 <div className="tb-brand"><span className="tb-dot" aria-hidden />WKNDR</div>
-                <div className="tb-weather">{wx.temp}° in {wx.city} today</div>
+                <div className="tb-weather">{wx.temp}° in {wx.city}</div>
               </div>
 
               <button

@@ -99,18 +99,19 @@
 }
 .detail-why span { color: var(--accent-deep); }
 
-.detail-actions { margin-top: 18px; display: flex; gap: 8px; }
-.detail-save {
+.detail-actions { margin-top: 18px; display: flex; gap: 8px; align-items: center; }
+.detail-icon-btn {
   flex-shrink: 0;
-  font-size: 14px;
-  font-weight: 600;
-  padding: 12px 18px;
+  width: 48px; height: 48px;
+  display: grid; place-items: center;
+  font-size: 19px;
   border-radius: 999px;
   background: var(--paper-2);
   color: var(--ink);
   transition: all 0.12s var(--ease-out);
 }
-.detail-save.on { background: var(--accent); color: #fff; }
+.detail-icon-btn:hover { background: var(--paper-3); transform: translateY(-1px); }
+.detail-icon-btn.on, .detail-icon-btn.on:hover { background: var(--accent); color: #fff; }
 .detail-link {
   flex: 1;
   text-align: center;

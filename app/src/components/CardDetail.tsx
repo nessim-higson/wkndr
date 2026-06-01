@@ -1,7 +1,18 @@
+import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import type { Pick } from '../types'
 import { CATEGORY_LABEL, FRESHNESS_LABEL } from '../types'
 import './CardDetail.css'
+
+// the detail body fades/rises in just after the sheet lands — staggered children
+const bodyV = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.05, delayChildren: 0.12 } },
+}
+const itemV = {
+  hidden: { opacity: 0, y: 14 },
+  show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 420, damping: 34 } },
+}
 
 /** Full detail for a pick — opens on tap (stack) or row click (list). */
 export function CardDetail({
@@ -12,50 +23,71 @@ export function CardDetail({
   onClose: () => void
   onToggleSave: (p: Pick) => void
 }) {
+  const [copied, setCopied] = useState(false)
+
+  // share THIS pick — a link that opens straight to it (no backend)
+  async function share() {
+    if (!pick) return
+    const url = `${location.origin}${location.pathname}?w=${pick.id}`
+    const data = { title: pick.title, text: `${pick.title} — ${pick.venue}, ${pick.area}`, url }
+    try { if (navigator.share) { await navigator.share(data); return } } catch { /* fall through to copy */ }
+    try {
+      await navigator.clipboard?.writeText(url)
+      setCopied(true); setTimeout(() => setCopied(false), 1800)
+    } catch { /* no-op */ }
+  }
+
   return (
-    <AnimatePresence>
+    <AnimatePresence onExitComplete={() => setCopied(false)}>
       {pick && (
         <motion.div
           className="detail-backdrop"
           onClick={onClose}
           initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-          transition={{ duration: 0.2 }}
+          transition={{ duration: 0.22 }}
         >
           <motion.article
             className="detail"
             onClick={(e) => e.stopPropagation()}
-            initial={{ y: 28, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 28, opacity: 0 }}
-            transition={{ type: 'spring', stiffness: 320, damping: 32 }}
+            initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }}
+            transition={{ type: 'spring', stiffness: 280, damping: 30, mass: 0.9 }}
           >
             <button className="detail-close" onClick={onClose} aria-label="Close">×</button>
-            <div className="detail-img" style={{ backgroundImage: `url(${pick.image})` }}>
+            <motion.div
+              className="detail-img" style={{ backgroundImage: `url(${pick.image})` }}
+              initial={{ scale: 1.08 }} animate={{ scale: 1 }}
+              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            >
               <div className="detail-tags">
                 <span className={`chip chip-fresh chip-fresh--${pick.freshness}`}>{FRESHNESS_LABEL[pick.freshness]}</span>
                 <span className="chip chip-cat">{CATEGORY_LABEL[pick.category]}</span>
                 {pick.outdoor && <span className="chip chip-outdoor">Outdoor</span>}
                 {pick.kid && <span className="chip chip-kid">Kids</span>}
               </div>
-            </div>
-            <div className="detail-body">
-              <div className="detail-when">
+            </motion.div>
+            <motion.div className="detail-body" variants={bodyV} initial="hidden" animate="show">
+              <motion.div className="detail-when" variants={itemV}>
                 {pick.when}{pick.verify && <span className="verify">verify</span>}
-              </div>
-              <h2 className="detail-title">{pick.title}</h2>
-              <div className="detail-venue">{pick.venue} · {pick.area} · {pick.price}</div>
-              <p className="detail-blurb">{pick.blurb}</p>
-              <div className="detail-why"><span aria-hidden>✦</span> {pick.why}</div>
-              <div className="detail-actions">
-                <button className={`detail-save${saved ? ' on' : ''}`} onClick={() => onToggleSave(pick)}>
-                  {saved ? '★ Saved' : '☆ Save'}
+              </motion.div>
+              <motion.h2 className="detail-title" variants={itemV}>{pick.title}</motion.h2>
+              <motion.div className="detail-venue" variants={itemV}>{pick.venue} · {pick.area} · {pick.price}</motion.div>
+              <motion.p className="detail-blurb" variants={itemV}>{pick.blurb}</motion.p>
+              <motion.div className="detail-why" variants={itemV}><span aria-hidden>✦</span> {pick.why}</motion.div>
+              <motion.div className="detail-actions" variants={itemV}>
+                <button className={`detail-icon-btn${saved ? ' on' : ''}`} onClick={() => onToggleSave(pick)} aria-label={saved ? 'Saved' : 'Save'}>
+                  {saved ? '★' : '☆'}
+                </button>
+                <button className="detail-icon-btn" onClick={share} aria-label="Share this pick">
+                  {copied ? '✓' : '↗'}
                 </button>
                 <a className="detail-link" href={pick.link} target="_blank" rel="noreferrer">
                   Open at {pick.source} ↗
                 </a>
-              </div>
-              <div className="detail-trace">
+              </motion.div>
+              <motion.div className="detail-trace" variants={itemV}>
                 ↳ surfaced from <b>{pick.source}</b> · ranked for this weekend’s weather
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
           </motion.article>
         </motion.div>
       )}

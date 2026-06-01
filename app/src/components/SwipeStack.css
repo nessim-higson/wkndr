@@ -10,8 +10,8 @@
 
 .stack-deck {
   position: relative;
-  width: min(380px, 86vw);
-  flex: 0 1 560px;    /* prefer 560px tall, but shrink when space is tight (mobile) */
+  width: min(300px, 74vw);   /* leave the weather field visible around the deck */
+  flex: 0 1 440px;           /* prefer 440px tall, shrink when space is tight */
   min-height: 0;
   max-height: 100%;
 }
@@ -43,6 +43,17 @@
 .ind-nope { left: 22px; color: #d2402e; transform: rotate(-12deg); }
 .ind-save { left: 50%; transform: translateX(-50%); top: 22px; color: var(--accent); }
 .ind-skip { left: 50%; transform: translateX(-50%); top: auto; bottom: 120px; color: var(--ink-3); }
+
+/* full-card colour wash while dragging: red = dismiss (left), green = keep (right) */
+.swipe-tint {
+  position: absolute;
+  inset: 0;
+  z-index: 15;
+  border-radius: 22px;
+  pointer-events: none;
+}
+.swipe-tint.red { background: linear-gradient(rgba(232, 80, 58, 0.5), rgba(210, 50, 35, 0.8)); }
+.swipe-tint.green { background: linear-gradient(rgba(60, 190, 120, 0.5), rgba(38, 150, 90, 0.8)); }
 
 /* action buttons */
 .stack-actions {
