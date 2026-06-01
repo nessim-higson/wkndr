@@ -9,7 +9,7 @@
 import type { Mode } from '../types'
 import { MODE_META } from './modes'
 
-export type Look = 'off' | 'aura' | 'warp' | 'metaball'
+export type Look = 'off' | 'aura' | 'warp' | 'metaball' | 'aurora' | 'mesh'
 export interface FieldStats { fps: number; ms: number; res: string }
 
 interface RGB { r: number; g: number; b: number }
@@ -82,7 +82,12 @@ export class FieldEngine {
   }
   private canvas: HTMLCanvasElement
 
-  private div() { return this.look === 'warp' ? 5 : this.look === 'metaball' ? 6 : 2 }
+  private div() {
+    return this.look === 'metaball' ? 6
+      : this.look === 'warp' || this.look === 'aurora' ? 5
+      : this.look === 'mesh' ? 4
+      : 2
+  }
 
   resize(cssW: number, cssH: number) {
     this.W = Math.max(1, Math.round(cssW)); this.H = Math.max(1, Math.round(cssH))
@@ -168,6 +173,8 @@ export class FieldEngine {
     if (this.look === 'warp') this.renderWarp()
     else if (this.look === 'aura') this.renderAura()
     else if (this.look === 'metaball') this.renderMetaball()
+    else if (this.look === 'aurora') this.renderAurora()
+    else if (this.look === 'mesh') this.renderMesh()
     const ms = performance.now() - t0
     if (this.onStats && ts - this.statsAt > 400) {
       this.statsAt = ts
@@ -226,6 +233,37 @@ export class FieldEngine {
       d[i + 1] = (g / f) * cov + base.g * (1 - cov)
       d[i + 2] = (bb / f) * cov + base.b * (1 - cov)
       d[i + 3] = 255
+    }
+    this.bctx.putImageData(this.img!, 0, 0); this.present()
+  }
+
+  // vertical light curtains drifting sideways, brighter up top — northern-lights feel
+  private renderAurora() {
+    const d = this.img!.data, n = this.n, W = this.bw, H = this.bh, t = this.t
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+      const sx = x * 0.014, sy = y * 0.004
+      const flow = fbm(n, sx + t * 0.4, sy, 3)
+      const curtain = fbm(n, sx * 0.5 + flow * 0.7 + t * 0.2, sy * 0.4, 2)
+      const vert = 1 - y / H
+      const v = curtain * 1.1 * (0.45 + vert * 0.75)
+      const c = rampAt(this.cur, v)
+      const i = (y * W + x) * 4
+      d[i] = c.r; d[i + 1] = c.g; d[i + 2] = c.b; d[i + 3] = 255
+    }
+    this.bctx.putImageData(this.img!, 0, 0); this.present()
+  }
+
+  // smooth flowing gradient mesh — soft diagonal bands, no noise texture
+  private renderMesh() {
+    const d = this.img!.data, W = this.bw, H = this.bh, t = this.t
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+      const u = x / W, v = y / H
+      const a = Math.sin(u * 2.3 + t * 0.6) * 0.5 + 0.5
+      const b = Math.cos(v * 2.1 - t * 0.5) * 0.5 + 0.5
+      const m = a * 0.5 + b * 0.45 + Math.sin((u + v) * 3.0 + t * 0.8) * 0.18 + 0.1
+      const c = rampAt(this.cur, m)
+      const i = (y * W + x) * 4
+      d[i] = c.r; d[i + 1] = c.g; d[i + 2] = c.b; d[i + 3] = 255
     }
     this.bctx.putImageData(this.img!, 0, 0); this.present()
   }

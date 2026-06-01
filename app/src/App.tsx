@@ -69,6 +69,8 @@ const DEMO: Record<Mode, Wx> = {
 const FIELD_OPTS: { key: Look; label: string }[] = [
   { key: 'aura', label: 'Aura' },
   { key: 'warp', label: 'Warp' },
+  { key: 'aurora', label: 'Aurora' },
+  { key: 'mesh', label: 'Mesh' },
   { key: 'metaball', label: 'Metaball' },
   { key: 'off', label: 'Static' },
 ]
@@ -235,6 +237,11 @@ export default function App() {
 
           <div className={`topbar-module${barOpen ? ' open' : ''}`}>
             <div className="topbar-row">
+              <div className="tb-brandblock">
+                <div className="tb-brand"><span className="tb-dot" aria-hidden />WKNDR</div>
+                <div className="tb-weather">{wx.temp}° in {wx.city}</div>
+              </div>
+
               <button
                 className={`tb-icon tb-menu${barOpen ? ' on' : ''}${!barOpen && filterActive ? ' dot' : ''}`}
                 onClick={() => setBarOpen((v) => !v)}
@@ -251,11 +258,6 @@ export default function App() {
                   </svg>
                 )}
               </button>
-
-              <div className="tb-brandblock">
-                <div className="tb-brand"><span className="tb-dot" aria-hidden />WKNDR</div>
-                <div className="tb-weather">{wx.temp}° in {wx.city}</div>
-              </div>
             </div>
 
             <AnimatePresence>

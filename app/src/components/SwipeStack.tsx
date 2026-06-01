@@ -35,10 +35,9 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
   const rotate = useTransform(x, [-220, 220], [-13, 13])
   const dragged = useRef(false)  // true once a real drag begins → suppresses the tap-to-open
 
-  // drag feedback: left → red wash (dismiss), right → green wash (keep), up → SAVE
-  const redOp = useTransform(x, [-160, -25], [0.5, 0])
-  const greenOp = useTransform(x, [25, 160], [0, 0.5])
-  const saveOp = useTransform(y, [-150, -40], [1, 0])
+  // drag feedback: left → bold red wash (dismiss), right → bold green wash (keep)
+  const redOp = useTransform(x, [-130, -18], [0.88, 0])
+  const greenOp = useTransform(x, [18, 130], [0, 0.88])
 
   function fling(dir: SwipeDir) {
     const t = FLING[dir]
@@ -78,7 +77,6 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
         <>
           <motion.div className="swipe-tint red" style={{ opacity: redOp }} aria-hidden />
           <motion.div className="swipe-tint green" style={{ opacity: greenOp }} aria-hidden />
-          <motion.div className="ind ind-save" style={{ opacity: saveOp }}>SAVE</motion.div>
         </>
       )}
       <Card pick={pick} />

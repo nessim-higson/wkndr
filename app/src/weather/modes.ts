@@ -101,5 +101,23 @@ export function rankPicks(picks: Pick[], mode: Mode, taste?: Taste): Pick[] {
     p.freshness === 'new' ? 1.5 : p.freshness === 'ending' ? 1.2 : p.freshness === 'weekend' ? 1 : 0.6
   const score = (p: Pick) =>
     (p.weatherFit.includes(mode) ? 10 : 0) + freshBoost(p) + (taste ? tasteScore(p, taste) : 0)
-  return [...picks].sort((a, b) => score(b) - score(a))
+  const sorted = [...picks].sort((a, b) => score(b) - score(a))
+  return diversify(sorted)
+}
+
+/**
+ * De-cluster by category so the feed never serves a run of the same thing (e.g. five
+ * museums in a row). Greedy: always take the highest-ranked pick whose category differs
+ * from the one just placed — keeps score order roughly intact while interleaving.
+ */
+function diversify(ranked: Pick[]): Pick[] {
+  const out: Pick[] = []
+  const pool = [...ranked]
+  while (pool.length) {
+    const prev = out[out.length - 1]?.category
+    let i = pool.findIndex((p) => p.category !== prev)
+    if (i === -1) i = 0   // only the same category left — take it
+    out.push(pool.splice(i, 1)[0])
+  }
+  return out
 }
