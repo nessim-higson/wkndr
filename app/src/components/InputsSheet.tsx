@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import type { Mode } from '../types'
 import { MODE_META } from '../weather/modes'
 import { SOURCE_ROSTER, SOURCE_COUNT } from '../data/sources'
+import { APP_VERSION } from '../version'
 import './InputsSheet.css'
 
 /** Exposes every input feeding the recommendations — the credibility / source-trace. */
@@ -71,6 +72,7 @@ export function InputsSheet({
               <p>Amsterdam · Ness — kids treated as a cross-cut lens, not a separate feed.</p>
             </section>
 
+            <div className="sheet-version">WKNDR v{APP_VERSION} · Amsterdam · hand-curated snapshot</div>
             <button className="sheet-done" onClick={onClose}>Done</button>
           </motion.div>
         </motion.div>

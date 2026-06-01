@@ -67,8 +67,15 @@
 }
 .sheet-src:hover { background: var(--accent); color: #fff; }
 
+.sheet-version {
+  margin-top: 22px;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: var(--ink-4);
+  text-align: center;
+}
 .sheet-done {
-  margin-top: 26px;
+  margin-top: 14px;
   width: 100%;
   font-size: 15px;
   font-weight: 600;
