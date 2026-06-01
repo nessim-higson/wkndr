@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WKNDR — UI directions, side by side</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;background:#cfccc4;color:#2a2a28;padding:28px 20px 60px}
+  h1{font-size:22px;font-weight:600;letter-spacing:-.02em;text-align:center}
+  .sub{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.06em;color:#6a6a64;text-align:center;margin-top:8px;margin-bottom:26px}
+  .grid{display:flex;gap:22px;justify-content:center;align-items:flex-start;flex-wrap:wrap;max-width:1400px;margin:0 auto}
+  .item{display:flex;flex-direction:column;align-items:center;gap:12px;width:420px}
+  .cap{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#4a4a46}
+  .frame{width:420px;height:860px;border:none;border-radius:30px;background:#faf8f3;box-shadow:0 16px 50px rgba(0,0,0,.22);overflow:hidden}
+  iframe{width:100%;height:100%;border:none;display:block}
+</style></head>
+<body>
+  <h1>WKNDR — three UI directions</h1>
+  <div class="sub">SAME CONTENT · THREE SKINS · SCROLL EACH FRAME</div>
+  <div class="grid">
+    <div class="item"><span class="cap">A · Generative cover</span><div class="frame"><iframe src="01-generative-cover.html" loading="eager"></iframe></div></div>
+    <div class="item"><span class="cap">B · Editorial / Hara</span><div class="frame"><iframe src="02-editorial-hara.html" loading="eager"></iframe></div></div>
+    <div class="item"><span class="cap">C · Utility</span><div class="frame"><iframe src="03-utility.html" loading="eager"></iframe></div></div>
+  </div>
+</body></html>
