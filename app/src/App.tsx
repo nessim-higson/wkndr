@@ -211,39 +211,64 @@ export default function App() {
       <AmbientField mode={mode} look={look} onLookChange={setLook} />
 
       <div className="app">
-        <header className="bar-wrap">
-          <div className={`bar${barOpen ? ' open' : ''}`}>
-            <div className="brand">WKNDR<span className="brand-sub">weekend brief</span></div>
-            <button
-              className={`bar-trigger${barOpen ? ' on' : ''}${!barOpen && filterActive ? ' dot' : ''}`}
-              onClick={() => setBarOpen((v) => !v)}
-              aria-label={barOpen ? 'Close controls' : 'Open controls'}
-              aria-expanded={barOpen}
-            >
-              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden>
-                <line x1="2" y1="5" x2="16" y2="5" /><circle cx="12" cy="5" r="2.2" />
-                <line x1="2" y1="13" x2="16" y2="13" /><circle cx="6" cy="13" r="2.2" />
-              </svg>
-            </button>
-          </div>
-
+        <header className="topbar">
           <AnimatePresence>
             {barOpen && (
-              <>
+              <motion.div
+                className="topbar-scrim"
+                onClick={() => setBarOpen(false)}
+                initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+              />
+            )}
+          </AnimatePresence>
+
+          <div className={`topbar-module${barOpen ? ' open' : ''}`}>
+            <div className="topbar-row">
+              <button
+                className="tb-icon tb-left"
+                onClick={() => { setFilter('saved'); setView('list'); setBarOpen(false) }}
+                aria-label="Your saved list"
+              >
+                <span className="tb-star">★</span>{saved.size > 0 && <span className="tb-count">{saved.size}</span>}
+              </button>
+
+              <div className="tb-center">
+                <div className="tb-brand">WKNDR</div>
+                <div className="tb-weather">
+                  {live && <span className="tb-live" aria-hidden />}
+                  {wx.temp}° in {wx.city} today
+                </div>
+              </div>
+
+              <button
+                className={`tb-icon tb-right${barOpen ? ' on' : ''}${!barOpen && filterActive ? ' dot' : ''}`}
+                onClick={() => setBarOpen((v) => !v)}
+                aria-label={barOpen ? 'Close menu' : 'Open menu'}
+                aria-expanded={barOpen}
+              >
+                {barOpen ? (
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden>
+                    <line x1="5" y1="5" x2="15" y2="15" /><line x1="15" y1="5" x2="5" y2="15" />
+                  </svg>
+                ) : (
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden>
+                    <line x1="3" y1="7" x2="17" y2="7" /><line x1="3" y1="13" x2="17" y2="13" />
+                  </svg>
+                )}
+              </button>
+            </div>
+
+            <AnimatePresence>
+              {barOpen && (
                 <motion.div
-                  className="bar-scrim"
-                  onClick={() => setBarOpen(false)}
-                  initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                  transition={{ duration: 0.18 }}
-                />
-                <motion.div
-                  className="bar-panel"
+                  className="tb-panel"
                   initial={{ height: 0, opacity: 0 }}
                   animate={{ height: 'auto', opacity: 1 }}
                   exit={{ height: 0, opacity: 0 }}
                   transition={{ type: 'spring', stiffness: 420, damping: 38 }}
                 >
-                  <div className="bar-panel-inner">
+                  <div className="tb-panel-inner">
                     <div className="bar-group">
                       <span className="bar-label">View</span>
                       <div className="bar-row">
@@ -309,9 +334,9 @@ export default function App() {
                     </button>
                   </div>
                 </motion.div>
-              </>
-            )}
-          </AnimatePresence>
+              )}
+            </AnimatePresence>
+          </div>
         </header>
 
         <section className="wx">
