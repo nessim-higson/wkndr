@@ -5,7 +5,13 @@ Format loosely follows [Keep a Changelog](https://keepachangelog.com/). The vers
 shown in the app's "What's feeding this" sheet matches the latest tag here.
 
 ## [Unreleased]
-- (next up — pick from docs/moat.md §7: "My Weekend" share card · the content pipeline)
+- (next up — UI/header design direction · the content pipeline · "Wrapped" retrospective)
+
+## [0.5.0] — 2026-06-01 — "Share my weekend"
+- **"My Weekend" share card** — tap ★ → Saved → Share → a weather-tinted card of your saved
+  picks. **Share with your partner** (Web Share API → iMessage/WhatsApp) or **Copy link**.
+- The link encodes the saved pick IDs (`?w=…`), so the partner opens straight into *those* picks
+  with a **Save all** option — no backend, no account. The distribution lever (docs/moat.md §5).
 
 ## [0.4.0] — 2026-06-01 — "Hosted + unified IA"
 - **Hosted on GitHub Pages** via a build-and-deploy Action — auto-redeploys on every push to `main`

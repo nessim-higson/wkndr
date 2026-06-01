@@ -8,7 +8,14 @@ import { ListView } from './components/ListView'
 import { CardDetail } from './components/CardDetail'
 import { InputsSheet } from './components/InputsSheet'
 import { FilterSheet } from './components/FilterSheet'
+import { ShareSheet } from './components/ShareSheet'
 import type { Freshness } from './types'
+
+// a partner-shared weekend arrives as ?w=id,id,id
+const SHARED_IDS = (() => {
+  const w = new URLSearchParams(window.location.search).get('w')
+  return w ? new Set(w.split(',').filter(Boolean)) : null
+})()
 import { SOURCE_COUNT } from './data/sources'
 import { CATEGORY_LABEL, type Category } from './types'
 import {
@@ -20,14 +27,15 @@ import './App.css'
 const ACTIVE_SOURCES = new Set(PICKS.map((p) => p.source)).size
 
 // filters available = 'all' + 'saved' + 'kids' (cross-cut) + the categories present
-type Filter = 'all' | 'saved' | 'kids' | Category
+type Filter = 'all' | 'saved' | 'shared' | 'kids' | Category
 const PRESENT: Category[] = [...new Set(PICKS.map((p) => p.category))]
 const FILTERS: { key: Filter; label: string; count: number }[] = [
   { key: 'all', label: 'Everything', count: PICKS.length },
   ...(PICKS.some((p) => p.kid) ? [{ key: 'kids' as Filter, label: 'Kids', count: PICKS.filter((p) => p.kid).length }] : []),
   ...PRESENT.map((c) => ({ key: c as Filter, label: CATEGORY_LABEL[c], count: PICKS.filter((p) => p.category === c).length })),
 ]
-const filterLabel = (f: Filter) => f === 'saved' ? 'Saved' : (FILTERS.find((x) => x.key === f)?.label ?? 'Everything')
+const filterLabel = (f: Filter) =>
+  f === 'saved' ? 'Saved' : f === 'shared' ? 'Shared with you' : (FILTERS.find((x) => x.key === f)?.label ?? 'Everything')
 
 // the WHEN axis — time-sensitivity, incl. the evergreen canon. Maps to freshness.
 type When = 'all' | Freshness
@@ -61,7 +69,7 @@ const today = new Date().toLocaleDateString('en-GB', {
 
 export default function App() {
   const [mode, setMode] = useState<Mode>('HOT')
-  const [view, setView] = useState<View>('stack')
+  const [view, setView] = useState<View>(SHARED_IDS ? 'list' : 'stack')
   const [wx, setWx] = useState<Wx>(DEMO.HOT)
   const [live, setLive] = useState(false)        // true once the real forecast loads
   const [swiped, setSwiped] = useState<Set<string>>(new Set())
@@ -73,7 +81,8 @@ export default function App() {
   const [dealKey, setDealKey] = useState(0)      // bump → stack re-deals (refresh signal)
   const [detail, setDetail] = useState<Pick | null>(null)  // open card detail
   const [inputsOpen, setInputsOpen] = useState(false)      // "what's feeding this" sheet
-  const [filter, setFilter] = useState<Filter>('all')      // What: category / kids / saved
+  const [filter, setFilter] = useState<Filter>(SHARED_IDS ? 'shared' : 'all')  // What
+  const [shareOpen, setShareOpen] = useState(false)        // "My Weekend" share sheet
   const [when, setWhen] = useState<When>('all')            // When: time-sensitivity / canon
   const [filterOpen, setFilterOpen] = useState(false)      // What sheet
   const [whenOpen, setWhenOpen] = useState(false)          // When sheet
@@ -109,6 +118,7 @@ export default function App() {
     () => rankedAll.filter((p) => {
       const whatOk = filter === 'all' ? true
         : filter === 'saved' ? saved.has(p.id)
+        : filter === 'shared' ? !!SHARED_IDS?.has(p.id)
         : filter === 'kids' ? p.kid
         : p.category === filter
       const whenOk = when === 'all' ? true : p.freshness === when
@@ -234,6 +244,19 @@ export default function App() {
           </button>
         </div>
 
+        {filter === 'saved' && saved.size > 0 && (
+          <div className="ctx-bar">
+            <span>Your weekend · {saved.size} saved</span>
+            <button onClick={() => setShareOpen(true)}>Share ↗</button>
+          </div>
+        )}
+        {filter === 'shared' && SHARED_IDS && (
+          <div className="ctx-bar shared">
+            <span>👋 A weekend shared with you · {SHARED_IDS.size} picks</span>
+            <button onClick={() => setSaved((s) => new Set([...s, ...SHARED_IDS]))}>Save all</button>
+          </div>
+        )}
+
         <main className={`main main-${view}`}>
           {view === 'stack' && (
             <SwipeStack
@@ -289,6 +312,13 @@ export default function App() {
         lo={wx.lo}
         live={live}
         activeCount={ACTIVE_SOURCES}
+      />
+      <ShareSheet
+        open={shareOpen}
+        onClose={() => setShareOpen(false)}
+        picks={rankedAll.filter((p) => saved.has(p.id))}
+        mode={mode}
+        city={wx.city}
       />
       <FilterSheet
         open={whenOpen}

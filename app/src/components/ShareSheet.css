@@ -1,0 +1,52 @@
+.share-backdrop {
+  position: fixed; inset: 0; z-index: 320;
+  background: rgba(10, 10, 10, 0.5); backdrop-filter: blur(6px);
+  display: flex; align-items: flex-end; justify-content: center;
+}
+@media (min-width: 600px) { .share-backdrop { align-items: center; padding: 24px; } }
+
+.share {
+  width: 100%; max-width: 460px; max-height: 92vh; overflow-y: auto;
+  background: var(--paper); color: var(--ink);
+  border-radius: 22px 22px 0 0; padding: 12px 20px 26px;
+  box-shadow: 0 -10px 50px rgba(0, 0, 0, 0.35);
+}
+@media (min-width: 600px) { .share { border-radius: 22px; } }
+.share-handle { width: 40px; height: 4px; border-radius: 999px; background: var(--rule); margin: 0 auto 16px; }
+
+/* ── the shareable card ── */
+.weekend-card {
+  position: relative;
+  border-radius: 18px;
+  padding: 18px;
+  color: #fbf7ef;
+  overflow: hidden;
+}
+.wc-grain {
+  position: absolute; inset: 0; opacity: 0.08; mix-blend-mode: overlay; pointer-events: none;
+  background-image: radial-gradient(circle at 20% 30%, #fff 0, transparent 1%), radial-gradient(circle at 75% 60%, #fff 0, transparent 1%);
+  background-size: 40px 40px, 32px 32px;
+}
+.wc-head { position: relative; display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 14px; }
+.wc-eyebrow { font-size: 16px; font-weight: 600; letter-spacing: -0.02em; }
+.wc-mode { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.8; }
+.wc-list { position: relative; list-style: none; display: flex; flex-direction: column; gap: 9px; }
+.wc-item { display: flex; align-items: center; gap: 10px; }
+.wc-thumb { width: 40px; height: 40px; border-radius: 8px; background-size: cover; background-position: center; flex-shrink: 0; box-shadow: 0 2px 8px rgba(0,0,0,0.25); }
+.wc-text { display: flex; flex-direction: column; min-width: 0; }
+.wc-title { font-size: 14px; font-weight: 600; letter-spacing: -0.015em; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.wc-when { font-size: 11px; opacity: 0.8; }
+.wc-more { position: relative; margin-top: 9px; font-size: 12px; opacity: 0.85; }
+.wc-foot { position: relative; margin-top: 16px; font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; opacity: 0.7; }
+
+/* ── actions ── */
+.share-actions { display: flex; gap: 8px; margin-top: 18px; }
+.share-primary { flex: 1; font-size: 15px; font-weight: 600; padding: 14px; border-radius: 999px; background: var(--ink); color: var(--paper); }
+.share-primary:hover { background: var(--accent-deep); }
+.share-copy { flex-shrink: 0; font-size: 14px; font-weight: 600; padding: 14px 18px; border-radius: 999px; background: var(--paper-2); color: var(--ink); }
+.share-note { margin-top: 12px; font-size: 12px; line-height: 1.45; color: var(--ink-4); text-align: center; }
+
+.share-empty { text-align: center; padding: 8px 8px 4px; }
+.share-empty h3 { font-size: 20px; font-weight: 600; letter-spacing: -0.02em; }
+.share-empty p { margin-top: 8px; font-size: 14px; line-height: 1.5; color: var(--ink-3); }
+.share-done { margin-top: 20px; width: 100%; font-size: 15px; font-weight: 600; padding: 14px; border-radius: 999px; background: var(--ink); color: var(--paper); }
