@@ -65,10 +65,6 @@ const DEMO: Record<Mode, Wx> = {
   VOLATILE: { temp: 21, hi: 24, lo: 15, city: 'Amsterdam' },
 }
 
-const today = new Date().toLocaleDateString('en-GB', {
-  weekday: 'short', day: 'numeric', month: 'long',
-}).toUpperCase()
-
 // the ambient field looks the user can switch between (persisted to localStorage)
 const FIELD_OPTS: { key: Look; label: string }[] = [
   { key: 'aura', label: 'Aura' },
@@ -225,20 +221,11 @@ export default function App() {
 
           <div className={`topbar-module${barOpen ? ' open' : ''}`}>
             <div className="topbar-row">
-              <button
-                className="tb-icon tb-left"
-                onClick={() => { setFilter('saved'); setView('list'); setBarOpen(false) }}
-                aria-label="Your saved list"
-              >
-                <span className="tb-star">★</span>{saved.size > 0 && <span className="tb-count">{saved.size}</span>}
-              </button>
+              <span className="tb-side" aria-hidden />
 
               <div className="tb-center">
-                <div className="tb-brand">WKNDR</div>
-                <div className="tb-weather">
-                  {live && <span className="tb-live" aria-hidden />}
-                  {wx.temp}° in {wx.city} today
-                </div>
+                <div className="tb-brand"><span className="tb-dot" aria-hidden />WKNDR</div>
+                <div className="tb-weather">{wx.temp}° in {wx.city} today</div>
               </div>
 
               <button
@@ -338,17 +325,6 @@ export default function App() {
             </AnimatePresence>
           </div>
         </header>
-
-        <section className="wx">
-          <div className="wx-temp">{wx.temp}<span className="deg">°</span></div>
-          <div className="wx-meta">
-            <div className="wx-city">{wx.city}</div>
-            <div className="wx-cond">
-              {today} · {MODE_META[mode].cond} · H {wx.hi}° L {wx.lo}°
-              <span className={`wx-src${live ? ' is-live' : ''}`}>{live ? 'live forecast' : 'preview'}</span>
-            </div>
-          </div>
-        </section>
 
         {filter === 'saved' && saved.size > 0 && (
           <div className="ctx-bar">
