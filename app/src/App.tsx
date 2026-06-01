@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import type { Mode, Pick, SwipeDir } from './types'
 import { MODES, MODE_META, classify, applyMode, rankPicks, shuffle } from './weather/modes'
 import { PICKS } from './data/picks'
-import { WeatherField } from './weather/WeatherField'
+import { AmbientField } from './weather/AmbientField'
 import { SwipeStack } from './components/SwipeStack'
 import { ListView } from './components/ListView'
 import { CardDetail } from './components/CardDetail'
@@ -196,11 +196,11 @@ export default function App() {
 
   return (
     <>
-      <WeatherField mode={mode} />
+      <AmbientField mode={mode} />
 
       <div className="app">
         <header className="app-head">
-          <div className="brand">WKNDR</div>
+          <div className="brand">WKNDR<span className="brand-sub">weekend brief</span></div>
           <div className="head-right">
             <button className="refresh-btn" onClick={refresh} title="Refresh picks" aria-label="Refresh picks">↻</button>
             <button
