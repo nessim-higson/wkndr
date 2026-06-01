@@ -1,6 +1,10 @@
 .list {
   width: min(420px, 82vw);
   margin: 0 auto;
+}
+@media (min-width: 720px) { .list { width: min(640px, 64vw); } }
+@media (min-width: 1200px) { .list { width: 720px; } }
+.list {
   display: flex;
   flex-direction: column;
   gap: 10px;

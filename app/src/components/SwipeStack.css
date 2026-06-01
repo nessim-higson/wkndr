@@ -10,10 +10,17 @@
 
 .stack-deck {
   position: relative;
-  width: min(300px, 74vw);   /* leave the weather field visible around the deck */
+  width: min(300px, 74vw);   /* mobile: leave the weather field visible around the deck */
   flex: 0 1 440px;           /* prefer 440px tall, shrink when space is tight */
   min-height: 0;
   max-height: 100%;
+}
+/* desktop has room — let the card grow and command the space */
+@media (min-width: 720px) {
+  .stack-deck { width: min(440px, 46vw); flex-basis: 600px; }
+}
+@media (min-width: 1200px) {
+  .stack-deck { width: 500px; flex-basis: 680px; }
 }
 .stack-actions { flex-shrink: 0; }
 

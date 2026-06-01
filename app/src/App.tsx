@@ -167,6 +167,20 @@ export default function App() {
     if (!wasSaved) setTaste((t) => applySwipe(t, p, 'save'))
   }
 
+  // hard reset — wipe saved list + learned taste (for testing the cold-start state)
+  function resetData() {
+    localStorage.removeItem('wkndr.saved.v1')
+    localStorage.removeItem('wkndr.taste.v1')
+    setSaved(new Set())
+    setTaste(loadTaste())   // fresh/empty profile
+    setSwiped(new Set())
+    setSeed(0)
+    setDealKey((k) => k + 1)
+    setFilter('all'); setWhen('all')
+    setBarOpen(false)
+    setToast('Reset · saved list + taste cleared')
+  }
+
   // "preview a different forecast" — explicitly a what-if, not the real weather
   function previewMode(m: Mode) {
     setMode(m); setWx(DEMO[m]); setLive(false); setSwiped(new Set())
@@ -221,15 +235,8 @@ export default function App() {
 
           <div className={`topbar-module${barOpen ? ' open' : ''}`}>
             <div className="topbar-row">
-              <span className="tb-side" aria-hidden />
-
-              <div className="tb-center">
-                <div className="tb-brand"><span className="tb-dot" aria-hidden />WKNDR</div>
-                <div className="tb-weather">{wx.temp}° in {wx.city}</div>
-              </div>
-
               <button
-                className={`tb-icon tb-right${barOpen ? ' on' : ''}${!barOpen && filterActive ? ' dot' : ''}`}
+                className={`tb-icon tb-menu${barOpen ? ' on' : ''}${!barOpen && filterActive ? ' dot' : ''}`}
                 onClick={() => setBarOpen((v) => !v)}
                 aria-label={barOpen ? 'Close menu' : 'Open menu'}
                 aria-expanded={barOpen}
@@ -244,6 +251,11 @@ export default function App() {
                   </svg>
                 )}
               </button>
+
+              <div className="tb-brandblock">
+                <div className="tb-brand"><span className="tb-dot" aria-hidden />WKNDR</div>
+                <div className="tb-weather">{wx.temp}° in {wx.city}</div>
+              </div>
             </div>
 
             <AnimatePresence>
@@ -287,6 +299,9 @@ export default function App() {
                           onClick={() => { setFilter('saved'); setView('list'); setBarOpen(false) }}
                         >★ Saved · {saved.size}</button>
                         {saved.size > 0 && <button className="bar-pill" onClick={() => { setShareOpen(true); setBarOpen(false) }}>Share ↗</button>}
+                        {(saved.size > 0 || hasTaste(taste)) && (
+                          <button className="bar-pill bar-pill--danger" onClick={resetData}>↺ Reset</button>
+                        )}
                       </div>
                     </div>
 
