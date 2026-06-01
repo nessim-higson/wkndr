@@ -49,10 +49,10 @@ export function CardDetail({
           <motion.article
             className="detail"
             onClick={(e) => e.stopPropagation()}
-            initial={{ opacity: 0, scale: 0.9, y: 18 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.93, y: 12 }}
-            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+            initial={{ opacity: 0, scale: 0.84 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            transition={{ duration: 0.44, ease: [0.22, 1, 0.36, 1] }}
           >
             <button className="detail-close" onClick={onClose} aria-label="Close">×</button>
             <motion.div
