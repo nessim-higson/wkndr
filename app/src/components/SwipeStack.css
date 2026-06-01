@@ -51,12 +51,12 @@
   align-items: center;
 }
 .act {
-  width: 52px;
-  height: 52px;
+  width: 54px;
+  height: 54px;
   border-radius: 50%;
   display: grid;
   place-items: center;
-  font-size: 19px;
+  font-size: 18px;
   background: var(--paper);
   color: var(--ink-3);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.16);
@@ -65,9 +65,8 @@
 .act:hover { transform: translateY(-2px); }
 .act:active { transform: scale(0.92); }
 .act-nope:hover { color: #d2402e; }
-.act-skip { width: 44px; height: 44px; font-size: 16px; }
+.act-skip:hover { color: var(--ink); }
 .act-save:hover { color: var(--accent); }
-.act-like { width: 60px; height: 60px; font-size: 22px; }
 .act-like:hover { color: #2faa6a; }
 
 .stack-empty {

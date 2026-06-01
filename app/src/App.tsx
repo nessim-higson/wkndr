@@ -215,7 +215,6 @@ export default function App() {
             </div>
           </div>
         </section>
-        <p className="wx-phrase">{MODE_META[mode].phrase}</p>
         <button className="built-from" onClick={() => setInputsOpen(true)}>
           ⓘ Built from {SOURCE_COUNT} sources · weather × freshness{hasTaste(taste) ? ' × you' : ''}
         </button>
