@@ -65,6 +65,51 @@ Each stage, concretely:
 
 ---
 
+## What makes it feel *smart* — ranking + the guarantee
+
+Crawling is the easy half. The half that makes it feel like "guaranteed smart things to do"
+is **scoring** and a **floor**.
+
+### 1. Cross-source frequency = the popularity signal
+The single best, cheapest relevance signal is **how many independent editors are talking about
+it this week.** Dedupe already merges the same event across sources — so the *count of distinct
+sources* on a merged record becomes its **buzz score**. A show in I amsterdam **and** Time Out
+**and** Het Parool is, almost by definition, the thing to know about. We don't need likes or
+ticket-sales data we can't get; agreement across trusted editors *is* the popularity proxy.
+
+`relevance = buzz(distinct sources, weighted by source trust)`
+`           + editorial flags ("editor's pick", "don't miss")`
+`           + freshness (new this week ▸ ending soon ▸ this weekend ▸ evergreen)`
+`           + scarcity (final week of a run, last date of a festival)`
+
+Then the app's existing per-user pass re-ranks `relevance` by **weather-fit × learned taste**
+(and de-clusters by category). So the order is: *what the city agrees is great → filtered to
+what suits today's weather → tilted to you.*
+
+### 2. The canon floor = the guarantee
+The crawl is the **fresh top layer**; a hand-maintained **evergreen canon** (Rijksmuseum,
+Van Gogh, Vondelpark, the markets, the day-trips) is the **floor that's always there.** So the
+guarantee isn't "the crawl always finds gold" — it's:
+
+> **Every weekend = the genuinely-buzzy fresh things (multi-source verified) layered on top of a
+> always-excellent evergreen base, all matched to the weather.** Never empty, never stale,
+> never random — even on a quiet week or if a crawl half-fails.
+
+### 3. Time-sensitive surfacing (the stuff you flagged)
+- **Shows ending** — museum/gallery scrapers carry each exhibition's `end date`; in its final
+  1–2 weeks it's auto-flagged `ending` ("see it before it's gone" — scarcity ranks it up).
+- **Gallery walks / openings** — the I amsterdam art agenda + gallery sites; one-off dates.
+- **Festivals** — festival calendars; multi-day, surfaced across their run, ranked by buzz.
+
+### 4. Imagery, solved by construction
+Bad-fit images are a *sourcing* problem, fixed in the pipeline: each event page already has an
+**`og:image`** (the real photo of that show/venue/artist) — the crawler extracts it, validates
+it loads, and uses it. Where there's genuinely no usable image (some new venues), fall back to a
+**typographic "poster" card** (bold title on the mode-tinted field, category glyph) rather than a
+generic stock photo — designed-on-purpose beats misleading.
+
+---
+
 ## Sources by category (the curated Amsterdam roster)
 
 Comprehensive on what matters, **deliberately not infinite** — raw source count is what
