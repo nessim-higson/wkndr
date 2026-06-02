@@ -64,13 +64,26 @@
 .tb-panel {
   position: absolute; top: 100%; left: 0; right: 0; z-index: 3;
   margin-top: -1px;                 /* sit flush over the module's bottom edge */
-  overflow: hidden;
   border-radius: 0 0 22px 22px;
   background: rgba(250, 248, 243, 0.93);
   backdrop-filter: blur(22px) saturate(1.3);
   border: 1px solid rgba(255, 255, 255, 0.6);
   border-top: 1px solid rgba(0, 0, 0, 0.07);
   box-shadow: 0 32px 84px rgba(0, 0, 0, 0.42), 0 3px 8px rgba(0, 0, 0, 0.14);
+  /* expand via grid-rows so the panel always follows its content height — no
+     locked pixel height to go stale when the in-panel controls change (e.g. the
+     list-style toggle appearing). Smooth in pure CSS, independent of rAF. */
+  display: grid;
+  grid-template-rows: 0fr;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition: grid-template-rows 0.42s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.26s ease;
+}
+.tb-panel.open { grid-template-rows: 1fr; opacity: 1; pointer-events: auto; }
+.tb-panel-clip { overflow: hidden; min-height: 0; }
+@media (prefers-reduced-motion: reduce) {
+  .tb-panel { transition: opacity 0.2s ease; }
 }
 .tb-panel-inner {
   display: flex; flex-direction: column; gap: 14px;

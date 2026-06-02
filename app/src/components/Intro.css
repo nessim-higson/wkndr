@@ -17,8 +17,14 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
-  max-width: 17ch;
+  gap: 22px;
+  max-width: 14ch;
+}
+.intro-line {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
 }
 .intro-mark {
   display: inline-flex;
@@ -30,12 +36,25 @@
   opacity: 0.82;
 }
 .intro-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
-.intro-inner h1 {
-  font-size: clamp(30px, 8.5vw, 54px);
+/* bold lead — roughly twice the old size */
+.intro-lead {
+  font-size: clamp(46px, 12.5vw, 88px);
   font-weight: 800;
-  line-height: 1.04;
-  letter-spacing: -0.04em;
-  text-shadow: 0 2px 36px rgba(0, 0, 0, 0.28);
+  line-height: 0.98;
+  letter-spacing: -0.045em;
+  text-shadow: 0 2px 40px rgba(0, 0, 0, 0.3);
+}
+/* light Helvetica Neue follow — animates in with a soft blur-and-rise */
+.intro-follow {
+  display: block;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 300;
+  font-size: clamp(23px, 6vw, 42px);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  opacity: 0.94;
+  text-shadow: 0 2px 30px rgba(0, 0, 0, 0.26);
+  will-change: filter, transform, opacity;
 }
 .intro-skip {
   position: absolute;

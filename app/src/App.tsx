@@ -303,16 +303,9 @@ export default function App() {
               </span>
             </div>
 
-            <AnimatePresence>
-              {barOpen && (
-                <motion.div
-                  className="tb-panel"
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: 'auto', opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  transition={{ type: 'spring', stiffness: 420, damping: 38 }}
-                >
-                  <div className="tb-panel-inner">
+            <div className={`tb-panel${barOpen ? ' open' : ''}`} aria-hidden={!barOpen}>
+              <div className="tb-panel-clip">
+                <div className="tb-panel-inner">
                     <div className="bar-group">
                       <span className="bar-label">View</span>
                       <div className="bar-row">
@@ -387,9 +380,8 @@ export default function App() {
                     </button>
                     <span className="bar-build">v{APP_VERSION}</span>
                   </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+                </div>
+              </div>
           </div>
         </header>
 
@@ -420,6 +412,7 @@ export default function App() {
                 onSwipe={handleStackSwipe}
                 onRefresh={refresh}
                 onOpen={setDetail}
+                paused={detail !== null || intro}
                 filterLabel={filterActive ? 'this filter' : null}
                 onClearFilter={() => { setFilter('all'); setWhen('all') }}
                 onSeeList={() => setView('list')}

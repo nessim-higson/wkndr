@@ -3,20 +3,20 @@ import { AnimatePresence, motion } from 'framer-motion'
 import type { Mode } from '../types'
 import './Intro.css'
 
-// the value-prop hook, tuned to the live weather — the "fun" weather-adaptive option
-const LINES: Record<Mode, string> = {
-  HOT: 'It’s a scorcher — get outside.',
-  WARM: 'A perfect one. Let’s make it count.',
-  COOL: 'Crisp and clear. The city’s yours.',
-  COLD_WET: 'A grey, wet one. Here’s where to hide.',
-  VOLATILE: 'The sky can’t decide. We packed backups.',
+// the value-prop hook, tuned to the live weather — a bold lead + a light follow.
+const LINES: Record<Mode, [string, string]> = {
+  HOT: ['It’s a scorcher.', 'Get outside.'],
+  WARM: ['A perfect one.', 'Let’s make it count.'],
+  COOL: ['Crisp and clear.', 'The city’s yours.'],
+  COLD_WET: ['A grey, wet one.', 'Here’s where to hide.'],
+  VOLATILE: ['The sky can’t decide.', 'We picked some backups.'],
 }
 
 /** Full-screen intro over the live field: a bold weather-aware line, then it lifts
  *  away as the app rises in. Plays every load; tap to skip. */
 export function Intro({ mode, onDone }: { mode: Mode; onDone: () => void }) {
   useEffect(() => {
-    const id = setTimeout(onDone, 2000)
+    const id = setTimeout(onDone, 2600)
     return () => clearTimeout(id)
   }, [onDone])
 
@@ -37,21 +37,30 @@ export function Intro({ mode, onDone }: { mode: Mode; onDone: () => void }) {
       >
         <span className="intro-mark"><span className="intro-dot" aria-hidden />WKNDR</span>
         <AnimatePresence mode="wait">
-          <motion.h1
+          <motion.div
             key={mode}
+            className="intro-line"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.4 }}
           >
-            {LINES[mode]}
-          </motion.h1>
+            <h1 className="intro-lead">{LINES[mode][0]}</h1>
+            <motion.span
+              className="intro-follow"
+              initial={{ opacity: 0, y: 18, filter: 'blur(9px)' }}
+              animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+              transition={{ delay: 0.5, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            >
+              {LINES[mode][1]}
+            </motion.span>
+          </motion.div>
         </AnimatePresence>
       </motion.div>
 
       <motion.span
         className="intro-skip"
-        initial={{ opacity: 0 }} animate={{ opacity: 0.45 }} transition={{ delay: 1.1 }}
+        initial={{ opacity: 0 }} animate={{ opacity: 0.45 }} transition={{ delay: 1.4 }}
       >
         tap to continue
       </motion.span>
