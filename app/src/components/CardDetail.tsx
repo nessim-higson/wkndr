@@ -56,10 +56,12 @@ export function CardDetail({
           >
             <button className="detail-close" onClick={onClose} aria-label="Close">×</button>
             <motion.div
-              className="detail-img" style={{ backgroundImage: `url(${pick.image})` }}
-              initial={{ scale: 1.08 }} animate={{ scale: 1 }}
+              className={`detail-img${pick.image ? '' : ` poster poster--${pick.category}`}`}
+              style={pick.image ? { backgroundImage: `url(${pick.image})` } : undefined}
+              initial={{ scale: pick.image ? 1.08 : 1 }} animate={{ scale: 1 }}
               transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
             >
+              {!pick.image && <span className="poster-mark">{CATEGORY_LABEL[pick.category]}</span>}
               <div className="detail-tags">
                 {pick.status && <span className={`chip chip-status chip-status--${pick.status}`}>{STATUS_LABEL[pick.status]}</span>}
                 <span className={`chip chip-fresh chip-fresh--${pick.freshness}`}>{FRESHNESS_LABEL[pick.freshness]}</span>

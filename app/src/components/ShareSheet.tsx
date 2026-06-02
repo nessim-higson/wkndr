@@ -63,7 +63,7 @@ export function ShareSheet({
                   <ul className="wc-list">
                     {picks.slice(0, 5).map((p) => (
                       <li key={p.id} className="wc-item">
-                        <span className="wc-thumb" style={{ backgroundImage: `url(${p.image})` }} />
+                        <span className={`wc-thumb${p.image ? '' : ` poster poster--${p.category}`}`} style={p.image ? { backgroundImage: `url(${p.image})` } : undefined} />
                         <span className="wc-text">
                           <span className="wc-title">{p.title}</span>
                           <span className="wc-when">{p.when}</span>

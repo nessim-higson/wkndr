@@ -32,7 +32,7 @@ export interface Pick {
   outdoor: boolean
   kid: boolean
   price: string
-  image: string
+  image?: string       // real og:image; when absent the card renders a typographic poster
   blurb: string
   why: string          // "why this fits you / now" reasoning
   source: string       // publication credited (signal + link model)

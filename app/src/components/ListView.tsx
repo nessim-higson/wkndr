@@ -25,17 +25,19 @@ export function ListView({
         const saved = savedIds.has(p.id)
         return (
           <motion.article className="row" key={p.id} variants={rowV} onClick={() => onOpen?.(p)}>
-            <div className="row-thumb" style={{ backgroundImage: `url(${p.image})` }} />
+            <div
+              className={`row-thumb${p.image ? '' : ` poster poster--${p.category}`}`}
+              style={p.image ? { backgroundImage: `url(${p.image})` } : undefined}
+            />
             <div className="row-main">
               <div className="row-tags mono">
                 {p.status && <span className={`row-status row-status--${p.status}`}>{STATUS_LABEL[p.status]}</span>}
                 <span className="row-fresh">{FRESHNESS_LABEL[p.freshness]}</span>
-                <span>· {CATEGORY_LABEL[p.category]}</span>
-                <span className="row-when">· {p.when}</span>
+                <span className="row-cat">{CATEGORY_LABEL[p.category]}</span>
                 {p.verify && <span className="row-verify">verify</span>}
               </div>
               <h3 className="row-title">{p.title}</h3>
-              <div className="row-meta">{p.venue} · {p.area} · {p.price}</div>
+              <div className="row-meta"><span className="row-when">{p.when}</span> · {p.venue} · {p.area}</div>
               <div className="row-why">{p.why}</div>
             </div>
             <button

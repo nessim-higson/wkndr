@@ -25,6 +25,33 @@
   background: linear-gradient(180deg, rgba(0,0,0,0.28) 0%, transparent 26%, transparent 60%, rgba(0,0,0,0.55) 100%);
 }
 
+/* poster fallback — no real photo: a category-tinted gradient + the category set large */
+.poster { background-color: #2a2540; }
+.poster--live    { background: linear-gradient(145deg, #5a4b8c, #241d44); }
+.poster--art     { background: linear-gradient(145deg, #b9613a, #5e2a1c); }
+.poster--stage   { background: linear-gradient(145deg, #834066, #361d35); }
+.poster--eat     { background: linear-gradient(145deg, #cf8038, #7a3f1a); }
+.poster--drink   { background: linear-gradient(145deg, #2f8f86, #143f3c); }
+.poster--market  { background: linear-gradient(145deg, #6f9a4a, #2c4624); }
+.poster--out     { background: linear-gradient(145deg, #4e9a63, #21452f); }
+.poster--daytrip { background: linear-gradient(145deg, #3f72ad, #1c3656); }
+.poster-mark {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 22px;
+  text-align: center;
+  font-size: clamp(26px, 7vw, 40px);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1.02;
+  color: rgba(255, 255, 255, 0.92);
+  text-shadow: 0 2px 26px rgba(0, 0, 0, 0.28);
+}
+
 .card-tags {
   position: absolute;
   top: 14px;

@@ -26,7 +26,6 @@ export const PICKS: Pick[] = [
   {
     id: 'red-light-jazz', title: 'Red Light Jazz Festival', venue: 'Around De Wallen', area: 'Centrum', when: 'Fri–Sun 5–7 Jun',
     category: 'live', freshness: 'weekend', outdoor: false, kid: false, price: 'mostly free',
-    image: 'https://loremflickr.com/900/1200/jazz?lock=80',
     blurb: 'Mostly-free jazz across intimate Red Light District cafés, churches and hidden rooms — 13th edition.',
     why: 'Top cross-source pick (LBB + I amsterdam) · mostly free · wet-weather safe',
     source: 'I amsterdam', link: 'https://redlightjazz.com/en/',
@@ -44,7 +43,6 @@ export const PICKS: Pick[] = [
   {
     id: '909-festival', title: '909 Festival', venue: 'Het Amsterdamse Bos', area: 'Amstelveen', when: 'Sat–Sun 6–7 Jun',
     category: 'live', freshness: 'weekend', outdoor: true, kid: false, price: 'from €45',
-    image: 'https://loremflickr.com/900/1200/festival?lock=73',
     blurb: 'Outdoor techno festival in the forest with international DJs across the first weekend of June.',
     why: 'Outdoor dance day · confirm line-up before booking',
     source: 'I amsterdam', link: 'https://www.iamsterdam.com/en/whats-on/calendar/festivals/events/909-festival',
@@ -53,7 +51,6 @@ export const PICKS: Pick[] = [
   {
     id: 'jungle-by-night', title: 'Jungle by Night', venue: 'Vondelpark Openluchttheater', area: 'Zuid', when: 'Sun 7 Jun',
     category: 'live', freshness: 'weekend', outdoor: true, kid: true, price: 'free (open-air)',
-    image: 'https://loremflickr.com/900/1200/concert?lock=70',
     blurb: 'Amsterdam’s own brass-heavy instrumental collective plays the free open-air Vondelpark stage.',
     why: 'Free open-air gig · easy with a kid · sun-dependent',
     source: 'Songkick', link: 'https://www.songkick.com/concerts/43194695-jungle-by-night-at-vondelpark-openluchttheater',
@@ -96,7 +93,6 @@ export const PICKS: Pick[] = [
   {
     id: 'motor-city-drum', title: 'Motor City Drum Ensemble', venue: 'NDSM', area: 'Noord', when: 'Sat 6 Jun',
     category: 'live', freshness: 'weekend', outdoor: false, kid: false, price: 'ticketed',
-    image: 'https://loremflickr.com/900/1200/dj?lock=71',
     blurb: 'Deep-house selector MCDE headlines a DJ session at the industrial NDSM wharf.',
     why: 'Late dance night · the wharf', source: 'Songkick', link: 'https://www.songkick.com/concerts/42980706-motor-city-drum-ensemble-at-ndsm',
     weatherFit: ['WARM', 'COOL', 'COLD_WET', 'VOLATILE'],
@@ -133,7 +129,6 @@ export const PICKS: Pick[] = [
   {
     id: 'spinoza', title: 'Spinoza — De Mokum Musical', venue: 'Amsterdamse Bostheater', area: 'Amstelveen', when: 'Runs incl. this weekend',
     category: 'stage', freshness: 'weekend', outdoor: true, kid: false, price: 'ticketed',
-    image: 'https://loremflickr.com/900/1200/theatre?lock=74',
     blurb: 'Open-air musical about philosopher Spinoza set in old Amsterdam, in the forest theatre.',
     why: 'Cross-source (LBB + I amsterdam) · open-air · dry-night plan',
     source: 'I amsterdam', link: 'https://ita.nl/nl/voorstellingen/spinoza/4018418/',
@@ -144,7 +139,6 @@ export const PICKS: Pick[] = [
   {
     id: 'ivna-esajas', title: 'Ivna Esajas — Wayward Lines', venue: 'Stedelijk Museum', area: 'Museumplein', when: 'Until Sun 7 Jun — last days',
     category: 'art', freshness: 'ending', outdoor: false, kid: false, price: '€22.50',
-    image: 'https://loremflickr.com/900/1200/gallery?lock=75',
     blurb: 'The ABN Amro Art Award show threads diasporic memory through installation — its very last weekend.',
     why: 'Closes Sunday · indoor · see it or miss it',
     source: 'Stedelijk Museum', link: 'https://www.stedelijk.nl/en/exhibitions/en-abn-amro-art-award-ivna-esajas',
@@ -171,7 +165,6 @@ export const PICKS: Pick[] = [
   {
     id: 'foam-talent', title: 'Foam Talent 2026', venue: 'Foam', area: 'Keizersgracht', when: 'Opens Fri 5 Jun',
     category: 'art', freshness: 'new', outdoor: false, kid: false, price: '~€16',
-    image: 'https://loremflickr.com/900/1200/photography?lock=78',
     blurb: 'Fifteen emerging photographers from 107 countries — fresh on its launch weekend.',
     why: 'New this week · indoor · quick + sharp',
     source: 'Foam', link: 'https://www.foam.org/events/foam-talent-2026',
@@ -180,7 +173,6 @@ export const PICKS: Pick[] = [
   {
     id: 'wisa', title: 'Women in Street Art Weekend', venue: 'STRAAT Museum', area: 'NDSM · Noord', when: 'Fri–Sun 5–7 Jun',
     category: 'art', freshness: 'weekend', outdoor: false, kid: true, price: '~€19',
-    image: 'https://loremflickr.com/900/1200/graffiti?lock=79',
     blurb: 'The street-art museum’s weekend spotlighting women artists, on the NDSM wharf.',
     why: 'Cross-source (LBB + I amsterdam) · indoor · ferry trip',
     source: 'I amsterdam', link: 'https://www.straatmuseum.com/en/events/wisa-women-in-street-art-weekend',
@@ -207,7 +199,6 @@ export const PICKS: Pick[] = [
   {
     id: 'danh-vo', title: 'Danh Vo at the Stedelijk', venue: 'Stedelijk Museum', area: 'Museumplein', when: 'Until 2 Aug',
     category: 'art', freshness: 'always', outdoor: false, kid: false, price: '€22.50',
-    image: 'https://loremflickr.com/900/1200/gallery?lock=76',
     blurb: 'Danh Vo weaves objects, images and text into a quiet meditation on identity and human ties.',
     why: 'Indoor · talked-about · runs all summer',
     source: 'Stedelijk Museum', link: 'https://www.stedelijk.nl/en/exhibitions/danh-vo-2',
@@ -236,7 +227,6 @@ export const PICKS: Pick[] = [
   {
     id: 'oatly-bike-thru', title: 'Oatly Bike Thru', venue: 'Papaverhoek 24', area: 'Noord', when: 'Final weekend · until Sun 7 Jun',
     category: 'drink', freshness: 'ending', outdoor: true, kid: true, price: '€',
-    image: 'https://loremflickr.com/900/1200/coffee?lock=81',
     blurb: 'A bike-through pop-up serving iced oat lattes and matcha — its final days before it closes.',
     why: 'Cross-source (Time Out + LBB) · outdoor · ends Sunday',
     source: 'Your Little Black Book', link: 'https://www.yourlittleblackbook.me/en/weekendtips-amsterdam/',
@@ -265,7 +255,6 @@ export const PICKS: Pick[] = [
   {
     id: 'amsterdam-sevens', title: 'Amsterdam Sevens Rugby', venue: 'Sportpark de Eendracht', area: 'West', when: 'Sat–Sun 6–7 Jun',
     category: 'out', freshness: 'weekend', outdoor: true, kid: true, price: 'ticketed',
-    image: 'https://loremflickr.com/900/1200/rugby?lock=82',
     blurb: 'The 53rd-edition international rugby sevens — 120+ teams, fast games, a full-day atmosphere.',
     why: 'Outdoor day out · all-ages · sun-dependent',
     source: 'I amsterdam', link: 'https://www.iamsterdam.com/en/whats-on',

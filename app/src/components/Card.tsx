@@ -6,7 +6,10 @@ import './Card.css'
 export function Card({ pick }: { pick: Pick }) {
   return (
     <article className="card">
-      <div className="card-img" style={{ backgroundImage: `url(${pick.image})` }}>
+      <div
+        className={`card-img${pick.image ? '' : ` poster poster--${pick.category}`}`}
+        style={pick.image ? { backgroundImage: `url(${pick.image})` } : undefined}
+      >
         <div className="card-tags">
           {pick.status && <span className={`chip chip-status chip-status--${pick.status}`}>{STATUS_LABEL[pick.status]}</span>}
           <span className={`chip chip-fresh chip-fresh--${pick.freshness}`}>{FRESHNESS_LABEL[pick.freshness]}</span>
@@ -14,6 +17,7 @@ export function Card({ pick }: { pick: Pick }) {
           {pick.outdoor && <span className="chip chip-outdoor">Outdoor</span>}
           {pick.kid && <span className="chip chip-kid">Kids</span>}
         </div>
+        {!pick.image && <span className="poster-mark">{CATEGORY_LABEL[pick.category]}</span>}
         <div className="card-img-foot mono">{pick.area} · {pick.price}</div>
       </div>
       <div className="card-body">
