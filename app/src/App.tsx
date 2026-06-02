@@ -5,7 +5,7 @@ import { MODES, MODE_META, classify, applyMode, rankPicks, shuffle } from './wea
 import { PICKS } from './data/picks'
 import { AmbientField } from './weather/AmbientField'
 import type { Look } from './weather/ambientEngine'
-import { APP_VERSION, BUILD } from './version'
+import { APP_VERSION } from './version'
 import { SwipeStack } from './components/SwipeStack'
 import { ListView } from './components/ListView'
 import { CardDetail } from './components/CardDetail'
@@ -361,7 +361,7 @@ export default function App() {
                     <button className="bar-foot" onClick={() => { setInputsOpen(true); setBarOpen(false) }}>
                       ⓘ Built from {SOURCE_COUNT} sources · weather × freshness{hasTaste(taste) ? ' × you' : ''}
                     </button>
-                    <span className="bar-build">v{APP_VERSION} · build {BUILD}</span>
+                    <span className="bar-build">v{APP_VERSION}</span>
                   </div>
                 </motion.div>
               )}

@@ -1,7 +1,6 @@
-// Keep in sync with package.json + the latest tag in CHANGELOG.md.
-// Shown in the "What's feeding this" sheet so we can see what's deployed.
-export const APP_VERSION = '0.7.0'
-
-// Short build tag shown in the menu footer — bump on each ship so we can confirm
-// (at a glance) which build is actually live, vs a stale browser cache.
-export const BUILD = 'jun2·7'
+// The live build version — BUMPED ON EVERY SHIP.
+// Shown in the menu footer, and used verbatim as the ?v= in the link we share
+// (e.g. https://nessim-higson.github.io/wkndr/?v=0.7.1) so the URL is the version,
+// confirms freshness, and busts the cache in one. Milestone git tags (v0.7.0, …)
+// are cut separately at notable points.
+export const APP_VERSION = '0.7.1'
