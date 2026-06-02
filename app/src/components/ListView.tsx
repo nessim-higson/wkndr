@@ -25,7 +25,7 @@ export function ListView({
     const scroller = listRef.current?.closest('.main-list') as HTMLElement | null
     if (!scroller) return
     let raf = 0
-    const R = 170        // cylinder radius (px) — larger = gentler barrel
+    const R = 125        // cylinder radius (px) — smaller = tighter barrel
     const apply = () => {
       raf = 0
       const sr = scroller.getBoundingClientRect()
@@ -34,15 +34,18 @@ export function ListView({
       for (const row of rowsRef.current) {
         if (!row) continue
         const r = row.getBoundingClientRect()
-        // distance from the focal centre → an angle on the cylinder
+        // distance from the focal centre → an angle on the cylinder. The wrap is steep
+        // (×95) so a row folds fully edge-on (90°, opacity 0) just BEFORE it reaches the
+        // viewport edge — it tucks behind the row in front and vanishes, so there's no
+        // hard clip line and no soft mask, just the curve of the cylinder doing the hiding.
         const t = Math.max(-1.5, Math.min(1.5, (r.top + r.height / 2 - mid) / half))
-        const ang = Math.max(-85, Math.min(85, t * 64))       // degrees of wrap
+        const ang = Math.max(-90, Math.min(90, t * 95))
         const rad = (ang * Math.PI) / 180
         const tz = -R * (1 - Math.cos(rad))                    // recede along the curve
         const cos = Math.max(0, Math.cos(rad))
-        row.style.transform = `perspective(680px) translateZ(${tz}px) rotateX(${-ang}deg)`
-        row.style.opacity = String(Math.max(0.08, cos ** 1.4))  // fade tracks the facing angle
-        row.style.zIndex = String(100 - Math.round(Math.abs(t) * 50))  // centre row on top
+        row.style.transform = `perspective(540px) translateZ(${tz}px) rotateX(${-ang}deg)`
+        row.style.opacity = String(cos ** 1.7)                 // → 0 at the fold; edges fully vanish
+        row.style.zIndex = String(Math.round(100 - Math.abs(t) * 60))  // folding rows sit behind
       }
     }
     const onScroll = () => { if (!raf) raf = requestAnimationFrame(apply) }

@@ -3,4 +3,4 @@
 // (e.g. https://nessim-higson.github.io/wkndr/?v=0.7.1) so the URL is the version,
 // confirms freshness, and busts the cache in one. Milestone git tags (v0.7.0, …)
 // are cut separately at notable points.
-export const APP_VERSION = '0.8.0'
+export const APP_VERSION = '0.8.1'
