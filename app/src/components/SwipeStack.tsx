@@ -1,7 +1,7 @@
 import { forwardRef, useImperativeHandle, useRef } from 'react'
 import {
   motion, useMotionValue, useTransform, animate,
-  type PanInfo,
+  type MotionValue, type PanInfo,
 } from 'framer-motion'
 import type { Pick, SwipeDir } from '../types'
 import { Card } from './Card'
@@ -24,12 +24,15 @@ interface SwipeCardProps {
   pick: Pick
   interactive: boolean
   depth: number // 0 = top
+  progress: MotionValue<number>   // shared: how far the TOP card is dragged (0→1)
   onSwipe: (p: Pick, dir: SwipeDir) => void
   onOpen?: (p: Pick) => void
 }
 
+const PROGRESS_REF = 140   // px of drag at which the next card has fully advanced
+
 const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
-  { pick, interactive, depth, onSwipe, onOpen }, ref,
+  { pick, interactive, depth, progress, onSwipe, onOpen }, ref,
 ) {
   const x = useMotionValue(0)
   const y = useMotionValue(0)
@@ -39,6 +42,12 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
   // drag feedback: left → bold red wash (dismiss), right → bold green wash (keep)
   const redOp = useTransform(x, [-130, -18], [0.88, 0])
   const greenOp = useTransform(x, [18, 130], [0, 0.88])
+
+  // Each card sits at an effective depth of (depth − progress): as the top card is
+  // dragged (progress 0→1), every card behind eases forward one step in lockstep. On
+  // commit, depth decrements exactly as progress resets, so the position stays continuous.
+  const slotScale = useTransform(progress, (p) => 1 - Math.max(0, depth - p) * 0.05)
+  const slotY = useTransform(progress, (p) => Math.max(0, depth - p) * 18)
 
   // Throw the card off-screen in `dir`, carrying the gesture's momentum. The exit
   // glides at a fairly consistent pace (a hard toss is only a little quicker) and is
@@ -53,18 +62,25 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
     const exitSpeed = Math.min(3000, 1850 + speed * 0.32)   // px/s, gentle velocity influence
     const dur = Math.min(0.62, Math.max(0.42, dist / exitSpeed))
     const ease = [0.32, 0.12, 0.24, 1] as const             // quick lead-in, smooth glide-out
+    // bring the next card fully forward while this one flies, then reset on landing
+    animate(progress, 1, { duration: Math.min(0.34, dur), ease: 'easeOut' })
     animate(x, targetX, { duration: dur, ease })
-    animate(y, targetY, { duration: dur, ease, onComplete: () => onSwipe(pick, dir) })
+    animate(y, targetY, { duration: dur, ease, onComplete: () => { progress.set(0); onSwipe(pick, dir) } })
   }
   useImperativeHandle(ref, () => ({ fling }), [pick])
 
+  // live: as the top card drags, publish how far (0→1) so the stack advances with it
+  function onDrag(_e: unknown, info: PanInfo) {
+    progress.set(Math.min(1, Math.hypot(info.offset.x, info.offset.y) / PROGRESS_REF))
+  }
   function onDragEnd(_e: unknown, info: PanInfo) {
     const { offset, velocity } = info
     if (offset.x > THRESHOLD || velocity.x > VELOCITY) return fling('like', velocity)
     if (offset.x < -THRESHOLD || velocity.x < -VELOCITY) return fling('nope', velocity)
     if (offset.y < -THRESHOLD || velocity.y < -VELOCITY) return fling('save', velocity)
     if (offset.y > THRESHOLD || velocity.y > VELOCITY) return fling('skip', velocity)
-    // otherwise dragSnapToOrigin returns it home
+    // not committed → card snaps home and the stack eases back
+    animate(progress, 0, { type: 'spring', stiffness: 320, damping: 32 })
   }
 
   return (
@@ -72,10 +88,10 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
     // card is promoted, so it never fights the drag offset (which lives on the inner).
     <motion.div
       className="swipe-card-slot"
-      style={{ zIndex: 10 - depth }}
-      initial={{ opacity: 0, scale: 0.92, y: depth * 16 }}
-      animate={{ opacity: 1, scale: 1 - depth * 0.045, y: depth * 16 }}
-      transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+      style={{ zIndex: 10 - depth, scale: slotScale, y: slotY }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
     >
       {/* INNER — only the top card is draggable; x/y/rotate start at 0 every time */}
       <motion.div
@@ -86,6 +102,7 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
         dragElastic={0.6}
         onTapStart={interactive ? () => { dragged.current = false } : undefined}
         onDragStart={interactive ? () => { dragged.current = true } : undefined}
+        onDrag={interactive ? onDrag : undefined}
         onDragEnd={interactive ? onDragEnd : undefined}
         onTap={interactive ? () => { if (!dragged.current) onOpen?.(pick) } : undefined}
         whileTap={interactive ? { cursor: 'grabbing' } : undefined}
@@ -114,6 +131,7 @@ export function SwipeStack({
   onSeeList?: () => void
 }) {
   const topRef = useRef<CardHandle>(null)
+  const progress = useMotionValue(0)   // top card's drag (0→1), drives the cards behind
   const visible = picks.slice(0, 3)
 
   if (visible.length === 0) {
@@ -149,6 +167,7 @@ export function SwipeStack({
             pick={p}
             depth={i}
             interactive={i === 0}
+            progress={progress}
             onSwipe={onSwipe}
             onOpen={onOpen}
           />
