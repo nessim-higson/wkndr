@@ -8,6 +8,7 @@ import type { Look } from './weather/ambientEngine'
 import { APP_VERSION } from './version'
 import { SwipeStack } from './components/SwipeStack'
 import { ListView } from './components/ListView'
+import { FanView } from './components/FanView'
 import { CardDetail } from './components/CardDetail'
 import { Intro } from './components/Intro'
 import { InputsSheet } from './components/InputsSheet'
@@ -52,7 +53,7 @@ const WHEN_FILTERS = ([
 ] as { key: When; label: string; count: number }[]).filter((o) => o.count > 0)
 const whenLabel = (w: When) => WHEN_FILTERS.find((x) => x.key === w)?.label ?? 'Any time'
 
-type View = 'stack' | 'list'
+type View = 'stack' | 'list' | 'fan'
 interface Wx { temp: number; hi: number; lo: number; city: string }
 
 // Amsterdam — the product's home city. The app defaults to its live forecast.
@@ -311,6 +312,7 @@ export default function App() {
                       <div className="bar-row">
                         <div className="toggle" role="tablist">
                           <button className={view === 'stack' ? 'on' : ''} onClick={() => setView('stack')}>Stack</button>
+                          <button className={view === 'fan' ? 'on' : ''} onClick={() => setView('fan')}>Fan</button>
                           <button className={view === 'list' ? 'on' : ''} onClick={() => setView('list')}>List</button>
                         </div>
                         <button className="bar-pill" onClick={refresh}>↻ Shuffle</button>
@@ -419,6 +421,15 @@ export default function App() {
                 onClearFilter={() => { setFilter('all'); setWhen('all') }}
                 onSeeList={() => setView('list')}
               />
+            </motion.div>
+          ) : view === 'fan' ? (
+            <motion.div
+              key="fan" className="view-pane"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <FanView picks={shown} onOpen={setDetail} paused={detail !== null || intro} />
             </motion.div>
           ) : (
             <motion.div

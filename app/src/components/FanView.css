@@ -1,0 +1,46 @@
+.fan {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* each card hangs off a shared pivot well below the deck, so they fan up and arc */
+.fan-slot {
+  position: absolute;
+  left: 50%;
+  bottom: 16%;
+  width: 210px;
+  height: 286px;
+  margin-left: -105px;
+  transform-origin: 50% calc(100% + 340px);
+  will-change: transform, opacity;
+}
+@media (min-width: 720px) {
+  .fan-slot { width: 244px; height: 332px; margin-left: -122px; bottom: 12%; transform-origin: 50% calc(100% + 420px); }
+}
+
+.fan-lift {
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  border-radius: 20px;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.26), 0 4px 12px rgba(0, 0, 0, 0.14);
+  transform-origin: center bottom;
+}
+/* clip the reused Card to the fan card's rounded frame */
+.fan-card {
+  width: 100%;
+  height: 100%;
+  border-radius: 20px;
+  overflow: hidden;
+}
+.fan-card .card { width: 100%; height: 100%; }
+
+.fan-empty {
+  position: absolute;
+  left: 50%; top: 44%;
+  transform: translate(-50%, -50%);
+  color: var(--field-text);
+  opacity: 0.8;
+}
