@@ -107,6 +107,12 @@ export default function App() {
   useEffect(() => { persistTaste(taste) }, [taste])   // your taste accumulates over time
   useEffect(() => { localStorage.setItem('wkndr.field', look) }, [look])   // your ambient-field choice sticks
 
+  // Warm the image cache up front (during the intro) so a card's photo is already loaded
+  // before it's revealed — no pop-in / flash as cards come forward.
+  useEffect(() => {
+    PICKS.forEach((p) => { const im = new Image(); im.src = p.image })
+  }, [])
+
   // Default to the real Amsterdam forecast on load — weather is a fact, not a toggle.
   const didInit = useRef(false)
   useEffect(() => {

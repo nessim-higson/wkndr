@@ -81,13 +81,13 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
     const targetX = (dx / mag) * reach
     const targetY = (dy / mag) * reach
     const dist = Math.hypot(targetX - x.get(), targetY - y.get())
-    const exitSpeed = Math.min(3200, 1850 + speed * 0.32)   // harder toss → quicker exit (clamped)
-    const dur = Math.min(0.62, Math.max(0.4, dist / exitSpeed))
-    const ease = [0.32, 0.12, 0.24, 1] as const
+    const exitSpeed = Math.min(2300, 1250 + speed * 0.2)    // harder toss → a bit quicker (gentle, clamped)
+    const dur = Math.min(0.85, Math.max(0.58, dist / exitSpeed))
+    const ease = [0.3, 0.18, 0.28, 1] as const
     // toss-spin: harder + edge-grabbed throws spin more, in the throw's horizontal sense
-    const spinDeg = Math.sign(dx || 1) * (8 + Math.min(26, speed * 0.012)) * (0.6 + Math.abs(grabLever.current) * 0.8)
+    const spinDeg = Math.sign(dx || 1) * (4 + Math.min(14, speed * 0.007)) * (0.55 + Math.abs(grabLever.current) * 0.6)
     animate(spin, spinDeg, { duration: dur, ease })
-    animate(progress, 1, { duration: Math.min(0.34, dur), ease: 'easeOut' })   // next card advances as this flies
+    animate(progress, 1, { duration: Math.min(0.5, dur), ease: 'easeOut' })   // next card advances as this flies
     animate(x, targetX, { duration: dur, ease })
     animate(y, targetY, { duration: dur, ease, onComplete: () => onSwipe(pick, dir) })
   }
@@ -103,8 +103,8 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
     if (offset.x < -THRESHOLD || velocity.x < -VELOCITY) return fling('nope', info)
     if (offset.y < -THRESHOLD || velocity.y < -VELOCITY) return fling('save', info)
     if (offset.y > THRESHOLD || velocity.y > VELOCITY) return fling('skip', info)
-    // not committed → card snaps home and the stack eases back
-    animate(progress, 0, { type: 'spring', stiffness: 320, damping: 32 })
+    // not committed → card snaps home and the stack eases back (soft)
+    animate(progress, 0, { type: 'spring', stiffness: 230, damping: 30 })
   }
 
   return (
