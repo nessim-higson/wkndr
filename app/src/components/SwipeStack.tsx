@@ -13,8 +13,8 @@ const THRESHOLD = 105
 const VELOCITY = 550
 const IDLE_MS = 3000   // no interaction for this long → the deck starts cycling itself
 const RENDER = 4       // cards kept in the DOM (depth 0..3); depth 3 is the rear/receiving slot
-const STEP_SCALE = 0.05
-const STEP_Y = 18
+const GAP_Z = 62       // px each card sits further back in real 3D space (perspective shrinks it)
+const PEEK_Y = 16      // px each deeper card drops, so its lower edge peeks out below the front
 
 // unit direction the card travels when committed
 const DIR: Record<SwipeDir, { x: number; y: number }> = {
@@ -47,14 +47,11 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
   const x = useMotionValue(0)
   const y = useMotionValue(0)
   const spin = useMotionValue(0)               // extra rotation imparted by a toss
-  const lift = useMotionValue(1)               // inner scale — shrinks as it slides to the back
-  const slotZ = useMotionValue(10 - depth)     // stacking order; the cycle drops it behind the deck
+  const cycleZ = useMotionValue(0)             // idle shuffle: recede the card into the deck (translateZ)
+  const cycleY = useMotionValue(0)             // idle shuffle: drop it to the rear peek
   const grabLever = useRef(0)                  // where you grabbed: -1 top … +1 bottom
   const cardRef = useRef<HTMLDivElement>(null)
   const dragged = useRef(false)  // true once a real drag begins → suppresses the tap-to-open
-
-  // keep z in step with depth as cards are promoted (except while a cycle has parked it behind)
-  useLayoutEffect(() => { slotZ.set(10 - depth) }, [depth, slotZ])
 
   // Tilt is torque: grabbing the TOP and pulling pivots the card hard one way, the BOTTOM
   // the other, a centre grab barely tilts. Plus any spin imparted on a toss.
@@ -72,11 +69,12 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
     if (r) grabLever.current = Math.max(-1, Math.min(1, ((e.clientY - r.top) / r.height) * 2 - 1))
   }
 
-  // Each card sits at an effective depth of (depth − progress): as the top card is
-  // dragged (progress 0→1), every card behind eases forward one step in lockstep. On
-  // commit, depth decrements exactly as progress resets, so the position stays continuous.
-  const slotScale = useTransform(progress, (p) => 1 - Math.max(0, depth - p) * STEP_SCALE)
-  const slotY = useTransform(progress, (p) => Math.max(0, depth - p) * STEP_Y)
+  // Each card sits at an effective depth of (depth − progress), expressed as real 3D
+  // distance: as the top card is dragged (progress 0→1), every card behind eases forward
+  // one step in Z. On commit, depth decrements as progress resets, so it stays continuous.
+  // cycleZ/cycleY add the idle-shuffle recede on top of that (only the cycling card moves).
+  const slotZ = useTransform([progress, cycleZ], ([p, cz]: number[]) => -Math.max(0, depth - p) * GAP_Z + cz)
+  const slotY = useTransform([progress, cycleY], ([p, cy]: number[]) => Math.max(0, depth - p) * PEEK_Y + cy)
 
   // Throw the card off-screen in `dir`, carrying the gesture's momentum.
   function fling(dir: SwipeDir, info?: PanInfo) {
@@ -102,18 +100,17 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
     animate(y, targetY, { duration: dur, ease, onComplete: () => onSwipe(pick, dir) })
   }
 
-  // The idle move: the top card drops BEHIND the deck (z below the others) and slides
-  // straight back into the rearmost slot — shrinking and lowering to match it — while the
-  // cards in front advance one step. No lift, no fade: it literally tucks behind the stack.
-  // The rear slot is occluded, so when the parent then rotates the order the swap is unseen.
+  // The idle move: the top card recedes straight back through the deck into the rearmost
+  // slot — real translateZ, so the front cards genuinely occlude it as it passes their
+  // depth (no z-index poke, no fade). It just sinks to the back. Meanwhile the cards in
+  // front ease forward one step; the rear slot is occluded, so the order-rotation is unseen.
   function cycle() {
-    const ease = [0.4, 0, 0.2, 1] as const
-    const dur = 0.7
+    const ease = [0.33, 0, 0.25, 1] as const
+    const dur = 0.74
     const rear = RENDER - 1                       // deepest rendered slot
-    slotZ.set(1)                                  // behind every other card (their z is 7..10)
     animate(progress, 1, { duration: dur, ease })
-    animate(lift, 1 - rear * STEP_SCALE, { duration: dur, ease })   // shrink to rear-slot size
-    animate(y, rear * STEP_Y, { duration: dur, ease, onComplete: () => onCycle?.(pick) })   // settle into rear slot
+    animate(cycleZ, -rear * GAP_Z, { duration: dur, ease })            // sink to the rear depth
+    animate(cycleY, rear * PEEK_Y, { duration: dur, ease, onComplete: () => onCycle?.(pick) })
   }
   useImperativeHandle(ref, () => ({ fling, cycle }), [pick])
 
@@ -133,7 +130,7 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
     // SLOT — owns the stack position (depth scale + offset) and stacking order.
     <motion.div
       className="swipe-card-slot"
-      style={{ zIndex: slotZ, scale: slotScale, y: slotY, pointerEvents: interactive ? 'auto' : 'none' }}
+      style={{ z: slotZ, y: slotY, pointerEvents: interactive ? 'auto' : 'none' }}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
@@ -142,7 +139,7 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
       <motion.div
         ref={cardRef}
         className="swipe-card"
-        style={interactive ? { x, y, rotate, scale: lift } : undefined}
+        style={interactive ? { x, y, rotate } : undefined}
         drag={interactive}
         dragSnapToOrigin
         dragElastic={0.6}
