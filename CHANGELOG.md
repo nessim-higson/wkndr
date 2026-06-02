@@ -5,15 +5,27 @@ Format loosely follows [Keep a Changelog](https://keepachangelog.com/). The vers
 shown in the app's "What's feeding this" sheet matches the latest tag here.
 
 ## [Unreleased]
-- **Content refresh (1 Jun 2026)** — listings re-cut for the coming weekend (Fri 5–Sun 7 Jun):
-  web-researched real events (Amsterdam Open Air, FKA twigs + Yves Tumor @ Ziggo, Harry Styles +
-  Robyn, Jungle by Night, Holland Festival, Bacchus, Red Light Jazz, Danh Vo @ Stedelijk); removed
-  past/unverifiable entries (Iron Maiden, Ben Howard, Hayley Williams, the 31 May / 1 Jun items).
-- **Imagery accuracy pass** — replaced generic keyword stand-ins + weak shots with real, HTTP-verified
-  Wikimedia photos of the actual places (De Nieuwe Kerk, Van Gogh building, Foam, Hortus, Marineterrein,
-  IJ-Hallen, Albert Cuyp, Noordermarkt, Westergas, Zaanse Schans, Haarlem, Volendam, Muiderslot).
-  Venues without a Commons photo (new bars/restaurants, one-off festivals) keep flagged placeholders.
-- (next up — choose the default ambient field · the content pipeline · "Wrapped" retrospective)
+- (next up — unique card displays · GPU-shader backgrounds · the content pipeline · "Wrapped")
+
+## [0.7.0] — 2026-06-02 — "Floating bar, weather intro, real weekend"
+- **Floating command module** — the top bar is now a centered, floating product card
+  (WePresent-style) with a drop shadow that expands into a grouped control panel
+  (View / Filter / Your list / Weather / Ambient field). Wordmark left, weather to its
+  right (live temp + city, hairline divider), hamburger menu right. A Reset control wipes
+  saved + taste for cold-start testing. Build tag in the footer.
+- **Weather-adaptive intro** — every load opens on the live ambient field with a bold
+  value-prop line tuned to the forecast (5 modes), then lifts away as the app rises in.
+- **Real weekend content** — listings web-researched for Fri 5–Sun 7 Jun (Amsterdam Open
+  Air, FKA twigs + Yves Tumor @ Ziggo, Harry Styles + Robyn, Jungle by Night, Holland
+  Festival, Danh Vo @ Stedelijk…); fabricated/past entries removed; feed de-clustered so
+  it never serves a run of the same category.
+- **Imagery accuracy pass** — real, HTTP-verified Wikimedia photos of the actual places
+  (De Nieuwe Kerk, Van Gogh, Foam, Hortus, IJ-Hallen, Zaanse Schans, Haarlem, Volendam…).
+- **Ambient field looks** — Aura / Warp / Aurora / Mesh / Metaball, palette-driven, with a
+  perf budget; the classifier no longer mislabels warm-wet days as “cold”.
+- **Swipe + motion** — two actions (✕ / ★) with a bold red/green top-fade drag tint; card
+  detail expands open (menu easing) with a per-card Share; list staggers in; Stack⇄List
+  crossfades; cards/list scale up responsively on desktop.
 
 ## [0.6.0] — 2026-06-01 — "Living field"
 - **Generative ambient field** — a weather-driven canvas backdrop (palette follows the live mode),
