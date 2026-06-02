@@ -9,6 +9,7 @@ import { APP_VERSION, BUILD } from './version'
 import { SwipeStack } from './components/SwipeStack'
 import { ListView } from './components/ListView'
 import { CardDetail } from './components/CardDetail'
+import { Intro } from './components/Intro'
 import { InputsSheet } from './components/InputsSheet'
 import { FilterSheet } from './components/FilterSheet'
 import { ShareSheet } from './components/ShareSheet'
@@ -99,6 +100,7 @@ export default function App() {
   const [whenOpen, setWhenOpen] = useState(false)          // When sheet
   const [look, setLook] = useState<Look>(() => (localStorage.getItem('wkndr.field') as Look) || 'warp')  // ambient field
   const [barOpen, setBarOpen] = useState(false)            // command bar expanded?
+  const [intro, setIntro] = useState(true)                 // weather-aware intro (every load)
 
   useEffect(() => { applyMode(mode) }, [mode])
   useEffect(() => { persistSaved(saved) }, [saved])   // your list survives reloads
@@ -226,7 +228,16 @@ export default function App() {
     <>
       <AmbientField mode={mode} look={look} onLookChange={setLook} />
 
-      <div className="app">
+      <AnimatePresence>
+        {intro && <Intro mode={mode} onDone={() => setIntro(false)} />}
+      </AnimatePresence>
+
+      <motion.div
+        className="app"
+        initial={false}
+        animate={intro ? { opacity: 0, y: 14 } : { opacity: 1, y: 0 }}
+        transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1], delay: intro ? 0 : 0.2 }}
+      >
         <header className="topbar">
           <AnimatePresence>
             {barOpen && (
@@ -391,7 +402,7 @@ export default function App() {
             </motion.div>
           )}
         </main>
-      </div>
+      </motion.div>
 
       {toast && <div className="toast">↻ {toast}</div>}
 
