@@ -129,12 +129,19 @@ export default function App() {
     return () => clearTimeout(id)
   }, [toast])
 
+  // taste is read via a ref when ranking so that swiping (which updates taste every card)
+  // does NOT re-sort the live deck — otherwise the "next up" card could change identity
+  // mid-toss and its image would swap. Taste re-applies on Refresh / weather change.
+  const tasteRef = useRef(taste)
+  useEffect(() => { tasteRef.current = taste }, [taste])
+
   // Refresh reshuffles the whole pool (within weather tiers) so BOTH views reorder,
   // then re-ranks. List + stack both change; the stack re-deals with a toast.
   const pool = useMemo(() => (seed === 0 ? PICKS : shuffle(PICKS, seed)), [seed])
   const rankedAll = useMemo(
-    () => rankPicks(pool, mode, hasTaste(taste) ? taste : undefined),
-    [pool, mode, taste],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    () => rankPicks(pool, mode, hasTaste(tasteRef.current) ? tasteRef.current : undefined),
+    [pool, mode],   // intentionally NOT [taste] — keeps the deck stable while swiping
   )
   const shown = useMemo(
     () => rankedAll.filter((p) => {
