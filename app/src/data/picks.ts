@@ -25,6 +25,7 @@ export const PICKS: Pick[] = [
   },
   {
     id: 'red-light-jazz', title: 'Red Light Jazz Festival', venue: 'Around De Wallen', area: 'Centrum', when: 'Fri–Sun 5–7 Jun',
+    image: 'https://redlightjazz.com/wp-content/uploads/2025/05/sabrina-starke-at-red-light-jazz-uitgelicht.webp',
     category: 'live', freshness: 'weekend', outdoor: false, kid: false, price: 'mostly free',
     blurb: 'Mostly-free jazz across intimate Red Light District cafés, churches and hidden rooms — 13th edition.',
     why: 'Top cross-source pick (LBB + I amsterdam) · mostly free · wet-weather safe',
@@ -42,6 +43,7 @@ export const PICKS: Pick[] = [
   },
   {
     id: '909-festival', title: '909 Festival', venue: 'Het Amsterdamse Bos', area: 'Amstelveen', when: 'Sat–Sun 6–7 Jun',
+    image: 'https://framerusercontent.com/assets/zKisd6fZKSwFKx4QHS96VbG1XI.jpg',
     category: 'live', freshness: 'weekend', outdoor: true, kid: false, price: 'from €45',
     blurb: 'Outdoor techno festival in the forest with international DJs across the first weekend of June.',
     why: 'Outdoor dance day · confirm line-up before booking',
@@ -50,6 +52,7 @@ export const PICKS: Pick[] = [
   },
   {
     id: 'jungle-by-night', title: 'Jungle by Night', venue: 'Vondelpark Openluchttheater', area: 'Zuid', when: 'Sun 7 Jun',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/c/c2/Jungle_by_Night.jpg',
     category: 'live', freshness: 'weekend', outdoor: true, kid: true, price: 'free (open-air)',
     blurb: 'Amsterdam’s own brass-heavy instrumental collective plays the free open-air Vondelpark stage.',
     why: 'Free open-air gig · easy with a kid · sun-dependent',
@@ -92,6 +95,7 @@ export const PICKS: Pick[] = [
   },
   {
     id: 'motor-city-drum', title: 'Motor City Drum Ensemble', venue: 'NDSM', area: 'Noord', when: 'Sat 6 Jun',
+    image: 'https://www.attackmagazine.com/wp-content/uploads/2012/09/6_MCDE_by_Stefan_Braunbarth.png',
     category: 'live', freshness: 'weekend', outdoor: false, kid: false, price: 'ticketed',
     blurb: 'Deep-house selector MCDE headlines a DJ session at the industrial NDSM wharf.',
     why: 'Late dance night · the wharf', source: 'Songkick', link: 'https://www.songkick.com/concerts/42980706-motor-city-drum-ensemble-at-ndsm',
@@ -128,6 +132,7 @@ export const PICKS: Pick[] = [
   },
   {
     id: 'spinoza', title: 'Spinoza — De Mokum Musical', venue: 'Amsterdamse Bostheater', area: 'Amstelveen', when: 'Runs incl. this weekend',
+    image: 'https://bostheater.nl/wp-content/uploads/2026/02/NITE_SPINOZA_NIEUW_SHOTBYHALIE_16x9-scaled.jpg',
     category: 'stage', freshness: 'weekend', outdoor: true, kid: false, price: 'ticketed',
     blurb: 'Open-air musical about philosopher Spinoza set in old Amsterdam, in the forest theatre.',
     why: 'Cross-source (LBB + I amsterdam) · open-air · dry-night plan',
@@ -138,6 +143,7 @@ export const PICKS: Pick[] = [
   // ═════════ ART & MUSEUMS — incl. closing-soon (museum sites) ═════════
   {
     id: 'ivna-esajas', title: 'Ivna Esajas — Wayward Lines', venue: 'Stedelijk Museum', area: 'Museumplein', when: 'Until Sun 7 Jun — last days',
+    image: 'https://artdaily.cc/imagenes/2026/03/07/abn-2.jpg',
     category: 'art', freshness: 'ending', outdoor: false, kid: false, price: '€22.50',
     blurb: 'The ABN Amro Art Award show threads diasporic memory through installation — its very last weekend.',
     why: 'Closes Sunday · indoor · see it or miss it',
@@ -164,6 +170,7 @@ export const PICKS: Pick[] = [
   },
   {
     id: 'foam-talent', title: 'Foam Talent 2026', venue: 'Foam', area: 'Keizersgracht', when: 'Opens Fri 5 Jun',
+    image: 'https://www.meer.com/attachments/f6cf99a262109375f24294abae18a69d7f318767/store/fill/860/645/49711ed03e3aed01bca0482dfee80cf5bfe7ff76363addaf5f7d88934208/Sean-Cham-301-Chinese-boy-on-duty-detail-Courtesy-of-Foam.jpg',
     category: 'art', freshness: 'new', outdoor: false, kid: false, price: '~€16',
     blurb: 'Fifteen emerging photographers from 107 countries — fresh on its launch weekend.',
     why: 'New this week · indoor · quick + sharp',
@@ -172,6 +179,7 @@ export const PICKS: Pick[] = [
   },
   {
     id: 'wisa', title: 'Women in Street Art Weekend', venue: 'STRAAT Museum', area: 'NDSM · Noord', when: 'Fri–Sun 5–7 Jun',
+    image: 'https://www.coolesuggesties.nl/wp-content/uploads/2026/05/Buuf-Buur-aan-het-werk-in-STRAAT-foto-Janneke-Nooij.webp',
     category: 'art', freshness: 'weekend', outdoor: false, kid: true, price: '~€19',
     blurb: 'The street-art museum’s weekend spotlighting women artists, on the NDSM wharf.',
     why: 'Cross-source (LBB + I amsterdam) · indoor · ferry trip',
@@ -198,6 +206,7 @@ export const PICKS: Pick[] = [
   },
   {
     id: 'danh-vo', title: 'Danh Vo at the Stedelijk', venue: 'Stedelijk Museum', area: 'Museumplein', when: 'Until 2 Aug',
+    image: 'https://artdaily.cc/imagenes/2026/02/14/danh-2.jpg',
     category: 'art', freshness: 'always', outdoor: false, kid: false, price: '€22.50',
     blurb: 'Danh Vo weaves objects, images and text into a quiet meditation on identity and human ties.',
     why: 'Indoor · talked-about · runs all summer',
@@ -226,6 +235,7 @@ export const PICKS: Pick[] = [
   },
   {
     id: 'oatly-bike-thru', title: 'Oatly Bike Thru', venue: 'Papaverhoek 24', area: 'Noord', when: 'Final weekend · until Sun 7 Jun',
+    image: 'https://a.storyblok.com/f/107921/960x540/8ebbcdc9e7/wow_no_cow.webp',
     category: 'drink', freshness: 'ending', outdoor: true, kid: true, price: '€',
     blurb: 'A bike-through pop-up serving iced oat lattes and matcha — its final days before it closes.',
     why: 'Cross-source (Time Out + LBB) · outdoor · ends Sunday',
