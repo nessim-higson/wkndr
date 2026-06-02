@@ -9,7 +9,7 @@
 import type { Mode } from '../types'
 import { MODE_META } from './modes'
 
-export type Look = 'off' | 'aura' | 'warp' | 'metaball' | 'aurora' | 'mesh' | 'contour' | 'particles' | 'rain'
+export type Look = 'off' | 'aura' | 'warp' | 'metaball' | 'aurora' | 'mesh'
 export interface FieldStats { fps: number; ms: number; res: string }
 
 interface RGB { r: number; g: number; b: number }
@@ -84,9 +84,8 @@ export class FieldEngine {
 
   private div() {
     return this.look === 'metaball' ? 6
-      : this.look === 'warp' || this.look === 'aurora' || this.look === 'contour' ? 5
+      : this.look === 'warp' || this.look === 'aurora' ? 5
       : this.look === 'mesh' ? 4
-      : this.look === 'rain' ? 3
       : 2
   }
 
@@ -176,9 +175,6 @@ export class FieldEngine {
     else if (this.look === 'metaball') this.renderMetaball()
     else if (this.look === 'aurora') this.renderAurora()
     else if (this.look === 'mesh') this.renderMesh()
-    else if (this.look === 'contour') this.renderContour()
-    else if (this.look === 'particles') this.renderParticles()
-    else if (this.look === 'rain') this.renderRain()
     const ms = performance.now() - t0
     if (this.onStats && ts - this.statsAt > 400) {
       this.statsAt = ts
@@ -270,68 +266,5 @@ export class FieldEngine {
       d[i] = c.r; d[i + 1] = c.g; d[i + 2] = c.b; d[i + 3] = 255
     }
     this.bctx.putImageData(this.img!, 0, 0); this.present()
-  }
-
-  // topographic contour lines drifting over a soft gradient — calm, "designed"
-  private renderContour() {
-    const d = this.img!.data, n = this.n, W = this.bw, H = this.bh, t = this.t
-    const glow = this.cur[this.cur.length - 1]
-    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
-      const h = fbm(n, x * 0.012, y * 0.012 + t * 0.05, 4)
-      const base = rampAt(this.cur, h * 0.85)
-      const e = Math.abs(((h * 9) % 1) - 0.5) * 2     // 0 at a contour iso-line
-      const line = sstep(0.86, 1, 1 - e) * 0.85       // thin bright band on the line
-      const i = (y * W + x) * 4
-      d[i] = base.r + (glow.r - base.r) * line
-      d[i + 1] = base.g + (glow.g - base.g) * line
-      d[i + 2] = base.b + (glow.b - base.b) * line
-      d[i + 3] = 255
-    }
-    this.bctx.putImageData(this.img!, 0, 0); this.present()
-  }
-
-  // drifting glowing particles — calm, additive bokeh
-  private renderParticles() {
-    const b = this.bctx, W = this.bw, H = this.bh, t = this.t
-    const c0 = this.cur[0]
-    b.globalCompositeOperation = 'source-over'
-    b.fillStyle = `rgb(${c0.r | 0},${c0.g | 0},${c0.b | 0})`
-    b.fillRect(0, 0, W, H)
-    b.globalCompositeOperation = 'lighter'
-    const N = 32
-    for (let i = 0; i < N; i++) {
-      const px = (0.5 + 0.46 * Math.sin(t * 0.12 + i * 1.7)) * W
-      const py = (((i / N) + t * 0.02 * (1 + (i % 3) * 0.3)) % 1) * H
-      const r = Math.max(W, H) * (0.05 + 0.045 * ((i * 0.37) % 1))
-      const c = this.cur[1 + (i % 3)]
-      const g = b.createRadialGradient(px, py, 0, px, py, r)
-      g.addColorStop(0, `rgba(${c.r | 0},${c.g | 0},${c.b | 0},0.42)`)
-      g.addColorStop(1, `rgba(${c.r | 0},${c.g | 0},${c.b | 0},0)`)
-      b.fillStyle = g; b.fillRect(0, 0, W, H)
-    }
-    b.globalCompositeOperation = 'source-over'
-    this.present()
-  }
-
-  // diagonal rain streaks over a vertical gradient — for the wet days
-  private renderRain() {
-    const b = this.bctx, W = this.bw, H = this.bh, t = this.t
-    const c0 = this.cur[0], c1 = this.cur[1]
-    const grd = b.createLinearGradient(0, 0, 0, H)
-    grd.addColorStop(0, `rgb(${c1.r | 0},${c1.g | 0},${c1.b | 0})`)
-    grd.addColorStop(1, `rgb(${c0.r | 0},${c0.g | 0},${c0.b | 0})`)
-    b.fillStyle = grd; b.fillRect(0, 0, W, H)
-    const lc = this.cur[this.cur.length - 1]
-    b.strokeStyle = `rgba(${lc.r | 0},${lc.g | 0},${lc.b | 0},0.3)`
-    b.lineWidth = Math.max(1, W * 0.006)
-    b.lineCap = 'round'
-    const N = 46, len = H * 0.14
-    for (let i = 0; i < N; i++) {
-      const x = ((i * 73) % 100) / 100 * W
-      const speed = 0.5 + (i % 5) * 0.14
-      const y = ((t * speed * 90 + i * 37) % (H + len)) - len
-      b.beginPath(); b.moveTo(x, y); b.lineTo(x - W * 0.03, y + len); b.stroke()
-    }
-    this.present()
   }
 }

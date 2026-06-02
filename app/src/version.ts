@@ -4,4 +4,4 @@ export const APP_VERSION = '0.6.0'
 
 // Short build tag shown in the menu footer — bump on each ship so we can confirm
 // (at a glance) which build is actually live, vs a stale browser cache.
-export const BUILD = 'jun1·2'
+export const BUILD = 'jun2·1'

@@ -73,9 +73,6 @@ const FIELD_OPTS: { key: Look; label: string }[] = [
   { key: 'warp', label: 'Warp' },
   { key: 'aurora', label: 'Aurora' },
   { key: 'mesh', label: 'Mesh' },
-  { key: 'contour', label: 'Contour' },
-  { key: 'particles', label: 'Particles' },
-  { key: 'rain', label: 'Rain' },
   { key: 'metaball', label: 'Metaball' },
   { key: 'off', label: 'Static' },
 ]
@@ -98,7 +95,10 @@ export default function App() {
   const [when, setWhen] = useState<When>('all')            // When: time-sensitivity / canon
   const [filterOpen, setFilterOpen] = useState(false)      // What sheet
   const [whenOpen, setWhenOpen] = useState(false)          // When sheet
-  const [look, setLook] = useState<Look>(() => (localStorage.getItem('wkndr.field') as Look) || 'warp')  // ambient field
+  const [look, setLook] = useState<Look>(() => {       // ambient field (validated)
+    const s = localStorage.getItem('wkndr.field') as Look
+    return FIELD_OPTS.some((o) => o.key === s) ? s : 'warp'
+  })
   const [barOpen, setBarOpen] = useState(false)            // command bar expanded?
   const [intro, setIntro] = useState(true)                 // weather-aware intro (every load)
 
@@ -254,7 +254,11 @@ export default function App() {
             <div className="topbar-row">
               <div className="tb-brandblock">
                 <div className="tb-brand"><span className="tb-dot" aria-hidden />WKNDR</div>
-                <div className="tb-weather">{wx.temp}° in {wx.city}</div>
+                <span className="tb-divider" aria-hidden />
+                <div className="tb-wx">
+                  <span className="tb-temp">{wx.temp}°</span>
+                  <span className="tb-city">{wx.city}</span>
+                </div>
               </div>
 
               <button
