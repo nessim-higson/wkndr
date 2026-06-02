@@ -310,10 +310,9 @@
 .view-pane--scroll { height: auto; display: block; }
 .main-list, .main-guide {
   overflow-y: auto; -webkit-overflow-scrolling: touch;
-  padding-top: 6px;
-  /* soft fade at the scroll edges instead of a hard cut */
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 24px, #000 calc(100% - 28px), transparent 100%);
-  mask-image: linear-gradient(to bottom, transparent 0, #000 24px, #000 calc(100% - 28px), transparent 100%);
+  padding: 6px 0;
+  /* breathing room so the first/last rows can reach the focal centre */
+  scroll-padding: 40% 0;
 }
 
 /* ===== controls — weather is a fact; adjusting is tucked behind a disclosure ===== */

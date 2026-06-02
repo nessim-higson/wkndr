@@ -7,8 +7,10 @@
 .list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding-bottom: 24px;
+  gap: 14px;
+  /* headroom so the first/last rows can ride through the focal centre — and so the
+     top row sits at the centre at rest (a clear focal point the moment the list opens) */
+  padding: calc(50vh - 64px) 0;
 }
 
 .row {
@@ -22,6 +24,11 @@
   border-radius: 14px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
   cursor: pointer;
+  /* 3D roll — transform & opacity driven per-row from scroll position (ListView.tsx) */
+  position: relative;
+  transform-origin: center center;
+  backface-visibility: hidden;
+  will-change: transform, opacity;
 }
 .row:hover { background: rgba(255, 255, 255, 0.98); }
 .row-thumb {

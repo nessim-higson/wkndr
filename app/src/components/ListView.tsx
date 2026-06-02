@@ -1,18 +1,13 @@
 import { useLayoutEffect, useRef } from 'react'
-import { motion } from 'framer-motion'
 import type { Pick, SwipeDir } from '../types'
 import { CATEGORY_LABEL, FRESHNESS_LABEL, STATUS_LABEL } from '../types'
 import './ListView.css'
 
-// rows cascade in subtly when the list mounts (transform only — opacity is owned
-// by the scroll spotlight below, so the two never fight over the same channel)
-const listV = { hidden: {}, show: { transition: { staggerChildren: 0.035, delayChildren: 0.04 } } }
-const rowV = {
-  hidden: { y: 14 },
-  show: { y: 0, transition: { type: 'spring', stiffness: 520, damping: 40 } },
-}
-
-/** The scannable posture — same ranked pool, compact rows. */
+/** The scannable posture — same ranked pool, compact rows.
+ *  Rows ride a gentle vertical "wheel": the one passing through the centre is the
+ *  flat, full-opacity focal point; rows above/below tilt backwards and fade with
+ *  distance, so scanning the list feels like turning a dial rather than reading a
+ *  flat column. The whole effect is scroll-driven (see the layout effect). */
 export function ListView({
   picks, savedIds, onSwipe, onOpen,
 }: {
@@ -25,26 +20,28 @@ export function ListView({
   const rowsRef = useRef<(HTMLElement | null)[]>([])
   rowsRef.current = []
 
-  // Spotlight focus: the row nearest the viewport centre holds full opacity while
-  // rows above and below fade with distance — gives the flat list the same sense
-  // of depth as the card stack, and draws the eye to where you're looking.
   useLayoutEffect(() => {
     const scroller = listRef.current?.closest('.main-list') as HTMLElement | null
     if (!scroller) return
     let raf = 0
     const apply = () => {
       raf = 0
-      const scrolls = scroller.scrollHeight > scroller.clientHeight + 4
       const sr = scroller.getBoundingClientRect()
       const mid = sr.top + sr.height / 2
-      const falloff = sr.height * 0.5
+      const half = sr.height / 2
       for (const row of rowsRef.current) {
         if (!row) continue
-        if (!scrolls) { row.style.opacity = '1'; continue }   // short lists stay fully lit
         const r = row.getBoundingClientRect()
-        const d = Math.abs(r.top + r.height / 2 - mid)
-        const t = Math.min(1, d / falloff)
-        row.style.opacity = String(Math.max(0.2, 1 - t * 0.82))
+        // signed distance from the focal centre, normalised to ~[-1, 1] across the viewport
+        const t = Math.max(-1.6, Math.min(1.6, (r.top + r.height / 2 - mid) / half))
+        const a = Math.abs(t)
+        const rot = -t * 50              // tilt away from centre (top of the wheel rolls back)
+        const tz = -a * 120              // recede with distance for real depth
+        // eased falloff: the centred row stays crisp, then fades off hard with distance
+        const opacity = Math.max(0.12, 1 - Math.min(1, a) ** 1.7 * 0.9)
+        row.style.transform = `perspective(900px) translateZ(${tz}px) rotateX(${rot}deg)`
+        row.style.opacity = String(opacity)
+        row.style.zIndex = String(100 - Math.round(a * 50))   // centre row sits on top
       }
     }
     const onScroll = () => { if (!raf) raf = requestAnimationFrame(apply) }
@@ -59,15 +56,14 @@ export function ListView({
   }, [picks])
 
   return (
-    <motion.div className="list" ref={listRef} variants={listV} initial="hidden" animate="show">
+    <div className="list" ref={listRef}>
       {picks.map((p, i) => {
         const saved = savedIds.has(p.id)
         return (
-          <motion.article
+          <article
             className="row"
             key={p.id}
             ref={(el) => { rowsRef.current[i] = el }}
-            variants={rowV}
             onClick={() => onOpen?.(p)}
           >
             <div
@@ -90,10 +86,10 @@ export function ListView({
               onClick={(e) => { e.stopPropagation(); onSwipe(p, saved ? 'skip' : 'save') }}
               aria-label={saved ? 'Saved' : 'Save'}
             >★</button>
-          </motion.article>
+          </article>
         )
       })}
       {picks.length === 0 && <p className="list-empty mono">No picks for this view yet.</p>}
-    </motion.div>
+    </div>
   )
 }
