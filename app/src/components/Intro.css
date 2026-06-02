@@ -18,7 +18,7 @@
   flex-direction: column;
   align-items: center;
   gap: 22px;
-  max-width: 14ch;
+  max-width: min(90vw, 560px);
 }
 .intro-line {
   display: flex;

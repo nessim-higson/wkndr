@@ -1,20 +1,14 @@
 import { useEffect } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
-import type { Mode } from '../types'
+import { motion } from 'framer-motion'
 import './Intro.css'
 
-// the value-prop hook, tuned to the live weather — a bold lead + a light follow.
-const LINES: Record<Mode, [string, string]> = {
-  HOT: ['It’s a scorcher.', 'Get outside.'],
-  WARM: ['A perfect one.', 'Let’s make it count.'],
-  COOL: ['Crisp and clear.', 'The city’s yours.'],
-  COLD_WET: ['A grey, wet one.', 'Here’s where to hide.'],
-  VOLATILE: ['The sky can’t decide.', 'We picked some backups.'],
-}
+// the landing line — a bold lead + a light follow. Fixed copy (not weather-keyed).
+const LEAD = 'The sky can’t decide.'
+const FOLLOW = 'We picked some backups.'
 
-/** Full-screen intro over the live field: a bold weather-aware line, then it lifts
- *  away as the app rises in. Plays every load; tap to skip. */
-export function Intro({ mode, onDone }: { mode: Mode; onDone: () => void }) {
+/** Full-screen intro over the live field: the line, then it lifts away as the app
+ *  rises in. Plays every load; tap to skip. */
+export function Intro({ onDone }: { onDone: () => void }) {
   useEffect(() => {
     const id = setTimeout(onDone, 2600)
     return () => clearTimeout(id)
@@ -36,26 +30,17 @@ export function Intro({ mode, onDone }: { mode: Mode; onDone: () => void }) {
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
       >
         <span className="intro-mark"><span className="intro-dot" aria-hidden />WKNDR</span>
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={mode}
-            className="intro-line"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.4 }}
+        <div className="intro-line">
+          <h1 className="intro-lead">{LEAD}</h1>
+          <motion.span
+            className="intro-follow"
+            initial={{ opacity: 0, y: 18, filter: 'blur(9px)' }}
+            animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+            transition={{ delay: 0.55, duration: 0.85, ease: [0.22, 1, 0.36, 1] }}
           >
-            <h1 className="intro-lead">{LINES[mode][0]}</h1>
-            <motion.span
-              className="intro-follow"
-              initial={{ opacity: 0, y: 18, filter: 'blur(9px)' }}
-              animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-              transition={{ delay: 0.5, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            >
-              {LINES[mode][1]}
-            </motion.span>
-          </motion.div>
-        </AnimatePresence>
+            {FOLLOW}
+          </motion.span>
+        </div>
       </motion.div>
 
       <motion.span

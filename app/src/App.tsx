@@ -247,7 +247,7 @@ export default function App() {
       <AmbientField mode={mode} look={look} onLookChange={setLook} />
 
       <AnimatePresence>
-        {intro && <Intro mode={mode} onDone={() => setIntro(false)} />}
+        {intro && <Intro onDone={() => setIntro(false)} />}
       </AnimatePresence>
 
       <motion.div
