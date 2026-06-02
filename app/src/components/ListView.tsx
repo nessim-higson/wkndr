@@ -4,18 +4,21 @@ import type { Pick, SwipeDir } from '../types'
 import { CATEGORY_LABEL, FRESHNESS_LABEL, STATUS_LABEL } from '../types'
 import './ListView.css'
 
-/** The scannable posture — same ranked pool, compact rows.
- *  Rows ride the surface of a vertical cylinder: the one passing through the
- *  centre is flat, crisp and front-most; rows above/below curve backwards and
- *  fade, so scanning feels like turning a dial. The curve is scroll-driven
- *  (the layout effect); the cards "assemble" onto the wheel on entry (CSS). */
+type ListStyle = 'wheel' | 'flux'
+
+/** The scannable posture — same ranked pool, two motion languages:
+ *  - "wheel"  : rows ride a vertical cylinder, folding edge-on at the rim.
+ *  - "flux"   : flat cards with weight — they shear & stretch with scroll
+ *               momentum, thumbnails parallax, and the centre card pops.
+ *  Both fade rows to nothing at the edges, so neither shows a hard clip line. */
 export function ListView({
-  picks, savedIds, onSwipe, onOpen,
+  picks, savedIds, onSwipe, onOpen, listStyle = 'wheel',
 }: {
   picks: Pick[]
   savedIds: Set<string>
   onSwipe: (p: Pick, dir: SwipeDir) => void
   onOpen?: (p: Pick) => void
+  listStyle?: ListStyle
 }) {
   const listRef = useRef<HTMLDivElement>(null)
   const rowsRef = useRef<(HTMLElement | null)[]>([])
@@ -24,43 +27,90 @@ export function ListView({
   useLayoutEffect(() => {
     const scroller = listRef.current?.closest('.main-list') as HTMLElement | null
     if (!scroller) return
-    let raf = 0
-    const R = 125        // cylinder radius (px) — smaller = tighter barrel
+
+    // ---- WHEEL: rigid vertical cylinder ------------------------------------
+    if (listStyle === 'wheel') {
+      let raf = 0
+      const R = 125
+      const apply = () => {
+        raf = 0
+        const sr = scroller.getBoundingClientRect()
+        const mid = sr.top + sr.height / 2
+        const half = sr.height / 2
+        for (const row of rowsRef.current) {
+          if (!row) continue
+          const r = row.getBoundingClientRect()
+          const t = Math.max(-1.5, Math.min(1.5, (r.top + r.height / 2 - mid) / half))
+          const ang = Math.max(-90, Math.min(90, t * 95))
+          const rad = (ang * Math.PI) / 180
+          const tz = -R * (1 - Math.cos(rad))
+          const cos = Math.max(0, Math.cos(rad))
+          row.style.transform = `perspective(540px) translateZ(${tz}px) rotateX(${-ang}deg)`
+          row.style.opacity = String(cos ** 1.7)
+          row.style.zIndex = String(Math.round(100 - Math.abs(t) * 60))
+        }
+      }
+      const onScroll = () => { if (!raf) raf = requestAnimationFrame(apply) }
+      apply()
+      scroller.addEventListener('scroll', onScroll, { passive: true })
+      window.addEventListener('resize', onScroll)
+      return () => {
+        scroller.removeEventListener('scroll', onScroll)
+        window.removeEventListener('resize', onScroll)
+        if (raf) cancelAnimationFrame(raf)
+      }
+    }
+
+    // ---- FLUX: liquid, momentum-reactive feed ------------------------------
+    let lastST = scroller.scrollTop
+    let lastT = performance.now()
+    let vel = 0            // smoothed scroll velocity (px/ms), signed
+    let running = false
     const apply = () => {
-      raf = 0
       const sr = scroller.getBoundingClientRect()
       const mid = sr.top + sr.height / 2
       const half = sr.height / 2
+      const skew = Math.max(-6, Math.min(6, vel * 3.5))           // shear with travel
+      const stretch = Math.min(0.08, Math.abs(vel) * 0.05)        // rubber stretch on fast flings
       for (const row of rowsRef.current) {
         if (!row) continue
         const r = row.getBoundingClientRect()
-        // distance from the focal centre → an angle on the cylinder. The wrap is steep
-        // (×95) so a row folds fully edge-on (90°, opacity 0) just BEFORE it reaches the
-        // viewport edge — it tucks behind the row in front and vanishes, so there's no
-        // hard clip line and no soft mask, just the curve of the cylinder doing the hiding.
-        const t = Math.max(-1.5, Math.min(1.5, (r.top + r.height / 2 - mid) / half))
-        const ang = Math.max(-90, Math.min(90, t * 95))
-        const rad = (ang * Math.PI) / 180
-        const tz = -R * (1 - Math.cos(rad))                    // recede along the curve
-        const cos = Math.max(0, Math.cos(rad))
-        row.style.transform = `perspective(540px) translateZ(${tz}px) rotateX(${-ang}deg)`
-        row.style.opacity = String(cos ** 1.7)                 // → 0 at the fold; edges fully vanish
-        row.style.zIndex = String(Math.round(100 - Math.abs(t) * 60))  // folding rows sit behind
+        const t = Math.max(-1.4, Math.min(1.4, (r.top + r.height / 2 - mid) / half))
+        const a = Math.min(1, Math.abs(t))
+        const scale = 1.04 - a * 0.13                              // centre card pops forward
+        row.style.transform = `scale(${scale}) scaleY(${1 + stretch}) skewY(${skew}deg)`
+        row.style.opacity = String(Math.cos(a * Math.PI / 2) ** 1.4)  // crisp centre, dissolved edges (no hard line)
+        row.style.zIndex = String(Math.round(100 - a * 50))
+        const thumb = row.querySelector('.row-thumb') as HTMLElement | null
+        if (thumb) thumb.style.backgroundPositionY = `${50 + t * 22}%`  // image parallax
       }
     }
-    const onScroll = () => { if (!raf) raf = requestAnimationFrame(apply) }
+    const frame = () => {
+      const now = performance.now()
+      const st = scroller.scrollTop
+      const dt = Math.max(16, now - lastT)
+      const v = (st - lastST) / dt
+      lastST = st; lastT = now
+      vel += (v - vel) * 0.25                                      // ease toward current velocity
+      apply()
+      if (Math.abs(vel) > 0.002) requestAnimationFrame(frame)      // keep going until it settles
+      else { vel = 0; apply(); running = false }
+    }
+    const onScroll = () => {
+      if (!running) { running = true; lastT = performance.now(); lastST = scroller.scrollTop; requestAnimationFrame(frame) }
+    }
+    const onResize = () => apply()
     apply()
     scroller.addEventListener('scroll', onScroll, { passive: true })
-    window.addEventListener('resize', onScroll)
+    window.addEventListener('resize', onResize)
     return () => {
       scroller.removeEventListener('scroll', onScroll)
-      window.removeEventListener('resize', onScroll)
-      if (raf) cancelAnimationFrame(raf)
+      window.removeEventListener('resize', onResize)
     }
-  }, [picks])
+  }, [picks, listStyle])
 
   return (
-    <div className="list" ref={listRef}>
+    <div className={`list list--${listStyle}`} ref={listRef}>
       {picks.map((p, i) => {
         const saved = savedIds.has(p.id)
         return (

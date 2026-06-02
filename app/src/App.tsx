@@ -101,11 +101,16 @@ export default function App() {
   })
   const [barOpen, setBarOpen] = useState(false)            // command bar expanded?
   const [intro, setIntro] = useState(true)                 // weather-aware intro (every load)
+  const [listStyle, setListStyle] = useState<'wheel' | 'flux'>(() => {  // list motion language
+    const s = localStorage.getItem('wkndr.liststyle')
+    return s === 'flux' ? 'flux' : 'wheel'
+  })
 
   useEffect(() => { applyMode(mode) }, [mode])
   useEffect(() => { persistSaved(saved) }, [saved])   // your list survives reloads
   useEffect(() => { persistTaste(taste) }, [taste])   // your taste accumulates over time
   useEffect(() => { localStorage.setItem('wkndr.field', look) }, [look])   // your ambient-field choice sticks
+  useEffect(() => { localStorage.setItem('wkndr.liststyle', listStyle) }, [listStyle])   // list style sticks
 
   // Warm the image cache up front (during the intro) so a card's photo is already loaded
   // before it's revealed — no pop-in / flash as cards come forward.
@@ -317,6 +322,12 @@ export default function App() {
                         </div>
                         <button className="bar-pill" onClick={refresh}>↻ Shuffle</button>
                       </div>
+                      {view === 'list' && (
+                        <div className="mode-pills" style={{ marginTop: 8 }}>
+                          <button className={listStyle === 'wheel' ? 'on' : ''} onClick={() => setListStyle('wheel')}>Cylinder</button>
+                          <button className={listStyle === 'flux' ? 'on' : ''} onClick={() => setListStyle('flux')}>Flux</button>
+                        </div>
+                      )}
                     </div>
 
                     <div className="bar-group">
@@ -421,7 +432,7 @@ export default function App() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
             >
-              <ListView picks={shown} savedIds={saved} onSwipe={handleListToggle} onOpen={setDetail} />
+              <ListView picks={shown} savedIds={saved} onSwipe={handleListToggle} onOpen={setDetail} listStyle={listStyle} />
             </motion.div>
           )}
         </main>
