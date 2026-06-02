@@ -407,7 +407,9 @@ export default function App() {
               transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
             >
               <SwipeStack
-                key={`${dealKey}-${filter}-${when}`}
+                /* remount when the intro lifts so the deck deals in while it's actually visible
+                   (mounting behind the intro would burn the fly-in before the app is revealed) */
+                key={`${dealKey}-${filter}-${when}-${intro ? 'intro' : 'live'}`}
                 picks={deck}
                 onSwipe={handleStackSwipe}
                 onRefresh={refresh}

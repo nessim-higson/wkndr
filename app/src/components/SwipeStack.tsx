@@ -12,7 +12,9 @@ import './SwipeStack.css'
 const THRESHOLD = 105
 const VELOCITY = 550
 const IDLE_MS = 3000   // no interaction for this long → the deck demos itself
-const RENDER = 4       // cards kept in the DOM; the 4th feeds the back slot so it never "snaps" in
+const RENDER = 4         // cards kept in the DOM
+const VISIBLE_DEPTH = 2  // only 3 cards show; anything deeper parks behind the back one — a hidden
+                         // buffer, so a card cycling in mounts unseen and only appears by being revealed
 const STEP_SCALE = 0.05
 const STEP_Y = 18
 
@@ -87,8 +89,12 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
   // Each card sits at an effective depth of (depth − progress): as the top card is
   // dragged (progress 0→1), every card behind eases forward one step in lockstep. On
   // commit, depth decrements exactly as progress resets, so the position stays continuous.
-  const slotScale = useTransform(progress, (p) => 1 - Math.max(0, depth - p) * STEP_SCALE)
-  const slotY = useTransform([progress, enterY], ([p, ey]: number[]) => Math.max(0, depth - p) * STEP_Y + ey)
+  // clamp the visible depth: cards deeper than VISIBLE_DEPTH sit exactly where the back one
+  // does (occluded behind it) until they advance forward — so the incoming card is never seen
+  // to "insert", it just gets uncovered as the stack moves up.
+  const eff = useTransform(progress, (p) => Math.min(VISIBLE_DEPTH, Math.max(0, depth - p)))
+  const slotScale = useTransform(eff, (d) => 1 - d * STEP_SCALE)
+  const slotY = useTransform([eff, enterY], ([d, ey]: number[]) => d * STEP_Y + ey)
 
   // Fly the card off-screen along (dx, dy), carrying `speed` of momentum. The exit glides
   // at a fairly steady pace (a hard toss is only a little quicker) and is clamped so cards
