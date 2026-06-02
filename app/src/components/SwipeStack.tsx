@@ -11,10 +11,10 @@ import './SwipeStack.css'
 
 const THRESHOLD = 105
 const VELOCITY = 550
-const IDLE_MS = 3000   // no interaction for this long → the deck starts cycling itself
-const RENDER = 4       // cards kept in the DOM (depth 0..3); depth 3 is the rear/receiving slot
-const GAP_Z = 62       // px each card sits further back in real 3D space (perspective shrinks it)
-const PEEK_Y = 16      // px each deeper card drops, so its lower edge peeks out below the front
+const IDLE_MS = 3000   // no interaction for this long → the deck demos itself
+const RENDER = 3       // cards kept in the DOM (depth 0..2)
+const STEP_SCALE = 0.05
+const STEP_Y = 18
 
 // unit direction the card travels when committed
 const DIR: Record<SwipeDir, { x: number; y: number }> = {
@@ -26,7 +26,7 @@ const DIR: Record<SwipeDir, { x: number; y: number }> = {
 
 interface CardHandle {
   fling: (dir: SwipeDir, info?: PanInfo) => void
-  cycle: () => void
+  autoFling: () => void
 }
 
 interface SwipeCardProps {
@@ -47,8 +47,6 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
   const x = useMotionValue(0)
   const y = useMotionValue(0)
   const spin = useMotionValue(0)               // extra rotation imparted by a toss
-  const cycleZ = useMotionValue(0)             // idle shuffle: recede the card into the deck (translateZ)
-  const cycleY = useMotionValue(0)             // idle shuffle: drop it to the rear peek
   const grabLever = useRef(0)                  // where you grabbed: -1 top … +1 bottom
   const cardRef = useRef<HTMLDivElement>(null)
   const dragged = useRef(false)  // true once a real drag begins → suppresses the tap-to-open
@@ -69,22 +67,17 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
     if (r) grabLever.current = Math.max(-1, Math.min(1, ((e.clientY - r.top) / r.height) * 2 - 1))
   }
 
-  // Each card sits at an effective depth of (depth − progress), expressed as real 3D
-  // distance: as the top card is dragged (progress 0→1), every card behind eases forward
-  // one step in Z. On commit, depth decrements as progress resets, so it stays continuous.
-  // cycleZ/cycleY add the idle-shuffle recede on top of that (only the cycling card moves).
-  const slotZ = useTransform([progress, cycleZ], ([p, cz]: number[]) => -Math.max(0, depth - p) * GAP_Z + cz)
-  const slotY = useTransform([progress, cycleY], ([p, cy]: number[]) => Math.max(0, depth - p) * PEEK_Y + cy)
+  // Each card sits at an effective depth of (depth − progress): as the top card is
+  // dragged (progress 0→1), every card behind eases forward one step in lockstep. On
+  // commit, depth decrements exactly as progress resets, so the position stays continuous.
+  const slotScale = useTransform(progress, (p) => 1 - Math.max(0, depth - p) * STEP_SCALE)
+  const slotY = useTransform(progress, (p) => Math.max(0, depth - p) * STEP_Y)
 
-  // Throw the card off-screen in `dir`, carrying the gesture's momentum.
-  function fling(dir: SwipeDir, info?: PanInfo) {
+  // Fly the card off-screen along (dx, dy), carrying `speed` of momentum. The exit glides
+  // at a fairly steady pace (a hard toss is only a little quicker) and is clamped so cards
+  // leave the frame where you can see them. `onDone` fires once it's gone.
+  function exit(dx: number, dy: number, speed: number, onDone: () => void) {
     const W = window.innerWidth, H = window.innerHeight
-    let dx = DIR[dir].x, dy = DIR[dir].y, speed = 0
-    if (info) {
-      speed = Math.hypot(info.velocity.x, info.velocity.y)
-      if (speed > 400) { dx = info.velocity.x; dy = info.velocity.y }
-      else { dx = info.offset.x || DIR[dir].x; dy = info.offset.y || DIR[dir].y }
-    }
     const mag = Math.hypot(dx, dy) || 1
     const reach = Math.max(W, H) * 1.25 + 200
     const targetX = (dx / mag) * reach
@@ -95,25 +88,33 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
     const ease = [0.3, 0.18, 0.28, 1] as const
     const spinDeg = Math.sign(dx || 1) * (4 + Math.min(14, speed * 0.007)) * (0.55 + Math.abs(grabLever.current) * 0.6)
     animate(spin, spinDeg, { duration: dur, ease })
-    animate(progress, 1, { duration: Math.min(0.5, dur), ease: 'easeOut' })
+    animate(progress, 1, { duration: Math.min(0.5, dur), ease: 'easeOut' })   // next card advances as this flies
     animate(x, targetX, { duration: dur, ease })
-    animate(y, targetY, { duration: dur, ease, onComplete: () => onSwipe(pick, dir) })
+    animate(y, targetY, { duration: dur, ease, onComplete: onDone })
   }
 
-  // The idle move: the top card recedes straight back through the deck into the rearmost
-  // slot — real translateZ, so the front cards genuinely occlude it as it passes their
-  // depth (no z-index poke, no fade). It just sinks to the back. Meanwhile the cards in
-  // front ease forward one step; the rear slot is occluded, so the order-rotation is unseen.
-  function cycle() {
-    const ease = [0.33, 0, 0.25, 1] as const
-    const dur = 0.74
-    const rear = RENDER - 1                       // deepest rendered slot
-    animate(progress, 1, { duration: dur, ease })
-    animate(cycleZ, -rear * GAP_Z, { duration: dur, ease })            // sink to the rear depth
-    animate(cycleY, rear * PEEK_Y, { duration: dur, ease, onComplete: () => onCycle?.(pick) })
+  // Committed swipe: exit ALONG the throw (velocity flick → offset drag → cardinal fallback).
+  function fling(dir: SwipeDir, info?: PanInfo) {
+    let dx = DIR[dir].x, dy = DIR[dir].y, speed = 0
+    if (info) {
+      speed = Math.hypot(info.velocity.x, info.velocity.y)
+      if (speed > 400) { dx = info.velocity.x; dy = info.velocity.y }
+      else { dx = info.offset.x || DIR[dir].x; dy = info.offset.y || DIR[dir].y }
+    }
+    exit(dx, dy, speed, () => onSwipe(pick, dir))
   }
-  useImperativeHandle(ref, () => ({ fling, cycle }), [pick])
 
+  // Idle demo: the top card slides off in a varying direction, then rotates to the back of
+  // the deck (non-destructive — the deck never empties). Direction varies each time so the
+  // deck fans itself out every which way while you're not touching it.
+  function autoFling() {
+    const ang = Math.random() * Math.PI * 2                 // any direction
+    const lean = -0.5 + Math.random()                       // slight up/down lean for variety
+    exit(Math.cos(ang), Math.sin(ang) * 0.7 + lean * 0.3, 650, () => onCycle?.(pick))
+  }
+  useImperativeHandle(ref, () => ({ fling, autoFling }), [pick])
+
+  // live: as the top card drags, publish how far (0→1) so the stack advances with it
   function onDrag(_e: unknown, info: PanInfo) {
     progress.set(Math.min(1, Math.hypot(info.offset.x, info.offset.y) / PROGRESS_REF))
   }
@@ -123,14 +124,16 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
     if (offset.x < -THRESHOLD || velocity.x < -VELOCITY) return fling('nope', info)
     if (offset.y < -THRESHOLD || velocity.y < -VELOCITY) return fling('save', info)
     if (offset.y > THRESHOLD || velocity.y > VELOCITY) return fling('skip', info)
+    // not committed → card snaps home and the stack eases back (soft)
     animate(progress, 0, { type: 'spring', stiffness: 230, damping: 30 })
   }
 
   return (
-    // SLOT — owns the stack position (depth scale + offset) and stacking order.
+    // SLOT — owns the stack position (depth scale + offset). Animates smoothly when a
+    // card is promoted, so it never fights the drag offset (which lives on the inner).
     <motion.div
       className="swipe-card-slot"
-      style={{ z: slotZ, y: slotY, pointerEvents: interactive ? 'auto' : 'none' }}
+      style={{ zIndex: 10 - depth, scale: slotScale, y: slotY, pointerEvents: interactive ? 'auto' : 'none' }}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
@@ -173,13 +176,13 @@ export function SwipeStack({
   filterLabel?: string | null
   onClearFilter?: () => void
   onSeeList?: () => void
-  paused?: boolean   // suppress the idle auto-cycle (e.g. while a detail sheet is open)
+  paused?: boolean   // suppress the idle demo (e.g. while a detail sheet is open)
 }) {
   const topRef = useRef<CardHandle>(null)
   const progress = useMotionValue(0)   // top card's drag (0→1), drives the cards behind
 
-  // Rotation counter — lets the idle auto-cycle send the top card to the back WITHOUT
-  // committing a swipe. Derived synchronously from `picks` so a real swipe never lags.
+  // Rotation counter — lets the idle demo send the top card to the back WITHOUT committing
+  // a swipe. Derived synchronously from `picks` so a real swipe never lags / flashes.
   const [rot, setRot] = useState(0)
   const n = picks.length
   const order = useMemo(() => {
@@ -193,7 +196,7 @@ export function SwipeStack({
   const topId = visible[0]?.id
   useLayoutEffect(() => { progress.set(0) }, [topId, progress])
 
-  // ---- idle auto-cycle -----------------------------------------------------
+  // ---- idle demo -----------------------------------------------------------
   const idle = useRef<ReturnType<typeof setTimeout>>()
   const cycling = useRef(false)
   const canCycle = !paused && n > 1
@@ -204,17 +207,17 @@ export function SwipeStack({
     idle.current = setTimeout(() => {
       if (document.hidden || cycling.current) { arm(); return }   // don't burn cycles in a hidden tab
       cycling.current = true
-      topRef.current?.cycle()
+      topRef.current?.autoFling()
     }, IDLE_MS)
   }, [canCycle])
 
   function handleCycle() {
     cycling.current = false
-    setRot((r) => r + 1)   // top → back; the topId-change effect re-arms the idle clock
+    setRot((r) => r + 1)   // flung card → back of the deck; the topId-change effect re-arms
   }
 
   // Pause the instant a pointer goes down on the stack; resume the countdown only once it
-  // lifts — so the deck never cycles mid-drag, and only resumes after you stop interacting.
+  // lifts — so the deck never auto-flings mid-touch, and only resumes with no interaction.
   function pause() { clearTimeout(idle.current); cycling.current = false }
   useEffect(() => {
     const resume = () => arm()
