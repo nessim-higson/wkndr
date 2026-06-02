@@ -12,7 +12,7 @@ import './SwipeStack.css'
 const THRESHOLD = 105
 const VELOCITY = 550
 const IDLE_MS = 3000   // no interaction for this long → the deck demos itself
-const RENDER = 3       // cards kept in the DOM (depth 0..2)
+const RENDER = 4       // cards kept in the DOM; the 4th feeds the back slot so it never "snaps" in
 const STEP_SCALE = 0.05
 const STEP_Y = 18
 
@@ -33,6 +33,7 @@ interface SwipeCardProps {
   pick: Pick
   interactive: boolean
   depth: number // 0 = top
+  dealIn: boolean // true → fly onto the deck (initial build); false → just fade (a card cycling in)
   progress: MotionValue<number>   // shared: how far the TOP card is dragged (0→1)
   onSwipe: (p: Pick, dir: SwipeDir) => void
   onCycle?: (p: Pick) => void
@@ -42,14 +43,30 @@ interface SwipeCardProps {
 const PROGRESS_REF = 140   // px of drag at which the next card has fully advanced
 
 const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
-  { pick, interactive, depth, progress, onSwipe, onCycle, onOpen }, ref,
+  { pick, interactive, depth, dealIn, progress, onSwipe, onCycle, onOpen }, ref,
 ) {
   const x = useMotionValue(0)
   const y = useMotionValue(0)
   const spin = useMotionValue(0)               // extra rotation imparted by a toss
+  const enterY = useMotionValue(dealIn ? 680 : 0)               // build-in: fly up from below
+  const enterRot = useMotionValue(dealIn ? (depth % 2 ? 7 : -7) : 0)  // …with a slight fanning tilt
+  const enterOp = useMotionValue(0)
   const grabLever = useRef(0)                  // where you grabbed: -1 top … +1 bottom
   const cardRef = useRef<HTMLDivElement>(null)
   const dragged = useRef(false)  // true once a real drag begins → suppresses the tap-to-open
+
+  // Build-in: when the deck first deals (initial load, refresh, entering the stack) the
+  // cards fly up onto it, back-to-front. A card that merely cycles in at the back later
+  // just fades — no fly-in. Runs once on mount.
+  useEffect(() => {
+    const delay = dealIn ? (RENDER - 1 - depth) * 0.07 : 0
+    animate(enterOp, 1, { duration: dealIn ? 0.5 : 0.34, delay, ease: [0.22, 1, 0.36, 1] })
+    if (dealIn) {
+      animate(enterY, 0, { type: 'spring', stiffness: 300, damping: 30, delay })
+      animate(enterRot, 0, { type: 'spring', stiffness: 300, damping: 30, delay })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   // Tilt is torque: grabbing the TOP and pulling pivots the card hard one way, the BOTTOM
   // the other, a centre grab barely tilts. Plus any spin imparted on a toss.
@@ -71,7 +88,7 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
   // dragged (progress 0→1), every card behind eases forward one step in lockstep. On
   // commit, depth decrements exactly as progress resets, so the position stays continuous.
   const slotScale = useTransform(progress, (p) => 1 - Math.max(0, depth - p) * STEP_SCALE)
-  const slotY = useTransform(progress, (p) => Math.max(0, depth - p) * STEP_Y)
+  const slotY = useTransform([progress, enterY], ([p, ey]: number[]) => Math.max(0, depth - p) * STEP_Y + ey)
 
   // Fly the card off-screen along (dx, dy), carrying `speed` of momentum. The exit glides
   // at a fairly steady pace (a hard toss is only a little quicker) and is clamped so cards
@@ -133,10 +150,7 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
     // card is promoted, so it never fights the drag offset (which lives on the inner).
     <motion.div
       className="swipe-card-slot"
-      style={{ zIndex: 10 - depth, scale: slotScale, y: slotY, pointerEvents: interactive ? 'auto' : 'none' }}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+      style={{ zIndex: 10 - depth, scale: slotScale, y: slotY, rotate: enterRot, opacity: enterOp, pointerEvents: interactive ? 'auto' : 'none' }}
     >
       {/* INNER — only the top card is draggable; x/y/rotate start at 0 every time */}
       <motion.div
@@ -180,6 +194,8 @@ export function SwipeStack({
 }) {
   const topRef = useRef<CardHandle>(null)
   const progress = useMotionValue(0)   // top card's drag (0→1), drives the cards behind
+  const firstDeal = useRef(true)       // only the initial set flies in; later arrivals fade
+  useEffect(() => { firstDeal.current = false }, [])
 
   // Rotation counter — lets the idle demo send the top card to the back WITHOUT committing
   // a swipe. Derived synchronously from `picks` so a real swipe never lags / flashes.
@@ -265,6 +281,7 @@ export function SwipeStack({
             ref={i === 0 ? topRef : undefined}
             pick={p}
             depth={i}
+            dealIn={firstDeal.current}
             interactive={i === 0}
             progress={progress}
             onSwipe={onSwipe}

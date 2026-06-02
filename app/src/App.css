@@ -315,6 +315,11 @@
   margin-top: 18px;
   display: flex;
   flex-direction: column;
+  /* own stacking context BELOW the topbar (z 20): the list rows set z-index up to 100
+     for their depth ordering — without this they'd paint over the menu and steal its
+     clicks (tapping "Stack" would hit a row behind it and open a card). */
+  position: relative;
+  z-index: 0;
 }
 .main-stack { justify-content: center; align-items: center; }
 /* animated view panes (stack <-> list crossfade) */
