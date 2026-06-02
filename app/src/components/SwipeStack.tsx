@@ -1,4 +1,4 @@
-import { forwardRef, useImperativeHandle, useRef } from 'react'
+import { forwardRef, useImperativeHandle, useLayoutEffect, useRef } from 'react'
 import {
   motion, useMotionValue, useTransform, animate,
   type MotionValue, type PanInfo,
@@ -65,7 +65,7 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
     // bring the next card fully forward while this one flies, then reset on landing
     animate(progress, 1, { duration: Math.min(0.34, dur), ease: 'easeOut' })
     animate(x, targetX, { duration: dur, ease })
-    animate(y, targetY, { duration: dur, ease, onComplete: () => { progress.set(0); onSwipe(pick, dir) } })
+    animate(y, targetY, { duration: dur, ease, onComplete: () => onSwipe(pick, dir) })
   }
   useImperativeHandle(ref, () => ({ fling }), [pick])
 
@@ -133,6 +133,11 @@ export function SwipeStack({
   const topRef = useRef<CardHandle>(null)
   const progress = useMotionValue(0)   // top card's drag (0→1), drives the cards behind
   const visible = picks.slice(0, 3)
+
+  // When the top card changes (a swipe committed), reset progress AFTER the new depths
+  // commit but BEFORE paint — so the promoted stack never flashes its pre-shift frame.
+  const topId = visible[0]?.id
+  useLayoutEffect(() => { progress.set(0) }, [topId, progress])
 
   if (visible.length === 0) {
     return (
