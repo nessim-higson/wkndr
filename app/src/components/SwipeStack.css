@@ -29,6 +29,8 @@
   inset: 0;
   will-change: transform, opacity;
   transform-origin: center bottom;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 .swipe-card {
   width: 100%;
@@ -36,6 +38,8 @@
   cursor: grab;
   will-change: transform;
   transform-origin: center bottom;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 /* drag indicators */

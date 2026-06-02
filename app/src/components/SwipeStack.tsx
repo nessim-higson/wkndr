@@ -88,7 +88,7 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
     // card is promoted, so it never fights the drag offset (which lives on the inner).
     <motion.div
       className="swipe-card-slot"
-      style={{ zIndex: 10 - depth, scale: slotScale, y: slotY }}
+      style={{ zIndex: 10 - depth, scale: slotScale, y: slotY, pointerEvents: interactive ? 'auto' : 'none' }}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
@@ -164,7 +164,8 @@ export function SwipeStack({
   return (
     <div className="stack-wrap">
       <div className="stack-deck">
-        {/* render back-to-front so the top card paints last */}
+        {/* Stable DOM order — stacking is handled by each slot's z-index (set per depth),
+            so we never reorder nodes on a swipe (reordering mid-transform = glitches). */}
         {visible.map((p, i) => (
           <SwipeCard
             key={p.id}
@@ -176,7 +177,7 @@ export function SwipeStack({
             onSwipe={onSwipe}
             onOpen={onOpen}
           />
-        )).reverse()}
+        ))}
       </div>
 
       <div className="stack-actions">
