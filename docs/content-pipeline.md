@@ -80,7 +80,20 @@ ticket-sales data we can't get; agreement across trusted editors *is* the popula
 `relevance = buzz(distinct sources, weighted by source trust)`
 `           + editorial flags ("editor's pick", "don't miss")`
 `           + freshness (new this week ▸ ending soon ▸ this weekend ▸ evergreen)`
-`           + scarcity (final week of a run, last date of a festival)`
+`           + scarcity (final week of a run, last date of a festival, selling fast)`
+
+**Source-trust weights (curated with Ness):** Time Out + Your Little Black Book = highest;
+I amsterdam What's On = strong corroborator. A thing in two top sources ranks near the top.
+
+**`status` (scarcity badge).** The crawler reads a live availability signal and the app shows
+it as a badge that also lifts ranking:
+- `selling-fast` / `almost-gone` / `sold-out` — parsed from ticketing/venue pages.
+- `final-week` / `closing-soon` — computed from an exhibition's end date.
+- `free` — surfaced positively.
+
+**Instagram is a research lead only, never a scraped source** (see the dedicated section
+below): pull the website/newsletter behind the account; use official oEmbed for a single
+public post if ever needed.
 
 Then the app's existing per-user pass re-ranks `relevance` by **weather-fit × learned taste**
 (and de-clusters by category). So the order is: *what the city agrees is great → filtered to
