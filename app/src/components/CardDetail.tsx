@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence, motion, useDragControls } from 'framer-motion'
 import type { Pick } from '../types'
 import { CATEGORY_LABEL, FRESHNESS_LABEL, STATUS_LABEL } from '../types'
 import './CardDetail.css'
@@ -24,6 +24,9 @@ export function CardDetail({
   onToggleSave: (p: Pick) => void
 }) {
   const [copied, setCopied] = useState(false)
+  // drag-to-dismiss (App Store style): the gesture only starts from the image /
+  // top zone (via dragControls), so the body below still scrolls normally.
+  const dragControls = useDragControls()
 
   // share THIS pick — a link that opens straight to it (no backend)
   async function share() {
@@ -53,14 +56,27 @@ export function CardDetail({
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
             transition={{ duration: 0.44, ease: [0.22, 1, 0.36, 1] }}
+            drag="y"
+            dragListener={false}
+            dragControls={dragControls}
+            dragConstraints={{ top: 0, bottom: 0 }}
+            dragElastic={{ top: 0.02, bottom: 0.7 }}
+            onDragEnd={(_, info) => { if (info.offset.y > 120 || info.velocity.y > 600) onClose() }}
           >
-            <button className="detail-close" onClick={onClose} aria-label="Close">×</button>
+            <button
+              className="detail-close"
+              onClick={onClose}
+              onPointerDown={(e) => e.stopPropagation()}
+              aria-label="Close"
+            >×</button>
             <motion.div
               className={`detail-img${pick.image ? '' : ` poster poster--${pick.category}`}`}
-              style={pick.image ? { backgroundImage: `url(${pick.image})` } : undefined}
+              style={{ ...(pick.image ? { backgroundImage: `url(${pick.image})` } : {}), touchAction: 'none' }}
+              onPointerDown={(e) => dragControls.start(e)}
               initial={{ scale: pick.image ? 1.08 : 1 }} animate={{ scale: 1 }}
               transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
             >
+              <span className="detail-grip" aria-hidden />
               {!pick.image && <span className="poster-mark">{CATEGORY_LABEL[pick.category]}</span>}
               <div className="detail-tags">
                 {pick.status && <span className={`chip chip-status chip-status--${pick.status}`}>{STATUS_LABEL[pick.status]}</span>}
