@@ -68,30 +68,36 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
   }
 
   return (
+    // SLOT — owns the stack position (depth scale + offset). Animates smoothly when a
+    // card is promoted, so it never fights the drag offset (which lives on the inner).
     <motion.div
-      className="swipe-card"
-      style={interactive ? { x, y, rotate, zIndex: 10 } : { zIndex: 10 - depth }}
-      initial={{ scale: 0.94 }}
-      animate={interactive
-        ? { scale: 1 }
-        : { scale: 1 - depth * 0.045, y: depth * 16 }}
+      className="swipe-card-slot"
+      style={{ zIndex: 10 - depth }}
+      initial={{ opacity: 0, scale: 0.92, y: depth * 16 }}
+      animate={{ opacity: 1, scale: 1 - depth * 0.045, y: depth * 16 }}
       transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-      drag={interactive}
-      dragSnapToOrigin
-      dragElastic={0.6}
-      onTapStart={interactive ? () => { dragged.current = false } : undefined}
-      onDragStart={interactive ? () => { dragged.current = true } : undefined}
-      onDragEnd={interactive ? onDragEnd : undefined}
-      onTap={interactive ? () => { if (!dragged.current) onOpen?.(pick) } : undefined}
-      whileTap={interactive ? { cursor: 'grabbing' } : undefined}
     >
-      {interactive && (
-        <>
-          <motion.div className="swipe-tint red" style={{ opacity: redOp }} aria-hidden />
-          <motion.div className="swipe-tint green" style={{ opacity: greenOp }} aria-hidden />
-        </>
-      )}
-      <Card pick={pick} />
+      {/* INNER — only the top card is draggable; x/y/rotate start at 0 every time */}
+      <motion.div
+        className="swipe-card"
+        style={interactive ? { x, y, rotate } : undefined}
+        drag={interactive}
+        dragSnapToOrigin
+        dragElastic={0.6}
+        onTapStart={interactive ? () => { dragged.current = false } : undefined}
+        onDragStart={interactive ? () => { dragged.current = true } : undefined}
+        onDragEnd={interactive ? onDragEnd : undefined}
+        onTap={interactive ? () => { if (!dragged.current) onOpen?.(pick) } : undefined}
+        whileTap={interactive ? { cursor: 'grabbing' } : undefined}
+      >
+        {interactive && (
+          <>
+            <motion.div className="swipe-tint red" style={{ opacity: redOp }} aria-hidden />
+            <motion.div className="swipe-tint green" style={{ opacity: greenOp }} aria-hidden />
+          </>
+        )}
+        <Card pick={pick} />
+      </motion.div>
     </motion.div>
   )
 })
