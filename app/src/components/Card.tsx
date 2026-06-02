@@ -1,5 +1,5 @@
 import type { Pick } from '../types'
-import { CATEGORY_LABEL, FRESHNESS_LABEL } from '../types'
+import { CATEGORY_LABEL, FRESHNESS_LABEL, STATUS_LABEL } from '../types'
 import './Card.css'
 
 /** The big, image-led pick card. Used inside the swipe stack. */
@@ -8,6 +8,7 @@ export function Card({ pick }: { pick: Pick }) {
     <article className="card">
       <div className="card-img" style={{ backgroundImage: `url(${pick.image})` }}>
         <div className="card-tags">
+          {pick.status && <span className={`chip chip-status chip-status--${pick.status}`}>{STATUS_LABEL[pick.status]}</span>}
           <span className={`chip chip-fresh chip-fresh--${pick.freshness}`}>{FRESHNESS_LABEL[pick.freshness]}</span>
           <span className="chip chip-cat">{CATEGORY_LABEL[pick.category]}</span>
           {pick.outdoor && <span className="chip chip-outdoor">Outdoor</span>}

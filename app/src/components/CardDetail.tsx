@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import type { Pick } from '../types'
-import { CATEGORY_LABEL, FRESHNESS_LABEL } from '../types'
+import { CATEGORY_LABEL, FRESHNESS_LABEL, STATUS_LABEL } from '../types'
 import './CardDetail.css'
 
 // the detail body fades/rises in just after the sheet lands — staggered children
@@ -61,6 +61,7 @@ export function CardDetail({
               transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
             >
               <div className="detail-tags">
+                {pick.status && <span className={`chip chip-status chip-status--${pick.status}`}>{STATUS_LABEL[pick.status]}</span>}
                 <span className={`chip chip-fresh chip-fresh--${pick.freshness}`}>{FRESHNESS_LABEL[pick.freshness]}</span>
                 <span className="chip chip-cat">{CATEGORY_LABEL[pick.category]}</span>
                 {pick.outdoor && <span className="chip chip-outdoor">Outdoor</span>}

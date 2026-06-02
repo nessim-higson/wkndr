@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import type { Pick, SwipeDir } from '../types'
-import { CATEGORY_LABEL, FRESHNESS_LABEL } from '../types'
+import { CATEGORY_LABEL, FRESHNESS_LABEL, STATUS_LABEL } from '../types'
 import './ListView.css'
 
 // rows cascade in subtly when the list mounts
@@ -28,6 +28,7 @@ export function ListView({
             <div className="row-thumb" style={{ backgroundImage: `url(${p.image})` }} />
             <div className="row-main">
               <div className="row-tags mono">
+                {p.status && <span className={`row-status row-status--${p.status}`}>{STATUS_LABEL[p.status]}</span>}
                 <span className="row-fresh">{FRESHNESS_LABEL[p.freshness]}</span>
                 <span>· {CATEGORY_LABEL[p.category]}</span>
                 <span className="row-when">· {p.when}</span>

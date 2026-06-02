@@ -16,6 +16,9 @@ export type Category =
 // freshness buckets (the time dimension)
 export type Freshness = 'new' | 'weekend' | 'always' | 'ending'
 
+// live availability/scarcity signal (from the crawl) — shown as a badge, lifts ranking
+export type Status = 'sold-out' | 'selling-fast' | 'final-week' | 'free'
+
 export type SwipeDir = 'like' | 'nope' | 'save' | 'skip'
 
 export interface Pick {
@@ -36,6 +39,7 @@ export interface Pick {
   link: string         // link out to the source/booking page (never republish)
   weatherFit: Mode[]   // modes this pick peaks in
   verify?: boolean     // true = detail (venue/time) needs confirming before relying
+  status?: Status      // live availability/scarcity from the crawl
 }
 
 export const CATEGORY_LABEL: Record<Category, string> = {
@@ -54,4 +58,11 @@ export const FRESHNESS_LABEL: Record<Freshness, string> = {
   weekend: 'This weekend',
   always: 'Always good',
   ending: 'Ending soon',
+}
+
+export const STATUS_LABEL: Record<Status, string> = {
+  'sold-out': 'Sold out',
+  'selling-fast': 'Selling fast',
+  'final-week': 'Final week',
+  free: 'Free',
 }
