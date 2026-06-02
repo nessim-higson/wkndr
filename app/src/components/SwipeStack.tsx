@@ -7,17 +7,18 @@ import type { Pick, SwipeDir } from '../types'
 import { Card } from './Card'
 import './SwipeStack.css'
 
-const THRESHOLD = 110
-const VELOCITY = 600
+const THRESHOLD = 105
+const VELOCITY = 550
 
-const FLING: Record<SwipeDir, { x: number; y: number }> = {
-  like: { x: 700, y: 0 },
-  nope: { x: -700, y: 0 },
-  save: { x: 0, y: -800 },
-  skip: { x: 0, y: 600 },
+// unit direction the card travels when committed
+const DIR: Record<SwipeDir, { x: number; y: number }> = {
+  like: { x: 1, y: 0 },
+  nope: { x: -1, y: 0 },
+  save: { x: 0, y: -1 },
+  skip: { x: 0, y: 1 },
 }
 
-interface CardHandle { fling: (dir: SwipeDir) => void }
+interface CardHandle { fling: (dir: SwipeDir, vel?: { x: number; y: number }) => void }
 
 interface SwipeCardProps {
   pick: Pick
@@ -39,19 +40,30 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
   const redOp = useTransform(x, [-130, -18], [0.88, 0])
   const greenOp = useTransform(x, [18, 130], [0, 0.88])
 
-  function fling(dir: SwipeDir) {
-    const t = FLING[dir]
-    animate(x, t.x, { duration: 0.32, ease: 'easeIn' })
-    animate(y, t.y, { duration: 0.32, ease: 'easeIn', onComplete: () => onSwipe(pick, dir) })
+  // Throw the card off-screen in `dir`, carrying the gesture's momentum. The exit
+  // glides at a fairly consistent pace (a hard toss is only a little quicker) and is
+  // clamped so cards never just vanish — they leave the frame where you can see them.
+  function fling(dir: SwipeDir, vel?: { x: number; y: number }) {
+    const u = DIR[dir]
+    const W = window.innerWidth, H = window.innerHeight
+    const targetX = u.x * (W + 240)
+    const targetY = u.y * (H + 240)
+    const dist = Math.hypot(targetX - x.get(), targetY - y.get())
+    const speed = vel ? Math.hypot(vel.x, vel.y) : 0
+    const exitSpeed = Math.min(3000, 1850 + speed * 0.32)   // px/s, gentle velocity influence
+    const dur = Math.min(0.62, Math.max(0.42, dist / exitSpeed))
+    const ease = [0.32, 0.12, 0.24, 1] as const             // quick lead-in, smooth glide-out
+    animate(x, targetX, { duration: dur, ease })
+    animate(y, targetY, { duration: dur, ease, onComplete: () => onSwipe(pick, dir) })
   }
   useImperativeHandle(ref, () => ({ fling }), [pick])
 
   function onDragEnd(_e: unknown, info: PanInfo) {
     const { offset, velocity } = info
-    if (offset.x > THRESHOLD || velocity.x > VELOCITY) return fling('like')
-    if (offset.x < -THRESHOLD || velocity.x < -VELOCITY) return fling('nope')
-    if (offset.y < -THRESHOLD || velocity.y < -VELOCITY) return fling('save')
-    if (offset.y > THRESHOLD || velocity.y > VELOCITY) return fling('skip')
+    if (offset.x > THRESHOLD || velocity.x > VELOCITY) return fling('like', velocity)
+    if (offset.x < -THRESHOLD || velocity.x < -VELOCITY) return fling('nope', velocity)
+    if (offset.y < -THRESHOLD || velocity.y < -VELOCITY) return fling('save', velocity)
+    if (offset.y > THRESHOLD || velocity.y > VELOCITY) return fling('skip', velocity)
     // otherwise dragSnapToOrigin returns it home
   }
 

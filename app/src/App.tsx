@@ -251,7 +251,15 @@ export default function App() {
           </AnimatePresence>
 
           <div className={`topbar-module${barOpen ? ' open' : ''}`}>
-            <div className="topbar-row">
+            <div
+              className="topbar-row"
+              role="button"
+              tabIndex={0}
+              aria-label={barOpen ? 'Close menu' : 'Open menu'}
+              aria-expanded={barOpen}
+              onClick={() => setBarOpen((v) => !v)}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setBarOpen((v) => !v) } }}
+            >
               <div className="tb-brandblock">
                 <div className="tb-brand"><span className="tb-dot" aria-hidden />WKNDR</div>
                 <span className="tb-divider" aria-hidden />
@@ -261,22 +269,20 @@ export default function App() {
                 </div>
               </div>
 
-              <button
+              <span
                 className={`tb-icon tb-menu${barOpen ? ' on' : ''}${!barOpen && filterActive ? ' dot' : ''}`}
-                onClick={() => setBarOpen((v) => !v)}
-                aria-label={barOpen ? 'Close menu' : 'Open menu'}
-                aria-expanded={barOpen}
+                aria-hidden
               >
                 {barOpen ? (
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden>
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                     <line x1="5" y1="5" x2="15" y2="15" /><line x1="15" y1="5" x2="5" y2="15" />
                   </svg>
                 ) : (
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden>
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                     <line x1="3" y1="7" x2="17" y2="7" /><line x1="3" y1="13" x2="17" y2="13" />
                   </svg>
                 )}
-              </button>
+              </span>
             </div>
 
             <AnimatePresence>
