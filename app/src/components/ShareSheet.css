@@ -30,7 +30,7 @@
 .wc-head { position: relative; display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 14px; }
 .wc-eyebrow { font-size: 16px; font-weight: 600; letter-spacing: -0.02em; }
 .wc-mode { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.8; }
-.wc-list { position: relative; list-style: none; display: flex; flex-direction: column; gap: 9px; }
+.wc-list { position: relative; list-style: none; display: flex; flex-direction: column; gap: 8px; }
 .wc-item { display: flex; align-items: center; gap: 10px; }
 .wc-thumb { width: 40px; height: 40px; border-radius: 8px; background-size: cover; background-position: center; flex-shrink: 0; box-shadow: 0 2px 8px rgba(0,0,0,0.25); }
 .wc-text { display: flex; flex-direction: column; min-width: 0; }
@@ -41,7 +41,7 @@
 
 /* ── actions ── */
 .share-actions { display: flex; gap: 8px; margin-top: 18px; }
-.share-primary { flex: 1; font-size: 15px; font-weight: 600; padding: 14px; border-radius: 999px; background: var(--ink); color: var(--paper); }
+.share-primary { flex: 1; font-size: 14px; font-weight: 600; padding: 14px; border-radius: 999px; background: var(--ink); color: var(--paper); }
 .share-primary:hover { background: var(--accent-deep); }
 .share-copy { flex-shrink: 0; font-size: 14px; font-weight: 600; padding: 14px 18px; border-radius: 999px; background: var(--paper-2); color: var(--ink); }
 .share-note { margin-top: 12px; font-size: 12px; line-height: 1.45; color: var(--ink-4); text-align: center; }
@@ -49,7 +49,7 @@
 .share-empty { text-align: center; padding: 8px 8px 4px; }
 .share-empty h3 { font-size: 20px; font-weight: 600; letter-spacing: -0.02em; }
 .share-empty p { margin-top: 8px; font-size: 14px; line-height: 1.5; color: var(--ink-3); }
-.share-done { margin-top: 20px; width: 100%; font-size: 15px; font-weight: 600; padding: 14px; border-radius: 999px; background: var(--ink); color: var(--paper); }
+.share-done { margin-top: 20px; width: 100%; font-size: 14px; font-weight: 600; padding: 14px; border-radius: 999px; background: var(--ink); color: var(--paper); }
 
 /* sender name — stamps the share link so the recipient knows who it's from */
 .share-name {

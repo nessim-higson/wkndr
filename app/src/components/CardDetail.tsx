@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { AnimatePresence, motion, useDragControls } from 'framer-motion'
+import { X, Star, ArrowUpRight, Check, Sparkles } from 'lucide-react'
 import type { Pick } from '../types'
 import { CATEGORY_LABEL, FRESHNESS_LABEL, STATUS_LABEL } from '../types'
 import './CardDetail.css'
@@ -68,7 +69,7 @@ export function CardDetail({
               onClick={onClose}
               onPointerDown={(e) => e.stopPropagation()}
               aria-label="Close"
-            >×</button>
+            ><X size={18} strokeWidth={2.4} /></button>
             <motion.div
               className={`detail-img${pick.image ? '' : ` poster poster--${pick.category}`}`}
               style={{ ...(pick.image ? { backgroundImage: `url(${pick.image})` } : {}), touchAction: 'none' }}
@@ -93,16 +94,16 @@ export function CardDetail({
               <motion.h2 className="detail-title" variants={itemV}>{pick.title}</motion.h2>
               <motion.div className="detail-venue" variants={itemV}>{pick.venue} · {pick.area} · {pick.price}</motion.div>
               <motion.p className="detail-blurb" variants={itemV}>{pick.blurb}</motion.p>
-              <motion.div className="detail-why" variants={itemV}><span aria-hidden>✦</span> {pick.why}</motion.div>
+              <motion.div className="detail-why" variants={itemV}><Sparkles className="why-mark" size={13} /> {pick.why}</motion.div>
               <motion.div className="detail-actions" variants={itemV}>
                 <button className={`detail-icon-btn${saved ? ' on' : ''}`} onClick={() => onToggleSave(pick)} aria-label={saved ? 'Saved' : 'Save'}>
-                  {saved ? '★' : '☆'}
+                  <Star size={19} strokeWidth={2.2} fill={saved ? 'currentColor' : 'none'} />
                 </button>
                 <button className="detail-icon-btn" onClick={share} aria-label="Share this pick">
-                  {copied ? '✓' : '↗'}
+                  {copied ? <Check size={19} strokeWidth={2.4} /> : <ArrowUpRight size={19} strokeWidth={2.2} />}
                 </button>
                 <a className="detail-link" href={pick.link} target="_blank" rel="noreferrer">
-                  Open at {pick.source} ↗
+                  Open at {pick.source} <ArrowUpRight size={15} strokeWidth={2.2} style={{ verticalAlign: '-2px' }} />
                 </a>
               </motion.div>
               <motion.div className="detail-trace" variants={itemV}>

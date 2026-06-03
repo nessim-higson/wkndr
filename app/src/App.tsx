@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
+import { Shuffle, Clock, ChevronDown, LayoutGrid, Star, ArrowUpRight, LocateFixed, Info } from 'lucide-react'
 import type { Mode, Pick, SwipeDir } from './types'
 import { MODES, MODE_META, classify, applyMode, rankPicks, shuffle } from './weather/modes'
 import { PICKS } from './data/picks'
@@ -330,7 +331,7 @@ export default function App() {
                           <button className={view === 'fan' ? 'on' : ''} onClick={() => setView('fan')}>Fan</button>
                           <button className={view === 'list' ? 'on' : ''} onClick={() => setView('list')}>List</button>
                         </div>
-                        <button className="bar-pill" onClick={refresh}>↻ Shuffle</button>
+                        <button className="bar-pill" onClick={refresh}><Shuffle size={15} strokeWidth={2.2} /> Shuffle</button>
                       </div>
                       {view === 'list' && (
                         <div className="mode-pills list-style-pills" style={{ marginTop: 8 }}>
@@ -344,10 +345,10 @@ export default function App() {
                       <span className="bar-label">Filter</span>
                       <div className="bar-row">
                         <button className={`filter-trigger${when !== 'all' ? ' on' : ''}`} onClick={() => setWhenOpen(true)}>
-                          <span className="ft-icon">◷</span> {whenLabel(when)}<span className="ft-caret">⌄</span>
+                          <Clock className="ft-icon" size={14} strokeWidth={2.2} /> {whenLabel(when)}<ChevronDown className="ft-caret" size={14} strokeWidth={2.2} />
                         </button>
                         <button className={`filter-trigger${filter !== 'all' && filter !== 'saved' ? ' on' : ''}`} onClick={() => setFilterOpen(true)}>
-                          <span className="ft-icon">⊞</span> {filter === 'all' || filter === 'saved' ? 'Everything' : filterLabel(filter)}<span className="ft-caret">⌄</span>
+                          <LayoutGrid className="ft-icon" size={14} strokeWidth={2.2} /> {filter === 'all' || filter === 'saved' ? 'Everything' : filterLabel(filter)}<ChevronDown className="ft-caret" size={14} strokeWidth={2.2} />
                         </button>
                       </div>
                     </div>
@@ -358,8 +359,8 @@ export default function App() {
                         <button
                           className={`bar-pill${filter === 'saved' ? ' on' : ''}`}
                           onClick={() => { setFilter('saved'); setView('list'); setBarOpen(false) }}
-                        >★ Saved · {saved.size}</button>
-                        {saved.size > 0 && <button className="bar-pill" onClick={() => { setShareOpen(true); setBarOpen(false) }}>Share ↗</button>}
+                        ><Star size={14} strokeWidth={2.2} fill="currentColor" /> Saved · {saved.size}</button>
+                        {saved.size > 0 && <button className="bar-pill" onClick={() => { setShareOpen(true); setBarOpen(false) }}>Share <ArrowUpRight size={14} strokeWidth={2.2} /></button>}
                         {(saved.size > 0 || hasTaste(taste)) && (
                           <button className="bar-pill bar-pill--danger" onClick={resetData}>↺ Reset</button>
                         )}
@@ -369,7 +370,7 @@ export default function App() {
                     <div className="bar-group">
                       <span className="bar-label">Weather</span>
                       <div className="bar-row">
-                        <button className="bar-pill" onClick={() => { locate(); setBarOpen(false) }}>⌖ Use my location</button>
+                        <button className="bar-pill" onClick={() => { locate(); setBarOpen(false) }}><LocateFixed size={15} strokeWidth={2.2} /> Use my location</button>
                       </div>
                       <span className="bar-sublabel">Preview a forecast</span>
                       <div className="mode-pills">
@@ -393,7 +394,7 @@ export default function App() {
                     </div>
 
                     <button className="bar-foot" onClick={() => { setInputsOpen(true); setBarOpen(false) }}>
-                      ⓘ Built from {SOURCE_COUNT} sources · weather × freshness{hasTaste(taste) ? ' × you' : ''}
+                      <Info size={13} strokeWidth={2.2} /> Built from {SOURCE_COUNT} sources · weather × freshness{hasTaste(taste) ? ' × you' : ''}
                     </button>
                     <span className="bar-build">v{APP_VERSION}</span>
                   </div>
@@ -405,7 +406,7 @@ export default function App() {
         {filter === 'saved' && saved.size > 0 && (
           <div className="ctx-bar">
             <span>Your weekend · {saved.size} saved</span>
-            <button onClick={() => setShareOpen(true)}>Share ↗</button>
+            <button onClick={() => setShareOpen(true)}>Share <ArrowUpRight size={14} strokeWidth={2.2} /></button>
           </div>
         )}
         {filter === 'shared' && SHARED_IDS && (
@@ -496,7 +497,7 @@ export default function App() {
         open={filterOpen}
         onClose={() => setFilterOpen(false)}
         title="Show me"
-        options={[FILTERS[0], { key: 'saved' as Filter, label: '★ Saved', count: saved.size }, ...FILTERS.slice(1)]}
+        options={[FILTERS[0], { key: 'saved' as Filter, label: 'Saved', count: saved.size }, ...FILTERS.slice(1)]}
         active={filter}
         onSelect={setFilter}
       />

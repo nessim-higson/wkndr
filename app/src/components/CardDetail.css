@@ -38,8 +38,8 @@
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  font-size: 22px;
-  line-height: 1;
+  display: grid;
+  place-items: center;
   color: #fff;
   background: rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(6px);
@@ -79,7 +79,7 @@
   top: 14px;
   left: 14px;
   display: flex;
-  gap: 5px;
+  gap: 4px;
   flex-wrap: wrap;
 }
 .detail-body {
@@ -113,7 +113,7 @@
   letter-spacing: -0.03em;
 }
 .detail-venue { margin-top: 5px; font-size: 13px; color: var(--ink-4); }
-.detail-blurb { margin-top: 16px; font-size: 15px; line-height: 1.6; color: var(--ink-2); }
+.detail-blurb { margin-top: 16px; font-size: 14px; line-height: 1.6; color: var(--ink-2); }
 .detail-why {
   margin-top: 16px;
   padding: 12px 14px;
@@ -123,14 +123,14 @@
   line-height: 1.45;
   color: var(--ink-3);
 }
-.detail-why span { color: var(--accent-deep); }
+.why-mark { color: var(--accent-deep); vertical-align: -2px; margin-right: 2px; }
 
 .detail-actions { margin-top: 18px; display: flex; gap: 8px; align-items: center; }
 .detail-icon-btn {
   flex-shrink: 0;
   width: 48px; height: 48px;
   display: grid; place-items: center;
-  font-size: 19px;
+  font-size: 18px;
   border-radius: 999px;
   background: var(--paper-2);
   color: var(--ink);

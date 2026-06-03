@@ -24,6 +24,22 @@
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 
+  /* ---- type scale (the canonical steps — use these, don't invent in-betweens) ---- */
+  --fs-cap: 10px;   /* uppercase micro labels, chips */
+  --fs-xs: 11px;    /* mono metadata, eyebrows */
+  --fs-sm: 13px;    /* secondary text, pills */
+  --fs-base: 14px;  /* body / blurbs */
+  --fs-md: 16px;    /* emphasised body */
+  --fs-lg: 18px;    /* small titles */
+  --fs-xl: 20px;    /* titles */
+  --fs-2xl: 22px;   /* section titles */
+  --fs-3xl: 27px;   /* card / detail titles */
+  /* heroes use clamp() directly (intro, poster-mark) */
+
+  /* ---- spacing scale (4 · 8 · 12 · 16 · 24 · 32 · 48 · 64) ---- */
+  --sp-1: 4px;  --sp-2: 8px;  --sp-3: 12px; --sp-4: 16px;
+  --sp-6: 24px; --sp-8: 32px; --sp-12: 48px; --sp-16: 64px;
+
   /* weather-field defaults (HOT) — overwritten per mode */
   --field-text: #fbf7ef;
   --field-1: #ff9a3d;

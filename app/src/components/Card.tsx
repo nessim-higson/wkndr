@@ -1,3 +1,4 @@
+import { Sparkles } from 'lucide-react'
 import type { Pick } from '../types'
 import { CATEGORY_LABEL, FRESHNESS_LABEL, STATUS_LABEL } from '../types'
 import './Card.css'
@@ -28,7 +29,7 @@ export function Card({ pick }: { pick: Pick }) {
         <h2 className="card-title">{pick.title}</h2>
         <div className="card-venue">{pick.venue} · {pick.area} · {pick.price}</div>
         <p className="card-blurb">{pick.blurb}</p>
-        <div className="card-why"><span aria-hidden>✦</span> {pick.why}</div>
+        <div className="card-why"><Sparkles className="why-mark" size={13} strokeWidth={2.2} /> {pick.why}</div>
       </div>
     </article>
   )

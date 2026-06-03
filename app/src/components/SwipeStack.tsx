@@ -5,6 +5,7 @@ import {
   motion, useMotionValue, useTransform, animate,
   type MotionValue, type PanInfo,
 } from 'framer-motion'
+import { X, Star } from 'lucide-react'
 import type { Pick, SwipeDir } from '../types'
 import { Card } from './Card'
 import './SwipeStack.css'
@@ -298,7 +299,7 @@ export function SwipeStack({
             <button className="stack-btn primary" onClick={onClearFilter}>Clear filters</button>
           )}
           {onSeeList && <button className="stack-btn" onClick={onSeeList}>See all in List</button>}
-          {onRefresh && <button className="stack-btn" onClick={onRefresh}>↻ Refresh</button>}
+          {onRefresh && <button className="stack-btn" onClick={onRefresh}>Refresh</button>}
         </div>
       </div>
     )
@@ -326,8 +327,8 @@ export function SwipeStack({
       </div>
 
       <div className="stack-actions">
-        <button className="act act-nope" onClick={() => topRef.current?.fling('nope')} aria-label="Not for me">✕</button>
-        <button className="act act-save" onClick={() => topRef.current?.fling('save')} aria-label="Save">★</button>
+        <button className="act act-nope" onClick={() => topRef.current?.fling('nope')} aria-label="Not for me"><X size={22} strokeWidth={2.5} /></button>
+        <button className="act act-save" onClick={() => topRef.current?.fling('save')} aria-label="Save"><Star size={21} strokeWidth={2.4} /></button>
       </div>
     </div>
   )

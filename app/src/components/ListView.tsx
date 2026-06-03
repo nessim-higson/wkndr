@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useRef } from 'react'
 import type { CSSProperties } from 'react'
+import { Star } from 'lucide-react'
 import type { Pick, SwipeDir } from '../types'
 import { CATEGORY_LABEL, FRESHNESS_LABEL, STATUS_LABEL } from '../types'
 import './ListView.css'
@@ -187,7 +188,7 @@ export function ListView({
                 className={`row-save${saved ? ' on' : ''}`}
                 onClick={(e) => { e.stopPropagation(); onSwipe(p, saved ? 'skip' : 'save') }}
                 aria-label={saved ? 'Saved' : 'Save'}
-              >★</button>
+              ><Star size={16} strokeWidth={2.2} fill={saved ? 'currentColor' : 'none'} /></button>
             </div>
           </article>
         )
