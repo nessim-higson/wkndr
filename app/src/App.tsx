@@ -217,9 +217,7 @@ export default function App() {
   function handleStackSwipe(p: Pick, dir: SwipeDir) {
     setSwiped((s) => new Set(s).add(p.id))
     if (dir === 'like' || dir === 'save') {
-      const n = saved.has(p.id) ? saved.size : saved.size + 1
-      setSaved((s) => new Set(s).add(p.id))
-      flash(`Saved · ${n}`, true)   // haptic already fired at the swipe commit (SwipeStack.fling)
+      setSaved((s) => new Set(s).add(p.id))   // the header counter turns orange + bumps — that's the confirmation
     }
     setTaste((t) => applySwipe(t, p, dir))   // every swipe teaches it
   }
@@ -230,7 +228,7 @@ export default function App() {
       return next
     })
     if (dir === 'save') {
-      haptic(14); flash(`Saved · ${saved.size + 1}`, true)
+      haptic(14)
       setTaste((t) => applySwipe(t, p, 'save'))
     }
   }
@@ -241,7 +239,7 @@ export default function App() {
       if (wasSaved) next.delete(p.id); else next.add(p.id)
       return next
     })
-    if (!wasSaved) { haptic(14); flash(`Saved · ${saved.size + 1}`, true); setTaste((t) => applySwipe(t, p, 'save')) }
+    if (!wasSaved) { haptic(14); setTaste((t) => applySwipe(t, p, 'save')) }
     else flash('Removed')
   }
 
@@ -322,7 +320,7 @@ export default function App() {
             )}
           </AnimatePresence>
 
-          <div className={`topbar-module${barOpen ? ' open' : ''}`}>
+          <div className={`topbar-module${barOpen ? ' open' : ''}${savesOpen ? ' peeking' : ''}`}>
             <div
               className="topbar-row"
               role="button"
@@ -341,20 +339,33 @@ export default function App() {
                 </div>
               </div>
 
-              <span
-                className={`tb-icon tb-menu${barOpen ? ' on' : ''}${!barOpen && filterActive ? ' dot' : ''}`}
-                aria-hidden
-              >
-                {barOpen ? (
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                    <line x1="5" y1="5" x2="15" y2="15" /><line x1="15" y1="5" x2="5" y2="15" />
-                  </svg>
-                ) : (
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                    <line x1="3" y1="7" x2="17" y2="7" /><line x1="3" y1="13" x2="17" y2="13" />
-                  </svg>
-                )}
-              </span>
+              <div className="tb-actions">
+                <button
+                  type="button"
+                  className={`tb-saves${saved.size > 0 ? ' has' : ''}${savesOpen ? ' on' : ''}${dockPop ? ' pop' : ''}`}
+                  aria-label={`${saved.size} saved — ${savesOpen ? 'hide' : 'show'} your list`}
+                  aria-expanded={savesOpen}
+                  onClick={(e) => { e.stopPropagation(); setSavesOpen((v) => !v); setBarOpen(false) }}
+                >
+                  <Star size={16} strokeWidth={2.3} fill={saved.size > 0 ? 'currentColor' : 'none'} />
+                  {saved.size > 0 && <span className="tb-saves-n" key={saved.size}>{saved.size}</span>}
+                </button>
+
+                <span
+                  className={`tb-icon tb-menu${barOpen ? ' on' : ''}${!barOpen && filterActive ? ' dot' : ''}`}
+                  aria-hidden
+                >
+                  {barOpen ? (
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                      <line x1="5" y1="5" x2="15" y2="15" /><line x1="15" y1="5" x2="5" y2="15" />
+                    </svg>
+                  ) : (
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                      <line x1="3" y1="7" x2="17" y2="7" /><line x1="3" y1="13" x2="17" y2="13" />
+                    </svg>
+                  )}
+                </span>
+              </div>
             </div>
 
             <div className={`tb-panel${barOpen ? ' open' : ''}`} aria-hidden={!barOpen}>
@@ -437,84 +448,60 @@ export default function App() {
                   </div>
                 </div>
               </div>
-          </div>
-
-          {/* persistent saves dock — the menu's companion: a live ★ count that always
-              stays put, and peeks your saved list on tap. Hides while the full menu is open. */}
-          <AnimatePresence>
-            {!barOpen && (
-              <motion.div
-                className="saves-dock-wrap"
-                initial={{ opacity: 0, scale: 0.82 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.82 }}
-                transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-              >
-                <button
-                  className={`saves-dock${saved.size > 0 ? ' has' : ''}${savesOpen ? ' on' : ''}${dockPop ? ' pop' : ''}`}
-                  aria-label={`${saved.size} saved — ${savesOpen ? 'hide' : 'show'} your list`}
-                  aria-expanded={savesOpen}
-                  onClick={() => setSavesOpen((v) => !v)}
-                >
-                  <Star className="sd-star" size={17} strokeWidth={2.2} fill={saved.size > 0 ? 'currentColor' : 'none'} />
-                  <span className="sd-count" key={saved.size}>{saved.size}</span>
-                </button>
-
-                <AnimatePresence>
-                  {savesOpen && (
-                    <motion.div
-                      className="saves-panel"
-                      initial={{ opacity: 0, y: -10, scale: 0.97 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: -10, scale: 0.97 }}
-                      transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
-                    >
-                      {saved.size === 0 ? (
-                        <div className="sv-empty">
-                          <Star size={22} strokeWidth={1.8} />
-                          <b>Nothing saved yet</b>
-                          <span>Swipe right, or tap ★ on a card, to start building your weekend.</span>
-                        </div>
-                      ) : (
-                        <>
-                          <div className="sv-head">
-                            <div className="sv-head-txt">
-                              <span className="sv-title">Your weekend</span>
-                              <span className="sv-sub">{saved.size} saved</span>
-                            </div>
-                            <button className="sv-share" onClick={() => { setShareOpen(true); setSavesOpen(false) }}>
-                              Share <ArrowUpRight size={14} strokeWidth={2.2} />
-                            </button>
+              {/* saved-picks peek — drops straight from the module, so it's flush-aligned */}
+              <AnimatePresence>
+                {savesOpen && (
+                  <motion.div
+                    className="saves-panel"
+                    initial={{ opacity: 0, y: -8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
+                  >
+                    {saved.size === 0 ? (
+                      <div className="sv-empty">
+                        <Star size={22} strokeWidth={1.8} />
+                        <b>Nothing saved yet</b>
+                        <span>Swipe right, or tap ★ on a card, to start building your weekend.</span>
+                      </div>
+                    ) : (
+                      <>
+                        <div className="sv-head">
+                          <div className="sv-head-txt">
+                            <span className="sv-title">Your weekend</span>
+                            <span className="sv-sub">{saved.size} saved</span>
                           </div>
-                          <div className="sv-list">
-                            {savedPicks.map((p) => (
-                              <div className="sv-row" key={p.id}>
-                                <button className="sv-rowmain" onClick={() => { setDetail(p); setSavesOpen(false) }}>
-                                  <span className="sv-thumb" style={p.image ? { backgroundImage: `url(${p.image})` } : undefined}>
-                                    {!p.image && <span className="sv-thumb-cat">{CATEGORY_LABEL[p.category]}</span>}
-                                  </span>
-                                  <span className="sv-meta">
-                                    <span className="sv-when">{p.when}</span>
-                                    <span className="sv-name">{p.title}</span>
-                                  </span>
-                                </button>
-                                <button className="sv-remove" aria-label={`Remove ${p.title}`} onClick={() => toggleSave(p)}>
-                                  <X size={15} strokeWidth={2.4} />
-                                </button>
-                              </div>
-                            ))}
-                          </div>
-                          <button className="sv-open" onClick={() => { setFilter('saved'); setView('list'); setSavesOpen(false) }}>
-                            Open as list <ArrowUpRight size={14} strokeWidth={2.2} />
+                          <button className="sv-share" onClick={() => { setShareOpen(true); setSavesOpen(false) }}>
+                            Share <ArrowUpRight size={14} strokeWidth={2.2} />
                           </button>
-                        </>
-                      )}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </motion.div>
-            )}
-          </AnimatePresence>
+                        </div>
+                        <div className="sv-list">
+                          {savedPicks.map((p) => (
+                            <div className="sv-row" key={p.id}>
+                              <button className="sv-rowmain" onClick={() => { setDetail(p); setSavesOpen(false) }}>
+                                <span className="sv-thumb" style={p.image ? { backgroundImage: `url(${p.image})` } : undefined}>
+                                  {!p.image && <span className="sv-thumb-cat">{CATEGORY_LABEL[p.category]}</span>}
+                                </span>
+                                <span className="sv-meta">
+                                  <span className="sv-when">{p.when}</span>
+                                  <span className="sv-name">{p.title}</span>
+                                </span>
+                              </button>
+                              <button className="sv-remove" aria-label={`Remove ${p.title}`} onClick={() => toggleSave(p)}>
+                                <X size={15} strokeWidth={2.4} />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                        <button className="sv-open" onClick={() => { setFilter('saved'); setView('list'); setSavesOpen(false) }}>
+                          Open as list <ArrowUpRight size={14} strokeWidth={2.2} />
+                        </button>
+                      </>
+                    )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+          </div>
         </header>
 
         {filter === 'saved' && saved.size > 0 && (
