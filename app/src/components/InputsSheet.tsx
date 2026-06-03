@@ -1,13 +1,15 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import type { Mode } from '../types'
+import type { Source } from '../data/sources'
 import { MODE_META } from '../weather/modes'
-import { SOURCE_ROSTER, SOURCE_COUNT } from '../data/sources'
 import { APP_VERSION } from '../version'
 import './InputsSheet.css'
 
-/** Exposes every input feeding the recommendations — the credibility / source-trace. */
+/** Exposes every input feeding the recommendations — the credibility / source-trace.
+ *  Roster is passed in from the active city so this travels with the feed. */
 export function InputsSheet({
   open, onClose, mode, temp, hi, lo, live, activeCount,
+  roster, rosterCount, cityLabel, seed,
 }: {
   open: boolean
   onClose: () => void
@@ -17,6 +19,10 @@ export function InputsSheet({
   lo: number
   live: boolean
   activeCount: number
+  roster: Record<string, Source[]>
+  rosterCount: number
+  cityLabel: string
+  seed?: boolean
 }) {
   return (
     <AnimatePresence>
@@ -46,9 +52,9 @@ export function InputsSheet({
             </section>
 
             <section className="sheet-block">
-              <h4>Sources · {SOURCE_COUNT} in the roster</h4>
+              <h4>Sources · {rosterCount} in the {cityLabel} roster</h4>
               <p className="sheet-note">This weekend’s brief drew on {activeCount}. The full roster WKNDR reads from:</p>
-              {Object.entries(SOURCE_ROSTER).map(([group, list]) => (
+              {Object.entries(roster).map(([group, list]) => (
                 <div className="sheet-group" key={group}>
                   <div className="sheet-group-label">{group}</div>
                   <div className="sheet-sources">
@@ -69,10 +75,10 @@ export function InputsSheet({
 
             <section className="sheet-block">
               <h4>For</h4>
-              <p>Amsterdam · Ness — kids treated as a cross-cut lens, not a separate feed.</p>
+              <p>{cityLabel} · Ness — kids treated as a cross-cut lens, not a separate feed.</p>
             </section>
 
-            <div className="sheet-version">WKNDR v{APP_VERSION} · Amsterdam · hand-curated snapshot</div>
+            <div className="sheet-version">WKNDR v{APP_VERSION} · {cityLabel} · {seed ? 'seed set (pre-crawl)' : 'hand-curated snapshot'}</div>
             <button className="sheet-done" onClick={onClose}>Done</button>
           </motion.div>
         </motion.div>

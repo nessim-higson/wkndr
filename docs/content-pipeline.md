@@ -1,10 +1,17 @@
 # WKNDR — Content pipeline (the living-events plan)
 
-> **Status:** architecture sketch, not built. Today the pool is a *hand-curated snapshot*
-> in `app/src/data/picks.ts` (last curated 31 May 2026). This doc is the plan for making
-> events stay current automatically — the "living content pipeline" that
-> `docs/discovery-direction.md` §2 flags as *the actual work and the real risk*.
-> Per the build order (§9), this is Phase 5: **do not build it until the core is sticky.**
+> **Status:** architecture sketch, mostly not built. Today each city's pool is a *hand-curated
+> snapshot* (`app/src/data/picks.ts` = Amsterdam; `picks.nola.ts` = a New Orleans **seed**).
+> This doc is the plan for making events stay current automatically — the "living content
+> pipeline" that `docs/discovery-direction.md` §2 flags as *the actual work and the real risk*.
+> Per the build order (§9), automation is Phase 5: **do not build it until the core is sticky.**
+>
+> **What IS built now (v0.9.16):** the app is **city-scoped** — `app/src/data/cities.ts` is a
+> registry of `City { picks, sources, lat/lon }`; everything downstream (weather classify,
+> rank, diversify, itinerary, .ics) is city-agnostic and consumes whichever city is active.
+> You can switch city in the menu or via `?city=new-orleans`, and live geolocation auto-snaps
+> to a city we have a feed for. **So the engine is multi-city today; only the *inputs* are
+> hand-seeded.** See "Multi-city" below.
 
 ---
 
@@ -191,3 +198,42 @@ Build `scripts/refresh.ts`: start with the two cleanest adapters (**Songkick** f
 **museum/Holland-Festival** scrapes for run-dates), LLM-enrich to `picks.json`, point the app
 at `picks.json` instead of the hardcoded `picks.ts`. That alone replaces ~half of a manual
 weekly curation and proves the spine end-to-end.
+
+---
+
+## Multi-city (the New Orleans test)
+
+The app is now **city-scoped by construction**, which makes a hard truth obvious: *the engine
+travels, the content doesn't.* Switch location to a city with no feed and you'd get the right
+**weather** (open-meteo + reverse-geocode are coordinate-driven and portable) but the wrong
+**events**. A city is healthy only when its inputs are sourced.
+
+### What a new city needs (the per-city checklist)
+A `City` (`app/src/data/cities.ts`) is just: `{ key, name, lat, lon, picks[], sources, sourceCount }`.
+To stand one up for real:
+
+1. **A source roster** — the per-city equivalent of `sources.ts`. The *categories* are universal
+   (Live, Eat & drink, Art, Stage, Out/Markets, Weather); the *sources* are local. The NOLA seed
+   roster (`sources.nola.ts`) shows the shape: **WWOZ Livewire** is the local gold standard for
+   live music (the Songkick-equivalent), then OffBeat, neworleans.com, venue sites, the museums.
+2. **Adapters** for that roster — same FETCH→NORMALIZE→DEDUPE→ENRICH→VERIFY pipeline, just
+   pointed at local sources. Most reuse: an RSS adapter, an "LLM-read a messy listings page"
+   adapter, an og:image extractor — all city-agnostic. Only the URLs and a few selectors change.
+3. **An evergreen canon** — the floor (NOMA, the WWII Museum, Preservation Hall, Café du Monde,
+   the Steamboat Natchez) so the city is never empty even on a quiet week / failed crawl.
+4. **Local weather realism** — `classify()` already handles it, but tune copy: a NOLA summer
+   weekend is *classic* `VOLATILE` (sun → 4pm thunderstorm → sun), so indoor/covered picks should
+   dominate the rain-fit tags. The seed set is tagged that way on purpose.
+
+### What's seeded vs sourced (be honest in-product)
+The NOLA set is hand-authored and **flagged `seed: true`** — the menu pill shows `·seed`, the
+"what's feeding this" sheet says *seed set (pre-crawl)*, and lineup-specific picks carry
+`verify: true`. A real launch replaces the seed with a crawled roster; the schema doesn't change.
+
+### The honest scaling answer
+Adding cities is **bounded by sourcing, not engineering.** The marginal engineering cost of a new
+city is ~an afternoon (roster + reuse the adapters). The marginal *content* cost is the real one:
+finding the 15–20 reliable local sources, weighting their trust, and keeping the canon honest —
+per city, every week. That's the moat *and* the cost. The LLM-read adapter is what makes it
+plausible at all (curation labor → cents/city/week), but taste-checking and link-pruning stay a
+human loop per city. Don't pretend a new city is free; pretend it's cheap-ish and verifiable.

@@ -6,7 +6,7 @@ import { Shuffle, Clock, ChevronDown, LayoutGrid, Star, ArrowUpRight, LocateFixe
 const haptic = (ms = 10) => { try { navigator.vibrate?.(ms) } catch { /* unsupported */ } }
 import type { Mode, Pick, SwipeDir } from './types'
 import { MODES, MODE_META, classify, applyMode, rankPicks, shuffle } from './weather/modes'
-import { PICKS } from './data/picks'
+import { CITIES, DEFAULT_CITY, cityByKey, cityByName, nearestCity, type City } from './data/cities'
 import { AmbientField } from './weather/AmbientField'
 import type { Look } from './weather/ambientEngine'
 import { APP_VERSION } from './version'
@@ -30,43 +30,26 @@ const SHARED_FROM = (() => {
   const f = new URLSearchParams(window.location.search).get('from')
   return f ? f.trim().slice(0, 24) : null
 })()
-import { SOURCE_COUNT } from './data/sources'
 import { CATEGORY_LABEL, type Category } from './types'
 import {
   type Taste, applySwipe, hasTaste, loadSaved, loadTaste, persistSaved, persistTaste,
 } from './taste'
 import './App.css'
 
-// sources actually used in the current snapshot (vs the full roster)
-const ACTIVE_SOURCES = new Set(PICKS.map((p) => p.source)).size
-
 // filters available = 'all' + 'saved' + 'kids' (cross-cut) + the categories present
 type Filter = 'all' | 'saved' | 'shared' | 'kids' | Category
-const PRESENT: Category[] = [...new Set(PICKS.map((p) => p.category))]
-const FILTERS: { key: Filter; label: string; count: number }[] = [
-  { key: 'all', label: 'Everything', count: PICKS.length },
-  ...(PICKS.some((p) => p.kid) ? [{ key: 'kids' as Filter, label: 'Kids', count: PICKS.filter((p) => p.kid).length }] : []),
-  ...PRESENT.map((c) => ({ key: c as Filter, label: CATEGORY_LABEL[c], count: PICKS.filter((p) => p.category === c).length })),
-]
-const filterLabel = (f: Filter) =>
-  f === 'saved' ? 'Saved' : f === 'shared' ? 'Shared with you' : (FILTERS.find((x) => x.key === f)?.label ?? 'Everything')
-
+type FilterOpt = { key: Filter; label: string; count: number }
 // the WHEN axis — time-sensitivity, incl. the evergreen canon. Maps to freshness.
 type When = 'all' | Freshness
-const WHEN_FILTERS = ([
-  { key: 'all', label: 'Any time', count: PICKS.length },
-  { key: 'weekend', label: 'This weekend', count: PICKS.filter((p) => p.freshness === 'weekend').length },
-  { key: 'new', label: 'New this week', count: PICKS.filter((p) => p.freshness === 'new').length },
-  { key: 'always', label: 'Evergreen canon', count: PICKS.filter((p) => p.freshness === 'always').length },
-  { key: 'ending', label: 'Ending soon', count: PICKS.filter((p) => p.freshness === 'ending').length },
-] as { key: When; label: string; count: number }[]).filter((o) => o.count > 0)
-const whenLabel = (w: When) => WHEN_FILTERS.find((x) => x.key === w)?.label ?? 'Any time'
+type WhenOpt = { key: When; label: string; count: number }
+
+// the city we boot into: ?city= override, else the default (Amsterdam). Live geolocation
+// can switch it later (goLive) if it lands somewhere we have a feed for.
+const INITIAL_CITY: City =
+  cityByKey(new URLSearchParams(window.location.search).get('city')) ?? DEFAULT_CITY
 
 type View = 'stack' | 'list' | 'fan'
 interface Wx { temp: number; hi: number; lo: number; city: string }
-
-// Amsterdam — the product's home city. The app defaults to its live forecast.
-const AMS = { lat: 52.37, lon: 4.89 }
 
 // representative figures for the "preview a different forecast" what-if pills
 const DEMO: Record<Mode, Wx> = {
@@ -125,6 +108,28 @@ export default function App() {
     const s = localStorage.getItem('wkndr.liststyle')
     return s === 'flux' ? 'flux' : 'wheel'
   })
+  const [city, setCity] = useState<City>(INITIAL_CITY)   // which city's feed is active
+
+  // Everything that used to be derived from the single static PICKS set is now derived from
+  // the ACTIVE city's pool — so switching city swaps the whole feed (filters, counts, deck).
+  const cityPicks = city.picks
+  const present = useMemo<Category[]>(() => [...new Set(cityPicks.map((p) => p.category))], [cityPicks])
+  const FILTERS = useMemo<FilterOpt[]>(() => [
+    { key: 'all', label: 'Everything', count: cityPicks.length },
+    ...(cityPicks.some((p) => p.kid) ? [{ key: 'kids' as Filter, label: 'Kids', count: cityPicks.filter((p) => p.kid).length }] : []),
+    ...present.map((c) => ({ key: c as Filter, label: CATEGORY_LABEL[c], count: cityPicks.filter((p) => p.category === c).length })),
+  ], [cityPicks, present])
+  const WHEN_FILTERS = useMemo<WhenOpt[]>(() => ([
+    { key: 'all', label: 'Any time', count: cityPicks.length },
+    { key: 'weekend', label: 'This weekend', count: cityPicks.filter((p) => p.freshness === 'weekend').length },
+    { key: 'new', label: 'New this week', count: cityPicks.filter((p) => p.freshness === 'new').length },
+    { key: 'always', label: 'Evergreen canon', count: cityPicks.filter((p) => p.freshness === 'always').length },
+    { key: 'ending', label: 'Ending soon', count: cityPicks.filter((p) => p.freshness === 'ending').length },
+  ] as WhenOpt[]).filter((o) => o.count > 0), [cityPicks])
+  const activeSources = useMemo(() => new Set(cityPicks.map((p) => p.source)).size, [cityPicks])
+  const filterLabel = (f: Filter) =>
+    f === 'saved' ? 'Saved' : f === 'shared' ? 'Shared with you' : (FILTERS.find((x) => x.key === f)?.label ?? 'Everything')
+  const whenLabel = (w: When) => WHEN_FILTERS.find((x) => x.key === w)?.label ?? 'Any time'
 
   useEffect(() => { applyMode(mode) }, [mode])
   useEffect(() => { persistSaved(saved) }, [saved])   // your list survives reloads
@@ -132,18 +137,18 @@ export default function App() {
   useEffect(() => { localStorage.setItem('wkndr.field', look) }, [look])   // your ambient-field choice sticks
   useEffect(() => { localStorage.setItem('wkndr.liststyle', listStyle) }, [listStyle])   // list style sticks
 
-  // Warm the image cache up front (during the intro) so a card's photo is already loaded
-  // before it's revealed — no pop-in / flash as cards come forward.
+  // Warm the image cache for the active city (during the intro) so a card's photo is
+  // already loaded before it's revealed — no pop-in / flash as cards come forward.
   useEffect(() => {
-    PICKS.forEach((p) => { if (p.image) { const im = new Image(); im.src = p.image } })
-  }, [])
+    cityPicks.forEach((p) => { if (p.image) { const im = new Image(); im.src = p.image } })
+  }, [cityPicks])
 
-  // Default to the real Amsterdam forecast on load — weather is a fact, not a toggle.
+  // Load the active city's live forecast on boot — weather is a fact, not a toggle.
   const didInit = useRef(false)
   useEffect(() => {
     if (didInit.current) return
     didInit.current = true
-    goLive(AMS.lat, AMS.lon)
+    goLive(city.lat, city.lon)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -174,7 +179,7 @@ export default function App() {
 
   // Refresh reshuffles the whole pool (within weather tiers) so BOTH views reorder,
   // then re-ranks. List + stack both change; the stack re-deals with a toast.
-  const pool = useMemo(() => (seed === 0 ? PICKS : shuffle(PICKS, seed)), [seed])
+  const pool = useMemo(() => (seed === 0 ? cityPicks : shuffle(cityPicks, seed)), [cityPicks, seed])
   const rankedAll = useMemo(
     // eslint-disable-next-line react-hooks/exhaustive-deps
     () => rankPicks(pool, mode, hasTaste(tasteRef.current) ? tasteRef.current : undefined),
@@ -260,14 +265,24 @@ export default function App() {
 
   // "preview a different forecast" — explicitly a what-if, not the real weather
   function previewMode(m: Mode) {
-    setMode(m); setWx(DEMO[m]); setLive(false); setSwiped(new Set())
+    setMode(m); setWx({ ...DEMO[m], city: city.name }); setLive(false); setSwiped(new Set())
+  }
+
+  // Switch the active city's whole feed (and load its weather). Resets the run so you
+  // start fresh in the new city. `autoSwitch` = true means geolocation found it, not a tap.
+  function selectCity(c: City, autoSwitch = false) {
+    if (c.key === city.key) return
+    setCity(c)
+    setFilter('all'); setWhen('all')
+    setSwiped(new Set()); setSeed(0); setDealKey((k) => k + 1)
+    if (!autoSwitch) { setView('stack'); setBarOpen(false); goLive(c.lat, c.lon) }
   }
 
   function locate() {
     if (!navigator.geolocation) return
     navigator.geolocation.getCurrentPosition(
       (pos) => goLive(pos.coords.latitude, pos.coords.longitude),
-      () => goLive(AMS.lat, AMS.lon),
+      () => goLive(city.lat, city.lon),
       { timeout: 8000 },
     )
   }
@@ -279,17 +294,20 @@ export default function App() {
         `&current=temperature_2m&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max` +
         `&timezone=auto&forecast_days=1`,
       ).then((r) => r.json())
-      let city = 'Amsterdam'
+      let placeName = city.name
       try {
         const g = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}`).then((r) => r.json())
-        city = g.city || g.locality || g.principalSubdivision || 'Amsterdam'
-      } catch { /* keep default */ }
+        placeName = g.city || g.locality || g.principalSubdivision || placeName
+      } catch { /* keep current */ }
+      // if the live location is somewhere we actually have a feed for, swap to it
+      const matched = cityByName(placeName) ?? nearestCity(lat, lon)
+      if (matched && matched.key !== city.key) selectCity(matched, true)
       const hi = Math.round(w.daily.temperature_2m_max[0])
       const lo = Math.round(w.daily.temperature_2m_min[0])
       const pp = w.daily.precipitation_probability_max[0] ?? 0
       const m = classify(hi, pp, hi - lo)
       setMode(m)
-      setWx({ temp: Math.round(w.current.temperature_2m), hi, lo, city })
+      setWx({ temp: Math.round(w.current.temperature_2m), hi, lo, city: placeName })
       setLive(true)
     } catch { /* keep current */ }
     finally { setLocating(false) }
@@ -417,6 +435,17 @@ export default function App() {
                     </div>
 
                     <div className="bar-group">
+                      <span className="bar-label">City</span>
+                      <div className="mode-pills">
+                        {CITIES.map((c) => (
+                          <button key={c.key} className={c.key === city.key ? 'on' : ''} onClick={() => selectCity(c)}>
+                            {c.label}{c.seed ? ' ·seed' : ''}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="bar-group">
                       <span className="bar-label">Weather</span>
                       <div className="bar-row">
                         <button className="bar-pill" onClick={() => { locate(); setBarOpen(false) }}><LocateFixed size={15} strokeWidth={2.2} /> Use my location</button>
@@ -443,7 +472,7 @@ export default function App() {
                     </div>
 
                     <button className="bar-foot" onClick={() => { setInputsOpen(true); setBarOpen(false) }}>
-                      <Info size={13} strokeWidth={2.2} /> Built from {SOURCE_COUNT} sources · weather × freshness{hasTaste(taste) ? ' × you' : ''}
+                      <Info size={13} strokeWidth={2.2} /> Built from {city.sourceCount} sources · weather × freshness{hasTaste(taste) ? ' × you' : ''}
                     </button>
                     <span className="bar-build">v{APP_VERSION}</span>
                   </div>
@@ -585,7 +614,11 @@ export default function App() {
         hi={wx.hi}
         lo={wx.lo}
         live={live}
-        activeCount={ACTIVE_SOURCES}
+        activeCount={activeSources}
+        roster={city.sources}
+        rosterCount={city.sourceCount}
+        cityLabel={city.label}
+        seed={city.seed}
       />
       <ShareSheet
         open={shareOpen}

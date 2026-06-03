@@ -349,6 +349,12 @@ export function SwipeStack({
         <button className="act act-nope" onClick={() => topRef.current?.fling('nope')} aria-label="Not for me"><X size={22} strokeWidth={2.5} /></button>
         <button className="act act-save" onClick={() => topRef.current?.fling('save')} aria-label="Save"><Star size={21} strokeWidth={2.4} /></button>
       </div>
+
+      {onRefresh && (
+        <button className="stack-more" onClick={onRefresh}>
+          Not feeling these? <b>Shuffle for more</b>
+        </button>
+      )}
     </div>
   )
 }
