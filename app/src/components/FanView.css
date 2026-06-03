@@ -1,48 +1,38 @@
+/* ===== Fan wheel =====
+   A tight circle of cards cropped to its top arc. The card at the top is the HERO — it
+   scales up and comes forward to focus, holds, then the wheel steps to the next. A smaller
+   radius than before keeps the circle TIGHT so it reads as a fan, not one flat card.
+   Base rules below are DESKTOP; the single mobile block at the end overrides them. */
 .wheel-stage {
-  /* break out of the padded layout to the full viewport, so the circle is cropped by the
-     screen edge (invisible) — not by a container edge sitting inside the viewport */
-  position: absolute;
+  /* Anchored to the VISIBLE viewport (fixed + dvh) on every device — so the hero centres
+     by viewport height regardless of the topbar/banner offset, and Safari's toolbar/notch
+     can't push it off. (.app animates opacity only, so fixed = true viewport here.) */
+  position: fixed;
   top: 0;
-  left: 50%;
-  transform: translateX(-50%);
+  left: 0;
   width: 100vw;
-  height: 100vh;
-  overflow: hidden;          /* crop the circle — only the top arc shows, at the screen edge */
-  touch-action: none;        /* let us spin by dragging without the page scrolling */
+  height: 100dvh;
+  overflow: hidden;
+  touch-action: none;          /* spin by dragging without scrolling the page */
   cursor: grab;
-  /* radius ~ a screen-height so the circle's centre sits BELOW the viewport — only the
-     gentle top arc crops in (rather than the whole ring). Scales across devices. */
-  --R: max(680px, 100vh);
+  z-index: 1;                  /* under the floating topbar (20) + banner (6) */
+  /* desktop radius: large, so the circle's centre sits well below the screen and only the
+     gentle top arc shows (a wide fan). Mobile overrides to a width-tight circle below. */
+  --R: max(680px, 96vh);
 }
 .wheel-stage:active { cursor: grabbing; }
 
-/* the wheel: a circle 2R across, centred well below the crop so only its top shows */
+/* the wheel: a circle 2R across, centred below the crop so only its top arc shows. The rim
+   sits at a fraction of viewport height so the hero lands centred on any screen. */
 .wheel {
   position: absolute;
   left: 50%;
-  top: 84px;
+  top: 12dvh;
   width: calc(2 * var(--R));
   height: calc(2 * var(--R));
   margin-left: calc(-1 * var(--R));
   transform-origin: 50% 50%;
   will-change: transform;
-}
-/* MOBILE: anchor the fan to the VISIBLE viewport (fixed + dvh, not vh) so Safari's
-   toolbar can't push the hero below the fold, and so the shared/saved banner's offset
-   can't shift it either. Smaller radius + cards reveal more of the arc → it reads as a
-   fan, and the hero lands centred. Desktop is untouched (keeps absolute + vh above). */
-@media (max-width: 719px) {
-  .wheel-stage {
-    position: fixed;
-    top: 0;
-    left: 0;
-    transform: none;
-    width: 100vw;
-    height: 100dvh;
-    z-index: 1;                 /* under the floating topbar (20) + banner (6) */
-    --R: 132vw;                 /* tighter circle → more of the arc shows */
-  }
-  .wheel { top: 17dvh; }        /* rim height; the hero pulls down from here to ~centre */
 }
 
 /* each card hangs at the top of the wheel and is rotated to its place around the rim */
@@ -50,16 +40,13 @@
   position: absolute;
   left: 50%;
   top: 0;
-  width: 264px;
-  height: 356px;
-  margin-left: -132px;
+  width: 300px;
+  height: 406px;
+  margin-left: -150px;
   transform-origin: 50% var(--R);   /* pivot about the wheel's centre */
 }
-@media (min-width: 720px) {
-  .wheel-card { width: 324px; height: 436px; margin-left: -162px; }
-}
 
-/* image-led mini face — clean at small size (no cropped body copy) */
+/* image-led face */
 .wheel-card-face {
   position: relative;
   width: 100%;
@@ -109,9 +96,12 @@
   opacity: 0.8;
 }
 
-/* MOBILE card size — placed at the END so it wins over the base + desktop .wheel-card rules
-   above (a media query adds no specificity, so source order decides). Smaller cards let the
-   neighbouring cards show in the arc → it reads as a fan, not one full-width card. */
+/* ===== MOBILE (single block, at the END so it wins over the desktop base) =====
+   Anchor to the VISIBLE viewport (fixed + dvh, not vh) so Safari's toolbar / the notch /
+   the shared banner can't push the hero off. Tighter radius + smaller cards → the circle
+   of cards reads as a fan, with the hero centred. */
 @media (max-width: 719px) {
-  .wheel-card { width: 216px; height: 292px; margin-left: -108px; }
+  .wheel-stage { --R: 116vw; }   /* tight circle relative to phone width */
+  .wheel { top: 15dvh; }
+  .wheel-card { width: 200px; height: 272px; margin-left: -100px; }
 }

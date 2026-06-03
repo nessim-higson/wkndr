@@ -25,9 +25,8 @@ export function FanView({
   const n = cards.length
   const step = n > 0 ? 360 / n : 0
   const spin = useMotionValue(0)
-  // how far the hero pulls down out of the arc — gentler on a short phone so it lands
-  // centred rather than near the bottom
-  const heroLift = useMemo(() => (typeof window !== 'undefined' && window.innerWidth < 720 ? 76 : 104), [])
+  // how far the hero pulls down out of the arc to land centred (less on a short phone)
+  const heroLift = useMemo(() => (typeof window !== 'undefined' && window.innerWidth < 720 ? 96 : 76), [])
 
   const moved = useRef(false)
   const spinStart = useRef(0)
@@ -80,10 +79,11 @@ export function FanView({
         const p = Math.max(0, 1 - Math.abs(a) / HALO)   // 1 at the top, 0 by HALO°
         const e = p * p                                 // ease so only the very centre lifts out
         const face = card.querySelector<HTMLElement>('.wheel-card-face')
-        // hero: grow bigger AND pull down into the middle of the screen (out of the arc)
-        if (face) face.style.transform = `scale(${0.9 + e * 0.46}) translateY(${e * heroLift}px)`
+        // hero: the top card comes OUT — neighbours sit back at 0.82, the hero grows to 1.34
+        // and pulls down to centre. Bigger gap = the main card is clearly the focus.
+        if (face) face.style.transform = `scale(${0.82 + e * 0.52}) translateY(${e * heroLift}px)`
         card.style.zIndex = String(100 + Math.round(p * 100))
-        card.style.opacity = String(0.6 + p * 0.4)
+        card.style.opacity = String(0.46 + p * 0.54)    // neighbours recede further
       })
     }
     update()
