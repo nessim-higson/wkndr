@@ -33,13 +33,13 @@
   position: absolute;
   left: 50%;
   top: 0;
-  width: 210px;
-  height: 286px;
-  margin-left: -105px;
+  width: 264px;
+  height: 356px;
+  margin-left: -132px;
   transform-origin: 50% var(--R);   /* pivot about the wheel's centre */
 }
 @media (min-width: 720px) {
-  .wheel-card { width: 244px; height: 332px; margin-left: -122px; }
+  .wheel-card { width: 324px; height: 436px; margin-left: -162px; }
 }
 
 /* image-led mini face — clean at small size (no cropped body copy) */
@@ -70,9 +70,9 @@
   padding: 14px 14px 16px;
   color: #fff;
 }
-.wcard-cat { font-size: 9px; letter-spacing: 0.13em; text-transform: uppercase; opacity: 0.82; }
+.wcard-cat { font-size: 10px; letter-spacing: 0.13em; text-transform: uppercase; opacity: 0.82; }
 .wcard-title {
-  font-size: 17px;
+  font-size: 20px;
   font-weight: 700;
   line-height: 1.14;
   letter-spacing: -0.02em;

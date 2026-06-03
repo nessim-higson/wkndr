@@ -3,8 +3,8 @@ import { motion } from 'framer-motion'
 import './Intro.css'
 
 // the landing line — a bold lead + a light follow. Fixed copy (not weather-keyed).
-const LEAD = 'The sky can’t decide.'
-const FOLLOW = 'We picked some backups.'
+const LEAD = 'Tinder your events,'
+const FOLLOW = 'Stacked.'
 
 /** Full-screen intro over the live field: the line, then it lifts away as the app
  *  rises in. Plays every load; tap to skip. */

@@ -94,6 +94,10 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
   // drag feedback: left → bold red wash (dismiss), right → bold green wash (keep)
   const redOp = useTransform(x, [-130, -18], [0.88, 0])
   const greenOp = useTransform(x, [18, 130], [0, 0.88])
+  // 3D dimension WHILE dragging: the card turns on its Y axis as you pull sideways and tilts
+  // on X as you pull up/down — and these compound with the exit flip (flipY/flipX) on release.
+  const turnY = useTransform([x, flipY], ([lx, f]: number[]) => Math.max(-34, Math.min(34, lx * 0.07)) + f)
+  const turnX = useTransform([y, flipX], ([ly, f]: number[]) => Math.max(-28, Math.min(28, -ly * 0.07)) + f)
 
   // record the grab point (relative to the card's height) the instant you press down
   function capturePoint(e: { clientY: number }) {
@@ -133,9 +137,9 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
     // dimension on exit: a big, VARIED tumble — turns hard on Y, tumbles a little on X, and
     // lunges toward camera. Random per throw so no two exits look alike.
     const r = Math.random()
-    animate(flipY, Math.sign(dx || 1) * (78 + r * 64), { duration: dur, ease })   // 78–142°
-    animate(flipX, (Math.random() * 2 - 1) * 64, { duration: dur, ease })          // ±64°
-    animate(pop, 1.16 + r * 0.2, { duration: dur * 0.62, ease })                   // 1.16–1.36 toward camera
+    animate(flipY, Math.sign(dx || 1) * (110 + r * 70), { duration: dur, ease })   // 110–180°
+    animate(flipX, (Math.random() * 2 - 1) * 85, { duration: dur, ease })           // ±85°
+    animate(pop, 1.28 + r * 0.32, { duration: dur * 0.6, ease })                    // 1.28–1.6 toward camera
     animate(x, targetX, { duration: dur, ease })
     animate(y, targetY, { duration: dur, ease, onComplete: onDone })
   }
@@ -186,7 +190,7 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
       <motion.div
         ref={cardRef}
         className="swipe-card"
-        style={interactive ? { x, y, rotate, rotateY: flipY, rotateX: flipX, scale: pop, transformPerspective: 1200 } : undefined}
+        style={interactive ? { x, y, rotate, rotateY: turnY, rotateX: turnX, scale: pop, transformPerspective: 1100 } : undefined}
         drag={interactive}
         dragSnapToOrigin
         dragElastic={0.6}

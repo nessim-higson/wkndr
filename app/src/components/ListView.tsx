@@ -43,7 +43,7 @@ export function ListView({
     const tick = () => {
       const max = maxScroll()
       if (max > 4) {
-        let next = scroller.scrollTop + dir * 0.4   // ~24px/s, a slow breathing drift
+        let next = scroller.scrollTop + dir * 1.3   // ~78px/s — a clearly-visible breathing drift
         if (next >= max) { next = max; dir = -1 }
         else if (next <= 0) { next = 0; dir = 1 }
         scroller.scrollTop = next
@@ -52,8 +52,8 @@ export function ListView({
     }
     const stop = () => { if (raf) cancelAnimationFrame(raf); raf = 0 }
     const drift = () => { stop(); raf = requestAnimationFrame(tick) }
-    const onActivity = () => { stop(); clearTimeout(idleT); idleT = setTimeout(drift, 2600) }
-    idleT = setTimeout(drift, 2000)   // begin drifting after a short rest
+    const onActivity = () => { stop(); clearTimeout(idleT); idleT = setTimeout(drift, 2200) }
+    idleT = setTimeout(drift, 1200)   // begin drifting after a short rest
     const events = ['pointerdown', 'wheel', 'touchstart', 'keydown'] as const
     events.forEach((e) => scroller.addEventListener(e, onActivity, { passive: true }))
     return () => {
