@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Shuffle, Clock, ChevronDown, LayoutGrid, Star, ArrowUpRight, LocateFixed, Info, RotateCw } from 'lucide-react'
+import { Shuffle, Clock, ChevronDown, LayoutGrid, Star, ArrowUpRight, LocateFixed, Info, RotateCw, X } from 'lucide-react'
 
 // subtle haptic on commit/save (Android/Chrome; iOS Safari ignores navigator.vibrate)
 const haptic = (ms = 10) => { try { navigator.vibrate?.(ms) } catch { /* unsupported */ } }
@@ -116,6 +116,9 @@ export default function App() {
     return FIELD_OPTS.some((o) => o.key === s) ? s : 'warp'
   })
   const [barOpen, setBarOpen] = useState(false)            // command bar expanded?
+  const [savesOpen, setSavesOpen] = useState(false)        // the persistent saves dock peek
+  const [dockPop, setDockPop] = useState(false)            // brief pulse when a save lands in the counter
+  const prevSavedCount = useRef(saved.size)
   const [intro, setIntro] = useState(true)                 // weather-aware intro (every load)
   const [listStyle, setListStyle] = useState<'wheel' | 'flux'>(() => {  // list motion language
     const s = localStorage.getItem('wkndr.liststyle')
@@ -150,6 +153,18 @@ export default function App() {
     return () => clearTimeout(id)
   }, [toast])
 
+  // pulse the persistent saves counter whenever a new save lands in it (the toast's
+  // sibling moment — the saved item visibly "arrives" in the dock)
+  useEffect(() => {
+    if (saved.size > prevSavedCount.current) {
+      setDockPop(true)
+      const id = setTimeout(() => setDockPop(false), 620)
+      prevSavedCount.current = saved.size
+      return () => clearTimeout(id)
+    }
+    prevSavedCount.current = saved.size
+  }, [saved.size])
+
   // taste is read via a ref when ranking so that swiping (which updates taste every card)
   // does NOT re-sort the live deck — otherwise the "next up" card could change identity
   // mid-toss and its image would swap. Taste re-applies on Refresh / weather change.
@@ -178,6 +193,8 @@ export default function App() {
   )
   const filterActive = filter !== 'all' || when !== 'all'
   const deck = useMemo(() => shown.filter((p) => !swiped.has(p.id)), [shown, swiped])
+  // saved picks in rank order — fuels the saves-dock peek
+  const savedPicks = useMemo(() => rankedAll.filter((p) => saved.has(p.id)), [rankedAll, saved])
 
   // Bottomless: in the unfiltered Stack, never dead-end — when you've swiped through the pool
   // it reshuffles and keeps serving. (Placeholder for the live pipeline that feeds new finds.)
@@ -295,10 +312,10 @@ export default function App() {
       >
         <header className="topbar">
           <AnimatePresence>
-            {barOpen && (
+            {(barOpen || savesOpen) && (
               <motion.div
                 className="topbar-scrim"
-                onClick={() => setBarOpen(false)}
+                onClick={() => { setBarOpen(false); setSavesOpen(false) }}
                 initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
                 transition={{ duration: 0.2 }}
               />
@@ -312,8 +329,8 @@ export default function App() {
               tabIndex={0}
               aria-label={barOpen ? 'Close menu' : 'Open menu'}
               aria-expanded={barOpen}
-              onClick={() => setBarOpen((v) => !v)}
-              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setBarOpen((v) => !v) } }}
+              onClick={() => { setBarOpen((v) => !v); setSavesOpen(false) }}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setBarOpen((v) => !v); setSavesOpen(false) } }}
             >
               <div className="tb-brandblock">
                 <div className="tb-brand"><span className={`tb-dot${locating ? ' pulsing' : ''}`} aria-hidden />WKNDR</div>
@@ -421,6 +438,83 @@ export default function App() {
                 </div>
               </div>
           </div>
+
+          {/* persistent saves dock — the menu's companion: a live ★ count that always
+              stays put, and peeks your saved list on tap. Hides while the full menu is open. */}
+          <AnimatePresence>
+            {!barOpen && (
+              <motion.div
+                className="saves-dock-wrap"
+                initial={{ opacity: 0, scale: 0.82 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.82 }}
+                transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+              >
+                <button
+                  className={`saves-dock${saved.size > 0 ? ' has' : ''}${savesOpen ? ' on' : ''}${dockPop ? ' pop' : ''}`}
+                  aria-label={`${saved.size} saved — ${savesOpen ? 'hide' : 'show'} your list`}
+                  aria-expanded={savesOpen}
+                  onClick={() => setSavesOpen((v) => !v)}
+                >
+                  <Star className="sd-star" size={17} strokeWidth={2.2} fill={saved.size > 0 ? 'currentColor' : 'none'} />
+                  <span className="sd-count" key={saved.size}>{saved.size}</span>
+                </button>
+
+                <AnimatePresence>
+                  {savesOpen && (
+                    <motion.div
+                      className="saves-panel"
+                      initial={{ opacity: 0, y: -10, scale: 0.97 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -10, scale: 0.97 }}
+                      transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
+                    >
+                      {saved.size === 0 ? (
+                        <div className="sv-empty">
+                          <Star size={22} strokeWidth={1.8} />
+                          <b>Nothing saved yet</b>
+                          <span>Swipe right, or tap ★ on a card, to start building your weekend.</span>
+                        </div>
+                      ) : (
+                        <>
+                          <div className="sv-head">
+                            <div className="sv-head-txt">
+                              <span className="sv-title">Your weekend</span>
+                              <span className="sv-sub">{saved.size} saved</span>
+                            </div>
+                            <button className="sv-share" onClick={() => { setShareOpen(true); setSavesOpen(false) }}>
+                              Share <ArrowUpRight size={14} strokeWidth={2.2} />
+                            </button>
+                          </div>
+                          <div className="sv-list">
+                            {savedPicks.map((p) => (
+                              <div className="sv-row" key={p.id}>
+                                <button className="sv-rowmain" onClick={() => { setDetail(p); setSavesOpen(false) }}>
+                                  <span className="sv-thumb" style={p.image ? { backgroundImage: `url(${p.image})` } : undefined}>
+                                    {!p.image && <span className="sv-thumb-cat">{CATEGORY_LABEL[p.category]}</span>}
+                                  </span>
+                                  <span className="sv-meta">
+                                    <span className="sv-when">{p.when}</span>
+                                    <span className="sv-name">{p.title}</span>
+                                  </span>
+                                </button>
+                                <button className="sv-remove" aria-label={`Remove ${p.title}`} onClick={() => toggleSave(p)}>
+                                  <X size={15} strokeWidth={2.4} />
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+                          <button className="sv-open" onClick={() => { setFilter('saved'); setView('list'); setSavesOpen(false) }}>
+                            Open as list <ArrowUpRight size={14} strokeWidth={2.2} />
+                          </button>
+                        </>
+                      )}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </header>
 
         {filter === 'saved' && saved.size > 0 && (
