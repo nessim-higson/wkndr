@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>WKNDR — saves view comps</title>
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin />
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=clash-display@600,700&display=swap" />
+<style>
+  :root{
+    --ink:#1a1a1a; --ink-3:#5a5a5a; --ink-4:#9a9a96;
+    --paper:#faf8f3; --paper-2:#f1efe8; --paper-3:#e7e4db; --rule:#ddd9cf;
+    --accent:#ff4d1f; --accent-deep:#8a2818;
+    --disp:'Clash Display','Helvetica Neue',sans-serif;
+    --body:'Helvetica Neue',Helvetica,Arial,sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased;}
+  body{font-family:var(--body);background:#2a2330;color:var(--ink);padding:40px 20px 80px;}
+  /* warm WKNDR field behind the phones */
+  body::before{content:'';position:fixed;inset:0;z-index:-1;
+    background:
+      radial-gradient(60% 50% at 30% 20%, #ff9a3d55, transparent 70%),
+      radial-gradient(70% 60% at 75% 70%, #c2310e66, transparent 70%),
+      linear-gradient(160deg,#5a1606,#2a1620);}
+  .lab{font-family:var(--disp);font-weight:700;color:#fff;font-size:13px;letter-spacing:.16em;text-transform:uppercase;opacity:.7;margin:0 auto 14px;max-width:390px;}
+  .lab small{display:block;font-family:var(--body);font-weight:400;letter-spacing:.01em;text-transform:none;font-size:12px;opacity:.8;margin-top:4px;}
+  .phone{width:390px;max-width:100%;margin:0 auto 56px;border-radius:30px;overflow:hidden;
+    box-shadow:0 30px 80px rgba(0,0,0,.5);background:#0c0a0e;}
+  .scene{position:relative;min-height:720px;padding:64px 16px 24px;
+    background:
+      radial-gradient(60% 45% at 35% 12%, #ff9a3d, transparent 70%),
+      radial-gradient(70% 55% at 78% 80%, #c2310e, transparent 70%),
+      linear-gradient(160deg,#e8842f,#7a2a12);}
+  /* faux topbar */
+  .bar{position:absolute;top:14px;left:50%;transform:translateX(-50%);width:322px;max-width:calc(100% - 24px);
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+    padding:9px 12px;border-radius:22px;background:rgba(250,248,243,.92);backdrop-filter:blur(20px);
+    border:1px solid rgba(255,255,255,.6);box-shadow:0 12px 30px rgba(0,0,0,.25);}
+  .bar .bm{display:flex;align-items:center;gap:9px;}
+  .bm .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);}
+  .bm b{font-family:var(--disp);font-weight:700;font-size:20px;letter-spacing:-.01em;}
+  .bm .wx{font-size:9px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;opacity:.5;border-left:1px solid rgba(0,0,0,.14);padding-left:9px;}
+  .bar .acts{display:flex;align-items:center;gap:6px;}
+  .pillc{display:inline-flex;align-items:center;gap:5px;background:var(--accent);color:#fff;border-radius:999px;padding:5px 10px;font-weight:700;font-size:13px;}
+  .pillc svg{width:15px;height:15px;}
+  .burg{width:34px;height:34px;display:grid;place-items:center;}
+  .burg span{display:block;width:15px;height:1.6px;background:#1c1c1a;box-shadow:0 5px 0 #1c1c1a;}
+
+  /* ===== A — itinerary ===== */
+  .sheet{background:var(--paper);border-radius:22px;padding:20px 18px 22px;box-shadow:0 18px 50px rgba(0,0,0,.28);}
+  .sheet-h{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:4px;}
+  .sheet-h h2{font-family:var(--disp);font-weight:700;font-size:26px;letter-spacing:-.02em;}
+  .sheet-h .n{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-4);font-weight:600;}
+  .day{margin-top:18px;}
+  .day-l{font-family:var(--disp);font-weight:700;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-deep);
+    display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+  .day-l::after{content:'';flex:1;height:1px;background:var(--rule);}
+  .it{display:flex;gap:12px;align-items:center;padding:8px 0;border-bottom:1px solid var(--paper-2);}
+  .it:last-child{border-bottom:none;}
+  .it .tm{font-variant-numeric:tabular-nums;font-weight:700;font-size:12px;color:var(--accent);min-width:42px;letter-spacing:-.01em;}
+  .it .tb{width:46px;height:46px;border-radius:10px;flex-shrink:0;background-size:cover;background-position:center;}
+  .it .ic h4{font-family:var(--disp);font-weight:600;font-size:16px;letter-spacing:-.01em;line-height:1.05;}
+  .it .ic p{font-size:11px;color:var(--ink-3);margin-top:2px;}
+
+  /* ===== B — poster wall ===== */
+  .wall-h{display:flex;align-items:baseline;justify-content:space-between;margin:2px 4px 12px;}
+  .wall-h h2{font-family:var(--disp);font-weight:700;font-size:24px;color:#fff;letter-spacing:-.02em;text-shadow:0 2px 18px rgba(0,0,0,.35);}
+  .wall-h .n{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#fff;opacity:.85;font-weight:600;}
+  .wall{display:grid;grid-template-columns:1fr 1fr;grid-auto-rows:96px;gap:8px;}
+  .tile{position:relative;border-radius:14px;overflow:hidden;background-size:cover;background-position:center;box-shadow:0 8px 22px rgba(0,0,0,.3);}
+  .tile.big{grid-row:span 2;}
+  .tile.wide{grid-column:span 2;}
+  .tile::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(0,0,0,.72));}
+  .tile .cap{position:absolute;left:10px;right:10px;bottom:9px;z-index:1;color:#fff;}
+  .tile .cap .t{font-family:var(--disp);font-weight:700;font-size:15px;line-height:1;letter-spacing:-.01em;text-shadow:0 1px 8px rgba(0,0,0,.5);}
+  .tile .cap .w{font-size:9px;letter-spacing:.06em;text-transform:uppercase;opacity:.9;margin-top:3px;}
+
+  /* ===== C — ticket stack ===== */
+  .stack-h{text-align:center;margin-bottom:18px;}
+  .stack-h h2{font-family:var(--disp);font-weight:700;font-size:24px;color:#fff;letter-spacing:-.02em;text-shadow:0 2px 18px rgba(0,0,0,.35);}
+  .stack-h p{font-size:11px;color:#fff;opacity:.8;margin-top:3px;letter-spacing:.08em;text-transform:uppercase;}
+  .stack{position:relative;height:430px;}
+  .tk{position:absolute;left:50%;width:300px;margin-left:-150px;background:var(--paper);border-radius:18px;
+    box-shadow:0 18px 40px rgba(0,0,0,.34);overflow:hidden;}
+  .tk .top{height:120px;background-size:cover;background-position:center;position:relative;}
+  .tk .top::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.1),rgba(0,0,0,.45));}
+  .tk .cat{position:absolute;top:10px;left:12px;z-index:1;font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#fff;background:rgba(0,0,0,.4);padding:3px 7px;border-radius:5px;}
+  /* perforation */
+  .tk .perf{position:relative;height:0;border-top:2px dashed var(--paper-3);}
+  .tk .perf::before,.tk .perf::after{content:'';position:absolute;top:-9px;width:18px;height:18px;border-radius:50%;background:#e8842f;}
+  .tk .perf::before{left:-9px;} .tk .perf::after{right:-9px;}
+  .tk .body{padding:14px 16px 16px;}
+  .tk .body h3{font-family:var(--disp);font-weight:700;font-size:21px;letter-spacing:-.02em;line-height:.98;}
+  .tk .body .meta{margin-top:7px;display:flex;justify-content:space-between;align-items:flex-end;}
+  .tk .body .when{font-weight:700;font-size:12px;color:var(--accent);font-variant-numeric:tabular-nums;}
+  .tk .body .ven{font-size:11px;color:var(--ink-3);}
+  .tk .body .code{font-family:var(--body);font-size:9px;letter-spacing:.18em;color:var(--ink-4);margin-top:10px;}
+  .tk.s1{top:0;transform:rotate(-4deg) scale(.9);filter:brightness(.9);}
+  .tk.s2{top:18px;transform:rotate(3deg) scale(.95);filter:brightness(.96);}
+  .tk.s3{top:42px;transform:rotate(-1deg);}
+</style>
+</head>
+<body>
+
+  <!-- ============ A: WEEKEND ITINERARY ============ -->
+  <div class="lab">A · Weekend itinerary<small>Saves grouped into a Fri/Sat/Sun plan — most useful, planning-forward</small></div>
+  <div class="phone"><div class="scene">
+    <div class="bar">
+      <div class="bm"><span class="dot"></span><b>WKNDR</b><span class="wx">18° AMS</span></div>
+      <div class="acts"><span class="pillc"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 6.5 7 .6-5.3 4.6 1.6 6.8L12 17l-6.9 3.5 1.6-6.8L1.4 9.1l7-.6z"/></svg>5</span><span class="burg"><span></span></span></div>
+    </div>
+    <div class="sheet">
+      <div class="sheet-h"><h2>Your weekend</h2><span class="n">5 saved</span></div>
+
+      <div class="day">
+        <div class="day-l">Fri 6 Jun</div>
+        <div class="it"><span class="tm">19:30</span><span class="tb" style="background:linear-gradient(145deg,#5a4b8c,#241d44)"></span><div class="ic"><h4>Humbe</h4><p>Ziggo Dome · Zuidoost</p></div></div>
+      </div>
+
+      <div class="day">
+        <div class="day-l">Sat 7 Jun</div>
+        <div class="it"><span class="tm">09:00</span><span class="tb" style="background:linear-gradient(145deg,#6f9a4a,#2c4624)"></span><div class="ic"><h4>Jordaan Flea Market</h4><p>Noordermarkt · Centrum</p></div></div>
+        <div class="it"><span class="tm">20:00</span><span class="tb" style="background:linear-gradient(145deg,#834066,#361d35)"></span><div class="ic"><h4>FKA twigs + Yves Tumor</h4><p>AFAS Live · Zuidoost</p></div></div>
+      </div>
+
+      <div class="day">
+        <div class="day-l">Sun 8 Jun</div>
+        <div class="it"><span class="tm">11:00</span><span class="tb" style="background:linear-gradient(145deg,#4e9a63,#21452f)"></span><div class="ic"><h4>Canal swim + coffee</h4><p>Het IJ · Noord</p></div></div>
+        <div class="it"><span class="tm">23:00</span><span class="tb" style="background:linear-gradient(145deg,#cf8038,#7a3f1a)"></span><div class="ic"><h4>Jungle by Night</h4><p>Melkweg · Centrum</p></div></div>
+      </div>
+    </div>
+  </div></div>
+
+  <!-- ============ B: POSTER WALL ============ -->
+  <div class="lab">B · Poster wall<small>A mosaic of your saved posters — most visual, screenshot-ready</small></div>
+  <div class="phone"><div class="scene">
+    <div class="bar">
+      <div class="bm"><span class="dot"></span><b>WKNDR</b><span class="wx">18° AMS</span></div>
+      <div class="acts"><span class="pillc"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 6.5 7 .6-5.3 4.6 1.6 6.8L12 17l-6.9 3.5 1.6-6.8L1.4 9.1l7-.6z"/></svg>5</span><span class="burg"><span></span></span></div>
+    </div>
+    <div class="wall-h"><h2>Your weekend</h2><span class="n">5 saved</span></div>
+    <div class="wall">
+      <div class="tile big" style="background:linear-gradient(145deg,#834066,#361d35)"><div class="cap"><div class="t">FKA twigs + Yves Tumor</div><div class="w">Sat · AFAS Live</div></div></div>
+      <div class="tile" style="background:linear-gradient(145deg,#5a4b8c,#241d44)"><div class="cap"><div class="t">Humbe</div><div class="w">Fri · Ziggo</div></div></div>
+      <div class="tile" style="background:linear-gradient(145deg,#cf8038,#7a3f1a)"><div class="cap"><div class="t">Jungle by Night</div><div class="w">Sun · Melkweg</div></div></div>
+      <div class="tile wide" style="background:linear-gradient(145deg,#6f9a4a,#2c4624)"><div class="cap"><div class="t">Jordaan Flea Market</div><div class="w">Sat · Noordermarkt</div></div></div>
+      <div class="tile" style="background:linear-gradient(145deg,#4e9a63,#21452f)"><div class="cap"><div class="t">Canal swim + coffee</div><div class="w">Sun · Het IJ</div></div></div>
+      <div class="tile" style="background:linear-gradient(145deg,#3f72ad,#1c3656)"><div class="cap"><div class="t">+ add more</div><div class="w">keep swiping</div></div></div>
+    </div>
+  </div></div>
+
+  <!-- ============ C: TICKET STACK ============ -->
+  <div class="lab">C · Ticket stack<small>Flip through your saves as ticket stubs — most delightful, collectible</small></div>
+  <div class="phone"><div class="scene">
+    <div class="bar">
+      <div class="bm"><span class="dot"></span><b>WKNDR</b><span class="wx">18° AMS</span></div>
+      <div class="acts"><span class="pillc"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 6.5 7 .6-5.3 4.6 1.6 6.8L12 17l-6.9 3.5 1.6-6.8L1.4 9.1l7-.6z"/></svg>5</span><span class="burg"><span></span></span></div>
+    </div>
+    <div class="stack-h"><h2>Your weekend</h2><p>5 tickets · swipe to flip</p></div>
+    <div class="stack">
+      <div class="tk s1"><div class="top" style="background:linear-gradient(145deg,#6f9a4a,#2c4624)"></div><div class="perf"></div><div class="body"><h3>Jordaan Flea Market</h3></div></div>
+      <div class="tk s2"><div class="top" style="background:linear-gradient(145deg,#5a4b8c,#241d44)"></div><div class="perf"></div><div class="body"><h3>Humbe</h3></div></div>
+      <div class="tk s3">
+        <div class="top" style="background:linear-gradient(145deg,#834066,#361d35)"><span class="cat">Live · Gigs</span></div>
+        <div class="perf"></div>
+        <div class="body">
+          <h3>FKA twigs<br>+ Yves Tumor</h3>
+          <div class="meta"><span class="when">SAT 7 JUN · 20:00</span><span class="ven">AFAS Live</span></div>
+          <div class="code">WKNDR · AMS · ADM 01</div>
+        </div>
+      </div>
+    </div>
+  </div></div>
+
+</body>
+</html>
