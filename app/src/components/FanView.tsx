@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { animate, motion, useMotionValue, type PanInfo } from 'framer-motion'
 import type { Pick } from '../types'
-import { Card } from './Card'
+import { CATEGORY_LABEL } from '../types'
 import './FanView.css'
 
 const MAX = 26          // cards placed around the wheel
@@ -77,10 +77,16 @@ export function FanView({
         {cards.map((p, i) => (
           <div className="wheel-card" key={p.id} style={{ transform: `rotate(${i * step}deg)` }}>
             <div
-              className="wheel-card-face"
+              className={`wheel-card-face${p.image ? '' : ` poster poster--${p.category}`}`}
+              style={p.image ? { backgroundImage: `url(${p.image})` } : undefined}
               onClick={() => { if (!moved.current) onOpen?.(p) }}
             >
-              <Card pick={p} />
+              <span className="wcard-shade" aria-hidden />
+              <span className="wcard-info">
+                <span className="wcard-cat mono">{CATEGORY_LABEL[p.category]}</span>
+                <span className="wcard-title">{p.title}</span>
+                <span className="wcard-when mono">{p.when}</span>
+              </span>
             </div>
           </div>
         ))}

@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef } from 'react'
+import { useEffect, useLayoutEffect, useRef } from 'react'
 import type { CSSProperties } from 'react'
 import type { Pick, SwipeDir } from '../types'
 import { CATEGORY_LABEL, FRESHNESS_LABEL, STATUS_LABEL } from '../types'
@@ -23,6 +23,42 @@ export function ListView({
   const listRef = useRef<HTMLDivElement>(null)
   const rowsRef = useRef<(HTMLElement | null)[]>([])
   rowsRef.current = []
+
+  // Active / inactive: on entry the list eases to the MIDDLE of the set, and whenever it's
+  // left untouched it drifts very slowly (bouncing at the ends) so it's never dead-static —
+  // the inactive state carries gentle motion. Any real interaction stops it; idle resumes it.
+  useEffect(() => {
+    const scroller = listRef.current?.closest('.main-list') as HTMLElement | null
+    if (!scroller) return
+    let raf = 0
+    let idleT: ReturnType<typeof setTimeout>
+    let dir = 1
+    const maxScroll = () => Math.max(0, scroller.scrollHeight - scroller.clientHeight)
+    const tick = () => {
+      const max = maxScroll()
+      if (max > 4) {
+        let next = scroller.scrollTop + dir * 0.4   // ~24px/s, a slow breathing drift
+        if (next >= max) { next = max; dir = -1 }
+        else if (next <= 0) { next = 0; dir = 1 }
+        scroller.scrollTop = next
+      }
+      raf = requestAnimationFrame(tick)
+    }
+    const stop = () => { if (raf) cancelAnimationFrame(raf); raf = 0 }
+    const drift = () => { stop(); raf = requestAnimationFrame(tick) }
+    const onActivity = () => { stop(); clearTimeout(idleT); idleT = setTimeout(drift, 2600) }
+    // settle into the middle, then begin drifting after a beat
+    const startT = setTimeout(() => {
+      scroller.scrollTo({ top: maxScroll() / 2, behavior: 'smooth' })
+      idleT = setTimeout(drift, 2600)
+    }, 160)
+    const events = ['pointerdown', 'wheel', 'touchstart', 'keydown'] as const
+    events.forEach((e) => scroller.addEventListener(e, onActivity, { passive: true }))
+    return () => {
+      stop(); clearTimeout(idleT); clearTimeout(startT)
+      events.forEach((e) => scroller.removeEventListener(e, onActivity))
+    }
+  }, [picks, listStyle])
 
   useLayoutEffect(() => {
     const scroller = listRef.current?.closest('.main-list') as HTMLElement | null

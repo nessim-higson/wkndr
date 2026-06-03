@@ -44,14 +44,27 @@ interface SwipeCardProps {
 
 const PROGRESS_REF = 140   // px of drag at which the next card has fully advanced
 
+// deterministic [-1, 1) from a string — gives each card a stable little imperfection
+function hashUnit(s: string): number {
+  let h = 0
+  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0
+  return ((h % 2000) / 1000) - 1
+}
+
 const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
   { pick, interactive, depth, dealIn, progress, onSwipe, onCycle, onOpen }, ref,
 ) {
+  // a touch of deterministic imperfection per card — the stack looks hand-laid, not machined
+  const skew = useMemo(() => hashUnit(pick.id) * 2.8, [pick.id])        // ±2.8° resting tilt
+  const restX = useMemo(() => hashUnit(`${pick.id}x`) * 7, [pick.id])   // ±7px resting nudge
+
   const x = useMotionValue(0)
   const y = useMotionValue(0)
   const spin = useMotionValue(0)               // extra rotation imparted by a toss
+  const flipY = useMotionValue(0)              // 3D turn as the card flies off
+  const pop = useMotionValue(1)                // grows slightly toward camera on exit
   const enterY = useMotionValue(dealIn ? 680 : 0)               // build-in: fly up from below
-  const enterRot = useMotionValue(dealIn ? (depth % 2 ? 7 : -7) : 0)  // …with a slight fanning tilt
+  const enterRot = useMotionValue(dealIn ? skew + (depth % 2 ? 7 : -7) : skew)  // settle to the resting skew
   const enterOp = useMotionValue(0)
   const grabLever = useRef(0)                  // where you grabbed: -1 top … +1 bottom
   const cardRef = useRef<HTMLDivElement>(null)
@@ -64,8 +77,9 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
     const delay = dealIn ? (RENDER - 1 - depth) * 0.07 : 0
     animate(enterOp, 1, { duration: dealIn ? 0.5 : 0.34, delay, ease: [0.22, 1, 0.36, 1] })
     if (dealIn) {
-      animate(enterY, 0, { type: 'spring', stiffness: 300, damping: 30, delay })
-      animate(enterRot, 0, { type: 'spring', stiffness: 300, damping: 30, delay })
+      // a hair of overshoot + extra settle time so the card "drops" and rocks to rest, not a clean snap
+      animate(enterY, 0, { type: 'spring', stiffness: 260, damping: 17, delay })
+      animate(enterRot, skew, { type: 'spring', stiffness: 240, damping: 14, delay })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -112,6 +126,9 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
     const spinDeg = Math.sign(dx || 1) * (4 + Math.min(14, speed * 0.007)) * (0.55 + Math.abs(grabLever.current) * 0.6)
     animate(spin, spinDeg, { duration: dur, ease })
     animate(progress, 1, { duration: Math.min(0.5, dur), ease: 'easeOut' })   // next card advances as this flies
+    // dimension on exit: the card turns on its Y axis and lifts toward camera as it leaves
+    animate(flipY, Math.sign(dx || 1) * 52, { duration: dur, ease })
+    animate(pop, 1.12, { duration: dur * 0.66, ease })
     animate(x, targetX, { duration: dur, ease })
     animate(y, targetY, { duration: dur, ease, onComplete: onDone })
   }
@@ -156,13 +173,13 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
     // card is promoted, so it never fights the drag offset (which lives on the inner).
     <motion.div
       className="swipe-card-slot"
-      style={{ zIndex: 10 - depth, scale: slotScale, y: slotY, rotate: enterRot, opacity: enterOp, pointerEvents: interactive ? 'auto' : 'none' }}
+      style={{ zIndex: 10 - depth, scale: slotScale, x: restX, y: slotY, rotate: enterRot, opacity: enterOp, pointerEvents: interactive ? 'auto' : 'none' }}
     >
       {/* INNER — only the top card is draggable; x/y/rotate start at 0 every time */}
       <motion.div
         ref={cardRef}
         className="swipe-card"
-        style={interactive ? { x, y, rotate } : undefined}
+        style={interactive ? { x, y, rotate, rotateY: flipY, scale: pop, transformPerspective: 1400 } : undefined}
         drag={interactive}
         dragSnapToOrigin
         dragElastic={0.6}
