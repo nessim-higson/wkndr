@@ -34,16 +34,21 @@
   position: absolute;
   top: 12px;
   right: 12px;
-  z-index: 3;
-  width: 34px;
-  height: 34px;
+  z-index: 4;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   display: grid;
   place-items: center;
   color: #fff;
-  background: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(6px);
+  background: rgba(0, 0, 0, 0.55);
+  border: 1.5px solid rgba(255, 255, 255, 0.5);   /* a ring so it reads on any image/poster */
+  backdrop-filter: blur(8px);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+  transition: transform 0.12s var(--ease-out), background 0.12s;
 }
+.detail-close:hover { background: rgba(0, 0, 0, 0.7); }
+.detail-close:active { transform: scale(0.9); }
 .detail-img {
   position: relative;
   width: 100%;

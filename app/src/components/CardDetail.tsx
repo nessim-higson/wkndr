@@ -69,7 +69,7 @@ export function CardDetail({
               onClick={onClose}
               onPointerDown={(e) => e.stopPropagation()}
               aria-label="Close"
-            ><X size={18} strokeWidth={2.4} /></button>
+            ><X size={20} strokeWidth={2.6} /></button>
             <motion.div
               className={`detail-img${pick.image ? '' : ` poster poster--${pick.category}`}`}
               style={{ ...(pick.image ? { backgroundImage: `url(${pick.image})` } : {}), touchAction: 'none' }}

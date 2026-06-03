@@ -27,6 +27,11 @@
   transform-origin: 50% 50%;
   will-change: transform;
 }
+/* mobile: pull the wheel up so the hero sits in the upper-middle, not pushed low
+   (the stacked topbar + main offset otherwise leaves a big dead gap above the fan) */
+@media (max-width: 719px) {
+  .wheel { top: 14px; }
+}
 
 /* each card hangs at the top of the wheel and is rotated to its place around the rim */
 .wheel-card {

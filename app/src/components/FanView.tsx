@@ -25,6 +25,9 @@ export function FanView({
   const n = cards.length
   const step = n > 0 ? 360 / n : 0
   const spin = useMotionValue(0)
+  // how far the hero pulls down out of the arc — gentler on a short phone so it lands
+  // centred rather than near the bottom
+  const heroLift = useMemo(() => (typeof window !== 'undefined' && window.innerWidth < 720 ? 76 : 104), [])
 
   const moved = useRef(false)
   const spinStart = useRef(0)
@@ -78,7 +81,7 @@ export function FanView({
         const e = p * p                                 // ease so only the very centre lifts out
         const face = card.querySelector<HTMLElement>('.wheel-card-face')
         // hero: grow bigger AND pull down into the middle of the screen (out of the arc)
-        if (face) face.style.transform = `scale(${0.9 + e * 0.46}) translateY(${e * 104}px)`
+        if (face) face.style.transform = `scale(${0.9 + e * 0.46}) translateY(${e * heroLift}px)`
         card.style.zIndex = String(100 + Math.round(p * 100))
         card.style.opacity = String(0.6 + p * 0.4)
       })
@@ -86,7 +89,7 @@ export function FanView({
     update()
     const unsub = spin.on('change', update)
     return unsub
-  }, [spin, step, n])
+  }, [spin, step, n, heroLift])
 
   function onPointerDown(e: RPointerEvent) {
     auto.current?.stop()
