@@ -86,6 +86,16 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  // Safety: only the TOP card carries a fly-off transform. The moment a card is no longer
+  // the top one, snap its drag/exit values back to rest — so a recycled card can never
+  // reappear mid-flight or return to the top still flung off-screen (the reshuffle "pop").
+  useEffect(() => {
+    if (!interactive) {
+      x.set(0); y.set(0); spin.set(0); flipY.set(0); flipX.set(0); pop.set(1)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [interactive])
+
   // Tilt is torque: grabbing the TOP and pulling pivots the card hard one way, the BOTTOM
   // the other, a centre grab barely tilts. Plus any spin imparted on a toss.
   const rotate = useTransform([x, spin], ([lx, ls]: number[]) => {
@@ -177,7 +187,11 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
     if (offset.x < -THRESHOLD || velocity.x < -VELOCITY) return fling('nope', info)
     if (offset.y < -THRESHOLD || velocity.y < -VELOCITY) return fling('save', info)
     if (offset.y > THRESHOLD || velocity.y > VELOCITY) return fling('skip', info)
-    // not committed → card snaps home and the stack eases back (soft)
+    // not committed → ease the card home and the stack eases back (soft). We snap home
+    // ourselves rather than via dragSnapToOrigin, which would otherwise fight a committed
+    // exit on release and stutter for a frame.
+    animate(x, 0, { type: 'spring', stiffness: 260, damping: 28 })
+    animate(y, 0, { type: 'spring', stiffness: 260, damping: 28 })
     animate(progress, 0, { type: 'spring', stiffness: 230, damping: 30 })
   }
 
@@ -194,7 +208,6 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
         className="swipe-card"
         style={interactive ? { x, y, rotate, rotateY: turnY, rotateX: turnX, scale: pop, transformPerspective: 1100 } : undefined}
         drag={interactive}
-        dragSnapToOrigin
         dragElastic={0.6}
         onPointerDown={interactive ? capturePoint : undefined}
         onTapStart={interactive ? () => { dragged.current = false } : undefined}
@@ -251,7 +264,10 @@ export function SwipeStack({
   // ---- idle demo -----------------------------------------------------------
   const idle = useRef<ReturnType<typeof setTimeout>>()
   const cycling = useRef(false)
-  const canCycle = !paused && n > 1
+  // Only auto-demo when the deck is big enough that the flung card genuinely leaves the
+  // visible window (and a fresh one fades in behind). On a small deck it would wrap back
+  // into view and pop; better to just sit still — same call as the short-list motion.
+  const canCycle = !paused && n > RENDER
 
   const arm = useCallback(() => {
     clearTimeout(idle.current)
