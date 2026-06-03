@@ -1,6 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Shuffle, Clock, ChevronDown, LayoutGrid, Star, ArrowUpRight, LocateFixed, Info } from 'lucide-react'
+import { Shuffle, Clock, ChevronDown, LayoutGrid, Star, ArrowUpRight, LocateFixed, Info, RotateCw } from 'lucide-react'
+
+// subtle haptic on commit/save (Android/Chrome; iOS Safari ignores navigator.vibrate)
+const haptic = (ms = 10) => { try { navigator.vibrate?.(ms) } catch { /* unsupported */ } }
 import type { Mode, Pick, SwipeDir } from './types'
 import { MODES, MODE_META, classify, applyMode, rankPicks, shuffle } from './weather/modes'
 import { PICKS } from './data/picks'
@@ -91,7 +94,14 @@ export default function App() {
   const [swiped, setSwiped] = useState<Set<string>>(new Set())
   const [saved, setSaved] = useState<Set<string>>(() => loadSaved())   // persisted
   const [taste, setTaste] = useState<Taste>(() => loadTaste())         // persisted taste profile
-  const [toast, setToast] = useState('')
+  const [toast, setToast] = useState<{ text: string; save?: boolean } | null>(null)
+  const [locating, setLocating] = useState(false)   // weather/location fetch in flight
+  const [visits] = useState(() => {                  // for progressive-reduction of hints
+    const v = Number(localStorage.getItem('wkndr.visits') || 0) + 1
+    localStorage.setItem('wkndr.visits', String(v))
+    return v
+  })
+  const flash = (text: string, save = false) => setToast({ text, save })
   const [seed, setSeed] = useState(0)            // 0 = forecast order; bumped by Refresh
   const [dealKey, setDealKey] = useState(0)      // bump → stack re-deals (refresh signal)
   const [detail, setDetail] = useState<Pick | null>(null)  // open card detail
@@ -136,7 +146,7 @@ export default function App() {
   // auto-clear the refresh toast
   useEffect(() => {
     if (!toast) return
-    const id = setTimeout(() => setToast(''), 1900)
+    const id = setTimeout(() => setToast(null), 1900)
     return () => clearTimeout(id)
   }, [toast])
 
@@ -175,7 +185,7 @@ export default function App() {
     if (view !== 'stack' || filterActive || deck.length > 0 || shown.length === 0) return
     const t = setTimeout(() => {
       setSwiped(new Set()); setSeed((s) => s + 1); setDealKey((k) => k + 1)
-      setToast('More for you ↻')
+      flash('More for you')
     }, 380)
     return () => clearTimeout(t)
   }, [view, filterActive, deck.length, shown.length])
@@ -184,12 +194,16 @@ export default function App() {
     setSwiped(new Set())
     setSeed((s) => s + 1)
     setDealKey((k) => k + 1)
-    setToast(`Reshuffled · ${rankedAll.length} picks · re-ranked for ${MODE_META[mode].label.toLowerCase()}`)
+    flash(`Reshuffled · ${rankedAll.length} picks · re-ranked for ${MODE_META[mode].label.toLowerCase()}`)
   }
 
   function handleStackSwipe(p: Pick, dir: SwipeDir) {
     setSwiped((s) => new Set(s).add(p.id))
-    if (dir === 'like' || dir === 'save') setSaved((s) => new Set(s).add(p.id))
+    if (dir === 'like' || dir === 'save') {
+      const n = saved.has(p.id) ? saved.size : saved.size + 1
+      setSaved((s) => new Set(s).add(p.id))
+      flash(`Saved · ${n}`, true)   // haptic already fired at the swipe commit (SwipeStack.fling)
+    }
     setTaste((t) => applySwipe(t, p, dir))   // every swipe teaches it
   }
   function handleListToggle(p: Pick, dir: SwipeDir) {
@@ -198,7 +212,10 @@ export default function App() {
       if (dir === 'save') next.add(p.id); else next.delete(p.id)
       return next
     })
-    if (dir === 'save') setTaste((t) => applySwipe(t, p, 'save'))
+    if (dir === 'save') {
+      haptic(14); flash(`Saved · ${saved.size + 1}`, true)
+      setTaste((t) => applySwipe(t, p, 'save'))
+    }
   }
   function toggleSave(p: Pick) {
     const wasSaved = saved.has(p.id)
@@ -207,7 +224,8 @@ export default function App() {
       if (wasSaved) next.delete(p.id); else next.add(p.id)
       return next
     })
-    if (!wasSaved) setTaste((t) => applySwipe(t, p, 'save'))
+    if (!wasSaved) { haptic(14); flash(`Saved · ${saved.size + 1}`, true); setTaste((t) => applySwipe(t, p, 'save')) }
+    else flash('Removed')
   }
 
   // hard reset — wipe saved list + learned taste (for testing the cold-start state)
@@ -221,7 +239,7 @@ export default function App() {
     setDealKey((k) => k + 1)
     setFilter('all'); setWhen('all')
     setBarOpen(false)
-    setToast('Reset · saved list + taste cleared')
+    flash('Reset · saved list + taste cleared')
   }
 
   // "preview a different forecast" — explicitly a what-if, not the real weather
@@ -238,6 +256,7 @@ export default function App() {
     )
   }
   async function goLive(lat: number, lon: number) {
+    setLocating(true)
     try {
       const w = await fetch(
         `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}` +
@@ -257,6 +276,7 @@ export default function App() {
       setWx({ temp: Math.round(w.current.temperature_2m), hi, lo, city })
       setLive(true)
     } catch { /* keep current */ }
+    finally { setLocating(false) }
   }
 
   return (
@@ -264,7 +284,7 @@ export default function App() {
       <AmbientField mode={mode} look={look} onLookChange={setLook} />
 
       <AnimatePresence>
-        {intro && <Intro lead={SHARED_FROM ? `${SHARED_FROM} shared some picks.` : undefined} onDone={() => setIntro(false)} />}
+        {intro && <Intro lead={SHARED_FROM ? `${SHARED_FROM} shared some picks.` : undefined} showHint={visits <= 3} onDone={() => setIntro(false)} />}
       </AnimatePresence>
 
       <motion.div
@@ -296,11 +316,11 @@ export default function App() {
               onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setBarOpen((v) => !v) } }}
             >
               <div className="tb-brandblock">
-                <div className="tb-brand"><span className="tb-dot" aria-hidden />WKNDR</div>
+                <div className="tb-brand"><span className={`tb-dot${locating ? ' pulsing' : ''}`} aria-hidden />WKNDR</div>
                 <span className="tb-divider" aria-hidden />
                 <div className="tb-wx">
                   <span className="tb-temp">{wx.temp}°</span>
-                  <span className="tb-city">{wx.city}</span>
+                  <span className="tb-city">{locating ? 'Locating…' : wx.city}</span>
                 </div>
               </div>
 
@@ -460,7 +480,12 @@ export default function App() {
         </main>
       </motion.div>
 
-      {toast && <div className="toast">↻ {toast}</div>}
+      {toast && (
+        <div className={`toast${toast.save ? ' toast--save' : ''}`}>
+          {toast.save ? <Star size={14} strokeWidth={2.4} fill="currentColor" /> : <RotateCw size={14} strokeWidth={2.4} />}
+          {toast.text}
+        </div>
+      )}
 
       <CardDetail
         pick={detail}

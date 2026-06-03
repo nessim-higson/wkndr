@@ -147,6 +147,7 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
 
   // Committed swipe: exit ALONG the throw (velocity flick → offset drag → cardinal fallback).
   function fling(dir: SwipeDir, info?: PanInfo) {
+    try { navigator.vibrate?.(11) } catch { /* unsupported (iOS) */ }   // tactile commit
     let dx = DIR[dir].x, dy = DIR[dir].y, speed = 0
     if (info) {
       speed = Math.hypot(info.velocity.x, info.velocity.y)

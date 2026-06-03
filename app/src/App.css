@@ -406,6 +406,9 @@
   left: 50%;
   transform: translateX(-50%);
   z-index: 200;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
   font-size: 13px;
   font-weight: 600;
   letter-spacing: -0.005em;
@@ -416,9 +419,33 @@
   box-shadow: 0 10px 34px rgba(0, 0, 0, 0.32);
   animation: toast-in 0.32s var(--ease-spring);
 }
+.toast--save { background: var(--accent); color: #fff; }   /* save reads warm + positive */
 @keyframes toast-in {
   from { opacity: 0; transform: translate(-50%, 16px) scale(0.96); }
   to { opacity: 1; transform: translate(-50%, 0) scale(1); }
+}
+
+/* ---- microinteraction polish ---- */
+/* tactile press feedback on every control */
+.bar-pill:active, .filter-trigger:active, .toggle button:active,
+.mode-pills button:active, .stack-btn:active,
+.share-primary:active, .share-copy:active { transform: scale(0.96); }
+.row-save:active, .detail-icon-btn:active { transform: scale(0.9); }
+/* the saved star "pops" when it turns on */
+.row-save.on, .detail-icon-btn.on { animation: star-pop 0.34s var(--ease-spring); }
+@keyframes star-pop {
+  0% { transform: scale(1); }
+  45% { transform: scale(1.32); }
+  100% { transform: scale(1); }
+}
+/* the brand dot pulses while locating / fetching weather */
+.tb-dot.pulsing { animation: dot-pulse 0.9s ease-in-out infinite; }
+@keyframes dot-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(1.5); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .row-save.on, .detail-icon-btn.on, .tb-dot.pulsing { animation: none; }
 }
 
 @media (max-width: 560px) {

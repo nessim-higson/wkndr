@@ -7,7 +7,7 @@ const FOLLOW = ''
 /** Full-screen intro over the live field: the line, then it lifts away as the app
  *  rises in. Plays every load; tap to skip. `lead` is overridable so a shared visit
  *  can be greeted personally ("Ness shared some picks."). */
-export function Intro({ onDone, lead = 'Tinder your events.' }: { onDone: () => void; lead?: string }) {
+export function Intro({ onDone, lead = 'Tinder your events.', showHint = true }: { onDone: () => void; lead?: string; showHint?: boolean }) {
   const LEAD = lead
   useEffect(() => {
     const id = setTimeout(onDone, 2600)
@@ -45,12 +45,14 @@ export function Intro({ onDone, lead = 'Tinder your events.' }: { onDone: () => 
         </div>
       </motion.div>
 
-      <motion.span
-        className="intro-skip"
-        initial={{ opacity: 0 }} animate={{ opacity: 0.45 }} transition={{ delay: 1.4 }}
-      >
-        tap to continue
-      </motion.span>
+      {showHint && (
+        <motion.span
+          className="intro-skip"
+          initial={{ opacity: 0 }} animate={{ opacity: 0.45 }} transition={{ delay: 1.4 }}
+        >
+          tap to continue
+        </motion.span>
+      )}
     </motion.div>
   )
 }
