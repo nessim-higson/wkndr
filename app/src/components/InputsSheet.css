@@ -30,7 +30,7 @@
   background: var(--rule);
   margin: 0 auto 18px;
 }
-.sheet-title { font-size: 22px; font-weight: 600; letter-spacing: -0.03em; }
+.sheet-title { font-family: var(--font-display); font-size: 23px; font-weight: 700; letter-spacing: -0.02em; }
 .sheet-sub { margin-top: 6px; font-size: 13px; line-height: 1.45; color: var(--ink-4); }
 
 .sheet-block { margin-top: 22px; }

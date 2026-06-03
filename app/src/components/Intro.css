@@ -30,18 +30,21 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  font-size: 14px;
-  font-weight: 800;
-  letter-spacing: -0.03em;
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
   opacity: 0.82;
 }
 .intro-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
-/* bold lead — roughly twice the old size */
+/* bold lead — Clash Display, poster-grade, roughly twice the old size */
 .intro-lead {
-  font-size: clamp(46px, 12.5vw, 88px);
-  font-weight: 800;
-  line-height: 0.98;
-  letter-spacing: -0.045em;
+  font-family: var(--font-display);
+  font-size: clamp(48px, 13vw, 92px);
+  font-weight: 700;
+  line-height: 0.92;
+  letter-spacing: -0.025em;
   text-shadow: 0 2px 40px rgba(0, 0, 0, 0.3);
 }
 /* light Helvetica Neue follow — animates in with a soft blur-and-rise */

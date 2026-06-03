@@ -24,6 +24,11 @@
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 
+  /* type families — Clash Display is the display voice (loud, poster energy),
+     Helvetica Neue stays the workhorse body. Pair distinctive display + clean body. */
+  --font-display: 'Clash Display', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-body: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
   /* ---- type scale (the canonical steps — use these, don't invent in-betweens) ---- */
   --fs-cap: 10px;   /* uppercase micro labels, chips */
   --fs-xs: 11px;    /* mono metadata, eyebrows */
@@ -55,7 +60,7 @@ html, body, #root {
   height: 100%;
 }
 body {
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: var(--font-body);
   background: var(--paper);
   color: var(--ink);
   font-feature-settings: "kern", "liga", "tnum";
@@ -63,9 +68,34 @@ body {
   overflow: hidden;            /* the app owns its own scroll regions */
   overscroll-behavior: none;
 }
-/* All type is Helvetica for now. `.mono` is kept as a hook (it still carries the
+/* Body type is Helvetica. `.mono` is kept as a hook (it still carries the
    letter-spaced/uppercase label styling at call sites) but no longer switches font. */
-.mono { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; }
+.mono { font-family: var(--font-body); }
+/* `.display` = the Clash Display voice. Loud, tight, poster-grade. Reserved for
+   the wordmark, the hero line, and titles — never body copy. */
+.display {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.02;
+}
 button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
 img { display: block; max-width: 100%; }
 a { color: inherit; }
+
+/* Film-grain overlay — a faint fractal-noise texture across the whole app, so the
+   weather field, paper sheets and photo cards all sit under one tactile, filmic
+   surface instead of flat pixels. Static, GPU-cheap (tiny tiled SVG), never blocks
+   input. The signature "this was made by a person" detail. */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  pointer-events: none;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+}
+@media (prefers-reduced-motion: reduce) { body::after { opacity: 0.035; } }

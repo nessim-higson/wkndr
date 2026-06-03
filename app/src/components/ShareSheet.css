@@ -47,7 +47,7 @@
 .share-note { margin-top: 12px; font-size: 12px; line-height: 1.45; color: var(--ink-4); text-align: center; }
 
 .share-empty { text-align: center; padding: 8px 8px 4px; }
-.share-empty h3 { font-size: 20px; font-weight: 600; letter-spacing: -0.02em; }
+.share-empty h3 { font-family: var(--font-display); font-size: 21px; font-weight: 700; letter-spacing: -0.018em; }
 .share-empty p { margin-top: 8px; font-size: 14px; line-height: 1.5; color: var(--ink-3); }
 .share-done { margin-top: 20px; width: 100%; font-size: 14px; font-weight: 600; padding: 14px; border-radius: 999px; background: var(--ink); color: var(--paper); }
 
