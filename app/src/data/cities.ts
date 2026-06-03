@@ -18,16 +18,18 @@ export interface City {
   sources: Record<string, Source[]>
   sourceCount: number
   seed?: boolean        // true = hand-seeded proof set, not yet crawled
+  songkickMetroId?: number   // for the live gigs adapter (scripts/adapters/songkick.ts)
 }
 
 export const CITIES: City[] = [
   {
     key: 'amsterdam', name: 'Amsterdam', label: 'Amsterdam', lat: 52.37, lon: 4.89,
-    picks: PICKS, sources: SOURCE_ROSTER, sourceCount: SOURCE_COUNT,
+    picks: PICKS, sources: SOURCE_ROSTER, sourceCount: SOURCE_COUNT, songkickMetroId: 31366,
   },
   {
     key: 'new-orleans', name: 'New Orleans', label: 'New Orleans', lat: 29.95, lon: -90.07,
     picks: PICKS_NOLA, sources: SOURCE_ROSTER_NOLA, sourceCount: SOURCE_COUNT_NOLA, seed: true,
+    songkickMetroId: 4968,
   },
 ]
 

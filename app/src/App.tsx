@@ -109,10 +109,16 @@ export default function App() {
     return s === 'flux' ? 'flux' : 'wheel'
   })
   const [city, setCity] = useState<City>(INITIAL_CITY)   // which city's feed is active
+  const [feeds, setFeeds] = useState<Record<string, { picks: Pick[]; generatedAt: string }>>({})
+  const fetchedFeeds = useRef<Set<string>>(new Set())
+
+  // THE LIVE SEAM: prefer the generated feed (scripts/refresh.ts → public/data/picks.<city>.json)
+  // when present, else the bundled snapshot. Lets refreshed content flow in with no rebuild.
+  const cityPicks = feeds[city.key]?.picks ?? city.picks
+  const feedAt = feeds[city.key]?.generatedAt ?? null
 
   // Everything that used to be derived from the single static PICKS set is now derived from
   // the ACTIVE city's pool — so switching city swaps the whole feed (filters, counts, deck).
-  const cityPicks = city.picks
   const present = useMemo<Category[]>(() => [...new Set(cityPicks.map((p) => p.category))], [cityPicks])
   const FILTERS = useMemo<FilterOpt[]>(() => [
     { key: 'all', label: 'Everything', count: cityPicks.length },
@@ -132,6 +138,19 @@ export default function App() {
   const whenLabel = (w: When) => WHEN_FILTERS.find((x) => x.key === w)?.label ?? 'Any time'
 
   useEffect(() => { applyMode(mode) }, [mode])
+  // pull the active city's live feed once (falls back silently to the bundled set)
+  useEffect(() => {
+    const key = city.key
+    if (fetchedFeeds.current.has(key)) return
+    fetchedFeeds.current.add(key)
+    fetch(`${import.meta.env.BASE_URL}data/picks.${key}.json`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((j) => {
+        if (!j || !Array.isArray(j.picks) || !j.picks.length) return
+        setFeeds((prev) => ({ ...prev, [key]: { picks: j.picks as Pick[], generatedAt: j.generatedAt } }))
+      })
+      .catch(() => { /* keep bundled */ })
+  }, [city.key])
   useEffect(() => { persistSaved(saved) }, [saved])   // your list survives reloads
   useEffect(() => { persistTaste(taste) }, [taste])   // your taste accumulates over time
   useEffect(() => { localStorage.setItem('wkndr.field', look) }, [look])   // your ambient-field choice sticks
@@ -619,6 +638,7 @@ export default function App() {
         rosterCount={city.sourceCount}
         cityLabel={city.label}
         seed={city.seed}
+        feedAt={feedAt}
       />
       <ShareSheet
         open={shareOpen}

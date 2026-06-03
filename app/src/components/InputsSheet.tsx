@@ -9,7 +9,7 @@ import './InputsSheet.css'
  *  Roster is passed in from the active city so this travels with the feed. */
 export function InputsSheet({
   open, onClose, mode, temp, hi, lo, live, activeCount,
-  roster, rosterCount, cityLabel, seed,
+  roster, rosterCount, cityLabel, seed, feedAt,
 }: {
   open: boolean
   onClose: () => void
@@ -23,6 +23,7 @@ export function InputsSheet({
   rosterCount: number
   cityLabel: string
   seed?: boolean
+  feedAt?: string | null
 }) {
   return (
     <AnimatePresence>
@@ -66,6 +67,16 @@ export function InputsSheet({
                   </div>
                 </div>
               ))}
+            </section>
+
+            <section className="sheet-block">
+              <h4>Pipeline</h4>
+              <p>
+                {feedAt
+                  ? <>Served from a <b>generated feed</b> (refresh pipeline) · {new Date(feedAt).toLocaleString()}.</>
+                  : <>Served from the <b>bundled snapshot</b> (no live feed loaded).</>}
+                {' '}Adapters normalize → dedupe → fill og:images → publish <code>picks.json</code>.
+              </p>
             </section>
 
             <section className="sheet-block">
