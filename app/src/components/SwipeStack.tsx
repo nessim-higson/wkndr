@@ -62,9 +62,10 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
   const y = useMotionValue(0)
   const spin = useMotionValue(0)               // extra rotation imparted by a toss
   const flipY = useMotionValue(0)              // 3D turn as the card flies off
-  const pop = useMotionValue(1)                // grows slightly toward camera on exit
+  const flipX = useMotionValue(0)              // 3D tumble on exit (varies per throw)
+  const pop = useMotionValue(1)                // grows toward camera on exit
   const enterY = useMotionValue(dealIn ? 680 : 0)               // build-in: fly up from below
-  const enterRot = useMotionValue(dealIn ? skew + (depth % 2 ? 7 : -7) : skew)  // settle to the resting skew
+  const enterRotExtra = useMotionValue(dealIn ? (depth % 2 ? 7 : -7) : 0)  // entrance tilt → 0
   const enterOp = useMotionValue(0)
   const grabLever = useRef(0)                  // where you grabbed: -1 top … +1 bottom
   const cardRef = useRef<HTMLDivElement>(null)
@@ -79,7 +80,7 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
     if (dealIn) {
       // a hair of overshoot + extra settle time so the card "drops" and rocks to rest, not a clean snap
       animate(enterY, 0, { type: 'spring', stiffness: 260, damping: 17, delay })
-      animate(enterRot, skew, { type: 'spring', stiffness: 240, damping: 14, delay })
+      animate(enterRotExtra, 0, { type: 'spring', stiffness: 240, damping: 14, delay })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -109,6 +110,9 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
   const eff = useTransform(progress, (p) => Math.min(VISIBLE_DEPTH, Math.max(0, depth - p)))
   const slotScale = useTransform(eff, (d) => 1 - d * STEP_SCALE)
   const slotY = useTransform([eff, enterY], ([d, ey]: number[]) => d * STEP_Y + ey)
+  // resting imperfection scales with depth: the TOP card stays nearly square; deeper cards tilt/offset more
+  const slotRot = useTransform([eff, enterRotExtra], ([d, ex]: number[]) => skew * Math.min(1, d) + ex)
+  const slotX = useTransform(eff, (d) => restX * Math.min(1, d))
 
   // Fly the card off-screen along (dx, dy), carrying `speed` of momentum. The exit glides
   // at a fairly steady pace (a hard toss is only a little quicker) and is clamped so cards
@@ -126,9 +130,12 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
     const spinDeg = Math.sign(dx || 1) * (4 + Math.min(14, speed * 0.007)) * (0.55 + Math.abs(grabLever.current) * 0.6)
     animate(spin, spinDeg, { duration: dur, ease })
     animate(progress, 1, { duration: Math.min(0.5, dur), ease: 'easeOut' })   // next card advances as this flies
-    // dimension on exit: the card turns on its Y axis and lifts toward camera as it leaves
-    animate(flipY, Math.sign(dx || 1) * 52, { duration: dur, ease })
-    animate(pop, 1.12, { duration: dur * 0.66, ease })
+    // dimension on exit: a big, VARIED tumble — turns hard on Y, tumbles a little on X, and
+    // lunges toward camera. Random per throw so no two exits look alike.
+    const r = Math.random()
+    animate(flipY, Math.sign(dx || 1) * (78 + r * 64), { duration: dur, ease })   // 78–142°
+    animate(flipX, (Math.random() * 2 - 1) * 64, { duration: dur, ease })          // ±64°
+    animate(pop, 1.16 + r * 0.2, { duration: dur * 0.62, ease })                   // 1.16–1.36 toward camera
     animate(x, targetX, { duration: dur, ease })
     animate(y, targetY, { duration: dur, ease, onComplete: onDone })
   }
@@ -173,13 +180,13 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
     // card is promoted, so it never fights the drag offset (which lives on the inner).
     <motion.div
       className="swipe-card-slot"
-      style={{ zIndex: 10 - depth, scale: slotScale, x: restX, y: slotY, rotate: enterRot, opacity: enterOp, pointerEvents: interactive ? 'auto' : 'none' }}
+      style={{ zIndex: 10 - depth, scale: slotScale, x: slotX, y: slotY, rotate: slotRot, opacity: enterOp, pointerEvents: interactive ? 'auto' : 'none' }}
     >
       {/* INNER — only the top card is draggable; x/y/rotate start at 0 every time */}
       <motion.div
         ref={cardRef}
         className="swipe-card"
-        style={interactive ? { x, y, rotate, rotateY: flipY, scale: pop, transformPerspective: 1400 } : undefined}
+        style={interactive ? { x, y, rotate, rotateY: flipY, rotateX: flipX, scale: pop, transformPerspective: 1200 } : undefined}
         drag={interactive}
         dragSnapToOrigin
         dragElastic={0.6}

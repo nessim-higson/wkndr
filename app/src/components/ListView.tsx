@@ -24,15 +24,21 @@ export function ListView({
   const rowsRef = useRef<(HTMLElement | null)[]>([])
   rowsRef.current = []
 
-  // Active / inactive: on entry the list eases to the MIDDLE of the set, and whenever it's
-  // left untouched it drifts very slowly (bouncing at the ends) so it's never dead-static —
-  // the inactive state carries gentle motion. Any real interaction stops it; idle resumes it.
+  // open already centred on the middle of the set — pre-paint, so no scroll-jump animation
+  useLayoutEffect(() => {
+    const scroller = listRef.current?.closest('.main-list') as HTMLElement | null
+    if (!scroller) return
+    scroller.scrollTop = Math.max(0, (scroller.scrollHeight - scroller.clientHeight) / 2)
+  }, [picks, listStyle])
+
+  // Inactive state carries motion: left untouched, the list drifts very slowly (bouncing at
+  // the ends) so it's never dead-static. Any real interaction stops it; it resumes after a rest.
   useEffect(() => {
     const scroller = listRef.current?.closest('.main-list') as HTMLElement | null
     if (!scroller) return
     let raf = 0
-    let idleT: ReturnType<typeof setTimeout>
     let dir = 1
+    let idleT: ReturnType<typeof setTimeout>
     const maxScroll = () => Math.max(0, scroller.scrollHeight - scroller.clientHeight)
     const tick = () => {
       const max = maxScroll()
@@ -47,15 +53,11 @@ export function ListView({
     const stop = () => { if (raf) cancelAnimationFrame(raf); raf = 0 }
     const drift = () => { stop(); raf = requestAnimationFrame(tick) }
     const onActivity = () => { stop(); clearTimeout(idleT); idleT = setTimeout(drift, 2600) }
-    // settle into the middle, then begin drifting after a beat
-    const startT = setTimeout(() => {
-      scroller.scrollTo({ top: maxScroll() / 2, behavior: 'smooth' })
-      idleT = setTimeout(drift, 2600)
-    }, 160)
+    idleT = setTimeout(drift, 2000)   // begin drifting after a short rest
     const events = ['pointerdown', 'wheel', 'touchstart', 'keydown'] as const
     events.forEach((e) => scroller.addEventListener(e, onActivity, { passive: true }))
     return () => {
-      stop(); clearTimeout(idleT); clearTimeout(startT)
+      stop(); clearTimeout(idleT)
       events.forEach((e) => scroller.removeEventListener(e, onActivity))
     }
   }, [picks, listStyle])

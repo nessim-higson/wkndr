@@ -37,17 +37,12 @@
   animation-delay: calc(var(--i, 0) * 0.045s);
 }
 .row:hover .row-inner { background: rgba(255, 255, 255, 0.98); }
-/* wheel: each card rises and uncurls onto the cylinder as the list rolls in */
-.list--wheel .row-inner { animation: row-assemble 0.52s cubic-bezier(0.22, 1, 0.36, 1) both; }
-@keyframes row-assemble {
-  from { opacity: 0; transform: translateY(34px) rotateX(-32deg) scale(0.94); }
-  to   { opacity: 1; transform: none; }
-}
-/* flux: cards rise and settle in, no fold */
+/* both styles: a clean staggered rise + fade in (no 3D flip — that read awkwardly) */
+.list--wheel .row-inner,
 .list--flux .row-inner { animation: row-rise 0.5s cubic-bezier(0.22, 1, 0.36, 1) both; }
 .list--flux .row-thumb { will-change: background-position; }
 @keyframes row-rise {
-  from { opacity: 0; transform: translateY(26px) scale(0.96); }
+  from { opacity: 0; transform: translateY(22px) scale(0.97); }
   to   { opacity: 1; transform: none; }
 }
 @media (prefers-reduced-motion: reduce) {

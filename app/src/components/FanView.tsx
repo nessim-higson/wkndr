@@ -6,7 +6,7 @@ import './FanView.css'
 
 const MAX = 26          // cards placed around the wheel
 const SENS = 0.26       // degrees of spin per px dragged
-const FLICK = 0.32      // how much a release-flick coasts
+const FLICK = 0.5       // how much a release-flick coasts
 const AUTO_DPS = 4.5    // idle drift speed (deg/sec)
 const IDLE_MS = 2600    // resume the drift this long after you let go
 
@@ -59,10 +59,12 @@ export function FanView({
   }
   function onPanEnd(_e: unknown, info: PanInfo) {
     auto.current?.stop()
-    // coast on the release velocity, then hand back to the idle drift
-    auto.current = animate(spin, spin.get() + info.velocity.x * SENS * FLICK, {
-      duration: 0.9, ease: [0.16, 1, 0.3, 1],
-    })
+    // project where the flick wants to land, then SNAP to the nearest card detent with an
+    // underdamped spring — so it overshoots and pulls back like a weighted spring-wheel.
+    // Harder throw → lands further round. After it settles, the idle drift resumes.
+    const projected = spin.get() + info.velocity.x * SENS * FLICK
+    const snapped = step ? Math.round(projected / step) * step : projected
+    auto.current = animate(spin, snapped, { type: 'spring', stiffness: 70, damping: 12, restDelta: 0.2 })
     armIdle()
   }
 
