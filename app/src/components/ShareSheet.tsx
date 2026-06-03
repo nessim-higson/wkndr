@@ -92,7 +92,7 @@ export function ShareSheet({
                   aria-label="Your name"
                 />
                 <div className="share-actions">
-                  <button className="share-primary" onClick={share}>Share with your partner</button>
+                  <button className="share-primary" onClick={share}>Share with a friend</button>
                   <button className="share-copy" onClick={copy}>{copied ? '✓ Link copied' : 'Copy link'}</button>
                 </div>
                 <p className="share-note">

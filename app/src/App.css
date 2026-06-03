@@ -89,7 +89,14 @@
   display: flex; flex-direction: column; gap: 14px;
   padding: 14px 16px 16px;
   max-height: min(64vh, 520px); overflow-y: auto;
+  /* fade the whole panel's contents in together as it opens, so nothing reads as "fixed"
+     while the rest reveals (the grid-rows reveal is top-down on its own) */
+  opacity: 0;
+  transition: opacity 0.3s ease 0.04s;
 }
+.tb-panel.open .tb-panel-inner { opacity: 1; }
+/* list-style toggle sits left, aligned under the Stack/Fan/List toggle */
+.list-style-pills { justify-content: flex-start; }
 
 /* control groups inside the light module */
 .bar-group {

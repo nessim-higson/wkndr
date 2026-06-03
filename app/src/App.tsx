@@ -333,7 +333,7 @@ export default function App() {
                         <button className="bar-pill" onClick={refresh}>↻ Shuffle</button>
                       </div>
                       {view === 'list' && (
-                        <div className="mode-pills" style={{ marginTop: 8 }}>
+                        <div className="mode-pills list-style-pills" style={{ marginTop: 8 }}>
                           <button className={listStyle === 'wheel' ? 'on' : ''} onClick={() => setListStyle('wheel')}>Cylinder</button>
                           <button className={listStyle === 'flux' ? 'on' : ''} onClick={() => setListStyle('flux')}>Flux</button>
                         </div>

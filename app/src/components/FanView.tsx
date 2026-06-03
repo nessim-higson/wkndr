@@ -75,10 +75,12 @@ export function FanView({
         if (a > 180) a -= 360
         else if (a < -180) a += 360
         const p = Math.max(0, 1 - Math.abs(a) / HALO)   // 1 at the top, 0 by HALO°
+        const e = p * p                                 // ease so only the very centre lifts out
         const face = card.querySelector<HTMLElement>('.wheel-card-face')
-        if (face) face.style.transform = `scale(${0.9 + p * 0.22}) translateY(${-p * 22}px)`
+        // hero: grow bigger AND pull down into the middle of the screen (out of the arc)
+        if (face) face.style.transform = `scale(${0.9 + e * 0.46}) translateY(${e * 104}px)`
         card.style.zIndex = String(100 + Math.round(p * 100))
-        card.style.opacity = String(0.62 + p * 0.38)
+        card.style.opacity = String(0.6 + p * 0.4)
       })
     }
     update()

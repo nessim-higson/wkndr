@@ -23,6 +23,7 @@ export function ListView({
   const listRef = useRef<HTMLDivElement>(null)
   const rowsRef = useRef<(HTMLElement | null)[]>([])
   rowsRef.current = []
+  const entering = useRef(true)   // suppress Flux's velocity-skew during the entrance spin-in
 
   // Entrance + flywheel: on open it spins in from the top to the middle (eased), then keeps
   // cycling one direction forever — wrapping at the end like a flywheel rather than bouncing.
@@ -32,6 +33,7 @@ export function ListView({
     if (!scroller) return
     let raf = 0
     let idleT: ReturnType<typeof setTimeout>
+    entering.current = true
     const maxScroll = () => Math.max(0, scroller.scrollHeight - scroller.clientHeight)
     // continuous one-way loop — wraps back to the top so it cycles all the way around
     const loop = () => {
@@ -50,13 +52,14 @@ export function ListView({
       const step = (now: number) => {
         const p = Math.min(1, (now - t0) / 900)
         scroller.scrollTop = target * (1 - Math.pow(1 - p, 3))   // ease-out cubic
-        raf = p < 1 ? requestAnimationFrame(step) : requestAnimationFrame(loop)
+        if (p < 1) { raf = requestAnimationFrame(step) }
+        else { entering.current = false; raf = requestAnimationFrame(loop) }   // skew allowed only now
       }
       scroller.scrollTop = 0
       raf = requestAnimationFrame(step)
     }
     const stop = () => { if (raf) cancelAnimationFrame(raf); raf = 0 }
-    const onActivity = () => { stop(); clearTimeout(idleT); idleT = setTimeout(() => { stop(); raf = requestAnimationFrame(loop) }, 2200) }
+    const onActivity = () => { entering.current = false; stop(); clearTimeout(idleT); idleT = setTimeout(() => { stop(); raf = requestAnimationFrame(loop) }, 2200) }
     const startT = setTimeout(spinIn, 120)
     const events = ['pointerdown', 'wheel', 'touchstart', 'keydown'] as const
     events.forEach((e) => scroller.addEventListener(e, onActivity, { passive: true }))
@@ -112,8 +115,9 @@ export function ListView({
       const sr = scroller.getBoundingClientRect()
       const mid = sr.top + sr.height / 2
       const half = sr.height / 2
-      const skew = Math.max(-6, Math.min(6, vel * 3.5))           // shear with travel
-      const stretch = Math.min(0.08, Math.abs(vel) * 0.05)        // rubber stretch on fast flings
+      // no shear/stretch during the entrance spin-in — only once the user is actually scrolling
+      const skew = entering.current ? 0 : Math.max(-6, Math.min(6, vel * 3.5))
+      const stretch = entering.current ? 0 : Math.min(0.08, Math.abs(vel) * 0.05)
       for (const row of rowsRef.current) {
         if (!row) continue
         const r = row.getBoundingClientRect()
