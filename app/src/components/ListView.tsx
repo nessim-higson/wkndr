@@ -7,6 +7,10 @@ import './ListView.css'
 
 type ListStyle = 'wheel' | 'flux'
 
+// Below this much overflow the list is "short" (e.g. a handful of saves): no auto-cycle,
+// and no cylinder/flux distortion — the few rows just sit flat and clean.
+const CYCLE_MIN = 180
+
 /** The scannable posture — same ranked pool, two motion languages:
  *  - "wheel"  : rows ride a vertical cylinder, folding edge-on at the rim.
  *  - "flux"   : flat cards with weight — they shear & stretch with scroll
@@ -36,6 +40,10 @@ export function ListView({
     let idleT: ReturnType<typeof setTimeout>
     entering.current = true
     const maxScroll = () => Math.max(0, scroller.scrollHeight - scroller.clientHeight)
+    // Only auto-cycle when the list actually overflows enough to be worth it. With just a
+    // few rows (a short saved list) the loop micro-scrolls over a tiny range and wraps
+    // constantly — that's the wonky/glitchy motion. Below this, the list just sits still.
+    const enoughToCycle = () => maxScroll() > CYCLE_MIN
     // continuous one-way loop — wraps back to the top so it cycles all the way around
     const loop = () => {
       const max = maxScroll()
@@ -60,8 +68,9 @@ export function ListView({
       raf = requestAnimationFrame(step)
     }
     const stop = () => { if (raf) cancelAnimationFrame(raf); raf = 0 }
-    const onActivity = () => { entering.current = false; stop(); clearTimeout(idleT); idleT = setTimeout(() => { stop(); raf = requestAnimationFrame(loop) }, 2200) }
-    const startT = setTimeout(spinIn, 120)
+    const onActivity = () => { entering.current = false; stop(); clearTimeout(idleT); idleT = setTimeout(() => { if (enoughToCycle()) { stop(); raf = requestAnimationFrame(loop) } }, 2200) }
+    // short lists (e.g. a handful of saves): skip the spin-in + flywheel, just settle still
+    const startT = setTimeout(() => { if (enoughToCycle()) spinIn(); else entering.current = false }, 120)
     const events = ['pointerdown', 'wheel', 'touchstart', 'keydown'] as const
     events.forEach((e) => scroller.addEventListener(e, onActivity, { passive: true }))
     return () => {
@@ -80,6 +89,11 @@ export function ListView({
       const R = 125
       const apply = () => {
         raf = 0
+        // short list → flat, undistorted rows
+        if (scroller.scrollHeight - scroller.clientHeight <= CYCLE_MIN) {
+          for (const row of rowsRef.current) { if (!row) continue; row.style.transform = ''; row.style.opacity = ''; row.style.zIndex = '' }
+          return
+        }
         const sr = scroller.getBoundingClientRect()
         const mid = sr.top + sr.height / 2
         const half = sr.height / 2
@@ -113,6 +127,16 @@ export function ListView({
     let vel = 0            // smoothed scroll velocity (px/ms), signed
     let running = false
     const apply = () => {
+      // short list → flat, undistorted rows
+      if (scroller.scrollHeight - scroller.clientHeight <= CYCLE_MIN) {
+        for (const row of rowsRef.current) {
+          if (!row) continue
+          row.style.transform = ''; row.style.opacity = ''; row.style.zIndex = ''
+          const th = row.querySelector('.row-thumb') as HTMLElement | null
+          if (th) th.style.backgroundPositionY = ''
+        }
+        return
+      }
       const sr = scroller.getBoundingClientRect()
       const mid = sr.top + sr.height / 2
       const half = sr.height / 2

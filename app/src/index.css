@@ -29,6 +29,10 @@
   --font-display: 'Clash Display', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   --font-body: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 
+  /* the floating command module + its dropdowns share ONE surface, so header and
+     panel read as a single continuous object (no opacity seam between them) */
+  --module-surface: rgba(250, 248, 243, 0.92);
+
   /* ---- type scale (the canonical steps — use these, don't invent in-betweens) ---- */
   --fs-cap: 10px;   /* uppercase micro labels, chips */
   --fs-xs: 11px;    /* mono metadata, eyebrows */

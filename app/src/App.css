@@ -17,17 +17,20 @@
 }
 .topbar-module {
   position: relative; z-index: 2;
+  /* ONE constant width, open or closed. (Animating the width to a wider open
+     state never settled — transitioning to a percentage-max-width-clamped value
+     is unreliable in Chrome — and a fixed width keeps the header and its
+     dropdowns perfectly edge-aligned.) */
   width: min(322px, 100%); margin: 0 auto;
   border-radius: 22px;
-  background: rgba(250, 248, 243, 0.86);
+  background: var(--module-surface);
   backdrop-filter: blur(22px) saturate(1.3);
   border: 1px solid rgba(255, 255, 255, 0.6);
   box-shadow: 0 18px 48px rgba(0, 0, 0, 0.28), 0 2px 6px rgba(0, 0, 0, 0.10);
   color: #1c1c1a;
-  transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1), border-radius 0.28s var(--ease-out);
+  transition: border-radius 0.28s var(--ease-out);
 }
 .topbar-module.open {
-  width: min(500px, 100%);
   border-bottom-left-radius: 0; border-bottom-right-radius: 0;
 }
 /* peeking saves (no width change — only flatten the bottom for the attached panel) */
@@ -93,12 +96,12 @@
   .tb-saves-n { animation: none; }
 }
 
-/* the saved-picks peek drops straight from the module (flush left/right) */
+/* the saved-picks peek drops straight from the module (borders flush, same surface) */
 .saves-panel {
-  position: absolute; top: 100%; left: 0; right: 0; z-index: 3;
+  position: absolute; top: 100%; left: -1px; right: -1px; z-index: 3;
   margin-top: -1px;
   border-radius: 0 0 22px 22px;
-  background: rgba(250, 248, 243, 0.96);
+  background: var(--module-surface);
   backdrop-filter: blur(22px) saturate(1.3);
   border: 1px solid rgba(255, 255, 255, 0.6);
   border-top: 1px solid rgba(0, 0, 0, 0.07);
@@ -155,10 +158,12 @@
 .sv-empty span { font-size: 12px; line-height: 1.45; opacity: 0.6; max-width: 210px; }
 
 .tb-panel {
-  position: absolute; top: 100%; left: 0; right: 0; z-index: 3;
+  /* left/right -1px so the panel's side borders sit exactly over the module's,
+     instead of 1px inboard (the misaligned-edge discrepancy) */
+  position: absolute; top: 100%; left: -1px; right: -1px; z-index: 3;
   margin-top: -1px;                 /* sit flush over the module's bottom edge */
   border-radius: 0 0 22px 22px;
-  background: rgba(250, 248, 243, 0.93);
+  background: var(--module-surface);
   backdrop-filter: blur(22px) saturate(1.3);
   border: 1px solid rgba(255, 255, 255, 0.6);
   border-top: 1px solid rgba(0, 0, 0, 0.07);
