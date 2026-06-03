@@ -389,6 +389,8 @@
 
 /* contextual bar (Saved → share · Shared → save all) */
 .ctx-bar {
+  position: relative;
+  z-index: 6;                 /* stay above the (fixed, full-bleed) fan stage on mobile */
   display: flex;
   align-items: center;
   justify-content: space-between;

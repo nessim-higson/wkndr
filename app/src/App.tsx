@@ -343,7 +343,10 @@ export default function App() {
       <motion.div
         className="app"
         initial={false}
-        animate={intro ? { opacity: 0, y: 14 } : { opacity: 1, y: 0 }}
+        /* opacity only — NO transform: a transform here would make .app the containing block
+           for position:fixed children (the fan stage, overlays), offsetting them by the
+           safe-area padding on notched phones. Keep it transform-free so fixed = true viewport. */
+        animate={intro ? { opacity: 0 } : { opacity: 1 }}
         transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1], delay: intro ? 0 : 0.2 }}
       >
         <header className="topbar">

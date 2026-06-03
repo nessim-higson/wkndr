@@ -27,10 +27,22 @@
   transform-origin: 50% 50%;
   will-change: transform;
 }
-/* mobile: pull the wheel up so the hero sits in the upper-middle, not pushed low
-   (the stacked topbar + main offset otherwise leaves a big dead gap above the fan) */
+/* MOBILE: anchor the fan to the VISIBLE viewport (fixed + dvh, not vh) so Safari's
+   toolbar can't push the hero below the fold, and so the shared/saved banner's offset
+   can't shift it either. Smaller radius + cards reveal more of the arc → it reads as a
+   fan, and the hero lands centred. Desktop is untouched (keeps absolute + vh above). */
 @media (max-width: 719px) {
-  .wheel { top: 14px; }
+  .wheel-stage {
+    position: fixed;
+    top: 0;
+    left: 0;
+    transform: none;
+    width: 100vw;
+    height: 100dvh;
+    z-index: 1;                 /* under the floating topbar (20) + banner (6) */
+    --R: 132vw;                 /* tighter circle → more of the arc shows */
+  }
+  .wheel { top: 17dvh; }        /* rim height; the hero pulls down from here to ~centre */
 }
 
 /* each card hangs at the top of the wheel and is rotated to its place around the rim */
@@ -95,4 +107,11 @@
   transform: translate(-50%, -50%);
   color: var(--field-text);
   opacity: 0.8;
+}
+
+/* MOBILE card size — placed at the END so it wins over the base + desktop .wheel-card rules
+   above (a media query adds no specificity, so source order decides). Smaller cards let the
+   neighbouring cards show in the arc → it reads as a fan, not one full-width card. */
+@media (max-width: 719px) {
+  .wheel-card { width: 216px; height: 292px; margin-left: -108px; }
 }
