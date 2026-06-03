@@ -12,6 +12,7 @@ import type { Look } from './weather/ambientEngine'
 import { APP_VERSION } from './version'
 import { SwipeStack } from './components/SwipeStack'
 import { ListView } from './components/ListView'
+import { Itinerary } from './components/Itinerary'
 import { FanView } from './components/FanView'
 import { CardDetail } from './components/CardDetail'
 import { Intro } from './components/Intro'
@@ -381,7 +382,7 @@ export default function App() {
                         </div>
                         <button className="bar-pill" onClick={refresh}><Shuffle size={15} strokeWidth={2.2} /> Shuffle</button>
                       </div>
-                      {view === 'list' && (
+                      {view === 'list' && filter !== 'saved' && (
                         <div className="mode-pills list-style-pills" style={{ marginTop: 8 }}>
                           <button className={listStyle === 'wheel' ? 'on' : ''} onClick={() => setListStyle('wheel')}>Cylinder</button>
                           <button className={listStyle === 'flux' ? 'on' : ''} onClick={() => setListStyle('flux')}>Flux</button>
@@ -555,7 +556,9 @@ export default function App() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
             >
-              <ListView picks={shown} savedIds={saved} onSwipe={handleListToggle} onOpen={setDetail} listStyle={listStyle} />
+              {filter === 'saved'
+                ? <Itinerary picks={shown} onOpen={setDetail} onSwipe={handleListToggle} />
+                : <ListView picks={shown} savedIds={saved} onSwipe={handleListToggle} onOpen={setDetail} listStyle={listStyle} />}
             </motion.div>
           )}
         </main>

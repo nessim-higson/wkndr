@@ -79,9 +79,9 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
     const delay = dealIn ? (RENDER - 1 - depth) * 0.07 : 0
     animate(enterOp, 1, { duration: dealIn ? 0.5 : 0.34, delay, ease: [0.22, 1, 0.36, 1] })
     if (dealIn) {
-      // a hair of overshoot + extra settle time so the card "drops" and rocks to rest, not a clean snap
-      animate(enterY, 0, { type: 'spring', stiffness: 260, damping: 17, delay })
-      animate(enterRotExtra, 0, { type: 'spring', stiffness: 240, damping: 14, delay })
+      // a soft drop that settles to rest (gentler than before — less bounce, no snap)
+      animate(enterY, 0, { type: 'spring', stiffness: 220, damping: 24, delay })
+      animate(enterRotExtra, 0, { type: 'spring', stiffness: 220, damping: 22, delay })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -209,6 +209,8 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
         style={interactive ? { x, y, rotate, rotateY: turnY, rotateX: turnX, scale: pop, transformPerspective: 1100 } : undefined}
         drag={interactive}
         dragElastic={0.6}
+        dragMomentum={false}   /* WE own the release animation (exit or ease-home); framer's
+                                  inertia would otherwise coast the card and fight it → the snap */
         onPointerDown={interactive ? capturePoint : undefined}
         onTapStart={interactive ? () => { dragged.current = false } : undefined}
         onDragStart={interactive ? () => { dragged.current = true } : undefined}
