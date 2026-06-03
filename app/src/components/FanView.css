@@ -1,45 +1,55 @@
-.fan {
+.wheel-stage {
   position: relative;
   width: 100%;
   height: 100%;
-  overflow: hidden;
+  overflow: hidden;          /* crop the circle — only the top arc shows */
+  touch-action: none;        /* let us spin by dragging without the page scrolling */
+  cursor: grab;
+  /* radius ~ a screen-height so the circle's centre sits BELOW the viewport — only the
+     gentle top arc crops in (rather than the whole ring). Scales across devices. */
+  --R: max(680px, 100vh);
 }
+.wheel-stage:active { cursor: grabbing; }
 
-/* each card hangs off a shared pivot well below the deck, so they fan up and arc */
-.fan-slot {
+/* the wheel: a circle 2R across, centred well below the crop so only its top shows */
+.wheel {
   position: absolute;
   left: 50%;
-  bottom: 16%;
+  top: 84px;
+  width: calc(2 * var(--R));
+  height: calc(2 * var(--R));
+  margin-left: calc(-1 * var(--R));
+  transform-origin: 50% 50%;
+  will-change: transform;
+}
+
+/* each card hangs at the top of the wheel and is rotated to its place around the rim */
+.wheel-card {
+  position: absolute;
+  left: 50%;
+  top: 0;
   width: 210px;
   height: 286px;
   margin-left: -105px;
-  transform-origin: 50% calc(100% + 340px);
-  will-change: transform, opacity;
+  transform-origin: 50% var(--R);   /* pivot about the wheel's centre */
 }
 @media (min-width: 720px) {
-  .fan-slot { width: 244px; height: 332px; margin-left: -122px; bottom: 12%; transform-origin: 50% calc(100% + 420px); }
+  .wheel-card { width: 244px; height: 332px; margin-left: -122px; }
 }
 
-.fan-lift {
-  width: 100%;
-  height: 100%;
-  cursor: pointer;
-  border-radius: 20px;
-  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.26), 0 4px 12px rgba(0, 0, 0, 0.14);
-  transform-origin: center bottom;
-}
-/* clip the reused Card to the fan card's rounded frame */
-.fan-card {
+.wheel-card-face {
   width: 100%;
   height: 100%;
   border-radius: 20px;
   overflow: hidden;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.24), 0 4px 12px rgba(0, 0, 0, 0.14);
+  cursor: pointer;
 }
-.fan-card .card { width: 100%; height: 100%; }
+.wheel-card-face .card { width: 100%; height: 100%; }
 
-.fan-empty {
+.wheel-empty {
   position: absolute;
-  left: 50%; top: 44%;
+  left: 50%; top: 40%;
   transform: translate(-50%, -50%);
   color: var(--field-text);
   opacity: 0.8;

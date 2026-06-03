@@ -1,15 +1,18 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { motion } from 'framer-motion'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
+import { animate, motion, useMotionValue, type PanInfo } from 'framer-motion'
 import type { Pick } from '../types'
 import { Card } from './Card'
 import './FanView.css'
 
-const FAN_MAX = 5     // cards held in the fan
-const SPREAD = 58     // total degrees the fan opens across
-const HOLD_MS = 2200  // how long each card stays pulled forward in autoplay
+const MAX = 26          // cards placed around the wheel
+const SENS = 0.26       // degrees of spin per px dragged
+const FLICK = 0.32      // how much a release-flick coasts
+const AUTO_DPS = 4.5    // idle drift speed (deg/sec)
+const IDLE_MS = 2600    // resume the drift this long after you let go
 
-/** A hand of cards fanned up from the bottom. Idle → it auto-pulls each card forward
- *  in turn to show it off; tap any card to pull it and investigate (opens its detail). */
+/** A wheel of cards: they sit around a big circle whose centre is pushed below the
+ *  screen, so only the top arc shows. It drifts slowly on its own; grab and spin it
+ *  with the pointer (with a little release-momentum); tap a card to investigate. */
 export function FanView({
   picks, onOpen, paused = false,
 }: {
@@ -17,67 +20,72 @@ export function FanView({
   onOpen?: (p: Pick) => void
   paused?: boolean
 }) {
-  const cards = useMemo(() => picks.slice(0, FAN_MAX), [picks])
+  const cards = useMemo(() => picks.slice(0, MAX), [picks])
   const n = cards.length
-  const step = n > 1 ? SPREAD / (n - 1) : 0
-  const [active, setActive] = useState(-1)   // which card is pulled forward (−1 = none)
+  const step = n > 0 ? 360 / n : 0      // evenly fill the circle so the spin wraps seamlessly
+  const spin = useMotionValue(0)        // wheel rotation in degrees (drives the whole wheel)
 
-  // idle autoplay: sweep the "pulled" card across the fan, one at a time
+  const moved = useRef(false)           // distinguishes a spin-drag from a tap
+  const spinStart = useRef(0)
+  const auto = useRef<ReturnType<typeof animate> | null>(null)
   const idle = useRef<ReturnType<typeof setTimeout>>()
-  const arm = useCallback(() => {
-    clearTimeout(idle.current)
+
+  const startDrift = useCallback(() => {
+    auto.current?.stop()
     if (paused || n === 0) return
-    idle.current = setTimeout(() => {
-      if (document.hidden) { arm(); return }
-      setActive((a) => (a + 1) % n)
-      arm()
-    }, HOLD_MS)
-  }, [paused, n])
+    // creep forever at a steady rate; any interaction stops it
+    auto.current = animate(spin, spin.get() + 100000, { duration: 100000 / AUTO_DPS, ease: 'linear' })
+  }, [paused, n, spin])
 
-  useEffect(() => { arm(); return () => clearTimeout(idle.current) }, [arm])
+  const armIdle = useCallback(() => {
+    clearTimeout(idle.current)
+    idle.current = setTimeout(startDrift, IDLE_MS)
+  }, [startDrift])
 
-  // any touch pauses the sweep and drops the pulled card; it resumes once you let go
-  function pause() { clearTimeout(idle.current); setActive(-1) }
   useEffect(() => {
-    const resume = () => arm()
-    window.addEventListener('pointerup', resume)
-    window.addEventListener('pointercancel', resume)
-    return () => {
-      window.removeEventListener('pointerup', resume)
-      window.removeEventListener('pointercancel', resume)
-    }
-  }, [arm])
+    startDrift()
+    return () => { auto.current?.stop(); clearTimeout(idle.current) }
+  }, [startDrift])
+
+  function onPanStart() {
+    auto.current?.stop()
+    clearTimeout(idle.current)
+    moved.current = false
+    spinStart.current = spin.get()
+  }
+  function onPan(_e: unknown, info: PanInfo) {
+    if (Math.abs(info.offset.x) + Math.abs(info.offset.y) > 5) moved.current = true
+    spin.set(spinStart.current + info.offset.x * SENS)
+  }
+  function onPanEnd(_e: unknown, info: PanInfo) {
+    auto.current?.stop()
+    // coast on the release velocity, then hand back to the idle drift
+    auto.current = animate(spin, spin.get() + info.velocity.x * SENS * FLICK, {
+      duration: 0.9, ease: [0.16, 1, 0.3, 1],
+    })
+    armIdle()
+  }
 
   return (
-    <div className="fan" onPointerDown={pause}>
-      {cards.map((p, i) => {
-        const phi = (i - (n - 1) / 2) * step   // this card's angle in the fan
-        const isActive = active === i
-        return (
-          <motion.div
-            className="fan-slot"
-            key={p.id}
-            style={{ zIndex: isActive ? 100 : 10 + i }}
-            // deal in from below, arcing out into the fan
-            initial={{ rotate: 0, y: 480, opacity: 0 }}
-            animate={{ rotate: phi, y: 0, opacity: 1 }}
-            transition={{ type: 'spring', stiffness: 170, damping: 22, delay: i * 0.07 }}
-          >
-            <motion.div
-              className="fan-lift"
-              // pulled forward: straighten up, rise, and grow
-              animate={isActive ? { rotate: -phi, y: -64, scale: 1.18 } : { rotate: 0, y: 0, scale: 1 }}
-              transition={{ type: 'spring', stiffness: 240, damping: 22 }}
-              onClick={() => onOpen?.(p)}
+    <motion.div
+      className="wheel-stage"
+      onPanStart={onPanStart}
+      onPan={onPan}
+      onPanEnd={onPanEnd}
+    >
+      <motion.div className="wheel" style={{ rotate: spin }}>
+        {cards.map((p, i) => (
+          <div className="wheel-card" key={p.id} style={{ transform: `rotate(${i * step}deg)` }}>
+            <div
+              className="wheel-card-face"
+              onClick={() => { if (!moved.current) onOpen?.(p) }}
             >
-              <div className="fan-card">
-                <Card pick={p} />
-              </div>
-            </motion.div>
-          </motion.div>
-        )
-      })}
-      {n === 0 && <p className="fan-empty mono">No picks for this view yet.</p>}
-    </div>
+              <Card pick={p} />
+            </div>
+          </div>
+        ))}
+      </motion.div>
+      {n === 0 && <p className="wheel-empty mono">No picks for this view yet.</p>}
+    </motion.div>
   )
 }
