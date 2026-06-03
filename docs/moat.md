@@ -213,10 +213,26 @@ loop (§5) + retention/habit signal.** It compounds in a way the swipe motion ne
 **Push:** the shared "weekend" artifact is where craft earns its keep most — invest there
 before the Nth swipe-physics pass.
 
-### 8e. The unifying one-liner
-**WKNDR = "Beeper for going out": consolidate the fragmented sources → personalize by taste
-→ make the output (your weekend) a beautiful, shareable, repeatable artifact.**
-Defensibility stack that compounds *behind* that wedge:
+### 8e. Positioning — two registers, don't conflate them
+**Consumer hook (what you say out loud): "Tinder for your events."** Instantly legible —
+everyone gets it in two seconds (swipe, it learns you, it's fun). The landing line already
+commits to it ("Tinder your events."). This is the *read*, the door. Use it everywhere a
+human first meets the product. ("Beeper for going out" was a clever deep-cut — kill it;
+nobody knows Beeper.)
+
+**Substance / defensibility (what's actually underneath): consolidation + taste.** "Tinder
+for events" is the *mechanic*; the reason the deck is never empty — and the part nobody's
+done — is that we **consolidate the scattered sources (RA, Songkick, museums, Eater, Time
+Out, IG, I amsterdam) into one pool** and rank it for you. The hook sells the swipe; the
+consolidation is *why the swipe has anything good to show.* They're complementary, not rival.
+
+> One mild watch-out: "Tinder for X" is a worn VC cliché and on its own undersells the
+> consolidation depth — fine for **users** (legibility wins), but in an **investor/strategy**
+> register lead with the consolidation + taste + outcome-data story, with "Tinder for events"
+> as the one-line wrapper.
+
+**Defensibility stack that compounds behind the hook:**
 breadth+freshness (grind) → trust/habit (demand-side) → publisher relationships (supply-side)
 → taste/outcome data → collaborative filtering (network effect at scale) → brand (craft, sustained).
-Consolidation gets us in; the moat forms behind it — only after the weekly habit is proven.
+The swipe gets attention; consolidation makes it real; the moat forms behind it — only after
+the weekly habit is proven.
