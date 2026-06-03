@@ -22,7 +22,15 @@ export function ShareSheet({
   city: string
 }) {
   const [copied, setCopied] = useState(false)
+  const [name, setName] = useState(() => localStorage.getItem('wkndr.name') || '')
+  function setNamePersist(v: string) {
+    const clean = v.slice(0, 24)
+    setName(clean)
+    localStorage.setItem('wkndr.name', clean)
+  }
+  // …?w=ids&from=Name → the recipient lands on the Stack greeted "<name> shared some picks"
   const link = `${location.origin}${location.pathname}?w=${picks.map((p) => p.id).join(',')}`
+    + (name.trim() ? `&from=${encodeURIComponent(name.trim())}` : '')
 
   function copy() {
     navigator.clipboard?.writeText(link).then(() => {
@@ -30,7 +38,8 @@ export function ShareSheet({
     })
   }
   async function share() {
-    const data = { title: 'My WKNDR weekend', text: `My ${city} weekend — ${picks.length} picks`, url: link }
+    const who = name.trim() ? `${name.trim()} shared` : `My`
+    const data = { title: 'WKNDR weekend', text: `${who} ${picks.length} ${city} picks`, url: link }
     try { if (navigator.share) { await navigator.share(data); return } } catch { /* fall through */ }
     copy()
   }
@@ -75,11 +84,20 @@ export function ShareSheet({
                   <div className="wc-foot">WKNDR · weather-ranked for the weekend</div>
                 </div>
 
+                <input
+                  className="share-name"
+                  value={name}
+                  onChange={(e) => setNamePersist(e.target.value)}
+                  placeholder="Your name (so they know it’s from you)"
+                  aria-label="Your name"
+                />
                 <div className="share-actions">
                   <button className="share-primary" onClick={share}>Share with your partner</button>
                   <button className="share-copy" onClick={copy}>{copied ? '✓ Link copied' : 'Copy link'}</button>
                 </div>
-                <p className="share-note">They’ll open a link showing exactly these picks — no app or account needed.</p>
+                <p className="share-note">
+                  They’ll land on the Stack and flip through exactly these picks{name.trim() ? ` — greeted “${name.trim()} shared some picks”` : ''}. No app or account needed.
+                </p>
               </>
             )}
           </motion.div>

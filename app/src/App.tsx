@@ -16,10 +16,14 @@ import { FilterSheet } from './components/FilterSheet'
 import { ShareSheet } from './components/ShareSheet'
 import type { Freshness } from './types'
 
-// a partner-shared weekend arrives as ?w=id,id,id
+// a partner-shared weekend arrives as ?w=id,id,id&from=Name
 const SHARED_IDS = (() => {
   const w = new URLSearchParams(window.location.search).get('w')
   return w ? new Set(w.split(',').filter(Boolean)) : null
+})()
+const SHARED_FROM = (() => {
+  const f = new URLSearchParams(window.location.search).get('from')
+  return f ? f.trim().slice(0, 24) : null
 })()
 import { SOURCE_COUNT } from './data/sources'
 import { CATEGORY_LABEL, type Category } from './types'
@@ -80,7 +84,7 @@ const FIELD_OPTS: { key: Look; label: string }[] = [
 
 export default function App() {
   const [mode, setMode] = useState<Mode>('HOT')
-  const [view, setView] = useState<View>(SHARED_IDS ? 'list' : 'stack')
+  const [view, setView] = useState<View>('stack')   // a shared weekend lands on the Stack too (flip through their picks)
   const [wx, setWx] = useState<Wx>(DEMO.HOT)
   const [live, setLive] = useState(false)        // true once the real forecast loads
   const [swiped, setSwiped] = useState<Set<string>>(new Set())
@@ -163,6 +167,17 @@ export default function App() {
   )
   const filterActive = filter !== 'all' || when !== 'all'
   const deck = useMemo(() => shown.filter((p) => !swiped.has(p.id)), [shown, swiped])
+
+  // Bottomless: in the unfiltered Stack, never dead-end — when you've swiped through the pool
+  // it reshuffles and keeps serving. (Placeholder for the live pipeline that feeds new finds.)
+  useEffect(() => {
+    if (view !== 'stack' || filterActive || deck.length > 0 || shown.length === 0) return
+    const t = setTimeout(() => {
+      setSwiped(new Set()); setSeed((s) => s + 1); setDealKey((k) => k + 1)
+      setToast('More for you ↻')
+    }, 380)
+    return () => clearTimeout(t)
+  }, [view, filterActive, deck.length, shown.length])
 
   function refresh() {
     setSwiped(new Set())
@@ -248,7 +263,7 @@ export default function App() {
       <AmbientField mode={mode} look={look} onLookChange={setLook} />
 
       <AnimatePresence>
-        {intro && <Intro onDone={() => setIntro(false)} />}
+        {intro && <Intro lead={SHARED_FROM ? `${SHARED_FROM} shared some picks.` : undefined} onDone={() => setIntro(false)} />}
       </AnimatePresence>
 
       <motion.div
@@ -395,7 +410,7 @@ export default function App() {
         )}
         {filter === 'shared' && SHARED_IDS && (
           <div className="ctx-bar shared">
-            <span>👋 A weekend shared with you · {SHARED_IDS.size} picks</span>
+            <span>💌 {SHARED_FROM || 'A friend'} shared {SHARED_IDS.size} picks — swipe through</span>
             <button onClick={() => setSaved((s) => new Set([...s, ...SHARED_IDS]))}>Save all</button>
           </div>
         )}

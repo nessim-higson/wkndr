@@ -8,12 +8,12 @@ import './FanView.css'
 const MAX = 26          // cards placed around the wheel
 const SENS = 0.26       // degrees of spin per px dragged
 const FLICK = 0.5       // how much a release-flick coasts
-const AUTO_DPS = 4.5    // idle drift speed (deg/sec)
-const IDLE_MS = 2600    // resume the drift this long after you let go
+const HOLD_MS = 3200    // how long the hero card holds before the wheel advances
+const HALO = 24         // degrees from top within which a card gets the "hero" treatment
 
-/** A wheel of cards: they sit around a big circle whose centre is pushed below the
- *  screen, so only the top arc shows. It spins in on entry, drifts slowly on its own,
- *  and you grab & spin it (snaps to a card with a spring). Tap a card to investigate. */
+/** A wheel of cards cropped to its top arc. The card at the top is the HERO — larger,
+ *  lifted, on top, neighbours recede. It holds ~3s, then the wheel steps to the next.
+ *  Grab and spin it freely (snaps to a card on release); tap a card to investigate. */
 export function FanView({
   picks, onOpen, paused = false,
 }: {
@@ -23,27 +23,31 @@ export function FanView({
 }) {
   const cards = useMemo(() => picks.slice(0, MAX), [picks])
   const n = cards.length
-  const step = n > 0 ? 360 / n : 0      // evenly fill the circle so the spin wraps seamlessly
-  const spin = useMotionValue(0)        // wheel rotation in degrees (drives the whole wheel)
+  const step = n > 0 ? 360 / n : 0
+  const spin = useMotionValue(0)
 
-  const moved = useRef(false)           // distinguishes a spin-drag from a tap
+  const moved = useRef(false)
   const spinStart = useRef(0)
   const tapTarget = useRef<EventTarget | null>(null)
   const auto = useRef<ReturnType<typeof animate> | null>(null)
-  const idle = useRef<ReturnType<typeof setTimeout>>()
+  const timer = useRef<ReturnType<typeof setTimeout>>()
+  const wheelRef = useRef<HTMLDivElement>(null)
 
-  const startDrift = useCallback(() => {
+  // auto-advance: dwell on the hero, then step to the next card with a spring
+  const advance = useCallback(() => {
     auto.current?.stop()
-    if (paused || n === 0) return
-    auto.current = animate(spin, spin.get() + 100000, { duration: 100000 / AUTO_DPS, ease: 'linear' })
-  }, [paused, n, spin])
+    const cur = step ? Math.round(spin.get() / step) * step : 0
+    auto.current = animate(spin, cur - step, { type: 'spring', stiffness: 60, damping: 15 })
+    timer.current = setTimeout(advance, HOLD_MS)
+  }, [spin, step])
 
-  const armIdle = useCallback(() => {
-    clearTimeout(idle.current)
-    idle.current = setTimeout(startDrift, IDLE_MS)
-  }, [startDrift])
+  const startAuto = useCallback(() => {
+    clearTimeout(timer.current)
+    if (paused || n < 2) return
+    timer.current = setTimeout(advance, HOLD_MS)
+  }, [paused, n, advance])
 
-  // entrance: the wheel spins in (and scales/fades via the motion props below)
+  // entrance: the wheel spins + scales/fades in (motion props below)
   useEffect(() => {
     spin.set(-28)
     auto.current = animate(spin, 0, { type: 'spring', stiffness: 50, damping: 13 })
@@ -51,16 +55,40 @@ export function FanView({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // idle drift follows the paused state: stop while a detail is open, resume after it closes
+  // auto-advance follows the paused state (stop while a detail is open; resume after)
   useEffect(() => {
-    if (paused) { auto.current?.stop(); clearTimeout(idle.current); return }
-    armIdle()
-    return () => clearTimeout(idle.current)
-  }, [paused, armIdle])
+    if (paused) { auto.current?.stop(); clearTimeout(timer.current); return }
+    startAuto()
+    return () => clearTimeout(timer.current)
+  }, [paused, startAuto])
+
+  // HERO emphasis — recomputed every time the wheel turns: the card nearest the top
+  // grows + lifts + comes to the front; the others shrink and dim back.
+  useEffect(() => {
+    const wheel = wheelRef.current
+    if (!wheel) return
+    const update = () => {
+      const s = spin.get()
+      const els = wheel.querySelectorAll<HTMLElement>('.wheel-card')
+      els.forEach((card, i) => {
+        let a = (i * step + s) % 360
+        if (a > 180) a -= 360
+        else if (a < -180) a += 360
+        const p = Math.max(0, 1 - Math.abs(a) / HALO)   // 1 at the top, 0 by HALO°
+        const face = card.querySelector<HTMLElement>('.wheel-card-face')
+        if (face) face.style.transform = `scale(${0.9 + p * 0.22}) translateY(${-p * 22}px)`
+        card.style.zIndex = String(100 + Math.round(p * 100))
+        card.style.opacity = String(0.62 + p * 0.38)
+      })
+    }
+    update()
+    const unsub = spin.on('change', update)
+    return unsub
+  }, [spin, step, n])
 
   function onPointerDown(e: RPointerEvent) {
     auto.current?.stop()
-    clearTimeout(idle.current)
+    clearTimeout(timer.current)
     moved.current = false
     spinStart.current = spin.get()
     tapTarget.current = e.target
@@ -71,20 +99,16 @@ export function FanView({
   }
   function onPanEnd(_e: unknown, info: PanInfo) {
     auto.current?.stop()
-    // project where the flick wants to land, snap to the nearest card detent with an
-    // underdamped spring — overshoots and pulls back like a weighted spring-wheel.
     const projected = spin.get() + info.velocity.x * SENS * FLICK
     const snapped = step ? Math.round(projected / step) * step : projected
-    auto.current = animate(spin, snapped, { type: 'spring', stiffness: 70, damping: 12, restDelta: 0.2 })
-    armIdle()
+    auto.current = animate(spin, snapped, { type: 'spring', stiffness: 70, damping: 13, restDelta: 0.2 })
+    startAuto()
   }
-  // a tap (pointer down+up with no real drag) opens that card — handled here because the
-  // pan gesture captures the pointer, so a plain onClick on the card never fires.
   function onPointerUp() {
     if (moved.current) return
     const el = (tapTarget.current as HTMLElement | null)?.closest('[data-fan-i]') as HTMLElement | null
     if (el) onOpen?.(cards[Number(el.dataset.fanI)])
-    armIdle()
+    startAuto()
   }
 
   return (
@@ -97,6 +121,7 @@ export function FanView({
     >
       <motion.div
         className="wheel"
+        ref={wheelRef}
         style={{ rotate: spin }}
         initial={{ opacity: 0, scale: 0.86 }}
         animate={{ opacity: 1, scale: 1 }}

@@ -2,13 +2,13 @@ import { useEffect } from 'react'
 import { motion } from 'framer-motion'
 import './Intro.css'
 
-// the landing line. Fixed copy (not weather-keyed).
-const LEAD = 'Tinder your events.'
 const FOLLOW = ''
 
 /** Full-screen intro over the live field: the line, then it lifts away as the app
- *  rises in. Plays every load; tap to skip. */
-export function Intro({ onDone }: { onDone: () => void }) {
+ *  rises in. Plays every load; tap to skip. `lead` is overridable so a shared visit
+ *  can be greeted personally ("Ness shared some picks."). */
+export function Intro({ onDone, lead = 'Tinder your events.' }: { onDone: () => void; lead?: string }) {
+  const LEAD = lead
   useEffect(() => {
     const id = setTimeout(onDone, 2600)
     return () => clearTimeout(id)

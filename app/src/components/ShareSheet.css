@@ -50,3 +50,17 @@
 .share-empty h3 { font-size: 20px; font-weight: 600; letter-spacing: -0.02em; }
 .share-empty p { margin-top: 8px; font-size: 14px; line-height: 1.5; color: var(--ink-3); }
 .share-done { margin-top: 20px; width: 100%; font-size: 15px; font-weight: 600; padding: 14px; border-radius: 999px; background: var(--ink); color: var(--paper); }
+
+/* sender name — stamps the share link so the recipient knows who it's from */
+.share-name {
+  width: 100%;
+  margin-top: 14px;
+  font-size: 14px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  background: var(--paper-2);
+  color: var(--ink);
+}
+.share-name::placeholder { color: var(--ink-4); }
+.share-name:focus { outline: none; border-color: var(--accent); }
