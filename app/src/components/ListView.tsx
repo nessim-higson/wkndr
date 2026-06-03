@@ -24,40 +24,44 @@ export function ListView({
   const rowsRef = useRef<(HTMLElement | null)[]>([])
   rowsRef.current = []
 
-  // open already centred on the middle of the set — pre-paint, so no scroll-jump animation
-  useLayoutEffect(() => {
-    const scroller = listRef.current?.closest('.main-list') as HTMLElement | null
-    if (!scroller) return
-    scroller.scrollTop = Math.max(0, (scroller.scrollHeight - scroller.clientHeight) / 2)
-  }, [picks, listStyle])
-
-  // Inactive state carries motion: left untouched, the list drifts very slowly (bouncing at
-  // the ends) so it's never dead-static. Any real interaction stops it; it resumes after a rest.
+  // Entrance + flywheel: on open it spins in from the top to the middle (eased), then keeps
+  // cycling one direction forever — wrapping at the end like a flywheel rather than bouncing.
+  // Any real interaction stops it; it resumes the loop after a short rest.
   useEffect(() => {
     const scroller = listRef.current?.closest('.main-list') as HTMLElement | null
     if (!scroller) return
     let raf = 0
-    let dir = 1
     let idleT: ReturnType<typeof setTimeout>
     const maxScroll = () => Math.max(0, scroller.scrollHeight - scroller.clientHeight)
-    const tick = () => {
+    // continuous one-way loop — wraps back to the top so it cycles all the way around
+    const loop = () => {
       const max = maxScroll()
       if (max > 4) {
-        let next = scroller.scrollTop + dir * 1.3   // ~78px/s — a clearly-visible breathing drift
-        if (next >= max) { next = max; dir = -1 }
-        else if (next <= 0) { next = 0; dir = 1 }
+        let next = scroller.scrollTop + 1.3   // ~78px/s
+        if (next >= max) next -= max
         scroller.scrollTop = next
       }
-      raf = requestAnimationFrame(tick)
+      raf = requestAnimationFrame(loop)
+    }
+    // eased spin-in from the top to the middle, then hand off to the loop
+    const spinIn = () => {
+      const target = maxScroll() / 2
+      const t0 = performance.now()
+      const step = (now: number) => {
+        const p = Math.min(1, (now - t0) / 900)
+        scroller.scrollTop = target * (1 - Math.pow(1 - p, 3))   // ease-out cubic
+        raf = p < 1 ? requestAnimationFrame(step) : requestAnimationFrame(loop)
+      }
+      scroller.scrollTop = 0
+      raf = requestAnimationFrame(step)
     }
     const stop = () => { if (raf) cancelAnimationFrame(raf); raf = 0 }
-    const drift = () => { stop(); raf = requestAnimationFrame(tick) }
-    const onActivity = () => { stop(); clearTimeout(idleT); idleT = setTimeout(drift, 2200) }
-    idleT = setTimeout(drift, 1200)   // begin drifting after a short rest
+    const onActivity = () => { stop(); clearTimeout(idleT); idleT = setTimeout(() => { stop(); raf = requestAnimationFrame(loop) }, 2200) }
+    const startT = setTimeout(spinIn, 120)
     const events = ['pointerdown', 'wheel', 'touchstart', 'keydown'] as const
     events.forEach((e) => scroller.addEventListener(e, onActivity, { passive: true }))
     return () => {
-      stop(); clearTimeout(idleT)
+      stop(); clearTimeout(idleT); clearTimeout(startT)
       events.forEach((e) => scroller.removeEventListener(e, onActivity))
     }
   }, [picks, listStyle])

@@ -38,8 +38,8 @@
   cursor: grab;
   will-change: transform;
   transform-origin: center bottom;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
+  /* NO backface-visibility:hidden — the exit flip turns past 90°, and hiding the backface
+     would make the card vanish mid-screen before it reaches the edge. Let it ride off. */
 }
 
 /* drag indicators */
@@ -69,8 +69,8 @@
   border-radius: 22px;
   pointer-events: none;
 }
-.swipe-tint.red { background: linear-gradient(to bottom, #ec3b22 0%, rgba(236, 59, 34, 0.7) 28%, transparent 80%); }
-.swipe-tint.green { background: linear-gradient(to bottom, #16a85a 0%, rgba(22, 168, 90, 0.7) 28%, transparent 80%); }
+.swipe-tint.red { background: linear-gradient(to bottom, #ec3b22 0%, rgba(236, 59, 34, 0.94) 52%, rgba(236, 59, 34, 0.6) 100%); }
+.swipe-tint.green { background: linear-gradient(to bottom, #16a85a 0%, rgba(22, 168, 90, 0.94) 52%, rgba(22, 168, 90, 0.6) 100%); }
 
 /* action buttons */
 .stack-actions {

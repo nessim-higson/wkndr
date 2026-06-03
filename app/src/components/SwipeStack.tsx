@@ -92,8 +92,8 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
     return Math.max(-20, Math.min(20, tilt)) + ls
   })
   // drag feedback: left → bold red wash (dismiss), right → bold green wash (keep)
-  const redOp = useTransform(x, [-130, -18], [0.88, 0])
-  const greenOp = useTransform(x, [18, 130], [0, 0.88])
+  const redOp = useTransform(x, [-104, -8], [1, 0])
+  const greenOp = useTransform(x, [8, 104], [0, 1])
   // 3D dimension WHILE dragging: the card turns on its Y axis as you pull sideways and tilts
   // on X as you pull up/down — and these compound with the exit flip (flipY/flipX) on release.
   const turnY = useTransform([x, flipY], ([lx, f]: number[]) => Math.max(-34, Math.min(34, lx * 0.07)) + f)
