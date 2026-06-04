@@ -9,7 +9,8 @@ const MAX = 26          // cards placed around the wheel
 const SENS = 0.26       // degrees of spin per px dragged
 const FLICK = 0.5       // how much a release-flick coasts
 const HOLD_MS = 3200    // how long the hero card holds before the wheel advances
-const HALO = 24         // degrees from top within which a card gets the "hero" treatment
+const HALO = 20         // degrees from top within which a card gets the "hero" treatment
+const SPREAD = 56       // degrees of fan on each side: cards fade to nothing by here (no sideways cards)
 
 /** A wheel of cards cropped to its top arc. The card at the top is the HERO — larger,
  *  lifted, on top, neighbours recede. It holds ~3s, then the wheel steps to the next.
@@ -76,14 +77,19 @@ export function FanView({
         let a = (i * step + s) % 360
         if (a > 180) a -= 360
         else if (a < -180) a += 360
-        const p = Math.max(0, 1 - Math.abs(a) / HALO)   // 1 at the top, 0 by HALO°
-        const e = p * p                                 // ease so only the very centre lifts out
+        const aa = Math.abs(a)
+        const vis = Math.max(0, 1 - aa / SPREAD)        // fan membership: 1 centre → 0 at the spread edge
+        const p = Math.max(0, 1 - aa / HALO)            // hero emphasis (tighter than the spread)
+        const e = p * p
         const face = card.querySelector<HTMLElement>('.wheel-card-face')
-        // hero: the top card comes OUT — neighbours sit back at 0.82, the hero grows to 1.34
-        // and pulls down to centre. Bigger gap = the main card is clearly the focus.
-        if (face) face.style.transform = `scale(${0.82 + e * 0.52}) translateY(${e * heroLift}px)`
-        card.style.zIndex = String(100 + Math.round(p * 100))
-        card.style.opacity = String(0.46 + p * 0.54)    // neighbours recede further
+        // hero: lifts forward (scale) + pulls to centre; neighbours sit back, tilted into the fan
+        if (face) face.style.transform = `scale(${0.86 + e * 0.46}) translateY(${e * heroLift}px)`
+        // layer inner→outer by angle so the hero is on top and the fan stacks cleanly
+        card.style.zIndex = String(Math.round(300 - aa))
+        // fade out toward the fan edges (slightly concave so near cards stay solid) — cards
+        // past SPREAD vanish, so there are never sideways/upside-down cards on the rim
+        card.style.opacity = String(Math.pow(vis, 0.6))
+        card.style.pointerEvents = vis < 0.04 ? 'none' : 'auto'
       })
     }
     update()

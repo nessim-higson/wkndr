@@ -1,7 +1,8 @@
-/* ===== Fan wheel =====
-   A tight circle of cards cropped to its top arc. The card at the top is the HERO — it
-   scales up and comes forward to focus, holds, then the wheel steps to the next. A smaller
-   radius than before keeps the circle TIGHT so it reads as a fan, not one flat card.
+/* ===== Hand fan =====
+   Cards fanned from a pivot just below them, like a hand of cards. The card at the top is
+   the HERO — it lifts forward + scales to focus, holds, then the fan steps to the next.
+   The pivot (--R) is close, so neighbours tilt out and several show on each side; cards
+   fade to nothing past the fan's spread (FanView.tsx) so there are no sideways cards.
    Base rules below are DESKTOP; the single mobile block at the end overrides them. */
 .wheel-stage {
   /* Anchored to the VISIBLE viewport (fixed + dvh) on every device — so the hero centres
@@ -16,18 +17,17 @@
   touch-action: none;          /* spin by dragging without scrolling the page */
   cursor: grab;
   z-index: 1;                  /* under the floating topbar (20) + banner (6) */
-  /* desktop radius: large, so the circle's centre sits well below the screen and only the
-     gentle top arc shows (a wide fan). Mobile overrides to a width-tight circle below. */
-  --R: max(680px, 96vh);
+  /* a CLOSE pivot → cards fan out as a hand (neighbours tilt + sit beside the hero). */
+  --R: 540px;
 }
 .wheel-stage:active { cursor: grabbing; }
 
-/* the wheel: a circle 2R across, centred below the crop so only its top arc shows. The rim
-   sits at a fraction of viewport height so the hero lands centred on any screen. */
+/* the fan pivots about a point (--R) below the cards. The rim sits at a fraction of
+   viewport height so the hero lands centred on any screen. */
 .wheel {
   position: absolute;
   left: 50%;
-  top: 12dvh;
+  top: 13dvh;
   width: calc(2 * var(--R));
   height: calc(2 * var(--R));
   margin-left: calc(-1 * var(--R));
@@ -35,15 +35,15 @@
   will-change: transform;
 }
 
-/* each card hangs at the top of the wheel and is rotated to its place around the rim */
+/* each card pivots about the point below → it tilts to its place in the fan */
 .wheel-card {
   position: absolute;
   left: 50%;
   top: 0;
-  width: 300px;
-  height: 406px;
-  margin-left: -150px;
-  transform-origin: 50% var(--R);   /* pivot about the wheel's centre */
+  width: 248px;
+  height: 336px;
+  margin-left: -124px;
+  transform-origin: 50% var(--R);   /* pivot below the cards = the fan's hinge */
 }
 
 /* image-led face */
@@ -101,7 +101,7 @@
    the shared banner can't push the hero off. Tighter radius + smaller cards → the circle
    of cards reads as a fan, with the hero centred. */
 @media (max-width: 719px) {
-  .wheel-stage { --R: 116vw; }   /* tight circle relative to phone width */
-  .wheel { top: 15dvh; }
-  .wheel-card { width: 200px; height: 272px; margin-left: -100px; }
+  .wheel-stage { --R: 96vw; }    /* close pivot relative to phone width → fuller hand fan */
+  .wheel { top: 16dvh; }
+  .wheel-card { width: 188px; height: 256px; margin-left: -94px; }
 }
