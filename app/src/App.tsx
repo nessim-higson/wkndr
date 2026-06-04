@@ -5,7 +5,7 @@ import { Shuffle, Clock, ChevronDown, LayoutGrid, Star, ArrowUpRight, LocateFixe
 // subtle haptic on commit/save (Android/Chrome; iOS Safari ignores navigator.vibrate)
 const haptic = (ms = 10) => { try { navigator.vibrate?.(ms) } catch { /* unsupported */ } }
 import type { Mode, Pick, SwipeDir } from './types'
-import { MODES, MODE_META, classify, applyMode, rankPicks, shuffle } from './weather/modes'
+import { MODES, MODE_META, classify, applyMode, rankPicks } from './weather/modes'
 import { CITIES, DEFAULT_CITY, cityByKey, cityByName, nearestCity, type City } from './data/cities'
 import { AmbientField } from './weather/AmbientField'
 import type { Look } from './weather/ambientEngine'
@@ -49,7 +49,30 @@ const INITIAL_CITY: City =
   cityByKey(new URLSearchParams(window.location.search).get('city')) ?? DEFAULT_CITY
 
 type View = 'stack' | 'list' | 'fan'
-interface Wx { temp: number; hi: number; lo: number; city: string }
+// `temp` is the headline number; `label` is the window it describes ("This weekend" / a
+// preview). The live forecast describes the COMING WEEKEND, not the current hour.
+interface Wx { temp: number; hi: number; lo: number; city: string; label?: string }
+
+// Pick the upcoming weekend (Sat+Sun) out of a daily forecast's date list. If today is the
+// weekend, use today onward. Returns the indices into the daily arrays + a human label.
+function weekendWindow(times: string[]): { idx: number[]; label: string } {
+  const dow = times.map((t) => new Date(`${t}T12:00:00`).getDay())   // 0 Sun … 6 Sat
+  const mon = (t: string) => new Date(`${t}T12:00:00`).toLocaleDateString('en', { month: 'short' })
+  const dayNum = (t: string) => new Date(`${t}T12:00:00`).getDate()
+  let idx: number[] = []
+  if (dow[0] === 0) idx = [0]                                         // today is Sun → this weekend = today
+  else if (dow[0] === 6) idx = dow[1] === 0 ? [0, 1] : [0]            // today is Sat
+  else {
+    const s = dow.indexOf(6)                                         // next Saturday
+    if (s === -1) { const su = dow.indexOf(0); idx = su === -1 ? [0] : [su] }
+    else idx = (s + 1 < dow.length && dow[s + 1] === 0) ? [s, s + 1] : [s]
+  }
+  const a = idx[0], b = idx[idx.length - 1]
+  const label = idx.length > 1
+    ? `Sat–Sun ${dayNum(times[a])}–${dayNum(times[b])} ${mon(times[b])}`
+    : `${['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][dow[a]]} ${dayNum(times[a])} ${mon(times[a])}`
+  return { idx, label }
+}
 
 // representative figures for the "preview a different forecast" what-if pills
 const DEMO: Record<Mode, Wx> = {
@@ -199,11 +222,10 @@ export default function App() {
 
   // Refresh reshuffles the whole pool (within weather tiers) so BOTH views reorder,
   // then re-ranks. List + stack both change; the stack re-deals with a toast.
-  const pool = useMemo(() => (seed === 0 ? cityPicks : shuffle(cityPicks, seed)), [cityPicks, seed])
   const rankedAll = useMemo(
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    () => rankPicks(pool, mode, hasTaste(tasteRef.current) ? tasteRef.current : undefined),
-    [pool, mode],   // intentionally NOT [taste] — keeps the deck stable while swiping
+    () => rankPicks(cityPicks, mode, hasTaste(tasteRef.current) ? tasteRef.current : undefined, seed),
+    [cityPicks, mode, seed],   // seed jitters the order ("show me more"); NOT [taste] — keeps the deck stable while swiping
   )
   const shown = useMemo(
     () => rankedAll.filter((p) => {
@@ -233,11 +255,15 @@ export default function App() {
     return () => clearTimeout(t)
   }, [view, filterActive, deck.length, shown.length])
 
+  // "Show me more" / Shuffle: bump the seed so the ranking JITTERS — different picks lead,
+  // not the same high-scorers. Keep what you've already seen hidden so "more" really is more;
+  // only start the pool over once you've been through most of it.
   function refresh() {
-    setSwiped(new Set())
     setSeed((s) => s + 1)
     setDealKey((k) => k + 1)
-    flash(`Reshuffled · ${rankedAll.length} picks · re-ranked for ${MODE_META[mode].label.toLowerCase()}`)
+    const nearlyDone = deck.length <= Math.max(3, Math.round(shown.length * 0.25))
+    if (nearlyDone) { setSwiped(new Set()); flash('Starting fresh') }
+    else flash('More for you')
   }
 
   function handleStackSwipe(p: Pick, dir: SwipeDir) {
@@ -309,10 +335,12 @@ export default function App() {
   async function goLive(lat: number, lon: number) {
     setLocating(true)
     try {
+      // the app is about the COMING WEEKEND — pull the week's daily forecast and read the
+      // weekend out of it, not today's weather.
       const w = await fetch(
         `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}` +
-        `&current=temperature_2m&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max` +
-        `&timezone=auto&forecast_days=1`,
+        `&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max` +
+        `&timezone=auto&forecast_days=10`,
       ).then((r) => r.json())
       let placeName = city.name
       try {
@@ -322,12 +350,17 @@ export default function App() {
       // if the live location is somewhere we actually have a feed for, swap to it
       const matched = cityByName(placeName) ?? nearestCity(lat, lon)
       if (matched && matched.key !== city.key) selectCity(matched, true)
-      const hi = Math.round(w.daily.temperature_2m_max[0])
-      const lo = Math.round(w.daily.temperature_2m_min[0])
-      const pp = w.daily.precipitation_probability_max[0] ?? 0
-      const m = classify(hi, pp, hi - lo)
+      const dly = w.daily
+      const { idx, label } = weekendWindow(dly.time as string[])
+      const his = idx.map((i) => dly.temperature_2m_max[i])
+      const los = idx.map((i) => dly.temperature_2m_min[i])
+      const pps = idx.map((i) => dly.precipitation_probability_max[i] ?? 0)
+      const hi = Math.round(Math.max(...his))
+      const lo = Math.round(Math.min(...los))
+      const pp = Math.max(...pps)
+      const m = classify(hi, pp, hi - lo)   // classify the WEEKEND
       setMode(m)
-      setWx({ temp: Math.round(w.current.temperature_2m), hi, lo, city: placeName })
+      setWx({ temp: hi, hi, lo, city: placeName, label })
       setLive(true)
     } catch { /* keep current */ }
     finally { setLocating(false) }
@@ -377,7 +410,9 @@ export default function App() {
                 <span className="tb-divider" aria-hidden />
                 <div className="tb-wx">
                   <span className="tb-temp">{wx.temp}°</span>
-                  <span className="tb-city">{locating ? 'Locating…' : wx.city}</span>
+                  <span className="tb-city">
+                    {locating ? 'Locating…' : live && wx.label ? wx.label : wx.city}
+                  </span>
                 </div>
               </div>
 
@@ -632,7 +667,6 @@ export default function App() {
         open={inputsOpen}
         onClose={() => setInputsOpen(false)}
         mode={mode}
-        temp={wx.temp}
         hi={wx.hi}
         lo={wx.lo}
         live={live}

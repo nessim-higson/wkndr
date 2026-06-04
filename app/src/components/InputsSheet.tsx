@@ -8,13 +8,12 @@ import './InputsSheet.css'
 /** Exposes every input feeding the recommendations — the credibility / source-trace.
  *  Roster is passed in from the active city so this travels with the feed. */
 export function InputsSheet({
-  open, onClose, mode, temp, hi, lo, live, activeCount,
+  open, onClose, mode, hi, lo, live, activeCount,
   roster, rosterCount, cityLabel, seed, feedAt,
 }: {
   open: boolean
   onClose: () => void
   mode: Mode
-  temp: number
   hi: number
   lo: number
   live: boolean
@@ -45,10 +44,11 @@ export function InputsSheet({
             <p className="sheet-sub">Every input behind today’s picks. We signal &amp; link — never republish.</p>
 
             <section className="sheet-block">
-              <h4>Weather</h4>
+              <h4>Weather · this weekend</h4>
               <p>
-                <b>Open-Meteo</b> {live ? 'live forecast' : '(preview)'} → <b>{MODE_META[mode].label}</b> ·
-                {' '}{temp}° now · H {hi}° L {lo}°. Production adds <b>Buienradar</b> (5-min rain) + <b>KNMI</b>.
+                <b>Open-Meteo</b> {live ? 'weekend forecast' : '(preview)'} → <b>{MODE_META[mode].label}</b> ·
+                {' '}H {hi}° L {lo}°. The picks are ranked for the <b>coming weekend's</b> outlook,
+                not today. Production adds <b>Buienradar</b> (5-min rain) + <b>KNMI</b>.
               </p>
             </section>
 

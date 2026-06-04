@@ -77,6 +77,7 @@
 .chip-status--selling-fast{ background: var(--accent); }
 .chip-status--sold-out    { background: rgba(26, 26, 26, 0.7); color: rgba(255,255,255,0.75); }
 .chip-status--free        { background: #2faa6a; }
+.chip-closing { background: #d2402e; color: #fff; font-weight: 700; }
 
 .chip-cat {
   background: rgba(255, 255, 255, 0.16);
@@ -102,14 +103,18 @@
   padding: 20px 20px 22px;
   color: #fff;
 }
+/* category eyebrow above the title (small, quiet) */
+.card-cat {
+  font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: #fff; opacity: 0.8; font-weight: 600; margin-bottom: 7px;
+}
+/* the date — hero'd on the front (it's what you most need to know) */
 .card-when {
-  font-size: 10px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  margin-top: 9px;
+  font-size: 15px;
+  letter-spacing: -0.01em;
   color: #fff;
-  opacity: 0.92;
-  font-weight: 600;
-  margin-bottom: 6px;
+  font-weight: 700;
   display: flex;
   align-items: center;
   gap: 8px;

@@ -92,15 +92,25 @@ export function shuffle<T>(arr: T[], seed: number): T[] {
 }
 
 /**
- * Weather × taste ranking. Phase 1 has no taste model yet, so we rank by
- * weather-fit (picks that peak in the current mode first), then nudge fresh
- * and ending-soon items up. The taste term arrives in Phase 4.
+ * Weather × taste ranking. Ranks by weather-fit first (picks that peak in the current mode),
+ * then nudges fresh / ending-soon up, plus the taste term.
+ *
+ * `seed` adds a deterministic per-pick jitter so "Show me more" genuinely reshuffles WHICH
+ * picks lead — without it the same high-scorers always surfaced first ("same stuff comes
+ * back"). The jitter (±~3.5) reorders within the weather-fit tier but never lifts a non-fit
+ * pick above the fit ones (+10), so it stays weather-appropriate.
  */
-export function rankPicks(picks: Pick[], mode: Mode, taste?: Taste): Pick[] {
+function jitter(id: string, seed: number): number {
+  let h = (seed * 2654435761) >>> 0
+  for (let i = 0; i < id.length; i++) h = Math.imul(h ^ id.charCodeAt(i), 16777619) >>> 0
+  return (h >>> 8) / 16777216   // 0..1, stable per (id, seed)
+}
+export function rankPicks(picks: Pick[], mode: Mode, taste?: Taste, seed = 0): Pick[] {
   const freshBoost = (p: Pick) =>
     p.freshness === 'new' ? 1.5 : p.freshness === 'ending' ? 1.2 : p.freshness === 'weekend' ? 1 : 0.6
   const score = (p: Pick) =>
     (p.weatherFit.includes(mode) ? 10 : 0) + freshBoost(p) + (taste ? tasteScore(p, taste) : 0)
+    + (seed ? jitter(p.id, seed) * 3.5 : 0)
   const sorted = [...picks].sort((a, b) => score(b) - score(a))
   return diversify(sorted)
 }
