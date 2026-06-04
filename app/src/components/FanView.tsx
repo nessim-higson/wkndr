@@ -10,7 +10,8 @@ const SENS = 0.26       // degrees of spin per px dragged
 const FLICK = 0.5       // how much a release-flick coasts
 const HOLD_MS = 3200    // how long the hero card holds before the wheel advances
 const HALO = 20         // degrees from top within which a card gets the "hero" treatment
-const SPREAD = 56       // degrees of fan on each side: cards fade to nothing by here (no sideways cards)
+// degrees of fan on each side before cards fade out. Mobile = tight hand fan; desktop = a
+// WIDE, airy fan (cards splay further out — the earlier, more interesting desktop look).
 
 /** A wheel of cards cropped to its top arc. The card at the top is the HERO — larger,
  *  lifted, on top, neighbours recede. It holds ~3s, then the wheel steps to the next.
@@ -27,7 +28,9 @@ export function FanView({
   const step = n > 0 ? 360 / n : 0
   const spin = useMotionValue(0)
   // how far the hero pulls down out of the arc to land centred (less on a short phone)
-  const heroLift = useMemo(() => (typeof window !== 'undefined' && window.innerWidth < 720 ? 96 : 102), [])
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 720
+  const heroLift = useMemo(() => (isMobile ? 96 : 84), [isMobile])
+  const spread = useMemo(() => (isMobile ? 56 : 104), [isMobile])   // wider, airier fan on desktop
 
   const moved = useRef(false)
   const spinStart = useRef(0)
@@ -78,7 +81,7 @@ export function FanView({
         if (a > 180) a -= 360
         else if (a < -180) a += 360
         const aa = Math.abs(a)
-        const vis = Math.max(0, 1 - aa / SPREAD)        // fan membership: 1 centre → 0 at the spread edge
+        const vis = Math.max(0, 1 - aa / spread)        // fan membership: 1 centre → 0 at the spread edge
         const p = Math.max(0, 1 - aa / HALO)            // hero emphasis (tighter than the spread)
         const e = p * p
         const face = card.querySelector<HTMLElement>('.wheel-card-face')
@@ -95,7 +98,7 @@ export function FanView({
     update()
     const unsub = spin.on('change', update)
     return unsub
-  }, [spin, step, n, heroLift])
+  }, [spin, step, n, heroLift, spread])
 
   function onPointerDown(e: RPointerEvent) {
     auto.current?.stop()

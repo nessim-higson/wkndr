@@ -17,19 +17,19 @@
   touch-action: none;          /* spin by dragging without scrolling the page */
   cursor: grab;
   z-index: 1;                  /* under the floating topbar (20) + banner (6) */
-  /* a CLOSE pivot → cards fan out as a hand (neighbours tilt + sit beside the hero).
-     Desktop: a big, commanding fan; mobile (below) tightens to the phone width. */
-  --R: 800px;
+  /* Desktop: a WIDE radius → cards splay out in a big, airy arc (the earlier, more
+     interesting look). Mobile (below) uses a close pivot for the tight hand fan. */
+  --R: clamp(780px, 104vh, 1120px);
 }
 .wheel-stage:active { cursor: grabbing; }
 
 /* the fan pivots about a point (--R) below the cards. The rim is placed so the HERO (rim +
-   card-half + lift) lands at ~54% of viewport height on ANY screen — calc keeps it centred
-   on tall desktop displays instead of riding high. (offset = card-half 244 + heroLift 102.) */
+   card-half + lift) lands at ~45% of viewport height on ANY screen — calc keeps it centred
+   on tall desktop displays instead of riding high. (offset = card-half 224 + heroLift 84.) */
 .wheel {
   position: absolute;
   left: 50%;
-  top: calc(54dvh - 346px);
+  top: calc(45dvh - 308px);
   width: calc(2 * var(--R));
   height: calc(2 * var(--R));
   margin-left: calc(-1 * var(--R));
@@ -42,9 +42,9 @@
   position: absolute;
   left: 50%;
   top: 0;
-  width: 360px;
-  height: 488px;
-  margin-left: -180px;
+  width: 330px;
+  height: 448px;
+  margin-left: -165px;
   transform-origin: 50% var(--R);   /* pivot below the cards = the fan's hinge */
 }
 
