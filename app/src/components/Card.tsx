@@ -1,21 +1,27 @@
 import { RotateCw } from 'lucide-react'
 import type { Pick } from '../types'
-import { CATEGORY_LABEL, STATUS_LABEL } from '../types'
+import { CATEGORY_LABEL, FRESHNESS_LABEL, STATUS_LABEL } from '../types'
 import './Card.css'
 
-/** The stack card FRONT — simple & image-led, like the fan: a scarcity flag, the category,
- *  the title, and the date hero'd. The rich detail lives on the back (tap to flip). */
+/** The stack card FRONT — image-led like the fan, but carrying the at-a-glance signals:
+ *  scarcity, freshness, outdoor/kids, the category, the title, and the date hero'd.
+ *  The full dossier lives on the back (tap to flip). */
 export function Card({ pick }: { pick: Pick }) {
-  const closing = pick.freshness === 'ending'
+  // freshness is worth a chip when it's time-sensitive (new / ending) — the everyday
+  // "this weekend" / "always good" stay quiet so the row doesn't get noisy.
+  const showFresh = pick.freshness === 'new' || pick.freshness === 'ending'
+  const hasTags = pick.status || showFresh || pick.outdoor || pick.kid
   return (
     <article
       className={`card${pick.image ? '' : ` poster poster--${pick.category}`}`}
       style={pick.image ? { backgroundImage: `url(${pick.image})` } : undefined}
     >
-      {(pick.status || closing) && (
+      {hasTags && (
         <div className="card-tags">
           {pick.status && <span className={`chip chip-status chip-status--${pick.status}`}>{STATUS_LABEL[pick.status]}</span>}
-          {closing && !pick.status && <span className="chip chip-closing">Closing soon</span>}
+          {showFresh && <span className={`chip chip-fresh chip-fresh--${pick.freshness}`}>{FRESHNESS_LABEL[pick.freshness]}</span>}
+          {pick.outdoor && <span className="chip chip-outdoor">Outdoor</span>}
+          {pick.kid && <span className="chip chip-kid">Kids</span>}
         </div>
       )}
 
