@@ -117,8 +117,27 @@
   font-weight: 700;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 8px;
 }
+/* the flip signifier — a quiet cue that there's a rich back to tap into */
+.card-flip-cue {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.82);
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  backdrop-filter: blur(4px);
+  padding: 3px 8px;
+  border-radius: 999px;
+}
+.card-flip-cue svg { opacity: 0.9; }
 .card-when .verify {
   color: rgba(255, 255, 255, 0.85);
   background: rgba(255, 255, 255, 0.18);
@@ -165,3 +184,231 @@
   overflow: hidden;
 }
 .why-mark { color: var(--accent); vertical-align: -2px; margin-right: 1px; flex-shrink: 0; }
+
+/* ─── FLIP: front (poster) ⇄ back (dossier) ────────────────────────────────
+   The flip lives on its OWN element nested inside the draggable .swipe-card, so
+   the 3D turn never fights the drag/exit transforms above it. Two faces share the
+   box; backface-visibility hides whichever is turned away. */
+.card-flip {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+}
+.card-face {
+  position: absolute;
+  inset: 0;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  border-radius: 22px;
+}
+.card-face--back { transform: rotateY(180deg); }
+
+/* the back — an editorial paper dossier, the deliberate inverse of the dark poster front */
+.card-back {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 22px;
+  overflow: hidden;
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.22), 0 2px 8px rgba(0, 0, 0, 0.12);
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+/* a slim category-keyed accent rail down the left edge — the one carry-over of colour */
+.cb-rail {
+  position: absolute;
+  top: 0; bottom: 0; left: 0;
+  width: 5px;
+  background: var(--accent);
+}
+.cb--live    .cb-rail { background: #6b58b0; }
+.cb--art     .cb-rail { background: #b9613a; }
+.cb--stage   .cb-rail { background: #9a4a78; }
+.cb--eat     .cb-rail { background: #cf8038; }
+.cb--drink   .cb-rail { background: #2f8f86; }
+.cb--market  .cb-rail { background: #6f9a4a; }
+.cb--out     .cb-rail { background: #4e9a63; }
+.cb--daytrip .cb-rail { background: #3f72ad; }
+
+.cb-flip {
+  position: absolute;
+  top: 12px; right: 12px;
+  z-index: 3;
+  width: 32px; height: 32px;
+  display: flex; align-items: center; justify-content: center;
+  border: none;
+  border-radius: 50%;
+  background: var(--paper-2);
+  color: var(--ink-3);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  cursor: pointer;
+  transition: background 0.16s ease, color 0.16s ease, transform 0.16s ease;
+}
+.cb-flip:hover { background: var(--paper-3); color: var(--ink); }
+.cb-flip:active { transform: scale(0.92); }
+
+.cb-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 20px 20px 8px 22px;
+}
+.cb-scroll::-webkit-scrollbar { width: 0; }
+
+.cb-chips {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+  padding-right: 40px;   /* clear the flip-back button */
+}
+/* paper-context chip variants (the front's chips assume a dark photo behind them) */
+.card-back .chip-fresh--weekend { background: var(--ink); }
+.card-back .chip-fresh--always  { background: var(--ink-4); }
+.card-back .chip-outdoor { background: rgba(78, 154, 99, 0.16); color: #2c6b41; border-color: rgba(78, 154, 99, 0.4); }
+.card-back .chip-kid     { background: rgba(74, 90, 122, 0.14); color: #3a4a6a; border-color: rgba(74, 90, 122, 0.36); }
+
+.cb-cat {
+  font-size: var(--fs-cap);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.cb-title {
+  font-family: var(--font-body);
+  font-size: var(--fs-3xl);
+  font-weight: 700;
+  line-height: 1.06;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+}
+.cb-meta {
+  margin-top: 8px;
+  font-size: var(--fs-sm);
+  color: var(--ink-3);
+  letter-spacing: -0.005em;
+}
+.cb-when {
+  margin-top: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  color: var(--ink);
+}
+.cb-verify {
+  font-size: var(--fs-cap);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  background: var(--paper-3);
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+.cb-blurb {
+  margin-top: 14px;
+  font-size: var(--fs-md);
+  line-height: 1.5;
+  color: var(--ink-2);
+  letter-spacing: -0.006em;
+}
+.cb-why {
+  margin-top: 12px;
+  font-size: var(--fs-sm);
+  line-height: 1.45;
+  color: var(--ink-3);
+}
+
+/* listen-first — the gig sampler. Brand the two streamers so they read instantly. */
+.cb-listen {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--rule);
+}
+.cb-listen-label {
+  display: block;
+  font-size: var(--fs-cap);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.cb-streams { display: flex; gap: 8px; flex-wrap: wrap; }
+.cb-stream {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  transition: transform 0.14s ease, filter 0.14s ease;
+}
+.cb-stream:active { transform: scale(0.96); }
+.cb-stream--spotify { background: #1db954; color: #fff; }
+.cb-stream--spotify:hover { filter: brightness(1.06); }
+.cb-stream--apple { background: var(--ink); color: #fff; }
+.cb-stream--apple:hover { filter: brightness(1.4); }
+
+.cb-foot {
+  flex-shrink: 0;
+  padding: 12px 18px 16px 22px;
+  border-top: 1px solid var(--rule);
+  background: var(--paper);
+}
+.cb-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.cb-icon {
+  width: 38px; height: 38px;
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid var(--rule);
+  border-radius: 50%;
+  background: var(--paper);
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: background 0.16s ease, color 0.16s ease, border-color 0.16s ease, transform 0.16s ease;
+}
+.cb-icon:hover { background: var(--paper-2); }
+.cb-icon:active { transform: scale(0.92); }
+.cb-icon.on { color: var(--accent); border-color: var(--accent); }
+.cb-open {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  height: 38px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  transition: filter 0.16s ease, transform 0.16s ease;
+}
+.cb-open:hover { filter: brightness(1.45); }
+.cb-open:active { transform: scale(0.98); }
+.cb-trace {
+  margin-top: 10px;
+  font-size: var(--fs-xs);
+  color: var(--ink-4);
+  letter-spacing: -0.003em;
+}
+.cb-trace b { color: var(--ink-3); font-weight: 600; }

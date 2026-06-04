@@ -618,9 +618,10 @@ export default function App() {
                    (mounting behind the intro would burn the fly-in before the app is revealed) */
                 key={`${dealKey}-${filter}-${when}-${intro ? 'intro' : 'live'}`}
                 picks={deck}
+                savedIds={saved}
                 onSwipe={handleStackSwipe}
+                onToggleSave={toggleSave}
                 onRefresh={refresh}
-                onOpen={setDetail}
                 filterLabel={filterActive ? 'this filter' : null}
                 onClearFilter={() => { setFilter('all'); setWhen('all') }}
                 onSeeList={() => setView('list')}

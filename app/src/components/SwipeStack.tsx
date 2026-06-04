@@ -1,5 +1,5 @@
 import {
-  forwardRef, useEffect, useImperativeHandle, useLayoutEffect, useMemo, useRef,
+  forwardRef, useEffect, useImperativeHandle, useLayoutEffect, useMemo, useRef, useState,
 } from 'react'
 import {
   motion, useMotionValue, useTransform, animate,
@@ -8,6 +8,7 @@ import {
 import { X, Star } from 'lucide-react'
 import type { Pick, SwipeDir } from '../types'
 import { Card } from './Card'
+import { CardBack } from './CardBack'
 import './SwipeStack.css'
 
 const THRESHOLD = 105
@@ -37,9 +38,10 @@ interface SwipeCardProps {
   depth: number // 0 = top
   dealIn: boolean // true → fly onto the deck (initial build); false → just fade (a card cycling in)
   progress: MotionValue<number>   // shared: how far the TOP card is dragged (0→1)
+  saved: boolean
   onSwipe: (p: Pick, dir: SwipeDir) => void
+  onToggleSave: (p: Pick) => void
   onCycle?: (p: Pick) => void
-  onOpen?: (p: Pick) => void
 }
 
 const PROGRESS_REF = 140   // px of drag at which the next card has fully advanced
@@ -52,8 +54,10 @@ function hashUnit(s: string): number {
 }
 
 const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
-  { pick, interactive, depth, dealIn, progress, onSwipe, onCycle, onOpen }, ref,
+  { pick, interactive, depth, dealIn, progress, saved, onSwipe, onToggleSave, onCycle }, ref,
 ) {
+  // tap the top card to FLIP it to its rich back; tap the flip-back button to return.
+  const [flipped, setFlipped] = useState(false)
   // a touch of deterministic imperfection per card — the stack looks hand-laid, not machined
   const skew = useMemo(() => hashUnit(pick.id) * 2.8, [pick.id])        // ±2.8° resting tilt
   const restX = useMemo(() => hashUnit(`${pick.id}x`) * 7, [pick.id])   // ±7px resting nudge
@@ -93,6 +97,7 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
   useEffect(() => {
     if (!interactive) {
       x.set(0); y.set(0); spin.set(0); flipY.set(0); flipX.set(0); pop.set(1)
+      setFlipped(false)   // a card leaving the top always returns to its front face
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [interactive])
@@ -209,12 +214,13 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
       className="swipe-card-slot"
       style={{ zIndex: 10 - depth, scale: slotScale, x: slotX, y: slotY, rotate: slotRot, opacity: slotOpacity, pointerEvents: interactive ? 'auto' : 'none' }}
     >
-      {/* INNER — only the top card is draggable; x/y/rotate start at 0 every time */}
+      {/* INNER — only the top card is draggable, and only while showing its FRONT (flipped
+          cards stay put so you can read/scroll the back). x/y/rotate start at 0 every time */}
       <motion.div
         ref={cardRef}
         className="swipe-card"
         style={interactive ? { x, y, rotate, rotateY: turnY, rotateX: turnX, scale: pop, transformPerspective: 1100 } : undefined}
-        drag={interactive}
+        drag={interactive && !flipped}
         dragElastic={0.6}
         dragMomentum={false}   /* WE own the release animation (exit or ease-home); framer's
                                   inertia would otherwise coast the card and fight it → the snap */
@@ -223,28 +229,43 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
         onDragStart={interactive ? () => { dragged.current = true } : undefined}
         onDrag={interactive ? onDrag : undefined}
         onDragEnd={interactive ? onDragEnd : undefined}
-        onTap={interactive ? () => { if (!dragged.current) onOpen?.(pick) } : undefined}
-        whileTap={interactive ? { cursor: 'grabbing' } : undefined}
+        onTap={interactive ? () => { if (!dragged.current && !flipped) setFlipped(true) } : undefined}
+        whileTap={interactive && !flipped ? { cursor: 'grabbing' } : undefined}
       >
-        {interactive && (
-          <>
-            <motion.div className="swipe-tint red" style={{ opacity: redOp }} aria-hidden />
-            <motion.div className="swipe-tint green" style={{ opacity: greenOp }} aria-hidden />
-          </>
-        )}
-        <Card pick={pick} />
+        {/* the flip: front poster ⇄ back dossier, on its own 3D element so the turn never
+            fights the drag/exit transforms on .swipe-card above it */}
+        <motion.div
+          className="card-flip"
+          style={{ transformPerspective: 1200 }}
+          animate={{ rotateY: flipped ? 180 : 0 }}
+          transition={{ type: 'spring', stiffness: 230, damping: 26 }}
+        >
+          <div className="card-face card-face--front" style={{ pointerEvents: flipped ? 'none' : 'auto' }}>
+            {interactive && (
+              <>
+                <motion.div className="swipe-tint red" style={{ opacity: redOp }} aria-hidden />
+                <motion.div className="swipe-tint green" style={{ opacity: greenOp }} aria-hidden />
+              </>
+            )}
+            <Card pick={pick} />
+          </div>
+          <div className="card-face card-face--back" style={{ pointerEvents: flipped ? 'auto' : 'none' }} aria-hidden={!flipped}>
+            <CardBack pick={pick} saved={saved} onToggleSave={onToggleSave} onFlipBack={() => setFlipped(false)} />
+          </div>
+        </motion.div>
       </motion.div>
     </motion.div>
   )
 })
 
 export function SwipeStack({
-  picks, onSwipe, onRefresh, onOpen, filterLabel, onClearFilter, onSeeList,
+  picks, savedIds, onSwipe, onToggleSave, onRefresh, filterLabel, onClearFilter, onSeeList,
 }: {
   picks: Pick[]
+  savedIds: Set<string>
   onSwipe: (p: Pick, dir: SwipeDir) => void
+  onToggleSave: (p: Pick) => void
   onRefresh?: () => void
-  onOpen?: (p: Pick) => void
   filterLabel?: string | null
   onClearFilter?: () => void
   onSeeList?: () => void
@@ -294,8 +315,9 @@ export function SwipeStack({
             dealIn={firstDeal.current}
             interactive={i === 0}
             progress={progress}
+            saved={savedIds.has(p.id)}
             onSwipe={onSwipe}
-            onOpen={onOpen}
+            onToggleSave={onToggleSave}
           />
         ))}
       </div>
