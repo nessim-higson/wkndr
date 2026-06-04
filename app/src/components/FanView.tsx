@@ -89,10 +89,13 @@ export function FanView({
         if (face) face.style.transform = `scale(${0.86 + e * 0.46}) translateY(${e * heroLift}px)`
         // layer inner→outer by angle so the hero is on top and the fan stacks cleanly
         card.style.zIndex = String(Math.round(300 - aa))
-        // fade out toward the fan edges (slightly concave so near cards stay solid) — cards
-        // past SPREAD vanish, so there are never sideways/upside-down cards on the rim
-        card.style.opacity = String(Math.pow(vis, 0.6))
-        card.style.pointerEvents = vis < 0.04 ? 'none' : 'auto'
+        // Cards stay OPAQUE so they don't bleed each other's edges (the whole .wheel carries a
+        // single group-translucency against the field instead). Depth = brightness, not alpha:
+        // recessed cards dim back; the hero stays bright. Only the very far edge fades to 0 to
+        // hide off-fan cards (they're off-screen anyway).
+        card.style.opacity = String(Math.max(0, Math.min(1, (spread - aa) / 14)))
+        card.style.filter = `brightness(${(0.52 + 0.48 * vis).toFixed(3)})`
+        card.style.pointerEvents = spread - aa < 1 ? 'none' : 'auto'
       })
     }
     update()
@@ -137,8 +140,10 @@ export function FanView({
         className="wheel"
         ref={wheelRef}
         style={{ rotate: spin }}
+        /* group-translucency lives HERE (on the whole fan), not per card — so the fan reads
+           glassy against the field while the opaque cards never bleed each other's edges */
         initial={{ opacity: 0, scale: 0.86 }}
-        animate={{ opacity: 1, scale: 1 }}
+        animate={{ opacity: 0.82, scale: 1 }}
         transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
       >
         {cards.map((p, i) => (
