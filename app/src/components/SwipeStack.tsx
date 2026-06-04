@@ -67,7 +67,9 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
   const pop = useMotionValue(1)                // grows toward camera on exit
   const enterY = useMotionValue(dealIn ? 680 : 0)               // build-in: fly up from below
   const enterRotExtra = useMotionValue(dealIn ? (depth % 2 ? 7 : -7) : 0)  // entrance tilt → 0
-  const enterOp = useMotionValue(0)
+  // dealt cards fade in (fly-in). A card that CYCLES in at the back starts fully opaque and
+  // is hidden purely by depth-occlusion (below) — no mount-fade, so no "blip" at the back.
+  const enterOp = useMotionValue(dealIn ? 0 : 1)
   const grabLever = useRef(0)                  // where you grabbed: -1 top … +1 bottom
   const cardRef = useRef<HTMLDivElement>(null)
   const dragged = useRef(false)  // true once a real drag begins → suppresses the tap-to-open
@@ -76,9 +78,9 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
   // cards fly up onto it, back-to-front. A card that merely cycles in at the back later
   // just fades — no fly-in. Runs once on mount.
   useEffect(() => {
-    const delay = dealIn ? (RENDER - 1 - depth) * 0.07 : 0
-    animate(enterOp, 1, { duration: dealIn ? 0.5 : 0.34, delay, ease: [0.22, 1, 0.36, 1] })
     if (dealIn) {
+      const delay = (RENDER - 1 - depth) * 0.07
+      animate(enterOp, 1, { duration: 0.5, delay, ease: [0.22, 1, 0.36, 1] })
       // a soft drop that settles to rest (gentler than before — less bounce, no snap)
       animate(enterY, 0, { type: 'spring', stiffness: 220, damping: 24, delay })
       animate(enterRotExtra, 0, { type: 'spring', stiffness: 220, damping: 22, delay })
@@ -128,6 +130,12 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
   // resting imperfection scales with depth: the TOP card stays nearly square; deeper cards tilt/offset more
   const slotRot = useTransform([eff, enterRotExtra], ([d, ex]: number[]) => skew * Math.min(1, d) + ex)
   const slotX = useTransform(eff, (d) => restX * Math.min(1, d))
+  // Depth occlusion: the buffer card (deeper than VISIBLE_DEPTH) is fully transparent behind
+  // the back card, then revealed CONTINUOUSLY by progress as it advances forward — so a
+  // cycling-in card is never seen to fade/insert ("blip"); it's just uncovered as the stack moves.
+  const rawDepth = useTransform(progress, (p) => Math.max(0, depth - p))
+  const depthOpacity = useTransform(rawDepth, (d) => 1 - Math.max(0, Math.min(1, d - VISIBLE_DEPTH)))
+  const slotOpacity = useTransform([enterOp, depthOpacity], ([e, d]: number[]) => e * d)
 
   // Fly the card off-screen along (dx, dy), carrying `speed` of momentum. The exit glides
   // at a fairly steady pace (a hard toss is only a little quicker) and is clamped so cards
@@ -200,7 +208,7 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
     // card is promoted, so it never fights the drag offset (which lives on the inner).
     <motion.div
       className="swipe-card-slot"
-      style={{ zIndex: 10 - depth, scale: slotScale, x: slotX, y: slotY, rotate: slotRot, opacity: enterOp, pointerEvents: interactive ? 'auto' : 'none' }}
+      style={{ zIndex: 10 - depth, scale: slotScale, x: slotX, y: slotY, rotate: slotRot, opacity: slotOpacity, pointerEvents: interactive ? 'auto' : 'none' }}
     >
       {/* INNER — only the top card is draggable; x/y/rotate start at 0 every time */}
       <motion.div
