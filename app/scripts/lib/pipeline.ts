@@ -28,11 +28,39 @@ export function dedupe(picks: Pick[]): Pick[] {
     // keep the one with more info (longer blurb / has image), union the credits
     const richer = (p.blurb?.length ?? 0) + (p.image ? 50 : 0) > (existing.blurb?.length ?? 0) + (existing.image ? 50 : 0) ? p : existing
     const merged: Pick = { ...existing, ...richer }
-    const credits = new Set([existing.source, p.source].filter(Boolean))
+    const credits = new Set((existing.source + ' · ' + p.source).split(' · ').filter(Boolean))
     merged.source = [...credits].join(' · ')
+    merged.buzz = credits.size                                   // distinct sources = the "talked about" signal
     byKey.set(key, merged)
   }
   return [...byKey.values()]
+}
+
+// Keep the pool DIVERSE: cap how many of each category make the cut, so a firehose source
+// (e.g. a ticketing feed full of gigs) can't drown out food / art / free / markets.
+export function balanceByCategory(picks: Pick[], perCat = 6): Pick[] {
+  const count: Record<string, number> = {}
+  const kept: Pick[] = []
+  for (const p of picks) {                                       // assumes input is already buzz/quality-ordered
+    const c = count[p.category] ?? 0
+    if (c >= perCat) continue
+    count[p.category] = c + 1
+    kept.push(p)
+  }
+  return kept
+}
+
+// Strip HTML to readable text for the LLM (drop script/style/nav noise, collapse whitespace).
+export function htmlToText(html: string): string {
+  return html
+    .replace(/<script[\s\S]*?<\/script>/gi, ' ')
+    .replace(/<style[\s\S]*?<\/style>/gi, ' ')
+    .replace(/<\/(p|div|li|h[1-6]|tr|section|article)>/gi, '\n')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&[a-z]+;/gi, ' ')
+    .replace(/[ \t]+/g, ' ')
+    .replace(/\n\s*\n+/g, '\n')
+    .trim()
 }
 
 const UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36'

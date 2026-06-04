@@ -1,0 +1,51 @@
+name: Refresh content
+
+# Runs WEEKLY (Thursday 06:00 UTC, ahead of the weekend) and ON DEMAND (the "Run workflow"
+# button in the Actions tab). Pulls fresh picks via the pipeline, commits the updated
+# picks.json, then kicks the Pages deploy so the live app serves the new feed.
+on:
+  schedule:
+    - cron: '0 6 * * 4'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - name: Install deps
+        run: cd app && bun install --frozen-lockfile
+      - name: Run pipeline
+        env:
+          # add these as repo secrets to turn the live pull on:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}   # the diverse/interesting LLM pull
+          SONGKICK_API_KEY: ${{ secrets.SONGKICK_API_KEY }}     # optional clean gigs
+        run: cd app && bun run refresh
+      - name: Commit if the feed changed
+        id: commit
+        run: |
+          git config user.name "wkndr-bot"
+          git config user.email "noreply@anthropic.com"
+          git add app/public/data
+          if git diff --staged --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "No feed changes."
+          else
+            git commit -m "chore(content): weekly refresh $(date -u +%Y-%m-%d)"
+            git push
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Trigger deploy
+        if: steps.commit.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh workflow run deploy.yml

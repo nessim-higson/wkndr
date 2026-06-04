@@ -108,9 +108,10 @@ function jitter(id: string, seed: number): number {
 export function rankPicks(picks: Pick[], mode: Mode, taste?: Taste, seed = 0): Pick[] {
   const freshBoost = (p: Pick) =>
     p.freshness === 'new' ? 1.5 : p.freshness === 'ending' ? 1.2 : p.freshness === 'weekend' ? 1 : 0.6
+  const buzzBoost = (p: Pick) => Math.min(3, Math.max(0, (p.buzz ?? 0) - 1)) // 2 sources→+1 … capped +3
   const score = (p: Pick) =>
-    (p.weatherFit.includes(mode) ? 10 : 0) + freshBoost(p) + (taste ? tasteScore(p, taste) : 0)
-    + (seed ? jitter(p.id, seed) * 3.5 : 0)
+    (p.weatherFit.includes(mode) ? 10 : 0) + freshBoost(p) + buzzBoost(p)
+    + (taste ? tasteScore(p, taste) : 0) + (seed ? jitter(p.id, seed) * 3.5 : 0)
   const sorted = [...picks].sort((a, b) => score(b) - score(a))
   return diversify(sorted)
 }

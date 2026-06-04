@@ -40,6 +40,7 @@ export interface Pick {
   weatherFit: Mode[]   // modes this pick peaks in
   verify?: boolean     // true = detail (venue/time) needs confirming before relying
   status?: Status      // live availability/scarcity from the crawl
+  buzz?: number        // how many independent sources flagged it (the "what's talked about" signal)
 }
 
 export const CATEGORY_LABEL: Record<Category, string> = {
