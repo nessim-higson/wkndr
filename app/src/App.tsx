@@ -60,13 +60,14 @@ const DEMO: Record<Mode, Wx> = {
   VOLATILE: { temp: 21, hi: 24, lo: 15, city: 'Amsterdam' },
 }
 
-// the ambient field looks the user can switch between (persisted to localStorage)
+// the ambient field looks the user can switch between (persisted to localStorage).
+// V2: a fresh set of five — flip through them to judge.
 const FIELD_OPTS: { key: Look; label: string }[] = [
-  { key: 'aura', label: 'Aura' },
-  { key: 'warp', label: 'Warp' },
-  { key: 'aurora', label: 'Aurora' },
-  { key: 'mesh', label: 'Mesh' },
-  { key: 'metaball', label: 'Metaball' },
+  { key: 'silk', label: 'Silk' },
+  { key: 'dunes', label: 'Dunes' },
+  { key: 'ink', label: 'Ink' },
+  { key: 'rings', label: 'Rings' },
+  { key: 'dots', label: 'Dots' },
   { key: 'off', label: 'Static' },
 ]
 
@@ -97,7 +98,7 @@ export default function App() {
   const [whenOpen, setWhenOpen] = useState(false)          // When sheet
   const [look, setLook] = useState<Look>(() => {       // ambient field (validated)
     const s = localStorage.getItem('wkndr.field') as Look
-    return FIELD_OPTS.some((o) => o.key === s) ? s : 'warp'
+    return FIELD_OPTS.some((o) => o.key === s) ? s : 'silk'
   })
   const [barOpen, setBarOpen] = useState(false)            // command bar expanded?
   const [savesOpen, setSavesOpen] = useState(false)        // the persistent saves dock peek
@@ -585,7 +586,6 @@ export default function App() {
                 onSwipe={handleStackSwipe}
                 onRefresh={refresh}
                 onOpen={setDetail}
-                paused={detail !== null || intro}
                 filterLabel={filterActive ? 'this filter' : null}
                 onClearFilter={() => { setFilter('all'); setWhen('all') }}
                 onSeeList={() => setView('list')}

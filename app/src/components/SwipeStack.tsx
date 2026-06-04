@@ -1,5 +1,5 @@
 import {
-  forwardRef, useCallback, useEffect, useImperativeHandle, useLayoutEffect, useMemo, useRef, useState,
+  forwardRef, useEffect, useImperativeHandle, useLayoutEffect, useMemo, useRef,
 } from 'react'
 import {
   motion, useMotionValue, useTransform, animate,
@@ -12,7 +12,6 @@ import './SwipeStack.css'
 
 const THRESHOLD = 105
 const VELOCITY = 550
-const IDLE_MS = 3000   // no interaction for this long → the deck demos itself
 const RENDER = 4         // cards kept in the DOM
 const VISIBLE_DEPTH = 2  // only 3 cards show; anything deeper parks behind the back one — a hidden
                          // buffer, so a card cycling in mounts unseen and only appears by being revealed
@@ -240,7 +239,7 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
 })
 
 export function SwipeStack({
-  picks, onSwipe, onRefresh, onOpen, filterLabel, onClearFilter, onSeeList, paused = false,
+  picks, onSwipe, onRefresh, onOpen, filterLabel, onClearFilter, onSeeList,
 }: {
   picks: Pick[]
   onSwipe: (p: Pick, dir: SwipeDir) => void
@@ -249,66 +248,17 @@ export function SwipeStack({
   filterLabel?: string | null
   onClearFilter?: () => void
   onSeeList?: () => void
-  paused?: boolean   // suppress the idle demo (e.g. while a detail sheet is open)
 }) {
   const topRef = useRef<CardHandle>(null)
   const progress = useMotionValue(0)   // top card's drag (0→1), drives the cards behind
   const firstDeal = useRef(true)       // only the initial set flies in; later arrivals fade
   useEffect(() => { firstDeal.current = false }, [])
 
-  // Rotation counter — lets the idle demo send the top card to the back WITHOUT committing
-  // a swipe. Derived synchronously from `picks` so a real swipe never lags / flashes.
-  const [rot, setRot] = useState(0)
-  const n = picks.length
-  const order = useMemo(() => {
-    if (n === 0) return picks
-    const k = ((rot % n) + n) % n
-    return k === 0 ? picks : [...picks.slice(k), ...picks.slice(0, k)]
-  }, [picks, rot, n])
-
-  const visible = order.slice(0, RENDER)
-
+  // The deck never moves on its own — no idle auto-flip. Cards only leave when YOU swipe
+  // (or hit the action buttons). Stable DOM order; stacking is each slot's z-index.
+  const visible = picks.slice(0, RENDER)
   const topId = visible[0]?.id
   useLayoutEffect(() => { progress.set(0) }, [topId, progress])
-
-  // ---- idle demo -----------------------------------------------------------
-  const idle = useRef<ReturnType<typeof setTimeout>>()
-  const cycling = useRef(false)
-  // Only auto-demo when the deck is big enough that the flung card genuinely leaves the
-  // visible window (and a fresh one fades in behind). On a small deck it would wrap back
-  // into view and pop; better to just sit still — same call as the short-list motion.
-  const canCycle = !paused && n > RENDER
-
-  const arm = useCallback(() => {
-    clearTimeout(idle.current)
-    if (!canCycle) return
-    idle.current = setTimeout(() => {
-      if (document.hidden || cycling.current) { arm(); return }   // don't burn cycles in a hidden tab
-      cycling.current = true
-      topRef.current?.autoFling()
-    }, IDLE_MS)
-  }, [canCycle])
-
-  function handleCycle() {
-    cycling.current = false
-    setRot((r) => r + 1)   // flung card → back of the deck; the topId-change effect re-arms
-  }
-
-  // Pause the instant a pointer goes down on the stack; resume the countdown only once it
-  // lifts — so the deck never auto-flings mid-touch, and only resumes with no interaction.
-  function pause() { clearTimeout(idle.current); cycling.current = false }
-  useEffect(() => {
-    const resume = () => arm()
-    window.addEventListener('pointerup', resume)
-    window.addEventListener('pointercancel', resume)
-    return () => {
-      window.removeEventListener('pointerup', resume)
-      window.removeEventListener('pointercancel', resume)
-    }
-  }, [arm])
-
-  // (re)arm whenever the top card changes or the pause/availability state flips
-  useEffect(() => { arm(); return () => clearTimeout(idle.current) }, [arm, topId])
 
   if (visible.length === 0) {
     return (
@@ -333,10 +283,8 @@ export function SwipeStack({
   }
 
   return (
-    <div className="stack-wrap" onPointerDown={pause}>
+    <div className="stack-wrap">
       <div className="stack-deck">
-        {/* Stable DOM order — stacking is each slot's z-index, so we never reorder nodes
-            on a swipe (reordering mid-transform = glitches). */}
         {visible.map((p, i) => (
           <SwipeCard
             key={p.id}
@@ -347,7 +295,6 @@ export function SwipeStack({
             interactive={i === 0}
             progress={progress}
             onSwipe={onSwipe}
-            onCycle={handleCycle}
             onOpen={onOpen}
           />
         ))}

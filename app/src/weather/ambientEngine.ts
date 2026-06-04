@@ -9,7 +9,12 @@
 import type { Mode } from '../types'
 import { MODE_META } from './modes'
 
-export type Look = 'off' | 'aura' | 'warp' | 'metaball' | 'aurora' | 'mesh'
+export type Look =
+  | 'off'
+  // the fresh V2 set — five that feel distinctly different from each other
+  | 'silk' | 'dunes' | 'ink' | 'rings' | 'dots'
+  // the original set (kept renderable; no longer surfaced in the menu)
+  | 'aura' | 'warp' | 'metaball' | 'aurora' | 'mesh'
 export interface FieldStats { fps: number; ms: number; res: string }
 
 interface RGB { r: number; g: number; b: number }
@@ -95,9 +100,10 @@ export class FieldEngine {
 
   private div() {
     return this.look === 'metaball' ? 6
-      : this.look === 'warp' || this.look === 'aurora' ? 5
-      : this.look === 'mesh' ? 4
-      : 2
+      : this.look === 'warp' || this.look === 'aurora' || this.look === 'silk' || this.look === 'dunes' ? 5
+      : this.look === 'ink' ? 4
+      : this.look === 'rings' ? 3
+      : 2   // mesh, aura, dots (dots draws full-res to ctx; buffer unused)
   }
 
   resize(cssW: number, cssH: number) {
@@ -191,7 +197,12 @@ export class FieldEngine {
   private renderFrame(ts = performance.now()) {
     if (!this.ctx) return
     const t0 = performance.now()
-    if (this.look === 'warp') this.renderWarp()
+    if (this.look === 'silk') this.renderSilk()
+    else if (this.look === 'dunes') this.renderDunes()
+    else if (this.look === 'ink') this.renderInk()
+    else if (this.look === 'rings') this.renderRings()
+    else if (this.look === 'dots') this.renderDots()
+    else if (this.look === 'warp') this.renderWarp()
     else if (this.look === 'aura') this.renderAura()
     else if (this.look === 'metaball') this.renderMetaball()
     else if (this.look === 'aurora') this.renderAurora()
@@ -263,6 +274,86 @@ export class FieldEngine {
       ctx.restore()
     }
     // WARM / COOL → no overlay (calm, the field's gentle drift is the weather)
+  }
+
+  // ═══════════ V2 LOOKS — five distinct fields ═══════════
+
+  // SILK — ultra-smooth flowing satin gradient with a soft moving sheen. Premium, calm.
+  private renderSilk() {
+    const d = this.img!.data, W = this.bw, H = this.bh, t = this.t
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+      const u = x / W, v = y / H
+      const w = Math.sin(u * 3.0 + t * 0.55) * Math.cos(v * 2.6 - t * 0.4)
+      const base = Math.sin((u * 1.4 + v * 1.05) * Math.PI + t * 0.5 + w * 1.4) * 0.5 + 0.5
+      const sheen = Math.pow(Math.max(0, Math.sin(u * 5.5 - v * 3.0 + t * 0.8 + w)), 8) * 0.3
+      const c = rampAt(this.cur, Math.min(1, base * 0.9 + sheen))
+      const i = (y * W + x) * 4; d[i] = c.r; d[i + 1] = c.g; d[i + 2] = c.b; d[i + 3] = 255
+    }
+    this.bctx.putImageData(this.img!, 0, 0); this.present()
+  }
+
+  // DUNES — soft horizontal contour bands that drift + warp, like topographic sand.
+  private renderDunes() {
+    const d = this.img!.data, n = this.n, W = this.bw, H = this.bh, t = this.t
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+      const u = x / W, v = y / H
+      const warp = fbm(n, u * 1.7 + t * 0.04, v * 1.1, 2) * 0.2
+      const band = v * 5.5 + Math.sin(u * 4.0 + t * 0.22) * 0.22 + warp
+      const val = (Math.sin(band * Math.PI - t * 0.35) * 0.5 + 0.5)
+      const c = rampAt(this.cur, val * 0.94 + 0.03)
+      const i = (y * W + x) * 4; d[i] = c.r; d[i + 1] = c.g; d[i + 2] = c.b; d[i + 3] = 255
+    }
+    this.bctx.putImageData(this.img!, 0, 0); this.present()
+  }
+
+  // INK — high-contrast marbled veins, organic and painterly (heavily domain-warped fbm).
+  private renderInk() {
+    const d = this.img!.data, n = this.n, W = this.bw, H = this.bh, t = this.t, sc = 0.016
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+      const fx = fbm(n, x * sc, y * sc, 2), fy = fbm(n, x * sc + 7.1, y * sc + 2.3, 2)
+      let v = fbm(n, x * sc + 4.6 * fx + t * 0.35, y * sc + 4.6 * fy - t * 0.2, 4)
+      v = sstep(0.30, 0.72, v)                                   // sharpen the boundaries into veins
+      const c = rampAt(this.cur, v)
+      const i = (y * W + x) * 4; d[i] = c.r; d[i + 1] = c.g; d[i + 2] = c.b; d[i + 3] = 255
+    }
+    this.bctx.putImageData(this.img!, 0, 0); this.present()
+  }
+
+  // RINGS — concentric ripples radiating from a high centre (the WKNDR dot, blown up).
+  private renderRings() {
+    const d = this.img!.data, n = this.n, W = this.bw, H = this.bh, t = this.t
+    const cx = W * 0.5, cy = H * 0.42, mx = Math.max(W, H)
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+      const dx = x - cx, dy = y - cy
+      const dist = Math.sqrt(dx * dx + dy * dy) / mx
+      const wob = fbm(n, x * 0.02, y * 0.02, 2) * 0.06
+      const ripple = Math.sin(dist * 24 - t * 2.4 + wob * 30) * 0.5 + 0.5
+      const core = Math.max(0, 1 - dist * 1.1)
+      const c = rampAt(this.cur, Math.min(1, ripple * 0.55 + core * 0.55))
+      const i = (y * W + x) * 4; d[i] = c.r; d[i + 1] = c.g; d[i + 2] = c.b; d[i + 3] = 255
+    }
+    this.bctx.putImageData(this.img!, 0, 0); this.present()
+  }
+
+  // DOTS — a halftone grid of dots sized + coloured by a flow field (the WKNDR dot, multiplied).
+  // Drawn full-res straight to the canvas (crisp circles), no buffer.
+  private renderDots() {
+    const ctx = this.ctx; if (!ctx) return
+    const n = this.n, t = this.t, W = this.W, H = this.H
+    const base = this.cur[0]
+    ctx.fillStyle = `rgb(${base.r | 0},${base.g | 0},${base.b | 0})`
+    ctx.fillRect(0, 0, W, H)
+    const gap = Math.max(30, Math.round(Math.min(W, H) / 15))
+    const sc = 1.1 / gap
+    for (let gy = gap * 0.5; gy < H + gap; gy += gap) {
+      for (let gx = gap * 0.5; gx < W + gap; gx += gap) {
+        const f = fbm(n, gx * sc, gy * sc + t * 1.2, 3)
+        const r = gap * 0.6 * (0.22 + f * 0.95)
+        const c = rampAt(this.cur, Math.min(1, f * 1.25 + 0.08))
+        ctx.fillStyle = `rgb(${c.r | 0},${c.g | 0},${c.b | 0})`
+        ctx.beginPath(); ctx.arc(gx, gy, r, 0, 6.2832); ctx.fill()
+      }
+    }
   }
 
   private renderWarp() {

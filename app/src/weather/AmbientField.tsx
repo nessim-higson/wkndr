@@ -17,9 +17,10 @@ function baseGradient(mode: Mode): string {
   ].join(', ')
 }
 
-const LOOKS: Look[] = ['off', 'aura', 'warp', 'aurora', 'mesh', 'metaball']
+const LOOKS: Look[] = ['off', 'silk', 'dunes', 'ink', 'rings', 'dots']
 const LOOK_LABEL: Record<Look, string> = {
-  off: 'CSS', aura: 'Aura', warp: 'Warp', aurora: 'Aurora', mesh: 'Mesh', metaball: 'Metaball',
+  off: 'CSS', silk: 'Silk', dunes: 'Dunes', ink: 'Ink', rings: 'Rings', dots: 'Dots',
+  aura: 'Aura', warp: 'Warp', aurora: 'Aurora', mesh: 'Mesh', metaball: 'Metaball',   // legacy
 }
 const DEV = import.meta.env.DEV
 
