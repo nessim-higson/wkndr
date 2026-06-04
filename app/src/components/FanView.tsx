@@ -27,7 +27,7 @@ export function FanView({
   const step = n > 0 ? 360 / n : 0
   const spin = useMotionValue(0)
   // how far the hero pulls down out of the arc to land centred (less on a short phone)
-  const heroLift = useMemo(() => (typeof window !== 'undefined' && window.innerWidth < 720 ? 96 : 76), [])
+  const heroLift = useMemo(() => (typeof window !== 'undefined' && window.innerWidth < 720 ? 96 : 102), [])
 
   const moved = useRef(false)
   const spinStart = useRef(0)
