@@ -73,12 +73,23 @@ export class FieldEngine {
   private emaDelta = 33; private statsAt = 0
   onStats?: (s: FieldStats) => void
 
+  // ---- weather-MOTION overlay (drawn full-res on top of the abstract field) ----
+  // The field's palette already changes with the weather; this makes it MOVE like the
+  // weather too — rain falls, storms flash, heat shimmers — so the abstract field reads
+  // as weather without literal suns/clouds.
+  private mode: Mode
+  private drops: { x: number; y: number; len: number; spd: number; a: number }[] = []
+  private flash = 0
+  private nextFlash = 2800
+  private wxLast = 0
+
   constructor(canvas: HTMLCanvasElement, mode: Mode) {
     this.ctx = canvas.getContext('2d')
     this.bctx = this.buf.getContext('2d')!
     this.cur = modeColors(mode); this.tgt = this.cur.map((c) => ({ ...c }))
     this.reduced = matchMedia('(prefers-reduced-motion: reduce)').matches
     this.canvas = canvas
+    this.mode = mode
   }
   private canvas: HTMLCanvasElement
 
@@ -93,6 +104,15 @@ export class FieldEngine {
     this.W = Math.max(1, Math.round(cssW)); this.H = Math.max(1, Math.round(cssH))
     this.canvas.width = this.W; this.canvas.height = this.H   // DPR clamped to 1 on purpose
     this.alloc()
+    this.initDrops()
+  }
+  private initDrops() {
+    const count = Math.min(240, Math.round((this.W * this.H) / 8200))
+    this.drops = []
+    for (let i = 0; i < count; i++) this.drops.push({
+      x: Math.random() * this.W, y: Math.random() * this.H,
+      len: 9 + Math.random() * 18, spd: 8 + Math.random() * 10, a: 0.18 + Math.random() * 0.34,
+    })
   }
   private alloc() {
     const d = this.div()
@@ -104,6 +124,7 @@ export class FieldEngine {
   }
 
   setMode(mode: Mode) {
+    this.mode = mode
     this.tgt = modeColors(mode)                                    // crossfades over ~1s while visible
     // If the animation loop can't advance the crossfade right now (reduced-motion,
     // tab hidden, or not yet started) it would otherwise stay stuck on the boot
@@ -175,6 +196,7 @@ export class FieldEngine {
     else if (this.look === 'metaball') this.renderMetaball()
     else if (this.look === 'aurora') this.renderAurora()
     else if (this.look === 'mesh') this.renderMesh()
+    this.drawWeather(ts)                                          // weather-motion on top
     const ms = performance.now() - t0
     if (this.onStats && ts - this.statsAt > 400) {
       this.statsAt = ts
@@ -182,6 +204,66 @@ export class FieldEngine {
     }
   }
   private _fps = 0
+
+  // The weather-motion layer — full-res, on the presented canvas. Each mode gets a distinct
+  // BEHAVIOUR (the thing that actually makes it read as weather), not just a palette.
+  private drawWeather(ts: number) {
+    const ctx = this.ctx
+    if (!ctx) return
+    const dt = this.wxLast ? Math.min(80, ts - this.wxLast) : 33
+    this.wxLast = ts
+    const m = this.mode
+
+    // RAIN — Cold & wet (steady) and Volatile (heavier, windier)
+    if (m === 'COLD_WET' || m === 'VOLATILE') {
+      const wind = m === 'VOLATILE' ? 3.2 : 1.1
+      const n = m === 'VOLATILE' ? this.drops.length : Math.round(this.drops.length * 0.82)
+      ctx.save()
+      ctx.lineWidth = 1.1
+      ctx.lineCap = 'round'
+      for (let i = 0; i < n; i++) {
+        const dp = this.drops[i]
+        dp.y += dp.spd; dp.x += wind
+        if (dp.y > this.H + dp.len) { dp.y = -dp.len; dp.x = Math.random() * (this.W + 120) - 60 }
+        ctx.strokeStyle = `rgba(214,228,248,${dp.a})`
+        ctx.beginPath(); ctx.moveTo(dp.x, dp.y); ctx.lineTo(dp.x - wind, dp.y + dp.len); ctx.stroke()
+      }
+      ctx.restore()
+    }
+
+    // LIGHTNING — Volatile only: an occasional brief full-field flash that decays
+    if (m === 'VOLATILE') {
+      this.nextFlash -= dt
+      if (this.nextFlash <= 0) { this.flash = 1; this.nextFlash = 3200 + Math.random() * 6000 }
+      if (this.flash > 0.02) {
+        ctx.save()
+        ctx.fillStyle = `rgba(244,247,255,${(this.flash * 0.45).toFixed(3)})`
+        ctx.fillRect(0, 0, this.W, this.H)
+        ctx.restore()
+        this.flash *= 0.80
+      }
+    }
+
+    // HEAT SHIMMER — Hot: faint warm haze-bands rising + wobbling (lighten blend)
+    if (m === 'HOT') {
+      const t = ts * 0.001
+      ctx.save()
+      ctx.globalCompositeOperation = 'lighten'
+      for (let i = 0; i < 4; i++) {
+        const prog = ((t * 0.16 + i / 4) % 1)            // 0→1, rises up the screen
+        const y = this.H * (1.05 - prog * 1.1)
+        const wob = Math.sin(t * 1.6 + i * 1.9) * 10
+        const g = ctx.createLinearGradient(0, y - 60, 0, y + 60)
+        g.addColorStop(0, 'rgba(255,214,150,0)')
+        g.addColorStop(0.5, `rgba(255,228,176,${(0.05 * (1 - prog)).toFixed(3)})`)
+        g.addColorStop(1, 'rgba(255,214,150,0)')
+        ctx.fillStyle = g
+        ctx.fillRect(wob, y - 60, this.W, 120)
+      }
+      ctx.restore()
+    }
+    // WARM / COOL → no overlay (calm, the field's gentle drift is the weather)
+  }
 
   private renderWarp() {
     const d = this.img!.data, n = this.n, sc = 0.012, t = this.t
