@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>WKNDR — fan comps</title>
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin />
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=clash-display@600,700&display=swap" />
+<style>
+  :root{
+    --ink:#1a1a1a; --paper:#faf8f3; --paper-3:#e7e4db; --accent:#ff4d1f;
+    --disp:'Clash Display','Helvetica Neue',sans-serif;
+    --body:'Helvetica Neue',Helvetica,Arial,sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased;}
+  body{font-family:var(--body);color:#fff;
+    background:
+      radial-gradient(60% 50% at 30% 15%, #ff9a3d, transparent 70%),
+      radial-gradient(70% 60% at 75% 80%, #c2310e, transparent 70%),
+      linear-gradient(160deg,#6a2a14,#2a1620);
+    padding:28px 16px 80px;}
+  .lab{max-width:1100px;margin:0 auto 6px;font-family:var(--disp);font-weight:700;font-size:15px;letter-spacing:.12em;text-transform:uppercase;}
+  .lab small{display:block;font-family:var(--body);font-weight:400;letter-spacing:.01em;text-transform:none;font-size:13px;opacity:.82;margin-top:4px;}
+  .stage{max-width:1100px;margin:0 auto 44px;position:relative;height:520px;
+    display:grid;place-items:center;perspective:1300px;overflow:hidden;
+    border-radius:20px;background:rgba(0,0,0,.10);}
+  @media (max-width:720px){ .stage{height:470px;} }
+
+  /* a card */
+  .c{position:absolute;width:clamp(176px,48vw,236px);aspect-ratio:3/4;border-radius:18px;overflow:hidden;
+    box-shadow:0 18px 44px rgba(0,0,0,.34);background-size:cover;background-position:center;
+    display:flex;align-items:flex-end;will-change:transform;}
+  .c::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.8),rgba(0,0,0,.15) 48%,transparent 72%);}
+  .c .meta{position:relative;z-index:1;padding:14px;}
+  .c .cat{font-size:9px;letter-spacing:.13em;text-transform:uppercase;opacity:.85;}
+  .c .ttl{font-family:var(--disp);font-weight:700;font-size:18px;line-height:1.02;letter-spacing:-.01em;margin-top:3px;}
+  .c .when{font-size:9px;opacity:.8;margin-top:4px;}
+  .live{background:linear-gradient(150deg,#5a4b8c,#241d44);}
+  .eat{background:linear-gradient(150deg,#cf8038,#7a3f1a);}
+  .art{background:linear-gradient(150deg,#3f72ad,#1c3656);}
+  .stagey{background:linear-gradient(150deg,#834066,#361d35);}
+  .out{background:linear-gradient(150deg,#4e9a63,#21452f);}
+  .hero{outline:2px solid rgba(255,255,255,.5);}
+
+  /* ============ A · COVERFLOW ============ */
+  .cf .c{transition:none;}
+  .cf .h{transform:translateX(0) scale(1.06);z-index:6;}
+  .cf .l1{transform:translateX(-62%) rotateY(40deg) scale(.84);z-index:5;opacity:.95;}
+  .cf .r1{transform:translateX(62%) rotateY(-40deg) scale(.84);z-index:5;opacity:.95;}
+  .cf .l2{transform:translateX(-112%) rotateY(46deg) scale(.68);z-index:4;opacity:.6;}
+  .cf .r2{transform:translateX(112%) rotateY(-46deg) scale(.68);z-index:4;opacity:.6;}
+
+  /* ============ B · HAND FAN (bottom pivot, hero lifted, all centered) ============ */
+  .hand .c{transform-origin:50% 165%;}
+  .hand .h{transform:rotate(0deg) translateY(-8px) scale(1.06);z-index:6;}
+  .hand .l1{transform:rotate(-13deg);z-index:5;opacity:.95;}
+  .hand .r1{transform:rotate(13deg);z-index:5;opacity:.95;}
+  .hand .l2{transform:rotate(-26deg) scale(.97);z-index:4;opacity:.72;}
+  .hand .r2{transform:rotate(26deg) scale(.97);z-index:4;opacity:.72;}
+
+  /* ============ C · CENTERED PEEK CAROUSEL ============ */
+  .peek .h{transform:scale(1.08);z-index:6;}
+  .peek .l1{transform:translateX(-84%) scale(.9);z-index:5;opacity:.7;}
+  .peek .r1{transform:translateX(84%) scale(.9);z-index:5;opacity:.7;}
+  .peek .l2{transform:translateX(-150%) scale(.8);z-index:4;opacity:.4;}
+  .peek .r2{transform:translateX(150%) scale(.8);z-index:4;opacity:.4;}
+</style>
+</head>
+<body>
+
+  <div class="lab">A · Coverflow<small>Hero dead-centre &amp; upright; neighbours turn away in 3D, same vertical centre. Cinematic, very focus-forward.</small></div>
+  <div class="stage cf">
+    <div class="c out l2"><div class="meta"><div class="cat">Out</div><div class="ttl">Sauna Deco</div></div></div>
+    <div class="c eat l1"><div class="meta"><div class="cat">Eat</div><div class="ttl">Foodhallen</div></div></div>
+    <div class="c live h hero"><div class="meta"><div class="cat">Live &amp; gigs</div><div class="ttl">FKA twigs + Yves Tumor</div><div class="when">Sat 6 Jun · 20:00</div></div></div>
+    <div class="c art r1"><div class="meta"><div class="cat">Art</div><div class="ttl">NOMA</div></div></div>
+    <div class="c stagey r2"><div class="meta"><div class="cat">Stage</div><div class="ttl">Saenger</div></div></div>
+  </div>
+
+  <div class="lab">B · Hand fan<small>Cards fan from a pivot below — hero lifted out of the middle, neighbours tilt away symmetrically. Tighter, playful, "a hand of picks."</small></div>
+  <div class="stage hand">
+    <div class="c out l2"><div class="meta"><div class="cat">Out</div><div class="ttl">Sauna Deco</div></div></div>
+    <div class="c eat l1"><div class="meta"><div class="cat">Eat</div><div class="ttl">Foodhallen</div></div></div>
+    <div class="c live h hero"><div class="meta"><div class="cat">Live &amp; gigs</div><div class="ttl">FKA twigs + Yves Tumor</div><div class="when">Sat 6 Jun · 20:00</div></div></div>
+    <div class="c art r1"><div class="meta"><div class="cat">Art</div><div class="ttl">NOMA</div></div></div>
+    <div class="c stagey r2"><div class="meta"><div class="cat">Stage</div><div class="ttl">Saenger</div></div></div>
+  </div>
+
+  <div class="lab">C · Centered peek<small>Hero centred &amp; large; the next/previous picks peek in from both edges at the same centre. Minimal, obviously swipeable.</small></div>
+  <div class="stage peek">
+    <div class="c out l2"><div class="meta"><div class="cat">Out</div><div class="ttl">Sauna Deco</div></div></div>
+    <div class="c eat l1"><div class="meta"><div class="cat">Eat</div><div class="ttl">Foodhallen</div></div></div>
+    <div class="c live h hero"><div class="meta"><div class="cat">Live &amp; gigs</div><div class="ttl">FKA twigs + Yves Tumor</div><div class="when">Sat 6 Jun · 20:00</div></div></div>
+    <div class="c art r1"><div class="meta"><div class="cat">Art</div><div class="ttl">NOMA</div></div></div>
+    <div class="c stagey r2"><div class="meta"><div class="cat">Stage</div><div class="ttl">Saenger</div></div></div>
+  </div>
+
+</body>
+</html>
