@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import type { PointerEvent as RPointerEvent } from 'react'
 import { animate, motion, useMotionValue, type PanInfo } from 'framer-motion'
 import type { Pick } from '../types'
@@ -8,20 +8,18 @@ import './FanView.css'
 const MAX = 26          // cards placed around the wheel
 const SENS = 0.26       // degrees of spin per px dragged
 const FLICK = 0.5       // how much a release-flick coasts
-const HOLD_MS = 3200    // how long the hero card holds before the wheel advances
 const HALO = 20         // degrees from top within which a card gets the "hero" treatment
 // degrees of fan on each side before cards fade out. Mobile = tight hand fan; desktop = a
 // WIDE, airy fan (cards splay further out — the earlier, more interesting desktop look).
 
 /** A wheel of cards cropped to its top arc. The card at the top is the HERO — larger,
- *  lifted, on top, neighbours recede. It holds ~3s, then the wheel steps to the next.
- *  Grab and spin it freely (snaps to a card on release); tap a card to investigate. */
+ *  lifted, on top, neighbours recede. Purely user-driven: grab and spin it freely (snaps to
+ *  a card on release); tap a card to investigate. (No auto-advance — it felt forced.) */
 export function FanView({
-  picks, onOpen, paused = false,
+  picks, onOpen,
 }: {
   picks: Pick[]
   onOpen?: (p: Pick) => void
-  paused?: boolean
 }) {
   const cards = useMemo(() => picks.slice(0, MAX), [picks])
   const n = cards.length
@@ -36,37 +34,16 @@ export function FanView({
   const spinStart = useRef(0)
   const tapTarget = useRef<EventTarget | null>(null)
   const auto = useRef<ReturnType<typeof animate> | null>(null)
-  const timer = useRef<ReturnType<typeof setTimeout>>()
   const wheelRef = useRef<HTMLDivElement>(null)
 
-  // auto-advance: dwell on the hero, then step to the next card with a spring
-  const advance = useCallback(() => {
-    auto.current?.stop()
-    const cur = step ? Math.round(spin.get() / step) * step : 0
-    auto.current = animate(spin, cur - step, { type: 'spring', stiffness: 60, damping: 15 })
-    timer.current = setTimeout(advance, HOLD_MS)
-  }, [spin, step])
-
-  const startAuto = useCallback(() => {
-    clearTimeout(timer.current)
-    if (paused || n < 2) return
-    timer.current = setTimeout(advance, HOLD_MS)
-  }, [paused, n, advance])
-
-  // entrance: the wheel spins + scales/fades in (motion props below)
+  // entrance: the wheel spins + scales/fades in (motion props below), then it just rests
+  // until the user spins it. No timed auto-advance.
   useEffect(() => {
     spin.set(-28)
     auto.current = animate(spin, 0, { type: 'spring', stiffness: 50, damping: 13 })
     return () => { auto.current?.stop() }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
-  // auto-advance follows the paused state (stop while a detail is open; resume after)
-  useEffect(() => {
-    if (paused) { auto.current?.stop(); clearTimeout(timer.current); return }
-    startAuto()
-    return () => clearTimeout(timer.current)
-  }, [paused, startAuto])
 
   // HERO emphasis — recomputed every time the wheel turns: the card nearest the top
   // grows + lifts + comes to the front; the others shrink and dim back.
@@ -105,7 +82,6 @@ export function FanView({
 
   function onPointerDown(e: RPointerEvent) {
     auto.current?.stop()
-    clearTimeout(timer.current)
     moved.current = false
     spinStart.current = spin.get()
     tapTarget.current = e.target
@@ -119,13 +95,11 @@ export function FanView({
     const projected = spin.get() + info.velocity.x * SENS * FLICK
     const snapped = step ? Math.round(projected / step) * step : projected
     auto.current = animate(spin, snapped, { type: 'spring', stiffness: 70, damping: 13, restDelta: 0.2 })
-    startAuto()
   }
   function onPointerUp() {
     if (moved.current) return
     const el = (tapTarget.current as HTMLElement | null)?.closest('[data-fan-i]') as HTMLElement | null
     if (el) onOpen?.(cards[Number(el.dataset.fanI)])
-    startAuto()
   }
 
   return (

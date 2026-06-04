@@ -598,7 +598,7 @@ export default function App() {
               animate={{ opacity: 1 }}
               transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
             >
-              <FanView picks={shown} onOpen={setDetail} paused={detail !== null || intro} />
+              <FanView picks={shown} onOpen={setDetail} />
             </motion.div>
           ) : (
             <motion.div

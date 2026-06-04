@@ -112,11 +112,11 @@
 }
 .detail-title {
   margin-top: 8px;
-  font-family: var(--font-display);
-  font-size: 30px;
+  font-family: var(--font-body);   /* card copy → Helvetica Neue */
+  font-size: 28px;
   font-weight: 700;
-  line-height: 1.0;
-  letter-spacing: -0.025em;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
 }
 .detail-venue { margin-top: 5px; font-size: 13px; color: var(--ink-4); }
 .detail-blurb { margin-top: 16px; font-size: 14px; line-height: 1.6; color: var(--ink-2); }

@@ -31,11 +31,11 @@
   justify-content: center;
   padding: 0 22px;
   text-align: center;
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-size: clamp(26px, 7vw, 40px);
   font-weight: 700;
-  letter-spacing: -0.025em;
-  line-height: 0.98;
+  letter-spacing: -0.035em;
+  line-height: 1.02;
   color: rgba(255, 255, 255, 0.92);
   text-shadow: 0 2px 26px rgba(0, 0, 0, 0.28);
 }
@@ -122,11 +122,11 @@
   letter-spacing: 0.04em;
 }
 .card-title {
-  font-family: var(--font-display);
-  font-size: 28px;
+  font-family: var(--font-body);   /* card copy is Helvetica Neue (WKNDR wordmark stays Clash) */
+  font-size: 27px;
   font-weight: 700;
-  line-height: 1.0;
-  letter-spacing: -0.022em;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
   color: #fff;
   text-shadow: 0 2px 18px rgba(0, 0, 0, 0.4);
 }
