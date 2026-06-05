@@ -16,6 +16,20 @@ const KEY = process.env.ANTHROPIC_API_KEY
 const MODEL = process.env.ANTHROPIC_MODEL || 'claude-haiku-4-5'   // cheap/fast tier (the 3-5-haiku alias was retired)
 const UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/124 Safari/537.36'
 
+// ── global rate gate ────────────────────────────────────────────────────────
+// New / low-tier Anthropic accounts cap at a few requests + ~10k input tokens per
+// minute. We space ALL Messages calls (across both cities) at least GAP apart so we
+// never burst past the limit. Override with ANTHROPIC_RPM as the account tier grows.
+const RPM = Math.max(1, Number(process.env.ANTHROPIC_RPM) || 3)
+const GAP = Math.ceil(60000 / RPM)
+let nextAt = 0
+async function gate(): Promise<void> {
+  const now = Date.now()
+  const wait = Math.max(0, nextAt - now)
+  nextAt = (wait > 0 ? nextAt : now) + GAP
+  if (wait > 0) await new Promise((r) => setTimeout(r, wait))
+}
+
 const CATEGORIES: Category[] = ['live', 'art', 'stage', 'eat', 'drink', 'market', 'out', 'daytrip']
 
 function systemPrompt(cityName: string): string {
@@ -66,20 +80,32 @@ export async function llmExtract(cityName: string, source: RosterSource): Promis
     const r = await fetch(source.url, { headers: { 'user-agent': UA, accept: 'text/html,application/xhtml+xml' } })
     const html = r.ok ? await r.text() : ''
     if (!html) { console.log(`${tag} fetch ${r.status} — no HTML`); return [] }
-    const text = htmlToText(html).slice(0, 14000)
+    const text = htmlToText(html).slice(0, 9000)   // ~2.2k input tokens — keeps us under the per-minute token cap
     if (text.length < 200) { console.log(`${tag} thin text (${text.length} chars after strip)`); return [] }
 
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'x-api-key': KEY, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },
-      body: JSON.stringify({
-        model: MODEL,
-        max_tokens: 2200,
-        // the static instructions are cached across every source call in a run (cheaper)
-        system: [{ type: 'text', text: systemPrompt(cityName), cache_control: { type: 'ephemeral' } }],
-        messages: [{ role: 'user', content: `SOURCE: ${source.name} — focus: ${source.facet}\nURL: ${source.url}\n\nPAGE TEXT:\n${text}\n\nReturn the JSON array.` }],
-      }),
-    }).then((r) => r.json())
+    const body = JSON.stringify({
+      model: MODEL,
+      max_tokens: 2200,
+      // the static instructions are cached across every source call in a run (cheaper)
+      system: [{ type: 'text', text: systemPrompt(cityName), cache_control: { type: 'ephemeral' } }],
+      messages: [{ role: 'user', content: `SOURCE: ${source.name} — focus: ${source.facet}\nURL: ${source.url}\n\nPAGE TEXT:\n${text}\n\nReturn the JSON array.` }],
+    })
+    // gated call, with one back-off retry if we still trip the rate limit
+    let res: any
+    for (let attempt = 0; attempt < 2; attempt++) {
+      await gate()
+      res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'x-api-key': KEY, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },
+        body,
+      }).then((r) => r.json())
+      if (res?.error?.type === 'rate_limit_error' && attempt === 0) {
+        console.log(`${tag} rate-limited — backing off ${Math.round((GAP + 5000) / 1000)}s`)
+        await new Promise((r) => setTimeout(r, GAP + 5000))
+        continue
+      }
+      break
+    }
 
     if (res?.error || !Array.isArray(res?.content)) {
       console.log(`${tag} API → ${JSON.stringify(res?.error ?? res?.type ?? res).slice(0, 200)}`)

@@ -50,7 +50,7 @@ async function buildCity(city: City) {
   console.log(`  rss:      ${rssSrc.length} feeds → ${fromRoster.length} picks (keyless)`)
 
   if (LLM_ON) {
-    const got = await mapLimit(llmSrc, 4, (s) => llmExtract(city.name, s))
+    const got = await mapLimit(llmSrc, 1, (s) => llmExtract(city.name, s))   // sequential — the gate paces the API calls
     const n = got.reduce((a, b) => a + b.length, 0)
     got.forEach((g) => fromRoster.push(...g))
     console.log(`  llm:      ${llmSrc.length} sources → ${n} picks`)
