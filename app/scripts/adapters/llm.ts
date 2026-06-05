@@ -114,7 +114,7 @@ export async function llmExtract(cityName: string, source: RosterSource): Promis
     const html = r.ok ? await r.text() : ''
     if (!html) { console.log(`${tag} fetch ${r.status} — no HTML`); return [] }
     const candidates = extractImages(html, source.url)
-    const text = htmlToText(html).slice(0, 7000)   // smaller — leave token room for the image list
+    const text = htmlToText(html).slice(0, 8500)   // room for the image list while keeping enough items
     if (text.length < 200) { console.log(`${tag} thin text (${text.length} chars after strip)`); return [] }
 
     const imgList = candidates.length

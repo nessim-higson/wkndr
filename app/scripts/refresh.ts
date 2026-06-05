@@ -19,7 +19,7 @@
  */
 import { CITIES, type City } from '../src/data/cities'
 import type { Pick } from '../src/types'
-import { dedupe, balanceByCategory, isGoodImage, mapLimit } from './lib/pipeline'
+import { dedupe, balanceByCategory, isGoodImage, fetchOgImage, mapLimit } from './lib/pipeline'
 import { songkickAdapter } from './adapters/songkick'
 import { llmExtract } from './adapters/llm'
 import { rssExtract } from './adapters/rss'
@@ -69,16 +69,22 @@ async function buildCity(city: City) {
   let picks = dedupe([...fromRoster, ...canon])
   const isLive = (p: Pick) => p.id.startsWith('llm-')
 
-  // PHOTO-FIRST IMAGE PASS — validate each live pick's matched page photo and DROP any live pick
-  // without a real, relevant image. No category-gradient posters, no generic page-hero fallbacks;
-  // the curated canon (all imaged) is the floor. Runs BEFORE the cap so the balanced set is all photos.
+  // PHOTO-FIRST IMAGE PASS. Every live pick must end up with a real, RELEVANT photo or it's dropped
+  // (no category-gradient posters, no generic page-hero fallbacks). Three sources, in order:
+  //   1. the page photo the LLM matched to this item (validate it),
+  //   2. else the og:image of the pick's OWN link (a Songkick concert page's og = the artist),
+  //   3. then drop any image reused across ≥2 live picks (a shared listing banner = generic).
+  // Curated canon (all imaged) is the floor, so the deck stays full.
   if (!SKIP_IMAGES) {
     const live = picks.filter(isLive)
-    let kept = 0
-    await mapLimit(live, 6, async (p) => { if (p.image && (await isGoodImage(p.image))) kept++; else p.image = undefined })
+    await mapLimit(live.filter((p) => p.image), 5, async (p) => { if (!(await isGoodImage(p.image!))) p.image = undefined })
+    await mapLimit(live.filter((p) => !p.image && p.link), 6, async (p) => { const img = await fetchOgImage(p.link); if (img) p.image = img })
+    const seen = new Map<string, number>()
+    for (const p of live) if (p.image) seen.set(p.image, (seen.get(p.image) || 0) + 1)
+    for (const p of live) if (p.image && (seen.get(p.image) || 0) > 1) p.image = undefined   // shared hero = generic
     const before = picks.length
     picks = picks.filter((p) => !isLive(p) || p.image)
-    console.log(`  images:   ${kept}/${live.length} live picks kept a real photo (dropped ${before - picks.length} imageless)`)
+    console.log(`  images:   ${live.filter((p) => p.image).length}/${live.length} live picks kept a real photo (dropped ${before - picks.length})`)
   }
 
   // RANK by what's-talked-about (buzz) then freshness. Cap per category only when there's a real
