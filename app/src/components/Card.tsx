@@ -1,4 +1,4 @@
-import { Plus } from 'lucide-react'
+import { Plus, Clock } from 'lucide-react'
 import type { Pick } from '../types'
 import { CATEGORY_LABEL, FRESHNESS_LABEL, STATUS_LABEL } from '../types'
 import './Card.css'
@@ -32,8 +32,8 @@ export function Card({ pick }: { pick: Pick }) {
         <div className="card-cat mono">{CATEGORY_LABEL[pick.category]}</div>
         <h2 className="card-title">{pick.title}</h2>
         <div className="card-when">
-          <span>{pick.when}</span>
-          <span className="card-flip-cue"><Plus size={12} strokeWidth={2.8} /> Details</span>
+          <span className="card-when-stamp"><Clock size={14} strokeWidth={2.6} /> {pick.when}</span>
+          <span className="card-flip-cue" aria-hidden><Plus size={15} strokeWidth={2.8} /></span>
         </div>
       </div>
     </article>

@@ -49,11 +49,11 @@
 .tb-brand { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-display); font-size: 21px; font-weight: 700; letter-spacing: -0.01em; }
 .tb-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
 .tb-divider { width: 1px; height: 22px; background: rgba(0, 0, 0, 0.14); flex-shrink: 0; }
-/* weather block: the weekend DATE and the temperature now carry equal weight —
-   the date is the headline ("which weekend"), the temp its peer just beneath. */
-.tb-wx { display: flex; flex-direction: column; line-height: 1.12; gap: 1px; }
+/* weather block: the weekend DATE is the headline ("which weekend"), with the
+   temperature a notch larger beneath so the weather still reads at a glance. */
+.tb-wx { display: flex; flex-direction: column; line-height: 1.1; gap: 1px; }
 .tb-when { font-size: 13px; font-weight: 700; letter-spacing: -0.012em; color: #1c1c1a; white-space: nowrap; }
-.tb-temp { font-size: 13px; font-weight: 700; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; opacity: 0.62; }
+.tb-temp { font-size: 17px; font-weight: 700; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; opacity: 0.78; }
 
 .tb-icon {
   position: relative;
