@@ -7,4 +7,4 @@
 // NAMING: the frozen landmark build is V.1 (served at /wkndr/v1/). Everything in
 // this current line of work is V.2 — hence the 2.x major. `-devN` counts the
 // in-progress iterations within V.2 before it's stamped a clean 2.0.0.
-export const APP_VERSION = '2.0.0-dev4'
+export const APP_VERSION = '2.0.0-dev5'

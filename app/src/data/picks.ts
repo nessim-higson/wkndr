@@ -264,6 +264,7 @@ export const PICKS: Pick[] = [
   },
   {
     id: 'amsterdam-sevens', title: 'Amsterdam Sevens Rugby', venue: 'Sportpark de Eendracht', area: 'West', when: 'Sat–Sun 6–7 Jun',
+    image: "https://media.iamsterdam.com/w_1080/69yh4j7g2d4u-rtxp.jpg",
     category: 'out', freshness: 'weekend', outdoor: true, kid: true, price: 'ticketed',
     blurb: 'The 53rd-edition international rugby sevens — 120+ teams, fast games, a full-day atmosphere.',
     why: 'Outdoor day out · all-ages · sun-dependent',
@@ -295,6 +296,7 @@ export const PICKS: Pick[] = [
   // Added to give a wet/volatile weekend real depth beyond gigs + galleries.
   {
     id: 'foodhallen', title: 'Foodhallen', venue: 'De Hallen', area: 'West', when: 'Daily · 11:00–23:00',
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Foodhallen_in_Oud-West_%28Amsterdam%2C_The_Netherlands_2017%29_%2834245643041%29.jpg/1280px-Foodhallen_in_Oud-West_%28Amsterdam%2C_The_Netherlands_2017%29_%2834245643041%29.jpg",
     category: 'eat', freshness: 'always', outdoor: false, kid: true, price: 'street-food prices',
     blurb: 'An indoor food hall in a converted tram depot — 20-odd stalls, long tables and two bars under one roof.',
     why: 'Indoor · grazing for a crowd · weather-proof',
@@ -303,6 +305,7 @@ export const PICKS: Pick[] = [
   },
   {
     id: 'moeders', title: 'Moeders — Dutch home cooking', venue: 'Moeders', area: 'Jordaan', when: 'Daily · dinner',
+    image: "https://www.moeders.com/template/images/facebook.png",
     category: 'eat', freshness: 'always', outdoor: false, kid: false, price: '€€',
     blurb: 'Walls papered with strangers’ mothers’ photos and a stamppot-and-stew menu built for a grey evening.',
     why: 'Snug · classic Dutch · ideal in the rain',
@@ -311,6 +314,7 @@ export const PICKS: Pick[] = [
   },
   {
     id: 'cafe-de-klos', title: 'Café de Klos — ribs & grill', venue: 'Café de Klos', area: 'Centrum', when: 'Daily · from 17:00',
+    image: "https://images.unsplash.com/photo-1569352304334-6e422cd70ecd?w=1200&q=80",
     category: 'eat', freshness: 'always', outdoor: false, kid: false, price: '€€',
     blurb: 'A tiny, packed grill house off the canals famous for sticky spare ribs — no frills, no reservations.',
     why: 'Warm · cheap · duck in out of the wet',
@@ -319,6 +323,7 @@ export const PICKS: Pick[] = [
   },
   {
     id: 'wynand-fockink', title: 'Wynand Fockink — jenever tasting', venue: 'Wynand Fockink', area: 'Centrum', when: 'Daily · 14:00–21:00',
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Wynand_Focking_Amsterdam_2014_%284%29.jpg/1280px-Wynand_Focking_Amsterdam_2014_%284%29.jpg",
     category: 'drink', freshness: 'always', outdoor: false, kid: false, price: 'per pour',
     blurb: 'A 1679 tasting room behind Dam Square pouring its own jenevers and liqueurs — you bend to the brimful glass.',
     why: 'Historic · indoor · made for a downpour',
@@ -327,6 +332,7 @@ export const PICKS: Pick[] = [
   },
   {
     id: 'cafe-chris', title: 'Café Chris — oldest brown café', venue: 'Café Chris', area: 'Jordaan', when: 'Daily · afternoon–late',
+    image: "https://www.cafechris.nl/assets/img/press/en/logo-slogan-190x54.png",
     category: 'drink', freshness: 'always', outdoor: false, kid: false, price: '€',
     blurb: 'Open since 1624: a creaky, golden-lit Jordaan brown café for a slow afternoon beer while it pours outside.',
     why: 'Cozy · low-lit · quintessential rainy-day Amsterdam',
@@ -335,6 +341,7 @@ export const PICKS: Pick[] = [
   },
   {
     id: 'eye-screening', title: 'Eye Filmmuseum — repertory screening', venue: 'Eye Filmmuseum', area: 'Noord', when: 'Daily · check programme',
+    image: "https://assets.eyefilm.nl/images/_1200x630_crop_center-center_none/Foto-EYE-Marcus-Koppen-bijgesneden-2_2021-04-12-140514.jpeg",
     category: 'stage', freshness: 'always', outdoor: false, kid: false, price: 'ticketed',
     blurb: 'Across the IJ by free ferry: a striking film museum with a daily repertory programme and a river-view café.',
     why: 'Indoor · a film + the ferry ride · weather-proof',
@@ -343,6 +350,7 @@ export const PICKS: Pick[] = [
   },
   {
     id: 'the-movies', title: 'The Movies — arthouse cinema', venue: 'The Movies', area: 'Jordaan', when: 'Daily · evening sessions',
+    image: "https://images.unsplash.com/photo-1777994808497-e9ca0037c671?w=1200&q=80",
     category: 'stage', freshness: 'always', outdoor: false, kid: false, price: 'ticketed',
     blurb: 'The Netherlands’ oldest cinema still running — Art Deco rooms, a dinner-and-a-film deal, arthouse bills.',
     why: 'Indoor · dinner + a film · perfect when it’s wet',
@@ -351,6 +359,7 @@ export const PICKS: Pick[] = [
   },
   {
     id: 'sauna-deco', title: 'Sauna Deco — Art Deco baths', venue: 'Sauna Deco', area: 'Centrum', when: 'Daily · 12:00–23:00',
+    image: "https://saunadeco.nl/wp-content/uploads/2023/05/cropped-picotogram-1.jpg",
     category: 'out', freshness: 'always', outdoor: false, kid: false, price: 'day pass',
     blurb: 'A 1920s Art Deco bathhouse (salvaged from a Paris department store) with saunas, steam and a quiet tea room.',
     why: 'Warm · restorative · the ultimate cold-and-wet antidote',
@@ -359,6 +368,7 @@ export const PICKS: Pick[] = [
   },
   {
     id: 'pllek-indoor', title: 'Pllek — waterfront hang', venue: 'Pllek', area: 'Noord', when: 'Daily · lunch–late',
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dc/Stadsstrand_Pllek.JPG/1280px-Stadsstrand_Pllek.JPG",
     category: 'drink', freshness: 'always', outdoor: false, kid: true, price: '€€',
     blurb: 'A cargo-container café-bar on the NDSM wharf — big windows onto the IJ, sofas, and a wood stove when it turns.',
     why: 'Indoor seating · IJ views · cozy when grey',
@@ -367,6 +377,7 @@ export const PICKS: Pick[] = [
   },
   {
     id: 'tony-chocolonely', title: 'Tony’s Chocolonely Super Store', venue: 'Tony’s Super Store', area: 'West', when: 'Daily · 10:00–18:00',
+    image: "http://tonyschocolonely.com/cdn/shop/files/TC_Online_SocialSharingImage_1200x628_6ddf1293-71f3-432b-a4b0-16ca77fd78ce.webp?crop=center&height=600&v=1732227996&width=1080",
     category: 'eat', freshness: 'always', outdoor: false, kid: true, price: '€',
     blurb: 'The flagship of the slavery-free chocolate brand — make-your-own bars, a café, and a serious sweet-tooth detour.',
     why: 'Indoor · kid-friendly · a happy rainy hour',

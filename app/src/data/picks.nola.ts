@@ -15,6 +15,7 @@ export const PICKS_NOLA: Pick[] = [
   // ── Live music — the city's heartbeat, almost all indoor ──
   {
     id: 'nola-preservation-hall', title: 'Preservation Hall', venue: 'Preservation Hall', area: 'French Quarter', when: 'Fri–Sun 5–7 Jun · sets nightly',
+    image: "https://www.preservationhall.com/app/uploads/cropped-favicon-1-1.png",
     category: 'live', freshness: 'always', outdoor: false, kid: true, price: 'from $25',
     blurb: 'Acoustic traditional jazz in a candle-lit 18th-century room — no bar, no mics, three short sets a night.',
     why: 'The definitive NOLA room · indoor · weather-proof',
@@ -23,6 +24,7 @@ export const PICKS_NOLA: Pick[] = [
   },
   {
     id: 'nola-tipitinas', title: 'Tipitina’s — Uptown show', venue: 'Tipitina’s', area: 'Uptown', when: 'Sat 6 Jun · doors 21:00',
+    image: "https://tipitinas.com/wp-content/uploads/2025/11/1200x630.png",
     category: 'live', freshness: 'weekend', outdoor: false, kid: false, price: 'ticketed',
     blurb: 'The fabled Napoleon Ave music hall — funk, brass and bounce under the banana-tree banner.',
     why: 'Institution · indoor · a proper Saturday night',
@@ -31,6 +33,7 @@ export const PICKS_NOLA: Pick[] = [
   },
   {
     id: 'nola-spotted-cat', title: 'The Spotted Cat Music Club', venue: 'The Spotted Cat', area: 'Marigny', when: 'Fri–Sun · sets from 16:00',
+    image: "http://static1.squarespace.com/static/5872a05fb8a79b5c39e888e8/t/605a4e9ca221b00fb12cd026/1616531100493/scmc-squarespace-Share.jpg?format=1500w",
     category: 'live', freshness: 'always', outdoor: false, kid: false, price: 'no cover (tip the band)',
     blurb: 'A tiny, sweaty Frenchmen Street jazz club — trad and swing bands back-to-back, cash only.',
     why: 'Frenchmen St · indoor · free-ish all weekend',
@@ -39,6 +42,7 @@ export const PICKS_NOLA: Pick[] = [
   },
   {
     id: 'nola-dba', title: 'd.b.a. — Frenchmen Street', venue: 'd.b.a.', area: 'Marigny', when: 'Fri 5 Jun · 22:00',
+    image: "http://static1.squarespace.com/static/659490e7976465783a380b2b/t/660e2c1e8218546a9eefeedd/1712204830201/dba-socialsharing.jpg?format=1500w",
     category: 'live', freshness: 'weekend', outdoor: false, kid: false, price: 'small cover',
     blurb: 'A craft-beer bar with one of the best live rooms in the city — brass, blues and the odd legend dropping in.',
     why: 'Frenchmen St · indoor · great sound',
@@ -47,6 +51,7 @@ export const PICKS_NOLA: Pick[] = [
   },
   {
     id: 'nola-maple-leaf', title: 'Maple Leaf Bar — Uptown brass', venue: 'Maple Leaf Bar', area: 'Carrollton', when: 'Sat 6 Jun · 22:30',
+    image: "https://images.unsplash.com/photo-1700949765531-ad21c71f1594?w=1200&q=80",
     category: 'live', freshness: 'weekend', outdoor: false, kid: false, price: 'cover',
     blurb: 'A pressed-tin Oak Street room that’s hosted Uptown funk and brass nights for half a century.',
     why: 'Late · indoor · sweaty in the best way',
@@ -57,6 +62,7 @@ export const PICKS_NOLA: Pick[] = [
   // ── Art & museums — the city's best rainy-day move ──
   {
     id: 'nola-noma', title: 'New Orleans Museum of Art', venue: 'NOMA', area: 'City Park', when: 'Sat–Sun 6–7 Jun · 10:00–17:00',
+    image: "https://noma.org/wp-content/uploads/2020/06/Besthoff-hero-box-.jpg",
     category: 'art', freshness: 'always', outdoor: false, kid: true, price: 'admission',
     blurb: 'A Beaux-Arts museum in City Park with a strong modern collection and the free Besthoff Sculpture Garden next door.',
     why: 'Indoor galleries · weather-proof · great with kids',
@@ -65,6 +71,7 @@ export const PICKS_NOLA: Pick[] = [
   },
   {
     id: 'nola-ogden', title: 'Ogden Museum of Southern Art', venue: 'Ogden Museum', area: 'Warehouse District', when: 'Sat–Sun 6–7 Jun',
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Ogden_Museum_of_Southern_Art.jpg/1280px-Ogden_Museum_of_Southern_Art.jpg",
     category: 'art', freshness: 'always', outdoor: false, kid: false, price: 'admission',
     blurb: 'The South’s art under one roof — folk, self-taught and contemporary — plus a long-running Thursday music night.',
     why: 'Indoor · compact · ideal in a storm',
@@ -73,6 +80,7 @@ export const PICKS_NOLA: Pick[] = [
   },
   {
     id: 'nola-wwii', title: 'The National WWII Museum', venue: 'WWII Museum', area: 'Warehouse District', when: 'Daily · 09:00–17:00',
+    image: "https://www.nationalww2museum.org//themes/nwwiim/images/placeholders/placeholder-open-graph.jpg",
     category: 'art', freshness: 'always', outdoor: false, kid: true, price: 'admission',
     blurb: 'A vast, immersive campus rated among the best museums in the US — easily a half-day, all indoors.',
     why: 'Indoor · half-a-day · the rainy-day default',
@@ -83,6 +91,7 @@ export const PICKS_NOLA: Pick[] = [
   // ── Stage & screen ──
   {
     id: 'nola-saenger', title: 'Saenger Theatre — touring show', venue: 'Saenger Theatre', area: 'Canal Street', when: 'Sat 6 Jun · 20:00',
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Saenger_Theatre%2C_Canal_%26_Rampart%2C_New_Orleans_16_April_2025_-_3.jpg/1280px-Saenger_Theatre%2C_Canal_%26_Rampart%2C_New_Orleans_16_April_2025_-_3.jpg",
     category: 'stage', freshness: 'weekend', outdoor: false, kid: false, price: 'ticketed',
     blurb: 'A restored 1927 atmospheric movie palace — faux-Italian courtyard, ceiling “stars” — now Broadway tours and concerts.',
     why: 'Indoor · grand · a dressed-up night out',
@@ -91,6 +100,7 @@ export const PICKS_NOLA: Pick[] = [
   },
   {
     id: 'nola-prytania', title: 'The Prytania Theatres — repertory', venue: 'Prytania', area: 'Uptown', when: 'Daily · check programme',
+    image: "https://theprytania.static.cinesync.io/images/theater/cinema/Android_thumbnail.jpg",
     category: 'stage', freshness: 'always', outdoor: false, kid: true, price: 'ticketed',
     blurb: 'The oldest single-screen cinema in the South still running classics and new releases Uptown.',
     why: 'Indoor · a film while it pours',
@@ -101,6 +111,7 @@ export const PICKS_NOLA: Pick[] = [
   // ── Eat & drink — covered, cozy, classic ──
   {
     id: 'nola-cafe-du-monde', title: 'Café du Monde — beignets', venue: 'Café du Monde', area: 'French Quarter', when: 'Daily · 24h',
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/Cafe_du_Monde_New_Orleans.jpg/1280px-Cafe_du_Monde_New_Orleans.jpg",
     category: 'eat', freshness: 'always', outdoor: false, kid: true, price: '$',
     blurb: 'Beignets and chicory café au lait under the covered patio by the river — open around the clock since 1862.',
     why: 'Covered · open 24h · duck in between showers',
@@ -109,6 +120,7 @@ export const PICKS_NOLA: Pick[] = [
   },
   {
     id: 'nola-commanders', title: 'Commander’s Palace — jazz brunch', venue: 'Commander’s Palace', area: 'Garden District', when: 'Sat–Sun · brunch from 11:00',
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Commander%27s_Palace%2C_New_Orleans%2C_decorated_for_2021_Mardi_Gras_Season_04.jpg/1280px-Commander%27s_Palace%2C_New_Orleans%2C_decorated_for_2021_Mardi_Gras_Season_04.jpg",
     category: 'eat', freshness: 'always', outdoor: false, kid: false, price: '$$$ · 25¢ martinis',
     blurb: 'The turquoise Garden District landmark — turtle soup, bread-pudding soufflé and a roving jazz trio at weekend brunch.',
     why: 'Indoor · the special-occasion brunch · book ahead',
@@ -117,6 +129,7 @@ export const PICKS_NOLA: Pick[] = [
   },
   {
     id: 'nola-turkey-wolf', title: 'Turkey and the Wolf', venue: 'Turkey and the Wolf', area: 'Irish Channel', when: 'Daily · lunch (closed Tue–Wed)',
+    image: "http://www.turkeyandthewolf.com/cdn/shop/files/Logo.png?height=628&pad_color=ffffff&v=1698772095&width=1200",
     category: 'eat', freshness: 'always', outdoor: false, kid: false, price: '$$',
     blurb: 'The deli that put fried-bologna and collard-melt sandwiches on the national map — playful, indoor, lunch-only.',
     why: 'Indoor · cult sandwiches · a great rainy lunch',
@@ -125,6 +138,7 @@ export const PICKS_NOLA: Pick[] = [
   },
   {
     id: 'nola-carousel-bar', title: 'Carousel Bar & Lounge', venue: 'Hotel Monteleone', area: 'French Quarter', when: 'Daily · from 11:00',
+    image: "https://www.hotelmonteleone.com/content/uploads/2026/02/1440-hero.png",
     category: 'drink', freshness: 'always', outdoor: false, kid: false, price: '$$',
     blurb: 'A literary landmark bar that slowly rotates — a working carousel — inside the grand Hotel Monteleone.',
     why: 'Indoor · a only-in-NOLA cocktail · dry and surreal',
@@ -135,6 +149,7 @@ export const PICKS_NOLA: Pick[] = [
   // ── Out & markets — the fair-weather options (correctly NOT tagged for rain) ──
   {
     id: 'nola-crescent-market', title: 'Crescent City Farmers Market', venue: 'Crescent City Market', area: 'CBD', when: 'Sat 6 Jun · 08:00–12:00',
+    image: "https://images.unsplash.com/photo-1567306295427-94503f8300d7?w=1200&q=80",
     category: 'market', freshness: 'weekend', outdoor: true, kid: true, price: 'free entry',
     blurb: 'Saturday-morning Gulf shrimp, Creole tomatoes and prepared-food stalls — the city’s flagship farmers market.',
     why: 'Outdoor · Saturday morning · go before the afternoon storms',
@@ -143,6 +158,7 @@ export const PICKS_NOLA: Pick[] = [
   },
   {
     id: 'nola-steamboat-natchez', title: 'Steamboat Natchez — jazz cruise', venue: 'Steamboat Natchez', area: 'Riverfront', when: 'Sat–Sun · 11:30 & 14:30',
+    image: "https://www.steamboatnatchez.com/wp-content/uploads/2024/05/steamboat-captain.jpg",
     category: 'daytrip', freshness: 'always', outdoor: true, kid: true, price: 'ticketed',
     blurb: 'A genuine steam paddlewheeler down the Mississippi with a live jazz band and an optional Creole lunch.',
     why: 'On the river · covered decks · best on a clear afternoon',
