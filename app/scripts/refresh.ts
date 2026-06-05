@@ -19,7 +19,7 @@
  */
 import { CITIES, type City } from '../src/data/cities'
 import type { Pick } from '../src/types'
-import { dedupe, balanceByCategory, fetchOgImage, mapLimit } from './lib/pipeline'
+import { dedupe, balanceByCategory, isGoodImage, mapLimit } from './lib/pipeline'
 import { songkickAdapter } from './adapters/songkick'
 import { llmExtract } from './adapters/llm'
 import { rssExtract } from './adapters/rss'
@@ -67,24 +67,29 @@ async function buildCity(city: City) {
 
   // DEDUPE (sets buzz = distinct sources) — roster first so live picks win the merge over canon.
   let picks = dedupe([...fromRoster, ...canon])
+  const isLive = (p: Pick) => p.id.startsWith('llm-')
 
-  // RANK by what's-talked-about (buzz) then freshness. Only cap per category when there's a real
-  // live pull to balance — never trim the curated canon when running keyless.
-  picks.sort((a, b) => (b.buzz ?? 1) - (a.buzz ?? 1) || (FRESH_RANK[b.freshness] - FRESH_RANK[a.freshness]))
-  if (fromRoster.length > 8) {   // only cap when there's a real live pull to balance — a failed/empty pull must NOT trim the canon
-    const balanced = balanceByCategory(picks, 6)
-    console.log(`  ranked:   ${picks.length} deduped → ${balanced.length} after per-category cap`)
-    picks = balanced
-  } else {
-    console.log(`  ranked:   ${picks.length} (canon floor; no live pull to balance)`)
+  // PHOTO-FIRST IMAGE PASS — validate each live pick's matched page photo and DROP any live pick
+  // without a real, relevant image. No category-gradient posters, no generic page-hero fallbacks;
+  // the curated canon (all imaged) is the floor. Runs BEFORE the cap so the balanced set is all photos.
+  if (!SKIP_IMAGES) {
+    const live = picks.filter(isLive)
+    let kept = 0
+    await mapLimit(live, 6, async (p) => { if (p.image && (await isGoodImage(p.image))) kept++; else p.image = undefined })
+    const before = picks.length
+    picks = picks.filter((p) => !isLive(p) || p.image)
+    console.log(`  images:   ${kept}/${live.length} live picks kept a real photo (dropped ${before - picks.length} imageless)`)
   }
 
-  // ENRICH — fill MISSING images from each source page's og:image.
-  if (!SKIP_IMAGES) {
-    const missing = picks.filter((p) => !p.image && p.link)
-    let got = 0
-    if (missing.length) await mapLimit(missing, 6, async (p) => { const img = await fetchOgImage(p.link); if (img) { p.image = img; got++ } })
-    console.log(`  og:image: filled ${got}/${missing.length} missing`)
+  // RANK by what's-talked-about (buzz) then freshness. Cap per category only when there's a real
+  // live pull to balance — a failed/empty pull must never trim the curated canon.
+  picks.sort((a, b) => (b.buzz ?? 1) - (a.buzz ?? 1) || (FRESH_RANK[b.freshness] - FRESH_RANK[a.freshness]))
+  if (picks.filter(isLive).length > 6) {
+    const balanced = balanceByCategory(picks, 6)
+    console.log(`  ranked:   ${picks.length} → ${balanced.length} after per-category cap`)
+    picks = balanced
+  } else {
+    console.log(`  ranked:   ${picks.length} (canon floor)`)
   }
 
   // PUBLISH — the app reads this at runtime.

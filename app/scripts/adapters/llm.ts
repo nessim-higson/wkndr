@@ -58,13 +58,46 @@ Return ONLY a JSON array (no prose), each item:
   "price": string,                      // "free", "from €25", "ticketed", etc.
   "blurb": string,                      // YOUR words, ≤ 22 words, why it's interesting
   "why": string,                        // ≤ 12 words: the hook (e.g. "final weekend", "sells out", "critics' pick")
-  "link": string                        // the most specific URL you can (event/booking), else the source URL
+  "link": string,                       // the most specific URL you can (event/booking), else the source URL
+  "image": number                       // index from CANDIDATE IMAGES of the photo that PLAINLY depicts THIS specific
+                                        // item (this act / this restaurant / this show). Use -1 if no candidate clearly
+                                        // belongs to it. Do NOT pick a generic page banner/hero shared by everything.
 }
+IMAGE MATCHING is important — this is a photo-first product. Candidate images are listed in page
+order, usually right next to the item they illustrate, so an item's photo is typically the
+candidate nearest it. Only assign an image you're confident shows that specific item; else -1.
 If the page has nothing genuinely worth doing this weekend, return [].`
 }
 
 function slug(s: string): string {
   return s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 48)
+}
+
+// Pull candidate CONTENT images out of the raw page HTML, in document order, so the LLM can
+// match each item to the photo that sits next to it (e.g. each restaurant's own Eater shot).
+// Logos / icons / sprites / svgs / pixels are filtered out up front.
+const BAD_IMG = /\.svg(\?|$)|data:image|sprite|favicon|logo|icon|placeholder|avatar|1x1|pixel|blank\.|spacer/i
+function extractImages(html: string, baseUrl: string): string[] {
+  const out: string[] = []
+  const seen = new Set<string>()
+  const push = (u?: string) => {
+    if (!u) return
+    let abs: string
+    try { abs = (u.startsWith('//') ? 'https:' + u : new URL(u, baseUrl).href).replace(/&amp;/g, '&') } catch { return }
+    if (!abs.startsWith('http') || BAD_IMG.test(abs) || seen.has(abs)) return
+    seen.add(abs); out.push(abs)
+  }
+  for (const m of html.matchAll(/<img\b[^>]*>/gi)) {
+    const t = m[0]
+    const srcset = t.match(/\bsrcset=["']([^"']+)["']/i)?.[1]
+    if (srcset) {
+      const best = srcset.split(',').map((s) => { const [u, d] = s.trim().split(/\s+/); return { u, w: d?.endsWith('w') ? parseInt(d) : 0 } })
+        .filter((c) => c.u).sort((a, b) => b.w - a.w)[0]
+      if (best) push(best.u)
+    }
+    push(t.match(/\bsrc=["']([^"']+)["']/i)?.[1] || t.match(/\bdata-(?:src|lazy-src|original)=["']([^"']+)["']/i)?.[1])
+  }
+  return out.slice(0, 20)
 }
 function parseArray(text: string): Record<string, unknown>[] {
   const a = text.indexOf('['), b = text.lastIndexOf(']')
@@ -80,15 +113,19 @@ export async function llmExtract(cityName: string, source: RosterSource): Promis
     const r = await fetch(source.url, { headers: { 'user-agent': UA, accept: 'text/html,application/xhtml+xml' } })
     const html = r.ok ? await r.text() : ''
     if (!html) { console.log(`${tag} fetch ${r.status} — no HTML`); return [] }
-    const text = htmlToText(html).slice(0, 9000)   // ~2.2k input tokens — keeps us under the per-minute token cap
+    const candidates = extractImages(html, source.url)
+    const text = htmlToText(html).slice(0, 7000)   // smaller — leave token room for the image list
     if (text.length < 200) { console.log(`${tag} thin text (${text.length} chars after strip)`); return [] }
 
+    const imgList = candidates.length
+      ? `\n\nCANDIDATE IMAGES (page order — pick the index that best shows each item, -1 if none):\n${candidates.map((u, i) => `${i}: ${u}`).join('\n')}`
+      : ''
     const body = JSON.stringify({
       model: MODEL,
       max_tokens: 2200,
       // the static instructions are cached across every source call in a run (cheaper)
       system: [{ type: 'text', text: systemPrompt(cityName), cache_control: { type: 'ephemeral' } }],
-      messages: [{ role: 'user', content: `SOURCE: ${source.name} — focus: ${source.facet}\nURL: ${source.url}\n\nPAGE TEXT:\n${text}\n\nReturn the JSON array.` }],
+      messages: [{ role: 'user', content: `SOURCE: ${source.name} — focus: ${source.facet}\nURL: ${source.url}\n\nPAGE TEXT:\n${text}${imgList}\n\nReturn the JSON array.` }],
     })
     // gated call, with one back-off retry if we still trip the rate limit
     let res: any
@@ -119,6 +156,8 @@ export async function llmExtract(cityName: string, source: RosterSource): Promis
       .map((e): Pick => {
         const outdoor = !!e.outdoor
         const category = (CATEGORIES.includes(e.category as Category) ? e.category : 'out') as Category
+        const idx = Number(e.image)
+        const image = Number.isInteger(idx) && idx >= 0 && idx < candidates.length ? candidates[idx] : undefined
         return {
           id: `llm-${slug(source.name)}-${slug(String(e.title))}`,
           title: String(e.title).slice(0, 90),
@@ -134,6 +173,7 @@ export async function llmExtract(cityName: string, source: RosterSource): Promis
           why: String(e.why ?? '').slice(0, 60),
           source: source.name,
           link: (typeof e.link === 'string' && e.link.startsWith('http')) ? e.link : source.url,
+          image,                          // the page photo the LLM matched to this item (validated later)
           weatherFit: deriveWeatherFit(outdoor),
           verify: true,   // auto-extracted — confirm before relying
         }
