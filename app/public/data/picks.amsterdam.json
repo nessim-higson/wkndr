@@ -1,9 +1,9 @@
 {
   "city": "amsterdam",
   "label": "Amsterdam",
-  "generatedAt": "2026-06-05T17:34:32.527Z",
+  "generatedAt": "2026-06-05T17:38:40.344Z",
   "live": true,
-  "count": 34,
+  "count": 40,
   "picks": [
     {
       "id": "ivna-esajas",
@@ -301,6 +301,97 @@
       ]
     },
     {
+      "id": "humbe",
+      "title": "Humbe",
+      "venue": "Tolhuistuin",
+      "area": "Noord",
+      "when": "Sat 6 Jun · doors 19:00",
+      "category": "live",
+      "freshness": "weekend",
+      "outdoor": false,
+      "kid": false,
+      "price": "from €28.70",
+      "image": "https://images.sk-static.com/images/media/profile_images/artists/10166255/huge_avatar",
+      "blurb": "Mexican singer-songwriter Humbe plays his first Amsterdam show at the waterfront Noord venue.",
+      "why": "Ferry over · garden venue · indoor hall",
+      "source": "Songkick",
+      "link": "https://www.songkick.com/concerts/43224395-humbe-at-tolhuistuin",
+      "weatherFit": [
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ]
+    },
+    {
+      "id": "jordana",
+      "title": "Jordana + Tōth",
+      "venue": "Paradiso",
+      "area": "Leidseplein",
+      "when": "Sun 7 Jun",
+      "category": "live",
+      "freshness": "weekend",
+      "outdoor": false,
+      "kid": false,
+      "price": "ticketed",
+      "image": "https://images.sk-static.com/images/media/profile_images/artists/566524/huge_avatar",
+      "blurb": "Bedroom-pop songwriter Jordana makes her Amsterdam debut at Paradiso, with Tōth supporting.",
+      "why": "Main-hall indie · indoor",
+      "source": "Songkick",
+      "link": "https://www.songkick.com/concerts/43034976-jordana-at-paradiso",
+      "weatherFit": [
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ]
+    },
+    {
+      "id": "ella-zirina",
+      "title": "Ella Zirina Trio",
+      "venue": "Bimhuis",
+      "area": "Oosterdok",
+      "when": "Sun 7 Jun",
+      "category": "live",
+      "freshness": "weekend",
+      "outdoor": false,
+      "kid": false,
+      "price": "ticketed",
+      "image": "https://images.sk-static.com/images/media/profile_images/artists/10213531/huge_avatar",
+      "blurb": "Latvian guitarist Ella Zirina leads her contemporary jazz trio at the Bimhuis.",
+      "why": "Sunday jazz · indoor",
+      "source": "Songkick",
+      "link": "https://www.songkick.com/concerts/43233408-ella-zirina-at-bimhuis",
+      "weatherFit": [
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ]
+    },
+    {
+      "id": "motor-city-drum",
+      "title": "Motor City Drum Ensemble",
+      "venue": "NDSM",
+      "area": "Noord",
+      "when": "Sat 6 Jun",
+      "image": "https://www.attackmagazine.com/wp-content/uploads/2012/09/6_MCDE_by_Stefan_Braunbarth.png",
+      "category": "live",
+      "freshness": "weekend",
+      "outdoor": false,
+      "kid": false,
+      "price": "ticketed",
+      "blurb": "Deep-house selector MCDE headlines a DJ session at the industrial NDSM wharf.",
+      "why": "Late dance night · the wharf",
+      "source": "Songkick",
+      "link": "https://www.songkick.com/concerts/42980706-motor-city-drum-ensemble-at-ndsm",
+      "weatherFit": [
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ]
+    },
+    {
       "id": "hf-tagaq",
       "title": "Arctic Futurisms with Tanya Tagaq",
       "venue": "De Nieuwe Liefde",
@@ -495,6 +586,50 @@
       "why": "Indoor · substantial · canal-side lunch nearby",
       "source": "H’ART Museum",
       "link": "https://www.hartmuseum.nl/en/exhibitions/american-identities/",
+      "weatherFit": [
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ]
+    },
+    {
+      "id": "eye-open",
+      "title": "Eye(s) Open",
+      "venue": "Eye Filmmuseum",
+      "area": "Noord",
+      "when": "Until 6 Sep",
+      "category": "art",
+      "freshness": "always",
+      "outdoor": false,
+      "kid": false,
+      "price": "~€12.50",
+      "image": "https://assets.eyefilm.nl/images/programme-item/_1200x630_crop_center-center_none/campagnebeeld-Eyes-Open.jpg",
+      "blurb": "Eleven artists confront Eye’s 2,000 colonial-era films from Indonesia and Suriname with new works.",
+      "why": "Indoor · ferry trip · the striking Eye building",
+      "source": "Eye Filmmuseum",
+      "link": "https://www.eyefilm.nl/en/programme/eyes-open/1583300",
+      "weatherFit": [
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ]
+    },
+    {
+      "id": "danh-vo",
+      "title": "Danh Vo at the Stedelijk",
+      "venue": "Stedelijk Museum",
+      "area": "Museumplein",
+      "when": "Until 2 Aug",
+      "image": "https://artdaily.cc/imagenes/2026/02/14/danh-2.jpg",
+      "category": "art",
+      "freshness": "always",
+      "outdoor": false,
+      "kid": false,
+      "price": "€22.50",
+      "blurb": "Danh Vo weaves objects, images and text into a quiet meditation on identity and human ties.",
+      "why": "Indoor · talked-about · runs all summer",
+      "source": "Stedelijk Museum",
+      "link": "https://www.stedelijk.nl/en/exhibitions/danh-vo-2",
       "weatherFit": [
         "COOL",
         "COLD_WET",
