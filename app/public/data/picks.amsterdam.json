@@ -1,10 +1,167 @@
 {
   "city": "amsterdam",
   "label": "Amsterdam",
-  "generatedAt": "2026-06-03T19:15:30.084Z",
-  "seed": false,
-  "count": 40,
+  "generatedAt": "2026-06-05T17:34:32.527Z",
+  "live": true,
+  "count": 34,
   "picks": [
+    {
+      "id": "ivna-esajas",
+      "title": "Ivna Esajas — Wayward Lines",
+      "venue": "Stedelijk Museum",
+      "area": "Museumplein",
+      "when": "Until Sun 7 Jun — last days",
+      "image": "https://artdaily.cc/imagenes/2026/03/07/abn-2.jpg",
+      "category": "art",
+      "freshness": "ending",
+      "outdoor": false,
+      "kid": false,
+      "price": "€22.50",
+      "blurb": "The ABN Amro Art Award show threads diasporic memory through installation — its very last weekend.",
+      "why": "Closes Sunday · indoor · see it or miss it",
+      "source": "Stedelijk Museum",
+      "link": "https://www.stedelijk.nl/en/exhibitions/en-abn-amro-art-award-ivna-esajas",
+      "weatherFit": [
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "status": "final-week"
+    },
+    {
+      "id": "yumna-al-arashi",
+      "title": "Yumna Al-Arashi — Body as Resistance",
+      "venue": "Huis Marseille",
+      "area": "Keizersgracht",
+      "when": "Until 21 Jun",
+      "category": "art",
+      "freshness": "ending",
+      "outdoor": false,
+      "kid": false,
+      "price": "~€10",
+      "image": "https://huismarseille.nl/app/uploads/2025/11/iam2.jpg",
+      "blurb": "First solo museum show for Al-Arashi — photography, sculpture and book confront the policing of women’s bodies.",
+      "why": "Final weeks · indoor · canal-house museum",
+      "source": "Huis Marseille",
+      "link": "https://huismarseille.nl/en/exhibitions/yumna-al-arashi/",
+      "weatherFit": [
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "status": "final-week"
+    },
+    {
+      "id": "carel-visser",
+      "title": "Carel Visser — sculpture in the gardens",
+      "venue": "Rijksmuseum Gardens",
+      "area": "Museumplein",
+      "when": "Opens Fri 5 Jun · until 25 Oct",
+      "category": "art",
+      "freshness": "new",
+      "outdoor": true,
+      "kid": true,
+      "price": "free",
+      "image": "https://www.rijksmuseum.nl/assets/bb8638d7-30fa-42c1-9bc5-2ca3c0d7bbfd?w=1200&h=630&fx=2896&fy=3894&c=16cc347f140afe0fd01cc3a22403b0e1f3e8ee7f20f0ee8c2cb719980e386242",
+      "blurb": "Free outdoor sculpture show — the first artist solo in the Rijksmuseum gardens, opening this weekend.",
+      "why": "Free · outdoor · stroll-through with kids",
+      "source": "Rijksmuseum",
+      "link": "https://www.rijksmuseum.nl/en/whats-on/exhibitions/carel-visser",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL"
+      ],
+      "status": "free"
+    },
+    {
+      "id": "foam-talent",
+      "title": "Foam Talent 2026",
+      "venue": "Foam",
+      "area": "Keizersgracht",
+      "when": "Opens Fri 5 Jun",
+      "image": "https://www.meer.com/attachments/f6cf99a262109375f24294abae18a69d7f318767/store/fill/860/645/49711ed03e3aed01bca0482dfee80cf5bfe7ff76363addaf5f7d88934208/Sean-Cham-301-Chinese-boy-on-duty-detail-Courtesy-of-Foam.jpg",
+      "category": "art",
+      "freshness": "new",
+      "outdoor": false,
+      "kid": false,
+      "price": "~€16",
+      "blurb": "Fifteen emerging photographers from 107 countries — fresh on its launch weekend.",
+      "why": "New this week · indoor · quick + sharp",
+      "source": "Foam",
+      "link": "https://www.foam.org/events/foam-talent-2026",
+      "weatherFit": [
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ]
+    },
+    {
+      "id": "east-beach",
+      "title": "East Beach — rooftop city beach",
+      "venue": "House of Orchid rooftop",
+      "area": "Oost",
+      "when": "New · daily",
+      "category": "drink",
+      "freshness": "new",
+      "outdoor": true,
+      "kid": false,
+      "price": "drinks",
+      "image": "https://cdn.amsterdamnow.com/app/uploads/strand-oost-amsterdam_1.jpg",
+      "blurb": "A new 800m² rooftop city beach above Oosterpark — sand, beach chairs, drinks, open to all.",
+      "why": "Just opened · outdoor · golden-hour drink",
+      "source": "AmsterdamNow",
+      "link": "https://www.amsterdamnow.com/en/going-out-entertainment/beach-of-east-city-beach-on-roof-terrace-of-house-of-orchid/",
+      "weatherFit": [
+        "HOT",
+        "WARM"
+      ]
+    },
+    {
+      "id": "de-pimpelmees",
+      "title": "De Pimpelmees",
+      "venue": "Wine bar · Staatsliedenbuurt",
+      "area": "West",
+      "when": "New · daily",
+      "category": "drink",
+      "freshness": "new",
+      "outdoor": false,
+      "kid": false,
+      "price": "€€",
+      "image": "https://cdn.amsterdamnow.com/app/uploads/pimpelmees-wijn-cafe-amsterdam.jpg",
+      "blurb": "Cosy neighbourhood wine bar — European wines from €6, Italian snacks, free chips. Opened early 2026.",
+      "why": "New local · for-after-the-kids-are-down · indoor",
+      "source": "AmsterdamNow",
+      "link": "https://www.amsterdamnow.com/en/restaurants/pimple-tit-wine-cafe-stateside/",
+      "weatherFit": [
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ]
+    },
+    {
+      "id": "oatly-bike-thru",
+      "title": "Oatly Bike Thru",
+      "venue": "Papaverhoek 24",
+      "area": "Noord",
+      "when": "Final weekend · until Sun 7 Jun",
+      "image": "https://a.storyblok.com/f/107921/960x540/8ebbcdc9e7/wow_no_cow.webp",
+      "category": "drink",
+      "freshness": "ending",
+      "outdoor": true,
+      "kid": true,
+      "price": "€",
+      "blurb": "A bike-through pop-up serving iced oat lattes and matcha — its final days before it closes.",
+      "why": "Cross-source (Time Out + LBB) · outdoor · ends Sunday",
+      "source": "Your Little Black Book",
+      "link": "https://www.yourlittleblackbook.me/en/weekendtips-amsterdam/",
+      "weatherFit": [
+        "HOT",
+        "WARM"
+      ],
+      "status": "final-week"
+    },
     {
       "id": "fka-twigs",
       "title": "FKA twigs + Yves Tumor",
@@ -144,97 +301,6 @@
       ]
     },
     {
-      "id": "humbe",
-      "title": "Humbe",
-      "venue": "Tolhuistuin",
-      "area": "Noord",
-      "when": "Sat 6 Jun · doors 19:00",
-      "category": "live",
-      "freshness": "weekend",
-      "outdoor": false,
-      "kid": false,
-      "price": "from €28.70",
-      "image": "https://images.sk-static.com/images/media/profile_images/artists/10166255/huge_avatar",
-      "blurb": "Mexican singer-songwriter Humbe plays his first Amsterdam show at the waterfront Noord venue.",
-      "why": "Ferry over · garden venue · indoor hall",
-      "source": "Songkick",
-      "link": "https://www.songkick.com/concerts/43224395-humbe-at-tolhuistuin",
-      "weatherFit": [
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ]
-    },
-    {
-      "id": "jordana",
-      "title": "Jordana + Tōth",
-      "venue": "Paradiso",
-      "area": "Leidseplein",
-      "when": "Sun 7 Jun",
-      "category": "live",
-      "freshness": "weekend",
-      "outdoor": false,
-      "kid": false,
-      "price": "ticketed",
-      "image": "https://images.sk-static.com/images/media/profile_images/artists/566524/huge_avatar",
-      "blurb": "Bedroom-pop songwriter Jordana makes her Amsterdam debut at Paradiso, with Tōth supporting.",
-      "why": "Main-hall indie · indoor",
-      "source": "Songkick",
-      "link": "https://www.songkick.com/concerts/43034976-jordana-at-paradiso",
-      "weatherFit": [
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ]
-    },
-    {
-      "id": "ella-zirina",
-      "title": "Ella Zirina Trio",
-      "venue": "Bimhuis",
-      "area": "Oosterdok",
-      "when": "Sun 7 Jun",
-      "category": "live",
-      "freshness": "weekend",
-      "outdoor": false,
-      "kid": false,
-      "price": "ticketed",
-      "image": "https://images.sk-static.com/images/media/profile_images/artists/10213531/huge_avatar",
-      "blurb": "Latvian guitarist Ella Zirina leads her contemporary jazz trio at the Bimhuis.",
-      "why": "Sunday jazz · indoor",
-      "source": "Songkick",
-      "link": "https://www.songkick.com/concerts/43233408-ella-zirina-at-bimhuis",
-      "weatherFit": [
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ]
-    },
-    {
-      "id": "motor-city-drum",
-      "title": "Motor City Drum Ensemble",
-      "venue": "NDSM",
-      "area": "Noord",
-      "when": "Sat 6 Jun",
-      "image": "https://www.attackmagazine.com/wp-content/uploads/2012/09/6_MCDE_by_Stefan_Braunbarth.png",
-      "category": "live",
-      "freshness": "weekend",
-      "outdoor": false,
-      "kid": false,
-      "price": "ticketed",
-      "blurb": "Deep-house selector MCDE headlines a DJ session at the industrial NDSM wharf.",
-      "why": "Late dance night · the wharf",
-      "source": "Songkick",
-      "link": "https://www.songkick.com/concerts/42980706-motor-city-drum-ensemble-at-ndsm",
-      "weatherFit": [
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ]
-    },
-    {
       "id": "hf-tagaq",
       "title": "Arctic Futurisms with Tanya Tagaq",
       "venue": "De Nieuwe Liefde",
@@ -326,97 +392,6 @@
       "verify": true
     },
     {
-      "id": "ivna-esajas",
-      "title": "Ivna Esajas — Wayward Lines",
-      "venue": "Stedelijk Museum",
-      "area": "Museumplein",
-      "when": "Until Sun 7 Jun — last days",
-      "image": "https://artdaily.cc/imagenes/2026/03/07/abn-2.jpg",
-      "category": "art",
-      "freshness": "ending",
-      "outdoor": false,
-      "kid": false,
-      "price": "€22.50",
-      "blurb": "The ABN Amro Art Award show threads diasporic memory through installation — its very last weekend.",
-      "why": "Closes Sunday · indoor · see it or miss it",
-      "source": "Stedelijk Museum",
-      "link": "https://www.stedelijk.nl/en/exhibitions/en-abn-amro-art-award-ivna-esajas",
-      "weatherFit": [
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "status": "final-week"
-    },
-    {
-      "id": "yumna-al-arashi",
-      "title": "Yumna Al-Arashi — Body as Resistance",
-      "venue": "Huis Marseille",
-      "area": "Keizersgracht",
-      "when": "Until 21 Jun",
-      "category": "art",
-      "freshness": "ending",
-      "outdoor": false,
-      "kid": false,
-      "price": "~€10",
-      "image": "https://huismarseille.nl/app/uploads/2025/11/iam2.jpg",
-      "blurb": "First solo museum show for Al-Arashi — photography, sculpture and book confront the policing of women’s bodies.",
-      "why": "Final weeks · indoor · canal-house museum",
-      "source": "Huis Marseille",
-      "link": "https://huismarseille.nl/en/exhibitions/yumna-al-arashi/",
-      "weatherFit": [
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "status": "final-week"
-    },
-    {
-      "id": "carel-visser",
-      "title": "Carel Visser — sculpture in the gardens",
-      "venue": "Rijksmuseum Gardens",
-      "area": "Museumplein",
-      "when": "Opens Fri 5 Jun · until 25 Oct",
-      "category": "art",
-      "freshness": "new",
-      "outdoor": true,
-      "kid": true,
-      "price": "free",
-      "image": "https://www.rijksmuseum.nl/assets/bb8638d7-30fa-42c1-9bc5-2ca3c0d7bbfd?w=1200&h=630&fx=2896&fy=3894&c=16cc347f140afe0fd01cc3a22403b0e1f3e8ee7f20f0ee8c2cb719980e386242",
-      "blurb": "Free outdoor sculpture show — the first artist solo in the Rijksmuseum gardens, opening this weekend.",
-      "why": "Free · outdoor · stroll-through with kids",
-      "source": "Rijksmuseum",
-      "link": "https://www.rijksmuseum.nl/en/whats-on/exhibitions/carel-visser",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL"
-      ],
-      "status": "free"
-    },
-    {
-      "id": "foam-talent",
-      "title": "Foam Talent 2026",
-      "venue": "Foam",
-      "area": "Keizersgracht",
-      "when": "Opens Fri 5 Jun",
-      "image": "https://www.meer.com/attachments/f6cf99a262109375f24294abae18a69d7f318767/store/fill/860/645/49711ed03e3aed01bca0482dfee80cf5bfe7ff76363addaf5f7d88934208/Sean-Cham-301-Chinese-boy-on-duty-detail-Courtesy-of-Foam.jpg",
-      "category": "art",
-      "freshness": "new",
-      "outdoor": false,
-      "kid": false,
-      "price": "~€16",
-      "blurb": "Fifteen emerging photographers from 107 countries — fresh on its launch weekend.",
-      "why": "New this week · indoor · quick + sharp",
-      "source": "Foam",
-      "link": "https://www.foam.org/events/foam-talent-2026",
-      "weatherFit": [
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ]
-    },
-    {
       "id": "wisa",
       "title": "Women in Street Art Weekend",
       "venue": "STRAAT Museum",
@@ -437,138 +412,6 @@
         "COLD_WET",
         "VOLATILE"
       ]
-    },
-    {
-      "id": "american-identities",
-      "title": "American Identities",
-      "venue": "H’ART Museum",
-      "area": "Amstel",
-      "when": "Until 6 Sep",
-      "category": "art",
-      "freshness": "always",
-      "outdoor": false,
-      "kid": false,
-      "price": "~€19.50",
-      "image": "https://www.hartmuseum.nl/wp-content/uploads/2025/10/4911-HM-Levinthal-digitaal-en-socials-11Ju_website.jpg",
-      "blurb": "Levinthal’s staged photos and ChicanX prints pick apart the myths and power plays of American identity.",
-      "why": "Indoor · substantial · canal-side lunch nearby",
-      "source": "H’ART Museum",
-      "link": "https://www.hartmuseum.nl/en/exhibitions/american-identities/",
-      "weatherFit": [
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ]
-    },
-    {
-      "id": "eye-open",
-      "title": "Eye(s) Open",
-      "venue": "Eye Filmmuseum",
-      "area": "Noord",
-      "when": "Until 6 Sep",
-      "category": "art",
-      "freshness": "always",
-      "outdoor": false,
-      "kid": false,
-      "price": "~€12.50",
-      "image": "https://assets.eyefilm.nl/images/programme-item/_1200x630_crop_center-center_none/campagnebeeld-Eyes-Open.jpg",
-      "blurb": "Eleven artists confront Eye’s 2,000 colonial-era films from Indonesia and Suriname with new works.",
-      "why": "Indoor · ferry trip · the striking Eye building",
-      "source": "Eye Filmmuseum",
-      "link": "https://www.eyefilm.nl/en/programme/eyes-open/1583300",
-      "weatherFit": [
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ]
-    },
-    {
-      "id": "danh-vo",
-      "title": "Danh Vo at the Stedelijk",
-      "venue": "Stedelijk Museum",
-      "area": "Museumplein",
-      "when": "Until 2 Aug",
-      "image": "https://artdaily.cc/imagenes/2026/02/14/danh-2.jpg",
-      "category": "art",
-      "freshness": "always",
-      "outdoor": false,
-      "kid": false,
-      "price": "€22.50",
-      "blurb": "Danh Vo weaves objects, images and text into a quiet meditation on identity and human ties.",
-      "why": "Indoor · talked-about · runs all summer",
-      "source": "Stedelijk Museum",
-      "link": "https://www.stedelijk.nl/en/exhibitions/danh-vo-2",
-      "weatherFit": [
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ]
-    },
-    {
-      "id": "east-beach",
-      "title": "East Beach — rooftop city beach",
-      "venue": "House of Orchid rooftop",
-      "area": "Oost",
-      "when": "New · daily",
-      "category": "drink",
-      "freshness": "new",
-      "outdoor": true,
-      "kid": false,
-      "price": "drinks",
-      "image": "https://cdn.amsterdamnow.com/app/uploads/strand-oost-amsterdam_1.jpg",
-      "blurb": "A new 800m² rooftop city beach above Oosterpark — sand, beach chairs, drinks, open to all.",
-      "why": "Just opened · outdoor · golden-hour drink",
-      "source": "AmsterdamNow",
-      "link": "https://www.amsterdamnow.com/en/going-out-entertainment/beach-of-east-city-beach-on-roof-terrace-of-house-of-orchid/",
-      "weatherFit": [
-        "HOT",
-        "WARM"
-      ]
-    },
-    {
-      "id": "de-pimpelmees",
-      "title": "De Pimpelmees",
-      "venue": "Wine bar · Staatsliedenbuurt",
-      "area": "West",
-      "when": "New · daily",
-      "category": "drink",
-      "freshness": "new",
-      "outdoor": false,
-      "kid": false,
-      "price": "€€",
-      "image": "https://cdn.amsterdamnow.com/app/uploads/pimpelmees-wijn-cafe-amsterdam.jpg",
-      "blurb": "Cosy neighbourhood wine bar — European wines from €6, Italian snacks, free chips. Opened early 2026.",
-      "why": "New local · for-after-the-kids-are-down · indoor",
-      "source": "AmsterdamNow",
-      "link": "https://www.amsterdamnow.com/en/restaurants/pimple-tit-wine-cafe-stateside/",
-      "weatherFit": [
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ]
-    },
-    {
-      "id": "oatly-bike-thru",
-      "title": "Oatly Bike Thru",
-      "venue": "Papaverhoek 24",
-      "area": "Noord",
-      "when": "Final weekend · until Sun 7 Jun",
-      "image": "https://a.storyblok.com/f/107921/960x540/8ebbcdc9e7/wow_no_cow.webp",
-      "category": "drink",
-      "freshness": "ending",
-      "outdoor": true,
-      "kid": true,
-      "price": "€",
-      "blurb": "A bike-through pop-up serving iced oat lattes and matcha — its final days before it closes.",
-      "why": "Cross-source (Time Out + LBB) · outdoor · ends Sunday",
-      "source": "Your Little Black Book",
-      "link": "https://www.yourlittleblackbook.me/en/weekendtips-amsterdam/",
-      "weatherFit": [
-        "HOT",
-        "WARM"
-      ],
-      "status": "final-week"
     },
     {
       "id": "sunday-market-westergas",
@@ -620,6 +463,7 @@
       "venue": "Sportpark de Eendracht",
       "area": "West",
       "when": "Sat–Sun 6–7 Jun",
+      "image": "https://media.iamsterdam.com/w_1080/69yh4j7g2d4u-rtxp.jpg",
       "category": "out",
       "freshness": "weekend",
       "outdoor": true,
@@ -633,8 +477,29 @@
         "HOT",
         "WARM"
       ],
-      "verify": true,
-      "image": "https://media.iamsterdam.com/w_1080/69yh4j7g2d4u-rtxp.jpg"
+      "verify": true
+    },
+    {
+      "id": "american-identities",
+      "title": "American Identities",
+      "venue": "H’ART Museum",
+      "area": "Amstel",
+      "when": "Until 6 Sep",
+      "category": "art",
+      "freshness": "always",
+      "outdoor": false,
+      "kid": false,
+      "price": "~€19.50",
+      "image": "https://www.hartmuseum.nl/wp-content/uploads/2025/10/4911-HM-Levinthal-digitaal-en-socials-11Ju_website.jpg",
+      "blurb": "Levinthal’s staged photos and ChicanX prints pick apart the myths and power plays of American identity.",
+      "why": "Indoor · substantial · canal-side lunch nearby",
+      "source": "H’ART Museum",
+      "link": "https://www.hartmuseum.nl/en/exhibitions/american-identities/",
+      "weatherFit": [
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ]
     },
     {
       "id": "zaanse-schans",
@@ -686,6 +551,7 @@
       "venue": "De Hallen",
       "area": "West",
       "when": "Daily · 11:00–23:00",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Foodhallen_in_Oud-West_%28Amsterdam%2C_The_Netherlands_2017%29_%2834245643041%29.jpg/1280px-Foodhallen_in_Oud-West_%28Amsterdam%2C_The_Netherlands_2017%29_%2834245643041%29.jpg",
       "category": "eat",
       "freshness": "always",
       "outdoor": false,
@@ -701,8 +567,7 @@
         "COOL",
         "COLD_WET",
         "VOLATILE"
-      ],
-      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Foodhallen_in_Oud-West_%28Amsterdam%2C_The_Netherlands_2017%29_%2834245643041%29.jpg/1280px-Foodhallen_in_Oud-West_%28Amsterdam%2C_The_Netherlands_2017%29_%2834245643041%29.jpg"
+      ]
     },
     {
       "id": "moeders",
@@ -710,6 +575,7 @@
       "venue": "Moeders",
       "area": "Jordaan",
       "when": "Daily · dinner",
+      "image": "https://images.unsplash.com/photo-1723511413901-99439b957bbf?w=1200&q=80",
       "category": "eat",
       "freshness": "always",
       "outdoor": false,
@@ -723,8 +589,7 @@
         "COOL",
         "COLD_WET",
         "VOLATILE"
-      ],
-      "image": "https://images.unsplash.com/photo-1723511413901-99439b957bbf?w=1200&q=80"
+      ]
     },
     {
       "id": "cafe-de-klos",
@@ -732,6 +597,7 @@
       "venue": "Café de Klos",
       "area": "Centrum",
       "when": "Daily · from 17:00",
+      "image": "https://images.unsplash.com/photo-1569352304334-6e422cd70ecd?w=1200&q=80",
       "category": "eat",
       "freshness": "always",
       "outdoor": false,
@@ -745,8 +611,7 @@
         "COOL",
         "COLD_WET",
         "VOLATILE"
-      ],
-      "image": "https://images.unsplash.com/photo-1569352304334-6e422cd70ecd?w=1200&q=80"
+      ]
     },
     {
       "id": "wynand-fockink",
@@ -754,6 +619,7 @@
       "venue": "Wynand Fockink",
       "area": "Centrum",
       "when": "Daily · 14:00–21:00",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Wynand_Focking_Amsterdam_2014_%284%29.jpg/1280px-Wynand_Focking_Amsterdam_2014_%284%29.jpg",
       "category": "drink",
       "freshness": "always",
       "outdoor": false,
@@ -767,8 +633,7 @@
         "COOL",
         "COLD_WET",
         "VOLATILE"
-      ],
-      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Wynand_Focking_Amsterdam_2014_%284%29.jpg/1280px-Wynand_Focking_Amsterdam_2014_%284%29.jpg"
+      ]
     },
     {
       "id": "cafe-chris",
@@ -776,6 +641,7 @@
       "venue": "Café Chris",
       "area": "Jordaan",
       "when": "Daily · afternoon–late",
+      "image": "https://images.unsplash.com/photo-1558210598-89ba75b1724e?w=1200&q=80",
       "category": "drink",
       "freshness": "always",
       "outdoor": false,
@@ -789,8 +655,7 @@
         "COOL",
         "COLD_WET",
         "VOLATILE"
-      ],
-      "image": "https://images.unsplash.com/photo-1558210598-89ba75b1724e?w=1200&q=80"
+      ]
     },
     {
       "id": "eye-screening",
@@ -798,6 +663,7 @@
       "venue": "Eye Filmmuseum",
       "area": "Noord",
       "when": "Daily · check programme",
+      "image": "https://assets.eyefilm.nl/images/_1200x630_crop_center-center_none/Foto-EYE-Marcus-Koppen-bijgesneden-2_2021-04-12-140514.jpeg",
       "category": "stage",
       "freshness": "always",
       "outdoor": false,
@@ -813,8 +679,7 @@
         "COOL",
         "COLD_WET",
         "VOLATILE"
-      ],
-      "image": "https://assets.eyefilm.nl/images/_1200x630_crop_center-center_none/Foto-EYE-Marcus-Koppen-bijgesneden-2_2021-04-12-140514.jpeg"
+      ]
     },
     {
       "id": "the-movies",
@@ -822,6 +687,7 @@
       "venue": "The Movies",
       "area": "Jordaan",
       "when": "Daily · evening sessions",
+      "image": "https://images.unsplash.com/photo-1777994808497-e9ca0037c671?w=1200&q=80",
       "category": "stage",
       "freshness": "always",
       "outdoor": false,
@@ -835,8 +701,7 @@
         "COOL",
         "COLD_WET",
         "VOLATILE"
-      ],
-      "image": "https://images.unsplash.com/photo-1777994808497-e9ca0037c671?w=1200&q=80"
+      ]
     },
     {
       "id": "sauna-deco",
@@ -844,6 +709,7 @@
       "venue": "Sauna Deco",
       "area": "Centrum",
       "when": "Daily · 12:00–23:00",
+      "image": "https://images.unsplash.com/photo-1757940556610-a114be4733bf?w=1200&q=80",
       "category": "out",
       "freshness": "always",
       "outdoor": false,
@@ -857,8 +723,7 @@
         "COOL",
         "COLD_WET",
         "VOLATILE"
-      ],
-      "image": "https://images.unsplash.com/photo-1757940556610-a114be4733bf?w=1200&q=80"
+      ]
     },
     {
       "id": "pllek-indoor",
@@ -866,6 +731,7 @@
       "venue": "Pllek",
       "area": "Noord",
       "when": "Daily · lunch–late",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dc/Stadsstrand_Pllek.JPG/1280px-Stadsstrand_Pllek.JPG",
       "category": "drink",
       "freshness": "always",
       "outdoor": false,
@@ -880,8 +746,7 @@
         "COOL",
         "COLD_WET",
         "VOLATILE"
-      ],
-      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dc/Stadsstrand_Pllek.JPG/1280px-Stadsstrand_Pllek.JPG"
+      ]
     },
     {
       "id": "tony-chocolonely",
@@ -889,6 +754,7 @@
       "venue": "Tony’s Super Store",
       "area": "West",
       "when": "Daily · 10:00–18:00",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/Tony%27s_Chocolonely_shop_Amsterdam.jpg/1280px-Tony%27s_Chocolonely_shop_Amsterdam.jpg",
       "category": "eat",
       "freshness": "always",
       "outdoor": false,
@@ -904,8 +770,7 @@
         "COOL",
         "COLD_WET",
         "VOLATILE"
-      ],
-      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/Tony%27s_Chocolonely_shop_Amsterdam.jpg/1280px-Tony%27s_Chocolonely_shop_Amsterdam.jpg"
+      ]
     }
   ]
 }
