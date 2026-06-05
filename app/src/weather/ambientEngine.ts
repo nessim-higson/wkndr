@@ -79,14 +79,10 @@ export class FieldEngine {
   onStats?: (s: FieldStats) => void
 
   // ---- weather-MOTION overlay (drawn full-res on top of the abstract field) ----
-  // The field's palette already changes with the weather; this makes it MOVE like the
-  // weather too — rain falls, storms flash, heat shimmers — so the abstract field reads
-  // as weather without literal suns/clouds.
+  // The field's palette already changes with the weather; the only remaining motion overlay
+  // is a soft heat shimmer (Hot). Literal rain/lightning were removed — they read cheesy; the
+  // field's colour + drift carry wet/volatile weather on their own.
   private mode: Mode
-  private drops: { x: number; y: number; len: number; spd: number; a: number }[] = []
-  private flash = 0
-  private nextFlash = 2800
-  private wxLast = 0
 
   constructor(canvas: HTMLCanvasElement, mode: Mode) {
     this.ctx = canvas.getContext('2d')
@@ -110,15 +106,6 @@ export class FieldEngine {
     this.W = Math.max(1, Math.round(cssW)); this.H = Math.max(1, Math.round(cssH))
     this.canvas.width = this.W; this.canvas.height = this.H   // DPR clamped to 1 on purpose
     this.alloc()
-    this.initDrops()
-  }
-  private initDrops() {
-    const count = Math.min(240, Math.round((this.W * this.H) / 8200))
-    this.drops = []
-    for (let i = 0; i < count; i++) this.drops.push({
-      x: Math.random() * this.W, y: Math.random() * this.H,
-      len: 9 + Math.random() * 18, spd: 8 + Math.random() * 10, a: 0.18 + Math.random() * 0.34,
-    })
   }
   private alloc() {
     const d = this.div()
@@ -221,39 +208,11 @@ export class FieldEngine {
   private drawWeather(ts: number) {
     const ctx = this.ctx
     if (!ctx) return
-    const dt = this.wxLast ? Math.min(80, ts - this.wxLast) : 33
-    this.wxLast = ts
     const m = this.mode
 
-    // RAIN — Cold & wet (steady) and Volatile (heavier, windier)
-    if (m === 'COLD_WET' || m === 'VOLATILE') {
-      const wind = m === 'VOLATILE' ? 3.2 : 1.1
-      const n = m === 'VOLATILE' ? this.drops.length : Math.round(this.drops.length * 0.82)
-      ctx.save()
-      ctx.lineWidth = 1.1
-      ctx.lineCap = 'round'
-      for (let i = 0; i < n; i++) {
-        const dp = this.drops[i]
-        dp.y += dp.spd; dp.x += wind
-        if (dp.y > this.H + dp.len) { dp.y = -dp.len; dp.x = Math.random() * (this.W + 120) - 60 }
-        ctx.strokeStyle = `rgba(214,228,248,${dp.a})`
-        ctx.beginPath(); ctx.moveTo(dp.x, dp.y); ctx.lineTo(dp.x - wind, dp.y + dp.len); ctx.stroke()
-      }
-      ctx.restore()
-    }
-
-    // LIGHTNING — Volatile only: an occasional brief full-field flash that decays
-    if (m === 'VOLATILE') {
-      this.nextFlash -= dt
-      if (this.nextFlash <= 0) { this.flash = 1; this.nextFlash = 3200 + Math.random() * 6000 }
-      if (this.flash > 0.02) {
-        ctx.save()
-        ctx.fillStyle = `rgba(244,247,255,${(this.flash * 0.45).toFixed(3)})`
-        ctx.fillRect(0, 0, this.W, this.H)
-        ctx.restore()
-        this.flash *= 0.80
-      }
-    }
+    // Wet & volatile weather now reads through the FIELD's palette + drift alone — the literal
+    // falling-rain / lightning overlays felt cheesy, so they're gone. Only the heat shimmer
+    // stays (it's a soft atmospheric haze, not a literal symbol).
 
     // HEAT SHIMMER — Hot: faint warm haze-bands rising + wobbling (lighten blend)
     if (m === 'HOT') {
