@@ -623,6 +623,7 @@ export default function App() {
                    (mounting behind the intro would burn the fly-in before the app is revealed) */
                 key={`${dealKey}-${filter}-${when}-${intro ? 'intro' : 'live'}`}
                 picks={deck}
+                temp={wx.temp}
                 onSwipe={handleStackSwipe}
                 onOpen={openDetail}
                 onRefresh={refresh}

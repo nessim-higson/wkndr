@@ -37,6 +37,7 @@ interface SwipeCardProps {
   depth: number // 0 = top
   dealIn: boolean // true → fly onto the deck (initial build); false → just fade (a card cycling in)
   progress: MotionValue<number>   // shared: how far the TOP card is dragged (0→1)
+  temp?: number                   // forecast temp, shown on outdoor cards
   onSwipe: (p: Pick, dir: SwipeDir) => void
   onOpen?: (p: Pick, origin?: DOMRect) => void
   onCycle?: (p: Pick) => void
@@ -52,7 +53,7 @@ function hashUnit(s: string): number {
 }
 
 const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
-  { pick, interactive, depth, dealIn, progress, onSwipe, onOpen, onCycle }, ref,
+  { pick, interactive, depth, dealIn, progress, temp, onSwipe, onOpen, onCycle }, ref,
 ) {
   // a touch of deterministic imperfection per card — the stack looks hand-laid, not machined
   const skew = useMemo(() => hashUnit(pick.id) * 2.8, [pick.id])        // ±2.8° resting tilt
@@ -233,16 +234,17 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
             <motion.div className="swipe-tint green" style={{ opacity: greenOp }} aria-hidden />
           </>
         )}
-        <Card pick={pick} />
+        <Card pick={pick} temp={temp} />
       </motion.div>
     </motion.div>
   )
 })
 
 export function SwipeStack({
-  picks, onSwipe, onOpen, onRefresh, filterLabel, onClearFilter, onSeeList,
+  picks, temp, onSwipe, onOpen, onRefresh, filterLabel, onClearFilter, onSeeList,
 }: {
   picks: Pick[]
+  temp?: number
   onSwipe: (p: Pick, dir: SwipeDir) => void
   onOpen?: (p: Pick, origin?: DOMRect) => void
   onRefresh?: () => void
@@ -295,6 +297,7 @@ export function SwipeStack({
             dealIn={firstDeal.current}
             interactive={i === 0}
             progress={progress}
+            temp={temp}
             onSwipe={onSwipe}
             onOpen={onOpen}
           />

@@ -3,10 +3,10 @@ import type { Pick } from '../types'
 import { CATEGORY_LABEL, FRESHNESS_LABEL, STATUS_LABEL } from '../types'
 import './Card.css'
 
-/** The stack card FRONT — image-led like the fan, but carrying the at-a-glance signals:
- *  scarcity, freshness, outdoor/kids, the category, the title, and the date hero'd.
- *  The full dossier lives on the back (tap to flip). */
-export function Card({ pick }: { pick: Pick }) {
+/** The stack card FRONT — image-led, carrying the at-a-glance signals: scarcity,
+ *  freshness, outdoor/kids, the category, the WHEN stamp (day/time + forecast temp on
+ *  outdoor picks), and the title. The full detail expands on tap. */
+export function Card({ pick, temp }: { pick: Pick; temp?: number }) {
   // freshness is worth a chip when it's time-sensitive (new / ending) — the everyday
   // "this weekend" / "always good" stay quiet so the row doesn't get noisy.
   const showFresh = pick.freshness === 'new' || pick.freshness === 'ending'
@@ -30,12 +30,13 @@ export function Card({ pick }: { pick: Pick }) {
       <div className="card-scrim" aria-hidden />
       <div className="card-body">
         <div className="card-cat mono">{CATEGORY_LABEL[pick.category]}</div>
-        <h2 className="card-title">{pick.title}</h2>
         <div className="card-when">
           <span className="card-when-stamp"><Clock size={14} strokeWidth={2.6} /> {pick.when}</span>
-          <span className="card-flip-cue" aria-hidden><Plus size={15} strokeWidth={2.8} /></span>
+          {pick.outdoor && temp != null && <span className="card-when-temp">{Math.round(temp)}°</span>}
         </div>
+        <h2 className="card-title">{pick.title}</h2>
       </div>
+      <span className="card-expand" aria-hidden><Plus size={15} strokeWidth={2.8} /></span>
     </article>
   )
 }

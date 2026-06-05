@@ -51,7 +51,7 @@
   position: absolute;
   top: 14px;
   left: 14px;
-  right: 14px;
+  right: 52px;          /* leave the top-right corner for the "+" expand cue */
   display: flex;
   gap: 4px;
   flex-wrap: wrap;
@@ -109,14 +109,14 @@
   color: #fff; opacity: 0.8; font-weight: 600; margin-bottom: 7px;
 }
 /* the date — hero'd on the front (it's what you most need to know) */
+/* the WHEN stamp — sits ABOVE the title now (day/time first), with the forecast
+   temp alongside on outdoor picks. The clearest "when", a notch higher up the card. */
 .card-when {
-  margin-top: 10px;
+  margin: 0 0 6px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 8px;
 }
-/* the WHEN stamp — the clearest "when": a clock + the date/time, hero'd on the front */
 .card-when-stamp {
   display: inline-flex;
   align-items: center;
@@ -132,23 +132,33 @@
   text-shadow: 0 1px 12px rgba(0, 0, 0, 0.4);
 }
 .card-when-stamp svg { flex-shrink: 0; opacity: 0.9; }
-.card-when .verify {
-  color: rgba(255, 255, 255, 0.85);
-  background: rgba(255, 255, 255, 0.18);
-  padding: 1px 6px;
-  border-radius: 4px;
-  letter-spacing: 0.04em;
-}
-/* the expand signifier — a compact "+" that there's a detail to open into */
-.card-flip-cue {
+/* forecast temp — shown on OUTDOOR picks (where the weather is the deciding factor) */
+.card-when-temp {
   flex-shrink: 0;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(4px);
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+/* the expand signifier — a compact "+" in the TOP-right corner (opposite the tags),
+   clear of the title: there's a detail to open into */
+.card-expand {
+  position: absolute;
+  top: 14px; right: 14px;
+  z-index: 3;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 28px; height: 28px;
+  width: 30px; height: 30px;
   color: #fff;
   background: rgba(255, 255, 255, 0.16);
-  border: 1px solid rgba(255, 255, 255, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   backdrop-filter: blur(4px);
   border-radius: 50%;
 }
