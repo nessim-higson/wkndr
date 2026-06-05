@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Shuffle, Clock, ChevronDown, LayoutGrid, Star, ArrowUpRight, LocateFixed, Info, RotateCw, X } from 'lucide-react'
+import { Shuffle, Clock, ChevronDown, LayoutGrid, Star, ArrowUpRight, LocateFixed, Info, RotateCw, RotateCcw, X, ArrowUp, ArrowDown, ArrowLeft, ArrowRight } from 'lucide-react'
 
 // subtle haptic on commit/save (Android/Chrome; iOS Safari ignores navigator.vibrate)
 const haptic = (ms = 10) => { try { navigator.vibrate?.(ms) } catch { /* unsupported */ } }
@@ -104,6 +104,11 @@ export default function App() {
   const [saved, setSaved] = useState<Set<string>>(() => loadSaved())   // persisted
   const [taste, setTaste] = useState<Taste>(() => loadTaste())         // persisted taste profile
   const [toast, setToast] = useState<{ text: string; save?: boolean } | null>(null)
+  // the last stack swipe, kept briefly so it can be UNDONE (Norman: error recovery)
+  const [undoable, setUndoable] = useState<{ pick: Pick; dir: SwipeDir; wasSaved: boolean } | null>(null)
+  // one-time swipe coaching — the 4 directions aren't obvious (up=save, down=skip)
+  const [hintDone, setHintDone] = useState(() => localStorage.getItem('wkndr.swipehint') === '1')
+  const dismissHint = () => { setHintDone(true); localStorage.setItem('wkndr.swipehint', '1') }
   const [locating, setLocating] = useState(false)   // weather/location fetch in flight
   const [visits] = useState(() => {                  // for progressive-reduction of hints
     const v = Number(localStorage.getItem('wkndr.visits') || 0) + 1
@@ -207,6 +212,13 @@ export default function App() {
     return () => clearTimeout(id)
   }, [toast])
 
+  // the Undo affordance lingers ~5s after a swipe, then fades
+  useEffect(() => {
+    if (!undoable) return
+    const id = setTimeout(() => setUndoable(null), 5000)
+    return () => clearTimeout(id)
+  }, [undoable])
+
   // pulse the persistent saves counter whenever a new save lands in it (the toast's
   // sibling moment — the saved item visibly "arrives" in the dock)
   useEffect(() => {
@@ -272,11 +284,26 @@ export default function App() {
   }
 
   function handleStackSwipe(p: Pick, dir: SwipeDir) {
+    const wasSaved = saved.has(p.id)
     setSwiped((s) => new Set(s).add(p.id))
     if (dir === 'like' || dir === 'save') {
       setSaved((s) => new Set(s).add(p.id))   // the header counter turns orange + bumps — that's the confirmation
     }
     setTaste((t) => applySwipe(t, p, dir))   // every swipe teaches it
+    setUndoable({ pick: p, dir, wasSaved })  // offer a brief take-back
+    if (!hintDone) dismissHint()             // they've got it — retire the coaching
+  }
+  // bring the last-swiped card back to the top (un-swipe → it re-enters the ranked deck
+  // at its old position, which was the front). Un-saves only if the swipe was what saved it.
+  function undoSwipe() {
+    if (!undoable) return
+    const { pick, dir, wasSaved } = undoable
+    setSwiped((s) => { const n = new Set(s); n.delete(pick.id); return n })
+    if ((dir === 'like' || dir === 'save') && !wasSaved) {
+      setSaved((s) => { const n = new Set(s); n.delete(pick.id); return n })
+    }
+    setUndoable(null)
+    haptic(8)
   }
   function handleListToggle(p: Pick, dir: SwipeDir) {
     setSaved((s) => {
@@ -662,6 +689,51 @@ export default function App() {
           {toast.text}
         </div>
       )}
+
+      {/* Undo — a brief take-back after a stack swipe (the card returns to the top) */}
+      <AnimatePresence>
+        {undoable && view === 'stack' && !intro && (
+          <motion.button
+            key="undo"
+            className="undo-bar"
+            onClick={undoSwipe}
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 14 }}
+            transition={{ type: 'spring', stiffness: 420, damping: 34 }}
+          >
+            <span className="undo-what">
+              {undoable.dir === 'save' || undoable.dir === 'like' ? 'Saved' : undoable.dir === 'nope' ? 'Passed' : 'Skipped'}
+              <span className="undo-title"> · {undoable.pick.title}</span>
+            </span>
+            <span className="undo-action"><RotateCcw size={14} strokeWidth={2.5} /> Undo</span>
+          </motion.button>
+        )}
+      </AnimatePresence>
+
+      {/* one-time swipe coaching — a coachmark centered on the deck; retires itself on
+          the first swipe (or a tap). Full-screen anchor animates opacity only so framer's
+          transform never fights the flex-centering. */}
+      <AnimatePresence>
+        {!hintDone && view === 'stack' && !intro && deck.length > 0 && (
+          <motion.div
+            key="hint"
+            className="swipe-hint-anchor"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <button className="swipe-hint" onClick={dismissHint}>
+              <span className="swipe-hint-lead">Swipe the card</span>
+              <span className="swipe-hint-dir"><ArrowRight size={13} strokeWidth={2.6} /> Like</span>
+              <span className="swipe-hint-dir"><ArrowLeft size={13} strokeWidth={2.6} /> Pass</span>
+              <span className="swipe-hint-dir"><ArrowUp size={13} strokeWidth={2.6} /> Save</span>
+              <span className="swipe-hint-dir"><ArrowDown size={13} strokeWidth={2.6} /> Skip</span>
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <CardDetail
         pick={detail}

@@ -40,22 +40,55 @@
   text-shadow: 0 2px 26px rgba(0, 0, 0, 0.28);
 }
 
-/* legibility scrim — light at the top (chips), heavy at the bottom (text) */
+/* legibility scrim — darker at the top now (the when stamp lives there) + heavy bottom */
 .card-scrim {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(0,0,0,0.34) 0%, transparent 20%, transparent 40%, rgba(0,0,0,0.58) 72%, rgba(0,0,0,0.84) 100%);
+  background: linear-gradient(180deg, rgba(0,0,0,0.42) 0%, transparent 26%, transparent 42%, rgba(0,0,0,0.58) 72%, rgba(0,0,0,0.84) 100%);
 }
 
-.card-tags {
+/* TOP area — the when stamp pinned highest, the tag chips beneath it */
+.card-top {
   position: absolute;
   top: 14px;
   left: 14px;
   right: 52px;          /* leave the top-right corner for the "+" expand cue */
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+/* the WHEN stamp — a frosted ticket stamp: clock + day/time (+ temp on outdoor) */
+.card-when {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 100%;
+  padding: 6px 11px;
+  border-radius: 999px;
+  background: rgba(20, 20, 22, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(8px);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.012em;
+}
+.card-when svg { flex-shrink: 0; opacity: 0.92; }
+.card-when-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.card-when-temp {
+  flex-shrink: 0;
+  margin-left: 1px;
+  padding-left: 8px;
+  border-left: 1px solid rgba(255, 255, 255, 0.28);
+  font-variant-numeric: tabular-nums;
+}
+
+.card-tags {
   display: flex;
   gap: 4px;
   flex-wrap: wrap;
-  z-index: 2;
 }
 .chip {
   font-size: 10px;
@@ -94,6 +127,16 @@
   color: #eef3ff;
   border: 1px solid rgba(150, 175, 230, 0.55);
 }
+/* "Trending" — surfaced from buzz (how many independent sources flagged the pick) */
+.chip-buzz {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  background: rgba(255, 77, 31, 0.9);
+  color: #fff;
+  font-weight: 700;
+}
+.chip-buzz svg { margin-top: -1px; }
 
 /* details, over the scrim at the bottom */
 .card-body {
@@ -107,44 +150,6 @@
 .card-cat {
   font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
   color: #fff; opacity: 0.8; font-weight: 600; margin-bottom: 7px;
-}
-/* the date — hero'd on the front (it's what you most need to know) */
-/* the WHEN stamp — sits ABOVE the title now (day/time first), with the forecast
-   temp alongside on outdoor picks. The clearest "when", a notch higher up the card. */
-.card-when {
-  margin: 0 0 6px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.card-when-stamp {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  min-width: 0;
-  font-size: 16px;
-  font-weight: 700;
-  letter-spacing: -0.012em;
-  color: #fff;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.4);
-}
-.card-when-stamp svg { flex-shrink: 0; opacity: 0.9; }
-/* forecast temp — shown on OUTDOOR picks (where the weather is the deciding factor) */
-.card-when-temp {
-  flex-shrink: 0;
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  color: #fff;
-  font-variant-numeric: tabular-nums;
-  background: rgba(255, 255, 255, 0.18);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  backdrop-filter: blur(4px);
-  padding: 2px 8px;
-  border-radius: 999px;
 }
 /* the expand signifier — a compact "+" in the TOP-right corner (opposite the tags),
    clear of the title: there's a detail to open into */
@@ -161,13 +166,6 @@
   border: 1px solid rgba(255, 255, 255, 0.3);
   backdrop-filter: blur(4px);
   border-radius: 50%;
-}
-.card-when .verify {
-  color: rgba(255, 255, 255, 0.85);
-  background: rgba(255, 255, 255, 0.18);
-  padding: 1px 6px;
-  border-radius: 4px;
-  letter-spacing: 0.04em;
 }
 .card-title {
   font-family: var(--font-body);   /* card copy is Helvetica Neue (WKNDR wordmark stays Clash) */

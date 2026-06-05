@@ -523,6 +523,93 @@
   animation: toast-in 0.32s var(--ease-spring);
 }
 .toast--save { background: var(--accent); color: #fff; }   /* save reads warm + positive */
+
+/* Undo — a tappable take-back pill after a stack swipe */
+.undo-bar {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 201;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  max-width: calc(100vw - 36px);
+  padding: 8px 8px 8px 16px;
+  border: none;
+  border-radius: 999px;
+  background: #1a1a1a;
+  color: #faf8f3;
+  box-shadow: 0 10px 34px rgba(0, 0, 0, 0.34);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  cursor: pointer;
+}
+.undo-bar:active { transform: translateX(-50%) scale(0.97); }
+.undo-what { min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.undo-title { opacity: 0.5; }
+.undo-action {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 13px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  font-weight: 700;
+}
+
+/* first-run swipe coaching — a one-time legend of the four directions, tucked just
+   under the header so it's clear of the deck's action buttons + "shuffle" affordance */
+/* full-screen anchor that flex-centers the coachmark on the deck. pointer-events:none
+   so the card behind stays swipeable; only the pill itself is tappable. */
+.swipe-hint-anchor {
+  position: fixed;
+  inset: 0;
+  z-index: 150;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+.swipe-hint {
+  pointer-events: auto;
+  display: grid;
+  grid-template-columns: auto auto;
+  align-items: center;
+  justify-items: start;
+  gap: 11px 20px;
+  padding: 14px 20px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 18px;
+  background: rgba(20, 20, 22, 0.64);
+  backdrop-filter: blur(12px);
+  color: #faf8f3;
+  box-shadow: 0 16px 44px rgba(0, 0, 0, 0.42);
+  cursor: pointer;
+}
+.swipe-hint-lead {
+  grid-column: 1 / -1;
+  text-align: center;
+  margin-bottom: 3px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.6;
+}
+.swipe-hint-dir {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+}
+.swipe-hint-dir svg { opacity: 0.85; flex-shrink: 0; }
 @keyframes toast-in {
   from { opacity: 0; transform: translate(-50%, 16px) scale(0.96); }
   to { opacity: 1; transform: translate(-50%, 0) scale(1); }
