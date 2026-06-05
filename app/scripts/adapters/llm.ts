@@ -13,7 +13,7 @@ import { htmlToText, deriveWeatherFit } from '../lib/pipeline'
 import type { RosterSource } from '../roster'
 
 const KEY = process.env.ANTHROPIC_API_KEY
-const MODEL = process.env.ANTHROPIC_MODEL || 'claude-3-5-haiku-latest'
+const MODEL = process.env.ANTHROPIC_MODEL || 'claude-haiku-4-5'   // cheap/fast tier (the 3-5-haiku alias was retired)
 const UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/124 Safari/537.36'
 
 const CATEGORIES: Category[] = ['live', 'art', 'stage', 'eat', 'drink', 'market', 'out', 'daytrip']
