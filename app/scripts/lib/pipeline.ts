@@ -65,8 +65,56 @@ export function htmlToText(html: string): string {
 
 const UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36'
 
-// Best-effort og:image scrape for a single page. Returns a verified-looking image URL or
-// null. Never throws — a blocked/slow page just means "keep the poster fallback".
+// ─── IMAGE QUALITY SCREEN ───────────────────────────────────────────────────
+// A card image must be a real PHOTO, not a logo/favicon/placeholder/share-graphic.
+// We reject by URL shape AND by real pixel dimensions, so a blown-up 100×100 logo
+// (e.g. a site's facebook.png) can never reach a card again.
+const MIN_DIM = 600                 // shortest side must be ≥ this
+const ASPECT_RANGE: [number, number] = [0.42, 2.6]   // not a banner strip, not a square icon
+const LOGO_URL = /logo|favicon|icon|sprite|placeholder|wordmark|social[-_]?shar|sharing[-_]?image|og[-_]?default|default[-_]?(og|share)|avatar|thumbnail|pictogram|picotogram|badge|emblem/i
+
+// Parse pixel dimensions from the first bytes of PNG / JPEG / GIF / WEBP.
+function imageDims(b: Uint8Array): [number, number] | null {
+  if (b.length < 24) return null
+  if (b[0] === 0x89 && b[1] === 0x50) { const dv = new DataView(b.buffer, b.byteOffset); return [dv.getUint32(16), dv.getUint32(20)] }   // PNG
+  if (b[0] === 0x47 && b[1] === 0x49) return [b[6] | b[7] << 8, b[8] | b[9] << 8]                                                          // GIF
+  if (b[8] === 0x57 && b[9] === 0x45 && b[10] === 0x42 && b[11] === 0x50) {                                                                // WEBP
+    const fmt = String.fromCharCode(b[12], b[13], b[14], b[15])
+    if (fmt === 'VP8 ') return [(b[26] | b[27] << 8) & 0x3fff, (b[28] | b[29] << 8) & 0x3fff]
+    if (fmt === 'VP8X') return [1 + (b[24] | b[25] << 8 | b[26] << 16), 1 + (b[27] | b[28] << 8 | b[29] << 16)]
+  }
+  if (b[0] === 0xff && b[1] === 0xd8) {                                                                                                    // JPEG
+    let i = 2
+    while (i < b.length - 9) {
+      if (b[i] !== 0xff) { i++; continue }
+      const mk = b[i + 1]
+      if (mk >= 0xc0 && mk <= 0xcf && mk !== 0xc4 && mk !== 0xc8 && mk !== 0xcc) return [b[i + 7] << 8 | b[i + 8], b[i + 5] << 8 | b[i + 6]]
+      i += 2 + (b[i + 2] << 8 | b[i + 3])
+    }
+  }
+  return null
+}
+
+/** True if `url` resolves to a real, card-worthy photo (right shape + resolution). */
+export async function isGoodImage(url: string, timeoutMs = 8000): Promise<boolean> {
+  if (LOGO_URL.test(url)) return false
+  try {
+    const ctrl = new AbortController()
+    const t = setTimeout(() => ctrl.abort(), timeoutMs)
+    const res = await fetch(url, { headers: { 'user-agent': UA, range: 'bytes=0-65535' }, signal: ctrl.signal, redirect: 'follow' })
+    clearTimeout(t)
+    if (!res.ok || !(res.headers.get('content-type') || '').startsWith('image/')) return false
+    const wh = imageDims(new Uint8Array(await res.arrayBuffer()))
+    if (!wh) return true                                  // couldn't parse (progressive/odd) — give benefit of the doubt
+    const [w, h] = wh, ar = w / h
+    return Math.min(w, h) >= MIN_DIM && ar >= ASPECT_RANGE[0] && ar <= ASPECT_RANGE[1]
+  } catch {
+    return false
+  }
+}
+
+// Best-effort og:image scrape for a single page, SCREENED for quality. Returns a real-photo
+// URL or null. Never throws — a blocked/slow page or a logo-only og:image → poster fallback.
 export async function fetchOgImage(url: string, timeoutMs = 8000): Promise<string | null> {
   try {
     const ctrl = new AbortController()
@@ -83,7 +131,8 @@ export async function fetchOgImage(url: string, timeoutMs = 8000): Promise<strin
     let img = m[1].trim()
     if (img.startsWith('//')) img = 'https:' + img
     if (img.startsWith('/')) { const u = new URL(url); img = u.origin + img }
-    return img.startsWith('http') ? img : null
+    if (!img.startsWith('http')) return null
+    return (await isGoodImage(img)) ? img : null          // SCREEN: reject logos / low-res / wrong-shape
   } catch {
     return null
   }

@@ -35,7 +35,7 @@ export const PICKS: Pick[] = [
   {
     id: 'amsterdam-open-air', title: 'Amsterdam Open Air', venue: 'Gaasperpark', area: 'Zuidoost', when: 'Sat–Sun 6–7 Jun',
     category: 'live', freshness: 'weekend', outdoor: true, kid: false, price: 'day / weekend tickets',
-    image: 'https://images.sk-static.com/images/media/profile_images/venues/1828103/col2',
+    image: "https://images.unsplash.com/photo-1761926826313-a1787661b7b6?w=1200&q=80",
     blurb: 'Ten-stage open-air electronic, house and techno weekender in the park — fashion and art across the site.',
     why: 'Big outdoor festival · sun-dependent · ⚠ one source flagged a possible cancellation',
     source: 'Songkick', link: 'https://www.amsterdamopenair.nl/',
@@ -305,7 +305,7 @@ export const PICKS: Pick[] = [
   },
   {
     id: 'moeders', title: 'Moeders — Dutch home cooking', venue: 'Moeders', area: 'Jordaan', when: 'Daily · dinner',
-    image: "https://www.moeders.com/template/images/facebook.png",
+    image: "https://images.unsplash.com/photo-1723511413901-99439b957bbf?w=1200&q=80",
     category: 'eat', freshness: 'always', outdoor: false, kid: false, price: '€€',
     blurb: 'Walls papered with strangers’ mothers’ photos and a stamppot-and-stew menu built for a grey evening.',
     why: 'Snug · classic Dutch · ideal in the rain',
@@ -332,7 +332,7 @@ export const PICKS: Pick[] = [
   },
   {
     id: 'cafe-chris', title: 'Café Chris — oldest brown café', venue: 'Café Chris', area: 'Jordaan', when: 'Daily · afternoon–late',
-    image: "https://www.cafechris.nl/assets/img/press/en/logo-slogan-190x54.png",
+    image: "https://images.unsplash.com/photo-1558210598-89ba75b1724e?w=1200&q=80",
     category: 'drink', freshness: 'always', outdoor: false, kid: false, price: '€',
     blurb: 'Open since 1624: a creaky, golden-lit Jordaan brown café for a slow afternoon beer while it pours outside.',
     why: 'Cozy · low-lit · quintessential rainy-day Amsterdam',
@@ -359,7 +359,7 @@ export const PICKS: Pick[] = [
   },
   {
     id: 'sauna-deco', title: 'Sauna Deco — Art Deco baths', venue: 'Sauna Deco', area: 'Centrum', when: 'Daily · 12:00–23:00',
-    image: "https://saunadeco.nl/wp-content/uploads/2023/05/cropped-picotogram-1.jpg",
+    image: "https://images.unsplash.com/photo-1757940556610-a114be4733bf?w=1200&q=80",
     category: 'out', freshness: 'always', outdoor: false, kid: false, price: 'day pass',
     blurb: 'A 1920s Art Deco bathhouse (salvaged from a Paris department store) with saunas, steam and a quiet tea room.',
     why: 'Warm · restorative · the ultimate cold-and-wet antidote',
@@ -377,7 +377,7 @@ export const PICKS: Pick[] = [
   },
   {
     id: 'tony-chocolonely', title: 'Tony’s Chocolonely Super Store', venue: 'Tony’s Super Store', area: 'West', when: 'Daily · 10:00–18:00',
-    image: "http://tonyschocolonely.com/cdn/shop/files/TC_Online_SocialSharingImage_1200x628_6ddf1293-71f3-432b-a4b0-16ca77fd78ce.webp?crop=center&height=600&v=1732227996&width=1080",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/Tony%27s_Chocolonely_shop_Amsterdam.jpg/1280px-Tony%27s_Chocolonely_shop_Amsterdam.jpg",
     category: 'eat', freshness: 'always', outdoor: false, kid: true, price: '€',
     blurb: 'The flagship of the slavery-free chocolate brand — make-your-own bars, a café, and a serious sweet-tooth detour.',
     why: 'Indoor · kid-friendly · a happy rainy hour',

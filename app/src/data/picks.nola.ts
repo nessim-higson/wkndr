@@ -15,7 +15,7 @@ export const PICKS_NOLA: Pick[] = [
   // ── Live music — the city's heartbeat, almost all indoor ──
   {
     id: 'nola-preservation-hall', title: 'Preservation Hall', venue: 'Preservation Hall', area: 'French Quarter', when: 'Fri–Sun 5–7 Jun · sets nightly',
-    image: "https://www.preservationhall.com/app/uploads/cropped-favicon-1-1.png",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Preservation_Hall_Interior_Oct_2015.jpg/1280px-Preservation_Hall_Interior_Oct_2015.jpg",
     category: 'live', freshness: 'always', outdoor: false, kid: true, price: 'from $25',
     blurb: 'Acoustic traditional jazz in a candle-lit 18th-century room — no bar, no mics, three short sets a night.',
     why: 'The definitive NOLA room · indoor · weather-proof',
@@ -24,7 +24,7 @@ export const PICKS_NOLA: Pick[] = [
   },
   {
     id: 'nola-tipitinas', title: 'Tipitina’s — Uptown show', venue: 'Tipitina’s', area: 'Uptown', when: 'Sat 6 Jun · doors 21:00',
-    image: "https://tipitinas.com/wp-content/uploads/2025/11/1200x630.png",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/Tipitinas_Daytime_New_Orleans_June_2018.jpg/1280px-Tipitinas_Daytime_New_Orleans_June_2018.jpg",
     category: 'live', freshness: 'weekend', outdoor: false, kid: false, price: 'ticketed',
     blurb: 'The fabled Napoleon Ave music hall — funk, brass and bounce under the banana-tree banner.',
     why: 'Institution · indoor · a proper Saturday night',
@@ -80,7 +80,7 @@ export const PICKS_NOLA: Pick[] = [
   },
   {
     id: 'nola-wwii', title: 'The National WWII Museum', venue: 'WWII Museum', area: 'Warehouse District', when: 'Daily · 09:00–17:00',
-    image: "https://www.nationalww2museum.org//themes/nwwiim/images/placeholders/placeholder-open-graph.jpg",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/National_World_War_II_Museum_New_Orleans_Exterior_August_2012.jpg/1280px-National_World_War_II_Museum_New_Orleans_Exterior_August_2012.jpg",
     category: 'art', freshness: 'always', outdoor: false, kid: true, price: 'admission',
     blurb: 'A vast, immersive campus rated among the best museums in the US — easily a half-day, all indoors.',
     why: 'Indoor · half-a-day · the rainy-day default',
@@ -100,7 +100,7 @@ export const PICKS_NOLA: Pick[] = [
   },
   {
     id: 'nola-prytania', title: 'The Prytania Theatres — repertory', venue: 'Prytania', area: 'Uptown', when: 'Daily · check programme',
-    image: "https://theprytania.static.cinesync.io/images/theater/cinema/Android_thumbnail.jpg",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Prytania_Theater_New_Orleans_May_2018_Outside.jpg/1280px-Prytania_Theater_New_Orleans_May_2018_Outside.jpg",
     category: 'stage', freshness: 'always', outdoor: false, kid: true, price: 'ticketed',
     blurb: 'The oldest single-screen cinema in the South still running classics and new releases Uptown.',
     why: 'Indoor · a film while it pours',
@@ -129,7 +129,7 @@ export const PICKS_NOLA: Pick[] = [
   },
   {
     id: 'nola-turkey-wolf', title: 'Turkey and the Wolf', venue: 'Turkey and the Wolf', area: 'Irish Channel', when: 'Daily · lunch (closed Tue–Wed)',
-    image: "http://www.turkeyandthewolf.com/cdn/shop/files/Logo.png?height=628&pad_color=ffffff&v=1698772095&width=1200",
+    image: "https://images.unsplash.com/photo-1554433607-66b5efe9d304?w=1200&q=80",
     category: 'eat', freshness: 'always', outdoor: false, kid: false, price: '$$',
     blurb: 'The deli that put fried-bologna and collard-melt sandwiches on the national map — playful, indoor, lunch-only.',
     why: 'Indoor · cult sandwiches · a great rainy lunch',
@@ -158,7 +158,7 @@ export const PICKS_NOLA: Pick[] = [
   },
   {
     id: 'nola-steamboat-natchez', title: 'Steamboat Natchez — jazz cruise', venue: 'Steamboat Natchez', area: 'Riverfront', when: 'Sat–Sun · 11:30 & 14:30',
-    image: "https://www.steamboatnatchez.com/wp-content/uploads/2024/05/steamboat-captain.jpg",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/Mississippi_River_in_Louisiana._Steamboat_Natchez.jpg/1280px-Mississippi_River_in_Louisiana._Steamboat_Natchez.jpg",
     category: 'daytrip', freshness: 'always', outdoor: true, kid: true, price: 'ticketed',
     blurb: 'A genuine steam paddlewheeler down the Mississippi with a live jazz band and an optional Creole lunch.',
     why: 'On the river · covered decks · best on a clear afternoon',
