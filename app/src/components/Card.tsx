@@ -1,4 +1,4 @@
-import { RotateCw } from 'lucide-react'
+import { Plus } from 'lucide-react'
 import type { Pick } from '../types'
 import { CATEGORY_LABEL, FRESHNESS_LABEL, STATUS_LABEL } from '../types'
 import './Card.css'
@@ -33,7 +33,7 @@ export function Card({ pick }: { pick: Pick }) {
         <h2 className="card-title">{pick.title}</h2>
         <div className="card-when">
           <span>{pick.when}</span>
-          <span className="card-flip-cue"><RotateCw size={11} strokeWidth={2.6} /> Details</span>
+          <span className="card-flip-cue"><Plus size={12} strokeWidth={2.8} /> Details</span>
         </div>
       </div>
     </article>

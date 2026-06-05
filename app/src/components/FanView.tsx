@@ -64,6 +64,10 @@ export function FanView({
         const face = card.querySelector<HTMLElement>('.wheel-card-face')
         // hero: lifts forward (scale) + pulls to centre; neighbours sit back, tilted into the fan
         if (face) face.style.transform = `scale(${0.86 + e * 0.46}) translateY(${e * heroLift}px)`
+        // text belongs to the HERO only — fade each card's copy out by its distance from the top
+        // so neighbours become quiet image tiles instead of a wall of competing titles
+        const info = card.querySelector<HTMLElement>('.wcard-info')
+        if (info) info.style.opacity = (0.12 + 0.88 * e).toFixed(3)
         // layer inner→outer by angle so the hero is on top and the fan stacks cleanly
         card.style.zIndex = String(Math.round(300 - aa))
         // Cards stay OPAQUE so they don't bleed each other's edges (the whole .wheel carries a

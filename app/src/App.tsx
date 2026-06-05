@@ -114,6 +114,10 @@ export default function App() {
   const [seed, setSeed] = useState(0)            // 0 = forecast order; bumped by Refresh
   const [dealKey, setDealKey] = useState(0)      // bump → stack re-deals (refresh signal)
   const [detail, setDetail] = useState<Pick | null>(null)  // open card detail
+  // where the detail should expand FROM (the tapped card's on-screen rect) — App Store style.
+  // null → fall back to a centred grow. Cleared on close.
+  const [detailOrigin, setDetailOrigin] = useState<DOMRect | null>(null)
+  const openDetail = (p: Pick, origin?: DOMRect) => { setDetailOrigin(origin ?? null); setDetail(p) }
   const [inputsOpen, setInputsOpen] = useState(false)      // "what's feeding this" sheet
   const [filter, setFilter] = useState<Filter>(SHARED_IDS ? 'shared' : 'all')  // What
   const [shareOpen, setShareOpen] = useState(false)        // "My Weekend" share sheet
@@ -567,7 +571,7 @@ export default function App() {
                         <div className="sv-list">
                           {savedPicks.map((p) => (
                             <div className="sv-row" key={p.id}>
-                              <button className="sv-rowmain" onClick={() => { setDetail(p); setSavesOpen(false) }}>
+                              <button className="sv-rowmain" onClick={() => { openDetail(p); setSavesOpen(false) }}>
                                 <span className="sv-thumb" style={p.image ? { backgroundImage: `url(${p.image})` } : undefined}>
                                   {!p.image && <span className="sv-thumb-cat">{CATEGORY_LABEL[p.category]}</span>}
                                 </span>
@@ -619,9 +623,8 @@ export default function App() {
                    (mounting behind the intro would burn the fly-in before the app is revealed) */
                 key={`${dealKey}-${filter}-${when}-${intro ? 'intro' : 'live'}`}
                 picks={deck}
-                savedIds={saved}
                 onSwipe={handleStackSwipe}
-                onToggleSave={toggleSave}
+                onOpen={openDetail}
                 onRefresh={refresh}
                 filterLabel={filterActive ? 'this filter' : null}
                 onClearFilter={() => { setFilter('all'); setWhen('all') }}
@@ -635,7 +638,7 @@ export default function App() {
               animate={{ opacity: 1 }}
               transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
             >
-              <FanView picks={shown} onOpen={setDetail} />
+              <FanView picks={shown} onOpen={openDetail} />
             </motion.div>
           ) : (
             <motion.div
@@ -645,8 +648,8 @@ export default function App() {
               transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
             >
               {filter === 'saved'
-                ? <Itinerary picks={shown} onOpen={setDetail} onSwipe={handleListToggle} />
-                : <ListView picks={shown} savedIds={saved} onSwipe={handleListToggle} onOpen={setDetail} listStyle={listStyle} />}
+                ? <Itinerary picks={shown} onOpen={openDetail} onSwipe={handleListToggle} />
+                : <ListView picks={shown} savedIds={saved} onSwipe={handleListToggle} onOpen={openDetail} listStyle={listStyle} />}
             </motion.div>
           )}
         </main>
@@ -662,6 +665,7 @@ export default function App() {
       <CardDetail
         pick={detail}
         saved={detail ? saved.has(detail.id) : false}
+        origin={detailOrigin}
         onClose={() => setDetail(null)}
         onToggleSave={toggleSave}
       />
