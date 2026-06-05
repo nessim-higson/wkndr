@@ -71,7 +71,7 @@ async function buildCity(city: City) {
   // RANK by what's-talked-about (buzz) then freshness. Only cap per category when there's a real
   // live pull to balance — never trim the curated canon when running keyless.
   picks.sort((a, b) => (b.buzz ?? 1) - (a.buzz ?? 1) || (FRESH_RANK[b.freshness] - FRESH_RANK[a.freshness]))
-  if (LLM_ON || fromRoster.length > 8) {
+  if (fromRoster.length > 8) {   // only cap when there's a real live pull to balance — a failed/empty pull must NOT trim the canon
     const balanced = balanceByCategory(picks, 6)
     console.log(`  ranked:   ${picks.length} deduped → ${balanced.length} after per-category cap`)
     picks = balanced

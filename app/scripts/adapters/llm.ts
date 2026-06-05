@@ -61,12 +61,13 @@ function parseArray(text: string): Record<string, unknown>[] {
 /** Read one source with the LLM → Pick[]. Never throws (returns [] on any failure). */
 export async function llmExtract(cityName: string, source: RosterSource): Promise<Pick[]> {
   if (!KEY) return []
+  const tag = `    · ${source.name}:`
   try {
-    const html = await fetch(source.url, { headers: { 'user-agent': UA, accept: 'text/html,application/xhtml+xml' } })
-      .then((r) => (r.ok ? r.text() : ''))
-    if (!html) return []
+    const r = await fetch(source.url, { headers: { 'user-agent': UA, accept: 'text/html,application/xhtml+xml' } })
+    const html = r.ok ? await r.text() : ''
+    if (!html) { console.log(`${tag} fetch ${r.status} — no HTML`); return [] }
     const text = htmlToText(html).slice(0, 14000)
-    if (text.length < 200) return []
+    if (text.length < 200) { console.log(`${tag} thin text (${text.length} chars after strip)`); return [] }
 
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
@@ -80,8 +81,13 @@ export async function llmExtract(cityName: string, source: RosterSource): Promis
       }),
     }).then((r) => r.json())
 
+    if (res?.error || !Array.isArray(res?.content)) {
+      console.log(`${tag} API → ${JSON.stringify(res?.error ?? res?.type ?? res).slice(0, 200)}`)
+      return []
+    }
     const out = res?.content?.[0]?.text ?? ''
     const rows = parseArray(out)
+    console.log(`${tag} ${rows.length} extracted (read ${text.length} chars)`)
     return rows
       .filter((e) => e && typeof e.title === 'string' && (e.title as string).length > 1)
       .map((e): Pick => {
@@ -106,7 +112,8 @@ export async function llmExtract(cityName: string, source: RosterSource): Promis
           verify: true,   // auto-extracted — confirm before relying
         }
       })
-  } catch {
+  } catch (e) {
+    console.log(`${tag} threw — ${(e as Error).message}`)
     return []
   }
 }
