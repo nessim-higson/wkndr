@@ -45,6 +45,18 @@ export function FanView({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  // keep the hero settled UPRIGHT across viewport changes (Safari's toolbar showing/hiding
+  // changes dvh and can leave the wheel resting between cards → a crooked hero).
+  useEffect(() => {
+    const onResize = () => {
+      auto.current?.stop()
+      const cur = spin.get()
+      spin.set(step ? Math.round(cur / step) * step : cur)
+    }
+    window.addEventListener('resize', onResize)
+    return () => window.removeEventListener('resize', onResize)
+  }, [spin, step])
+
   // HERO emphasis — recomputed every time the wheel turns: the card nearest the top
   // grows + lifts + comes to the front; the others shrink and dim back.
   useEffect(() => {
