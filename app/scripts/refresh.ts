@@ -19,7 +19,7 @@
  */
 import { CITIES, type City } from '../src/data/cities'
 import type { Pick } from '../src/types'
-import { dedupe, balanceByCategory, isGoodImage, fetchOgImage, mapLimit } from './lib/pipeline'
+import { dedupe, balanceByCategory, isGoodImage, fetchOgImage, wikiImage, mapLimit } from './lib/pipeline'
 import { songkickAdapter } from './adapters/songkick'
 import { llmExtract } from './adapters/llm'
 import { rssExtract } from './adapters/rss'
@@ -79,6 +79,16 @@ async function buildCity(city: City) {
     const live = picks.filter(isLive)
     await mapLimit(live.filter((p) => p.image), 5, async (p) => { if (!(await isGoodImage(p.image!))) p.image = undefined })
     await mapLimit(live.filter((p) => !p.image && p.link), 6, async (p) => { const img = await fetchOgImage(p.link); if (img) p.image = img })
+    // WEB SEARCH fallback (Wikipedia) for named entities only — gigs/films/art. The title is the
+    // entity; strip support acts ("X and Y" → "X") and subtitles ("Show: thing" → "Show").
+    const WIKI_OK = new Set(['live', 'stage', 'art'])
+    let wikiGot = 0
+    await mapLimit(live.filter((p) => !p.image && WIKI_OK.has(p.category)), 2, async (p) => {
+      const q = p.title.split(/\s*[:–—]\s*/)[0].split(/\s+(?:and|&|\+|x|w\/|ft\.?|feat\.?|with|presents)\s+/i)[0].trim()
+      const img = await wikiImage(q)
+      if (img && (await isGoodImage(img))) { p.image = img; wikiGot++ }
+    })
+    if (wikiGot) console.log(`  wiki:     +${wikiGot} live picks imaged via web search`)
     const seen = new Map<string, number>()
     for (const p of live) if (p.image) seen.set(p.image, (seen.get(p.image) || 0) + 1)
     for (const p of live) if (p.image && (seen.get(p.image) || 0) > 1) p.image = undefined   // shared hero = generic

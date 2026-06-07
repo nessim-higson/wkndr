@@ -21,6 +21,7 @@
      state never settled — transitioning to a percentage-max-width-clamped value
      is unreliable in Chrome — and a fixed width keeps the header and its
      dropdowns perfectly edge-aligned.) */
+  /* phone: full-bleed-ish; desktop: a wider module so the menu's controls breathe */
   width: min(384px, calc(100vw - 24px)); margin: 0 auto;
   border-radius: 22px;
   background: var(--module-surface);
@@ -29,6 +30,10 @@
   box-shadow: 0 18px 48px rgba(0, 0, 0, 0.28), 0 2px 6px rgba(0, 0, 0, 0.10);
   color: #1c1c1a;
   transition: border-radius 0.28s var(--ease-out);
+}
+/* desktop: widen the module so the expanded menu's two-up controls have room */
+@media (min-width: 720px) {
+  .topbar-module { width: 460px; }
 }
 .topbar-module.open {
   border-bottom-left-radius: 0; border-bottom-right-radius: 0;

@@ -138,6 +138,32 @@ export async function fetchOgImage(url: string, timeoutMs = 8000): Promise<strin
   }
 }
 
+// WEB-SEARCH image fallback via Wikipedia: search for the entity (artist / film / show /
+// venue) and return its lead photo (a real Wikimedia image of the actual subject). Keyless.
+// Best for named entities — the caller should gate it to safe categories so a restaurant
+// like "Belly Pepper" can't collide with the "bell pepper" article. Retries once on the
+// rate-limit HTML response. The result is still run through isGoodImage by the caller.
+const WIKI_UA = 'WKNDR/1.0 (https://github.com/nessim-higson/wkndr; weekend discovery) content-pipeline'
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
+export async function wikiImage(query: string): Promise<string | null> {
+  const api = (params: string) =>
+    fetch(`https://en.wikipedia.org/w/api.php?${params}&format=json&origin=*`, { headers: { 'user-agent': WIKI_UA, accept: 'application/json' } })
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      const s = await api(`action=query&list=search&srlimit=1&srsearch=${encodeURIComponent(query)}`)
+      if (!s.ok) { await sleep(700); continue }
+      const title = (await s.json())?.query?.search?.[0]?.title
+      if (!title) return null
+      const p = await api(`action=query&prop=pageimages&piprop=original|thumbnail&pithumbsize=1200&titles=${encodeURIComponent(title)}`)
+      if (!p.ok) { await sleep(700); continue }
+      const page = Object.values((await p.json())?.query?.pages || {})[0] as { original?: { source?: string }; thumbnail?: { source?: string } } | undefined
+      const img = page?.original?.source || page?.thumbnail?.source
+      return typeof img === 'string' && img.startsWith('http') ? img : null
+    } catch { await sleep(700) }
+  }
+  return null
+}
+
 // Run an async fn over items with a concurrency cap (be polite to source servers).
 export async function mapLimit<T, R>(items: T[], limit: number, fn: (item: T, i: number) => Promise<R>): Promise<R[]> {
   const out: R[] = new Array(items.length)
