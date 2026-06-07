@@ -690,24 +690,27 @@ export default function App() {
         </div>
       )}
 
-      {/* Undo — a brief take-back after a stack swipe (the card returns to the top) */}
+      {/* Undo — a brief take-back after a stack swipe (the card returns to the top). The
+          full-width anchor flex-centres the pill so framer's animated transform can't
+          knock it off-centre. */}
       <AnimatePresence>
-        {undoable && view === 'stack' && !intro && (
-          <motion.button
+        {undoable && view === 'stack' && !intro && !barOpen && !savesOpen && (
+          <motion.div
             key="undo"
-            className="undo-bar"
-            onClick={undoSwipe}
+            className="undo-anchor"
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 14 }}
             transition={{ type: 'spring', stiffness: 420, damping: 34 }}
           >
-            <span className="undo-what">
-              {undoable.dir === 'save' || undoable.dir === 'like' ? 'Saved' : undoable.dir === 'nope' ? 'Passed' : 'Skipped'}
-              <span className="undo-title"> · {undoable.pick.title}</span>
-            </span>
-            <span className="undo-action"><RotateCcw size={14} strokeWidth={2.5} /> Undo</span>
-          </motion.button>
+            <button className="undo-bar" onClick={undoSwipe}>
+              <span className="undo-what">
+                {undoable.dir === 'save' || undoable.dir === 'like' ? 'Saved' : undoable.dir === 'nope' ? 'Passed' : 'Skipped'}
+                <span className="undo-title"> · {undoable.pick.title}</span>
+              </span>
+              <span className="undo-action"><RotateCcw size={14} strokeWidth={2.5} /> Undo</span>
+            </button>
+          </motion.div>
         )}
       </AnimatePresence>
 
@@ -715,7 +718,7 @@ export default function App() {
           the first swipe (or a tap). Full-screen anchor animates opacity only so framer's
           transform never fights the flex-centering. */}
       <AnimatePresence>
-        {!hintDone && view === 'stack' && !intro && deck.length > 0 && (
+        {!hintDone && view === 'stack' && !intro && !barOpen && !savesOpen && deck.length > 0 && (
           <motion.div
             key="hint"
             className="swipe-hint-anchor"

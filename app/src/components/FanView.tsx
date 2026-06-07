@@ -5,7 +5,7 @@ import type { Pick } from '../types'
 import { CATEGORY_LABEL } from '../types'
 import './FanView.css'
 
-const MAX = 26          // cards placed around the wheel
+const MAX_DESKTOP = 26  // cards placed around the wheel
 const SENS = 0.26       // degrees of spin per px dragged
 const FLICK = 0.5       // how much a release-flick coasts
 const HALO = 20         // degrees from top within which a card gets the "hero" treatment
@@ -21,12 +21,14 @@ export function FanView({
   picks: Pick[]
   onOpen?: (p: Pick) => void
 }) {
-  const cards = useMemo(() => picks.slice(0, MAX), [picks])
+  // how far the hero pulls down out of the arc to land centred (less on a short phone)
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 720
+  // fewer cards on a phone — 26 large background-images + per-frame style writes is the fan's
+  // main mobile cost. ~16 still reads as a full hand fan.
+  const cards = useMemo(() => picks.slice(0, isMobile ? 16 : MAX_DESKTOP), [picks, isMobile])
   const n = cards.length
   const step = n > 0 ? 360 / n : 0
   const spin = useMotionValue(0)
-  // how far the hero pulls down out of the arc to land centred (less on a short phone)
-  const isMobile = typeof window !== 'undefined' && window.innerWidth < 720
   const heroLift = useMemo(() => (isMobile ? 96 : 84), [isMobile])
   const spread = useMemo(() => (isMobile ? 56 : 104), [isMobile])   // wider, airier fan on desktop
 
