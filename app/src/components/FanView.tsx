@@ -40,7 +40,7 @@ export function FanView({
   // until the user spins it. No timed auto-advance.
   useEffect(() => {
     spin.set(-28)
-    auto.current = animate(spin, 0, { type: 'spring', stiffness: 50, damping: 13 })
+    auto.current = animate(spin, 0, { type: 'spring', stiffness: 64, damping: 17 })   // settles upright fast, minimal bounce
     return () => { auto.current?.stop() }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -96,9 +96,12 @@ export function FanView({
   }
   function onPanEnd(_e: unknown, info: PanInfo) {
     auto.current?.stop()
-    const projected = spin.get() + info.velocity.x * SENS * FLICK
-    const snapped = step ? Math.round(projected / step) * step : projected
-    auto.current = animate(spin, snapped, { type: 'spring', stiffness: 70, damping: 13, restDelta: 0.2 })
+    const cur = spin.get()
+    // clamp the flick so a hard swipe advances a few cards, never an uncontrolled spin
+    const raw = cur + info.velocity.x * SENS * FLICK
+    const clamped = Math.max(cur - step * 4, Math.min(cur + step * 4, raw))
+    const snapped = step ? Math.round(clamped / step) * step : clamped
+    auto.current = animate(spin, snapped, { type: 'spring', stiffness: 90, damping: 20, restDelta: 0.2 })   // clean settle, no overshoot wobble
   }
   function onPointerUp() {
     if (moved.current) return
