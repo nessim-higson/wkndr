@@ -29,9 +29,10 @@
 .wheel {
   position: absolute;
   left: 50%;
-  /* hero lands at ~50dvh — dead-centre of the viewport, not riding high (offset = card-half
-     224 + heroLift 84 = 308). */
-  top: calc(50dvh - 308px);
+  /* Hero face lands dead-centre (50dvh). At spin=0 the hero sits at the wheel's top, so its
+     rendered centre = wheel.top + card-half(224) + heroLift(84)×heroScale(1.32 ≈ 111) = +335.
+     That offset is radius-independent (the hero is always the apex), so it centres at any height. */
+  top: calc(50dvh - 335px);
   width: calc(2 * var(--R));
   height: calc(2 * var(--R));
   margin-left: calc(-1 * var(--R));
@@ -108,8 +109,8 @@
   /* CAP the radius so a wide phone (430px) doesn't get an oversized wheel that floats the
      fan high — keep it a consistent ~360px hand-fan across phone widths. */
   .wheel-stage { --R: min(360px, 96vw); }
-  /* hero centred a touch BELOW the middle (~55dvh) so the fan fills the lower space instead
-     of clustering up top with a dead third beneath it. (offset = card-half 128 + lift 96.) */
-  .wheel { top: calc(52dvh - 200px); }
+  /* hero face centred at ~52dvh (a touch below middle so the fan fills the lower space).
+     offset = card-half(128) + heroLift(96)×scale(1.32 ≈ 127) = 255. */
+  .wheel { top: calc(52dvh - 255px); }
   .wheel-card { width: 188px; height: 256px; margin-left: -94px; }
 }
