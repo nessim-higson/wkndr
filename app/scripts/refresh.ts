@@ -20,6 +20,7 @@
 import { CITIES, type City } from '../src/data/cities'
 import type { Pick } from '../src/types'
 import { dedupe, balanceByCategory, isGoodImage, fetchOgImage, wikiImage, webImage, whenIsPast, mapLimit } from './lib/pipeline'
+import { fixWhen } from '../src/lib/when'
 import { songkickAdapter } from './adapters/songkick'
 import { llmExtract } from './adapters/llm'
 import { rssExtract } from './adapters/rss'
@@ -76,6 +77,10 @@ async function buildCity(city: City) {
     picks = picks.filter((p) => !whenIsPast(p.when))
     if (before !== picks.length) console.log(`  stale:    dropped ${before - picks.length} past-dated picks`)
   }
+
+  // NORMALIZE WEEKDAYS — recompute the day-of-week in every `when` from its actual date, so a
+  // source that wrote "Sun 8 Jun" when the 8th is a Monday is corrected in the stored feed too.
+  for (const p of picks) if (p.when) p.when = fixWhen(p.when)
 
   // PHOTO-FIRST IMAGE PASS. Every live pick must end up with a real, RELEVANT photo or it's dropped
   // (no category-gradient posters, no generic page-hero fallbacks). Three sources, in order:

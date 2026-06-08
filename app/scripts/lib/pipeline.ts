@@ -205,11 +205,24 @@ export async function webImage(query: string): Promise<string | null> {
     await sleep(250)
     const data = await fetch(`https://duckduckgo.com/i.js?l=us-en&o=json&q=${encodeURIComponent(query)}&vqd=${vqd}&f=,,,,,&p=1`,
       { headers: { 'user-agent': UA, referer: 'https://duckduckgo.com/' } }).then((r) => r.json()).catch(() => null)
-    const results: { image?: string }[] = data?.results || []
-    for (const r of results.slice(0, 8)) {
-      let u = r.image
-      if (typeof u !== 'string' || !u.startsWith('http')) continue
-      u = u.replace(/^http:\/\//i, 'https://')   // try the secure version (most hosts serve both; http would be mixed-content-blocked)
+    const results: { image?: string; width?: number; height?: number }[] = data?.results || []
+    // RANK relevance-FIRST (DuckDuckGo's order ≈ subject accuracy — critical, since we can't
+    // verify the subject), with image SHAPE as a gentle tiebreak: only an EXTREME banner/panorama
+    // (aspect > ~2.0) — which crops to a broken seam on a portrait card — gets pushed down. We
+    // never reorder a merely-landscape shot ahead of the most on-topic result. Dimensions come
+    // from DuckDuckGo's payload, so ranking costs no extra fetches.
+    const penalty = (r: { width?: number; height?: number }) => {
+      const w = Number(r.width), h = Number(r.height)
+      if (!w || !h) return 0
+      const ar = w / h
+      return ar > 2.0 ? 3 : ar > 1.7 ? 1 : 0       // demote panoramas a few slots; nudge wide shots one
+    }
+    const ranked = results
+      .filter((r) => typeof r.image === 'string' && r.image!.startsWith('http'))
+      .map((r, i) => ({ r, key: i + penalty(r) }))   // relevance index + a small shape nudge
+      .sort((a, b) => a.key - b.key)
+    for (const { r } of ranked.slice(0, 10)) {
+      const u = r.image!.replace(/^http:\/\//i, 'https://')   // secure version (most hosts serve both; http = mixed-content-blocked)
       if (await isGoodImage(u)) return u
     }
     return null

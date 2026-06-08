@@ -29,7 +29,9 @@
 .wheel {
   position: absolute;
   left: 50%;
-  top: calc(45dvh - 308px);
+  /* hero lands at ~50dvh — dead-centre of the viewport, not riding high (offset = card-half
+     224 + heroLift 84 = 308). */
+  top: calc(50dvh - 308px);
   width: calc(2 * var(--R));
   height: calc(2 * var(--R));
   margin-left: calc(-1 * var(--R));

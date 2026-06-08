@@ -135,10 +135,11 @@ export function FanView({
         className="wheel"
         ref={wheelRef}
         style={{ rotate: spin }}
-        /* group-translucency lives HERE (on the whole fan), not per card — so the fan reads
-           glassy against the field while the opaque cards never bleed each other's edges */
+        /* cards are SOLID — the old group-translucency (0.82) read as a milky veil over the
+           whole screen against the bright field. Depth comes from the per-card edge-fade
+           (computed in JS) + the bottom shade gradient, not from washing the whole fan out. */
         initial={{ opacity: 0, scale: 0.86 }}
-        animate={{ opacity: 0.82, scale: 1 }}
+        animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
       >
         {cards.map((p, i) => (

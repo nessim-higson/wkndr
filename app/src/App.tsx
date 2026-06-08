@@ -31,6 +31,7 @@ const SHARED_FROM = (() => {
   return f ? f.trim().slice(0, 24) : null
 })()
 import { CATEGORY_LABEL, type Category } from './types'
+import { fixWhen, whenDayGroup, whenSortKey, whenTime } from './lib/when'
 import {
   type Taste, applySwipe, hasTaste, loadSaved, loadTaste, persistSaved, persistTaste,
 } from './taste'
@@ -57,7 +58,9 @@ interface Wx { temp: number; hi: number; lo: number; city: string; label?: strin
 // weekend, use today onward. Returns the indices into the daily arrays + a human label.
 function weekendWindow(times: string[]): { idx: number[]; label: string } {
   const dow = times.map((t) => new Date(`${t}T12:00:00`).getDay())   // 0 Sun … 6 Sat
-  const mon = (t: string) => new Date(`${t}T12:00:00`).toLocaleDateString('en', { month: 'long' })   // full month
+  // SHORT month in the header so the full date always fits the compact module beside the temp
+  // (full month overflowed → "13–14 J…"). Date stays as prominent as the weather, just un-clipped.
+  const mon = (t: string) => new Date(`${t}T12:00:00`).toLocaleDateString('en', { month: 'short' })
   const dayNum = (t: string) => new Date(`${t}T12:00:00`).getDate()
   let idx: number[] = []
   if (dow[0] === 0) idx = [0]                                         // today is Sun → this weekend = today
@@ -148,7 +151,13 @@ export default function App() {
 
   // THE LIVE SEAM: prefer the generated feed (scripts/refresh.ts → public/data/picks.<city>.json)
   // when present, else the bundled snapshot. Lets refreshed content flow in with no rebuild.
-  const cityPicks = feeds[city.key]?.picks ?? city.picks
+  // Dates are normalized HERE (once) so every surface — cards, saves dock, fan, detail, share —
+  // shows a weekday that actually matches the date (the feed's can be wrong/stale).
+  const rawPicks = feeds[city.key]?.picks ?? city.picks
+  const cityPicks = useMemo(
+    () => rawPicks.map((p) => (p.when ? { ...p, when: fixWhen(p.when) } : p)),
+    [rawPicks],
+  )
   const feedAt = feeds[city.key]?.generatedAt ?? null
 
   // Everything that used to be derived from the single static PICKS set is now derived from
@@ -260,6 +269,23 @@ export default function App() {
   const deck = useMemo(() => shown.filter((p) => !swiped.has(p.id)), [shown, swiped])
   // saved picks in rank order — fuels the saves-dock peek
   const savedPicks = useMemo(() => rankedAll.filter((p) => saved.has(p.id)), [rankedAll, saved])
+  // …grouped into a day-by-day itinerary for the saves dock: dated picks first (chronological,
+  // sorted by time within a day), evergreen ("Anytime") last. This is the "breakdown by day +
+  // time" view when you open your list.
+  const savedGroups = useMemo(() => {
+    const groups = new Map<string, { label: string; order: number; items: Pick[] }>()
+    for (const p of savedPicks) {
+      const g = whenDayGroup(p.when)
+      const order = whenSortKey(p.when)
+      const grp = groups.get(g.key) ?? { label: g.label, order, items: [] }
+      grp.items.push(p)
+      grp.order = Math.min(grp.order, order)
+      groups.set(g.key, grp)
+    }
+    return [...groups.values()]
+      .map((grp) => ({ ...grp, items: [...grp.items].sort((a, b) => whenSortKey(a.when) - whenSortKey(b.when)) }))
+      .sort((a, b) => a.order - b.order)
+  }, [savedPicks])
 
   // Bottomless: in the unfiltered Stack, never dead-end — when you've swiped through the pool
   // it reshuffles and keeps serving. (Placeholder for the live pipeline that feeds new finds.)
@@ -596,20 +622,31 @@ export default function App() {
                           </button>
                         </div>
                         <div className="sv-list">
-                          {savedPicks.map((p) => (
-                            <div className="sv-row" key={p.id}>
-                              <button className="sv-rowmain" onClick={() => { openDetail(p); setSavesOpen(false) }}>
-                                <span className="sv-thumb" style={p.image ? { backgroundImage: `url(${p.image})` } : undefined}>
-                                  {!p.image && <span className="sv-thumb-cat">{CATEGORY_LABEL[p.category]}</span>}
-                                </span>
-                                <span className="sv-meta">
-                                  <span className="sv-when">{p.when}</span>
-                                  <span className="sv-name">{p.title}</span>
-                                </span>
-                              </button>
-                              <button className="sv-remove" aria-label={`Remove ${p.title}`} onClick={() => toggleSave(p)}>
-                                <X size={15} strokeWidth={2.4} />
-                              </button>
+                          {savedGroups.map((group) => (
+                            <div className="sv-group" key={group.label}>
+                              <div className="sv-group-label">{group.label}</div>
+                              {group.items.map((p) => {
+                                const t = whenTime(p.when)
+                                return (
+                                  <div className="sv-row" key={p.id}>
+                                    <button className="sv-rowmain" onClick={() => { openDetail(p); setSavesOpen(false) }}>
+                                      <span className="sv-thumb" style={p.image ? { backgroundImage: `url(${p.image})` } : undefined}>
+                                        {!p.image && <span className="sv-thumb-cat">{CATEGORY_LABEL[p.category]}</span>}
+                                      </span>
+                                      <span className="sv-meta">
+                                        <span className="sv-name">{p.title}</span>
+                                        <span className="sv-sub-line">
+                                          <span className="sv-cat">{CATEGORY_LABEL[p.category]}</span>
+                                          {t && <span className="sv-time">{t}</span>}
+                                        </span>
+                                      </span>
+                                    </button>
+                                    <button className="sv-remove" aria-label={`Remove ${p.title}`} onClick={() => toggleSave(p)}>
+                                      <X size={15} strokeWidth={2.4} />
+                                    </button>
+                                  </div>
+                                )
+                              })}
                             </div>
                           ))}
                         </div>
