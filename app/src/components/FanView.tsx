@@ -30,7 +30,7 @@ export function FanView({
   const step = n > 0 ? 360 / n : 0
   const spin = useMotionValue(0)
   const heroLift = useMemo(() => (isMobile ? 96 : 84), [isMobile])
-  const spread = useMemo(() => (isMobile ? 56 : 104), [isMobile])   // wider, airier fan on desktop
+  const spread = useMemo(() => (isMobile ? 46 : 56), [isMobile])   // tight fan — cards stay up beside the hero, not wrapping into a ring
 
   const moved = useRef(false)
   const spinStart = useRef(0)
