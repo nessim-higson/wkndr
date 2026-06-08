@@ -1,0 +1,93 @@
+/* ===== Coverflow (mobile browse) ===== */
+.cf-stage {
+  position: fixed;
+  inset: 0;
+  z-index: 1;                  /* under the floating topbar (20) + banner (6) */
+  overflow: hidden;
+}
+.cf-track {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  perspective: 1500px;
+  /* side padding = (100vw - card 74vw) / 2, so the first AND last card can settle dead-centre */
+  padding: 0 13vw;
+}
+.cf-track::-webkit-scrollbar { display: none; }
+
+.cf-card {
+  flex: 0 0 74vw;
+  height: min(66dvh, 560px);
+  scroll-snap-align: center;
+  transform-origin: center center;
+  will-change: transform;       /* its own layer — rotateY/scale composites cleanly while scrolling */
+  padding: 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.cf-face {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  width: 100%;
+  height: 100%;
+  border-radius: 22px;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+  background-color: var(--paper-3);
+  box-shadow: 0 26px 56px rgba(0, 0, 0, 0.42), 0 4px 12px rgba(0, 0, 0, 0.16);
+}
+.cf-shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.22) 46%, transparent 70%);
+}
+/* depth-dim via opacity (a composite) — off-centre cards darken back without a per-frame repaint */
+.cf-dim {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: #000;
+  opacity: 0;
+  pointer-events: none;
+}
+.cf-info {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px 18px 18px;
+  color: #fff;
+  text-align: left;
+}
+.cf-cat { font-size: 10px; letter-spacing: 0.13em; text-transform: uppercase; opacity: 0.82; }
+.cf-title {
+  font-family: var(--font-body);
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.cf-when { font-size: 11px; letter-spacing: 0.02em; opacity: 0.82; margin-top: 2px; }
+
+.cf-empty {
+  position: absolute;
+  left: 50%; top: 44%;
+  transform: translate(-50%, -50%);
+  color: var(--field-text);
+  opacity: 0.8;
+}

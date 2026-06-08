@@ -3,7 +3,15 @@ import type { PointerEvent as RPointerEvent } from 'react'
 import { animate, motion, useMotionValue, type PanInfo } from 'framer-motion'
 import type { Pick } from '../types'
 import { CATEGORY_LABEL } from '../types'
+import { Coverflow } from './Coverflow'
 import './FanView.css'
+
+/** Fan view = the signature browse. MOBILE gets the Coverflow (width-bounded, never crops);
+ *  DESKTOP gets the wide hand-fan arc. (May unify to Coverflow on both in a later pass.) */
+export function FanView(props: { picks: Pick[]; onOpen?: (p: Pick) => void }) {
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 720
+  return isMobile ? <Coverflow {...props} /> : <WheelFan {...props} />
+}
 
 const MAX_DESKTOP = 26  // cards placed around the wheel
 const SENS = 0.26       // degrees of spin per px dragged
@@ -14,8 +22,8 @@ const HALO = 20         // degrees from top within which a card gets the "hero" 
 
 /** A wheel of cards cropped to its top arc. The card at the top is the HERO — larger,
  *  lifted, on top, neighbours recede. Purely user-driven: grab and spin it freely (snaps to
- *  a card on release); tap a card to investigate. (No auto-advance — it felt forced.) */
-export function FanView({
+ *  a card on release); tap a card to investigate. (No auto-advance — it felt forced.) DESKTOP only. */
+function WheelFan({
   picks, onOpen,
 }: {
   picks: Pick[]
