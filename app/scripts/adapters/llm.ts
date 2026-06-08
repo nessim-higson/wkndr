@@ -32,15 +32,22 @@ async function gate(): Promise<void> {
 
 const CATEGORIES: Category[] = ['live', 'art', 'stage', 'eat', 'drink', 'market', 'out', 'daytrip']
 
-function systemPrompt(cityName: string): string {
-  return `You are WKNDR's culture scout for ${cityName}. You read a source page and extract the
-genuinely INTERESTING, DIVERSE, TIME-SENSITIVE things to do THIS WEEKEND — not a dump of every
-listing. Run the gamut: exciting gigs, critically-acclaimed AND crowd-pleasing films, festivals,
-new openings, things CLOSING SOON, kid-friendly options, free/outdoor things, food & drink,
-day-trips, members' club events (e.g. Soho House) if present.
+const TODAY = new Date().toLocaleDateString('en', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
 
-Pick only the 3–8 most worth-knowing items on the page. Skip generic/evergreen filler unless it
-is exceptional.
+function systemPrompt(cityName: string): string {
+  return `You are WKNDR's culture scout for ${cityName}. TODAY IS ${TODAY}. You read a source page
+and extract the genuinely INTERESTING, DIVERSE, TIME-SENSITIVE things to do from TODAY ONWARD
+(this coming weekend and the days around it) — not a dump of every listing. Run the gamut:
+exciting gigs, critically-acclaimed AND crowd-pleasing films, festivals, new openings, things
+CLOSING SOON, kid-friendly options, free/outdoor things, food & drink, day-trips, members' club
+events (e.g. Soho House) if present.
+
+CRUCIAL: NEVER include an event whose date has already passed (before ${TODAY}). Source pages
+often still list finished events — skip those entirely. Ongoing things ("until <future date>",
+"daily") are fine.
+
+Pick only the 3–8 most worth-knowing UPCOMING items on the page. Skip generic/evergreen filler
+unless it is exceptional.
 
 LEGAL: signal + link, never republish. Use only FACTS (name, venue, date, price). Write your OWN
 short blurb in your own words — never copy the source's sentences.

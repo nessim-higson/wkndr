@@ -19,7 +19,7 @@
  */
 import { CITIES, type City } from '../src/data/cities'
 import type { Pick } from '../src/types'
-import { dedupe, balanceByCategory, isGoodImage, fetchOgImage, wikiImage, webImage, mapLimit } from './lib/pipeline'
+import { dedupe, balanceByCategory, isGoodImage, fetchOgImage, wikiImage, webImage, whenIsPast, mapLimit } from './lib/pipeline'
 import { songkickAdapter } from './adapters/songkick'
 import { llmExtract } from './adapters/llm'
 import { rssExtract } from './adapters/rss'
@@ -68,6 +68,14 @@ async function buildCity(city: City) {
   // DEDUPE (sets buzz = distinct sources) — roster first so live picks win the merge over canon.
   let picks = dedupe([...fromRoster, ...canon])
   const isLive = (p: Pick) => p.id.startsWith('llm-')
+
+  // DROP STALE — past-dated picks (hardcoded canon dates that have rolled by, or LLM picks that
+  // scraped an already-finished event). Evergreen "Daily"/"Always" whens are kept.
+  {
+    const before = picks.length
+    picks = picks.filter((p) => !whenIsPast(p.when))
+    if (before !== picks.length) console.log(`  stale:    dropped ${before - picks.length} past-dated picks`)
+  }
 
   // PHOTO-FIRST IMAGE PASS. Every live pick must end up with a real, RELEVANT photo or it's dropped
   // (no category-gradient posters, no generic page-hero fallbacks). Three sources, in order:
