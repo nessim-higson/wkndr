@@ -100,9 +100,11 @@ function WheelFan({
         // old `filter: brightness()` (which forced a full repaint of every card every frame).
         if (face) face.style.transform = `scale(${0.86 + e * 0.46}) translateY(${e * heroLift}px)`
         if (info) info.style.opacity = (0.12 + 0.88 * e).toFixed(3)
-        // depth fade: the further a card is from the apex (i.e. the LOWER it sits in the downward
-        // arc), the darker — so the cards nearest the bottom of the viewport are the dimmest.
-        if (dim) dim.style.opacity = (0.68 * (1 - vis) * (1 - vis)).toFixed(3)
+        // depth fade, two parts so the hero clearly wins: (1) EVERY non-hero card gets a baseline
+        // darkening (0.24) the instant it leaves the hero halo — so neighbours stop competing with
+        // the hero; (2) it ramps up with distance from the apex, so the cards nearest the BOTTOM of
+        // the viewport are the dimmest. (1-e) keeps the hero itself at ~0 dim.
+        if (dim) dim.style.opacity = ((1 - e) * (0.24 + 0.58 * (1 - vis))).toFixed(3)
         card.style.zIndex = String(300 - (aa | 0))
         card.style.opacity = Math.max(0, Math.min(1, (spread - aa) / 14)).toFixed(3)
         card.style.pointerEvents = spread - aa < 1 ? 'none' : 'auto'
