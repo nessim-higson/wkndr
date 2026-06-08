@@ -164,6 +164,31 @@ export async function wikiImage(query: string): Promise<string | null> {
   return null
 }
 
+// WEB IMAGE SEARCH (keyless, via DuckDuckGo) — the broad fallback: find a real, subject-accurate
+// photo from the open web for any pick the sources don't supply one for (a restaurant's own
+// shot, a venue, an artist). Returns the first result that passes the quality screen AND is
+// actually hotlinkable; tries several so a blocked/low-res top hit doesn't sink it.
+export async function webImage(query: string): Promise<string | null> {
+  try {
+    const page = await fetch('https://duckduckgo.com/?q=' + encodeURIComponent(query) + '&iax=images&ia=images',
+      { headers: { 'user-agent': UA, accept: 'text/html' } }).then((r) => r.text())
+    const vqd = page.match(/vqd=["']?([\d-]+)["']?/)?.[1]
+    if (!vqd) return null
+    await sleep(250)
+    const data = await fetch(`https://duckduckgo.com/i.js?l=us-en&o=json&q=${encodeURIComponent(query)}&vqd=${vqd}&f=,,,,,&p=1`,
+      { headers: { 'user-agent': UA, referer: 'https://duckduckgo.com/' } }).then((r) => r.json()).catch(() => null)
+    const results: { image?: string }[] = data?.results || []
+    for (const r of results.slice(0, 8)) {
+      const u = r.image
+      if (typeof u !== 'string' || !u.startsWith('http') || LOGO_URL.test(u)) continue
+      if (await isGoodImage(u)) return u
+    }
+    return null
+  } catch {
+    return null
+  }
+}
+
 // Run an async fn over items with a concurrency cap (be polite to source servers).
 export async function mapLimit<T, R>(items: T[], limit: number, fn: (item: T, i: number) => Promise<R>): Promise<R[]> {
   const out: R[] = new Array(items.length)
