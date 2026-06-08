@@ -17,10 +17,9 @@
   touch-action: none;          /* spin by dragging without scrolling the page */
   cursor: grab;
   z-index: 1;                  /* under the floating topbar (20) + banner (6) */
-  /* Radius sets how far neighbours splay. Tuned so the SAME hand-fan (hero + ~2 neighbours per
-     side, spread 48°) fits without cropping on both: a contained arc on desktop, scaled down on
-     mobile (below). Bigger R = wider horizontal splay, so mobile needs a much smaller R. */
-  --R: clamp(520px, 64vh, 720px);
+  /* Desktop: a WIDE radius → cards splay into a big, airy arc (the impressive look). Mobile
+     (below) uses a much smaller pivot for a tight, crop-free fan. */
+  --R: clamp(780px, 104vh, 1120px);
 }
 .wheel-stage:active { cursor: grabbing; }
 

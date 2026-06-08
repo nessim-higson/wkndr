@@ -30,9 +30,9 @@ export function FanView({
   const step = n > 0 ? 360 / n : 0
   const spin = useMotionValue(0)
   const heroLift = useMemo(() => (isMobile ? 96 : 84), [isMobile])
-  // ONE spread for both so the fan reads the SAME on phone and desktop — a hero + ~2 neighbours
-  // per side. (Desktop used to be 104°, which wrapped into a ring; mobile 56°, which cropped.)
-  const spread = 48
+  // Desktop = the WIDE, impressive arc (many cards splay down + out, the lowest dimmest). Mobile
+  // stays a tight, crop-free fan (its own concept is being explored separately).
+  const spread = useMemo(() => (isMobile ? 48 : 104), [isMobile])
 
   const moved = useRef(false)
   const spinStart = useRef(0)
@@ -92,7 +92,9 @@ export function FanView({
         // old `filter: brightness()` (which forced a full repaint of every card every frame).
         if (face) face.style.transform = `scale(${0.86 + e * 0.46}) translateY(${e * heroLift}px)`
         if (info) info.style.opacity = (0.12 + 0.88 * e).toFixed(3)
-        if (dim) dim.style.opacity = (0.5 * (1 - vis)).toFixed(3)   // recessed cards darken back
+        // depth fade: the further a card is from the apex (i.e. the LOWER it sits in the downward
+        // arc), the darker — so the cards nearest the bottom of the viewport are the dimmest.
+        if (dim) dim.style.opacity = (0.68 * (1 - vis) * (1 - vis)).toFixed(3)
         card.style.zIndex = String(300 - (aa | 0))
         card.style.opacity = Math.max(0, Math.min(1, (spread - aa) / 14)).toFixed(3)
         card.style.pointerEvents = spread - aa < 1 ? 'none' : 'auto'

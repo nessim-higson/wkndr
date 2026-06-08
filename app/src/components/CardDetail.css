@@ -28,7 +28,9 @@
 .detail {
   position: relative;
   width: 100%;
-  max-height: 90vh;
+  /* dvh, not vh — vh includes the area under the mobile toolbar, so a 90vh sheet bled past the
+     visible screen. dvh keeps it fully on-screen, with margin all round so it still reads as a card. */
+  max-height: 90dvh;
   display: flex;
   flex-direction: column;
   overflow: hidden;             /* sheet itself doesn't scroll — the body does */
@@ -62,7 +64,7 @@
   position: relative;
   width: 100%;
   flex-shrink: 0;
-  aspect-ratio: 4 / 3;
+  aspect-ratio: 3 / 2;          /* shorter than 4/3 — leaves more room so the sheet fits the phone */
   background-size: cover;
   background-position: center;
   background-color: var(--paper-3);
@@ -129,16 +131,6 @@
 }
 .detail-venue { margin-top: 5px; font-size: 13px; color: var(--ink-4); }
 .detail-blurb { margin-top: 16px; font-size: 14px; line-height: 1.6; color: var(--ink-2); }
-.detail-why {
-  margin-top: 16px;
-  padding: 12px 14px;
-  background: var(--paper-2);
-  border-radius: 10px;
-  font-size: 13px;
-  line-height: 1.45;
-  color: var(--ink-3);
-}
-.why-mark { color: var(--accent-deep); vertical-align: -2px; margin-right: 2px; }
 
 .detail-actions { margin-top: 18px; display: flex; gap: 8px; align-items: center; }
 .detail-icon-btn {

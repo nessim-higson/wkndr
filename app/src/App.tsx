@@ -101,7 +101,9 @@ const FIELD_OPTS: { key: Look; label: string }[] = [
 
 export default function App() {
   const [mode, setMode] = useState<Mode>('HOT')
-  const [view, setView] = useState<View>('stack')   // a shared weekend lands on the Stack too (flip through their picks)
+  // a shared weekend opens on the FAN — the recipient sees everything you sent at once and taps
+  // in, instead of a one-at-a-time Stack (confusing before the Match flow exists). Normal = Stack.
+  const [view, setView] = useState<View>(SHARED_IDS ? 'fan' : 'stack')
   const [wx, setWx] = useState<Wx>(DEMO.HOT)
   const [live, setLive] = useState(false)        // true once the real forecast loads
   const [swiped, setSwiped] = useState<Set<string>>(new Set())

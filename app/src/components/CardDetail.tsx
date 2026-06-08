@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { AnimatePresence, motion, useDragControls } from 'framer-motion'
-import { X, Star, ArrowUpRight, Check, Sparkles } from 'lucide-react'
+import { X, Star, ArrowUpRight, Check } from 'lucide-react'
 import type { Pick } from '../types'
 import { CATEGORY_LABEL, FRESHNESS_LABEL, STATUS_LABEL } from '../types'
 import './CardDetail.css'
@@ -122,7 +122,6 @@ export function CardDetail({
                   {[pick.venue, pick.area, pick.price].filter(Boolean).join(' · ')}
                 </motion.div>
                 {pick.blurb && <motion.p className="detail-blurb" variants={itemV}>{pick.blurb}</motion.p>}
-                {pick.why && <motion.div className="detail-why" variants={itemV}><Sparkles className="why-mark" size={13} /> {pick.why}</motion.div>}
 
                 {isMusic && (
                   <motion.div className="cb-listen" variants={itemV}>
