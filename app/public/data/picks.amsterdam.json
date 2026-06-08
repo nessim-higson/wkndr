@@ -3,7 +3,7 @@
   "label": "Amsterdam",
   "generatedAt": "2026-06-08T15:22:21.307Z",
   "live": true,
-  "count": 33,
+  "count": 31,
   "picks": [
     {
       "id": "llm-your-little-black-book-women-in-street-art-weekend",
@@ -134,7 +134,7 @@
       "blurb": "Canadian rock legends bring high-energy anthems to iconic Amsterdam venue this weekend.",
       "why": "Weekend headliner, sells out fast",
       "source": "Songkick",
-      "link": "https://www.songkick.com/concerts/billy-talent-melkweg-amsterdam-2026-06-13",
+      "link": "https://www.songkick.com/search?query=Billy%20Talent",
       "image": "https://wallpaperaccess.com/full/11353398.jpg",
       "weatherFit": [
         "HOT",
@@ -158,9 +158,9 @@
       "price": "ticketed",
       "blurb": "Electronic pioneers deliver industrial post-punk reimagined for 2026—rare Amsterdam date.",
       "why": "Cult act, experimental live show",
-      "source": "Songkick",
-      "link": "https://www.songkick.com/concerts/cabaret-voltaire-paradiso-amsterdam-2026-06-13",
-      "image": "https://switzerlanding.com/wp-content/uploads/2023/01/cabaret-voltaire-zurich.jpg",
+      "source": "Paradiso",
+      "link": "https://www.paradiso.nl/programma/cabaret-voltaire/2754537",
+      "image": "https://assets.paradiso.nl/images/transforms/event/_1200x630_crop_center-center_none/Cabaret-Voltaire-2025-4042.jpeg",
       "weatherFit": [
         "HOT",
         "WARM",
@@ -168,7 +168,7 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "verify": true
+      "verify": false
     },
     {
       "id": "llm-songkick-olivia-dean-and-jalen-ngonda",
@@ -184,7 +184,7 @@
       "blurb": "UK soul sensation and producer collaborator in rare Amsterdam pairing at the city's premier dome.",
       "why": "Rising stars, intimate collaboration",
       "source": "Songkick",
-      "link": "https://www.songkick.com/concerts/olivia-dean-jalen-ngonda-ziggo-dome-amsterdam-2026-06-14",
+      "link": "https://www.songkick.com/search?query=OLIVIA%20DEAN",
       "image": "https://jazzsoul.pl/wp-content/uploads/2025/11/olivia-dean_owf2026.jpg",
       "weatherFit": [
         "HOT",
@@ -209,7 +209,7 @@
       "blurb": "Golden-age hip-hop legends reunite for intimate Amsterdam club show—rare chance to see underground classics live.",
       "why": "Cult producers, limited capacity",
       "source": "Songkick",
-      "link": "https://www.songkick.com/concerts/blu-exile-jeru-the-damaja-bitterzoet-amsterdam-2026-06-13",
+      "link": "https://www.songkick.com/search?query=Blu%20Exile",
       "image": "https://www.urbanworld.com.au/cdn/shop/files/blu_and_exile_below_the_heavens_lp_2.jpg?v=1729055998",
       "weatherFit": [
         "HOT",
@@ -217,29 +217,6 @@
         "COOL",
         "COLD_WET",
         "VOLATILE"
-      ],
-      "verify": true
-    },
-    {
-      "id": "llm-songkick-indiealley-2026",
-      "title": "IndieAlley 2026",
-      "venue": "timbr",
-      "area": "Naarden",
-      "when": "Sat 13 Jun",
-      "category": "live",
-      "freshness": "weekend",
-      "outdoor": true,
-      "kid": true,
-      "price": "ticketed",
-      "blurb": "Day festival celebrating independent music and culture just outside Amsterdam—emerging bands, food, art.",
-      "why": "Festival weekend, outdoor vibe",
-      "source": "Songkick",
-      "link": "https://www.songkick.com/concerts/indiealley-2026-timbr-naarden-2026-06-13",
-      "image": "https://indiegame.com/wp-content/uploads/2026/01/ILE2026_0425_KV-scaled.jpg",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL"
       ],
       "verify": true
     },
@@ -315,31 +292,6 @@
       "verify": true
     },
     {
-      "id": "llm-your-little-black-book-red-light-jazz",
-      "title": "Red Light Jazz",
-      "venue": "Various hidden venues, City Centre",
-      "area": "Amsterdam Centre",
-      "when": "Sat–Mon 13–15 Jun",
-      "category": "live",
-      "freshness": "weekend",
-      "outdoor": false,
-      "kid": false,
-      "price": "from €10",
-      "blurb": "Jazz festival takes over intimate hidden venues across the Red Light District; live performances in unexpected spaces.",
-      "why": "Unique venue concept, live music highlight",
-      "source": "Your Little Black Book",
-      "link": "https://www.yourlittleblackbook.me/en/",
-      "image": "https://www.jazzarchief.nl/wp-content/uploads/2025/09/Red-Light-Jazz.jpg",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "verify": true
-    },
-    {
       "id": "llm-your-little-black-book-le-french-caf-oysters-brocante",
       "title": "Le French Café — Oysters & Brocante",
       "venue": "Le French Café",
@@ -403,7 +355,7 @@
       "blurb": "Theatre show based on beloved Dutch children's book series; imaginative adventure for ages 6+.",
       "why": "Bestselling book adapted for stage",
       "source": "Kidsproof",
-      "link": "https://www.kidsproof.nl/amsterdam/de-waanzinnige-boomhut-van-13-verdiepingen/",
+      "link": "https://www.kidsproof.nl/amsterdam",
       "image": "https://imgv2-2-f.scribdassets.com/img/document/963803806/original/476e95f1d8/1?v=1",
       "weatherFit": [
         "HOT",

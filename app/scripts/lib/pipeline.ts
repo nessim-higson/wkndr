@@ -173,6 +173,23 @@ export function whenBeforeWeekend(when: string, now: Date = new Date()): boolean
   return latest ? latest < upcomingWeekend(now).cutoff : false
 }
 
+/** Is a URL definitively DEAD (a 404/410)? Catches LLM-fabricated slug links so a pick's "open
+ *  at" never dead-ends. CONSERVATIVE on purpose: only a hard not-found/gone counts as dead — a
+ *  bot-block (403), a 5xx, a timeout, or any network hiccup returns OK, so we never nuke a real
+ *  link we just couldn't reach. (No range header — it corrupts gzip/brotli bodies → false deaths.) */
+export async function linkOk(url: string, timeoutMs = 8000): Promise<boolean> {
+  if (!/^https?:\/\//i.test(url)) return false
+  try {
+    const ctrl = new AbortController()
+    const t = setTimeout(() => ctrl.abort(), timeoutMs)
+    const res = await fetch(url, { headers: { 'user-agent': UA, accept: 'text/html' }, signal: ctrl.signal, redirect: 'follow' })
+    clearTimeout(t)
+    return res.status !== 404 && res.status !== 410
+  } catch {
+    return true   // unreachable ≠ dead — benefit of the doubt, keep the link
+  }
+}
+
 // Best-effort og:image scrape for a single page, SCREENED for quality. Returns a real-photo
 // URL or null. Never throws — a blocked/slow page or a logo-only og:image → poster fallback.
 export async function fetchOgImage(url: string, timeoutMs = 8000): Promise<string | null> {

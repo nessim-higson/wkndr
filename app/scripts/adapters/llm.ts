@@ -51,6 +51,17 @@ Monday or Tuesday event), and never an event whose date has already passed. Sour
 events across many dates — pick the ones ON or spanning the weekend of ${WEEKEND}. Ongoing things
 ("until <future date>", "daily", a restaurant/museum open that weekend) are always fine.
 
+DATES MUST BE EXACT AND COME FROM THE SOURCE. Never shift, round, assume, or guess a date to make
+an event fall on the weekend. Use ONLY the date the source explicitly prints next to that event.
+If the source gives no clear date for it — or the date is NOT actually ${WEEKEND} — OMIT the
+event entirely. A recurring festival you "know" happens in June is NOT necessarily on this
+weekend; if the page doesn't say so for these exact dates, leave it out. A wrong date is far
+worse than a missing event.
+
+LINKS MUST BE REAL. Put in "link" ONLY a URL that appears verbatim in the source text. NEVER
+invent, complete, or guess a URL slug (e.g. do not fabricate "/concerts/artist-venue-date"). If
+you don't have the event's exact URL from the page, use the source page URL as the link.
+
 Pick only the 3–8 most worth-knowing items for that weekend. Skip generic/evergreen filler
 unless it is exceptional.
 

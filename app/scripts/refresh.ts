@@ -19,7 +19,7 @@
  */
 import { CITIES, type City } from '../src/data/cities'
 import type { Pick } from '../src/types'
-import { dedupe, balanceByCategory, isGoodImage, fetchOgImage, wikiImage, webImage, whenIsPast, whenBeforeWeekend, upcomingWeekend, mapLimit } from './lib/pipeline'
+import { dedupe, balanceByCategory, isGoodImage, fetchOgImage, wikiImage, webImage, whenIsPast, whenBeforeWeekend, upcomingWeekend, linkOk, mapLimit } from './lib/pipeline'
 import { fixWhen } from '../src/lib/when'
 import { songkickAdapter } from './adapters/songkick'
 import { llmExtract } from './adapters/llm'
@@ -93,6 +93,18 @@ async function buildCity(city: City) {
   // source that wrote "Sun 8 Jun" when the 8th is a Monday is corrected in the stored feed too.
   for (const p of picks) if (p.when) p.when = fixWhen(p.when)
 
+  // VALIDATE LINKS — LLM picks sometimes carry a GUESSED url slug that 404s, which both dead-ends
+  // the card's "open at" and starves the og:image pass (→ a wrong web image). Any live link that
+  // doesn't resolve falls back to its source page URL (always real).
+  {
+    const srcUrl = new Map(roster.map((s) => [s.name, s.url]))
+    let fixed = 0
+    await mapLimit(picks.filter(isLive), 6, async (p) => {
+      if (p.link && !(await linkOk(p.link))) { const u = srcUrl.get(p.source); if (u && u !== p.link) { p.link = u; fixed++ } }
+    })
+    if (fixed) console.log(`  links:    ${fixed} dead LLM links → source URL`)
+  }
+
   // PHOTO-FIRST IMAGE PASS. Every live pick must end up with a real, RELEVANT photo or it's dropped
   // (no category-gradient posters, no generic page-hero fallbacks). Three sources, in order:
   //   1. the page photo the LLM matched to this item (validate it),
@@ -105,14 +117,16 @@ async function buildCity(city: City) {
     await mapLimit(live.filter((p) => !p.image && p.link), 6, async (p) => { const img = await fetchOgImage(p.link); if (img) p.image = img })
 
     // WEB IMAGE SEARCH (DuckDuckGo, keyless) — the broad fallback for everything the sources didn't
-    // image: a real, subject-accurate photo from the open web. Performers → just the act; venues →
-    // name + city + a category hint so a restaurant resolves to the actual place, not a stock word.
+    // image: a real, subject-accurate photo from the open web. Performers get a DISAMBIGUATING term
+    // ("band"/"live") so an ambiguous name ("Cabaret Voltaire") resolves to the act, not a same-named
+    // landmark; venues → name + city + a category hint so a restaurant resolves to the actual place.
     const PERFORMER = new Set(['live', 'stage'])
     const CAT_HINT: Record<string, string> = { eat: 'restaurant', drink: 'bar', art: 'museum gallery', market: 'market', daytrip: '', out: '' }
+    const ACT_HINT: Record<string, string> = { live: 'band concert', stage: 'theatre show' }
     let webGot = 0
     await mapLimit(live.filter((p) => !p.image), 2, async (p) => {
       const q = PERFORMER.has(p.category)
-        ? p.title.split(/\s*[:–—]\s*/)[0].split(/\s+(?:and|&|\+|x|w\/|ft\.?|feat\.?|with|presents)\s+/i)[0].trim()
+        ? `${p.title.split(/\s*[:–—]\s*/)[0].split(/\s+(?:and|&|\+|x|w\/|ft\.?|feat\.?|with|presents)\s+/i)[0].trim()} ${ACT_HINT[p.category] ?? ''}`.trim()
         : `${p.title} ${city.name} ${CAT_HINT[p.category] ?? ''}`.replace(/\s+/g, ' ').trim()
       const img = await webImage(q)
       if (img) { p.image = img; webGot++ }
