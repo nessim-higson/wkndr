@@ -122,7 +122,9 @@ export async function isGoodImage(url: string, timeoutMs = 8000): Promise<boolea
 // already-finished events off a source page.
 const MONTHS: Record<string, number> = { jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5, jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11 }
 const MONTH_RE = 'jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec'
-export function whenIsPast(when: string, now: Date = new Date()): boolean {
+
+/** The LATEST concrete date a `when` refers to, or null if it's evergreen/undated. */
+function latestDateOf(when: string, now: Date): Date | null {
   const s = (when || '').toLowerCase()
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
   let latest: Date | null = null
@@ -137,7 +139,38 @@ export function whenIsPast(when: string, now: Date = new Date()): boolean {
     consider(MONTHS[m[3]], Math.max(+m[1], m[2] ? +m[2] : 0))
   for (const m of s.matchAll(new RegExp(`(${MONTH_RE})\\s*(\\d{1,2})`, 'g')))
     consider(MONTHS[m[1]], +m[2])
+  return latest
+}
+
+export function whenIsPast(when: string, now: Date = new Date()): boolean {
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+  const latest = latestDateOf(when, now)
   return latest ? latest < today : false   // no parseable date → evergreen → keep
+}
+
+// ─── WEEKEND FOCUS ───────────────────────────────────────────────────────────
+// WKNDR is a WEEKEND app: on a Monday the feed should point at the COMING Sat–Sun, not at
+// today's mid-week one-offs. This computes that weekend and screens out dated weekday events
+// that finish before it (evergreen restaurants/museums + weekend-or-later events stay).
+
+/** The upcoming weekend (Sat + Sun), plus the Friday cutoff (we keep the Fri run-up). If today
+ *  is itself Sat/Sun, that IS the weekend. */
+export function upcomingWeekend(now: Date = new Date()): { sat: Date; sun: Date; cutoff: Date } {
+  const d = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+  const dow = d.getDay()                                   // 0 Sun … 6 Sat
+  const sat = new Date(d)
+  if (dow === 0) sat.setDate(d.getDate() - 1)              // Sun → this weekend's Sat was yesterday
+  else if (dow !== 6) sat.setDate(d.getDate() + (6 - dow)) // Mon–Fri → the next Saturday
+  const sun = new Date(sat); sun.setDate(sat.getDate() + 1)
+  const cutoff = new Date(sat); cutoff.setDate(sat.getDate() - 1)   // Friday — include the run-up
+  return { sat, sun, cutoff }
+}
+
+/** A dated one-off that ENDS before this weekend's Friday — i.e. weekday filler, not weekend
+ *  content. Evergreen / ongoing / weekend-or-later picks return false (kept). */
+export function whenBeforeWeekend(when: string, now: Date = new Date()): boolean {
+  const latest = latestDateOf(when, now)
+  return latest ? latest < upcomingWeekend(now).cutoff : false
 }
 
 // Best-effort og:image scrape for a single page, SCREENED for quality. Returns a real-photo

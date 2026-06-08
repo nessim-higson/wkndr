@@ -19,7 +19,7 @@
  */
 import { CITIES, type City } from '../src/data/cities'
 import type { Pick } from '../src/types'
-import { dedupe, balanceByCategory, isGoodImage, fetchOgImage, wikiImage, webImage, whenIsPast, mapLimit } from './lib/pipeline'
+import { dedupe, balanceByCategory, isGoodImage, fetchOgImage, wikiImage, webImage, whenIsPast, whenBeforeWeekend, upcomingWeekend, mapLimit } from './lib/pipeline'
 import { fixWhen } from '../src/lib/when'
 import { songkickAdapter } from './adapters/songkick'
 import { llmExtract } from './adapters/llm'
@@ -76,6 +76,17 @@ async function buildCity(city: City) {
     const before = picks.length
     picks = picks.filter((p) => !whenIsPast(p.when))
     if (before !== picks.length) console.log(`  stale:    dropped ${before - picks.length} past-dated picks`)
+  }
+
+  // WEEKEND FOCUS — this is a weekend app. Drop dated weekday one-offs that finish before the
+  // coming weekend (evergreen restaurants/museums + weekend-or-later events stay), so a Monday
+  // feed points at Sat–Sun, not at today.
+  {
+    const wk = upcomingWeekend()
+    const before = picks.length
+    picks = picks.filter((p) => !whenBeforeWeekend(p.when))
+    const label = `${wk.sat.toLocaleDateString('en', { day: 'numeric', month: 'short' })}–${wk.sun.toLocaleDateString('en', { day: 'numeric', month: 'short' })}`
+    if (before !== picks.length) console.log(`  weekend:  dropped ${before - picks.length} pre-weekend one-offs (focus ${label})`)
   }
 
   // NORMALIZE WEEKDAYS — recompute the day-of-week in every `when` from its actual date, so a

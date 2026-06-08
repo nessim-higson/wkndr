@@ -9,7 +9,7 @@
 // Signal + link, never republish: the prompt extracts FACTS only and writes OUR OWN one-line
 // blurb, always crediting + linking the source.
 import type { Pick, Category } from '../../src/types'
-import { htmlToText, deriveWeatherFit } from '../lib/pipeline'
+import { htmlToText, deriveWeatherFit, upcomingWeekend } from '../lib/pipeline'
 import type { RosterSource } from '../roster'
 
 const KEY = process.env.ANTHROPIC_API_KEY
@@ -33,20 +33,25 @@ async function gate(): Promise<void> {
 const CATEGORIES: Category[] = ['live', 'art', 'stage', 'eat', 'drink', 'market', 'out', 'daytrip']
 
 const TODAY = new Date().toLocaleDateString('en', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
+const WK = upcomingWeekend()
+const fmt = (d: Date) => d.toLocaleDateString('en', { weekday: 'long', day: 'numeric', month: 'long' })
+const WEEKEND = WK.sat.getTime() === WK.sun.getTime() - 864e5 ? `${fmt(WK.sat)} – ${fmt(WK.sun)}` : fmt(WK.sat)
 
 function systemPrompt(cityName: string): string {
-  return `You are WKNDR's culture scout for ${cityName}. TODAY IS ${TODAY}. You read a source page
-and extract the genuinely INTERESTING, DIVERSE, TIME-SENSITIVE things to do from TODAY ONWARD
-(this coming weekend and the days around it) — not a dump of every listing. Run the gamut:
-exciting gigs, critically-acclaimed AND crowd-pleasing films, festivals, new openings, things
-CLOSING SOON, kid-friendly options, free/outdoor things, food & drink, day-trips, members' club
-events (e.g. Soho House) if present.
+  return `You are WKNDR's culture scout for ${cityName}. TODAY IS ${TODAY}.
 
-CRUCIAL: NEVER include an event whose date has already passed (before ${TODAY}). Source pages
-often still list finished events — skip those entirely. Ongoing things ("until <future date>",
-"daily") are fine.
+YOUR FOCUS IS THE COMING WEEKEND: ${WEEKEND}. WKNDR is a WEEKEND app — extract the genuinely
+INTERESTING, DIVERSE things to do THAT WEEKEND (and its Friday run-up), plus ongoing things that
+will still be on then. Run the gamut: exciting gigs, critically-acclaimed AND crowd-pleasing
+films, festivals, new openings, things CLOSING SOON, kid-friendly options, free/outdoor things,
+food & drink, day-trips, members' club events (e.g. Soho House) if present.
 
-Pick only the 3–8 most worth-knowing UPCOMING items on the page. Skip generic/evergreen filler
+CRUCIAL: do NOT include mid-week one-offs that happen and finish BEFORE that weekend (e.g. a
+Monday or Tuesday event), and never an event whose date has already passed. Source pages list
+events across many dates — pick the ones ON or spanning the weekend of ${WEEKEND}. Ongoing things
+("until <future date>", "daily", a restaurant/museum open that weekend) are always fine.
+
+Pick only the 3–8 most worth-knowing items for that weekend. Skip generic/evergreen filler
 unless it is exceptional.
 
 LEGAL: signal + link, never republish. Use only FACTS (name, venue, date, price). Write your OWN
