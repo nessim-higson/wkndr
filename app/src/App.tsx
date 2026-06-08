@@ -58,10 +58,9 @@ interface Wx { temp: number; hi: number; lo: number; city: string; label?: strin
 // weekend, use today onward. Returns the indices into the daily arrays + a human label.
 function weekendWindow(times: string[]): { idx: number[]; label: string } {
   const dow = times.map((t) => new Date(`${t}T12:00:00`).getDay())   // 0 Sun … 6 Sat
-  // SHORT month in the header so the full date always fits the compact module beside the temp
-  // (full month overflowed → "13–14 J…"). Date stays as prominent as the weather, just un-clipped.
   const mon = (t: string) => new Date(`${t}T12:00:00`).toLocaleDateString('en', { month: 'short' })
   const dayNum = (t: string) => new Date(`${t}T12:00:00`).getDate()
+  const shortDay = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
   let idx: number[] = []
   if (dow[0] === 0) idx = [0]                                         // today is Sun → this weekend = today
   else if (dow[0] === 6) idx = dow[1] === 0 ? [0, 1] : [0]            // today is Sat
@@ -71,10 +70,12 @@ function weekendWindow(times: string[]): { idx: number[]; label: string } {
     else idx = (s + 1 < dow.length && dow[s + 1] === 0) ? [s, s + 1] : [s]
   }
   const a = idx[0], b = idx[idx.length - 1]
-  const fullDay = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+  // Compact, un-truncatable date for the header pill. The app is ABOUT weekends, so a range
+  // doesn't need the redundant "Sat–Sun ·" prefix — "13–14 Jun" already reads as that weekend
+  // and fits beside the temp with room. A single day keeps its (short) weekday for clarity.
   const label = idx.length > 1
-    ? `Sat–Sun · ${dayNum(times[a])}–${dayNum(times[b])} ${mon(times[b])}`
-    : `${fullDay[dow[a]]} · ${dayNum(times[a])} ${mon(times[a])}`
+    ? `${dayNum(times[a])}–${dayNum(times[b])} ${mon(times[b])}`
+    : `${shortDay[dow[a]]} ${dayNum(times[a])} ${mon(times[a])}`
   return { idx, label }
 }
 

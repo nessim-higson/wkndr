@@ -55,7 +55,7 @@
 /* weather block: the weekend DATE is the headline ("which weekend"), with the
    temperature a notch larger beneath so the weather still reads at a glance. */
 .tb-wx { display: flex; flex-direction: column; line-height: 1.1; gap: 1px; min-width: 0; }
-.tb-when { font-size: 13px; font-weight: 700; letter-spacing: -0.012em; color: #1c1c1a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tb-when { font-size: 14px; font-weight: 700; letter-spacing: -0.012em; color: #1c1c1a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .tb-temp { font-size: 17px; font-weight: 700; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; opacity: 0.78; }
 
 .tb-icon {
