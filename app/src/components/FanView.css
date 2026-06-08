@@ -17,9 +17,10 @@
   touch-action: none;          /* spin by dragging without scrolling the page */
   cursor: grab;
   z-index: 1;                  /* under the floating topbar (20) + banner (6) */
-  /* Desktop: a WIDE radius → cards splay out in a big, airy arc (the earlier, more
-     interesting look). Mobile (below) uses a close pivot for the tight hand fan. */
-  --R: clamp(780px, 104vh, 1120px);
+  /* Radius sets how far neighbours splay. Tuned so the SAME hand-fan (hero + ~2 neighbours per
+     side, spread 48°) fits without cropping on both: a contained arc on desktop, scaled down on
+     mobile (below). Bigger R = wider horizontal splay, so mobile needs a much smaller R. */
+  --R: clamp(520px, 64vh, 720px);
 }
 .wheel-stage:active { cursor: grabbing; }
 
@@ -65,11 +66,22 @@
   background-color: var(--paper-3);
   display: flex;
   align-items: flex-end;
+  will-change: transform;       /* promote to its own layer — the per-frame scale/lift composites cleanly */
 }
 .wcard-shade {
   position: absolute;
   inset: 0;
   background: linear-gradient(to top, rgba(0, 0, 0, 0.78) 0%, rgba(0, 0, 0, 0.2) 46%, transparent 72%);
+}
+/* depth-dim — recessed cards darken via this overlay's OPACITY (a GPU composite), replacing the
+   old per-frame `filter: brightness()` that repainted every card every frame. */
+.wcard-dim {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: #000;
+  opacity: 0;
+  pointer-events: none;
 }
 .wcard-info {
   position: relative;
@@ -106,11 +118,10 @@
    the shared banner can't push the hero off. Tighter radius + smaller cards → the circle
    of cards reads as a fan, with the hero centred. */
 @media (max-width: 719px) {
-  /* CAP the radius so a wide phone (430px) doesn't get an oversized wheel that floats the
-     fan high — keep it a consistent ~360px hand-fan across phone widths. */
-  .wheel-stage { --R: min(360px, 96vw); }
-  /* hero face centred at ~52dvh (a touch below middle so the fan fills the lower space).
-     offset = card-half(128) + heroLift(96)×scale(1.32 ≈ 127) = 255. */
+  /* Small radius so the 1st neighbours (full opacity) fit inside a 375px screen and don't get
+     hard-cropped; the 2nd neighbours sit at ~0.2 opacity (a soft fade, not a harsh cut). */
+  .wheel-stage { --R: min(240px, 66vw); }
+  /* hero face centred ~50dvh (offset tuned empirically against the measured render). */
   .wheel { top: calc(52dvh - 255px); }
-  .wheel-card { width: 188px; height: 256px; margin-left: -94px; }
+  .wheel-card { width: 168px; height: 228px; margin-left: -84px; }
 }

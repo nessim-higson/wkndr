@@ -30,7 +30,9 @@ export function FanView({
   const step = n > 0 ? 360 / n : 0
   const spin = useMotionValue(0)
   const heroLift = useMemo(() => (isMobile ? 96 : 84), [isMobile])
-  const spread = useMemo(() => (isMobile ? 56 : 104), [isMobile])   // wider, airier fan on desktop
+  // ONE spread for both so the fan reads the SAME on phone and desktop — a hero + ~2 neighbours
+  // per side. (Desktop used to be 104°, which wrapped into a ring; mobile 56°, which cropped.)
+  const spread = 48
 
   const moved = useRef(false)
   const spinStart = useRef(0)
@@ -64,34 +66,37 @@ export function FanView({
   useEffect(() => {
     const wheel = wheelRef.current
     if (!wheel) return
+    // Cache the element refs ONCE (not per frame) — querying the DOM every frame was a needless
+    // cost. Each item carries its base angle so the per-frame loop is pure math + composited writes.
+    const items = [...wheel.querySelectorAll<HTMLElement>('.wheel-card')].map((card, i) => ({
+      card,
+      face: card.querySelector<HTMLElement>('.wheel-card-face'),
+      info: card.querySelector<HTMLElement>('.wcard-info'),
+      dim: card.querySelector<HTMLElement>('.wcard-dim'),
+      base: i * step,
+    }))
     const update = () => {
       const s = spin.get()
-      const els = wheel.querySelectorAll<HTMLElement>('.wheel-card')
-      els.forEach((card, i) => {
-        let a = (i * step + s) % 360
+      for (let i = 0; i < items.length; i++) {
+        const { card, face, info, dim, base } = items[i]
+        let a = (base + s) % 360
         if (a > 180) a -= 360
         else if (a < -180) a += 360
-        const aa = Math.abs(a)
-        const vis = Math.max(0, 1 - aa / spread)        // fan membership: 1 centre → 0 at the spread edge
-        const p = Math.max(0, 1 - aa / HALO)            // hero emphasis (tighter than the spread)
+        const aa = a < 0 ? -a : a
+        const vis = aa < spread ? 1 - aa / spread : 0   // fan membership: 1 centre → 0 at the spread edge
+        const p = aa < HALO ? 1 - aa / HALO : 0         // hero emphasis (tighter than the spread)
         const e = p * p
-        const face = card.querySelector<HTMLElement>('.wheel-card-face')
-        // hero: lifts forward (scale) + pulls to centre; neighbours sit back, tilted into the fan
+        // hero: lifts forward (scale) + pulls to centre; neighbours sit back, tilted into the fan.
+        // ONLY transform/opacity are written per frame — both composite on the GPU (no paint/layout),
+        // so the spin stays smooth on a phone. Depth-dimming is a black overlay's OPACITY, not the
+        // old `filter: brightness()` (which forced a full repaint of every card every frame).
         if (face) face.style.transform = `scale(${0.86 + e * 0.46}) translateY(${e * heroLift}px)`
-        // text belongs to the HERO only — fade each card's copy out by its distance from the top
-        // so neighbours become quiet image tiles instead of a wall of competing titles
-        const info = card.querySelector<HTMLElement>('.wcard-info')
         if (info) info.style.opacity = (0.12 + 0.88 * e).toFixed(3)
-        // layer inner→outer by angle so the hero is on top and the fan stacks cleanly
-        card.style.zIndex = String(Math.round(300 - aa))
-        // Cards stay OPAQUE so they don't bleed each other's edges (the whole .wheel carries a
-        // single group-translucency against the field instead). Depth = brightness, not alpha:
-        // recessed cards dim back; the hero stays bright. Only the very far edge fades to 0 to
-        // hide off-fan cards (they're off-screen anyway).
-        card.style.opacity = String(Math.max(0, Math.min(1, (spread - aa) / 14)))
-        card.style.filter = `brightness(${(0.52 + 0.48 * vis).toFixed(3)})`
+        if (dim) dim.style.opacity = (0.5 * (1 - vis)).toFixed(3)   // recessed cards darken back
+        card.style.zIndex = String(300 - (aa | 0))
+        card.style.opacity = Math.max(0, Math.min(1, (spread - aa) / 14)).toFixed(3)
         card.style.pointerEvents = spread - aa < 1 ? 'none' : 'auto'
-      })
+      }
     }
     update()
     const unsub = spin.on('change', update)
@@ -149,6 +154,7 @@ export function FanView({
               style={p.image ? { backgroundImage: `url(${p.image})` } : undefined}
             >
               <span className="wcard-shade" aria-hidden />
+              <span className="wcard-dim" aria-hidden />
               <span className="wcard-info">
                 <span className="wcard-cat mono">{CATEGORY_LABEL[p.category]}</span>
                 <span className="wcard-title">{p.title}</span>

@@ -50,13 +50,6 @@ export function fixWhen(when: string, now: Date = new Date()): string {
 
 // ── grouping helpers (the saves dock sorts/groups by day + time) ───────────────
 
-/** The first concrete date in a `when` (the START of a range), or null if it's evergreen. */
-function firstDate(when: string, now: Date): Date | null {
-  const m = when.match(new RegExp(`(\\d{1,2})(?:\\s*[–—-]\\s*\\d{1,2})?\\s+(${MONS})`, 'i'))
-  if (!m) return null
-  return resolveDate(+m[1], MON[m[2].toLowerCase()], now)
-}
-
 /** Minutes-into-the-day for intra-day ordering — explicit HH:MM, else a part-of-day word. */
 function timeMinutes(when: string): number {
   const t = when.match(/(\d{1,2}):(\d{2})/)
@@ -69,19 +62,45 @@ function timeMinutes(when: string): number {
   return 12 * 60
 }
 
-/** A sortable key: dated picks chronologically; evergreen ("Daily", "Open now") sink last. */
-export function whenSortKey(when: string, now: Date = new Date()): number {
-  const d = firstDate(when, now)
-  if (!d) return Number.MAX_SAFE_INTEGER
-  return d.getTime() + timeMinutes(when) * 60000
+/** Every concrete date mentioned in a `when`, sorted ascending. */
+function datesIn(s: string, now: Date): Date[] {
+  const out: Date[] = []
+  for (const m of s.matchAll(new RegExp(`(\\d{1,2})\\s*[–—-]?\\s*(\\d{1,2})?\\s*(${MONS})`, 'gi'))) {
+    const mi = MON[m[3].slice(0, 3).toLowerCase()]
+    out.push(resolveDate(+m[1], mi, now))
+    if (m[2]) out.push(resolveDate(+m[2], mi, now))
+  }
+  for (const m of s.matchAll(new RegExp(`(${MONS})\\s*(\\d{1,2})`, 'gi')))
+    out.push(resolveDate(+m[2], MON[m[1].slice(0, 3).toLowerCase()], now))
+  return out.sort((a, b) => a.getTime() - b.getTime())
 }
 
-/** The day bucket a pick belongs to, for the saves breakdown. Evergreen → "Anytime". */
+/** Is this pick "anytime" rather than a specific-day plan? True for open-ended/recurring runs
+ *  ("Until 21 Jun", "Daily") AND for long runs spanning more than a weekend (an exhibition open
+ *  for weeks) — so the saves list buckets those under Anytime, not on a misleading end date. */
+function classifyWhen(when: string, now: Date): { anytime: boolean; start: Date | null } {
+  const s = (when || '').toLowerCase()
+  if (/\b(daily|until|ongoing|every\s?day|always|through(?:out)?|all\s?(?:summer|year|weekend)|now\s?open|open\s?now)\b/.test(s))
+    return { anytime: true, start: null }
+  const dates = datesIn(s, now)
+  if (!dates.length) return { anytime: true, start: null }
+  const spanDays = (dates[dates.length - 1].getTime() - dates[0].getTime()) / 864e5
+  return { anytime: spanDays > 3, start: dates[0] }       // a run longer than a weekend → anytime
+}
+
+/** A sortable key: dated picks chronologically; ongoing / long-running / evergreen sink last. */
+export function whenSortKey(when: string, now: Date = new Date()): number {
+  const { anytime, start } = classifyWhen(when, now)
+  if (anytime || !start) return Number.MAX_SAFE_INTEGER
+  return start.getTime() + timeMinutes(when) * 60000
+}
+
+/** The day bucket a pick belongs to, for the saves breakdown. Ongoing/long-running → "Anytime". */
 export function whenDayGroup(when: string, now: Date = new Date()): { key: string; label: string } {
-  const d = firstDate(when, now)
-  if (!d) return { key: 'anytime', label: 'Anytime' }
-  const label = d.toLocaleDateString('en', { weekday: 'long', day: 'numeric', month: 'short' })
-  return { key: d.toISOString().slice(0, 10), label }
+  const { anytime, start } = classifyWhen(when, now)
+  if (anytime || !start) return { key: 'anytime', label: 'Anytime' }
+  const label = start.toLocaleDateString('en', { weekday: 'long', day: 'numeric', month: 'short' })
+  return { key: start.toISOString().slice(0, 10), label }
 }
 
 /** Just the time / part-of-day slice of a `when`, for the row's time chip ("" if none). */
