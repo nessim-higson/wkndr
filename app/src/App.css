@@ -20,7 +20,7 @@
   /* CLOSED = compact. Widths are PARENT-relative (100% = the .app's padded width), never
      calc(100vw): the viewport is wider than this padded parent, so a vw-based width would
      overflow and break `margin:0 auto` centring (the off-centre nav bug). */
-  width: min(366px, 100%); margin: 0 auto;
+  width: min(340px, 100%); margin: 0 auto;
   border-radius: 22px;
   background: var(--module-surface);
   backdrop-filter: blur(22px) saturate(1.3);
@@ -29,16 +29,22 @@
   color: #1c1c1a;
   transition: width 0.36s var(--ease-out), border-radius 0.28s var(--ease-out);
 }
-/* OPEN — expand outward, staying centred. Mobile fills the padded width; desktop opens
-   wide enough to show every control without the panel scrolling. */
+/* OPEN — expand outward, staying centred, but only as WIDE AS THE CONTENT NEEDS. The controls
+   are left-justified and ~300px wide, so a full-width (or 520px) panel left a big empty right
+   gutter — cap it so the panel hugs its content. Narrow phones still fill their width. */
 .topbar-module.open,
 .topbar-module.peeking {
   border-bottom-left-radius: 0; border-bottom-right-radius: 0;
-  width: 100%;
+  /* SAME width as closed — the controls (incl. the 6-pill ambient row) fit on one line at
+     ~340px, so the module stays a CONSTANT width and just expands DOWNWARD. No more 100%/520px
+     panel with a big empty right gutter, and no width jitter on open. (max-width:100% lets a
+     sub-340 phone fill its width.) */
+  width: 340px;
+  max-width: 100%;
 }
 @media (min-width: 720px) {
-  .topbar-module { width: 366px; }                                  /* compact closed */
-  .topbar-module.open, .topbar-module.peeking { width: 520px; }     /* open: left-justified content fits tighter */
+  .topbar-module { width: 340px; }                                  /* compact closed */
+  .topbar-module.open, .topbar-module.peeking { width: 340px; }     /* open: constant width, expands down only */
 }
 
 .topbar-row {
