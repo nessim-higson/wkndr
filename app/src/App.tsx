@@ -593,7 +593,7 @@ export default function App() {
                     <button className="bar-foot" onClick={() => { setInputsOpen(true); setBarOpen(false) }}>
                       <Info size={13} strokeWidth={2.2} /> Built from {city.sourceCount} sources · weather × freshness{hasTaste(taste) ? ' × you' : ''}
                     </button>
-                    <span className="bar-build">v{APP_VERSION}</span>
+                    <span className="bar-build">{APP_VERSION}</span>
                   </div>
                 </div>
               </div>

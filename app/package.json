@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "refresh": "bun run scripts/refresh.ts"
+    "refresh": "bun run scripts/refresh.ts",
+    "bump": "bun run scripts/bump.ts"
   },
   "dependencies": {
     "framer-motion": "^11.15.0",

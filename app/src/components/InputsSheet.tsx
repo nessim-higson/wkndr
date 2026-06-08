@@ -89,7 +89,7 @@ export function InputsSheet({
               <p>{cityLabel} · Ness — kids treated as a cross-cut lens, not a separate feed.</p>
             </section>
 
-            <div className="sheet-version">WKNDR v{APP_VERSION} · {cityLabel} · {seed ? 'seed set (pre-crawl)' : 'hand-curated snapshot'}</div>
+            <div className="sheet-version">WKNDR {APP_VERSION} · {cityLabel} · {seed ? 'seed set (pre-crawl)' : 'hand-curated snapshot'}</div>
             <button className="sheet-done" onClick={onClose}>Done</button>
           </motion.div>
         </motion.div>
