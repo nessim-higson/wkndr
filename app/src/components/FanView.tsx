@@ -104,7 +104,7 @@ function WheelFan({
         // darkening (0.24) the instant it leaves the hero halo — so neighbours stop competing with
         // the hero; (2) it ramps up with distance from the apex, so the cards nearest the BOTTOM of
         // the viewport are the dimmest. (1-e) keeps the hero itself at ~0 dim.
-        if (dim) dim.style.opacity = ((1 - e) * (0.24 + 0.58 * (1 - vis))).toFixed(3)
+        if (dim) dim.style.opacity = ((1 - e) * (0.32 + 0.6 * (1 - vis))).toFixed(3)
         card.style.zIndex = String(300 - (aa | 0))
         card.style.opacity = Math.max(0, Math.min(1, (spread - aa) / 14)).toFixed(3)
         card.style.pointerEvents = spread - aa < 1 ? 'none' : 'auto'
