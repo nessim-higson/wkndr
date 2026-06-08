@@ -20,7 +20,7 @@
   /* CLOSED = compact. Widths are PARENT-relative (100% = the .app's padded width), never
      calc(100vw): the viewport is wider than this padded parent, so a vw-based width would
      overflow and break `margin:0 auto` centring (the off-centre nav bug). */
-  width: min(340px, 100%); margin: 0 auto;
+  width: min(366px, 100%); margin: 0 auto;
   border-radius: 22px;
   background: var(--module-surface);
   backdrop-filter: blur(22px) saturate(1.3);
@@ -37,8 +37,8 @@
   width: 100%;
 }
 @media (min-width: 720px) {
-  .topbar-module { width: 340px; }                                  /* compact closed */
-  .topbar-module.open, .topbar-module.peeking { width: 640px; }     /* wide open, no scroll */
+  .topbar-module { width: 366px; }                                  /* compact closed */
+  .topbar-module.open, .topbar-module.peeking { width: 520px; }     /* open: left-justified content fits tighter */
 }
 
 .topbar-row {
@@ -48,14 +48,14 @@
   -webkit-tap-highlight-color: transparent;
   user-select: none;
 }
-.tb-brandblock { display: flex; align-items: center; gap: 12px; }
+.tb-brandblock { display: flex; align-items: center; gap: 12px; flex: 1 1 auto; min-width: 0; }
 .tb-brand { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-display); font-size: 21px; font-weight: 700; letter-spacing: -0.01em; }
 .tb-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
 .tb-divider { width: 1px; height: 22px; background: rgba(0, 0, 0, 0.14); flex-shrink: 0; }
 /* weather block: the weekend DATE is the headline ("which weekend"), with the
    temperature a notch larger beneath so the weather still reads at a glance. */
-.tb-wx { display: flex; flex-direction: column; line-height: 1.1; gap: 1px; }
-.tb-when { font-size: 13px; font-weight: 700; letter-spacing: -0.012em; color: #1c1c1a; white-space: nowrap; }
+.tb-wx { display: flex; flex-direction: column; line-height: 1.1; gap: 1px; min-width: 0; }
+.tb-when { font-size: 13px; font-weight: 700; letter-spacing: -0.012em; color: #1c1c1a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .tb-temp { font-size: 17px; font-weight: 700; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; opacity: 0.78; }
 
 .tb-icon {
@@ -487,7 +487,7 @@
   backdrop-filter: blur(10px);
 }
 .adjust-label { font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.6; }
-.mode-pills { display: inline-flex; gap: 4px; flex-wrap: wrap; justify-content: center; }
+.mode-pills { display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-start; }
 .field-pills button.on { background: var(--accent); color: #fff; opacity: 1; }
 .mode-pills button {
   font-size: 11px;
