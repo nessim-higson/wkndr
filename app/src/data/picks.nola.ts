@@ -33,7 +33,7 @@ export const PICKS_NOLA: Pick[] = [
   },
   {
     id: 'nola-spotted-cat', title: 'The Spotted Cat Music Club', venue: 'The Spotted Cat', area: 'Marigny', when: 'Fri–Sun · sets from 16:00',
-    image: "http://static1.squarespace.com/static/5872a05fb8a79b5c39e888e8/t/605a4e9ca221b00fb12cd026/1616531100493/scmc-squarespace-Share.jpg?format=1500w",
+    image: "https://static1.squarespace.com/static/5872a05fb8a79b5c39e888e8/t/605a4e9ca221b00fb12cd026/1616531100493/scmc-squarespace-Share.jpg?format=1500w",
     category: 'live', freshness: 'always', outdoor: false, kid: false, price: 'no cover (tip the band)',
     blurb: 'A tiny, sweaty Frenchmen Street jazz club — trad and swing bands back-to-back, cash only.',
     why: 'Frenchmen St · indoor · free-ish all weekend',
@@ -42,7 +42,7 @@ export const PICKS_NOLA: Pick[] = [
   },
   {
     id: 'nola-dba', title: 'd.b.a. — Frenchmen Street', venue: 'd.b.a.', area: 'Marigny', when: 'Fri 5 Jun · 22:00',
-    image: "http://static1.squarespace.com/static/659490e7976465783a380b2b/t/660e2c1e8218546a9eefeedd/1712204830201/dba-socialsharing.jpg?format=1500w",
+    image: "https://static1.squarespace.com/static/659490e7976465783a380b2b/t/660e2c1e8218546a9eefeedd/1712204830201/dba-socialsharing.jpg?format=1500w",
     category: 'live', freshness: 'weekend', outdoor: false, kid: false, price: 'small cover',
     blurb: 'A craft-beer bar with one of the best live rooms in the city — brass, blues and the odd legend dropping in.',
     why: 'Frenchmen St · indoor · great sound',

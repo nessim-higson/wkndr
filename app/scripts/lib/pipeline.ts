@@ -95,9 +95,11 @@ function imageDims(b: Uint8Array): [number, number] | null {
   return null
 }
 
-/** True if `url` resolves to a real, card-worthy photo (right shape + resolution). */
+/** True if `url` resolves to a real, card-worthy photo (right shape + resolution). Requires
+ *  HTTPS — an http:// image is mixed-content-blocked by the browser on the https site (a blank
+ *  card), even though a server-side fetch of it succeeds. */
 export async function isGoodImage(url: string, timeoutMs = 8000): Promise<boolean> {
-  if (LOGO_URL.test(url)) return false
+  if (!url.startsWith('https://') || LOGO_URL.test(url)) return false
   try {
     const ctrl = new AbortController()
     const t = setTimeout(() => ctrl.abort(), timeoutMs)
@@ -156,8 +158,9 @@ export async function fetchOgImage(url: string, timeoutMs = 8000): Promise<strin
     let img = m[1].trim()
     if (img.startsWith('//')) img = 'https:' + img
     if (img.startsWith('/')) { const u = new URL(url); img = u.origin + img }
+    img = img.replace(/^http:\/\//i, 'https://')          // avoid mixed-content blanks
     if (!img.startsWith('http')) return null
-    return (await isGoodImage(img)) ? img : null          // SCREEN: reject logos / low-res / wrong-shape
+    return (await isGoodImage(img)) ? img : null          // SCREEN: reject logos / low-res / wrong-shape / non-https
   } catch {
     return null
   }
@@ -204,8 +207,9 @@ export async function webImage(query: string): Promise<string | null> {
       { headers: { 'user-agent': UA, referer: 'https://duckduckgo.com/' } }).then((r) => r.json()).catch(() => null)
     const results: { image?: string }[] = data?.results || []
     for (const r of results.slice(0, 8)) {
-      const u = r.image
-      if (typeof u !== 'string' || !u.startsWith('http') || LOGO_URL.test(u)) continue
+      let u = r.image
+      if (typeof u !== 'string' || !u.startsWith('http')) continue
+      u = u.replace(/^http:\/\//i, 'https://')   // try the secure version (most hosts serve both; http would be mixed-content-blocked)
       if (await isGoodImage(u)) return u
     }
     return null

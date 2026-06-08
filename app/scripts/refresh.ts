@@ -118,6 +118,9 @@ async function buildCity(city: City) {
     picks = picks.filter((p) => !isLive(p) || p.image)
     console.log(`  images:   ${live.filter((p) => p.image).length}/${live.length} live picks kept a real photo (dropped ${before - picks.length})`)
   }
+  // belt-and-suspenders: any remaining http:// image (e.g. an old canon URL) → https, else it's a
+  // mixed-content blank card on the https site.
+  for (const p of picks) if (p.image && p.image.startsWith('http://')) p.image = 'https://' + p.image.slice(7)
 
   // RANK by what's-talked-about (buzz) then freshness. Cap per category only when there's a real
   // live pull to balance — a failed/empty pull must never trim the curated canon.
