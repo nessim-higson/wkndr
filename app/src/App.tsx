@@ -37,13 +37,16 @@ import {
 } from './taste'
 import './App.css'
 
-// filters available = 'all' + 'saved' + 'kids' (cross-cut) + the categories present
-type Filter = 'all' | 'saved' | 'shared' | 'kids' | Category
-type FilterOpt = { key: Filter; label: string; count: number }
+// `filter` is now just the top-level MODE (browse / saved / shared). The category + when axes are
+// MULTI-SELECT sets layered on top — tick several and they combine (a union).
+type Filter = 'all' | 'saved' | 'shared'
+type CatKey = 'kids' | Category               // category sheet keys (kids = a cross-cut)
+type FilterOpt = { key: CatKey | 'all'; label: string; count: number }
 // the WHEN axis — time-sensitivity + two evergreen "tiers" (classic = well-known staples,
 // bespoke = cooler/curated finds) so you can browse the library by flavour.
-type When = 'all' | Freshness | 'classic' | 'bespoke'
-type WhenOpt = { key: When; label: string; count: number }
+type When = Freshness | 'classic' | 'bespoke'   // selectable when-keys (no 'all' — empty set = any time)
+type WhenKey = When | 'all'
+type WhenOpt = { key: WhenKey; label: string; count: number }
 
 // the city we boot into: ?city= override, else the default (Amsterdam). Live geolocation
 // can switch it later (goLive) if it lands somewhere we have a feed for.
@@ -131,9 +134,13 @@ export default function App() {
   const [detailOrigin, setDetailOrigin] = useState<DOMRect | null>(null)
   const openDetail = (p: Pick, origin?: DOMRect) => { setDetailOrigin(origin ?? null); setDetail(p) }
   const [inputsOpen, setInputsOpen] = useState(false)      // "what's feeding this" sheet
-  const [filter, setFilter] = useState<Filter>(SHARED_IDS ? 'shared' : 'all')  // What
+  const [filter, setFilter] = useState<Filter>(SHARED_IDS ? 'shared' : 'all')  // mode: browse / saved / shared
+  const [cats, setCats] = useState<CatKey[]>([])           // What: multi-select categories (empty = all)
+  const [whens, setWhens] = useState<When[]>([])           // When: multi-select time/tier (empty = any time)
   const [shareOpen, setShareOpen] = useState(false)        // "My Weekend" share sheet
-  const [when, setWhen] = useState<When>('all')            // When: time-sensitivity / canon
+  // toggle helpers for the multi-select sheets ('all'/'any' clears the set)
+  const toggleCat = (k: CatKey | 'all') => setCats((p) => k === 'all' ? [] : p.includes(k) ? p.filter((x) => x !== k) : [...p, k])
+  const toggleWhen = (k: WhenKey) => setWhens((p) => k === 'all' ? [] : p.includes(k) ? p.filter((x) => x !== k) : [...p, k])
   const [filterOpen, setFilterOpen] = useState(false)      // What sheet
   const [whenOpen, setWhenOpen] = useState(false)          // When sheet
   const [look, setLook] = useState<Look>(() => {       // ambient field (validated)
@@ -169,8 +176,8 @@ export default function App() {
   const present = useMemo<Category[]>(() => [...new Set(cityPicks.map((p) => p.category))], [cityPicks])
   const FILTERS = useMemo<FilterOpt[]>(() => [
     { key: 'all', label: 'Everything', count: cityPicks.length },
-    ...(cityPicks.some((p) => p.kid) ? [{ key: 'kids' as Filter, label: 'Kids', count: cityPicks.filter((p) => p.kid).length }] : []),
-    ...present.map((c) => ({ key: c as Filter, label: CATEGORY_LABEL[c], count: cityPicks.filter((p) => p.category === c).length })),
+    ...(cityPicks.some((p) => p.kid) ? [{ key: 'kids' as CatKey, label: 'Kids', count: cityPicks.filter((p) => p.kid).length }] : []),
+    ...present.map((c) => ({ key: c as CatKey, label: CATEGORY_LABEL[c], count: cityPicks.filter((p) => p.category === c).length })),
   ], [cityPicks, present])
   const WHEN_FILTERS = useMemo<WhenOpt[]>(() => ([
     { key: 'all', label: 'Any time', count: cityPicks.length },
@@ -182,9 +189,11 @@ export default function App() {
     { key: 'ending', label: 'Ending soon', count: cityPicks.filter((p) => p.freshness === 'ending').length },
   ] as WhenOpt[]).filter((o) => o.count > 0), [cityPicks])
   const activeSources = useMemo(() => new Set(cityPicks.map((p) => p.source)).size, [cityPicks])
-  const filterLabel = (f: Filter) =>
-    f === 'saved' ? 'Saved' : f === 'shared' ? 'Shared with you' : (FILTERS.find((x) => x.key === f)?.label ?? 'Everything')
+  // multi-select summary labels for the two filter triggers ("Eat +2", "This weekend +1")
+  const catLabel = (k: CatKey) => (k === 'kids' ? 'Kids' : CATEGORY_LABEL[k])
   const whenLabel = (w: When) => WHEN_FILTERS.find((x) => x.key === w)?.label ?? 'Any time'
+  const catSummary = cats.length === 0 ? 'Everything' : cats.length === 1 ? catLabel(cats[0]) : `${catLabel(cats[0])} +${cats.length - 1}`
+  const whenSummary = whens.length === 0 ? 'Any time' : whens.length === 1 ? whenLabel(whens[0]) : `${whenLabel(whens[0])} +${whens.length - 1}`
 
   useEffect(() => { applyMode(mode) }, [mode])
   // pull the active city's live feed once (falls back silently to the bundled set)
@@ -261,23 +270,23 @@ export default function App() {
   )
   const shown = useMemo(
     () => {
+      const matchesWhen = (p: Pick, w: When) =>
+        w === 'classic' ? (p.freshness === 'always' && p.tier === 'classic')
+          : w === 'bespoke' ? (p.freshness === 'always' && p.tier === 'bespoke')
+          : p.freshness === w
       const filtered = rankedAll.filter((p) => {
-        const whatOk = filter === 'all' ? true
-          : filter === 'saved' ? saved.has(p.id)
-          : filter === 'shared' ? !!SHARED_IDS?.has(p.id)
-          : filter === 'kids' ? p.kid
-          : p.category === filter
-        const whenOk = when === 'all' ? true
-          : when === 'classic' ? (p.freshness === 'always' && p.tier === 'classic')
-          : when === 'bespoke' ? (p.freshness === 'always' && p.tier === 'bespoke')
-          : p.freshness === when
+        if (filter === 'saved') return saved.has(p.id)
+        if (filter === 'shared') return !!SHARED_IDS?.has(p.id)
+        // browse: multi-select category + when (empty set = no constraint; selections are a UNION)
+        const whatOk = cats.length === 0 || cats.some((c) => (c === 'kids' ? p.kid : p.category === c))
+        const whenOk = whens.length === 0 || whens.some((w) => matchesWhen(p, w))
         return whatOk && whenOk
       })
       // RESERVE: in the default browse (no filter), lead with the weekend's time-sensitive picks and
       // hold the deep evergreen library back — only a rotating sample surfaces, and Shuffle (seed)
       // rotates it, so "show me more" keeps revealing fresh evergreens without flooding the feed.
       // Any explicit filter (incl. the Evergreen tiers) shows the full set.
-      if (filter !== 'all' || when !== 'all') return filtered
+      if (filter !== 'all' || cats.length > 0 || whens.length > 0) return filtered
       const RESERVE = 12
       const fresh = filtered.filter((p) => p.freshness !== 'always')
       const ever = filtered.filter((p) => p.freshness === 'always')
@@ -286,9 +295,9 @@ export default function App() {
       const sample = [...ever, ...ever].slice(start, start + RESERVE)
       return [...fresh, ...sample]
     },
-    [rankedAll, filter, when, saved, seed],
+    [rankedAll, filter, cats, whens, saved, seed],
   )
-  const filterActive = filter !== 'all' || when !== 'all'
+  const filterActive = filter !== 'all' || cats.length > 0 || whens.length > 0
   const deck = useMemo(() => shown.filter((p) => !swiped.has(p.id)), [shown, swiped])
   // saved picks in rank order — fuels the saves-dock peek
   const savedPicks = useMemo(() => rankedAll.filter((p) => saved.has(p.id)), [rankedAll, saved])
@@ -385,7 +394,7 @@ export default function App() {
     setSwiped(new Set())
     setSeed(0)
     setDealKey((k) => k + 1)
-    setFilter('all'); setWhen('all')
+    setFilter('all'); setCats([]); setWhens([])
     setBarOpen(false)
     flash('Reset · saved list + taste cleared')
   }
@@ -400,7 +409,7 @@ export default function App() {
   function selectCity(c: City, autoSwitch = false) {
     if (c.key === city.key) return
     setCity(c)
-    setFilter('all'); setWhen('all')
+    setFilter('all'); setCats([]); setWhens([])
     setSwiped(new Set()); setSeed(0); setDealKey((k) => k + 1)
     if (!autoSwitch) { setView('stack'); setBarOpen(false); goLive(c.lat, c.lon) }
   }
@@ -550,11 +559,11 @@ export default function App() {
                     <div className="bar-group">
                       <span className="bar-label">Filter</span>
                       <div className="bar-row">
-                        <button className={`filter-trigger${when !== 'all' ? ' on' : ''}`} onClick={() => setWhenOpen(true)}>
-                          <Clock className="ft-icon" size={14} strokeWidth={2.2} /> {whenLabel(when)}<ChevronDown className="ft-caret" size={14} strokeWidth={2.2} />
+                        <button className={`filter-trigger${whens.length > 0 ? ' on' : ''}`} onClick={() => setWhenOpen(true)}>
+                          <Clock className="ft-icon" size={14} strokeWidth={2.2} /> {whenSummary}<ChevronDown className="ft-caret" size={14} strokeWidth={2.2} />
                         </button>
-                        <button className={`filter-trigger${filter !== 'all' && filter !== 'saved' ? ' on' : ''}`} onClick={() => setFilterOpen(true)}>
-                          <LayoutGrid className="ft-icon" size={14} strokeWidth={2.2} /> {filter === 'all' || filter === 'saved' ? 'Everything' : filterLabel(filter)}<ChevronDown className="ft-caret" size={14} strokeWidth={2.2} />
+                        <button className={`filter-trigger${cats.length > 0 ? ' on' : ''}`} onClick={() => setFilterOpen(true)}>
+                          <LayoutGrid className="ft-icon" size={14} strokeWidth={2.2} /> {catSummary}<ChevronDown className="ft-caret" size={14} strokeWidth={2.2} />
                         </button>
                       </div>
                     </div>
@@ -708,14 +717,14 @@ export default function App() {
               <SwipeStack
                 /* remount when the intro lifts so the deck deals in while it's actually visible
                    (mounting behind the intro would burn the fly-in before the app is revealed) */
-                key={`${dealKey}-${filter}-${when}-${intro ? 'intro' : 'live'}`}
+                key={`${dealKey}-${filter}-${cats.join(',')}-${whens.join(',')}-${intro ? 'intro' : 'live'}`}
                 picks={deck}
                 temp={wx.temp}
                 onSwipe={handleStackSwipe}
                 onOpen={openDetail}
                 onRefresh={refresh}
                 filterLabel={filterActive ? 'this filter' : null}
-                onClearFilter={() => { setFilter('all'); setWhen('all') }}
+                onClearFilter={() => { setFilter('all'); setCats([]); setWhens([]) }}
                 onSeeList={() => setView('list')}
               />
             </motion.div>
@@ -831,16 +840,18 @@ export default function App() {
         onClose={() => setWhenOpen(false)}
         title="When"
         options={WHEN_FILTERS}
-        active={when}
-        onSelect={setWhen}
+        selected={whens}
+        onToggle={toggleWhen}
+        clearKey={'all'}
       />
       <FilterSheet
         open={filterOpen}
         onClose={() => setFilterOpen(false)}
         title="Show me"
-        options={[FILTERS[0], { key: 'saved' as Filter, label: 'Saved', count: saved.size }, ...FILTERS.slice(1)]}
-        active={filter}
-        onSelect={setFilter}
+        options={FILTERS}
+        selected={cats}
+        onToggle={toggleCat}
+        clearKey={'all'}
       />
     </>
   )
