@@ -1,11 +1,12 @@
 name: Refresh content
 
-# Runs WEEKLY (Thursday 06:00 UTC, ahead of the weekend) and ON DEMAND (the "Run workflow"
-# button in the Actions tab). Pulls fresh picks via the pipeline, commits the updated
-# picks.json, then kicks the Pages deploy so the live app serves the new feed.
+# Runs WEEKLY — automatically every MONDAY 06:00 UTC (full week's lead before the weekend) — and
+# ON DEMAND (the "Run workflow" button in the Actions tab). Pulls fresh picks via the pipeline,
+# ranks them by buzz (how many sources flag each), commits the updated picks.json, then kicks the
+# Pages deploy so the live app serves the new feed. No manual prompting needed.
 on:
   schedule:
-    - cron: '0 6 * * 4'
+    - cron: '0 6 * * 1'      # Monday 06:00 UTC
   workflow_dispatch:
 
 permissions:

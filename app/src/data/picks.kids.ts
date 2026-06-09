@@ -10,7 +10,7 @@ const FAIR: Pick['weatherFit'] = ['HOT', 'WARM', 'COOL']
 export const KIDS_AMSTERDAM: Pick[] = [
   {
     id: 'ams-artis-zoo', title: 'ARTIS Royal Zoo', venue: 'ARTIS', area: 'Plantage',
-    image: 'https://www.artis.nl/media/x3wdajt5/artisaquariumshootbykirstenvansanten2026-1.jpg?width=1200&height=630&quality=80',
+    image: 'https://live.staticflickr.com/65535/51190815707_0c5bcf535a_b.jpg',   // flamingos (artis.nl blocks hotlinking)
     category: 'out', freshness: 'always', outdoor: true, kid: true, price: 'from €25',
     blurb: 'The country’s oldest zoo — big cats, an aquarium and a planetarium across a leafy 19th-century park.',
     why: 'All-day with kids · indoor + outdoor mix', source: 'ARTIS', link: 'https://www.artis.nl/en/',
@@ -26,7 +26,7 @@ export const KIDS_AMSTERDAM: Pick[] = [
   },
   {
     id: 'ams-micropia', title: 'Micropia', venue: 'Micropia', area: 'Plantage',
-    image: 'https://www.artis.nl/media/ywuhlvl3/micropia-1.jpg?width=1200&height=630&quality=80',
+    image: 'https://media.newyorker.com/photos/5909703aebe912338a376f7e/master/w_2560%2Cc_limit/Yong-Amsterdams-Microbe-Museum.jpg',
     category: 'art', freshness: 'always', outdoor: false, kid: true, price: '€16',
     blurb: 'The world’s only microbe museum — microscopes, a kiss-o-meter and the tiny life all around us.',
     why: 'Indoor · curious kids love it', source: 'Micropia', link: 'https://www.micropia.nl/en/',

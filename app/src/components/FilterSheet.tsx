@@ -14,6 +14,12 @@ export function FilterSheet<K extends string>({
   onSelect: (k: K) => void
   title?: string
 }) {
+  // mobile = a bottom sheet that slides up (native, effortless); desktop = a centred modal that
+  // fades + scales in (sliding up from the bottom edge felt foreign on a big screen).
+  const isDesktop = typeof window !== 'undefined' && window.innerWidth >= 600
+  const m = isDesktop
+    ? { initial: { opacity: 0, scale: 0.95, y: 6 }, animate: { opacity: 1, scale: 1, y: 0 }, exit: { opacity: 0, scale: 0.97, y: 6 }, transition: { type: 'spring' as const, stiffness: 440, damping: 34 } }
+    : { initial: { y: '100%' }, animate: { y: 0 }, exit: { y: '100%' }, transition: { type: 'spring' as const, stiffness: 320, damping: 34 } }
   return (
     <AnimatePresence>
       {open && (
@@ -26,8 +32,8 @@ export function FilterSheet<K extends string>({
           <motion.div
             className="fs"
             onClick={(e) => e.stopPropagation()}
-            initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }}
-            transition={{ type: 'spring', stiffness: 320, damping: 34 }}
+            initial={m.initial} animate={m.animate} exit={m.exit}
+            transition={m.transition}
           >
             <div className="fs-handle" />
             <h3 className="fs-title">{title}</h3>
