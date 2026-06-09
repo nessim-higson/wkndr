@@ -15,7 +15,6 @@ export function FanView(props: { picks: Pick[]; onOpen?: (p: Pick) => void }) {
 
 const MAX_DESKTOP = 26  // cards placed around the wheel
 const SENS = 0.26       // degrees of spin per px dragged
-const FLICK = 0.5       // how much a release-flick coasts
 const HALO = 20         // degrees from top within which a card gets the "hero" treatment
 // degrees of fan on each side before cards fade out. Mobile = tight hand fan; desktop = a
 // WIDE, airy fan (cards splay further out — the earlier, more interesting desktop look).
@@ -48,11 +47,14 @@ function WheelFan({
   const auto = useRef<ReturnType<typeof animate> | null>(null)
   const wheelRef = useRef<HTMLDivElement>(null)
 
-  // entrance: the wheel spins + scales/fades in (motion props below), then it just rests
-  // until the user spins it. No timed auto-advance.
+  // entrance: the fan BLOOMS into place — it rotates up from a wider offset on a long, gentle
+  // ease-out (fast to start, settling almost imperceptibly), while the per-card emphasis resolves
+  // as it turns so the hero comes into focus last. A considered arrival, not a quick snap.
   useEffect(() => {
-    spin.set(-28)
-    auto.current = animate(spin, 0, { type: 'spring', stiffness: 64, damping: 17 })   // settles upright fast, minimal bounce
+    spin.set(-46)
+    // a soft, slightly-overdamped spring → slow, graceful settle with NO bounce (a tween here
+    // misbehaves on the rotate motion value). Low stiffness = unhurried; damping > critical = clean.
+    auto.current = animate(spin, 0, { type: 'spring', stiffness: 38, damping: 18, mass: 1.15, restDelta: 0.1 })
     return () => { auto.current?.stop() }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -128,11 +130,22 @@ function WheelFan({
   function onPanEnd(_e: unknown, info: PanInfo) {
     auto.current?.stop()
     const cur = spin.get()
-    // clamp the flick so a hard swipe advances a few cards, never an uncontrolled spin
-    const raw = cur + info.velocity.x * SENS * FLICK
-    const clamped = Math.max(cur - step * 4, Math.min(cur + step * 4, raw))
-    const snapped = step ? Math.round(clamped / step) * step : clamped
-    auto.current = animate(spin, snapped, { type: 'spring', stiffness: 90, damping: 20, restDelta: 0.2 })   // clean settle, no overshoot wobble
+    // MOMENTUM: let the wheel coast off the release velocity and decay naturally, then settle on
+    // the nearest card — far smoother than snapping straight to a computed target. Travel is capped
+    // (modifyTarget clamp) so a hard flick advances a handful of cards, never an uncontrolled spin.
+    auto.current = animate(spin, cur, {
+      type: 'inertia',
+      velocity: info.velocity.x * SENS,
+      power: 0.8,
+      timeConstant: 340,
+      restDelta: 0.2,
+      modifyTarget: (t) => {
+        const snapped = step ? Math.round(t / step) * step : t
+        return Math.max(cur - step * 6, Math.min(cur + step * 6, snapped))
+      },
+      // belt-and-braces: land EXACTLY on a card so the hero is never left a hair crooked
+      onComplete: () => { if (step) spin.set(Math.round(spin.get() / step) * step) },
+    })
   }
   function onPointerUp() {
     if (moved.current) return
@@ -155,9 +168,9 @@ function WheelFan({
         /* cards are SOLID — the old group-translucency (0.82) read as a milky veil over the
            whole screen against the bright field. Depth comes from the per-card edge-fade
            (computed in JS) + the bottom shade gradient, not from washing the whole fan out. */
-        initial={{ opacity: 0, scale: 0.86 }}
+        initial={{ opacity: 0, scale: 0.82 }}
         animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: 1.0, ease: [0.16, 1, 0.3, 1] }}   /* matches the spin-in ease — one cohesive bloom */
       >
         {cards.map((p, i) => (
           <div className="wheel-card" key={p.id} data-fan-i={i} style={{ transform: `rotate(${i * step}deg)` }}>
