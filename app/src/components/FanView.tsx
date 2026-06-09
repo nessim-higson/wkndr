@@ -47,17 +47,8 @@ function WheelFan({
   const auto = useRef<ReturnType<typeof animate> | null>(null)
   const wheelRef = useRef<HTMLDivElement>(null)
 
-  // entrance: the fan BLOOMS into place — it rotates up from a wider offset on a long, gentle
-  // ease-out (fast to start, settling almost imperceptibly), while the per-card emphasis resolves
-  // as it turns so the hero comes into focus last. A considered arrival, not a quick snap.
-  useEffect(() => {
-    spin.set(-46)
-    // a soft, slightly-overdamped spring → slow, graceful settle with NO bounce (a tween here
-    // misbehaves on the rotate motion value). Low stiffness = unhurried; damping > critical = clean.
-    auto.current = animate(spin, 0, { type: 'spring', stiffness: 38, damping: 18, mass: 1.15, restDelta: 0.1 })
-    return () => { auto.current?.stop() }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  // (entrance now lives in the emphasis loop below — the cards UNFURL into the fan, so there's no
+  // separate wheel-spin-in.)
 
   // keep the hero settled UPRIGHT across viewport changes (Safari's toolbar showing/hiding
   // changes dvh and can leave the wheel resting between cards → a crooked hero).
@@ -71,8 +62,10 @@ function WheelFan({
     return () => window.removeEventListener('resize', onResize)
   }, [spin, step])
 
-  // HERO emphasis — recomputed every time the wheel turns: the card nearest the top
-  // grows + lifts + comes to the front; the others shrink and dim back.
+  // HERO emphasis + ENTRANCE — one per-frame loop owns every card's visuals. The cards UNFURL:
+  // each rotates out from the hero (rotate 0) to its fan angle and fades in, staggered by its
+  // distance from the top, so the fan visibly DEALS open from the centre outward. After the
+  // entrance the same loop just runs on spin changes (the hero emphasis as the wheel turns).
   useEffect(() => {
     const wheel = wheelRef.current
     if (!wheel) return
@@ -84,11 +77,24 @@ function WheelFan({
       info: card.querySelector<HTMLElement>('.wcard-info'),
       dim: card.querySelector<HTMLElement>('.wcard-dim'),
       base: i * step,
+      fromTop: Math.min(i * step, 360 - i * step),    // 0 for the hero, growing outward
     }))
+    const ENTER = 580, STAGGER = 62                   // ms: per-card unfurl + delay between rings
+    const easeOut = (t: number) => 1 - (1 - t) * (1 - t) * (1 - t)   // cubic ease-out
+    const start = performance.now()
+    const enterEnd = start + ENTER + (spread / step) * STAGGER + 120
+
     const update = () => {
       const s = spin.get()
+      const elapsed = performance.now() - start
       for (let i = 0; i < items.length; i++) {
-        const { card, face, info, dim, base } = items[i]
+        const { card, face, info, dim, base, fromTop } = items[i]
+        // entrance progress for THIS card (0→1), delayed by how far out it sits
+        const ef = easeOut(Math.max(0, Math.min(1, (elapsed - (fromTop / step) * STAGGER) / ENTER)))
+        const rot = base * ef                         // unfurl: 0 (stacked on hero) → its fan angle
+        card.style.transform = `rotate(${rot}deg)`
+        // emphasis (scale/dim) uses the RESTING angle, not the unfurling one — so each card holds
+        // its final size and simply rotates out + fades in (a clean fan-open, no size-flashing).
         let a = (base + s) % 360
         if (a > 180) a -= 360
         else if (a < -180) a += 360
@@ -97,24 +103,26 @@ function WheelFan({
         const p = aa < HALO ? 1 - aa / HALO : 0         // hero emphasis (tighter than the spread)
         const e = p * p
         // hero: lifts forward (scale) + pulls to centre; neighbours sit back, tilted into the fan.
-        // ONLY transform/opacity are written per frame — both composite on the GPU (no paint/layout),
-        // so the spin stays smooth on a phone. Depth-dimming is a black overlay's OPACITY, not the
-        // old `filter: brightness()` (which forced a full repaint of every card every frame).
-        if (face) face.style.transform = `scale(${0.86 + e * 0.46}) translateY(${e * heroLift}px)`
+        // ONLY transform/opacity are written per frame — both composite on the GPU (no paint/layout).
+        // a subtle pop (0.9→1) as the card deals in adds life on top of the unfurl; ×1 at rest
+        if (face) face.style.transform = `scale(${(0.86 + e * 0.46) * (0.9 + 0.1 * ef)}) translateY(${e * heroLift}px)`
         if (info) info.style.opacity = (0.12 + 0.88 * e).toFixed(3)
-        // depth fade, two parts so the hero clearly wins: (1) EVERY non-hero card gets a baseline
-        // darkening (0.24) the instant it leaves the hero halo — so neighbours stop competing with
-        // the hero; (2) it ramps up with distance from the apex, so the cards nearest the BOTTOM of
-        // the viewport are the dimmest. (1-e) keeps the hero itself at ~0 dim.
+        // depth fade, two parts so the hero clearly wins: every non-hero card gets a baseline
+        // darkening the instant it leaves the hero halo, ramping up toward the bottom of the arc.
         if (dim) dim.style.opacity = ((1 - e) * (0.32 + 0.6 * (1 - vis))).toFixed(3)
         card.style.zIndex = String(300 - (aa | 0))
-        card.style.opacity = Math.max(0, Math.min(1, (spread - aa) / 14)).toFixed(3)
-        card.style.pointerEvents = spread - aa < 1 ? 'none' : 'auto'
+        // edge-fade × entrance fade-in
+        card.style.opacity = (Math.max(0, Math.min(1, (spread - aa) / 14)) * ef).toFixed(3)
+        card.style.pointerEvents = (ef < 1 || spread - aa < 1) ? 'none' : 'auto'
       }
     }
-    update()
+
+    // drive every frame through the entrance, then settle into spin-driven updates
+    let raf = 0
+    const loop = () => { update(); if (performance.now() < enterEnd) raf = requestAnimationFrame(loop) }
+    raf = requestAnimationFrame(loop)
     const unsub = spin.on('change', update)
-    return unsub
+    return () => { cancelAnimationFrame(raf); unsub() }
   }, [spin, step, n, heroLift, spread])
 
   function onPointerDown(e: RPointerEvent) {
@@ -133,19 +141,13 @@ function WheelFan({
     // MOMENTUM: let the wheel coast off the release velocity and decay naturally, then settle on
     // the nearest card — far smoother than snapping straight to a computed target. Travel is capped
     // (modifyTarget clamp) so a hard flick advances a handful of cards, never an uncontrolled spin.
-    auto.current = animate(spin, cur, {
-      type: 'inertia',
-      velocity: info.velocity.x * SENS,
-      power: 0.8,
-      timeConstant: 340,
-      restDelta: 0.2,
-      modifyTarget: (t) => {
-        const snapped = step ? Math.round(t / step) * step : t
-        return Math.max(cur - step * 6, Math.min(cur + step * 6, snapped))
-      },
-      // belt-and-braces: land EXACTLY on a card so the hero is never left a hair crooked
-      onComplete: () => { if (step) spin.set(Math.round(spin.get() / step) * step) },
-    })
+    // THROW: project a target from the release velocity (so a harder flick carries further —
+    // momentum), cap the travel, snap to a card, and settle with a SOFT spring (a touch under
+    // critical) so it decelerates smoothly and lands without a hard snap.
+    const projected = cur + info.velocity.x * SENS * 0.2
+    const capped = Math.max(cur - step * 7, Math.min(cur + step * 7, projected))
+    const snapped = step ? Math.round(capped / step) * step : capped
+    auto.current = animate(spin, snapped, { type: 'spring', stiffness: 58, damping: 14, restDelta: 0.15 })
   }
   function onPointerUp() {
     if (moved.current) return
@@ -168,12 +170,13 @@ function WheelFan({
         /* cards are SOLID — the old group-translucency (0.82) read as a milky veil over the
            whole screen against the bright field. Depth comes from the per-card edge-fade
            (computed in JS) + the bottom shade gradient, not from washing the whole fan out. */
-        initial={{ opacity: 0, scale: 0.82 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 1.0, ease: [0.16, 1, 0.3, 1] }}   /* matches the spin-in ease — one cohesive bloom */
+        /* just a quick fade for the container — the CARDS unfurling (below) are the entrance */
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.4, ease: 'easeOut' }}
       >
         {cards.map((p, i) => (
-          <div className="wheel-card" key={p.id} data-fan-i={i} style={{ transform: `rotate(${i * step}deg)` }}>
+          <div className="wheel-card" key={p.id} data-fan-i={i}>
             <div
               className={`wheel-card-face${p.image ? '' : ` poster poster--${p.category}`}`}
               style={p.image ? { backgroundImage: `url(${p.image})` } : undefined}
