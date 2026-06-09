@@ -71,14 +71,24 @@ function WheelFan({
     if (!wheel) return
     // Cache the element refs ONCE (not per frame) — querying the DOM every frame was a needless
     // cost. Each item carries its base angle so the per-frame loop is pure math + composited writes.
-    const items = [...wheel.querySelectorAll<HTMLElement>('.wheel-card')].map((card, i) => ({
-      card,
-      face: card.querySelector<HTMLElement>('.wheel-card-face'),
-      info: card.querySelector<HTMLElement>('.wcard-info'),
-      dim: card.querySelector<HTMLElement>('.wcard-dim'),
-      base: i * step,
-      fromTop: Math.min(i * step, 360 - i * step),    // 0 for the hero, growing outward
-    }))
+    // Open on a DIFFERENT hero each time the fan mounts — stack→fan no longer always lands on card 0.
+    const heroIdx = n > 0 ? Math.floor(Math.random() * n) : 0
+    const heroBase = heroIdx * step
+    spin.set(-heroBase)                                // rotate that card to the top
+    const norm = (d: number) => (((d % 360) + 540) % 360) - 180   // shortest signed angle, [-180,180]
+    const items = [...wheel.querySelectorAll<HTMLElement>('.wheel-card')].map((card, i) => {
+      const base = i * step
+      const delta = norm(base - heroBase)             // signed angle from the hero out to this card
+      return {
+        card,
+        face: card.querySelector<HTMLElement>('.wheel-card-face'),
+        info: card.querySelector<HTMLElement>('.wcard-info'),
+        dim: card.querySelector<HTMLElement>('.wcard-dim'),
+        base,
+        delta,
+        fromHero: Math.abs(delta),                    // 0 for the hero, growing outward
+      }
+    })
     const ENTER = 580, STAGGER = 62                   // ms: per-card unfurl + delay between rings
     const easeOut = (t: number) => 1 - (1 - t) * (1 - t) * (1 - t)   // cubic ease-out
     const start = performance.now()
@@ -88,10 +98,10 @@ function WheelFan({
       const s = spin.get()
       const elapsed = performance.now() - start
       for (let i = 0; i < items.length; i++) {
-        const { card, face, info, dim, base, fromTop } = items[i]
-        // entrance progress for THIS card (0→1), delayed by how far out it sits
-        const ef = easeOut(Math.max(0, Math.min(1, (elapsed - (fromTop / step) * STAGGER) / ENTER)))
-        const rot = base * ef                         // unfurl: 0 (stacked on hero) → its fan angle
+        const { card, face, info, dim, base, delta, fromHero } = items[i]
+        // entrance progress for THIS card (0→1), delayed by how far out from the hero it sits
+        const ef = easeOut(Math.max(0, Math.min(1, (elapsed - (fromHero / step) * STAGGER) / ENTER)))
+        const rot = heroBase + delta * ef             // unfurl: stacked on the hero → its fan angle
         card.style.transform = `rotate(${rot}deg)`
         // emphasis (scale/dim) uses the RESTING angle, not the unfurling one — so each card holds
         // its final size and simply rotates out + fades in (a clean fan-open, no size-flashing).
