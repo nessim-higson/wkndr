@@ -41,6 +41,7 @@ export interface Pick {
   verify?: boolean     // true = detail (venue/time) needs confirming before relying
   status?: Status      // live availability/scarcity from the crawl
   buzz?: number        // how many independent sources flagged it (the "what's talked about" signal)
+  tier?: 'classic' | 'bespoke'   // evergreen only: well-known staple vs cooler/curated find (browse filter)
 }
 
 export const CATEGORY_LABEL: Record<Category, string> = {

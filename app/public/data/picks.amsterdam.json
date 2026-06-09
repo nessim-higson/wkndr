@@ -753,7 +753,8 @@
         "WARM",
         "COOL"
       ],
-      "when": "Daily · 9:00–18:00"
+      "when": "Daily · 9:00–18:00",
+      "tier": "classic"
     },
     {
       "id": "ams-nemo",
@@ -777,7 +778,8 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "when": "Tue–Sun · 10:00–17:30"
+      "when": "Tue–Sun · 10:00–17:30",
+      "tier": "classic"
     },
     {
       "id": "ams-micropia",
@@ -801,7 +803,8 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "when": "Daily · 10:00–17:00"
+      "when": "Daily · 10:00–17:00",
+      "tier": "bespoke"
     },
     {
       "id": "ams-scheepvaartmuseum",
@@ -825,7 +828,8 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "when": "Daily · 10:00–17:00"
+      "when": "Daily · 10:00–17:00",
+      "tier": "classic"
     },
     {
       "id": "ams-vondelpark-play",
@@ -848,7 +852,8 @@
         "WARM",
         "COOL"
       ],
-      "when": "Daily · dawn–dusk"
+      "when": "Daily · dawn–dusk",
+      "tier": "classic"
     },
     {
       "id": "ams-ridammerhoeve",
@@ -871,7 +876,8 @@
         "WARM",
         "COOL"
       ],
-      "when": "Daily exc. Wed · 10:00–17:00"
+      "when": "Daily exc. Wed · 10:00–17:00",
+      "tier": "bespoke"
     },
     {
       "id": "ams-tunfun",
@@ -895,7 +901,8 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "when": "Daily · 10:00–18:00"
+      "when": "Daily · 10:00–18:00",
+      "tier": "bespoke"
     },
     {
       "id": "ams-hortus",
@@ -918,7 +925,8 @@
         "COOL",
         "COLD_WET"
       ],
-      "when": "Daily · 10:00–17:00"
+      "when": "Daily · 10:00–17:00",
+      "tier": "classic"
     },
     {
       "id": "ams-museumtram",
@@ -940,7 +948,8 @@
         "WARM",
         "COOL"
       ],
-      "when": "Sun & holidays · Apr–Oct"
+      "when": "Sun & holidays · Apr–Oct",
+      "tier": "bespoke"
     },
     {
       "id": "ams-madurodam",
@@ -962,7 +971,8 @@
         "WARM",
         "COOL"
       ],
-      "when": "Daily · ~50 min by train"
+      "when": "Daily · ~50 min by train",
+      "tier": "classic"
     },
     {
       "id": "ams-efteling",
@@ -984,7 +994,8 @@
         "WARM",
         "COOL"
       ],
-      "when": "Daily · ~1h15 by car"
+      "when": "Daily · ~1h15 by car",
+      "tier": "classic"
     },
     {
       "id": "ams-eat-as",
@@ -1008,7 +1019,8 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "when": "Lunch & dinner · book ahead"
+      "when": "Lunch & dinner · book ahead",
+      "tier": "classic"
     },
     {
       "id": "ams-eat-bak",
@@ -1032,7 +1044,8 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "when": "Dinner · book ahead"
+      "when": "Dinner · book ahead",
+      "tier": "classic"
     },
     {
       "id": "ams-eat-brut-de-mer",
@@ -1056,7 +1069,8 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "when": "Dinner · walk-in"
+      "when": "Dinner · walk-in",
+      "tier": "bespoke"
     },
     {
       "id": "ams-eat-buffet-van-odette",
@@ -1080,7 +1094,8 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "when": "All day"
+      "when": "All day",
+      "tier": "bespoke"
     },
     {
       "id": "ams-eat-cafe-caron",
@@ -1104,7 +1119,8 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "when": "Dinner · book ahead"
+      "when": "Dinner · book ahead",
+      "tier": "bespoke"
     },
     {
       "id": "ams-eat-bar-centraal",
@@ -1128,7 +1144,8 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "when": "All day · walk-in"
+      "when": "All day · walk-in",
+      "tier": "bespoke"
     },
     {
       "id": "ams-eat-choux",
@@ -1152,7 +1169,8 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "when": "Dinner · book ahead"
+      "when": "Dinner · book ahead",
+      "tier": "bespoke"
     },
     {
       "id": "ams-eat-the-cottage",
@@ -1176,7 +1194,8 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "when": "All day"
+      "when": "All day",
+      "tier": "bespoke"
     },
     {
       "id": "ams-eat-entrepot",
@@ -1200,7 +1219,8 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "when": "Dinner · book ahead"
+      "when": "Dinner · book ahead",
+      "tier": "bespoke"
     },
     {
       "id": "ams-eat-fc-hyena",
@@ -1224,7 +1244,8 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "when": "Eve · around a film"
+      "when": "Eve · around a film",
+      "tier": "bespoke"
     },
     {
       "id": "ams-eat-bar-fisk",
@@ -1248,7 +1269,8 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "when": "Dinner · book ahead"
+      "when": "Dinner · book ahead",
+      "tier": "bespoke"
     },
     {
       "id": "ams-eat-gebr-hartering",
@@ -1272,7 +1294,8 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "when": "Dinner · book ahead"
+      "when": "Dinner · book ahead",
+      "tier": "classic"
     },
     {
       "id": "ams-eat-le-hollandais",
@@ -1296,7 +1319,8 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "when": "Dinner · book ahead"
+      "when": "Dinner · book ahead",
+      "tier": "classic"
     },
     {
       "id": "ams-eat-kaagman-kortekaas",
@@ -1320,7 +1344,8 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "when": "Dinner · book ahead"
+      "when": "Dinner · book ahead",
+      "tier": "bespoke"
     },
     {
       "id": "ams-eat-cafe-de-klepel",
@@ -1344,7 +1369,8 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "when": "Dinner · book ahead"
+      "when": "Dinner · book ahead",
+      "tier": "bespoke"
     },
     {
       "id": "ams-eat-cafe-modern",
@@ -1368,7 +1394,8 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "when": "Dinner · book ahead"
+      "when": "Dinner · book ahead",
+      "tier": "classic"
     },
     {
       "id": "ams-eat-bar-parry",
@@ -1392,7 +1419,8 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "when": "Dinner · walk-in"
+      "when": "Dinner · walk-in",
+      "tier": "bespoke"
     },
     {
       "id": "ams-eat-rijsel",
@@ -1416,7 +1444,8 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "when": "Dinner · book ahead"
+      "when": "Dinner · book ahead",
+      "tier": "classic"
     },
     {
       "id": "ams-eat-scheepskameel",
@@ -1440,7 +1469,8 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "when": "Dinner · book ahead"
+      "when": "Dinner · book ahead",
+      "tier": "bespoke"
     },
     {
       "id": "ams-eat-toscanini",
@@ -1464,7 +1494,8 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "when": "Dinner · book well ahead"
+      "when": "Dinner · book well ahead",
+      "tier": "classic"
     },
     {
       "id": "ams-eat-de-vrouw-met-de-baard",
@@ -1488,7 +1519,8 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "when": "All day"
+      "when": "All day",
+      "tier": "bespoke"
     },
     {
       "id": "ams-eat-wilde-zwijnen",
@@ -1512,7 +1544,8 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "when": "Dinner · book ahead"
+      "when": "Dinner · book ahead",
+      "tier": "bespoke"
     }
   ]
 }

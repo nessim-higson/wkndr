@@ -40,8 +40,9 @@ import './App.css'
 // filters available = 'all' + 'saved' + 'kids' (cross-cut) + the categories present
 type Filter = 'all' | 'saved' | 'shared' | 'kids' | Category
 type FilterOpt = { key: Filter; label: string; count: number }
-// the WHEN axis — time-sensitivity, incl. the evergreen canon. Maps to freshness.
-type When = 'all' | Freshness
+// the WHEN axis — time-sensitivity + two evergreen "tiers" (classic = well-known staples,
+// bespoke = cooler/curated finds) so you can browse the library by flavour.
+type When = 'all' | Freshness | 'classic' | 'bespoke'
 type WhenOpt = { key: When; label: string; count: number }
 
 // the city we boot into: ?city= override, else the default (Amsterdam). Live geolocation
@@ -175,7 +176,9 @@ export default function App() {
     { key: 'all', label: 'Any time', count: cityPicks.length },
     { key: 'weekend', label: 'This weekend', count: cityPicks.filter((p) => p.freshness === 'weekend').length },
     { key: 'new', label: 'New this week', count: cityPicks.filter((p) => p.freshness === 'new').length },
-    { key: 'always', label: 'Evergreen canon', count: cityPicks.filter((p) => p.freshness === 'always').length },
+    { key: 'always', label: 'Evergreen · all', count: cityPicks.filter((p) => p.freshness === 'always').length },
+    { key: 'classic', label: 'Evergreen · classics', count: cityPicks.filter((p) => p.freshness === 'always' && p.tier === 'classic').length },
+    { key: 'bespoke', label: 'Evergreen · bespoke', count: cityPicks.filter((p) => p.freshness === 'always' && p.tier === 'bespoke').length },
     { key: 'ending', label: 'Ending soon', count: cityPicks.filter((p) => p.freshness === 'ending').length },
   ] as WhenOpt[]).filter((o) => o.count > 0), [cityPicks])
   const activeSources = useMemo(() => new Set(cityPicks.map((p) => p.source)).size, [cityPicks])
@@ -257,16 +260,33 @@ export default function App() {
     [cityPicks, mode, seed],   // seed jitters the order ("show me more"); NOT [taste] — keeps the deck stable while swiping
   )
   const shown = useMemo(
-    () => rankedAll.filter((p) => {
-      const whatOk = filter === 'all' ? true
-        : filter === 'saved' ? saved.has(p.id)
-        : filter === 'shared' ? !!SHARED_IDS?.has(p.id)
-        : filter === 'kids' ? p.kid
-        : p.category === filter
-      const whenOk = when === 'all' ? true : p.freshness === when
-      return whatOk && whenOk
-    }),
-    [rankedAll, filter, when, saved],
+    () => {
+      const filtered = rankedAll.filter((p) => {
+        const whatOk = filter === 'all' ? true
+          : filter === 'saved' ? saved.has(p.id)
+          : filter === 'shared' ? !!SHARED_IDS?.has(p.id)
+          : filter === 'kids' ? p.kid
+          : p.category === filter
+        const whenOk = when === 'all' ? true
+          : when === 'classic' ? (p.freshness === 'always' && p.tier === 'classic')
+          : when === 'bespoke' ? (p.freshness === 'always' && p.tier === 'bespoke')
+          : p.freshness === when
+        return whatOk && whenOk
+      })
+      // RESERVE: in the default browse (no filter), lead with the weekend's time-sensitive picks and
+      // hold the deep evergreen library back — only a rotating sample surfaces, and Shuffle (seed)
+      // rotates it, so "show me more" keeps revealing fresh evergreens without flooding the feed.
+      // Any explicit filter (incl. the Evergreen tiers) shows the full set.
+      if (filter !== 'all' || when !== 'all') return filtered
+      const RESERVE = 12
+      const fresh = filtered.filter((p) => p.freshness !== 'always')
+      const ever = filtered.filter((p) => p.freshness === 'always')
+      if (ever.length <= RESERVE) return filtered
+      const start = (seed * RESERVE) % ever.length
+      const sample = [...ever, ...ever].slice(start, start + RESERVE)
+      return [...fresh, ...sample]
+    },
+    [rankedAll, filter, when, saved, seed],
   )
   const filterActive = filter !== 'all' || when !== 'all'
   const deck = useMemo(() => shown.filter((p) => !swiped.has(p.id)), [shown, swiped])

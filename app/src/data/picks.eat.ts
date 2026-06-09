@@ -78,8 +78,11 @@ const ROWS: Row[] = [
     why: 'Seasonal Dutch · game', image: 'https://caperleaves.nl/wp-content/uploads/2015/02/WildeZwijnenEetbar11-1024x768.jpg' },
 ]
 
+// classic = the established destinations; the rest are the cooler / wine-bar / newer finds
+const CLASSIC = new Set(['toscanini', 'as', 'bak', 'rijsel', 'cafe-modern', 'le-hollandais', 'gebr-hartering'])
 export const EAT_AMSTERDAM: Pick[] = ROWS.map((r) => ({
   id: `ams-eat-${r.slug}`,
+  tier: (CLASSIC.has(r.slug) ? 'classic' : 'bespoke') as 'classic' | 'bespoke',
   title: r.title,
   venue: r.title,
   area: r.area,

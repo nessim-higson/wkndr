@@ -7,7 +7,7 @@ import type { Pick } from '../types'
 const ALL_WEATHER: Pick['weatherFit'] = ['HOT', 'WARM', 'COOL', 'COLD_WET', 'VOLATILE']
 const FAIR: Pick['weatherFit'] = ['HOT', 'WARM', 'COOL']
 
-export const KIDS_AMSTERDAM: Pick[] = [
+const RAW: Pick[] = [
   {
     id: 'ams-artis-zoo', title: 'ARTIS Royal Zoo', venue: 'ARTIS', area: 'Plantage',
     image: 'https://live.staticflickr.com/65535/51190815707_0c5bcf535a_b.jpg',   // flamingos (artis.nl blocks hotlinking)
@@ -97,3 +97,7 @@ export const KIDS_AMSTERDAM: Pick[] = [
     weatherFit: FAIR, when: 'Daily · ~1h15 by car',
   },
 ]
+
+// classic = the well-known staples; everything else is the cooler / more bespoke pick
+const CLASSIC = new Set(['ams-artis-zoo', 'ams-nemo', 'ams-scheepvaartmuseum', 'ams-vondelpark-play', 'ams-hortus', 'ams-madurodam', 'ams-efteling'])
+export const KIDS_AMSTERDAM: Pick[] = RAW.map((p) => ({ ...p, tier: (CLASSIC.has(p.id) ? 'classic' : 'bespoke') as 'classic' | 'bespoke' }))
