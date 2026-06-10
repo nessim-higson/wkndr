@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-<title>WKNDR · seasons</title>
+<title>WKNDR · weather auras</title>
 <style>
   :root { --ui: #e9e6df; --ui-dim: #8c897f; --panel: rgba(18,17,15,.82); }
   * { box-sizing: border-box; }
@@ -18,7 +18,7 @@
   }
   #panel h1 { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; margin: 0 0 2px; font-weight: 600; }
   #panel .sub { color: var(--ui-dim); font-size: 10px; margin-bottom: 12px; }
-  .modes { display: grid; grid-template-columns: repeat(2, 1fr); gap: 5px; margin-bottom: 8px; }
+  .modes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-bottom: 8px; }
   .modes button { appearance: none; border: 1px solid rgba(255,255,255,.12); background: transparent; color: var(--ui-dim); border-radius: 8px; padding: 8px 4px; font-size: 10px; cursor: pointer; transition: all .15s; }
   .modes button:hover { color: var(--ui); border-color: rgba(255,255,255,.28); }
   .modes button.on { background: var(--ui); color: #111; border-color: var(--ui); font-weight: 600; }
@@ -36,7 +36,7 @@
 <body>
 <canvas id="c"></canvas>
 <div id="panel">
-  <h1>Seasons</h1>
+  <h1>Weather Auras</h1>
   <div class="sub">WKNDR · geometric aura fields</div>
   <div class="modes" id="modes"></div>
   <div class="why" id="why"></div>
@@ -72,6 +72,11 @@ function orb(g, x, y, r, col, aMax, p){
   }
   g.fillStyle=gr; g.beginPath(); g.arc(x,y,r,0,6.2832); g.fill();
 }
+// elongated orb — same eased falloff, stretched (veils, streams)
+function orbEll(g, x, y, rx, ry, col, aMax, p, rot){
+  g.save(); g.translate(x,y); if(rot) g.rotate(rot); g.scale(1, ry/rx);
+  orb(g, 0, 0, rx, col, aMax, p); g.restore();
+}
 // annulus: alpha rises into a band and eases out — the giant soft ring.
 function ringOrb(g, x, y, rIn, rOut, col, aMax){
   const gr = g.createRadialGradient(x,y,0,x,y,rOut);
@@ -85,26 +90,34 @@ function ringOrb(g, x, y, rIn, rOut, col, aMax){
 }
 
 // ============================================================================
-//  Seasons — palette + composition + motion rationale
+//  Weather — palette + composition + motion rationale (one vast form each)
 // ============================================================================
 const MODES = {
-  spring: { label:'Spring', why:'Emergence — a dark ring of soil parts around a green shoot of light. The core slowly blooms.' },
-  summer: { label:'Summer', why:'High sun — a hot core haloed in rings of heat over a clear sky. Everything radiates outward.' },
-  autumn: { label:'Autumn', why:'The turn — a vast sphere tips past the frame, rim lit amber, its colours slowly revolving.' },
-  winter: { label:'Winter', why:'Hush — pale light dissolved in cold haze, a remembered warmth low in the field. Almost still.' },
+  sun:   { label:'Sun',   why:'A hot core haloed in rings of heat over a clear sky. Everything radiates outward.' },
+  rain:  { label:'Rain',  why:'Soft veils of water descend into a deep pool of light. Everything falls, slowly.' },
+  cloud: { label:'Cloud', why:'A pale sun shrouded — light pressing through a soft grey veil. Diffuse, patient.' },
+  wind:  { label:'Wind',  why:'Long breaths of air cross the field. Nothing holds still, nothing hurries.' },
+  storm: { label:'Storm', why:'A charged sphere looms past the frame, rim flickering, colours churning in the dark.' },
+  snow:  { label:'Snow',  why:'Light dissolved in cold hush, a remembered warmth low in the field. Almost still.' },
 };
-let mode = 'summer';
+let mode = 'sun';
 const P = { scale:1, motion:0.6, grain:0.12, seed:1 };
 
-// seeded per-season layout (positions/sizes jitter on reroll; t animates only)
+// seeded per-weather layout (positions/sizes jitter on reroll; t animates only)
 let L = {};
 function layout(){
   rng = mulberry32(P.seed>>>0);
+  const veils=[]; for(let i=0;i<3;i++) veils.push({ x:rr(0.12,0.88), y:rr(0,1), sp:rr(0.7,1.3) });
+  const streams=[]; const ns=3+(rng()<0.5?1:0);
+  for(let i=0;i<ns;i++) streams.push({ x:rng()*1.5, y:0.12+(i+rr(0.1,0.5))/(ns+0.6)*0.8, len:rr(0.55,0.9), th:rr(0.08,0.18),
+    tilt:rr(-0.07,-0.02), sp:rr(0.6,1.4), col:['#2f5c48','#5a8c6e','#8fae7a','#f6f8ec'][(rng()*4)|0], a:rr(0.6,0.9) });
   L = {
-    spring: { cx:rr(0.42,0.58), cy:rr(0.5,0.62), ring:rr(0.92,1.1), band:rr(0.5,0.62), core:rr(0.5,0.62), lean:rr(-0.04,0.04) },
-    summer: { cx:rr(0.34,0.52), cy:rr(0.34,0.48), r:rr(0.5,0.62), halos:2+((rng()*2)|0), hx:rr(-0.06,0.02), hy:rr(-0.06,0.02) },
-    autumn: { edge:rr(0.35,0.55), rW:rr(1.3,1.8), cy:rr(0.45,0.6), th0:rr(0,6.28), fcx:rr(0.05,0.25), fcy:rr(0.15,0.4) },
-    winter: { ax:rr(0.2,0.4), ay:rr(0.2,0.4), bx:rr(0.6,0.85), by:rr(0.3,0.55), wx:rr(0.1,0.35), wy:rr(0.7,0.9) },
+    sun:   { cx:rr(0.34,0.52), cy:rr(0.34,0.48), r:rr(0.5,0.62), halos:2+((rng()*2)|0), hx:rr(-0.06,0.02), hy:rr(-0.06,0.02) },
+    rain:  { veils, px:rr(0.38,0.62), py:rr(0.78,0.92) },
+    cloud: { cx:rr(0.42,0.58), cy:rr(0.42,0.58), ring:rr(0.92,1.1), core:rr(0.5,0.62), lean:rr(-0.04,0.04) },
+    wind:  { streams },
+    storm: { edge:rr(0.35,0.55), rW:rr(1.3,1.8), cy:rr(0.45,0.6), th0:rr(0,6.28), fcx:rr(0.05,0.25), fcy:rr(0.15,0.4) },
+    snow:  { ax:rr(0.2,0.4), ay:rr(0.2,0.4), bx:rr(0.6,0.85), by:rr(0.3,0.55), wx:rr(0.1,0.35), wy:rr(0.7,0.9) },
   };
 }
 
@@ -120,19 +133,9 @@ function mix(a,b,t){
   return `rgb(${c[0]},${c[1]},${c[2]})`;
 }
 
-const SEASON = {
-  spring(t){
-    const s=L.spring, u=Math.min(W,H)*P.scale;
-    bgFill('#efe9dc','#e7dfcd');
-    const bloom = 1 + 0.03*Math.sin(t*0.5);             // the core blooming
-    const cx=W*(s.cx + s.lean*Math.sin(t*0.2)), cy=H*s.cy;
-    ringOrb(ctx, cx, cy, u*s.ring*0.42, u*s.ring*1.05, '#16323e', 0.96);   // dark soil ring
-    orb(ctx, cx, cy, u*s.core*0.78*bloom, '#9ed49a', 0.95, 0.18);          // green shoot
-    orb(ctx, cx-u*0.04, cy+u*0.03, u*s.core*0.52*bloom, '#cfe8d2', 0.9, 0.3); // mint heart
-    orb(ctx, cx+u*0.1, cy-u*0.12, u*0.3, '#e8e9a8', 0.3, 0.1);             // a breath of yellow
-  },
-  summer(t){
-    const s=L.summer, u=Math.min(W,H)*P.scale;
+const WEATHER = {
+  sun(t){
+    const s=L.sun, u=Math.min(W,H)*P.scale;
     bgFill('#a9cde9','#c2dcee');
     const cx=W*s.cx, cy=H*s.cy, R=u*s.r;
     const breathe = 1 + 0.015*Math.sin(t*0.6);
@@ -146,34 +149,60 @@ const SEASON = {
     orb(ctx, cx, cy, R*1.05*breathe, '#f57f22', 0.95, 0.22);               // sun body
     orb(ctx, cx+W*s.hx, cy+H*s.hy, R*0.62*breathe, '#ffd24a', 0.95, 0.2);  // hot gold core
   },
-  autumn(t){
-    const s=L.autumn, u=Math.min(W,H)*P.scale;
-    bgFill('#c8404a','#3a78c8');
-    // cool field on the left
-    orb(ctx, W*s.fcx, H*s.fcy+H*0.02*Math.sin(t*0.3), u*0.85, '#2f8c84', 0.55, 0.1);
-    orb(ctx, W*(s.fcx-0.05), H*(s.fcy+0.45), u*0.7, '#e9c8d8', 0.5, 0.1);
-    // the vast sphere, cropped past the frame — its edge arcs through the field
+  rain(t){
+    const s=L.rain, u=Math.min(W,H)*P.scale;
+    bgFill('#6d8aa6','#33506b');
+    for (const v of s.veils){                            // soft veils descending, wrapping
+      const y=((((v.y + t*0.03*v.sp)%1.4)+1.4)%1.4 - 0.2)*H;
+      orbEll(ctx, W*v.x, y, u*0.3, u*0.62, '#c9dcec', 0.32, 0.05);
+    }
+    const pb = 1 + 0.02*Math.sin(t*0.5);                 // the pool, faintly breathing
+    orb(ctx, W*s.px, H*s.py, u*0.8, '#1d3a6e', 0.85, 0.15);
+    orb(ctx, W*s.px, H*(s.py+0.03), u*0.42*pb, '#7fc4d8', 0.55, 0.15);
+  },
+  cloud(t){
+    const s=L.cloud, u=Math.min(W,H)*P.scale;
+    bgFill('#e9e8e3','#d4d7da');
+    const glow = 1 + 0.025*Math.sin(t*0.4);              // light pressing through
+    const cx=W*(s.cx + s.lean*Math.sin(t*0.15)), cy=H*s.cy;
+    ringOrb(ctx, cx, cy, u*s.ring*0.42, u*s.ring*1.08, '#76838f', 0.85);   // grey veil
+    orb(ctx, cx, cy, u*s.core*0.75*glow, '#f2efe6', 0.95, 0.2);            // shrouded light
+    orb(ctx, cx+u*0.05, cy-u*0.04, u*s.core*0.4*glow, '#ecdcb4', 0.5, 0.2); // warm hint
+  },
+  wind(t){
+    const s=L.wind, u=Math.min(W,H)*P.scale;
+    bgFill('#c9dcc4','#e9efdd');
+    for (const k of s.streams){                          // long breaths crossing, wrapping
+      const x=((((k.x + t*0.035*k.sp)%1.6)+1.6)%1.6 - 0.3)*W;
+      orbEll(ctx, x, H*k.y, u*k.len, u*k.th, k.col, k.a, 0.22, k.tilt);
+    }
+  },
+  storm(t){
+    const s=L.storm, u=Math.min(W,H)*P.scale;
+    bgFill('#241c48','#0d0922');
+    // faint masses in the dark
+    orb(ctx, W*s.fcx, H*s.fcy+H*0.02*Math.sin(t*0.3), u*0.85, '#3a2c6e', 0.5, 0.1);
+    orb(ctx, W*(s.fcx-0.05), H*(s.fcy+0.5), u*0.7, '#1f4458', 0.45, 0.1);
+    // the charged sphere, cropped past the frame
     const R=W*s.rW, cx=W*s.edge+R, cy=H*s.cy;
     ctx.save(); ctx.beginPath(); ctx.arc(cx,cy,R,0,6.2832); ctx.clip();
-    // stacked interior bands (blue → violet → magenta → gold), eased
     const ig=ctx.createLinearGradient(0,0,0,H);
-    const bands=[['#2336b0',0],['#5a1e8c',0.3],['#d8336e',0.55],['#e8682a',0.75],['#ffc83a',1]];
+    const bands=[['#1a1440',0],['#3a1e6e',0.35],['#7a2360',0.6],['#c2452a',0.82],['#f2b03a',1]];
     for(let i=0;i<bands.length-1;i++) for(let k=0;k<=6;k++){ const t2=k/6;
       ig.addColorStop(bands[i][1]+(bands[i+1][1]-bands[i][1])*t2, mix(bands[i][0],bands[i+1][0],sm(t2))); }
     ctx.fillStyle=ig; ctx.fillRect(0,0,W,H);
-    // slowly revolving colour masses breathe through the bands
-    const th = s.th0 + t*0.04;                           // the slow revolve
+    const th = s.th0 + t*0.05;                           // churn
     const zone=(ang,dist,r,col,a)=> orb(ctx, cx+Math.cos(th+ang)*R*dist, cy+Math.sin(th+ang)*R*dist, r*R, col, a, 0.2);
-    zone(2.6, 0.7, 0.55, '#2336b0', 0.6);
-    zone(3.6, 0.75, 0.45, '#d8336e', 0.55);
-    zone(4.4, 0.7, 0.5,  '#ffc83a', 0.6);
+    zone(2.6, 0.7, 0.55, '#2336b0', 0.55);
+    zone(3.6, 0.75, 0.45, '#d8336e', 0.5);
+    zone(4.4, 0.7, 0.5,  '#ffd24a', 0.45);
     ctx.restore();
-    // amber rim light on the sphere's edge
-    ringOrb(ctx, cx, cy, R*0.965, R*1.035, '#f08a1d', 0.9);
-    ringOrb(ctx, cx, cy, R*0.985, R*1.012, '#ffb24a', 0.8);
+    // electric rim, flickering faintly
+    ringOrb(ctx, cx, cy, R*0.965, R*1.035, '#f08a1d', 0.6+0.2*Math.sin(t*1.7));
+    ringOrb(ctx, cx, cy, R*0.985, R*1.012, '#ffe45e', 0.55+0.25*Math.sin(t*2.3+1));
   },
-  winter(t){
-    const s=L.winter, u=Math.min(W,H)*P.scale;
+  snow(t){
+    const s=L.snow, u=Math.min(W,H)*P.scale;
     bgFill('#eef2f7','#dde7f0');
     const breath = 1 + 0.008*Math.sin(t*0.35);           // the faintest breath
     orb(ctx, W*s.bx, H*s.by, u*0.95, '#7fa8d0', 0.5, 0.05);                 // ice blue
@@ -191,7 +220,7 @@ function buildGrain(){ const s=220,t=document.createElement('canvas');t.width=s;
 function draw(t){
   ctx.setTransform(DPR,0,0,DPR,0,0);
   ctx.globalCompositeOperation='source-over';
-  SEASON[mode](t);
+  WEATHER[mode](t);
   if(P.grain>0.005 && grainTile){ ctx.save(); ctx.globalCompositeOperation='overlay'; ctx.globalAlpha=P.grain; ctx.fillStyle=grainTile; ctx.fillRect(0,0,W,H); ctx.restore(); }
 }
 
@@ -211,7 +240,7 @@ function buildUI(){
   bind('motion','motion',x=>x===0?'still':(x*100|0)+'%');
   bind('grain','grain',x=>(x*100|0)+'%');
   document.getElementById('reroll').onclick=()=>{ P.seed=Math.floor(Math.random()*1e6); layout(); render(); };
-  document.getElementById('save').onclick=()=>{ draw(0); const a=document.createElement('a'); a.download=`wkndr-season-${mode}.png`; a.href=c.toDataURL('image/png'); a.click(); };
+  document.getElementById('save').onclick=()=>{ draw(0); const a=document.createElement('a'); a.download=`wkndr-aura-${mode}.png`; a.href=c.toDataURL('image/png'); a.click(); };
 }
 function resize(){ W=window.innerWidth; H=window.innerHeight; c.width=Math.floor(W*DPR); c.height=Math.floor(H*DPR); buildGrain(); render(); }
 window.addEventListener('resize', resize);
