@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WKNDR — Background Engines</title>
+<style>
+  :root {
+    --ink: #0a0a0a; --ink-3: #4a4a4a; --ink-4: #8a8a8a;
+    --paper: #fafaf7; --paper-2: #f2f2ee; --paper-3: #e8e8e3;
+    --rule: #d8d8d3; --accent: #ff4d1f;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+  body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background: var(--paper-3);
+    color: var(--ink); line-height: 1.5; padding: 40px 24px 120px; }
+  .wrap { max-width: 1180px; margin: 0 auto; }
+  .mark { font-size: 22px; font-weight: 800; letter-spacing: -0.035em; display: flex; align-items: center; gap: 9px; }
+  .mark::before { content:''; width:9px; height:9px; background:var(--accent); border-radius:50%; }
+  h1 { font-size: 32px; font-weight: 600; letter-spacing: -0.03em; margin: 20px 0 8px; }
+  .lede { font-size: 14px; color: var(--ink-3); max-width: 660px; margin-bottom: 14px; }
+  .note { font-size: 12px; color: var(--ink-4); max-width: 660px; margin-bottom: 40px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 20px; }
+  .card { background: var(--paper); border: 1px solid var(--rule); border-radius: 14px; overflow: hidden;
+    display: flex; flex-direction: column; transition: transform .15s, box-shadow .15s; text-decoration: none; color: inherit; }
+  .card:hover { transform: translateY(-3px); box-shadow: 0 14px 36px rgba(0,0,0,.12); }
+  .thumb { height: 150px; position: relative; overflow: hidden; }
+  .thumb canvas { width: 100%; height: 100%; display: block; }
+  .body { padding: 16px 18px 18px; }
+  .kicker { font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--accent); }
+  .body h2 { font-size: 19px; font-weight: 600; letter-spacing: -0.02em; margin: 5px 0 7px; }
+  .body p { font-size: 13px; color: var(--ink-3); }
+  .alt { display: inline-block; margin-top: 10px; font-size: 12px; color: var(--ink-4); text-decoration: underline; }
+  .foot { margin-top: 48px; font-size: 12px; color: var(--ink-4); }
+  .foot a { color: var(--ink-3); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="mark">WKNDR</div>
+  <h1>Background Engines</h1>
+  <p class="lede">Generative ambient-background R&amp;D for the weather field — exploring what a distinctive, abstract, weather-by-inference background could be. Four directions, each a tunable playground.</p>
+  <p class="note">Tap a card to open the full playground (control panel top-left). Built as self-contained canvas / WebGL. Animation runs live; some are static-by-default with a Motion toggle.</p>
+
+  <div class="grid">
+    <a class="card" href="riso/">
+      <div class="thumb" style="background:linear-gradient(160deg,#d83218,#f0701e 45%,#f4b24a 75%,#f2e6cf)"></div>
+      <div class="body">
+        <div class="kicker">Most developed</div>
+        <h2>Weather Risograph</h2>
+        <p>An abstract shape-language for weather — grain + colour-field geometry. Six conditions (sun/rain/cloud/wind/storm/snow), each its own motif; time-of-day, motion, and per-mode variants.</p>
+      </div>
+    </a>
+
+    <a class="card" href="aura/">
+      <div class="thumb" style="background:radial-gradient(circle at 60% 40%,#db2777,#7c3aed 55%,#2563eb)"></div>
+      <div class="body">
+        <div class="kicker">Live mesh gradient</div>
+        <h2>Aura Gradient</h2>
+        <p>A continuously-morphing multi-colour field with a glowing rounded-rect lens — the Apple-Intelligence / Siri-glow family. Domain-warped, with a travelling rim highlight.</p>
+        <a class="alt" href="aura/classic.html">→ classic version</a>
+      </div>
+    </a>
+
+    <a class="card" href="fluid/">
+      <div class="thumb" style="background:linear-gradient(150deg,#0b1f4a,#1e3a8a 50%,#67e8f9)"></div>
+      <div class="body">
+        <div class="kicker">GPU fluid sim</div>
+        <h2>Fluid Watercolor</h2>
+        <p>A real Navier-Stokes solver driven by weather-programmed splats — bleeds into wet-on-wet forms, then freezes (or stays alive). Tap the canvas to inject pigment.</p>
+      </div>
+    </a>
+
+    <a class="card" href="watercolor/">
+      <div class="thumb" style="background:linear-gradient(155deg,#f6c945,#f59e0b 50%,#c2310e)"></div>
+      <div class="body">
+        <div class="kicker">Hand-painted</div>
+        <h2>Polygon Watercolor</h2>
+        <p>Tyler-Hobbs-style generative watercolor — crisp deformed-polygon blooms, colour interleaving, capillary fringe. A Wetness dial morphs crisp → soft.</p>
+      </div>
+    </a>
+  </div>
+
+  <p class="foot">WKNDR · part of the <a href="../">experiments archive</a> · <a href="../../">app</a></p>
+</div>
+</body>
+</html>

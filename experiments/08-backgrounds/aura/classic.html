@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<title>WKNDR · aura gradient</title>
+<style>
+  :root { --ui: #e9e6df; --ui-dim: #8c897f; --panel: rgba(18,17,15,.82); }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #0d0c0b;
+    font-family: ui-sans-serif, system-ui, -apple-system, "Helvetica Neue", sans-serif; }
+  canvas { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+  #panel {
+    position: fixed; top: 14px; left: 14px; width: 240px; z-index: 10;
+    background: var(--panel); backdrop-filter: blur(14px) saturate(1.2);
+    border: 1px solid rgba(255,255,255,.08); border-radius: 14px;
+    padding: 14px 14px 16px; color: var(--ui);
+    font-size: 11px; line-height: 1.3; user-select: none;
+    box-shadow: 0 12px 40px rgba(0,0,0,.5); max-height: calc(100vh - 28px); overflow-y: auto;
+  }
+  #panel h1 { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; margin: 0 0 2px; font-weight: 600; }
+  #panel .sub { color: var(--ui-dim); font-size: 10px; margin-bottom: 12px; }
+  .modes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-bottom: 14px; }
+  .modes button { appearance: none; border: 1px solid rgba(255,255,255,.12); background: transparent;
+    color: var(--ui-dim); border-radius: 8px; padding: 7px 4px; font-size: 10px; cursor: pointer; transition: all .15s; }
+  .modes button:hover { color: var(--ui); border-color: rgba(255,255,255,.28); }
+  .modes button.on { background: var(--ui); color: #111; border-color: var(--ui); font-weight: 600; }
+  .row { margin-bottom: 11px; }
+  .row label { display: flex; justify-content: space-between; margin-bottom: 5px; color: var(--ui-dim); }
+  .row label .val { color: var(--ui); font-variant-numeric: tabular-nums; }
+  input[type=range] { -webkit-appearance: none; width: 100%; height: 3px; border-radius: 3px; background: rgba(255,255,255,.16); outline: none; }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 13px; height: 13px; border-radius: 50%; background: var(--ui); cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,.4); }
+  .toggle { display: flex; align-items: center; justify-content: space-between; margin-bottom: 11px; color: var(--ui-dim); cursor: pointer; }
+  .toggle .sw { width: 32px; height: 18px; border-radius: 10px; background: rgba(255,255,255,.16); position: relative; transition: background .2s; }
+  .toggle .sw::after { content: ''; position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; border-radius: 50%; background: var(--ui); transition: transform .2s; }
+  .toggle.on .sw { background: #6b9b6e; }
+  .toggle.on .sw::after { transform: translateX(14px); }
+  .foot { display: flex; gap: 6px; margin-top: 6px; }
+  .foot button { flex: 1; appearance: none; border: 1px solid rgba(255,255,255,.14); background: transparent; color: var(--ui); border-radius: 8px; padding: 8px 4px; font-size: 10px; cursor: pointer; }
+  .foot button:hover { background: rgba(255,255,255,.1); }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="panel">
+  <h1>Aura Gradient</h1>
+  <div class="sub">WKNDR · live mesh gradient · R&amp;D</div>
+  <div class="modes" id="modes"></div>
+  <div class="row"><label>Speed <span class="val" id="v-speed"></span></label>
+    <input type="range" id="s-speed" min="0" max="2.5" step="0.05"></div>
+  <div class="row"><label>Softness <span class="val" id="v-soft"></span></label>
+    <input type="range" id="s-soft" min="0.05" max="0.8" step="0.01"></div>
+  <div class="row"><label>Travel <span class="val" id="v-travel"></span></label>
+    <input type="range" id="s-travel" min="0.1" max="0.55" step="0.01"></div>
+  <div class="row"><label>Warp (complexity) <span class="val" id="v-warp"></span></label>
+    <input type="range" id="s-warp" min="0" max="0.4" step="0.01"></div>
+  <div class="row"><label>Rim glow <span class="val" id="v-rim"></span></label>
+    <input type="range" id="s-rim" min="0" max="1.4" step="0.05"></div>
+  <div class="row"><label>Corner radius <span class="val" id="v-radius"></span></label>
+    <input type="range" id="s-radius" min="0.02" max="0.6" step="0.01"></div>
+  <div class="toggle" id="t-frame"><span>Rounded-rect frame</span><span class="sw"></span></div>
+  <div class="foot"><button id="save">Save PNG</button></div>
+</div>
+
+<script>
+const canvas = document.getElementById('c');
+const gl = canvas.getContext('webgl', { alpha:false, antialias:true, preserveDrawingBuffer:true });
+
+// ---- weather palettes (5 colours each) ----
+const MODES = {
+  sunny:    { label:'Sunny', cols:['#ffd23f','#ff8c42','#ff5e7e','#ffb05e','#ffe29a'] },
+  overcast: { label:'Cloud', cols:['#94a3b8','#a5b4cb','#cbd5e1','#8b9bb4','#7d93a8'] },
+  rain:     { label:'Rain',  cols:['#1e3a8a','#2563eb','#22d3ee','#3b5bbf','#67e8f9'] },
+  wind:     { label:'Wind',  cols:['#10b981','#22d3ee','#a3e635','#34d399','#67e8f9'] },
+  storm:    { label:'Storm', cols:['#db2777','#7c3aed','#2563eb','#e11d48','#22d3ee'] },
+  snow:     { label:'Snow',  cols:['#a5f3fc','#c4b5fd','#fbcfe8','#e0f2fe','#ddd6fe'] },
+};
+let mode = 'storm';
+
+const P = { speed:0.7, soft:0.3, travel:0.36, warp:0.13, rim:0.7, radius:0.16, frame:true };
+
+function hexRgb(h){ h=h.replace('#',''); return [parseInt(h.slice(0,2),16)/255, parseInt(h.slice(2,4),16)/255, parseInt(h.slice(4,6),16)/255]; }
+
+// ---- shaders ----
+const VS = `
+  attribute vec2 aPosition;
+  varying vec2 vUv;
+  void main(){ vUv = aPosition*0.5+0.5; gl_Position = vec4(aPosition, 0.0, 1.0); }`;
+const FS = `
+  precision highp float;
+  varying vec2 vUv;
+  uniform vec2 uRes;
+  uniform float uTime, uSoft, uTravel, uRim, uRadius, uFrame, uWarp;
+  uniform vec3 uCol[5];
+  float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1,311.7)))*43758.5453); }
+  float vnoise(vec2 p){
+    vec2 i = floor(p), f = fract(p); f = f*f*(3.0-2.0*f);
+    float a = hash(i), b = hash(i+vec2(1.0,0.0)), c = hash(i+vec2(0.0,1.0)), d = hash(i+vec2(1.0,1.0));
+    return mix(mix(a,b,f.x), mix(c,d,f.x), f.y);
+  }
+  float fbm(vec2 p){ float v=0.0, a=0.5; for(int i=0;i<4;i++){ v+=a*vnoise(p); p*=2.0; a*=0.5; } return v; }
+  float sdRoundBox(vec2 p, vec2 b, float r){ vec2 q = abs(p)-b+r; return min(max(q.x,q.y),0.0)+length(max(q,0.0))-r; }
+  void main(){
+    vec2 uv = vUv;
+    vec2 asp = vec2(uRes.x/uRes.y, 1.0);
+    float t = uTime;
+    // domain warp — organic, flowing distortion so the field churns, not just slides
+    float w1 = fbm(uv*2.4 + vec2(0.0, t*0.08));
+    float w2 = fbm(uv*2.4 + vec2(3.7, 1.2) - t*0.06);
+    vec2 wuv = uv + (vec2(w1, w2) - 0.5) * uWarp;
+    // five colour sources drifting on independent orbits...
+    vec2 pts[5];
+    pts[0] = vec2(0.5 + uTravel*sin(t*0.23),     0.5 + uTravel*cos(t*0.19));
+    pts[1] = vec2(0.5 + uTravel*sin(t*0.17+2.1), 0.5 + uTravel*cos(t*0.27+1.0));
+    pts[2] = vec2(0.5 + uTravel*sin(t*0.21+4.0), 0.5 + uTravel*cos(t*0.15+3.0));
+    pts[3] = vec2(0.5 + uTravel*sin(t*0.13+1.5), 0.5 + uTravel*cos(t*0.23+5.0));
+    pts[4] = vec2(0.5 + uTravel*sin(t*0.19+3.5), 0.5 + uTravel*cos(t*0.20+2.5));
+    // ...and pulsing in/out so colours wax and wane (the noticeable shifts)
+    float pulse[5];
+    pulse[0]=0.5+0.5*sin(t*0.50);     pulse[1]=0.5+0.5*sin(t*0.37+1.7);
+    pulse[2]=0.5+0.5*sin(t*0.43+3.1); pulse[3]=0.5+0.5*sin(t*0.31+4.5);
+    pulse[4]=0.5+0.5*sin(t*0.47+0.6);
+    vec3 col = vec3(0.0); float wsum = 0.0;
+    for (int i=0;i<5;i++){
+      vec2 d = (wuv - pts[i]) * asp;
+      float w = exp(-dot(d,d)/uSoft) * (0.35 + 0.65*pulse[i]);
+      col += uCol[i]*w; wsum += w;
+    }
+    col /= max(wsum, 0.0001);
+
+    // glowing rounded-rectangle frame — crisp core line + soft bloom + a travelling highlight
+    if (uFrame > 0.5){
+      vec2 p = (uv - 0.5) * asp * 2.0;
+      float sdf = sdRoundBox(p, vec2(asp.x*0.82, 0.86), uRadius);
+      float core = exp(-abs(sdf)/0.014);                  // crisp bright line
+      float glow = exp(-abs(sdf)/0.10);                   // soft outer bloom
+      float ang  = atan(p.y, p.x);
+      float sweep = pow(cos(ang - t*0.55)*0.5 + 0.5, 4.0); // a luminous spot orbiting the border
+      vec3 lineCol = mix(vec3(1.0), col + 0.25, 0.35);     // luminous, picks up the field's hue
+      float line = (glow*0.5 + core*1.15) * (0.5 + 1.0*sweep);
+      col += line * uRim * lineCol;
+      col *= 1.0 - 0.12*smoothstep(0.0, -0.35, sdf);       // deepen interior
+      col *= 1.0 - 0.22*smoothstep(0.02, 0.4, sdf);        // dim just outside
+    }
+
+    col += (hash(gl_FragCoord.xy + t) - 0.5) / 200.0;       // dither to kill banding
+    gl_FragColor = vec4(col, 1.0);
+  }`;
+
+function compile(type, src){ const s=gl.createShader(type); gl.shaderSource(s,src); gl.compileShader(s);
+  if(!gl.getShaderParameter(s,gl.COMPILE_STATUS)) console.error(gl.getShaderInfoLog(s)); return s; }
+const prog = gl.createProgram();
+gl.attachShader(prog, compile(gl.VERTEX_SHADER, VS));
+gl.attachShader(prog, compile(gl.FRAGMENT_SHADER, FS));
+gl.bindAttribLocation(prog, 0, 'aPosition');
+gl.linkProgram(prog);
+if(!gl.getProgramParameter(prog, gl.LINK_STATUS)) console.error(gl.getProgramInfoLog(prog));
+gl.useProgram(prog);
+
+const buf = gl.createBuffer();
+gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 3,-1, -1,3]), gl.STATIC_DRAW);  // big triangle
+gl.enableVertexAttribArray(0);
+gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+
+const U = {};
+['uRes','uTime','uSoft','uTravel','uRim','uRadius','uFrame','uWarp','uCol[0]'].forEach(n=>U[n]=gl.getUniformLocation(prog,n));
+
+function setPalette(){
+  const flat = [];
+  MODES[mode].cols.forEach(h=>{ const c=hexRgb(h); flat.push(c[0],c[1],c[2]); });
+  gl.uniform3fv(U['uCol[0]'], new Float32Array(flat));
+}
+
+let t0 = performance.now(), simTime = 0, last = t0;
+function frame(now){
+  const dt = (now - last)/1000; last = now;
+  simTime += dt * P.speed;
+  gl.uniform1f(U.uTime, simTime);
+  gl.uniform2f(U.uRes, canvas.width, canvas.height);
+  gl.uniform1f(U.uSoft, P.soft);
+  gl.uniform1f(U.uTravel, P.travel);
+  gl.uniform1f(U.uWarp, P.warp);
+  gl.uniform1f(U.uRim, P.rim);
+  gl.uniform1f(U.uRadius, P.radius);
+  gl.uniform1f(U.uFrame, P.frame ? 1 : 0);
+  gl.drawArrays(gl.TRIANGLES, 0, 3);
+  requestAnimationFrame(frame);
+}
+
+// ---- UI ----
+function buildUI(){
+  const mc = document.getElementById('modes');
+  Object.keys(MODES).forEach(k=>{
+    const b=document.createElement('button'); b.textContent=MODES[k].label; b.className=k===mode?'on':'';
+    b.onclick=()=>{ mode=k; [...mc.children].forEach(x=>x.classList.remove('on')); b.classList.add('on'); setPalette(); };
+    mc.appendChild(b);
+  });
+  const bind=(id,key,fmt)=>{ const el=document.getElementById('s-'+id), v=document.getElementById('v-'+id);
+    el.value=P[key]; v.textContent=fmt(P[key]); el.oninput=()=>{ P[key]=parseFloat(el.value); v.textContent=fmt(P[key]); }; };
+  bind('speed','speed',x=>x.toFixed(2)+'×');
+  bind('soft','soft',x=>x.toFixed(2));
+  bind('travel','travel',x=>x.toFixed(2));
+  bind('warp','warp',x=>x.toFixed(2));
+  bind('rim','rim',x=>(x*100|0)+'%');
+  bind('radius','radius',x=>x.toFixed(2));
+  const tf=document.getElementById('t-frame'); const sync=()=>tf.classList.toggle('on',P.frame); sync();
+  tf.onclick=()=>{ P.frame=!P.frame; sync(); };
+  document.getElementById('save').onclick=()=>{ const a=document.createElement('a');
+    a.download=`wkndr-aura-${mode}.png`; a.href=canvas.toDataURL('image/png'); a.click(); };
+}
+
+function resize(){
+  const dpr = Math.min(2, window.devicePixelRatio||1);
+  canvas.width = Math.floor(window.innerWidth*dpr);
+  canvas.height = Math.floor(window.innerHeight*dpr);
+  gl.viewport(0,0,canvas.width,canvas.height);
+}
+window.addEventListener('resize', resize);
+resize();
+setPalette();
+buildUI();
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>

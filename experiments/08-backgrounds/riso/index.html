@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<title>WKNDR · weather risograph</title>
+<style>
+  :root { --ui: #e9e6df; --ui-dim: #8c897f; --panel: rgba(18,17,15,.82); }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #0d0c0b;
+    font-family: ui-sans-serif, system-ui, -apple-system, "Helvetica Neue", sans-serif; }
+  canvas { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+  #panel {
+    position: fixed; top: 14px; left: 14px; width: 234px; z-index: 10;
+    background: var(--panel); backdrop-filter: blur(14px) saturate(1.2);
+    border: 1px solid rgba(255,255,255,.08); border-radius: 14px;
+    padding: 14px 14px 16px; color: var(--ui);
+    font-size: 11px; line-height: 1.3; user-select: none;
+    box-shadow: 0 12px 40px rgba(0,0,0,.5); max-height: calc(100vh - 28px); overflow-y: auto;
+  }
+  #panel h1 { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; margin: 0 0 2px; font-weight: 600; }
+  #panel .sub { color: var(--ui-dim); font-size: 10px; margin-bottom: 12px; }
+  .modes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-bottom: 8px; }
+  .modes button { appearance: none; border: 1px solid rgba(255,255,255,.12); background: transparent;
+    color: var(--ui-dim); border-radius: 8px; padding: 7px 4px; font-size: 10px; cursor: pointer; transition: all .15s; }
+  .modes button:hover { color: var(--ui); border-color: rgba(255,255,255,.28); }
+  .modes button.on { background: var(--ui); color: #111; border-color: var(--ui); font-weight: 600; }
+  .why { color: var(--ui-dim); font-size: 10px; line-height: 1.4; margin: 0 0 14px; min-height: 26px; }
+  .row { margin-bottom: 11px; }
+  .row label { display: flex; justify-content: space-between; margin-bottom: 5px; color: var(--ui-dim); }
+  .row label .val { color: var(--ui); font-variant-numeric: tabular-nums; }
+  input[type=range] { -webkit-appearance: none; width: 100%; height: 3px; border-radius: 3px; background: rgba(255,255,255,.16); outline: none; }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 13px; height: 13px; border-radius: 50%; background: var(--ui); cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,.4); }
+  .toggle { display: flex; align-items: center; justify-content: space-between; margin-bottom: 11px; color: var(--ui-dim); cursor: pointer; }
+  .toggle .sw { width: 32px; height: 18px; border-radius: 10px; background: rgba(255,255,255,.16); position: relative; transition: background .2s; }
+  .toggle .sw::after { content: ''; position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; border-radius: 50%; background: var(--ui); transition: transform .2s; }
+  .toggle.on .sw { background: #6b9b6e; }
+  .toggle.on .sw::after { transform: translateX(14px); }
+  .seedline { display: flex; align-items: center; gap: 6px; color: var(--ui-dim); font-variant-numeric: tabular-nums; margin-top: 4px; }
+  .seedline input { flex: 1; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12); color: var(--ui); border-radius: 6px; padding: 5px 7px; font-size: 11px; font-family: inherit; }
+  .foot { display: flex; gap: 6px; margin-top: 12px; }
+  .foot button { flex: 1; appearance: none; border: 1px solid rgba(255,255,255,.14); background: transparent; color: var(--ui); border-radius: 8px; padding: 8px 4px; font-size: 10px; cursor: pointer; }
+  .foot button:hover { background: rgba(255,255,255,.1); }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="panel">
+  <h1>Weather Risograph</h1>
+  <div class="sub">WKNDR · abstract shape language</div>
+  <div class="modes" id="modes"></div>
+  <div class="why" id="why"></div>
+  <div class="row"><label>Density <span class="val" id="v-density"></span></label>
+    <input type="range" id="s-density" min="0.4" max="2" step="0.1"></div>
+  <div class="row"><label>Time of day <span class="val" id="v-time"></span></label>
+    <input type="range" id="s-time" min="0" max="1" step="0.02"></div>
+  <div class="row"><label>Motion <span class="val" id="v-motion"></span></label>
+    <input type="range" id="s-motion" min="0" max="1.5" step="0.05"></div>
+  <div class="row"><label>Grain <span class="val" id="v-grain"></span></label>
+    <input type="range" id="s-grain" min="0" max="1" step="0.05"></div>
+  <div class="toggle" id="t-shimmer"><span>Grain shimmer</span><span class="sw"></span></div>
+  <div class="seedline">seed <input id="seed" type="text" inputmode="numeric"></div>
+  <div class="foot"><button id="variant">Variant ⟳</button><button id="reroll">Reroll</button><button id="save">Save PNG</button></div>
+</div>
+
+<script>
+const c = document.getElementById('c');
+const ctx = c.getContext('2d');
+const comp = document.createElement('canvas');
+const cctx = comp.getContext('2d');
+let W, H, DPR = Math.min(2, window.devicePixelRatio||1);
+
+function mulberry32(a){ return function(){ a|=0; a=a+0x6D2B79F5|0; let t=Math.imul(a^a>>>15,1|a); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+let rng = mulberry32(1);
+const rr = (a,b)=>a+rng()*(b-a);
+const pick = arr => arr[(rng()*arr.length)|0];
+function col(hex,a){ hex=hex.replace('#',''); const r=parseInt(hex.slice(0,2),16),g=parseInt(hex.slice(2,4),16),b=parseInt(hex.slice(4,6),16); return `rgba(${r},${g},${b},${a})`; }
+
+const P = { density:1, grain:0.5, motion:0.6, timeOfDay:0.5, shimmer:false, seed:1 };
+const VAR = { wind:0, storm:0 };           // which alternative is showing
+const VARN = { wind:3, storm:2 };          // how many alternatives each has
+
+// ============================================================================
+//  ABSTRACT weather language: palette + vertical wash + modular colour panels
+//  + one signature geometry per condition. Nothing is depicted — only inferred.
+// ============================================================================
+const MODES = {
+  sun:   { label:'Sun',   why:'Warm wash + a glowing disc that arcs sunrise→noon→sunset with the time of day.',
+           bg:['#d83218','#f0701e','#f4b24a','#f2e6cf'], cols:['#e63320','#f3851f','#f3c218','#f2e6cf'], lines:['#ffffff','#e63320','#f3c218'], arcs:0, motif:'glow' },
+  rain:  { label:'Rain',  why:'Soft vertical washes running down to cream — rain as water streaking the surface.',
+           bg:['#3f4f68','#7286a0','#c2ccd6','#e3e8ec'], cols:['#36529a','#6b8fb8','#aebccb','#e7ebef'], lines:['#ffffff','#2b4ad6'], motif:'streaks' },
+  cloud: { label:'Cloud', why:'Muted grey panels and soft horizontal bands — flat, layered, still.',
+           bg:['#aab4bf','#cfd5db','#eceef0'], cols:['#8d99a6','#b4bdc6','#dfe3e7','#eceef0'], lines:['#ffffff','#7d8893'], motif:'bands' },
+  wind:  { label:'Wind',  why:'Long sweeping curves with streaming dashes flowing along them — air in motion.',
+           bg:['#7aa589','#b2ceac','#e7ecdc'], cols:['#3f6b5e','#7fae8a','#cfe0c4','#e7ecdc'], lines:['#2f5c44','#ffffff'], arcs:0, motif:'sweep' },
+  storm: { label:'Storm', why:'Turbulent mass, clashing shards, broken fragments and glitch — chaotic and electric.',
+           bg:['#211a3a','#3a2c5c','#544a72'], cols:['#1d1733','#4a2d7a','#e63320','#8a7fb0'], lines:['#ffe45e','#ffffff'], arcs:0, motif:'storm' },
+  snow:  { label:'Snow',  why:'Crisp rings and soft discs drifting slowly down with parallax — quiet, light, sparse.',
+           bg:['#cfe0ef','#e6eef6','#f6f9fc'], cols:['#b8cbe0','#d4e0ee','#eef4fa','#ffffff'], lines:['#ffffff','#9fb6d4'], motif:'rings' },
+};
+let mode = 'sun';
+
+// ---- modular colour-field panels (the poster grid) ----
+function edges(n, total){
+  const ws=[]; let s=0; for(let i=0;i<n;i++){ const w=0.55+rng(); ws.push(w); s+=w; }
+  const e=[0]; let acc=0; for(let i=0;i<n;i++){ acc+=ws[i]/s*total; e.push(acc); } e[n]=total; return e;
+}
+function drawGrid(g, m){
+  const fade = m.bg[m.bg.length-1];
+  const nCols = 2 + (rng()<0.55?1:0);
+  const xs = edges(nCols, W);
+  for (let i=0;i<nCols;i++){
+    const nRows = 1 + ((rng()*3*P.density)|0)%3;
+    const ys = edges(Math.max(1,nRows), H);
+    for (let j=0;j<ys.length-1;j++){
+      const x0=xs[i], y0=ys[j], x1=xs[i+1], y1=ys[j+1], w=x1-x0, h=y1-y0;
+      const r=rng();
+      if (r < 0.38) continue;                         // negative space — let the wash show
+      const cc = pick(m.cols);
+      if (rng() < 0.62){                               // crisp vertical-gradient field
+        const flip = rng()<0.5;
+        const grad=g.createLinearGradient(0,y0,0,y1);
+        grad.addColorStop(0, flip?cc:fade); grad.addColorStop(1, flip?fade:cc);
+        g.fillStyle=grad; g.fillRect(x0,y0,w,h);
+      } else {                                         // soft vertical stripe
+        const sw=w*rr(0.25,0.55), sx=x0+rng()*(w-sw);
+        g.save(); g.filter=`blur(${Math.max(2,w*0.05)}px)`;
+        const grad=g.createLinearGradient(0,y0,0,y1);
+        grad.addColorStop(0,cc); grad.addColorStop(1,fade);
+        g.fillStyle=grad; g.fillRect(sx,y0,sw,h); g.restore();
+      }
+    }
+  }
+}
+
+// ---- generic poster geometry: a couple of crisp circle / arc outlines ----
+function drawArcs(g, m, count){
+  for (let i=0;i<count;i++){
+    const cx=rr(-0.2,1.2)*W, cy=rr(-0.2,1.2)*H, rad=rr(0.3,0.8)*W;
+    g.strokeStyle=col(pick(m.lines), rr(0.5,0.85)); g.lineWidth=rr(1.4,2.8)*DPR;
+    g.beginPath();
+    if (rng()<0.5) g.arc(cx,cy,rad,0,6.2832);
+    else { const a0=rng()*6.2832; g.arc(cx,cy,rad,a0,a0+rr(1.0,4.2)); }
+    g.stroke();
+  }
+}
+
+// ---- wind variants (cycle with the Variant button) ----
+function windCurves(g,m,t){                       // 0: bold flexing curves only
+  const n=Math.round((3+rng()*2)*P.density)+2; g.lineCap='round'; g.setLineDash([]);
+  for (let i=0;i<n;i++){
+    const baseY=rr(0.1,0.9)*H, ph=i*1.3, off=(rng()<0.5?0:0.025)*H;
+    const bow=(rr(-0.26,0.26)+0.09*Math.sin(t*0.6+ph))*H, updown=rr(-0.12,0.12)*H;
+    g.strokeStyle=col(rng()<0.5?m.lines[0]:m.lines[1], rr(0.4,0.75)); g.lineWidth=rr(2,5)*DPR;
+    g.beginPath(); g.moveTo(-0.12*W, baseY+off);
+    g.bezierCurveTo(0.34*W, baseY+bow+off, 0.66*W, baseY-bow*0.55+off, 1.12*W, baseY+updown+off); g.stroke();
+  }
+}
+function windFlecks(g,m,t){                        // 1: particles streaming along flow paths
+  const lanes=Math.round((5+rng()*4)*P.density)+2; g.lineCap='round';
+  for (let i=0;i<lanes;i++){
+    const baseY=rr(0.06,0.94)*H, ph=i*1.1, bow=(rr(-0.2,0.2)+0.06*Math.sin(t*0.5+ph))*H;
+    g.setLineDash([rr(2,5)*DPR, rr(10,26)*DPR]);   // short flecks, big gaps
+    g.lineDashOffset = -t*200*DPR - i*30;          // stream along the lane
+    g.strokeStyle=col(rng()<0.6?'#ffffff':m.lines[0], rr(0.45,0.8)); g.lineWidth=rr(1.4,3)*DPR;
+    g.beginPath(); g.moveTo(-0.12*W, baseY);
+    g.bezierCurveTo(0.34*W, baseY+bow, 0.66*W, baseY-bow*0.5, 1.12*W, baseY+rr(-0.08,0.08)*H); g.stroke();
+  }
+  g.setLineDash([]);
+}
+function windStreaks(g,m,t){                       // 2: long soft tapered speed-streaks, drifting sideways
+  const n=Math.round((5+rng()*4)*P.density)+2;
+  for (let i=0;i<n;i++){
+    const y=rr(0.05,0.95)*H, lw=rr(4,12)*DPR, lean=rr(-0.05,0.05)*H;
+    const drift=(((t*0.08+rng())%1.5)-0.25)*W, x0=-0.25*W+drift, len=rr(0.5,1.0)*W;
+    const cc=rng()<0.5?'#ffffff':m.lines[0];
+    g.save(); g.lineCap='round'; g.lineWidth=lw;
+    const grad=g.createLinearGradient(x0,0,x0+len,0);
+    grad.addColorStop(0,col(cc,0)); grad.addColorStop(0.5,col(cc,rr(0.3,0.6))); grad.addColorStop(1,col(cc,0));
+    g.strokeStyle=grad; g.beginPath(); g.moveTo(x0,y); g.lineTo(x0+len,y+lean); g.stroke(); g.restore();
+  }
+}
+
+// ---- storm variants ----
+function stormShards(g,m,t){                       // 0: clashing shards + fragments + glitch blocks
+  g.save(); g.filter=`blur(${H*0.045}px)`;
+  const mn=3+((rng()*3*P.density)|0);
+  for (let i=0;i<mn;i++){ g.fillStyle=col(m.cols[0], rr(0.25,0.5));
+    const jx=Math.sin(t*0.8+i*2)*0.03*W, jy=Math.cos(t*0.6+i)*0.022*H;
+    g.beginPath(); g.ellipse(rr(0.05,0.95)*W+jx, rr(-0.05,0.5)*H+jy, rr(0.15,0.42)*W, rr(0.08,0.2)*H, rr(0,3.14),0,6.2832); g.fill(); }
+  g.restore();
+  const sw=(rr(0.05,0.1)+0.02*Math.sin(t*0.7))*W, sx=rr(0.3,0.66)*W;
+  g.save(); g.filter=`blur(${W*0.012}px)`;
+  const grad=g.createLinearGradient(0,0,0,H); grad.addColorStop(0,col('#e63320',0.85)); grad.addColorStop(0.5,col('#e63320',0.3)); grad.addColorStop(1,col('#e63320',0.6));
+  g.fillStyle=grad; g.fillRect(sx+Math.sin(t*1.1)*0.01*W,0,sw,H); g.restore();
+  const sh=5+((rng()*4*P.density)|0); g.lineCap='round';
+  const SC=[m.lines[0], m.lines[1], '#e63320', '#8a7fb0'];
+  for (let s=0;s<sh;s++){
+    const cx=rng()*W, cy=rng()*H, ang=rng()*3.1416 + 0.18*Math.sin(t*2.2+s*3), len=rr(0.3,1.0)*H, jit=Math.sin(t*3+s)*5*DPR;
+    g.strokeStyle=col(pick(SC), rr(0.35,0.9)); g.lineWidth=rr(1,4)*DPR;
+    g.beginPath(); g.moveTo(cx-Math.cos(ang)*len+jit, cy-Math.sin(ang)*len); g.lineTo(cx+Math.cos(ang)*len+jit, cy+Math.sin(ang)*len); g.stroke();
+  }
+  const fn=2+((rng()*3)|0);
+  for (let f=0;f<fn;f++){ let x=rng()*W, y=rng()*rr(0,0.5)*H; const segs=3+((rng()*4)|0), step=rr(0.05,0.12)*H;
+    g.strokeStyle=col(pick(['#ffe45e','#ffffff','#e63320']), rr(0.5,0.95)); g.lineWidth=rr(1.5,3)*DPR;
+    g.beginPath(); g.moveTo(x,y);
+    for (let k=0;k<segs;k++){ x+=rr(-0.09,0.09)*W + Math.sin(t*4+k)*3*DPR; y+=step; g.lineTo(x,y); } g.stroke(); }
+  const gn=2+((rng()*3)|0);
+  for (let b=0;b<gn;b++){ const bx=rng()*W, by=rng()*H, bw=rr(0.04,0.16)*W, bh=rr(0.02,0.09)*H;
+    const offx=(Math.sin(t*1.5+b)>0.6)?rr(4,12)*DPR:0;
+    g.globalAlpha=rr(0.3,0.7); g.fillStyle=pick(['#e63320','#4a2d7a','#ffe45e','#8a7fb0']);
+    g.fillRect(bx+offx, by, bw, bh); }
+  g.globalAlpha=1;
+}
+function stormGlitch(g,m,t){                        // 1: torn datamosh slices + channel-shift + fragments
+  g.save(); g.filter=`blur(${H*0.05}px)`;
+  for (let i=0;i<3+((rng()*2)|0);i++){ g.fillStyle=col(m.cols[0],rr(0.3,0.55));
+    g.beginPath(); g.ellipse(rng()*W+Math.sin(t*0.7+i)*0.03*W, rng()*H, rr(0.2,0.45)*W, rr(0.1,0.22)*H,0,0,6.2832); g.fill(); }
+  g.restore();
+  const slices=Math.round((8+rng()*9)*P.density);   // torn displaced slices of the base composition
+  for (let i=0;i<slices;i++){
+    const sy=rng()*(H-10), sh=rr(0.008,0.045)*H, off=(rr(-0.1,0.1)+Math.sin(t*2.2+i*1.7)*0.045)*W;
+    g.globalAlpha=rr(0.55,0.95);
+    g.drawImage(comp, 0, sy*DPR, comp.width, sh*DPR, off, sy, W, sh);
+  }
+  g.globalAlpha=1;
+  for (let i=0;i<3+((rng()*3)|0);i++){ const bx=rng()*W,by=rng()*H,bw=rr(0.05,0.22)*W,bh=rr(0.008,0.05)*H;
+    g.globalAlpha=rr(0.25,0.6); g.fillStyle=pick(['#e63320','#4a2d7a','#ffe45e','#8a7fb0','#ffffff']);
+    g.fillRect(bx+Math.sin(t*1.6+i)*0.02*W, by, bw, bh); }
+  g.globalAlpha=1;
+  for (let f=0;f<1+((rng()*2)|0);f++){ let x=rng()*W,y=rng()*0.5*H; const segs=3+((rng()*3)|0), step=rr(0.05,0.12)*H;
+    g.strokeStyle=col(pick(['#ffe45e','#ffffff']), rr(0.6,0.95)); g.lineWidth=rr(1.5,3)*DPR; g.lineCap='round';
+    g.beginPath(); g.moveTo(x,y); for(let k=0;k<segs;k++){ x+=rr(-0.08,0.08)*W; y+=step; g.lineTo(x,y);} g.stroke(); }
+}
+
+// ---- signature geometry per weather (all abstract) — each takes time t for motion ----
+const SIG = {
+  glow(g,m,t){                                    // sun: travels an arc by time-of-day, glow breathes
+    const a=((P.timeOfDay + t*0.02)%1+1)%1;        // 0 sunrise(left) · 0.5 noon(top) · 1 sunset(right)
+    const cx=(0.12+a*0.76)*W, cy=(0.58 - Math.sin(a*Math.PI)*0.44)*H, R=rr(0.18,0.28)*Math.min(W,H);
+    const breathe=1+0.09*Math.sin(t*1.1);
+    g.save(); g.globalCompositeOperation='lighter';
+    const gl=g.createRadialGradient(cx,cy,0,cx,cy,R*2.1*breathe);
+    gl.addColorStop(0,col('#fff2cf',0.55+0.12*Math.sin(t*1.1))); gl.addColorStop(0.45,col('#ffce6e',0.2)); gl.addColorStop(1,col('#fff2cf',0));
+    g.fillStyle=gl; g.fillRect(0,0,W,H); g.restore();
+    g.strokeStyle=col('#ffffff',0.7); g.lineWidth=rr(1.6,2.6)*DPR;
+    g.beginPath(); g.arc(cx,cy,R,0,6.2832); g.stroke();
+  },
+  streaks(g,m,t){                                 // rain: thin + dotted vertical lines, falling
+    const fade=m.bg[m.bg.length-1];
+    const wn=2+((rng()*2*P.density)|0);            // soft washes behind
+    for (let i=0;i<wn;i++){ const x=rng()*W,w=rr(0.04,0.11)*W,top=rr(-0.1,0.1)*H,len=rr(0.7,1.15)*H;
+      g.save(); g.filter=`blur(${Math.max(2,w*0.4)}px)`;
+      const grad=g.createLinearGradient(0,top,0,top+len); grad.addColorStop(0,col(pick(m.cols),rr(0.32,0.55))); grad.addColorStop(1,col(fade,0));
+      g.fillStyle=grad; g.fillRect(x,top,w,len); g.restore(); }
+    const n=Math.round((16+rng()*16)*P.density);   // many thin verticals, ~half dotted, all falling
+    for (let i=0;i<n;i++){
+      const x=rng()*W, dotted=rng()<0.55;
+      g.strokeStyle=col(rng()<0.35?m.lines[1]:m.lines[0], rr(0.18,0.5)); g.lineWidth=rr(0.6,1.5)*DPR;
+      if (dotted){ g.setLineDash([rr(2,6)*DPR, rr(5,20)*DPR]); g.lineDashOffset=-t*90*DPR; } else g.setLineDash([]);
+      g.beginPath(); g.moveTo(x, rr(-0.1,0.15)*H); g.lineTo(x, rr(0.7,1.1)*H); g.stroke();
+    }
+    g.setLineDash([]);
+  },
+  bands(g,m,t){                                   // cloud: soft horizontal bands sliding gently sideways
+    const n=Math.round((3+rng()*3)*P.density)+1;
+    for (let i=0;i<n;i++){
+      const y=rr(0.05,0.92)*H, h=rr(0.05,0.16)*H, dx=Math.sin(t*0.18+i*1.3)*0.05*W;
+      g.save(); g.filter=`blur(${H*rr(0.02,0.04)}px)`;
+      const grad=g.createLinearGradient(0,y,0,y+h);
+      grad.addColorStop(0,col(m.cols[0],0)); grad.addColorStop(0.5,col(pick(m.cols),rr(0.4,0.7))); grad.addColorStop(1,col(m.cols[0],0));
+      g.fillStyle=grad; g.fillRect(-0.18*W+dx,y,1.36*W,h); g.restore();
+    }
+  },
+  sweep(g,m,t){ const v=VAR.wind%3; if(v===0) windCurves(g,m,t); else if(v===1) windFlecks(g,m,t); else windStreaks(g,m,t); },
+  storm(g,m,t){ const v=VAR.storm%2; if(v===0) stormShards(g,m,t); else stormGlitch(g,m,t); },
+  rings(g,m,t){                                   // snow: crisp rings + soft discs drifting down (parallax)
+    const n=Math.round((9+rng()*9)*P.density);
+    for (let i=0;i<n;i++){
+      const x=rng()*W, baseY=rng()*(H+120)-60, rad=rr(5,30)*DPR;
+      const speed=(10+rad*0.7);
+      const yy=((baseY + t*speed) % (H+rad*4)) - rad*2;
+      const soft=rng()<0.35;
+      g.save(); if(soft) g.filter=`blur(${rad*0.55}px)`;
+      g.strokeStyle=col(rng()<0.5?'#ffffff':m.lines[1], rr(0.3,0.65)); g.lineWidth=rr(1,2)*DPR;
+      g.beginPath(); g.arc(x,yy,rad,0,6.2832); g.stroke();
+      if(!soft && rng()<0.3){ g.fillStyle=col('#ffffff',rr(0.3,0.6)); g.beginPath(); g.arc(x,yy,rad*0.28,0,6.2832); g.fill(); }
+      g.restore();
+    }
+  },
+};
+
+function compose(){
+  rng = mulberry32(P.seed>>>0);
+  const m = MODES[mode];
+  comp.width=c.width; comp.height=c.height;
+  const g=cctx; g.setTransform(DPR,0,0,DPR,0,0); g.clearRect(0,0,W,H);
+  const bg=g.createLinearGradient(0,0,0,H);
+  m.bg.forEach((s,i)=> bg.addColorStop(i/(m.bg.length-1), s));
+  g.fillStyle=bg; g.fillRect(0,0,W,H);
+  drawGrid(g, m);
+  g.lineJoin='round';
+  drawArcs(g, m, (m.arcs !== undefined) ? m.arcs : 1 + (rng()<0.6?1:0));
+}
+
+// ---- grain ----
+let grainTile=null;
+function buildGrain(){
+  const s=240, t=document.createElement('canvas'); t.width=s; t.height=s;
+  const p=t.getContext('2d'), img=p.createImageData(s,s), d=img.data;
+  for(let i=0;i<d.length;i+=4){ const v=128+(Math.random()-0.5)*255; d[i]=d[i+1]=d[i+2]=v; d[i+3]=255; }
+  p.putImageData(img,0,0); grainTile=t;
+}
+function present(t){
+  t = t||0;
+  ctx.setTransform(1,0,0,1,0,0); ctx.clearRect(0,0,c.width,c.height);
+  ctx.drawImage(comp,0,0);                                  // static base (panels + arcs + wash)
+  // animated signature motif on top — stable layout (fixed seed), only t drives motion
+  ctx.setTransform(DPR,0,0,DPR,0,0);
+  rng = mulberry32((P.seed>>>0) ^ 0x9e3779b9);
+  SIG[MODES[mode].motif](ctx, MODES[mode], t);
+  ctx.setTransform(1,0,0,1,0,0);
+  if(P.grain>0.01 && grainTile){
+    ctx.save(); ctx.globalCompositeOperation='overlay'; ctx.globalAlpha=P.grain*0.9;
+    const pat=ctx.createPattern(grainTile,'repeat');
+    const ox=P.shimmer?(Math.random()*240|0):0, oy=P.shimmer?(Math.random()*240|0):0;
+    ctx.translate(-ox,-oy); ctx.fillStyle=pat; ctx.fillRect(ox,oy,c.width,c.height); ctx.restore();
+  }
+  // time-of-day wash: morning faint/pale → midday clear → evening dark
+  const td=P.timeOfDay;
+  ctx.setTransform(1,0,0,1,0,0);
+  if (td < 0.48){ ctx.globalAlpha=(0.48-td)/0.48*0.42; ctx.fillStyle='#eef2f7'; ctx.fillRect(0,0,c.width,c.height); }   // dawn veil
+  else if (td > 0.52){ ctx.globalAlpha=(td-0.52)/0.48*0.6; ctx.fillStyle='#14101f'; ctx.fillRect(0,0,c.width,c.height); } // dusk darken
+  ctx.globalAlpha=1;
+}
+let raf=0, t0=performance.now();
+function loop(){ const t=(performance.now()-t0)/1000*P.motion; present(t); raf=requestAnimationFrame(loop); }
+function render(){ compose(); cancelAnimationFrame(raf); if(P.motion>0.001 || P.shimmer) loop(); else present(0); }
+
+// ---- UI ----
+function buildUI(){
+  const mc=document.getElementById('modes');
+  Object.keys(MODES).forEach(k=>{
+    const b=document.createElement('button'); b.textContent=MODES[k].label; b.className=k===mode?'on':'';
+    b.onclick=()=>{ mode=k; [...mc.children].forEach(x=>x.classList.remove('on')); b.classList.add('on');
+      document.getElementById('why').textContent=MODES[k].why; render(); };
+    mc.appendChild(b);
+  });
+  document.getElementById('why').textContent=MODES[mode].why;
+  const bind=(id,key,fmt)=>{ const el=document.getElementById('s-'+id), v=document.getElementById('v-'+id);
+    el.value=P[key]; v.textContent=fmt(P[key]); el.oninput=()=>{ P[key]=parseFloat(el.value); v.textContent=fmt(P[key]); render(); }; };
+  bind('density','density',x=>x.toFixed(1)+'×');
+  bind('time','timeOfDay',x=> x<0.4?'morning':(x>0.6?'evening':'midday'));
+  bind('motion','motion',x=>x===0?'still':(x*100|0)+'%');
+  bind('grain','grain',x=>(x*100|0)+'%');
+  document.getElementById('variant').onclick=()=>{ if(VARN[mode]){ VAR[mode]=(VAR[mode]+1)%VARN[mode]; render(); } };
+  const ts=document.getElementById('t-shimmer'); const sync=()=>ts.classList.toggle('on',P.shimmer); sync();
+  ts.onclick=()=>{ P.shimmer=!P.shimmer; sync(); render(); };
+  const seedEl=document.getElementById('seed'); seedEl.value=P.seed;
+  seedEl.onchange=()=>{ P.seed=(parseInt(seedEl.value)||0); render(); };
+  document.getElementById('reroll').onclick=()=>{ P.seed=Math.floor(Math.random()*1e6); seedEl.value=P.seed; render(); };
+  document.getElementById('save').onclick=()=>{ present(); const a=document.createElement('a'); a.download=`wkndr-riso-${mode}-${P.seed}.png`; a.href=c.toDataURL('image/png'); a.click(); };
+}
+function resize(){ W=window.innerWidth; H=window.innerHeight; c.width=Math.floor(W*DPR); c.height=Math.floor(H*DPR); buildGrain(); render(); }
+window.addEventListener('resize', resize);
+buildGrain(); buildUI(); resize();
+</script>
+</body>
+</html>

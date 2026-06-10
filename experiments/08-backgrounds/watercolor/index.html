@@ -1,0 +1,426 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<title>WKNDR · watercolor weather field</title>
+<style>
+  :root { --ui: #e9e6df; --ui-dim: #8c897f; --panel: rgba(18,17,15,.82); }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #0d0c0b;
+    font-family: ui-sans-serif, system-ui, -apple-system, "Helvetica Neue", sans-serif; }
+  #stage { position: fixed; inset: 0; }
+  canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+
+  #panel {
+    position: fixed; top: 14px; left: 14px; width: 248px; z-index: 10;
+    background: var(--panel); backdrop-filter: blur(14px) saturate(1.2);
+    border: 1px solid rgba(255,255,255,.08); border-radius: 14px;
+    padding: 14px 14px 16px; color: var(--ui);
+    font-size: 11px; line-height: 1.3; user-select: none;
+    box-shadow: 0 12px 40px rgba(0,0,0,.5);
+    max-height: calc(100vh - 28px); overflow-y: auto;
+  }
+  #panel h1 { font-size: 11px; letter-spacing: .14em; text-transform: uppercase;
+    margin: 0 0 2px; font-weight: 600; }
+  #panel .sub { color: var(--ui-dim); font-size: 10px; margin-bottom: 12px; letter-spacing: .02em; }
+
+  .modes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-bottom: 14px; }
+  .modes button {
+    appearance: none; border: 1px solid rgba(255,255,255,.12); background: transparent;
+    color: var(--ui-dim); border-radius: 8px; padding: 7px 4px; font-size: 10px;
+    letter-spacing: .03em; cursor: pointer; transition: all .15s; font-weight: 500;
+  }
+  .modes button:hover { color: var(--ui); border-color: rgba(255,255,255,.28); }
+  .modes button.on { background: var(--ui); color: #111; border-color: var(--ui); font-weight: 600; }
+
+  .row { margin-bottom: 11px; }
+  .row label { display: flex; justify-content: space-between; margin-bottom: 5px;
+    color: var(--ui-dim); letter-spacing: .03em; }
+  .row label .val { color: var(--ui); font-variant-numeric: tabular-nums; }
+  input[type=range] { -webkit-appearance: none; width: 100%; height: 3px; border-radius: 3px;
+    background: rgba(255,255,255,.16); outline: none; }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 13px; height: 13px;
+    border-radius: 50%; background: var(--ui); cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,.4); }
+
+  .foot { display: flex; gap: 6px; margin-top: 14px; }
+  .foot button { flex: 1; appearance: none; border: 1px solid rgba(255,255,255,.14);
+    background: transparent; color: var(--ui); border-radius: 8px; padding: 8px 4px;
+    font-size: 10px; letter-spacing: .04em; cursor: pointer; transition: all .15s; }
+  .foot button:hover { background: rgba(255,255,255,.1); }
+  .toggle { display: flex; align-items: center; justify-content: space-between; margin-bottom: 11px;
+    color: var(--ui-dim); cursor: pointer; }
+  .toggle .sw { width: 32px; height: 18px; border-radius: 10px; background: rgba(255,255,255,.16);
+    position: relative; transition: background .2s; }
+  .toggle .sw::after { content: ''; position: absolute; top: 2px; left: 2px; width: 14px; height: 14px;
+    border-radius: 50%; background: var(--ui); transition: transform .2s; }
+  .toggle.on .sw { background: #6b9b6e; }
+  .toggle.on .sw::after { transform: translateX(14px); }
+  .seedline { display: flex; align-items: center; gap: 6px; color: var(--ui-dim);
+    font-variant-numeric: tabular-nums; margin-top: 4px; }
+  .seedline input { flex: 1; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12);
+    color: var(--ui); border-radius: 6px; padding: 5px 7px; font-size: 11px; font-family: inherit; }
+  .hint { position: fixed; bottom: 12px; right: 14px; color: rgba(255,255,255,.32);
+    font-size: 10px; z-index: 10; letter-spacing: .03em; font-family: ui-monospace, monospace; }
+</style>
+</head>
+<body>
+<div id="stage"><canvas id="c"></canvas></div>
+
+<div id="panel">
+  <h1>Watercolor Weather</h1>
+  <div class="sub">WKNDR ambient field · R&amp;D</div>
+
+  <div class="modes" id="modes"></div>
+
+  <div class="row"><label>Blooms <span class="val" id="v-count"></span></label>
+    <input type="range" id="s-count" min="2" max="14" step="1"></div>
+  <div class="row"><label>Bloom size <span class="val" id="v-size"></span></label>
+    <input type="range" id="s-size" min="0.4" max="1.8" step="0.05"></div>
+  <div class="row"><label>Layers / bloom <span class="val" id="v-layers"></span></label>
+    <input type="range" id="s-layers" min="12" max="80" step="1"></div>
+  <div class="row"><label>Pigment opacity <span class="val" id="v-op"></span></label>
+    <input type="range" id="s-op" min="0.015" max="0.09" step="0.005"></div>
+  <div class="row"><label>Looseness <span class="val" id="v-loose"></span></label>
+    <input type="range" id="s-loose" min="0.06" max="0.34" step="0.01"></div>
+  <div class="row"><label>Colour blend <span class="val" id="v-blend"></span></label>
+    <input type="range" id="s-blend" min="1" max="3" step="1"></div>
+  <div class="row"><label>Fringe (capillary) <span class="val" id="v-fringe"></span></label>
+    <input type="range" id="s-fringe" min="0" max="1" step="0.05"></div>
+  <div class="row"><label>Wetness · Hobbs→Mierlo <span class="val" id="v-wet"></span></label>
+    <input type="range" id="s-wet" min="0" max="1" step="0.05"></div>
+  <div class="row"><label>Edge pooling <span class="val" id="v-edge"></span></label>
+    <input type="range" id="s-edge" min="0" max="1" step="0.05"></div>
+  <div class="row"><label>Paper grain <span class="val" id="v-grain"></span></label>
+    <input type="range" id="s-grain" min="0" max="1" step="0.05"></div>
+  <div class="row"><label>Paper weave <span class="val" id="v-weave"></span></label>
+    <input type="range" id="s-weave" min="0" max="1" step="0.05"></div>
+  <div class="row"><label>Granulation <span class="val" id="v-gran"></span></label>
+    <input type="range" id="s-gran" min="0" max="1" step="0.05"></div>
+
+  <div class="toggle" id="t-breathe"><span>Breathe</span><span class="sw"></span></div>
+
+  <div class="seedline">seed <input id="seed" type="text" inputmode="numeric"></div>
+  <div class="foot">
+    <button id="reroll">Reroll</button>
+    <button id="save">Save PNG</button>
+  </div>
+</div>
+<div class="hint" id="hint"></div>
+
+<script>
+const c = document.getElementById('c');
+const ctx = c.getContext('2d');
+let W = 0, H = 0;
+const DPR = Math.min(2, window.devicePixelRatio || 1);
+
+// ---------- seeded RNG ----------
+function mulberry32(a){ return function(){ a|=0; a=a+0x6D2B79F5|0; let t=Math.imul(a^a>>>15,1|a);
+  t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+let rng = mulberry32(1);
+const rrange = (a,b) => a + rng()*(b-a);
+function gauss(){ let u=0,v=0; while(u===0)u=rng(); while(v===0)v=rng();
+  return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v); }
+
+// ---------- weather recipes ----------
+// Weather is INFERRED, never drawn: a warm wash = sun, vertical cool bleeds = rain,
+// diagonal stretched sweeps = wind, layered grey bands = overcast, etc.
+// flow = direction the wet pigment "runs" (css px), so the bleed itself reads as weather:
+// rain runs down, wind drags sideways, sun barely moves, snow drifts gently.
+const MODES = {
+  sunny:    { label:'Sunny', paper:'#fffdf4', pigs:['#f6c945','#f59e0b','#fb923c','#fde68a','#facc15'],
+              aspect:[0.9,1.25], angle:[-0.2,0.2], yBias:0.38, spread:0.66, sizeMul:1.2, density:0.7, flow:[0,-2] },
+  overcast: { label:'Cloud', paper:'#f4f6f8', pigs:['#9fb3c8','#7d93a8','#b9c6d2','#8fa0ad','#aebccb'],
+              aspect:[1.9,2.7], angle:[-0.05,0.05], yBias:0.5, spread:0.72, sizeMul:1.1, density:0.85, bands:true, flow:[0,4] },
+  rain:     { label:'Rain', paper:'#f4f6fb', pigs:['#2b4a9e','#1e3a8a','#3a5bc0','#13235e','#4a6bcf'],
+              aspect:[0.36,0.55], angle:[-0.14,0.06], yBias:0.5, spread:0.92, sizeMul:1.0, density:1.05, flow:[1.5,15] },
+  wind:     { label:'Wind', paper:'#f6f8f1', pigs:['#7fae8a','#5c9b78','#a7c9a0','#cfd98a','#6fa37f'],
+              aspect:[1.8,2.6], angle:[-0.55,-0.32], yBias:0.46, spread:0.88, sizeMul:1.15, density:0.8, flow:[18,5] },
+  storm:    { label:'Storm', paper:'#f1edf2', pigs:['#c2410c','#7c2d92','#b45309','#4c1d6b','#9a3412'],
+              aspect:[1.0,1.5], angle:[-0.5,0.5], yBias:0.5, spread:0.58, sizeMul:1.25, density:1.1, flow:[4,9] },
+  snow:     { label:'Snow', paper:'#fbfcff', pigs:['#cfd8ec','#b9c4e0','#e3e9f5','#d8c9e8','#c2cee8'],
+              aspect:[0.85,1.15], angle:[-0.3,0.3], yBias:0.42, spread:0.94, sizeMul:0.88, density:0.55, flow:[2,4] },
+};
+let mode = 'sunny';
+
+// ---------- tunable parameters ----------
+const P = { count:6, size:1.15, layers:48, op:0.04, loose:0.16, blend:2, fringe:0.85, wet:0.3, edge:0.65, grain:0.4, weave:0.28, gran:0.32, breathe:false, seed:1 };
+
+// ---------- colour helpers ----------
+function hexRgb(h){ h=h.replace('#',''); return [parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)]; }
+function darken(rgb,f){ return rgb.map(v=>Math.max(0,Math.round(v*(1-f)))); }
+function rgbStr(rgb,a){ return `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${a})`; }
+
+// ---------- polygon deformation (Tyler Hobbs method) ----------
+// Subdivide every edge; push each new midpoint perpendicular by a random amount
+// scaled to that edge's length, so the wobble diminishes naturally as edges shorten.
+// Points carry [x, y, v] where v is per-segment variance: some edges stay calm,
+// others mutate wildly. That asymmetry is what makes a Hobbs blob read as alive.
+function deform(pts, strength){
+  const out = [];
+  for (let i=0;i<pts.length;i++){
+    const a=pts[i], b=pts[(i+1)%pts.length];
+    out.push(a);
+    const mx=(a[0]+b[0])/2, my=(a[1]+b[1])/2;
+    const dx=b[0]-a[0], dy=b[1]-a[1];
+    const len=Math.hypot(dx,dy)||1e-4;
+    const nx=-dy/len, ny=dx/len;
+    const segV=(a[2]+b[2])/2;                 // inherited variance of this edge
+    const disp=gauss()*strength*segV*len;
+    out.push([mx+nx*disp, my+ny*disp, segV]);
+  }
+  return out;
+}
+function baseBlob(cx,cy,rx,ry,rot,strength){
+  const m = 6 + Math.floor(rng()*3);
+  let pts = [];
+  for (let i=0;i<m;i++){
+    const ang=(i/m)*Math.PI*2;
+    const r=0.78+rng()*0.44;                 // irregular seed radius = childlike
+    const x=Math.cos(ang)*rx*r, y=Math.sin(ang)*ry*r;
+    const v=0.3 + Math.pow(rng(),1.6)*1.7;   // skewed: mostly calm edges, a few wild ones
+    pts.push([cx + x*Math.cos(rot)-y*Math.sin(rot), cy + x*Math.sin(rot)+y*Math.cos(rot), v]);
+  }
+  for (let i=0;i<6;i++) pts = deform(pts, strength*0.9);
+  return pts;
+}
+let g = ctx;   // active draw target — blooms paint onto an offscreen pigment layer
+function fillPoly(pts){
+  g.beginPath(); g.moveTo(pts[0][0],pts[0][1]);
+  for (let i=1;i<pts.length;i++) g.lineTo(pts[i][0],pts[i][1]);
+  g.closePath(); g.fill();
+}
+// Body only — the soft pigment mass. Drawn onto the pig layer, which gets blurred.
+// Returns the geometry the crisp fringe pass needs afterwards.
+function paintBloom(cx,cy,rx,ry,rot,cols){
+  const base = baseBlob(cx,cy,rx,ry,rot,P.loose);
+  const block = 4 + Math.floor(rng()*3);     // layers per colour block (Hobbs interleaving)
+  g.globalCompositeOperation = 'multiply';
+  for (let l=0;l<P.layers;l++){
+    const t=l/P.layers;
+    let pts=base;
+    const extra=3+Math.floor(t*2);           // outer layers deform more -> soft falloff
+    for (let k=0;k<extra;k++) pts=deform(pts, P.loose*(1+t*0.3));
+    const col=cols[Math.floor(l/block)%cols.length];   // interleave pigments
+    g.fillStyle=rgbStr(col, P.op*(0.7+rng()*0.6));      // per-layer opacity jitter = mottled texture
+    fillPoly(pts);
+  }
+  g.globalCompositeOperation='source-over';
+  return { base, cx, cy, rx, ry, cols, edgePig: darken(cols[0],0.42) };
+}
+
+// Crisp pass — capillary fringe + edge-darkening, drawn AFTER the body is blurred
+// so the feathered edge stays sharp against the soft mass (what the references have).
+function paintFringe(f){
+  g.globalCompositeOperation='multiply';
+  // capillary fringe — fine tendrils wicking outward into the wet paper
+  if (P.fringe>0.01){
+    const rim=f.base, n=rim.length;
+    const phase=rng()*Math.PI*2, freq=2+Math.floor(rng()*4);   // low-freq bands = clusters of fingers
+    const maxL=Math.min(f.rx,f.ry)*0.5*P.fringe;
+    const step=Math.max(1, Math.floor(n/300));
+    for (let i=0;i<n;i+=step){
+      const p=rim[i];
+      let ox=p[0]-f.cx, oy=p[1]-f.cy; const d=Math.hypot(ox,oy)||1e-4; ox/=d; oy/=d;
+      const band=0.3+0.7*Math.abs(Math.sin((i/n)*Math.PI*2*freq+phase));
+      const rr=rng(); const L=band*rr*rr*maxL;                 // skewed: many short fingers, few long
+      if (L<1.2) continue;
+      const px=-oy, py=ox, w=0.4+rng()*1.1;                    // perpendicular taper width
+      const tipx=p[0]+ox*L+gauss()*L*0.1*px, tipy=p[1]+oy*L+gauss()*L*0.1*py;
+      const col=f.cols[Math.floor(rng()*f.cols.length)];
+      const grad=g.createLinearGradient(p[0],p[1],tipx,tipy);
+      grad.addColorStop(0, rgbStr(f.edgePig, Math.min(0.55, P.op*6*P.fringe)));  // dark pooled base
+      grad.addColorStop(0.6, rgbStr(col, P.op*4*P.fringe));
+      grad.addColorStop(1, rgbStr(col, 0));                    // fades to nothing at the tip
+      g.fillStyle=grad;
+      g.beginPath(); g.moveTo(p[0]+px*w, p[1]+py*w); g.lineTo(p[0]-px*w, p[1]-py*w);
+      g.lineTo(tipx, tipy); g.closePath(); g.fill();
+    }
+  }
+  // edge darkening — a dark pooled line where the wash meets dry paper
+  if (P.edge>0.01){
+    const rim=deform(f.base, P.loose*0.7);
+    g.lineJoin='round';
+    g.strokeStyle=rgbStr(f.edgePig, Math.min(0.55, P.op*6*P.edge));
+    g.lineWidth=1+P.edge*2.2;
+    g.beginPath(); g.moveTo(rim[0][0],rim[0][1]);
+    for (let i=1;i<rim.length;i++) g.lineTo(rim[i][0],rim[i][1]);
+    g.closePath(); g.stroke();
+  }
+  g.globalCompositeOperation='source-over';
+}
+
+// ---------- paper + granulation ----------
+function buildPaperTile(){
+  const s=224, pc=document.createElement('canvas'); pc.width=s; pc.height=s;
+  const p=pc.getContext('2d'), img=p.createImageData(s,s), d=img.data;
+  const th=5;                                   // thread pitch for the weave
+  for (let y=0;y<s;y++) for (let x=0;x<s;x++){
+    let v=246+(rng()-0.5)*255*0.10*P.grain;     // fibrous tooth
+    if (P.weave>0.01){
+      const wx=Math.sin((x/th)*Math.PI), wy=Math.sin((y/th)*Math.PI);
+      const over=((((x/th)|0)+((y/th)|0))&1) ? wx : wy;   // plain weave: alternating over/under
+      v += over*255*0.05*P.weave;                          // thread highlight
+      v -= (1-Math.min(Math.abs(wx),Math.abs(wy)))*255*0.04*P.weave;  // darker gaps between threads
+    }
+    const i=(y*s+x)*4; d[i]=d[i+1]=d[i+2]=v; d[i+3]=255;
+  }
+  p.putImageData(img,0,0); return pc;
+}
+function granulate(){
+  if (P.gran<0.01) return;
+  ctx.globalCompositeOperation='multiply';
+  const n=Math.floor(W*H/2600*P.gran);
+  for (let i=0;i<n;i++){
+    const a=0.015+rng()*0.04*P.gran, sz=0.6+rng()*1.6;
+    ctx.fillStyle=`rgba(60,55,50,${a})`;
+    ctx.beginPath(); ctx.arc(rng()*W, rng()*H, sz, 0, Math.PI*2); ctx.fill();
+  }
+  ctx.globalCompositeOperation='source-over';
+}
+
+// ---------- the painting (rendered once per change, then breathed) ----------
+const painting = document.createElement('canvas');   // finished frame, for cheap re-blit
+const pig = document.createElement('canvas');         // wet pigment layer, blurred on composite
+
+function generate(){
+  rng = mulberry32(P.seed>>>0);
+  const m = MODES[mode];
+
+  // 1. wet paper base on the visible canvas
+  ctx.setTransform(DPR,0,0,DPR,0,0);
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle=m.paper; ctx.fillRect(0,0,W,H);
+  if (P.grain>0.01){
+    const pat=ctx.createPattern(buildPaperTile(),'repeat');
+    ctx.save(); ctx.globalAlpha=0.5; ctx.fillStyle=pat; ctx.fillRect(0,0,W,H); ctx.restore();
+  }
+
+  // 2. paint the blooms onto a separate transparent pigment layer
+  pig.width=c.width; pig.height=c.height;
+  const pg=pig.getContext('2d');
+  pg.setTransform(DPR,0,0,DPR,0,0);
+  pg.clearRect(0,0,W,H);
+  g=pg;
+  const count = Math.max(2, Math.round(P.count*m.density));
+  const baseR = Math.min(W,H)*0.26*P.size*m.sizeMul;
+  const frills=[];
+  for (let i=0;i<count;i++){
+    const aspect=rrange(m.aspect[0],m.aspect[1]);
+    const angle=rrange(m.angle[0],m.angle[1])*Math.PI;
+    const cols=[]; for (let j=0;j<P.blend;j++) cols.push(hexRgb(m.pigs[Math.floor(rng()*m.pigs.length)]));
+    let cx,cy;
+    if (m.bands){ cx=W*rrange(0.15,0.85); cy=H*((i+0.5)/count)*(0.6+0.7*m.spread)+H*0.08; }
+    else { cx=W*(0.5+(rng()-0.5)*m.spread); cy=H*(m.yBias+(rng()-0.5)*m.spread*0.8); }
+    const sz=baseR*rrange(0.6,1.25);
+    frills.push(paintBloom(cx,cy, sz*Math.sqrt(aspect), sz/Math.sqrt(aspect), angle, cols));
+  }
+  g=ctx;
+
+  // 3. let the pigment "run" — smear the layer along the weather's flow direction
+  if (P.wet>0.02 && m.flow){
+    const steps=Math.round(P.wet*7);
+    const fx=m.flow[0]*P.wet*DPR, fy=m.flow[1]*P.wet*DPR;
+    pg.setTransform(1,0,0,1,0,0);
+    for (let i=1;i<=steps;i++){ pg.globalAlpha=P.wet*0.4*(1-i/(steps+1)); pg.drawImage(pig, fx*i, fy*i); }
+    pg.globalAlpha=1;
+  }
+
+  // 4. composite the pigment onto paper — multiply = a translucent wash; blur = wet-on-wet bleed
+  ctx.save();
+  ctx.setTransform(1,0,0,1,0,0);
+  ctx.globalCompositeOperation='multiply';
+  ctx.filter = P.wet>0.02 ? `blur(${(1+P.wet*13)*DPR}px)` : 'none';
+  ctx.drawImage(pig,0,0);
+  ctx.restore();
+
+  // 4b. crisp fringe + edge-darkening on top of the soft body (survives the blur)
+  ctx.setTransform(DPR,0,0,DPR,0,0);
+  for (const f of frills) paintFringe(f);
+
+  // 5. granulation + vignette over the top
+  ctx.setTransform(DPR,0,0,DPR,0,0);
+  granulate();
+  const rad=ctx.createRadialGradient(W/2,H*0.45,Math.min(W,H)*0.2, W/2,H*0.5,Math.max(W,H)*0.75);
+  rad.addColorStop(0,'rgba(0,0,0,0)'); rad.addColorStop(1,'rgba(20,18,15,0.10)');
+  ctx.fillStyle=rad; ctx.fillRect(0,0,W,H);
+
+  // snapshot the finished painting so breathing can re-blit cheaply
+  painting.width=c.width; painting.height=c.height;
+  painting.getContext('2d').drawImage(c,0,0);
+}
+
+// ---------- present ----------
+let breath=0, rafing=false;
+function present(){
+  ctx.setTransform(1,0,0,1,0,0);
+  ctx.clearRect(0,0,c.width,c.height);
+  if (P.breathe){
+    const s=1+Math.sin(breath)*0.006, a=0.97+Math.sin(breath*0.7)*0.03;
+    const dw=c.width*s, dh=c.height*s;
+    ctx.globalAlpha=a;
+    ctx.drawImage(painting,(c.width-dw)/2,(c.height-dh)/2,dw,dh);
+    ctx.globalAlpha=1;
+  } else {
+    ctx.drawImage(painting,0,0);
+  }
+}
+function loop(){ if(!P.breathe){ rafing=false; return; } breath+=0.012; present(); requestAnimationFrame(loop); }
+
+function render(){ generate(); present(); }
+
+// ---------- sizing ----------
+function resize(){
+  W=window.innerWidth; H=window.innerHeight;
+  c.width=Math.floor(W*DPR); c.height=Math.floor(H*DPR);
+  render();
+}
+
+// ---------- UI ----------
+function buildUI(){
+  const mc=document.getElementById('modes');
+  Object.keys(MODES).forEach(k=>{
+    const b=document.createElement('button'); b.textContent=MODES[k].label;
+    b.className = k===mode?'on':'';
+    b.onclick=()=>{ mode=k; [...mc.children].forEach(x=>x.classList.remove('on')); b.classList.add('on'); render(); };
+    mc.appendChild(b);
+  });
+  const bind=(id,key,fmt)=>{ const el=document.getElementById('s-'+id), v=document.getElementById('v-'+id);
+    el.value=P[key]; v.textContent=fmt(P[key]);
+    el.oninput=()=>{ P[key]=parseFloat(el.value); v.textContent=fmt(P[key]); render(); }; };
+  bind('count','count',x=>x|0);
+  bind('size','size',x=>x.toFixed(2)+'×');
+  bind('layers','layers',x=>x|0);
+  bind('op','op',x=>x.toFixed(3));
+  bind('loose','loose',x=>x.toFixed(2));
+  bind('blend','blend',x=>x|0);
+  bind('fringe','fringe',x=>(x*100|0)+'%');
+  bind('wet','wet',x=>(x*100|0)+'%');
+  bind('edge','edge',x=>(x*100|0)+'%');
+  bind('grain','grain',x=>(x*100|0)+'%');
+  bind('weave','weave',x=>(x*100|0)+'%');
+  bind('gran','gran',x=>(x*100|0)+'%');
+
+  const tb=document.getElementById('t-breathe');
+  const syncT=()=>tb.classList.toggle('on',P.breathe);
+  syncT();
+  tb.onclick=()=>{ P.breathe=!P.breathe; syncT(); if(P.breathe && !rafing){ rafing=true; loop(); } else present(); };
+
+  const seedEl=document.getElementById('seed');
+  seedEl.value=P.seed;
+  seedEl.onchange=()=>{ P.seed=(parseInt(seedEl.value)||0); render(); };
+  document.getElementById('reroll').onclick=()=>{ P.seed=Math.floor(Math.random()*1e6); seedEl.value=P.seed; render(); };
+  document.getElementById('save').onclick=()=>{ const a=document.createElement('a');
+    a.download=`wkndr-${mode}-${P.seed}.png`; a.href=painting.toDataURL('image/png'); a.click(); };
+
+  document.getElementById('hint').textContent='click canvas = reroll · '+Object.keys(MODES).length+' weather modes';
+}
+
+c.addEventListener('click',()=>{ P.seed=Math.floor(Math.random()*1e6);
+  document.getElementById('seed').value=P.seed; render(); });
+window.addEventListener('resize', resize);
+buildUI();
+resize();
+</script>
+</body>
+</html>
