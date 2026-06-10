@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<title>WKNDR · gradient forms</title>
+<style>
+  :root { --ui: #e9e6df; --ui-dim: #8c897f; --panel: rgba(18,17,15,.82); }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #0d0c0b;
+    font-family: ui-sans-serif, system-ui, -apple-system, "Helvetica Neue", sans-serif; }
+  canvas { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+  #panel {
+    position: fixed; top: 14px; left: 14px; width: 236px; z-index: 10;
+    background: var(--panel); backdrop-filter: blur(14px) saturate(1.2);
+    border: 1px solid rgba(255,255,255,.08); border-radius: 14px;
+    padding: 14px 14px 16px; color: var(--ui);
+    font-size: 11px; line-height: 1.3; user-select: none;
+    box-shadow: 0 12px 40px rgba(0,0,0,.5); max-height: calc(100vh - 28px); overflow-y: auto;
+  }
+  #panel h1 { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; margin: 0 0 2px; font-weight: 600; }
+  #panel .sub { color: var(--ui-dim); font-size: 10px; margin-bottom: 12px; }
+  .modes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-bottom: 14px; }
+  .modes button { appearance: none; border: 1px solid rgba(255,255,255,.12); background: transparent;
+    color: var(--ui-dim); border-radius: 8px; padding: 7px 4px; font-size: 10px; cursor: pointer; transition: all .15s; }
+  .modes button:hover { color: var(--ui); border-color: rgba(255,255,255,.28); }
+  .modes button.on { background: var(--ui); color: #111; border-color: var(--ui); font-weight: 600; }
+  .row { margin-bottom: 11px; }
+  .row label { display: flex; justify-content: space-between; margin-bottom: 5px; color: var(--ui-dim); }
+  .row label .val { color: var(--ui); font-variant-numeric: tabular-nums; }
+  input[type=range] { -webkit-appearance: none; width: 100%; height: 3px; border-radius: 3px; background: rgba(255,255,255,.16); outline: none; }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 13px; height: 13px; border-radius: 50%; background: var(--ui); cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,.4); }
+  .seedline { display: flex; align-items: center; gap: 6px; color: var(--ui-dim); font-variant-numeric: tabular-nums; margin-top: 4px; }
+  .seedline input { flex: 1; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12); color: var(--ui); border-radius: 6px; padding: 5px 7px; font-size: 11px; font-family: inherit; }
+  .foot { display: flex; gap: 6px; margin-top: 12px; }
+  .foot button { flex: 1; appearance: none; border: 1px solid rgba(255,255,255,.14); background: transparent; color: var(--ui); border-radius: 8px; padding: 8px 4px; font-size: 10px; cursor: pointer; }
+  .foot button:hover { background: rgba(255,255,255,.1); }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="panel">
+  <h1>Gradient Forms</h1>
+  <div class="sub">WKNDR · Bauhaus gradient shapes</div>
+  <div class="modes" id="modes"></div>
+  <div class="row"><label>Forms <span class="val" id="v-shapes"></span></label>
+    <input type="range" id="s-shapes" min="2" max="6" step="1"></div>
+  <div class="row"><label>Softness <span class="val" id="v-soft"></span></label>
+    <input type="range" id="s-soft" min="0" max="1" step="0.05"></div>
+  <div class="row"><label>Halftone <span class="val" id="v-half"></span></label>
+    <input type="range" id="s-half" min="0" max="1" step="0.05"></div>
+  <div class="row"><label>Grain <span class="val" id="v-grain"></span></label>
+    <input type="range" id="s-grain" min="0" max="1" step="0.05"></div>
+  <div class="row"><label>Motion <span class="val" id="v-motion"></span></label>
+    <input type="range" id="s-motion" min="0" max="1.5" step="0.05"></div>
+  <div class="seedline">seed <input id="seed" type="text" inputmode="numeric"></div>
+  <div class="foot"><button id="reroll">Reroll</button><button id="save">Save PNG</button></div>
+</div>
+
+<script>
+const c = document.getElementById('c');
+const ctx = c.getContext('2d');
+let W, H, DPR = Math.min(2, window.devicePixelRatio||1);
+
+function mulberry32(a){ return function(){ a|=0; a=a+0x6D2B79F5|0; let t=Math.imul(a^a>>>15,1|a); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+let rng = mulberry32(1);
+const rr = (a,b)=>a+rng()*(b-a);
+const pick = arr => arr[(rng()*arr.length)|0];
+function rgba(hex,a){ hex=hex.replace('#',''); const r=parseInt(hex.slice(0,2),16),g=parseInt(hex.slice(2,4),16),b=parseInt(hex.slice(4,6),16); return `rgba(${r},${g},${b},${a})`; }
+
+// ---- palettes ----
+const MODES = {
+  bauhaus:  { label:'Bauhaus', bg:'#efeee8', cols:['#f4c20d','#e8331f','#1b4dd8','#f08a1d','#ff9ec4'] },
+  spectrum: { label:'Spectrum',bg:'#efeee8', cols:['#e8331f','#f08a1d','#f4c20d','#1bb35a','#1b6de8','#7b3fd8'] },
+  sunset:   { label:'Sunset',  bg:'#f1ece2', cols:['#f4c20d','#f08a1d','#e8331f','#d6336c','#7b3fd8'] },
+  candy:    { label:'Candy',   bg:'#f0efea', cols:['#ff2d6f','#ff7eb0','#1b6de8','#f4c20d','#1bb35a'] },
+  acid:     { label:'Acid',    bg:'#eceede', cols:['#1bb35a','#9bcf3a','#f0a85a','#3a2d6a','#e8e0c8'] },
+  cool:     { label:'Cool',    bg:'#eef0f1', cols:['#1bb3c8','#1b6de8','#5b3fd8','#9b5fe8','#cfe0ef'] },
+};
+let mode = 'bauhaus';
+const P = { shapes:3, soft:0.5, half:0.4, grain:0.35, motion:0.5, seed:1 };
+
+// ---- build a deterministic set of forms (animated by t at draw time) ----
+function buildForms(m){
+  const N=P.shapes, out=[];
+  for (let i=0;i<N;i++){
+    out.push({
+      type: pick(['blob','blob','rect','triangle','capsule','circle']),
+      cx: rr(0.18,0.82), cy: rr(0.18,0.82),
+      size: rr(0.4,0.78),
+      aspect: rr(0.6,1.7),
+      rot: rr(-0.35,0.35),
+      cols: [pick(m.cols), pick(m.cols), pick(m.cols)],
+      gAngle: rr(0,6.2832), gSpin: rr(-0.07,0.07),
+      dphase: rr(0,6.2832), dx: rr(-1,1), dy: rr(-1,1),
+      ht: rng()<0.45,
+    });
+  }
+  return out;
+}
+
+function shapePath(type, r, aspect){
+  const w=r*2*Math.sqrt(aspect), h=r*2/Math.sqrt(aspect);
+  ctx.beginPath();
+  if (type==='rect'){ ctx.rect(-w/2,-h/2,w,h); }
+  else if (type==='circle'){ ctx.arc(0,0,r,0,6.2832); }
+  else if (type==='capsule'){ const rad=Math.min(w,h)/2; roundRect(-w/2,-h/2,w,h,rad); }
+  else if (type==='triangle'){ ctx.moveTo(0,-h*0.62); ctx.lineTo(w*0.6,h*0.5); ctx.lineTo(-w*0.6,h*0.5); ctx.closePath(); }
+}
+function roundRect(x,y,w,h,r){ ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r); ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath(); }
+
+function drawForm(s, t, m){
+  const ang = s.gAngle + t*s.gSpin;
+  const cx = (s.cx + Math.sin(t*0.2+s.dphase)*s.dx*0.02)*W;
+  const cy = (s.cy + Math.cos(t*0.17+s.dphase)*s.dy*0.02)*H;
+  const r = s.size*0.5*Math.min(W,H);
+  ctx.save();
+  ctx.globalCompositeOperation='multiply';
+  if (s.type==='blob'){                                   // soft airbrushed blob (fades at edge)
+    const R=r*(1.0+P.soft*0.5);
+    const g=ctx.createRadialGradient(cx,cy,0,cx,cy,R);
+    g.addColorStop(0, rgba(s.cols[0],1)); g.addColorStop(0.5, rgba(s.cols[1],0.92));
+    g.addColorStop(1, rgba(s.cols[1],0));
+    ctx.fillStyle=g; ctx.beginPath(); ctx.arc(cx,cy,R,0,6.2832); ctx.fill();
+  } else {                                                // crisp form with a flowing linear gradient
+    ctx.translate(cx,cy); ctx.rotate(s.rot);
+    shapePath(s.type, r, s.aspect); ctx.clip();
+    const dx=Math.cos(ang)*r, dy=Math.sin(ang)*r;
+    const g=ctx.createLinearGradient(-dx,-dy,dx,dy);
+    g.addColorStop(0,s.cols[0]); g.addColorStop(0.5,s.cols[1]); g.addColorStop(1,s.cols[2]);
+    ctx.fillStyle=g; ctx.fillRect(-r*1.8,-r*1.8,r*3.6,r*3.6);
+    // optional soft edge: feather by overdrawing a blurred copy is costly — instead a soft inner light
+    if (P.half>0.01 && s.ht && halftone){                 // halftone dot screen, clipped to the form
+      ctx.globalCompositeOperation='multiply'; ctx.globalAlpha=P.half*0.55;
+      ctx.fillStyle=halftone; ctx.fillRect(-r*1.8,-r*1.8,r*3.6,r*3.6); ctx.globalAlpha=1;
+    }
+  }
+  ctx.restore();
+}
+
+// ---- textures ----
+let halftone=null, grainTile=null;
+function buildHalftone(){
+  const s=9, t=document.createElement('canvas'); t.width=s; t.height=s;
+  const p=t.getContext('2d'); p.fillStyle='rgba(20,18,16,1)';
+  p.beginPath(); p.arc(s/2,s/2,s*0.3,0,6.2832); p.fill();
+  halftone=ctx.createPattern(t,'repeat');
+}
+function buildGrain(){
+  const s=240, t=document.createElement('canvas'); t.width=s; t.height=s;
+  const p=t.getContext('2d'), img=p.createImageData(s,s), d=img.data;
+  for(let i=0;i<d.length;i+=4){ const v=128+(Math.random()-0.5)*255; d[i]=d[i+1]=d[i+2]=v; d[i+3]=255; }
+  p.putImageData(img,0,0); grainTile=ctx.createPattern(t,'repeat');
+}
+
+// ---- draw ----
+let forms=[];
+function draw(t){
+  rng = mulberry32(P.seed>>>0);
+  const m = MODES[mode];
+  forms = buildForms(m);
+  ctx.setTransform(DPR,0,0,DPR,0,0);
+  ctx.globalCompositeOperation='source-over';
+  ctx.fillStyle=m.bg; ctx.fillRect(0,0,W,H);
+  for (const s of forms) drawForm(s, t, m);
+  // grain over everything
+  ctx.globalCompositeOperation='overlay';
+  if (P.grain>0.01 && grainTile){ ctx.globalAlpha=P.grain*0.85; ctx.fillStyle=grainTile; ctx.fillRect(0,0,W,H); ctx.globalAlpha=1; }
+  ctx.globalCompositeOperation='source-over';
+  // soft vignette to seat it on the paper
+  const g=ctx.createRadialGradient(W/2,H*0.45,Math.min(W,H)*0.25,W/2,H*0.5,Math.max(W,H)*0.8);
+  g.addColorStop(0,'rgba(0,0,0,0)'); g.addColorStop(1,'rgba(20,18,15,0.06)');
+  ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+}
+
+let raf=0, t0=performance.now();
+function loop(){ const t=(performance.now()-t0)/1000*P.motion; draw(t); raf=requestAnimationFrame(loop); }
+function render(){ cancelAnimationFrame(raf); if(P.motion>0.001) loop(); else draw(0); }
+
+// ---- UI ----
+function buildUI(){
+  const mc=document.getElementById('modes');
+  Object.keys(MODES).forEach(k=>{
+    const b=document.createElement('button'); b.textContent=MODES[k].label; b.className=k===mode?'on':'';
+    b.onclick=()=>{ mode=k; [...mc.children].forEach(x=>x.classList.remove('on')); b.classList.add('on'); render(); };
+    mc.appendChild(b);
+  });
+  const bind=(id,key,fmt)=>{ const el=document.getElementById('s-'+id), v=document.getElementById('v-'+id);
+    el.value=P[key]; v.textContent=fmt(P[key]); el.oninput=()=>{ P[key]=parseFloat(el.value); v.textContent=fmt(P[key]); render(); }; };
+  bind('shapes','shapes',x=>x|0);
+  bind('soft','soft',x=>(x*100|0)+'%');
+  bind('half','half',x=>(x*100|0)+'%');
+  bind('grain','grain',x=>(x*100|0)+'%');
+  bind('motion','motion',x=>x===0?'still':(x*100|0)+'%');
+  const seedEl=document.getElementById('seed'); seedEl.value=P.seed;
+  seedEl.onchange=()=>{ P.seed=(parseInt(seedEl.value)||0); render(); };
+  document.getElementById('reroll').onclick=()=>{ P.seed=Math.floor(Math.random()*1e6); seedEl.value=P.seed; render(); };
+  document.getElementById('save').onclick=()=>{ draw(0); const a=document.createElement('a'); a.download=`wkndr-forms-${mode}-${P.seed}.png`; a.href=c.toDataURL('image/png'); a.click(); };
+}
+function resize(){ W=window.innerWidth; H=window.innerHeight; c.width=Math.floor(W*DPR); c.height=Math.floor(H*DPR); buildHalftone(); buildGrain(); render(); }
+window.addEventListener('resize', resize);
+buildHalftone(); buildGrain(); buildUI(); resize();
+</script>
+</body>
+</html>
