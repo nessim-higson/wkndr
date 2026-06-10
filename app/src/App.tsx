@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Shuffle, Clock, ChevronDown, LayoutGrid, Star, ArrowUpRight, LocateFixed, Info, RotateCw, RotateCcw, X, ArrowUp, ArrowDown, ArrowLeft, ArrowRight } from 'lucide-react'
+import { Shuffle, Clock, ChevronDown, LayoutGrid, Star, ArrowUpRight, LocateFixed, Info, RotateCw, RotateCcw, X, ArrowUp, ArrowDown, ArrowLeft, ArrowRight, Heart } from 'lucide-react'
 
 // subtle haptic on commit/save (Android/Chrome; iOS Safari ignores navigator.vibrate)
 const haptic = (ms = 10) => { try { navigator.vibrate?.(ms) } catch { /* unsupported */ } }
@@ -19,6 +19,7 @@ import { Intro } from './components/Intro'
 import { InputsSheet } from './components/InputsSheet'
 import { FilterSheet } from './components/FilterSheet'
 import { ShareSheet } from './components/ShareSheet'
+import { MatchGame } from './components/MatchGame'
 import type { Freshness } from './types'
 
 // a partner-shared weekend arrives as ?w=id,id,id&from=Name
@@ -128,6 +129,7 @@ export default function App() {
   const flash = (text: string, save = false) => setToast({ text, save })
   const [seed, setSeed] = useState(0)            // 0 = forecast order; bumped by Refresh
   const [dealKey, setDealKey] = useState(0)      // bump → stack re-deals (refresh signal)
+  const [matching, setMatching] = useState(false)   // match-mode overlay (prototype: simulated partner)
   const [detail, setDetail] = useState<Pick | null>(null)  // open card detail
   // where the detail should expand FROM (the tapped card's on-screen rect) — App Store style.
   // null → fall back to a centred grow. Cleared on close.
@@ -583,6 +585,15 @@ export default function App() {
                     </div>
 
                     <div className="bar-group">
+                      <span className="bar-label">Plan together</span>
+                      <div className="bar-row">
+                        <button className="bar-pill bar-pill--match" onClick={() => { setMatching(true); setBarOpen(false) }}>
+                          <Heart size={14} strokeWidth={2.4} fill="currentColor" /> Match with someone
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="bar-group">
                       <span className="bar-label">City</span>
                       <div className="mode-pills">
                         {CITIES.map((c) => (
@@ -758,6 +769,21 @@ export default function App() {
           {toast.text}
         </div>
       )}
+
+      {/* MATCH MODE — focused swipe-to-match session over the live feed. Prototype: the partner's
+          yes-set is simulated inside the component; matched picks merge into your saved list. */}
+      <AnimatePresence>
+        {matching && (
+          <MatchGame
+            picks={rankedAll}
+            temp={wx.temp}
+            partnerName="Robin"
+            onOpen={openDetail}
+            onClose={() => setMatching(false)}
+            onComplete={(m) => { setSaved((s) => new Set([...s, ...m.map((p) => p.id)])); flash(`${m.length} added to your list`, true) }}
+          />
+        )}
+      </AnimatePresence>
 
       {/* Undo — a brief take-back after a stack swipe (the card returns to the top). The
           full-width anchor flex-centres the pill so framer's animated transform can't

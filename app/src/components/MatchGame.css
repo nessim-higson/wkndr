@@ -1,0 +1,182 @@
+/* MATCH MODE — a focused full-screen swipe session that sits above the app. */
+.mg {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: flex;
+  flex-direction: column;
+  background:
+    radial-gradient(120% 80% at 50% -10%, rgba(255, 77, 31, 0.10), transparent 60%),
+    var(--paper);
+}
+
+/* ——— header ——— */
+.mg-head {
+  flex-shrink: 0;
+  display: grid;
+  grid-template-columns: 40px 1fr 56px;
+  align-items: center;
+  gap: 8px;
+  padding: calc(env(safe-area-inset-top) + 12px) 16px 12px;
+}
+.mg-close {
+  width: 38px; height: 38px;
+  display: grid; place-items: center;
+  border-radius: 50%;
+  color: var(--ink-3);
+  background: var(--paper-2);
+  transition: background 0.14s, color 0.14s;
+}
+.mg-close:hover { background: var(--paper-3); color: var(--ink); }
+.mg-head-mid { text-align: center; display: flex; flex-direction: column; gap: 2px; line-height: 1.1; }
+.mg-with { font-size: 14px; color: var(--ink-2); }
+.mg-with b { font-family: var(--font-display); font-weight: 700; letter-spacing: -0.01em; }
+.mg-progress { font-size: 11px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink-4); font-weight: 600; }
+.mg-count {
+  justify-self: end;
+  display: inline-flex; align-items: center; gap: 5px;
+  height: 30px; padding: 0 12px;
+  border-radius: 999px;
+  font-size: 14px; font-weight: 700;
+  color: var(--ink-4);
+  background: var(--paper-2);
+  transition: background 0.2s, color 0.2s, transform 0.2s;
+}
+.mg-count.on { color: #fff; background: var(--accent); transform: scale(1.04); }
+
+/* ——— body (the deck lives here) ——— */
+.mg-body { flex: 1; position: relative; min-height: 0; display: flex; }
+.mg-body > * { flex: 1; min-height: 0; }
+
+/* ——— THE SLAM ——— */
+.mg-slam {
+  position: fixed;
+  inset: 0;
+  z-index: 400;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(26, 26, 26, 0.52);
+  backdrop-filter: blur(8px) saturate(1.1);
+  -webkit-backdrop-filter: blur(8px) saturate(1.1);
+}
+.mg-slam-inner {
+  width: 100%;
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.mg-avatars { position: relative; display: flex; align-items: center; justify-content: center; margin-bottom: 18px; }
+.mg-av {
+  width: 78px; height: 78px;
+  display: grid; place-items: center;
+  border-radius: 50%;
+  font-family: var(--font-display);
+  font-weight: 700; font-size: 20px; letter-spacing: -0.01em;
+  color: #fff;
+  border: 3px solid var(--paper);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.32);
+}
+.mg-av--you { background: var(--accent); margin-right: -16px; }
+.mg-av--them { background: var(--ink); margin-left: -16px; }
+.mg-spark {
+  position: absolute;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  color: #ffd84d;
+  filter: drop-shadow(0 2px 8px rgba(255, 168, 31, 0.6));
+}
+.mg-slam-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 38px;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: #fff;
+  margin-bottom: 22px;
+}
+.mg-slam-card {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px;
+  border-radius: 16px;
+  background: var(--paper);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.34);
+  text-align: left;
+}
+.mg-slam-thumb {
+  width: 68px; height: 68px;
+  flex-shrink: 0;
+  border-radius: 11px;
+  background-size: cover; background-position: center;
+  background-color: var(--paper-3);
+}
+.mg-slam-meta { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.mg-slam-cat { font-size: 10px; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; color: var(--accent-deep); }
+.mg-slam-name { font-family: var(--font-display); font-weight: 700; font-size: 19px; letter-spacing: -0.01em; color: var(--ink); line-height: 1.12; }
+.mg-slam-sub { font-size: 13px; color: var(--ink-3); }
+.mg-slam-go {
+  margin-top: 22px;
+  height: 50px; padding: 0 30px;
+  border-radius: 999px;
+  font-size: 15px; font-weight: 700;
+  color: var(--ink);
+  background: var(--paper);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.28);
+  transition: transform 0.14s, filter 0.14s;
+}
+.mg-slam-go:hover { filter: brightness(0.97); }
+.mg-slam-go:active { transform: scale(0.97); }
+
+/* ——— THE PLAN (end of round) ——— */
+.mg-plan {
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 8px 22px 28px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+.mg-plan-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; color: var(--accent-deep); }
+.mg-plan-title { font-family: var(--font-display); font-weight: 700; font-size: 34px; letter-spacing: -0.02em; line-height: 1; margin: 6px 0 8px; color: var(--ink); }
+.mg-plan-sub { font-size: 14px; line-height: 1.5; color: var(--ink-3); margin-bottom: 20px; max-width: 38ch; }
+.mg-plan-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.mg-plan-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 9px;
+  border-radius: 13px;
+  background: var(--paper-2);
+  cursor: pointer;
+  transition: background 0.14s, transform 0.14s;
+}
+.mg-plan-row:hover { background: var(--paper-3); }
+.mg-plan-row:active { transform: scale(0.99); }
+.mg-plan-thumb {
+  width: 56px; height: 56px; flex-shrink: 0;
+  border-radius: 9px;
+  background-size: cover; background-position: center;
+  background-color: var(--paper-3);
+}
+.mg-plan-info { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1; }
+.mg-plan-cat { font-size: 9px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-4); }
+.mg-plan-name { font-family: var(--font-display); font-weight: 700; font-size: 16px; letter-spacing: -0.01em; color: var(--ink); line-height: 1.15; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mg-plan-when { font-size: 11px; letter-spacing: 0.03em; color: var(--accent-deep); font-weight: 600; }
+.mg-plan-heart { color: var(--accent); flex-shrink: 0; margin-right: 4px; }
+.mg-plan-actions { display: flex; flex-direction: column; gap: 9px; margin-top: 24px; }
+.mg-btn {
+  height: 50px;
+  border-radius: 999px;
+  font-size: 15px; font-weight: 700;
+  color: var(--ink);
+  background: var(--paper-2);
+  transition: filter 0.14s, transform 0.14s;
+}
+.mg-btn:active { transform: scale(0.98); }
+.mg-btn.primary { color: #fff; background: var(--accent); }
+.mg-btn.primary:hover { filter: brightness(1.05); }

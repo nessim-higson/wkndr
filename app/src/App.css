@@ -252,6 +252,9 @@
 .bar-pill.on { background: #1c1c1a; color: #faf8f3; border-color: #1c1c1a; }
 .bar-pill--danger { color: #b23b2e; border-color: rgba(178, 59, 46, 0.35); }
 .bar-pill--danger:hover { background: rgba(178, 59, 46, 0.1); }
+.bar-pill--match { color: #fff; background: var(--accent); border-color: var(--accent); font-weight: 600; }
+.bar-pill--match:hover { background: var(--accent); filter: brightness(1.06); }
+.bar-pill--match svg { color: #fff; }
 .bar-foot {
   margin-top: 2px; align-self: flex-start;
   display: inline-flex; align-items: center; gap: 6px;
