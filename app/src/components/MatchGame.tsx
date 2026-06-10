@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, Sparkles, Heart } from 'lucide-react'
-import type { Pick, SwipeDir } from '../types'
+import type { Pick, SwipeDir, Mode } from '../types'
 import { CATEGORY_LABEL } from '../types'
 import { SwipeStack } from './SwipeStack'
 import './MatchGame.css'
@@ -22,10 +22,11 @@ function rand(s: string): number {
 function haptic(p: number | number[]) { try { navigator.vibrate?.(p) } catch { /* iOS */ } }
 
 export function MatchGame({
-  picks, temp, partnerName = 'Robin', partnerIds, onOpen, onClose, onComplete,
+  picks, temp, mode, partnerName = 'Robin', partnerIds, onOpen, onClose, onComplete,
 }: {
   picks: Pick[]
   temp?: number
+  mode?: Mode
   partnerName?: string
   partnerIds?: string[]   // REAL partner's yes-set, decoded from the share link. Absent → demo (simulated).
   onOpen?: (p: Pick, origin?: DOMRect) => void
@@ -90,7 +91,7 @@ export function MatchGame({
             onSave={() => { onComplete?.(matched); onClose() }} onClose={onClose}
           />
         ) : (
-          <SwipeStack picks={queue} temp={temp} onSwipe={onSwipe} onOpen={onOpen} />
+          <SwipeStack picks={queue} temp={temp} mode={mode} onSwipe={onSwipe} onOpen={onOpen} />
         )}
       </div>
 

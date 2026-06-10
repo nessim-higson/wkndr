@@ -57,6 +57,25 @@ export const CATEGORY_LABEL: Record<Category, string> = {
   shop: 'Shops',
 }
 
+// A pick's weather affinity, surfaced as the card's top-left pill. Derived from weatherFit +
+// outdoor. When a live mode is passed and the pick peaks in TODAY's weather, it flips to
+// "Perfect today" (perfect=true) — the app's weather-brain made visible on the card.
+export function weatherPill(p: Pick, live?: Mode): { text: string; perfect: boolean } {
+  const fit = p.weatherFit
+  const sunny = fit.includes('HOT') || fit.includes('WARM')
+  const wet = fit.includes('COLD_WET')
+  const allWeather = fit.length >= 5
+  let text: string
+  if (!p.outdoor && (allWeather || (sunny && wet))) text = 'Rain or shine'
+  else if (p.outdoor && sunny && !wet) text = 'Best when sunny'
+  else if (wet && !sunny) text = 'Best on a wet day'
+  else if (!p.outdoor) text = 'Rain or shine'
+  else text = 'Better when dry'
+  const sensitive = text !== 'Rain or shine'
+  const perfect = !!live && sensitive && fit.includes(live)
+  return { text: perfect ? 'Perfect today' : text, perfect }
+}
+
 export const FRESHNESS_LABEL: Record<Freshness, string> = {
   new: 'New this week',
   weekend: 'This weekend',

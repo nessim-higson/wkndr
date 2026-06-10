@@ -6,7 +6,7 @@ import {
   type MotionValue, type PanInfo,
 } from 'framer-motion'
 import { X, Star } from 'lucide-react'
-import type { Pick, SwipeDir } from '../types'
+import type { Pick, SwipeDir, Mode } from '../types'
 import { Card } from './Card'
 import './SwipeStack.css'
 
@@ -38,6 +38,7 @@ interface SwipeCardProps {
   dealIn: boolean // true → fly onto the deck (initial build); false → just fade (a card cycling in)
   progress: MotionValue<number>   // shared: how far the TOP card is dragged (0→1)
   temp?: number                   // forecast temp, shown on outdoor cards
+  mode?: Mode                     // live weather mode → drives the card's "Perfect today" pill
   onSwipe: (p: Pick, dir: SwipeDir) => void
   onOpen?: (p: Pick, origin?: DOMRect) => void
   onCycle?: (p: Pick) => void
@@ -53,7 +54,7 @@ function hashUnit(s: string): number {
 }
 
 const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
-  { pick, interactive, depth, dealIn, progress, temp, onSwipe, onOpen, onCycle }, ref,
+  { pick, interactive, depth, dealIn, progress, temp, mode, onSwipe, onOpen, onCycle }, ref,
 ) {
   // a touch of deterministic imperfection per card — the stack looks hand-laid, not machined
   const skew = useMemo(() => hashUnit(pick.id) * 2.8, [pick.id])        // ±2.8° resting tilt
@@ -242,17 +243,18 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
             <motion.span className="ind ind-skip" style={{ opacity: skipOp }} aria-hidden>SKIP</motion.span>
           </>
         )}
-        <Card pick={pick} temp={temp} />
+        <Card pick={pick} temp={temp} mode={mode} />
       </motion.div>
     </motion.div>
   )
 })
 
 export function SwipeStack({
-  picks, temp, onSwipe, onOpen, onRefresh, filterLabel, onClearFilter, onSeeList,
+  picks, temp, mode, onSwipe, onOpen, onRefresh, filterLabel, onClearFilter, onSeeList,
 }: {
   picks: Pick[]
   temp?: number
+  mode?: Mode
   onSwipe: (p: Pick, dir: SwipeDir) => void
   onOpen?: (p: Pick, origin?: DOMRect) => void
   onRefresh?: () => void
@@ -306,6 +308,7 @@ export function SwipeStack({
             interactive={i === 0}
             progress={progress}
             temp={temp}
+            mode={mode}
             onSwipe={onSwipe}
             onOpen={onOpen}
           />

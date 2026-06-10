@@ -31,6 +31,11 @@ const SHARED_FROM = (() => {
   const f = new URLSearchParams(window.location.search).get('from')
   return f ? f.trim().slice(0, 24) : null
 })()
+// the header degrees take on the live weather's hue — a cool day reads cool, a hot day warm —
+// so the number itself signals the mood (muted tints, readable on the cream pill)
+const TEMP_TINT: Record<Mode, string> = {
+  HOT: '#c2310e', WARM: '#b5791f', COOL: '#3f7d74', COLD_WET: '#4a6491', VOLATILE: '#7a5a7a',
+}
 import { CATEGORY_LABEL, type Category } from './types'
 import { fixWhen, whenDayGroup, whenSortKey, whenTime } from './lib/when'
 import {
@@ -147,6 +152,8 @@ export default function App() {
   const [cats, setCats] = useState<CatKey[]>([])           // What: multi-select categories (empty = all)
   const [whens, setWhens] = useState<When[]>([])           // When: multi-select time/tier (empty = any time)
   const [shareOpen, setShareOpen] = useState(false)        // "My Weekend" share sheet
+  const [shareNudgeOff, setShareNudgeOff] = useState(() => localStorage.getItem('wkndr.sharenudge') === 'off')
+  const dismissShareNudge = () => { setShareNudgeOff(true); localStorage.setItem('wkndr.sharenudge', 'off') }
   // toggle helpers for the multi-select sheets ('all'/'any' clears the set)
   const toggleCat = (k: CatKey | 'all') => setCats((p) => k === 'all' ? [] : p.includes(k) ? p.filter((x) => x !== k) : [...p, k])
   const toggleWhen = (k: WhenKey) => setWhens((p) => k === 'all' ? [] : p.includes(k) ? p.filter((x) => x !== k) : [...p, k])
@@ -525,7 +532,7 @@ export default function App() {
                   <span className="tb-when">
                     {locating ? 'Locating…' : live && wx.label ? wx.label : wx.city}
                   </span>
-                  <span className="tb-temp">{wx.temp}°</span>
+                  <span className="tb-temp" style={{ color: TEMP_TINT[mode] }}>{wx.temp}°</span>
                 </div>
               </div>
 
@@ -738,6 +745,15 @@ export default function App() {
             <button onClick={() => setSaved((s) => new Set([...s, ...SHARED_IDS]))}>Save all</button>
           </div>
         )}
+        {/* Share nudge — appears once you've saved enough to be worth planning together (and not
+            already in a saved/shared context). Dismissible; it's the growth lever for matching. */}
+        {!shareNudgeOff && saved.size >= 3 && !SHARED_IDS && filter === 'all' && !intro && (
+          <div className="ctx-bar nudge">
+            <span>💛 Plan these together</span>
+            <button className="ctx-match" onClick={() => { setShareOpen(true) }}><Heart size={13} strokeWidth={2.6} fill="currentColor" /> Match</button>
+            <button className="ctx-x" onClick={dismissShareNudge} aria-label="Dismiss"><X size={15} strokeWidth={2.5} /></button>
+          </div>
+        )}
 
         <main className={`main main-${view}`}>
           {view === 'stack' ? (
@@ -753,6 +769,7 @@ export default function App() {
                 key={`${dealKey}-${filter}-${cats.join(',')}-${whens.join(',')}-${intro ? 'intro' : 'live'}`}
                 picks={deck}
                 temp={wx.temp}
+                mode={mode}
                 onSwipe={handleStackSwipe}
                 onOpen={openDetail}
                 onRefresh={refresh}
@@ -799,6 +816,7 @@ export default function App() {
           <MatchGame
             picks={rankedAll}
             temp={wx.temp}
+            mode={mode}
             partnerName={matchPartner?.name ?? 'Robin'}
             partnerIds={matchPartner?.ids}
             onOpen={openDetail}
