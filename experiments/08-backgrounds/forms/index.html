@@ -99,13 +99,13 @@ const MODES = {
            gAngle:null, tilt:0.2, drift:[0.2,0], ht:0, countMul:5, fall:true },
 };
 let mode = 'sun';
-const P = { shapes:3, soft:0.5, half:0.4, grain:0.35, motion:0.5, seed:1 };
+const P = { shapes:3, soft:0.5, half:0.4, grain:0.35, motion:0.7, seed:1 };
 
 // ---- placement per weather composition ----
 function place(kind,i,N){
   if(kind==='high')     return [rr(0.3,0.7), rr(0.14,0.42)];
   if(kind==='stack')    return [rr(0.32,0.68), ((i+0.5)/N)*0.86+0.07 + rr(-0.04,0.04)];
-  if(kind==='band')     return [rr(0.2,0.8), rr(0.26,0.74)];
+  if(kind==='band')     return [rr(0.2,0.8), rr(0.12,0.88)];
   if(kind==='diagonal'){ const tt=(i+0.5)/N; return [0.12+tt*0.72+rr(-0.06,0.06), 0.16+tt*0.62+rr(-0.06,0.06)]; }
   if(kind==='rainspread') return [rr(0.02,0.98), rr(-0.05,0.85)];
   if(kind==='sparse')   return [rr(0.12,0.88), rr(0.12,0.88)];
@@ -123,7 +123,8 @@ function buildForms(m){
       rot: rr(-m.tilt, m.tilt) + (m.tiltBias||0),
       cols: [pick(m.cols), pick(m.cols), pick(m.cols)],
       gAngle: (m.gAngle==null) ? rr(0,6.2832) : m.gAngle + rr(-0.35,0.35),
-      gSpin: rr(-0.06,0.06),
+      gSpin: rr(-0.12,0.12),
+      rotSpin: rr(-0.09,0.09),
       dphase: rr(0,6.2832),
       dx: (m.drift?m.drift[0]:0) + rr(-0.5,0.5),
       dy: (m.drift?m.drift[1]:0) + rr(-0.5,0.5),
@@ -132,7 +133,7 @@ function buildForms(m){
     };
     if (m.burst && rng()<m.burst) s.size *= rr(1.5,2.2);                 // sun: occasional big burst
     if (type==='cloud'){ s.lobes=[]; const L=4+((rng()*3)|0); for(let k=0;k<L;k++) s.lobes.push([rr(-0.85,0.85), rr(-0.32,0.12), rr(0.42,0.9)]); }
-    if (type==='ribbon'){ s.amp=rr(0.05,0.14); s.freq=rr(1.0,2.2); s.phase=rr(0,6.2832); s.bandH=rr(0.16,0.34); }
+    if (type==='ribbon'){ s.amp=rr(0.04,0.085); s.freq=rr(0.6,1.3); s.freq2=s.freq*rr(1.7,2.3); s.phase=rr(0,6.2832); s.bandH=rr(0.14,0.3); }
     out.push(s);
   }
   return out;
@@ -151,34 +152,37 @@ function roundRect(x,y,w,h,r){ ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ct
 function drawForm(s, t, m){
   const blend = m.blend || 'multiply';
   const ang = s.gAngle + t*s.gSpin;
-  const cx = (s.cx + Math.sin(t*0.2+s.dphase)*s.dx*0.02)*W;
-  let   cy = (s.cy + Math.cos(t*0.17+s.dphase)*s.dy*0.02)*H;
+  const cx = (s.cx + Math.sin(t*0.25+s.dphase)*s.dx*0.045)*W;
+  let   cy = (s.cy + Math.cos(t*0.21+s.dphase)*s.dy*0.045)*H;
   if (m.fall) cy = (((s.cy + t*s.fallSpeed)%1.14)-0.07)*H;   // snow: fall + wrap
   const r = s.size*0.5*Math.min(W,H);
   ctx.save();
   ctx.globalCompositeOperation=blend;
-  if (s.type==='blob'){                                   // soft airbrushed blob
-    const R=r*(1.0+P.soft*0.5);
+  if (s.type==='blob'){                                   // soft airbrushed blob, gently breathing
+    const R=r*(1.0+P.soft*0.5)*(1+0.06*Math.sin(t*0.9+s.dphase));
     const g=ctx.createRadialGradient(cx,cy,0,cx,cy,R);
     g.addColorStop(0, rgba(s.cols[0],1)); g.addColorStop(0.5, rgba(s.cols[1],0.92)); g.addColorStop(1, rgba(s.cols[1],0));
     ctx.fillStyle=g; ctx.beginPath(); ctx.arc(cx,cy,R,0,6.2832); ctx.fill();
   } else if (s.type==='cloud'){                           // feathered lobed mass (fluffy, soft-edged)
+    const br=1+0.05*Math.sin(t*0.7+s.dphase);
     for (const lo of s.lobes){
-      const lx=cx+lo[0]*r, ly=cy+lo[1]*r, lr=lo[2]*r*(1+P.soft*0.4);
+      const lx=cx+lo[0]*r, ly=cy+lo[1]*r, lr=lo[2]*r*(1+P.soft*0.4)*br;
       const g=ctx.createRadialGradient(lx,ly,0,lx,ly,lr);
       g.addColorStop(0,rgba(s.cols[0],0.8)); g.addColorStop(0.5,rgba(s.cols[1],0.5)); g.addColorStop(1,rgba(s.cols[1],0));
       ctx.fillStyle=g; ctx.beginPath(); ctx.arc(lx,ly,lr,0,6.2832); ctx.fill();
     }
-  } else if (s.type==='ribbon'){                          // wavy full-width band (wind)
-    const ph=s.phase+t*0.6, amp=s.amp*H, half=s.bandH*Math.min(W,H)*0.5, x0=-0.12*W, x1=1.12*W, Nn=30;
+  } else if (s.type==='ribbon'){                          // smooth, organically-flowing wavy band (wind)
+    const ph=s.phase+t*0.95, amp=s.amp*H, half=s.bandH*Math.min(W,H)*0.5;
+    const bob=Math.sin(t*0.55+s.dphase)*0.035*H, x0=-0.14*W, x1=1.14*W, Nn=72;
+    const yAt=(x)=>{ const u=x/W; return cy+bob + (Math.sin(u*6.2832*s.freq+ph)*0.72 + Math.sin(u*6.2832*s.freq2+ph*1.3+1.7)*0.28)*amp; };
     ctx.beginPath();
-    for (let i=0;i<=Nn;i++){ const x=x0+(x1-x0)*i/Nn, y=cy+Math.sin(x/W*6.2832*s.freq+ph)*amp; i?ctx.lineTo(x,y-half):ctx.moveTo(x,y-half); }
-    for (let i=Nn;i>=0;i--){ const x=x0+(x1-x0)*i/Nn, y=cy+Math.sin(x/W*6.2832*s.freq+ph)*amp; ctx.lineTo(x,y+half); }
+    for (let i=0;i<=Nn;i++){ const x=x0+(x1-x0)*i/Nn; i?ctx.lineTo(x,yAt(x)-half):ctx.moveTo(x,yAt(x)-half); }
+    for (let i=Nn;i>=0;i--){ const x=x0+(x1-x0)*i/Nn; ctx.lineTo(x,yAt(x)+half); }
     ctx.closePath(); ctx.clip();
     const g=ctx.createLinearGradient(0,0,W,0); g.addColorStop(0,s.cols[0]); g.addColorStop(0.5,s.cols[1]); g.addColorStop(1,s.cols[2]);
-    ctx.fillStyle=g; ctx.fillRect(0, cy-amp-half, W, 2*(amp+half));
+    ctx.fillStyle=g; ctx.fillRect(0, cy+bob-amp-half-6, W, 2*(amp+half)+12);
   } else {                                                // crisp form with a flowing linear gradient
-    ctx.translate(cx,cy); ctx.rotate(s.rot);
+    ctx.translate(cx,cy); ctx.rotate(s.rot + t*s.rotSpin);
     shapePath(s.type, r, s.aspect); ctx.clip();
     const dx=Math.cos(ang)*r, dy=Math.sin(ang)*r;
     const g=ctx.createLinearGradient(-dx,-dy,dx,dy);
