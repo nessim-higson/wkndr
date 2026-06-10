@@ -40,6 +40,8 @@
   <div class="sub">WKNDR · the weather, personified</div>
   <div class="modes" id="modes"></div>
   <div class="why" id="why"></div>
+  <div class="row"><label>Presence <span class="val" id="v-presence"></span></label>
+    <input type="range" id="s-presence" min="0.2" max="1" step="0.05"></div>
   <div class="row"><label>Soft focus <span class="val" id="v-blur"></span></label>
     <input type="range" id="s-blur" min="2" max="7" step="0.5"></div>
   <div class="row"><label>Fireflies <span class="val" id="v-bokeh"></span></label>
@@ -84,7 +86,27 @@ const MODES = {
            face:'closed', wings:false, bob:0.008, sway:0.006, jitter:0 },
 };
 let mode = 'sun';
-const P = { blur:4, bokeh:0.6, motion:0.8, grain:0.12, seed:1 };
+const P = { blur:5, bokeh:0.6, presence:0.5, motion:0.8, grain:0.12, seed:1 };
+
+// ---- a seeded spirit: varied proportions, ears, wisps, faint face ----
+let spirit=null;
+function buildSpirit(){
+  rng = mulberry32(((P.seed>>>0) ^ 0x9e3779b9) >>> 0);
+  const espread=rr(0.17,0.24), eY=rr(-0.22,-0.16), eR=rr(0.1,0.15);
+  const ears=[ {dx:-espread*rr(0.85,1.15), dy:eY*rr(0.9,1.1), r:eR*rr(0.85,1.15)},
+               {dx: espread*rr(0.85,1.15), dy:eY*rr(0.9,1.1), r:eR*rr(0.85,1.15)} ];
+  const wisps=[]; const nw=2+((rng()*3)|0);
+  for(let i=0;i<nw;i++) wisps.push({dx:rr(-0.55,0.55), dy:rr(-0.35,0.55), r:rr(0.1,0.24), a:rr(0.08,0.22)});
+  const belly=[]; const nb=1+(rng()<0.5?1:0);
+  for(let i=0;i<nb;i++) belly.push({dx:rr(-0.12,0.12), dy:rr(0.02,0.12), r:rr(0.18,0.3)});
+  spirit={
+    scale: rr(0.85,1.18), aspect: rr(0.82,1.22), cxOff: rr(-0.06,0.06),
+    headScale: rr(0.84,1.16), headDX: rr(-0.06,0.06), headDY: rr(-0.03,0.03), lean: rr(-0.05,0.05),
+    ears, wisps, belly,
+    eyeGap: rr(0.105,0.16), eyeSize: rr(0.038,0.058), eyeAsym: rr(-0.012,0.012),
+    mouthShow: rng()<0.78, mouthY: rr(0.1,0.14),
+  };
+}
 
 // ---- fireflies (precomputed, drift + twinkle) ----
 let flies=[];
@@ -116,50 +138,53 @@ function blob(g,x,y,r,col,a){
 
 // pose shared by body (low-res) + face (full-res) so they line up
 function pose(W2,H2,t){
-  const m=MODES[mode], u=Math.min(W2,H2);
+  const m=MODES[mode], sp=spirit||{scale:1,cxOff:0,lean:0};
+  const u=Math.min(W2,H2)*(sp.scale||1);
   const jit = m.jitter ? Math.sin(t*9)*m.jitter + Math.cos(t*13)*m.jitter*0.6 : 0;
-  const sway = Math.sin(t*0.8)*m.sway + jit;
+  const sway = Math.sin(t*0.8)*m.sway + (sp.lean||0) + jit;
   const bob = Math.cos(t*1.1)*m.bob;
   const breathe = 1 + Math.sin(t*1.0)*0.02;
-  return { u, cx:W2*(0.5+sway), headY:H2*(0.40+bob), bodyY:H2*(0.66+bob), s:breathe };
+  return { u, cx:W2*(0.5+(sp.cxOff||0)+sway), headY:H2*(0.40+bob), bodyY:H2*(0.66+bob), s:breathe, m };
 }
 
 function drawBody(g, W2, H2, t){
-  const m=MODES[mode], p=pose(W2,H2,t), u=p.u*p.s;
-  if (m.wings){ blob(g, p.cx-u*0.36, p.bodyY-u*0.14, u*0.22, m.wing, 0.7); blob(g, p.cx+u*0.36, p.bodyY-u*0.14, u*0.22, m.wing, 0.7); }
-  blob(g, p.cx, p.bodyY, u*0.38, m.body[0], 0.92);          // body
-  blob(g, p.cx, p.bodyY+u*0.06, u*0.26, m.body[2], 0.6);    // warm belly
-  blob(g, p.cx, p.headY, u*0.31, m.body[1], 0.94);          // head
-  blob(g, p.cx-u*0.21, p.headY-u*0.2, u*0.13, m.body[1], 0.9);  // ears
-  blob(g, p.cx+u*0.21, p.headY-u*0.2, u*0.13, m.body[1], 0.9);
+  const p=pose(W2,H2,t), sp=spirit, m=p.m, pres=P.presence, u=p.u*p.s;
+  const hx=p.cx+sp.headDX*u, hy=p.headY+sp.headDY*u;
+  for (const w of sp.wisps) blob(g, p.cx+w.dx*u, p.bodyY+w.dy*u, w.r*u*2, m.body[1], w.a*pres);  // faint aura
+  if (m.wings){ blob(g, p.cx-u*0.36, p.bodyY-u*0.14, u*0.22, m.wing, 0.55*pres); blob(g, p.cx+u*0.36, p.bodyY-u*0.14, u*0.22, m.wing, 0.55*pres); }
+  blob(g, p.cx, p.bodyY, u*0.38*sp.aspect, m.body[0], 0.7*pres);                 // body
+  for (const b of sp.belly) blob(g, p.cx+b.dx*u, p.bodyY+b.dy*u, b.r*u, m.body[2], 0.42*pres);  // warm belly
+  blob(g, hx, hy, u*0.31*sp.headScale, m.body[1], 0.72*pres);                    // head
+  for (const e of sp.ears) blob(g, hx+e.dx*u, hy+e.dy*u, e.r*u, m.body[1], 0.64*pres);  // ears
 }
 
 function drawFace(g, W2, H2, t){
-  const m=MODES[mode], p=pose(W2,H2,t), u=p.u*p.s, hx=p.cx, hy=p.headY+u*0.02;
-  const eg=u*0.135, ey=hy, ink='#3a2b3a';
-  // cheeks (soft, under)
-  blob(g, hx-eg*1.5, ey+u*0.09, u*0.085, m.cheek, 0.55); blob(g, hx+eg*1.5, ey+u*0.09, u*0.085, m.cheek, 0.55);
-  // blink (awake/startled blink periodically; sleeping/half stay shut-ish)
-  const cyc=(t*0.22)%1; const blink=(cyc<0.045)?0.12:1;
+  const p=pose(W2,H2,t), sp=spirit, m=p.m, u=p.u*p.s, pres=P.presence;
+  const faceA=Math.min(1, 0.5+pres*0.5);                  // face a touch more present than the body, still soft
+  const hx=p.cx+sp.headDX*u, hy=p.headY+sp.headDY*u+u*0.02;
+  const eg=u*sp.eyeGap, ey=hy, ink='#3a2b3a';
+  blob(g, hx-eg*1.5, ey+u*0.09, u*0.09, m.cheek, 0.4*faceA); blob(g, hx+eg*1.5, ey+u*0.09, u*0.09, m.cheek, 0.4*faceA);
+  const cyc=(t*0.22)%1, blink=(cyc<0.045 && (m.face==='open'||m.face==='startled'))?0.12:1;
   for(const dx of [-1,1]){
-    const ex=hx+dx*eg;
-    if(m.face==='open' || m.face==='startled'){
-      const er = m.face==='startled' ? u*0.062 : u*0.05;
-      g.fillStyle=ink; g.beginPath(); g.ellipse(ex,ey,er*0.92,er*blink,0,0,6.2832); g.fill();
-      if(blink>0.5){ g.fillStyle='rgba(255,255,255,0.92)'; g.beginPath(); g.arc(ex-er*0.32,ey-er*0.4,er*0.3,0,6.2832); g.fill(); }
-    } else if(m.face==='half'){
-      g.strokeStyle=ink; g.lineWidth=u*0.018; g.lineCap='round';
-      g.beginPath(); g.arc(ex,ey+u*0.01,u*0.052,Math.PI*1.08,Math.PI*1.92); g.stroke();   // heavy lid
-    } else { // closed (sleeping): downward lash arc
-      g.strokeStyle=ink; g.lineWidth=u*0.015; g.lineCap='round';
-      g.beginPath(); g.arc(ex,ey-u*0.01,u*0.05,Math.PI*0.12,Math.PI*0.88); g.stroke();
+    const ex=hx+dx*eg, eyy=ey+dx*sp.eyeAsym*u, er=u*sp.eyeSize*(m.face==='startled'?1.25:1);
+    if(m.face==='open' || m.face==='startled'){     // soft dark eye-smudge, faintly suggested
+      const gr=g.createRadialGradient(ex,eyy,0,ex,eyy,er*1.5);
+      gr.addColorStop(0,rgba(ink,0.6*faceA)); gr.addColorStop(0.55,rgba(ink,0.38*faceA)); gr.addColorStop(1,rgba(ink,0));
+      g.fillStyle=gr; g.beginPath(); g.ellipse(ex,eyy,er,er*blink,0,0,6.2832); g.fill();
+      if(blink>0.5){ g.fillStyle=rgba('#ffffff',0.4*faceA); g.beginPath(); g.arc(ex-er*0.28,eyy-er*0.35,er*0.22,0,6.2832); g.fill(); }
+    } else {                                        // half/closed: a faint lash arc
+      g.strokeStyle=rgba(ink,0.5*faceA); g.lineWidth=u*0.013; g.lineCap='round';
+      g.beginPath();
+      if(m.face==='half') g.arc(ex,eyy+u*0.01,u*0.05,Math.PI*1.1,Math.PI*1.9);
+      else                g.arc(ex,eyy-u*0.01,u*0.05,Math.PI*0.14,Math.PI*0.86);
+      g.stroke();
     }
   }
-  // mouth
-  g.fillStyle=rgba(m.mouth,0.92);
-  if(m.face==='startled'){ g.beginPath(); g.ellipse(hx,hy+u*0.13,u*0.022,u*0.04,0,0,6.2832); g.fill(); }
-  else if(m.face==='open'){ g.beginPath(); g.ellipse(hx,hy+u*0.12,u*0.016,u*0.026,0,0,6.2832); g.fill(); }
-  else { g.beginPath(); g.ellipse(hx,hy+u*0.11,u*0.014,u*0.012,0,0,6.2832); g.fill(); }
+  if(sp.mouthShow){
+    g.fillStyle=rgba(m.mouth,0.55*faceA); const my=hy+u*sp.mouthY;
+    if(m.face==='startled') g.beginPath(),g.ellipse(hx,my,u*0.02,u*0.034,0,0,6.2832),g.fill();
+    else                    g.beginPath(),g.ellipse(hx,my,u*0.014,u*0.02,0,0,6.2832),g.fill();
+  }
 }
 
 // ---- grain ----
@@ -199,16 +224,17 @@ function buildUI(){
   document.getElementById('why').textContent=MODES[mode].why;
   const bind=(id,key,fmt)=>{ const el=document.getElementById('s-'+id), v=document.getElementById('v-'+id); el.value=P[key]; v.textContent=fmt(P[key]);
     el.oninput=()=>{ P[key]=parseFloat(el.value); v.textContent=fmt(P[key]); if(key==='bokeh') buildFlies(); render(); }; };
+  bind('presence','presence',x=>(x*100|0)+'%');
   bind('blur','blur',x=>x.toFixed(1));
   bind('bokeh','bokeh',x=>(x*100|0)+'%');
   bind('motion','motion',x=>x===0?'still':(x*100|0)+'%');
   bind('grain','grain',x=>(x*100|0)+'%');
-  document.getElementById('reroll').onclick=()=>{ P.seed=Math.floor(Math.random()*1e6); buildFlies(); render(); };
+  document.getElementById('reroll').onclick=()=>{ P.seed=Math.floor(Math.random()*1e6); buildSpirit(); buildFlies(); render(); };
   document.getElementById('save').onclick=()=>{ draw(0); const a=document.createElement('a'); a.download=`wkndr-spirit-${mode}.png`; a.href=c.toDataURL('image/png'); a.click(); };
 }
 function resize(){ W=window.innerWidth; H=window.innerHeight; c.width=Math.floor(W*DPR); c.height=Math.floor(H*DPR); buildGrain(); render(); }
 window.addEventListener('resize', resize);
-buildFlies(); buildGrain(); buildUI(); resize();
+buildSpirit(); buildFlies(); buildGrain(); buildUI(); resize();
 </script>
 </body>
 </html>
