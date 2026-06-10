@@ -21,6 +21,7 @@
 .poster--market  { background: linear-gradient(145deg, #6f9a4a, #2c4624); }
 .poster--out     { background: linear-gradient(145deg, #4e9a63, #21452f); }
 .poster--daytrip { background: linear-gradient(145deg, #3f72ad, #1c3656); }
+.poster--shop    { background: linear-gradient(145deg, #b5638f, #45203a); }
 .poster-mark {
   position: absolute;
   top: 0; left: 0; right: 0;

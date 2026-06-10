@@ -4,6 +4,7 @@ import { PICKS } from './picks'
 import { KIDS_AMSTERDAM } from './picks.kids'
 import { EAT_AMSTERDAM } from './picks.eat'
 import { LOSTIN_AMSTERDAM } from './picks.lostin'
+import { BATCH2_AMSTERDAM } from './picks.batch2'
 import { SOURCE_ROSTER, SOURCE_COUNT } from './sources'
 import { PICKS_NOLA } from './picks.nola'
 import { SOURCE_ROSTER_NOLA, SOURCE_COUNT_NOLA } from './sources.nola'
@@ -27,7 +28,7 @@ export interface City {
 export const CITIES: City[] = [
   {
     key: 'amsterdam', name: 'Amsterdam', label: 'Amsterdam', lat: 52.37, lon: 4.89,
-    picks: [...PICKS, ...KIDS_AMSTERDAM, ...EAT_AMSTERDAM, ...LOSTIN_AMSTERDAM], sources: SOURCE_ROSTER, sourceCount: SOURCE_COUNT, songkickMetroId: 31366,
+    picks: [...PICKS, ...KIDS_AMSTERDAM, ...EAT_AMSTERDAM, ...LOSTIN_AMSTERDAM, ...BATCH2_AMSTERDAM], sources: SOURCE_ROSTER, sourceCount: SOURCE_COUNT, songkickMetroId: 31366,
   },
   {
     key: 'new-orleans', name: 'New Orleans', label: 'New Orleans', lat: 29.95, lon: -90.07,

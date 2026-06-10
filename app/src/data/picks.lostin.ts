@@ -16,7 +16,7 @@ const ROWS: Row[] = [
   { slug: 'petit-gateau', title: 'Petit Gâteau', area: 'West (Foodhallen)', category: 'eat', tier: 'bespoke', price: '€', when: 'Daily · pastries',
     blurb: 'Jewel-like little tarts — pistachio, lemon, chocolate — from the patisserie counter at the Foodhallen.',
     why: 'Tiny tarts · grab-and-go', image: 'https://www.epicureasia.com/wp-content/uploads/2023/09/Simple-Patisserie-petite-tarts.jpg' },
-  { slug: 'frozen-fountain', title: 'The Frozen Fountain', area: 'Centrum', category: 'market', tier: 'classic', price: 'browse', when: 'Daily · shop hours',
+  { slug: 'frozen-fountain', title: 'The Frozen Fountain', area: 'Centrum', category: 'shop', tier: 'classic', price: 'browse', when: 'Daily · shop hours',
     blurb: 'The country’s best-known design store — floors of furniture, lighting and covetable objects to browse.',
     why: 'Design icons · browse for hours', image: 'https://thatdamguide.com/wp-content/uploads/2024/10/Frozen-Fountain-2-1024x768.jpg' },
   { slug: 'homeland', title: 'Brewery Homeland', area: 'Centrum (IJ)', category: 'drink', tier: 'bespoke', price: '€€', when: 'Daily · sunny best',

@@ -12,6 +12,7 @@ export type Category =
   | 'stage'    // Stage & screen
   | 'daytrip'  // Day-trips
   | 'market'   // Markets & one-offs
+  | 'shop'     // Shops (design stores, bookshops, concept + streetwear)
 
 // freshness buckets (the time dimension)
 export type Freshness = 'new' | 'weekend' | 'always' | 'ending'
@@ -53,6 +54,7 @@ export const CATEGORY_LABEL: Record<Category, string> = {
   stage: 'Stage & screen',
   daytrip: 'Day-trip',
   market: 'Markets & one-offs',
+  shop: 'Shops',
 }
 
 export const FRESHNESS_LABEL: Record<Freshness, string> = {
