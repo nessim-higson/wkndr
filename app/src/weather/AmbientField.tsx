@@ -3,6 +3,11 @@ import type { Mode } from '../types'
 import { WeatherField } from './WeatherField'
 import { MODE_META } from './modes'
 import { FieldEngine, type Look, type FieldStats } from './ambientEngine'
+import type { LookRenderer } from './looks/types'
+import { AurasRenderer } from './looks/auras'
+import { RisoRenderer } from './looks/riso'
+import { FormsRenderer } from './looks/forms'
+import { AGradientRenderer } from './looks/agradient'
 import './WeatherField.css'
 
 // the static base gradient (same recipe as WeatherField) — guarantees the field is
@@ -17,27 +22,40 @@ function baseGradient(mode: Mode): string {
   ].join(', ')
 }
 
-const LOOKS: Look[] = ['off', 'silk', 'dunes', 'ink', 'rings', 'dots']
+// the four ported looks, each rendered by its own pluggable LookRenderer (own canvas)
+const RENDERERS: Partial<Record<Look, () => LookRenderer>> = {
+  auras: () => new AurasRenderer(),
+  riso: () => new RisoRenderer(),
+  forms: () => new FormsRenderer(),
+  agradient: () => new AGradientRenderer(),
+}
+
+const LOOKS: Look[] = ['off', 'silk', 'auras', 'riso', 'forms', 'agradient']
 const LOOK_LABEL: Record<Look, string> = {
-  off: 'CSS', silk: 'Silk', dunes: 'Dunes', ink: 'Ink', rings: 'Rings', dots: 'Dots',
-  aura: 'Aura', warp: 'Warp', aurora: 'Aurora', mesh: 'Mesh', metaball: 'Metaball',   // legacy
+  off: 'CSS', silk: 'Silk', auras: 'Auras', riso: 'Riso', forms: 'Forms', agradient: 'A Gradient',
+  dunes: 'Dunes', ink: 'Ink', rings: 'Rings', dots: 'Dots',                                  // legacy
+  aura: 'Aura', warp: 'Warp', aurora: 'Aurora', mesh: 'Mesh', metaball: 'Metaball',          // legacy
 }
 const DEV = import.meta.env.DEV
 
 /**
- * Drop-in for <WeatherField>. Renders a generative ambient field on a single
- * low-res canvas behind everything, driven by the mode palette. `off` renders the
- * real production WeatherField, so the dev panel is a true A/B. The engine handles
- * all the perf-budget concerns (see ambientEngine.ts).
+ * Drop-in for <WeatherField>. Renders a generative ambient field behind everything,
+ * driven by the mode palette. `off` renders the real production WeatherField, `silk`
+ * uses the original low-res FieldEngine, and the four ported looks each mount their
+ * own LookRenderer (own canvas) into the `.field` container.
  */
 export function AmbientField({ mode, look, onLookChange }: { mode: Mode; look: Look; onLookChange?: (l: Look) => void }) {
   const [stats, setStats] = useState<FieldStats | null>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const engineRef = useRef<FieldEngine | null>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
+  const rendererRef = useRef<LookRenderer | null>(null)
 
-  // mount the engine once the canvas exists (skipped entirely when look === 'off')
+  const isPlugin = look in RENDERERS
+
+  // mount the FieldEngine for `silk` (skipped for `off` and the plugin looks)
   useEffect(() => {
-    if (look === 'off' || !canvasRef.current) return
+    if (look !== 'silk' || !canvasRef.current) return
     const eng = new FieldEngine(canvasRef.current, mode)
     eng.onStats = setStats
     engineRef.current = eng
@@ -48,15 +66,30 @@ export function AmbientField({ mode, look, onLookChange }: { mode: Mode; look: L
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [look])
 
-  useEffect(() => { engineRef.current?.setMode(mode) }, [mode])
+  // mount the matching LookRenderer for the four ported looks
+  useEffect(() => {
+    if (!isPlugin || !containerRef.current) return
+    const renderer = RENDERERS[look]!()
+    rendererRef.current = renderer
+    renderer.mount(containerRef.current, mode)
+    const fit = () => renderer.resize()
+    window.addEventListener('resize', fit)
+    return () => { window.removeEventListener('resize', fit); renderer.destroy(); rendererRef.current = null }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [look])
+
+  useEffect(() => {
+    engineRef.current?.setMode(mode)
+    rendererRef.current?.setMode(mode)
+  }, [mode])
 
   return (
     <>
       {look === 'off' ? (
         <WeatherField mode={mode} />
       ) : (
-        <div className="field" aria-hidden style={{ background: baseGradient(mode) }}>
-          <canvas ref={canvasRef} className="field-canvas" />
+        <div ref={containerRef} className="field" aria-hidden style={{ background: baseGradient(mode) }}>
+          {look === 'silk' && <canvas ref={canvasRef} className="field-canvas" />}
           <div className="field-grain" />
           <div className="field-vignette" />
         </div>
@@ -71,7 +104,8 @@ export function AmbientField({ mode, look, onLookChange }: { mode: Mode; look: L
           </div>
           <div className="field-dev-stats">
             {look === 'off' ? 'CSS gradient · 0 canvas cost'
-              : stats ? `${stats.fps} fps · ${stats.ms}ms/frame · ${stats.res} buf` : '…'}
+              : look === 'silk' ? (stats ? `${stats.fps} fps · ${stats.ms}ms/frame · ${stats.res} buf` : '…')
+              : LOOK_LABEL[look]}
           </div>
         </div>
       )}

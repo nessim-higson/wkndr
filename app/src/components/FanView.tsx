@@ -1,14 +1,14 @@
 import { useEffect, useMemo, useRef } from 'react'
 import type { PointerEvent as RPointerEvent } from 'react'
 import { animate, motion, useMotionValue, type PanInfo } from 'framer-motion'
-import type { Pick } from '../types'
-import { CATEGORY_LABEL } from '../types'
+import type { Pick, Mode } from '../types'
+import { weatherPill } from '../types'
 import { Coverflow } from './Coverflow'
 import './FanView.css'
 
 /** Fan view = the signature browse. MOBILE gets the Coverflow (width-bounded, never crops);
  *  DESKTOP gets the wide hand-fan arc. (May unify to Coverflow on both in a later pass.) */
-export function FanView(props: { picks: Pick[]; onOpen?: (p: Pick) => void }) {
+export function FanView(props: { picks: Pick[]; onOpen?: (p: Pick) => void; mode?: Mode }) {
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 720
   return isMobile ? <Coverflow {...props} /> : <WheelFan {...props} />
 }
@@ -23,10 +23,11 @@ const HALO = 20         // degrees from top within which a card gets the "hero" 
  *  lifted, on top, neighbours recede. Purely user-driven: grab and spin it freely (snaps to
  *  a card on release); tap a card to investigate. (No auto-advance — it felt forced.) DESKTOP only. */
 function WheelFan({
-  picks, onOpen,
+  picks, onOpen, mode,
 }: {
   picks: Pick[]
   onOpen?: (p: Pick) => void
+  mode?: Mode
 }) {
   // how far the hero pulls down out of the arc to land centred (less on a short phone)
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 720
@@ -194,7 +195,9 @@ function WheelFan({
               <span className="wcard-shade" aria-hidden />
               <span className="wcard-dim" aria-hidden />
               <span className="wcard-info">
-                <span className="wcard-cat mono">{CATEGORY_LABEL[p.category]}</span>
+                {(() => { const w = weatherPill(p, mode); return (
+                  <span className={`wcard-cat mono${w.perfect ? ' wcard-cat--perfect' : ''}`}>{w.text}</span>
+                ) })()}
                 <span className="wcard-title">{p.title}</span>
                 <span className="wcard-when mono">{p.when}</span>
               </span>

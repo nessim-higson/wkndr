@@ -1,13 +1,13 @@
 import { useEffect, useMemo, useRef } from 'react'
-import type { Pick } from '../types'
-import { CATEGORY_LABEL } from '../types'
+import type { Pick, Mode } from '../types'
+import { weatherPill } from '../types'
 import './Coverflow.css'
 
 /** MOBILE browse — a horizontal 3D coverflow. The centred card stands upright + bright; cards to
  *  either side rotate away in perspective and dim. Scroll-snaps to a card; tap to open its detail.
  *  Width-bounded by design (we position each card directly), so nothing ever crops. Per-frame work
  *  is transform + a composited dim-overlay opacity only — no paint — so the scroll stays smooth. */
-export function Coverflow({ picks, onOpen }: { picks: Pick[]; onOpen?: (p: Pick) => void }) {
+export function Coverflow({ picks, onOpen, mode }: { picks: Pick[]; onOpen?: (p: Pick) => void; mode?: Mode }) {
   const trackRef = useRef<HTMLDivElement>(null)
   const cards = useMemo(() => picks.slice(0, 18), [picks])
 
@@ -55,7 +55,9 @@ export function Coverflow({ picks, onOpen }: { picks: Pick[]; onOpen?: (p: Pick)
               <span className="cf-shade" aria-hidden />
               <span className="cf-dim" aria-hidden />
               <span className="cf-info">
-                <span className="cf-cat mono">{CATEGORY_LABEL[p.category]}</span>
+                {(() => { const w = weatherPill(p, mode); return (
+                  <span className={`cf-cat mono${w.perfect ? ' cf-cat--perfect' : ''}`}>{w.text}</span>
+                ) })()}
                 <span className="cf-title">{p.title}</span>
                 <span className="cf-when mono">{p.when}</span>
               </span>

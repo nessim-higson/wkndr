@@ -102,11 +102,11 @@ const DEMO: Record<Mode, Wx> = {
 // V2: a fresh set of five — flip through them to judge.
 const FIELD_OPTS: { key: Look; label: string }[] = [
   { key: 'silk', label: 'Silk' },
-  { key: 'dunes', label: 'Dunes' },
-  { key: 'ink', label: 'Ink' },
-  { key: 'rings', label: 'Rings' },
-  { key: 'dots', label: 'Dots' },
-  { key: 'off', label: 'Static' },
+  { key: 'auras', label: 'Auras' },
+  { key: 'riso', label: 'Riso' },
+  { key: 'forms', label: 'Forms' },
+  { key: 'agradient', label: 'A Gradient' },
+  { key: 'off', label: 'CSS' },
 ]
 
 export default function App() {
@@ -785,7 +785,7 @@ export default function App() {
               animate={{ opacity: 1 }}
               transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
             >
-              <FanView picks={shown} onOpen={openDetail} />
+              <FanView picks={shown} onOpen={openDetail} mode={mode} />
             </motion.div>
           ) : (
             <motion.div

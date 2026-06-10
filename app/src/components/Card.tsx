@@ -43,7 +43,6 @@ export function Card({ pick, temp, mode }: { pick: Pick; temp?: number; mode?: M
       <span className="card-expand" aria-hidden><Plus size={15} strokeWidth={2.8} /></span>
 
       <div className="card-body">
-        <div className="card-cat mono">{CATEGORY_LABEL[pick.category]}</div>
         <h2 className="card-title">{pick.title}</h2>
       </div>
     </article>

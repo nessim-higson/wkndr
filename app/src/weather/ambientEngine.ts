@@ -11,6 +11,8 @@ import { MODE_META } from './modes'
 
 export type Look =
   | 'off'
+  // the ported prototype looks — each rendered by its own LookRenderer (see looks/)
+  | 'auras' | 'riso' | 'forms' | 'agradient'
   // the fresh V2 set — five that feel distinctly different from each other
   | 'silk' | 'dunes' | 'ink' | 'rings' | 'dots'
   // the original set (kept renderable; no longer surfaced in the menu)

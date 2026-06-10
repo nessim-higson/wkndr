@@ -91,6 +91,7 @@
   color: #fff;
 }
 .wcard-cat { font-size: 10px; letter-spacing: 0.13em; text-transform: uppercase; opacity: 0.82; }
+.wcard-cat--perfect { color: #ffd166; opacity: 1; font-weight: 700; }
 .wcard-title {
   font-family: var(--font-body);   /* card copy → Helvetica Neue */
   font-size: 20px;
