@@ -462,6 +462,9 @@
    reads as "a friend sent this" */
 .ctx-bar.shared { border-color: rgba(255, 120, 70, 0.6); box-shadow: 0 12px 32px rgba(255, 77, 31, 0.16), 0 0 0 1px rgba(255, 120, 70, 0.25); }
 .ctx-bar.shared button { background: var(--accent); color: #fff; }
+/* Match is the primary CTA (accent); Save all sits back as a muted secondary */
+.ctx-match { display: inline-flex; align-items: center; gap: 5px; }
+.ctx-bar.shared button:not(.ctx-match) { background: rgba(0, 0, 0, 0.06); color: var(--ink-2); }
 .ft-caret { opacity: 0.6; font-size: 11px; }
 
 /* ===== main ===== */

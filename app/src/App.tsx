@@ -131,7 +131,12 @@ export default function App() {
   const flash = (text: string, save = false) => setToast({ text, save })
   const [seed, setSeed] = useState(0)            // 0 = forecast order; bumped by Refresh
   const [dealKey, setDealKey] = useState(0)      // bump → stack re-deals (refresh signal)
-  const [matching, setMatching] = useState(false)   // match-mode overlay (prototype: simulated partner)
+  const [matching, setMatching] = useState(false)   // match-mode overlay
+  // a shared link (?w=ids&from=Name) IS a match invite — the sender's picks are the partner's yes-set
+  const [matchPartner] = useState<{ name: string; ids: string[] } | null>(
+    SHARED_IDS ? { name: SHARED_FROM || 'A friend', ids: [...SHARED_IDS] } : null,
+  )
+  const matchLaunched = useRef(false)
   const [detail, setDetail] = useState<Pick | null>(null)  // open card detail
   // where the detail should expand FROM (the tapped card's on-screen rect) — App Store style.
   // null → fall back to a centred grow. Cleared on close.
@@ -248,6 +253,11 @@ export default function App() {
     return () => clearTimeout(id)
   }, [undoShown])
   useEffect(() => () => { if (undoTimer.current) clearTimeout(undoTimer.current) }, [])
+  // opening a shared link launches the match game once the intro lifts — you swipe their picks to
+  // find what you both want. Closing it drops you onto the shared list (the 💌 banner can re-launch).
+  useEffect(() => {
+    if (matchPartner && !intro && !matchLaunched.current) { matchLaunched.current = true; setMatching(true) }
+  }, [intro, matchPartner])
 
   // pulse the persistent saves counter whenever a new save lands in it (the toast's
   // sibling moment — the saved item visibly "arrives" in the dock)
@@ -598,7 +608,7 @@ export default function App() {
                     <div className="bar-group">
                       <span className="bar-label">Plan together</span>
                       <div className="bar-row">
-                        <button className="bar-pill bar-pill--match" onClick={() => { setMatching(true); setBarOpen(false) }}>
+                        <button className="bar-pill bar-pill--match" onClick={() => { setShareOpen(true); setBarOpen(false) }}>
                           <Heart size={14} strokeWidth={2.4} fill="currentColor" /> Match with someone
                         </button>
                       </div>
@@ -723,7 +733,8 @@ export default function App() {
         )}
         {filter === 'shared' && SHARED_IDS && (
           <div className="ctx-bar shared">
-            <span>💌 {SHARED_FROM || 'A friend'} shared {SHARED_IDS.size} picks — swipe through</span>
+            <span>💌 {SHARED_FROM || 'A friend'} shared {SHARED_IDS.size} picks</span>
+            <button className="ctx-match" onClick={() => setMatching(true)}><Heart size={13} strokeWidth={2.6} fill="currentColor" /> Match</button>
             <button onClick={() => setSaved((s) => new Set([...s, ...SHARED_IDS]))}>Save all</button>
           </div>
         )}
@@ -781,14 +792,15 @@ export default function App() {
         </div>
       )}
 
-      {/* MATCH MODE — focused swipe-to-match session over the live feed. Prototype: the partner's
-          yes-set is simulated inside the component; matched picks merge into your saved list. */}
+      {/* MATCH MODE — focused swipe-to-match over a partner's shared picks. A real ?w= link drives
+          partnerName/partnerIds (the sender's yes-set); with no link it falls back to a demo. */}
       <AnimatePresence>
         {matching && (
           <MatchGame
             picks={rankedAll}
             temp={wx.temp}
-            partnerName="Robin"
+            partnerName={matchPartner?.name ?? 'Robin'}
+            partnerIds={matchPartner?.ids}
             onOpen={openDetail}
             onClose={() => setMatching(false)}
             onComplete={(m) => { setSaved((s) => new Set([...s, ...m.map((p) => p.id)])); flash(`${m.length} added to your list`, true) }}

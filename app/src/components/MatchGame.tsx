@@ -22,20 +22,31 @@ function rand(s: string): number {
 function haptic(p: number | number[]) { try { navigator.vibrate?.(p) } catch { /* iOS */ } }
 
 export function MatchGame({
-  picks, temp, partnerName = 'Robin', onOpen, onClose, onComplete,
+  picks, temp, partnerName = 'Robin', partnerIds, onOpen, onClose, onComplete,
 }: {
   picks: Pick[]
   temp?: number
   partnerName?: string
+  partnerIds?: string[]   // REAL partner's yes-set, decoded from the share link. Absent → demo (simulated).
   onOpen?: (p: Pick, origin?: DOMRect) => void
   onClose: () => void
   onComplete?: (matched: Pick[]) => void
 }) {
-  const session = useMemo(() => picks.filter((p) => p.image).slice(0, SESSION), [picks])
-  // the demo partner's yes-set — ~half the deck, deterministic
+  const real = !!partnerIds && partnerIds.length > 0
+  // REAL: the deck IS the partner's shared picks (in feed-rank order) — "which of these do you
+  // want too?", so every yes is genuine overlap. DEMO: a slice of the feed with a simulated set.
+  const session = useMemo(() => {
+    if (real) {
+      const want = new Set(partnerIds)
+      return picks.filter((p) => want.has(p.id) && p.image).slice(0, 30)
+    }
+    return picks.filter((p) => p.image).slice(0, SESSION)
+  }, [picks, real, partnerIds])
   const partnerYes = useMemo(
-    () => new Set(session.filter((p) => rand(`${p.id}·${partnerName}`) > 0.5).map((p) => p.id)),
-    [session, partnerName],
+    () => (real
+      ? new Set(partnerIds)
+      : new Set(session.filter((p) => rand(`${p.id}·${partnerName}`) > 0.5).map((p) => p.id))),
+    [real, partnerIds, session, partnerName],
   )
   const [queue, setQueue] = useState<Pick[]>(session)
   const [matched, setMatched] = useState<Pick[]>([])
@@ -75,7 +86,7 @@ export function MatchGame({
       <div className="mg-body">
         {done ? (
           <MatchPlan
-            matched={matched} total={total} partnerName={partnerName} onOpen={onOpen}
+            matched={matched} total={total} partnerName={partnerName} real={real} onOpen={onOpen}
             onSave={() => { onComplete?.(matched); onClose() }} onClose={onClose}
           />
         ) : (
@@ -169,12 +180,23 @@ function MatchSlam({
 
 // THE PAYOFF — the shared plan once the round is done.
 function MatchPlan({
-  matched, total, partnerName, onOpen, onSave, onClose,
+  matched, total, partnerName, real, onOpen, onSave, onClose,
 }: {
-  matched: Pick[]; total: number; partnerName: string
+  matched: Pick[]; total: number; partnerName: string; real: boolean
   onOpen?: (p: Pick, origin?: DOMRect) => void; onSave: () => void; onClose: () => void
 }) {
   const n = matched.length
+  const [sent, setSent] = useState(false)
+  // close the loop: send your matches BACK as the same kind of link, so they land on the plan you
+  // both agreed on (from your name, stored when you last shared).
+  function shareBack() {
+    const me = (localStorage.getItem('wkndr.name') || '').trim()
+    const url = `${location.origin}${location.pathname}?w=${matched.map((p) => p.id).join(',')}`
+      + (me ? `&from=${encodeURIComponent(me)}` : '')
+    const data = { title: 'WKNDR — our match', text: `${n} we both want to do`, url }
+    if (navigator.share) { navigator.share(data).catch(() => {}); return }
+    navigator.clipboard?.writeText(url).then(() => { setSent(true); setTimeout(() => setSent(false), 1800) })
+  }
   return (
     <div className="mg-plan">
       <span className="mg-plan-eyebrow">Your weekend with {partnerName}</span>
@@ -204,6 +226,7 @@ function MatchPlan({
       )}
       <div className="mg-plan-actions">
         {n > 0 && <button className="mg-btn primary" onClick={onSave}>Add {n} to my list</button>}
+        {real && n > 0 && <button className="mg-btn" onClick={shareBack}>{sent ? '✓ Link copied' : `Send ${partnerName} the plan`}</button>}
         <button className="mg-btn" onClick={onClose}>Done</button>
       </div>
     </div>

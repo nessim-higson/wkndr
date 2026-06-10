@@ -96,7 +96,7 @@ export function ShareSheet({
                   <button className="share-copy" onClick={copy}>{copied ? '✓ Link copied' : 'Copy link'}</button>
                 </div>
                 <p className="share-note">
-                  They’ll land on the Stack and flip through exactly these picks{name.trim() ? ` — greeted “${name.trim()} shared some picks”` : ''}. No app or account needed.
+                  They’ll swipe through these to find the ones you <b>both</b> want — your matches{name.trim() ? `, from “${name.trim()}”` : ''}. No app or account needed.
                 </p>
               </>
             )}
