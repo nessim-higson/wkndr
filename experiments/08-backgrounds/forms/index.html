@@ -73,30 +73,30 @@ function rgba(hex,a){ hex=hex.replace('#',''); const r=parseInt(hex.slice(0,2),1
 // ---- weather conditions: each = palette + a form-composition language ----
 const HALFPI=Math.PI/2, QPI=Math.PI/4;
 const MODES = {
-  sun:   { label:'Sun',  why:'Warm radial blooms — a high disc and soft glow, airy and bright.',
+  sun:   { label:'Sun',  why:'Warm radial blooms with occasional big sunbursts — airy and bright.',
            bg:'#f3ecdf', cols:['#f4c20d','#f08a1d','#e8331f','#ffce6e','#ff9ec4'],
-           shapes:['blob','circle','blob','blob'], place:'high', size:[0.5,0.85], aspect:[0.85,1.2],
-           gAngle:null, tilt:0.2, drift:[0,-0.4], ht:0.25 },
-  rain:  { label:'Rain', why:'Cool tall forms stacked vertically, gradients running down — falling.',
+           shapes:['blob','circle','blob','blob'], place:'high', size:[0.5,0.95], aspect:[0.85,1.2],
+           gAngle:null, tilt:0.2, drift:[0,-0.4], ht:0.2, burst:0.45, countMul:1.2 },
+  rain:  { label:'Rain', why:'Cool tall blocks spread across, with rain lines falling through.',
            bg:'#eef1f5', cols:['#1b4dd8','#2f6ee0','#5b3fd8','#9fb6d4','#1bb3c8'],
-           shapes:['capsule','rect','capsule','rect'], place:'stack', size:[0.42,0.7], aspect:[0.42,0.65],
-           gAngle:HALFPI, tilt:0.08, drift:[0,1.3], ht:0.4 },
-  cloud: { label:'Cloud',why:'Muted wide soft blobs spread across — flat, layered, low-contrast.',
-           bg:'#e9ecef', cols:['#9fb0c0','#b9c6d2','#c9b8d0','#8d99a6','#dfe3e7'],
-           shapes:['blob','capsule','blob'], place:'band', size:[0.5,0.85], aspect:[1.5,2.4],
-           gAngle:0, tilt:0.06, drift:[0.6,0], ht:0.2 },
-  wind:  { label:'Wind', why:'Capsules leaning on a diagonal, gradients raked — air in motion.',
+           shapes:['capsule','rect','capsule','rect'], place:'rainspread', size:[0.4,0.72], aspect:[0.42,0.7],
+           gAngle:HALFPI, tilt:0.08, drift:[0,1.1], ht:0.4, countMul:2.0, rainLines:true },
+  cloud: { label:'Cloud',why:'Feathered lobed masses drifting — abstract clouds, soft-edged.',
+           bg:'#e9ecef', cols:['#aebccb','#c3cdd7','#cdbfd6','#9aa6b2','#e3e7ea'],
+           shapes:['cloud','cloud','blob'], place:'band', size:[0.55,0.95], aspect:[1.0,1.0],
+           gAngle:0, tilt:0, drift:[0.7,0], ht:0, countMul:1.3 },
+  wind:  { label:'Wind', why:'Wavy ribbons streaming across — lots of flowing, undulating air.',
            bg:'#edf1e8', cols:['#3f6b5e','#7fae8a','#cfd98a','#f0a85a','#e8e0c8'],
-           shapes:['capsule','triangle','capsule'], place:'diagonal', size:[0.42,0.72], aspect:[1.3,2.1],
-           gAngle:QPI, tilt:0.55, tiltBias:-0.45, drift:[1.3,0.2], ht:0.3 },
-  storm: { label:'Storm',why:'Dark purples and hot accents, dense overlapping shards — charged.',
-           bg:'#d9d7de', cols:['#241a3a','#4a2d7a','#1b4dd8','#e8331f','#f4c20d'],
-           shapes:['triangle','rect','blob','triangle'], place:'scatter', size:[0.45,0.85], aspect:[0.7,1.5],
-           gAngle:null, tilt:0.7, drift:[0,0], ht:0.45 },
-  snow:  { label:'Snow', why:'Pale small circles scattered with open space — quiet and light.',
-           bg:'#f4f7fb', cols:['#b8cbe0','#d4e0ee','#cfd0ea','#ffffff','#9fb6d4'],
-           shapes:['circle','blob','circle'], place:'sparse', size:[0.16,0.42], aspect:[0.9,1.15],
-           gAngle:null, tilt:0.2, drift:[0.3,0.7], ht:0.15 },
+           shapes:['ribbon','ribbon','capsule'], place:'band', size:[0.5,0.9], aspect:[1.4,2.2],
+           gAngle:QPI, tilt:0.2, drift:[1.0,0.1], ht:0.2, countMul:1.8 },
+  storm: { label:'Storm',why:'A dark field with strange, colliding shapes glowing where they cross.',
+           bg:'#161221', blend:'screen', cols:['#5b3fd8','#1b6de8','#e8331f','#f4c20d','#1bb35a'],
+           shapes:['triangle','rect','triangle','blob'], place:'scatter', size:[0.4,0.82], aspect:[0.7,1.5],
+           gAngle:null, tilt:0.9, drift:[0,0], ht:0.1, countMul:1.6 },
+  snow:  { label:'Snow', why:'Many small snowballs falling — light, scattered, lots of space.',
+           bg:'#f4f7fb', cols:['#cdd9e8','#dde6f0','#cfd0ea','#ffffff','#b8cbe0'],
+           shapes:['circle','circle','blob'], place:'sparse', size:[0.05,0.18], aspect:[0.9,1.15],
+           gAngle:null, tilt:0.2, drift:[0.2,0], ht:0, countMul:5, fall:true },
 };
 let mode = 'sun';
 const P = { shapes:3, soft:0.5, half:0.4, grain:0.35, motion:0.5, seed:1 };
@@ -107,17 +107,17 @@ function place(kind,i,N){
   if(kind==='stack')    return [rr(0.32,0.68), ((i+0.5)/N)*0.86+0.07 + rr(-0.04,0.04)];
   if(kind==='band')     return [rr(0.2,0.8), rr(0.26,0.74)];
   if(kind==='diagonal'){ const tt=(i+0.5)/N; return [0.12+tt*0.72+rr(-0.06,0.06), 0.16+tt*0.62+rr(-0.06,0.06)]; }
+  if(kind==='rainspread') return [rr(0.02,0.98), rr(-0.05,0.85)];
   if(kind==='sparse')   return [rr(0.12,0.88), rr(0.12,0.88)];
   return [rr(0.15,0.85), rr(0.15,0.85)];  // scatter
 }
 // ---- build a deterministic set of forms (animated by t at draw time) ----
 function buildForms(m){
-  const N=P.shapes, out=[];
+  const N=Math.max(1, Math.round(P.shapes*(m.countMul||1))), out=[];
   for (let i=0;i<N;i++){
-    const p=place(m.place,i,N);
-    out.push({
-      type: pick(m.shapes),
-      cx: p[0], cy: p[1],
+    const p=place(m.place,i,N), type=pick(m.shapes);
+    const s={
+      type, cx:p[0], cy:p[1],
       size: rr(m.size[0], m.size[1]),
       aspect: rr(m.aspect[0], m.aspect[1]),
       rot: rr(-m.tilt, m.tilt) + (m.tiltBias||0),
@@ -128,7 +128,12 @@ function buildForms(m){
       dx: (m.drift?m.drift[0]:0) + rr(-0.5,0.5),
       dy: (m.drift?m.drift[1]:0) + rr(-0.5,0.5),
       ht: rng() < (m.ht!=null?m.ht:0.4),
-    });
+      fallSpeed: rr(0.05,0.14),
+    };
+    if (m.burst && rng()<m.burst) s.size *= rr(1.5,2.2);                 // sun: occasional big burst
+    if (type==='cloud'){ s.lobes=[]; const L=4+((rng()*3)|0); for(let k=0;k<L;k++) s.lobes.push([rr(-0.85,0.85), rr(-0.32,0.12), rr(0.42,0.9)]); }
+    if (type==='ribbon'){ s.amp=rr(0.05,0.14); s.freq=rr(1.0,2.2); s.phase=rr(0,6.2832); s.bandH=rr(0.16,0.34); }
+    out.push(s);
   }
   return out;
 }
@@ -144,18 +149,34 @@ function shapePath(type, r, aspect){
 function roundRect(x,y,w,h,r){ ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r); ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath(); }
 
 function drawForm(s, t, m){
+  const blend = m.blend || 'multiply';
   const ang = s.gAngle + t*s.gSpin;
   const cx = (s.cx + Math.sin(t*0.2+s.dphase)*s.dx*0.02)*W;
-  const cy = (s.cy + Math.cos(t*0.17+s.dphase)*s.dy*0.02)*H;
+  let   cy = (s.cy + Math.cos(t*0.17+s.dphase)*s.dy*0.02)*H;
+  if (m.fall) cy = (((s.cy + t*s.fallSpeed)%1.14)-0.07)*H;   // snow: fall + wrap
   const r = s.size*0.5*Math.min(W,H);
   ctx.save();
-  ctx.globalCompositeOperation='multiply';
-  if (s.type==='blob'){                                   // soft airbrushed blob (fades at edge)
+  ctx.globalCompositeOperation=blend;
+  if (s.type==='blob'){                                   // soft airbrushed blob
     const R=r*(1.0+P.soft*0.5);
     const g=ctx.createRadialGradient(cx,cy,0,cx,cy,R);
-    g.addColorStop(0, rgba(s.cols[0],1)); g.addColorStop(0.5, rgba(s.cols[1],0.92));
-    g.addColorStop(1, rgba(s.cols[1],0));
+    g.addColorStop(0, rgba(s.cols[0],1)); g.addColorStop(0.5, rgba(s.cols[1],0.92)); g.addColorStop(1, rgba(s.cols[1],0));
     ctx.fillStyle=g; ctx.beginPath(); ctx.arc(cx,cy,R,0,6.2832); ctx.fill();
+  } else if (s.type==='cloud'){                           // feathered lobed mass (fluffy, soft-edged)
+    for (const lo of s.lobes){
+      const lx=cx+lo[0]*r, ly=cy+lo[1]*r, lr=lo[2]*r*(1+P.soft*0.4);
+      const g=ctx.createRadialGradient(lx,ly,0,lx,ly,lr);
+      g.addColorStop(0,rgba(s.cols[0],0.8)); g.addColorStop(0.5,rgba(s.cols[1],0.5)); g.addColorStop(1,rgba(s.cols[1],0));
+      ctx.fillStyle=g; ctx.beginPath(); ctx.arc(lx,ly,lr,0,6.2832); ctx.fill();
+    }
+  } else if (s.type==='ribbon'){                          // wavy full-width band (wind)
+    const ph=s.phase+t*0.6, amp=s.amp*H, half=s.bandH*Math.min(W,H)*0.5, x0=-0.12*W, x1=1.12*W, Nn=30;
+    ctx.beginPath();
+    for (let i=0;i<=Nn;i++){ const x=x0+(x1-x0)*i/Nn, y=cy+Math.sin(x/W*6.2832*s.freq+ph)*amp; i?ctx.lineTo(x,y-half):ctx.moveTo(x,y-half); }
+    for (let i=Nn;i>=0;i--){ const x=x0+(x1-x0)*i/Nn, y=cy+Math.sin(x/W*6.2832*s.freq+ph)*amp; ctx.lineTo(x,y+half); }
+    ctx.closePath(); ctx.clip();
+    const g=ctx.createLinearGradient(0,0,W,0); g.addColorStop(0,s.cols[0]); g.addColorStop(0.5,s.cols[1]); g.addColorStop(1,s.cols[2]);
+    ctx.fillStyle=g; ctx.fillRect(0, cy-amp-half, W, 2*(amp+half));
   } else {                                                // crisp form with a flowing linear gradient
     ctx.translate(cx,cy); ctx.rotate(s.rot);
     shapePath(s.type, r, s.aspect); ctx.clip();
@@ -163,13 +184,25 @@ function drawForm(s, t, m){
     const g=ctx.createLinearGradient(-dx,-dy,dx,dy);
     g.addColorStop(0,s.cols[0]); g.addColorStop(0.5,s.cols[1]); g.addColorStop(1,s.cols[2]);
     ctx.fillStyle=g; ctx.fillRect(-r*1.8,-r*1.8,r*3.6,r*3.6);
-    // optional soft edge: feather by overdrawing a blurred copy is costly — instead a soft inner light
-    if (P.half>0.01 && s.ht && halftone){                 // halftone dot screen, clipped to the form
+    if (P.half>0.01 && s.ht && halftone){
       ctx.globalCompositeOperation='multiply'; ctx.globalAlpha=P.half*0.55;
       ctx.fillStyle=halftone; ctx.fillRect(-r*1.8,-r*1.8,r*3.6,r*3.6); ctx.globalAlpha=1;
     }
   }
   ctx.restore();
+}
+
+// ---- rain lines: thin + dotted verticals falling through the blocks ----
+function drawRainLines(m,t){
+  ctx.globalCompositeOperation='multiply';
+  const n=Math.round(20 + P.shapes*6);
+  for (let i=0;i<n;i++){
+    const x=rng()*W, dotted=rng()<0.5;
+    ctx.strokeStyle=rgba(pick(m.cols), rr(0.12,0.35)); ctx.lineWidth=rr(0.6,1.4)*DPR;
+    if (dotted){ ctx.setLineDash([rr(2,6)*DPR, rr(6,18)*DPR]); ctx.lineDashOffset=-t*85*DPR; } else ctx.setLineDash([]);
+    ctx.beginPath(); ctx.moveTo(x, rr(-0.1,0.2)*H); ctx.lineTo(x, rr(0.7,1.1)*H); ctx.stroke();
+  }
+  ctx.setLineDash([]); ctx.globalCompositeOperation='source-over';
 }
 
 // ---- textures ----
@@ -197,6 +230,7 @@ function draw(t){
   ctx.globalCompositeOperation='source-over';
   ctx.fillStyle=m.bg; ctx.fillRect(0,0,W,H);
   for (const s of forms) drawForm(s, t, m);
+  if (m.rainLines) drawRainLines(m, t);
   // grain over everything
   ctx.globalCompositeOperation='overlay';
   if (P.grain>0.01 && grainTile){ ctx.globalAlpha=P.grain*0.85; ctx.fillStyle=grainTile; ctx.fillRect(0,0,W,H); ctx.globalAlpha=1; }
