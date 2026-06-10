@@ -56,7 +56,7 @@
   <div class="row"><label>Motion <span class="val" id="v-motion"></span></label>
     <input type="range" id="s-motion" min="0" max="1.5" step="0.05"></div>
   <div class="seedline">seed <input id="seed" type="text" inputmode="numeric"></div>
-  <div class="foot"><button id="reroll">Reroll</button><button id="save">Save PNG</button></div>
+  <div class="foot"><button id="variant">Variant ⟳</button><button id="reroll">Reroll</button><button id="save">Save PNG</button></div>
 </div>
 
 <script>
@@ -76,7 +76,7 @@ const MODES = {
   sun:   { label:'Sun',  why:'Warm radial blooms with occasional big sunbursts — airy and bright.',
            bg:'#f3ecdf', cols:['#f4c20d','#f08a1d','#e8331f','#ffce6e','#ff9ec4'],
            shapes:['blob','circle','blob','blob'], place:'high', size:[0.5,0.95], aspect:[0.85,1.2],
-           gAngle:null, tilt:0.2, drift:[0,-0.4], ht:0.2, burst:0.45, countMul:1.2 },
+           gAngle:null, tilt:0.2, drift:[0,-0.4], ht:0.2, burst:0.45, countMul:1.2, mo:1.4 },
   rain:  { label:'Rain', why:'Cool tall blocks spread across, with rain lines falling through.',
            bg:'#eef1f5', cols:['#1b4dd8','#2f6ee0','#5b3fd8','#9fb6d4','#1bb3c8'],
            shapes:['capsule','rect','capsule','rect'], place:'rainspread', size:[0.4,0.72], aspect:[0.42,0.7],
@@ -84,7 +84,7 @@ const MODES = {
   cloud: { label:'Cloud',why:'Feathered lobed masses drifting — abstract clouds, soft-edged.',
            bg:'#e9ecef', cols:['#aebccb','#c3cdd7','#cdbfd6','#9aa6b2','#e3e7ea'],
            shapes:['cloud','cloud','blob'], place:'band', size:[0.55,0.95], aspect:[1.0,1.0],
-           gAngle:0, tilt:0, drift:[0.7,0], ht:0, countMul:1.3 },
+           gAngle:0, tilt:0, drift:[0.7,0], ht:0, countMul:1.3, mo:1.5, flowX:0.05 },
   wind:  { label:'Wind', why:'Wavy ribbons streaming across — lots of flowing, undulating air.',
            bg:'#edf1e8', cols:['#3f6b5e','#7fae8a','#cfd98a','#f0a85a','#e8e0c8'],
            shapes:['ribbon','ribbon','capsule'], place:'band', size:[0.5,0.9], aspect:[1.4,2.2],
@@ -92,13 +92,18 @@ const MODES = {
   storm: { label:'Storm',why:'A dark field with strange, colliding shapes glowing where they cross.',
            bg:'#161221', blend:'screen', cols:['#5b3fd8','#1b6de8','#e8331f','#f4c20d','#1bb35a'],
            shapes:['triangle','rect','triangle','blob'], place:'scatter', size:[0.4,0.82], aspect:[0.7,1.5],
-           gAngle:null, tilt:0.9, drift:[0,0], ht:0.1, countMul:1.6 },
+           gAngle:null, tilt:0.9, drift:[0.5,0.5], ht:0.1, countMul:1.6, mo:1.8 },
   snow:  { label:'Snow', why:'Many small snowballs falling — light, scattered, lots of space.',
            bg:'#f4f7fb', cols:['#cdd9e8','#dde6f0','#cfd0ea','#ffffff','#b8cbe0'],
            shapes:['circle','circle','blob'], place:'sparse', size:[0.05,0.18], aspect:[0.9,1.15],
-           gAngle:null, tilt:0.2, drift:[0.2,0], ht:0, countMul:5, fall:true },
+           gAngle:null, tilt:0.2, drift:[0.2,0], ht:0, countMul:5, fall:true, mo:1.3 },
 };
 let mode = 'sun';
+let windVar = 0;                                  // wind alternative (0 = ribbons, 1 = diagonal streaks)
+const VARN = { wind:2 };
+// alternative wind: thin diagonal streaks streaming across, instead of wavy ribbons
+const WINDALT = { shapes:['capsule','capsule','rect'], place:'diagonal', size:[0.28,0.55], aspect:[0.16,0.34],
+  gAngle:QPI, tilt:0.12, tiltBias:-0.92, drift:[1.7,0.9], ht:0.2, countMul:2.6, mo:1.4 };
 const P = { shapes:3, soft:0.5, half:0.4, grain:0.35, motion:0.7, seed:1 };
 
 // ---- placement per weather composition ----
@@ -132,7 +137,7 @@ function buildForms(m){
       fallSpeed: rr(0.05,0.14),
     };
     if (m.burst && rng()<m.burst) s.size *= rr(1.5,2.2);                 // sun: occasional big burst
-    if (type==='cloud'){ s.lobes=[]; const L=4+((rng()*3)|0); for(let k=0;k<L;k++) s.lobes.push([rr(-0.85,0.85), rr(-0.32,0.12), rr(0.42,0.9)]); }
+    if (type==='cloud'){ s.lobes=[]; const L=4+((rng()*3)|0); for(let k=0;k<L;k++) s.lobes.push([rr(-0.85,0.85), rr(-0.32,0.12), rr(0.42,0.9), rr(0,6.2832)]); }
     if (type==='ribbon'){ s.amp=rr(0.04,0.085); s.freq=rr(0.6,1.3); s.freq2=s.freq*rr(1.7,2.3); s.phase=rr(0,6.2832); s.bandH=rr(0.14,0.3); }
     out.push(s);
   }
@@ -151,29 +156,32 @@ function roundRect(x,y,w,h,r){ ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ct
 
 function drawForm(s, t, m){
   const blend = m.blend || 'multiply';
-  const ang = s.gAngle + t*s.gSpin;
-  const cx = (s.cx + Math.sin(t*0.25+s.dphase)*s.dx*0.045)*W;
-  let   cy = (s.cy + Math.cos(t*0.21+s.dphase)*s.dy*0.045)*H;
-  if (m.fall) cy = (((s.cy + t*s.fallSpeed)%1.14)-0.07)*H;   // snow: fall + wrap
+  const tt = t * (m.mo || 1);                             // per-mode movement multiplier
+  const ang = s.gAngle + tt*s.gSpin;
+  let cx, cy;
+  if (m.flowX) cx = ((((s.cx + tt*m.flowX)%1.26)+1.26)%1.26 - 0.13)*W;   // continuous drift across + wrap
+  else         cx = (s.cx + Math.sin(tt*0.28+s.dphase)*s.dx*0.06)*W;
+  if (m.fall)  cy = (((s.cy + tt*s.fallSpeed)%1.14)-0.07)*H;             // snow: fall + wrap
+  else         cy = (s.cy + Math.cos(tt*0.24+s.dphase)*s.dy*0.06)*H;
   const r = s.size*0.5*Math.min(W,H);
   ctx.save();
   ctx.globalCompositeOperation=blend;
-  if (s.type==='blob'){                                   // soft airbrushed blob, gently breathing
-    const R=r*(1.0+P.soft*0.5)*(1+0.06*Math.sin(t*0.9+s.dphase));
+  if (s.type==='blob'){                                   // soft airbrushed blob, breathing
+    const R=r*(1.0+P.soft*0.5)*(1+0.1*Math.sin(tt*0.9+s.dphase));
     const g=ctx.createRadialGradient(cx,cy,0,cx,cy,R);
     g.addColorStop(0, rgba(s.cols[0],1)); g.addColorStop(0.5, rgba(s.cols[1],0.92)); g.addColorStop(1, rgba(s.cols[1],0));
     ctx.fillStyle=g; ctx.beginPath(); ctx.arc(cx,cy,R,0,6.2832); ctx.fill();
-  } else if (s.type==='cloud'){                           // feathered lobed mass (fluffy, soft-edged)
-    const br=1+0.05*Math.sin(t*0.7+s.dphase);
+  } else if (s.type==='cloud'){                           // feathered lobed mass that billows + drifts
     for (const lo of s.lobes){
-      const lx=cx+lo[0]*r, ly=cy+lo[1]*r, lr=lo[2]*r*(1+P.soft*0.4)*br;
+      const lx=cx+(lo[0]+Math.sin(tt*0.5+lo[3])*0.2)*r, ly=cy+(lo[1]+Math.cos(tt*0.43+lo[3])*0.13)*r;
+      const lr=lo[2]*r*(1+P.soft*0.4)*(1+0.13*Math.sin(tt*0.62+lo[3]));
       const g=ctx.createRadialGradient(lx,ly,0,lx,ly,lr);
       g.addColorStop(0,rgba(s.cols[0],0.8)); g.addColorStop(0.5,rgba(s.cols[1],0.5)); g.addColorStop(1,rgba(s.cols[1],0));
       ctx.fillStyle=g; ctx.beginPath(); ctx.arc(lx,ly,lr,0,6.2832); ctx.fill();
     }
   } else if (s.type==='ribbon'){                          // smooth, organically-flowing wavy band (wind)
-    const ph=s.phase+t*0.95, amp=s.amp*H, half=s.bandH*Math.min(W,H)*0.5;
-    const bob=Math.sin(t*0.55+s.dphase)*0.035*H, x0=-0.14*W, x1=1.14*W, Nn=72;
+    const ph=s.phase+tt*0.95, amp=s.amp*H, half=s.bandH*Math.min(W,H)*0.5;
+    const bob=Math.sin(tt*0.55+s.dphase)*0.04*H, x0=-0.14*W, x1=1.14*W, Nn=72;
     const yAt=(x)=>{ const u=x/W; return cy+bob + (Math.sin(u*6.2832*s.freq+ph)*0.72 + Math.sin(u*6.2832*s.freq2+ph*1.3+1.7)*0.28)*amp; };
     ctx.beginPath();
     for (let i=0;i<=Nn;i++){ const x=x0+(x1-x0)*i/Nn; i?ctx.lineTo(x,yAt(x)-half):ctx.moveTo(x,yAt(x)-half); }
@@ -182,7 +190,7 @@ function drawForm(s, t, m){
     const g=ctx.createLinearGradient(0,0,W,0); g.addColorStop(0,s.cols[0]); g.addColorStop(0.5,s.cols[1]); g.addColorStop(1,s.cols[2]);
     ctx.fillStyle=g; ctx.fillRect(0, cy+bob-amp-half-6, W, 2*(amp+half)+12);
   } else {                                                // crisp form with a flowing linear gradient
-    ctx.translate(cx,cy); ctx.rotate(s.rot + t*s.rotSpin);
+    ctx.translate(cx,cy); ctx.rotate(s.rot + tt*s.rotSpin);
     shapePath(s.type, r, s.aspect); ctx.clip();
     const dx=Math.cos(ang)*r, dy=Math.sin(ang)*r;
     const g=ctx.createLinearGradient(-dx,-dy,dx,dy);
@@ -226,9 +234,10 @@ function buildGrain(){
 
 // ---- draw ----
 let forms=[];
+function curMode(){ let m=MODES[mode]; if(mode==='wind' && windVar===1) m=Object.assign({}, m, WINDALT); return m; }
 function draw(t){
   rng = mulberry32(P.seed>>>0);
-  const m = MODES[mode];
+  const m = curMode();
   forms = buildForms(m);
   ctx.setTransform(DPR,0,0,DPR,0,0);
   ctx.globalCompositeOperation='source-over';
@@ -268,6 +277,7 @@ function buildUI(){
   bind('motion','motion',x=>x===0?'still':(x*100|0)+'%');
   const seedEl=document.getElementById('seed'); seedEl.value=P.seed;
   seedEl.onchange=()=>{ P.seed=(parseInt(seedEl.value)||0); render(); };
+  document.getElementById('variant').onclick=()=>{ if(VARN[mode]){ windVar=(windVar+1)%VARN[mode]; render(); } };
   document.getElementById('reroll').onclick=()=>{ P.seed=Math.floor(Math.random()*1e6); seedEl.value=P.seed; render(); };
   document.getElementById('save').onclick=()=>{ draw(0); const a=document.createElement('a'); a.download=`wkndr-forms-${mode}-${P.seed}.png`; a.href=c.toDataURL('image/png'); a.click(); };
 }
