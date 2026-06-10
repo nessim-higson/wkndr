@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<title>WKNDR · seasons</title>
+<style>
+  :root { --ui: #e9e6df; --ui-dim: #8c897f; --panel: rgba(18,17,15,.82); }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #0d0c0b;
+    font-family: ui-sans-serif, system-ui, -apple-system, "Helvetica Neue", sans-serif; }
+  canvas { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+  #panel {
+    position: fixed; top: 14px; left: 14px; width: 232px; z-index: 10;
+    background: var(--panel); backdrop-filter: blur(14px) saturate(1.2);
+    border: 1px solid rgba(255,255,255,.08); border-radius: 14px; padding: 14px 14px 16px; color: var(--ui);
+    font-size: 11px; line-height: 1.3; user-select: none; box-shadow: 0 12px 40px rgba(0,0,0,.5); max-height: calc(100vh - 28px); overflow-y: auto;
+  }
+  #panel h1 { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; margin: 0 0 2px; font-weight: 600; }
+  #panel .sub { color: var(--ui-dim); font-size: 10px; margin-bottom: 12px; }
+  .modes { display: grid; grid-template-columns: repeat(2, 1fr); gap: 5px; margin-bottom: 8px; }
+  .modes button { appearance: none; border: 1px solid rgba(255,255,255,.12); background: transparent; color: var(--ui-dim); border-radius: 8px; padding: 8px 4px; font-size: 10px; cursor: pointer; transition: all .15s; }
+  .modes button:hover { color: var(--ui); border-color: rgba(255,255,255,.28); }
+  .modes button.on { background: var(--ui); color: #111; border-color: var(--ui); font-weight: 600; }
+  .why { color: var(--ui-dim); font-size: 10px; line-height: 1.4; margin: 0 0 14px; min-height: 28px; }
+  .row { margin-bottom: 11px; }
+  .row label { display: flex; justify-content: space-between; margin-bottom: 5px; color: var(--ui-dim); }
+  .row label .val { color: var(--ui); font-variant-numeric: tabular-nums; }
+  input[type=range] { -webkit-appearance: none; width: 100%; height: 3px; border-radius: 3px; background: rgba(255,255,255,.16); outline: none; }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 13px; height: 13px; border-radius: 50%; background: var(--ui); cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,.4); }
+  .foot { display: flex; gap: 6px; margin-top: 6px; }
+  .foot button { flex: 1; appearance: none; border: 1px solid rgba(255,255,255,.14); background: transparent; color: var(--ui); border-radius: 8px; padding: 8px 4px; font-size: 10px; cursor: pointer; }
+  .foot button:hover { background: rgba(255,255,255,.1); }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="panel">
+  <h1>Seasons</h1>
+  <div class="sub">WKNDR · geometric aura fields</div>
+  <div class="modes" id="modes"></div>
+  <div class="why" id="why"></div>
+  <div class="row"><label>Scale <span class="val" id="v-scale"></span></label>
+    <input type="range" id="s-scale" min="0.7" max="1.4" step="0.05"></div>
+  <div class="row"><label>Movement <span class="val" id="v-motion"></span></label>
+    <input type="range" id="s-motion" min="0" max="1.5" step="0.05"></div>
+  <div class="row"><label>Grain <span class="val" id="v-grain"></span></label>
+    <input type="range" id="s-grain" min="0" max="0.3" step="0.01"></div>
+  <div class="foot"><button id="reroll">Reroll</button><button id="save">Save PNG</button></div>
+</div>
+
+<script>
+const c = document.getElementById('c'); const ctx = c.getContext('2d');
+let W, H, DPR = Math.min(2, window.devicePixelRatio||1);
+
+function mulberry32(a){ return function(){ a|=0; a=a+0x6D2B79F5|0; let t=Math.imul(a^a>>>15,1|a); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+let rng = mulberry32(1); const rr=(a,b)=>a+rng()*(b-a);
+function rgba(hex,a){ hex=hex.replace('#',''); const r=parseInt(hex.slice(0,2),16),g=parseInt(hex.slice(2,4),16),b=parseInt(hex.slice(4,6),16); return `rgba(${r},${g},${b},${a})`; }
+const sm=t=>t*t*(3-2*t);                              // smoothstep — the silky falloff
+
+// ============================================================================
+//  Finesse primitives — eased multi-stop gradients (no banding, long dissolves)
+// ============================================================================
+// orb: solid plateau to `p`, then a long eased dissolve to nothing.
+function orb(g, x, y, r, col, aMax, p){
+  p = p==null ? 0.32 : p;
+  const gr = g.createRadialGradient(x,y,0,x,y,r);
+  for (let i=0;i<=18;i++){
+    const t=i/18;
+    const a = t<=p ? aMax : aMax*(1-sm((t-p)/(1-p)));
+    gr.addColorStop(t, rgba(col,a));
+  }
+  g.fillStyle=gr; g.beginPath(); g.arc(x,y,r,0,6.2832); g.fill();
+}
+// annulus: alpha rises into a band and eases out — the giant soft ring.
+function ringOrb(g, x, y, rIn, rOut, col, aMax){
+  const gr = g.createRadialGradient(x,y,0,x,y,rOut);
+  const tIn = Math.max(0.001, rIn/rOut);
+  for (let i=0;i<=20;i++){
+    const t=i/20; let a=0;
+    if (t>tIn){ const u=(t-tIn)/(1-tIn); a = u<0.45 ? aMax*sm(u/0.45) : aMax*(1-sm((u-0.45)/0.55)); }
+    gr.addColorStop(t, rgba(col,a));
+  }
+  g.fillStyle=gr; g.beginPath(); g.arc(x,y,rOut,0,6.2832); g.fill();
+}
+
+// ============================================================================
+//  Seasons — palette + composition + motion rationale
+// ============================================================================
+const MODES = {
+  spring: { label:'Spring', why:'Emergence — a dark ring of soil parts around a green shoot of light. The core slowly blooms.' },
+  summer: { label:'Summer', why:'High sun — a hot core haloed in rings of heat over a clear sky. Everything radiates outward.' },
+  autumn: { label:'Autumn', why:'The turn — a vast sphere tips past the frame, rim lit amber, its colours slowly revolving.' },
+  winter: { label:'Winter', why:'Hush — pale light dissolved in cold haze, a remembered warmth low in the field. Almost still.' },
+};
+let mode = 'summer';
+const P = { scale:1, motion:0.6, grain:0.12, seed:1 };
+
+// seeded per-season layout (positions/sizes jitter on reroll; t animates only)
+let L = {};
+function layout(){
+  rng = mulberry32(P.seed>>>0);
+  L = {
+    spring: { cx:rr(0.42,0.58), cy:rr(0.5,0.62), ring:rr(0.92,1.1), band:rr(0.5,0.62), core:rr(0.5,0.62), lean:rr(-0.04,0.04) },
+    summer: { cx:rr(0.34,0.52), cy:rr(0.34,0.48), r:rr(0.5,0.62), halos:2+((rng()*2)|0), hx:rr(-0.06,0.02), hy:rr(-0.06,0.02) },
+    autumn: { edge:rr(0.35,0.55), rW:rr(1.3,1.8), cy:rr(0.45,0.6), th0:rr(0,6.28), fcx:rr(0.05,0.25), fcy:rr(0.15,0.4) },
+    winter: { ax:rr(0.2,0.4), ay:rr(0.2,0.4), bx:rr(0.6,0.85), by:rr(0.3,0.55), wx:rr(0.1,0.35), wy:rr(0.7,0.9) },
+  };
+}
+
+function bgFill(top, bottom){
+  const g=ctx.createLinearGradient(0,0,0,H);
+  for(let i=0;i<=12;i++){ const t=i/12;
+    g.addColorStop(t, mix(top,bottom,sm(t))); }
+  ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+}
+function mix(a,b,t){
+  a=a.replace('#',''); b=b.replace('#','');
+  const c=[0,2,4].map(i=>Math.round(parseInt(a.slice(i,i+2),16)*(1-t)+parseInt(b.slice(i,i+2),16)*t));
+  return `rgb(${c[0]},${c[1]},${c[2]})`;
+}
+
+const SEASON = {
+  spring(t){
+    const s=L.spring, u=Math.min(W,H)*P.scale;
+    bgFill('#efe9dc','#e7dfcd');
+    const bloom = 1 + 0.03*Math.sin(t*0.5);             // the core blooming
+    const cx=W*(s.cx + s.lean*Math.sin(t*0.2)), cy=H*s.cy;
+    ringOrb(ctx, cx, cy, u*s.ring*0.42, u*s.ring*1.05, '#16323e', 0.96);   // dark soil ring
+    orb(ctx, cx, cy, u*s.core*0.78*bloom, '#9ed49a', 0.95, 0.18);          // green shoot
+    orb(ctx, cx-u*0.04, cy+u*0.03, u*s.core*0.52*bloom, '#cfe8d2', 0.9, 0.3); // mint heart
+    orb(ctx, cx+u*0.1, cy-u*0.12, u*0.3, '#e8e9a8', 0.3, 0.1);             // a breath of yellow
+  },
+  summer(t){
+    const s=L.summer, u=Math.min(W,H)*P.scale;
+    bgFill('#a9cde9','#c2dcee');
+    const cx=W*s.cx, cy=H*s.cy, R=u*s.r;
+    const breathe = 1 + 0.015*Math.sin(t*0.6);
+    // heat halos radiating outward — alpha travels with a slow outward pulse
+    for (let i=0;i<s.halos;i++){
+      const ph = (t*0.12 + i/s.halos)%1;
+      const hr = R*(1.25 + ph*1.1);
+      ringOrb(ctx, cx, cy, hr*0.86, hr, '#f5b06e', 0.16*(1-sm(ph)));
+    }
+    orb(ctx, cx, cy, R*1.5*breathe, '#f0a0a0', 0.42, 0.1);                 // pink fringe
+    orb(ctx, cx, cy, R*1.05*breathe, '#f57f22', 0.95, 0.22);               // sun body
+    orb(ctx, cx+W*s.hx, cy+H*s.hy, R*0.62*breathe, '#ffd24a', 0.95, 0.2);  // hot gold core
+  },
+  autumn(t){
+    const s=L.autumn, u=Math.min(W,H)*P.scale;
+    bgFill('#c8404a','#3a78c8');
+    // cool field on the left
+    orb(ctx, W*s.fcx, H*s.fcy+H*0.02*Math.sin(t*0.3), u*0.85, '#2f8c84', 0.55, 0.1);
+    orb(ctx, W*(s.fcx-0.05), H*(s.fcy+0.45), u*0.7, '#e9c8d8', 0.5, 0.1);
+    // the vast sphere, cropped past the frame — its edge arcs through the field
+    const R=W*s.rW, cx=W*s.edge+R, cy=H*s.cy;
+    ctx.save(); ctx.beginPath(); ctx.arc(cx,cy,R,0,6.2832); ctx.clip();
+    // stacked interior bands (blue → violet → magenta → gold), eased
+    const ig=ctx.createLinearGradient(0,0,0,H);
+    const bands=[['#2336b0',0],['#5a1e8c',0.3],['#d8336e',0.55],['#e8682a',0.75],['#ffc83a',1]];
+    for(let i=0;i<bands.length-1;i++) for(let k=0;k<=6;k++){ const t2=k/6;
+      ig.addColorStop(bands[i][1]+(bands[i+1][1]-bands[i][1])*t2, mix(bands[i][0],bands[i+1][0],sm(t2))); }
+    ctx.fillStyle=ig; ctx.fillRect(0,0,W,H);
+    // slowly revolving colour masses breathe through the bands
+    const th = s.th0 + t*0.04;                           // the slow revolve
+    const zone=(ang,dist,r,col,a)=> orb(ctx, cx+Math.cos(th+ang)*R*dist, cy+Math.sin(th+ang)*R*dist, r*R, col, a, 0.2);
+    zone(2.6, 0.7, 0.55, '#2336b0', 0.6);
+    zone(3.6, 0.75, 0.45, '#d8336e', 0.55);
+    zone(4.4, 0.7, 0.5,  '#ffc83a', 0.6);
+    ctx.restore();
+    // amber rim light on the sphere's edge
+    ringOrb(ctx, cx, cy, R*0.965, R*1.035, '#f08a1d', 0.9);
+    ringOrb(ctx, cx, cy, R*0.985, R*1.012, '#ffb24a', 0.8);
+  },
+  winter(t){
+    const s=L.winter, u=Math.min(W,H)*P.scale;
+    bgFill('#eef2f7','#dde7f0');
+    const breath = 1 + 0.008*Math.sin(t*0.35);           // the faintest breath
+    orb(ctx, W*s.bx, H*s.by, u*0.95, '#7fa8d0', 0.5, 0.05);                 // ice blue
+    orb(ctx, W*s.ax, H*s.ay, u*0.85*breath, '#ffffff', 0.95, 0.15);         // dissolved light
+    orb(ctx, W*s.wx, H*s.wy, u*0.6, '#f0b48a', 0.34, 0.05);                 // remembered warmth
+    orb(ctx, W*(s.ax+0.05), H*(s.ay+0.3), u*0.5*breath, '#ffffff', 0.6, 0.1);
+  },
+};
+
+// ---- grain (fine, uniform — also dithers the gradients) ----
+let grainTile=null;
+function buildGrain(){ const s=220,t=document.createElement('canvas');t.width=s;t.height=s;const p=t.getContext('2d'),img=p.createImageData(s,s),d=img.data;
+  for(let i=0;i<d.length;i+=4){const v=128+(Math.random()-0.5)*255;d[i]=d[i+1]=d[i+2]=v;d[i+3]=255;} p.putImageData(img,0,0); grainTile=ctx.createPattern(t,'repeat'); }
+
+function draw(t){
+  ctx.setTransform(DPR,0,0,DPR,0,0);
+  ctx.globalCompositeOperation='source-over';
+  SEASON[mode](t);
+  if(P.grain>0.005 && grainTile){ ctx.save(); ctx.globalCompositeOperation='overlay'; ctx.globalAlpha=P.grain; ctx.fillStyle=grainTile; ctx.fillRect(0,0,W,H); ctx.restore(); }
+}
+
+let raf=0, t0=performance.now();
+function loop(){ const t=(performance.now()-t0)/1000*P.motion; draw(t); raf=requestAnimationFrame(loop); }
+function render(){ cancelAnimationFrame(raf); if(P.motion>0.001) loop(); else draw(0); }
+
+// ---- UI ----
+function buildUI(){
+  const mc=document.getElementById('modes');
+  Object.keys(MODES).forEach(k=>{ const b=document.createElement('button'); b.textContent=MODES[k].label; b.className=k===mode?'on':'';
+    b.onclick=()=>{ mode=k; [...mc.children].forEach(x=>x.classList.remove('on')); b.classList.add('on'); document.getElementById('why').textContent=MODES[k].why; render(); }; mc.appendChild(b); });
+  document.getElementById('why').textContent=MODES[mode].why;
+  const bind=(id,key,fmt)=>{ const el=document.getElementById('s-'+id), v=document.getElementById('v-'+id); el.value=P[key]; v.textContent=fmt(P[key]);
+    el.oninput=()=>{ P[key]=parseFloat(el.value); v.textContent=fmt(P[key]); render(); }; };
+  bind('scale','scale',x=>x.toFixed(2)+'×');
+  bind('motion','motion',x=>x===0?'still':(x*100|0)+'%');
+  bind('grain','grain',x=>(x*100|0)+'%');
+  document.getElementById('reroll').onclick=()=>{ P.seed=Math.floor(Math.random()*1e6); layout(); render(); };
+  document.getElementById('save').onclick=()=>{ draw(0); const a=document.createElement('a'); a.download=`wkndr-season-${mode}.png`; a.href=c.toDataURL('image/png'); a.click(); };
+}
+function resize(){ W=window.innerWidth; H=window.innerHeight; c.width=Math.floor(W*DPR); c.height=Math.floor(H*DPR); buildGrain(); render(); }
+window.addEventListener('resize', resize);
+layout(); buildGrain(); buildUI(); resize();
+</script>
+</body>
+</html>
