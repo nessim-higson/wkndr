@@ -53,6 +53,7 @@ export class AurasRenderer implements LookRenderer {
   private grainTile: CanvasPattern | null = null
   private L!: Layout
 
+  private seed = P.seed
   private rng = mulberry32(1)
   private rr = (a: number, b: number) => a + this.rng() * (b - a)
 
@@ -72,6 +73,12 @@ export class AurasRenderer implements LookRenderer {
 
   setMode(mode: Mode) {
     this.mode = modeToKey(mode, { sun: 'sun', wind: 'wind', cloud: 'cloud', rain: 'rain', storm: 'storm' })
+    this.render()
+  }
+
+  reroll() {
+    this.seed = (Math.random() * 1e6) >>> 0   // a fresh seeded composition
+    this.layout()
     this.render()
   }
 
@@ -98,7 +105,7 @@ export class AurasRenderer implements LookRenderer {
 
   // ---- seeded per-weather layout (positions/sizes; t animates only) ----
   private layout() {
-    const rng = this.rng = mulberry32(P.seed >>> 0)
+    const rng = this.rng = mulberry32(this.seed >>> 0)
     const rr = this.rr
     const veils: Veil[] = []; for (let i = 0; i < 3; i++) veils.push({ x: rr(0.12, 0.88), y: rr(0, 1), sp: rr(0.7, 1.3) })
     const streams: Stream[] = []; const ns = 3 + (rng() < 0.5 ? 1 : 0)

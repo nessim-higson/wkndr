@@ -12,6 +12,8 @@ export interface LookRenderer {
   resize(): void
   /** cancel RAF, remove canvas, free GL */
   destroy(): void
+  /** re-seed the generative composition (seeded looks only; no-op/absent otherwise) */
+  reroll?(): void
 }
 
 // shared WKNDR Mode → source weather-key mapping helper. Each source names its keys

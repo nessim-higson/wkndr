@@ -44,7 +44,10 @@ const DEV = import.meta.env.DEV
  * uses the original low-res FieldEngine, and the four ported looks each mount their
  * own LookRenderer (own canvas) into the `.field` container.
  */
-export function AmbientField({ mode, look, onLookChange }: { mode: Mode; look: Look; onLookChange?: (l: Look) => void }) {
+// looks with a seeded generative composition that can be re-rolled
+const SEEDED: Look[] = ['auras', 'riso', 'forms']
+
+export function AmbientField({ mode, look, onLookChange, rerollNonce }: { mode: Mode; look: Look; onLookChange?: (l: Look) => void; rerollNonce?: number }) {
   const [stats, setStats] = useState<FieldStats | null>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const engineRef = useRef<FieldEngine | null>(null)
@@ -83,6 +86,11 @@ export function AmbientField({ mode, look, onLookChange }: { mode: Mode; look: L
     rendererRef.current?.setMode(mode)
   }, [mode])
 
+  // reroll the seeded composition when the nonce bumps (driven by the field picker's ⟳ button)
+  useEffect(() => {
+    if (rerollNonce) rendererRef.current?.reroll?.()
+  }, [rerollNonce])
+
   return (
     <>
       {look === 'off' ? (
@@ -101,6 +109,9 @@ export function AmbientField({ mode, look, onLookChange }: { mode: Mode; look: L
             {LOOKS.map((l) => (
               <button key={l} className={l === look ? 'on' : ''} onClick={() => onLookChange?.(l)}>{LOOK_LABEL[l]}</button>
             ))}
+            {SEEDED.includes(look) && (
+              <button onClick={() => rendererRef.current?.reroll?.()} title="New seed">⟳</button>
+            )}
           </div>
           <div className="field-dev-stats">
             {look === 'off' ? 'CSS gradient · 0 canvas cost'

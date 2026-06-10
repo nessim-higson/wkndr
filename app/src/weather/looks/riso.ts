@@ -50,6 +50,7 @@ export class RisoRenderer implements LookRenderer {
   private reduced = false
   private grainTile: HTMLCanvasElement | null = null
 
+  private seed = P.seed
   private rng = mulberry32(1)
   private rr = (a: number, b: number) => a + this.rng() * (b - a)
   private pick = <T,>(arr: T[]): T => arr[(this.rng() * arr.length) | 0]
@@ -69,6 +70,11 @@ export class RisoRenderer implements LookRenderer {
 
   setMode(mode: Mode) {
     this.mode = modeToKey(mode, { sun: 'sun', wind: 'wind', cloud: 'cloud', rain: 'rain', storm: 'storm' })
+    this.render()
+  }
+
+  reroll() {
+    this.seed = (Math.random() * 1e6) >>> 0   // new poster grid + arcs + motif layout
     this.render()
   }
 
@@ -318,7 +324,7 @@ export class RisoRenderer implements LookRenderer {
   }
 
   private compose() {
-    this.rng = mulberry32(P.seed >>> 0)
+    this.rng = mulberry32(this.seed >>> 0)
     const m = MODES[this.mode]
     this.comp.width = this.c.width; this.comp.height = this.c.height
     const g = this.cctx; g.setTransform(this.DPR, 0, 0, this.DPR, 0, 0); g.clearRect(0, 0, this.W, this.H)
@@ -343,7 +349,7 @@ export class RisoRenderer implements LookRenderer {
     ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, this.c.width, this.c.height)
     ctx.drawImage(this.comp, 0, 0)
     ctx.setTransform(this.DPR, 0, 0, this.DPR, 0, 0)
-    this.rng = mulberry32((P.seed >>> 0) ^ 0x9e3779b9)
+    this.rng = mulberry32((this.seed >>> 0) ^ 0x9e3779b9)
     this.sig(ctx, m, t)
     ctx.setTransform(1, 0, 0, 1, 0, 0)
     if (P.grain > 0.01 && this.grainTile) {

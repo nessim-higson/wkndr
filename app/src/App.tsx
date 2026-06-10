@@ -108,6 +108,8 @@ const FIELD_OPTS: { key: Look; label: string }[] = [
   { key: 'agradient', label: 'A Gradient' },
   { key: 'off', label: 'CSS' },
 ]
+// the seeded looks expose a "Randomize" button (A Gradient is a continuous shader — no seed)
+const SEEDED_FIELDS: Look[] = ['auras', 'riso', 'forms']
 
 export default function App() {
   const [mode, setMode] = useState<Mode>('HOT')
@@ -163,6 +165,7 @@ export default function App() {
     const s = localStorage.getItem('wkndr.field') as Look
     return FIELD_OPTS.some((o) => o.key === s) ? s : 'silk'
   })
+  const [fieldReroll, setFieldReroll] = useState(0)   // bump → reroll the seeded field's composition
   const [barOpen, setBarOpen] = useState(false)            // command bar expanded?
   const [savesOpen, setSavesOpen] = useState(false)        // the persistent saves dock peek
   const [dockPop, setDockPop] = useState(false)            // brief pulse when a save lands in the counter
@@ -488,7 +491,7 @@ export default function App() {
 
   return (
     <>
-      <AmbientField mode={mode} look={look} onLookChange={setLook} />
+      <AmbientField mode={mode} look={look} onLookChange={setLook} rerollNonce={fieldReroll} />
 
       <AnimatePresence>
         {intro && <Intro lead={SHARED_FROM ? `${SHARED_FROM} shared some picks.` : undefined} showHint={visits <= 3} onDone={() => setIntro(false)} />}
@@ -656,6 +659,11 @@ export default function App() {
                           </button>
                         ))}
                       </div>
+                      {SEEDED_FIELDS.includes(look) && (
+                        <button className="bar-pill" style={{ marginTop: 8 }} onClick={() => setFieldReroll((n) => n + 1)}>
+                          <Shuffle size={14} strokeWidth={2.2} /> Randomize
+                        </button>
+                      )}
                     </div>
 
                     <button className="bar-foot" onClick={() => { setInputsOpen(true); setBarOpen(false) }}>

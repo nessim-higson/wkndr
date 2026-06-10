@@ -85,6 +85,7 @@ export class FormsRenderer implements LookRenderer {
   private grainTile: CanvasPattern | null = null
   private forms: Form[] = []
 
+  private seed = P.seed
   private rng = mulberry32(1)
   private rr = (a: number, b: number) => a + this.rng() * (b - a)
   private pick = <T,>(arr: T[]): T => arr[(this.rng() * arr.length) | 0]
@@ -103,6 +104,11 @@ export class FormsRenderer implements LookRenderer {
 
   setMode(mode: Mode) {
     this.mode = modeToKey(mode, { sun: 'sun', wind: 'wind', cloud: 'cloud', rain: 'rain', storm: 'storm' })
+    this.render()
+  }
+
+  reroll() {
+    this.seed = (Math.random() * 1e6) >>> 0   // a fresh set of forms
     this.render()
   }
 
@@ -260,7 +266,7 @@ export class FormsRenderer implements LookRenderer {
 
   private draw(t: number) {
     const ctx = this.ctx, W = this.W, H = this.H
-    this.rng = mulberry32(P.seed >>> 0)
+    this.rng = mulberry32(this.seed >>> 0)
     const m = MODES[this.mode]
     this.forms = this.buildForms(m)
     ctx.setTransform(this.DPR, 0, 0, this.DPR, 0, 0)
