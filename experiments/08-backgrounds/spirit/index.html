@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<title>WKNDR · weather spirits</title>
+<style>
+  :root { --ui: #e9e6df; --ui-dim: #8c897f; --panel: rgba(18,17,15,.82); }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #0d0c0b;
+    font-family: ui-sans-serif, system-ui, -apple-system, "Helvetica Neue", sans-serif; }
+  canvas { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+  #panel {
+    position: fixed; top: 14px; left: 14px; width: 232px; z-index: 10;
+    background: var(--panel); backdrop-filter: blur(14px) saturate(1.2);
+    border: 1px solid rgba(255,255,255,.08); border-radius: 14px; padding: 14px 14px 16px; color: var(--ui);
+    font-size: 11px; line-height: 1.3; user-select: none; box-shadow: 0 12px 40px rgba(0,0,0,.5); max-height: calc(100vh - 28px); overflow-y: auto;
+  }
+  #panel h1 { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; margin: 0 0 2px; font-weight: 600; }
+  #panel .sub { color: var(--ui-dim); font-size: 10px; margin-bottom: 12px; }
+  .modes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-bottom: 8px; }
+  .modes button { appearance: none; border: 1px solid rgba(255,255,255,.12); background: transparent; color: var(--ui-dim); border-radius: 8px; padding: 7px 4px; font-size: 10px; cursor: pointer; transition: all .15s; }
+  .modes button:hover { color: var(--ui); border-color: rgba(255,255,255,.28); }
+  .modes button.on { background: var(--ui); color: #111; border-color: var(--ui); font-weight: 600; }
+  .why { color: var(--ui-dim); font-size: 10px; line-height: 1.4; margin: 0 0 14px; min-height: 26px; }
+  .row { margin-bottom: 11px; }
+  .row label { display: flex; justify-content: space-between; margin-bottom: 5px; color: var(--ui-dim); }
+  .row label .val { color: var(--ui); font-variant-numeric: tabular-nums; }
+  input[type=range] { -webkit-appearance: none; width: 100%; height: 3px; border-radius: 3px; background: rgba(255,255,255,.16); outline: none; }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 13px; height: 13px; border-radius: 50%; background: var(--ui); cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,.4); }
+  .foot { display: flex; gap: 6px; margin-top: 6px; }
+  .foot button { flex: 1; appearance: none; border: 1px solid rgba(255,255,255,.14); background: transparent; color: var(--ui); border-radius: 8px; padding: 8px 4px; font-size: 10px; cursor: pointer; }
+  .foot button:hover { background: rgba(255,255,255,.1); }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="panel">
+  <h1>Weather Spirits</h1>
+  <div class="sub">WKNDR · the weather, personified</div>
+  <div class="modes" id="modes"></div>
+  <div class="why" id="why"></div>
+  <div class="row"><label>Soft focus <span class="val" id="v-blur"></span></label>
+    <input type="range" id="s-blur" min="2" max="7" step="0.5"></div>
+  <div class="row"><label>Fireflies <span class="val" id="v-bokeh"></span></label>
+    <input type="range" id="s-bokeh" min="0" max="1.5" step="0.05"></div>
+  <div class="row"><label>Liveliness <span class="val" id="v-motion"></span></label>
+    <input type="range" id="s-motion" min="0" max="1.5" step="0.05"></div>
+  <div class="row"><label>Grain <span class="val" id="v-grain"></span></label>
+    <input type="range" id="s-grain" min="0" max="0.4" step="0.02"></div>
+  <div class="foot"><button id="reroll">Reroll</button><button id="save">Save PNG</button></div>
+</div>
+
+<script>
+const c = document.getElementById('c'); const ctx = c.getContext('2d');
+const buf = document.createElement('canvas'); const bx = buf.getContext('2d');
+let W, H, DPR = Math.min(2, window.devicePixelRatio||1);
+
+function mulberry32(a){ return function(){ a|=0; a=a+0x6D2B79F5|0; let t=Math.imul(a^a>>>15,1|a); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+let rng = mulberry32(1); const rr=(a,b)=>a+rng()*(b-a);
+function rgba(hex,a){ hex=hex.replace('#',''); const r=parseInt(hex.slice(0,2),16),g=parseInt(hex.slice(2,4),16),b=parseInt(hex.slice(4,6),16); return `rgba(${r},${g},${b},${a})`; }
+
+// ============================================================================
+//  Each weather = a spirit: palette, dreamy ground, a mood (face + motion).
+// ============================================================================
+const MODES = {
+  sun:   { label:'Sun',  why:'A bright, awake spirit — rosy and wide-eyed, bobbing happily with little wings.',
+           bg:['#ffd682','#f49a52','#e8718e'], body:['#ff9ec4','#ff85b0','#ffd0a0'], wing:'#ffe6c8', cheek:'#ff6f97', mouth:'#e23a1f', bokeh:'#fff4c4',
+           face:'open', wings:true, bob:0.02, sway:0.0, jitter:0 },
+  rain:  { label:'Rain', why:'A sleepy blue spirit — heavy-lidded and calm, drifting in the wet dark.',
+           bg:['#2e6e8c','#1d4e6b','#143a52'], body:['#9fc0ec','#9fb6d4','#c9d6ef'], wing:'#bfe0ef', cheek:'#e0899a', mouth:'#d6536c', bokeh:'#cfeaf6',
+           face:'half', wings:false, bob:0.012, sway:0.01, jitter:0 },
+  cloud: { label:'Cloud',why:'A dozing grey spirit — soft and half-asleep, barely stirring.',
+           bg:['#a6b4c0','#8593a3','#6f8090'], body:['#cdbfe0','#d3c8df','#e6ddee'], wing:'#e3e7ea', cheek:'#d49aae', mouth:'#b5566e', bokeh:'#f0f0e6',
+           face:'half', wings:false, bob:0.01, sway:0.012, jitter:0 },
+  wind:  { label:'Wind', why:'A breezy green spirit — wide awake and leaning, swept side to side.',
+           bg:['#5aa07a','#3f8c66','#2f6b52'], body:['#aed8a6','#cfe6b2','#ece6c8'], wing:'#e8efc8', cheek:'#e88f7a', mouth:'#c25a3a', bokeh:'#f2ec9c',
+           face:'open', wings:true, bob:0.018, sway:0.05, jitter:0 },
+  storm: { label:'Storm',why:'A startled violet spirit — eyes wide, mouth agape, trembling in the dark.',
+           bg:['#2a2150','#19143a','#0d0922'], body:['#b06cd8','#8a5fd0','#e86a8e'], wing:'#c9a8e8', cheek:'#e26a9c', mouth:'#ffd24a', bokeh:'#f6e45e',
+           face:'startled', wings:false, bob:0.02, sway:0.02, jitter:0.012 },
+  snow:  { label:'Snow', why:'A peaceful pale spirit — fast asleep, serene in the cold hush.',
+           bg:['#cfe0ef','#aec6e0','#9fb6d4'], body:['#eef3fb','#ddd2ee','#ffffff'], wing:'#ffffff', cheek:'#e7aebf', mouth:'#cf6f86', bokeh:'#ffffff',
+           face:'closed', wings:false, bob:0.008, sway:0.006, jitter:0 },
+};
+let mode = 'sun';
+const P = { blur:4, bokeh:0.6, motion:0.8, grain:0.12, seed:1 };
+
+// ---- fireflies (precomputed, drift + twinkle) ----
+let flies=[];
+function buildFlies(){
+  rng=mulberry32(P.seed>>>0); flies=[];
+  const n=Math.round(28*P.bokeh);
+  for(let i=0;i<n;i++) flies.push({ x:rng(), y:rng(), r:rr(0.004,0.02), ph:rr(0,6.28), sp:rr(0.6,1.6), drift:rr(0.01,0.03) });
+}
+function drawFlies(g, W2, H2, t, soft){
+  g.save(); g.globalCompositeOperation='lighter';
+  const m=MODES[mode], u=Math.min(W2,H2);
+  for(const f of flies){
+    const x=f.x*W2, y=((f.y - t*f.drift*0.04)%1+1)%1 * H2;
+    const tw=0.45+0.55*Math.sin(t*f.sp+f.ph);
+    const R=f.r*u*(soft?2.4:1.0);
+    const gr=g.createRadialGradient(x,y,0,x,y,R);
+    gr.addColorStop(0, rgba(m.bokeh, (soft?0.5:0.9)*tw)); gr.addColorStop(1, rgba(m.bokeh,0));
+    g.fillStyle=gr; g.beginPath(); g.arc(x,y,R,0,6.2832); g.fill();
+  }
+  g.restore();
+}
+
+// ---- soft blob helper ----
+function blob(g,x,y,r,col,a){
+  const gr=g.createRadialGradient(x,y,0,x,y,r);
+  gr.addColorStop(0,rgba(col,a)); gr.addColorStop(0.55,rgba(col,a*0.72)); gr.addColorStop(1,rgba(col,0));
+  g.fillStyle=gr; g.beginPath(); g.arc(x,y,r,0,6.2832); g.fill();
+}
+
+// pose shared by body (low-res) + face (full-res) so they line up
+function pose(W2,H2,t){
+  const m=MODES[mode], u=Math.min(W2,H2);
+  const jit = m.jitter ? Math.sin(t*9)*m.jitter + Math.cos(t*13)*m.jitter*0.6 : 0;
+  const sway = Math.sin(t*0.8)*m.sway + jit;
+  const bob = Math.cos(t*1.1)*m.bob;
+  const breathe = 1 + Math.sin(t*1.0)*0.02;
+  return { u, cx:W2*(0.5+sway), headY:H2*(0.40+bob), bodyY:H2*(0.66+bob), s:breathe };
+}
+
+function drawBody(g, W2, H2, t){
+  const m=MODES[mode], p=pose(W2,H2,t), u=p.u*p.s;
+  if (m.wings){ blob(g, p.cx-u*0.36, p.bodyY-u*0.14, u*0.22, m.wing, 0.7); blob(g, p.cx+u*0.36, p.bodyY-u*0.14, u*0.22, m.wing, 0.7); }
+  blob(g, p.cx, p.bodyY, u*0.38, m.body[0], 0.92);          // body
+  blob(g, p.cx, p.bodyY+u*0.06, u*0.26, m.body[2], 0.6);    // warm belly
+  blob(g, p.cx, p.headY, u*0.31, m.body[1], 0.94);          // head
+  blob(g, p.cx-u*0.21, p.headY-u*0.2, u*0.13, m.body[1], 0.9);  // ears
+  blob(g, p.cx+u*0.21, p.headY-u*0.2, u*0.13, m.body[1], 0.9);
+}
+
+function drawFace(g, W2, H2, t){
+  const m=MODES[mode], p=pose(W2,H2,t), u=p.u*p.s, hx=p.cx, hy=p.headY+u*0.02;
+  const eg=u*0.135, ey=hy, ink='#3a2b3a';
+  // cheeks (soft, under)
+  blob(g, hx-eg*1.5, ey+u*0.09, u*0.085, m.cheek, 0.55); blob(g, hx+eg*1.5, ey+u*0.09, u*0.085, m.cheek, 0.55);
+  // blink (awake/startled blink periodically; sleeping/half stay shut-ish)
+  const cyc=(t*0.22)%1; const blink=(cyc<0.045)?0.12:1;
+  for(const dx of [-1,1]){
+    const ex=hx+dx*eg;
+    if(m.face==='open' || m.face==='startled'){
+      const er = m.face==='startled' ? u*0.062 : u*0.05;
+      g.fillStyle=ink; g.beginPath(); g.ellipse(ex,ey,er*0.92,er*blink,0,0,6.2832); g.fill();
+      if(blink>0.5){ g.fillStyle='rgba(255,255,255,0.92)'; g.beginPath(); g.arc(ex-er*0.32,ey-er*0.4,er*0.3,0,6.2832); g.fill(); }
+    } else if(m.face==='half'){
+      g.strokeStyle=ink; g.lineWidth=u*0.018; g.lineCap='round';
+      g.beginPath(); g.arc(ex,ey+u*0.01,u*0.052,Math.PI*1.08,Math.PI*1.92); g.stroke();   // heavy lid
+    } else { // closed (sleeping): downward lash arc
+      g.strokeStyle=ink; g.lineWidth=u*0.015; g.lineCap='round';
+      g.beginPath(); g.arc(ex,ey-u*0.01,u*0.05,Math.PI*0.12,Math.PI*0.88); g.stroke();
+    }
+  }
+  // mouth
+  g.fillStyle=rgba(m.mouth,0.92);
+  if(m.face==='startled'){ g.beginPath(); g.ellipse(hx,hy+u*0.13,u*0.022,u*0.04,0,0,6.2832); g.fill(); }
+  else if(m.face==='open'){ g.beginPath(); g.ellipse(hx,hy+u*0.12,u*0.016,u*0.026,0,0,6.2832); g.fill(); }
+  else { g.beginPath(); g.ellipse(hx,hy+u*0.11,u*0.014,u*0.012,0,0,6.2832); g.fill(); }
+}
+
+// ---- grain ----
+let grainTile=null;
+function buildGrain(){ const s=200,t=document.createElement('canvas');t.width=s;t.height=s;const p=t.getContext('2d'),img=p.createImageData(s,s),d=img.data;
+  for(let i=0;i<d.length;i+=4){const v=128+(Math.random()-0.5)*255;d[i]=d[i+1]=d[i+2]=v;d[i+3]=255;} p.putImageData(img,0,0); grainTile=ctx.createPattern(t,'repeat'); }
+
+function draw(t){
+  const m=MODES[mode], D=P.blur;
+  const bw=Math.max(2,Math.floor(c.width/D)), bh=Math.max(2,Math.floor(c.height/D));
+  if(buf.width!==bw||buf.height!==bh){ buf.width=bw; buf.height=bh; }
+  // dreamy ground + soft fireflies + spirit, all low-res (upscaled = soft focus)
+  const bg=bx.createLinearGradient(0,0,0,bh); m.bg.forEach((s,i)=>bg.addColorStop(i/(m.bg.length-1),s));
+  bx.globalCompositeOperation='source-over'; bx.fillStyle=bg; bx.fillRect(0,0,bw,bh);
+  drawFlies(bx, bw, bh, t, true);
+  drawBody(bx, bw, bh, t);
+  // composite upscaled
+  ctx.setTransform(1,0,0,1,0,0); ctx.clearRect(0,0,c.width,c.height);
+  ctx.imageSmoothingEnabled=true; ctx.imageSmoothingQuality='high';
+  ctx.drawImage(buf,0,0,c.width,c.height);
+  // face + a few crisp sparkles at full res
+  drawFace(ctx, c.width, c.height, t);
+  drawFlies(ctx, c.width, c.height, t, false);
+  // grain
+  if(P.grain>0.005 && grainTile){ ctx.save(); ctx.globalCompositeOperation='overlay'; ctx.globalAlpha=P.grain; ctx.fillStyle=grainTile; ctx.fillRect(0,0,c.width,c.height); ctx.restore(); }
+}
+
+let raf=0, t0=performance.now();
+function loop(){ const t=(performance.now()-t0)/1000*P.motion; draw(t); raf=requestAnimationFrame(loop); }
+function render(){ cancelAnimationFrame(raf); if(P.motion>0.001) loop(); else draw(0); }
+
+// ---- UI ----
+function buildUI(){
+  const mc=document.getElementById('modes');
+  Object.keys(MODES).forEach(k=>{ const b=document.createElement('button'); b.textContent=MODES[k].label; b.className=k===mode?'on':'';
+    b.onclick=()=>{ mode=k; [...mc.children].forEach(x=>x.classList.remove('on')); b.classList.add('on'); document.getElementById('why').textContent=MODES[k].why; render(); }; mc.appendChild(b); });
+  document.getElementById('why').textContent=MODES[mode].why;
+  const bind=(id,key,fmt)=>{ const el=document.getElementById('s-'+id), v=document.getElementById('v-'+id); el.value=P[key]; v.textContent=fmt(P[key]);
+    el.oninput=()=>{ P[key]=parseFloat(el.value); v.textContent=fmt(P[key]); if(key==='bokeh') buildFlies(); render(); }; };
+  bind('blur','blur',x=>x.toFixed(1));
+  bind('bokeh','bokeh',x=>(x*100|0)+'%');
+  bind('motion','motion',x=>x===0?'still':(x*100|0)+'%');
+  bind('grain','grain',x=>(x*100|0)+'%');
+  document.getElementById('reroll').onclick=()=>{ P.seed=Math.floor(Math.random()*1e6); buildFlies(); render(); };
+  document.getElementById('save').onclick=()=>{ draw(0); const a=document.createElement('a'); a.download=`wkndr-spirit-${mode}.png`; a.href=c.toDataURL('image/png'); a.click(); };
+}
+function resize(){ W=window.innerWidth; H=window.innerHeight; c.width=Math.floor(W*DPR); c.height=Math.floor(H*DPR); buildGrain(); render(); }
+window.addEventListener('resize', resize);
+buildFlies(); buildGrain(); buildUI(); resize();
+</script>
+</body>
+</html>
