@@ -117,6 +117,8 @@ export default function App() {
   const [toast, setToast] = useState<{ text: string; save?: boolean } | null>(null)
   // the last stack swipe, kept briefly so it can be UNDONE (Norman: error recovery)
   const [undoable, setUndoable] = useState<{ pick: Pick; dir: SwipeDir; wasSaved: boolean } | null>(null)
+  const [undoShown, setUndoShown] = useState(false)   // surfaces only after you PAUSE — never mid-flurry
+  const undoTimer = useRef<number | null>(null)
   // one-time swipe coaching — the 4 directions aren't obvious (up=save, down=skip)
   const [hintDone, setHintDone] = useState(() => localStorage.getItem('wkndr.swipehint') === '1')
   const dismissHint = () => { setHintDone(true); localStorage.setItem('wkndr.swipehint', '1') }
@@ -238,12 +240,14 @@ export default function App() {
     return () => clearTimeout(id)
   }, [toast])
 
-  // the Undo affordance lingers ~5s after a swipe, then fades
+  // the Undo affordance only appears once you PAUSE (a fast swipe streak keeps resetting the
+  // settle timer in handleStackSwipe, so it never pops up to fight you) — then lingers ~5s.
   useEffect(() => {
-    if (!undoable) return
-    const id = setTimeout(() => setUndoable(null), 5000)
+    if (!undoShown) return
+    const id = setTimeout(() => { setUndoable(null); setUndoShown(false) }, 5000)
     return () => clearTimeout(id)
-  }, [undoable])
+  }, [undoShown])
+  useEffect(() => () => { if (undoTimer.current) clearTimeout(undoTimer.current) }, [])
 
   // pulse the persistent saves counter whenever a new save lands in it (the toast's
   // sibling moment — the saved item visibly "arrives" in the dock)
@@ -350,7 +354,12 @@ export default function App() {
       setSaved((s) => new Set(s).add(p.id))   // the header counter turns orange + bumps — that's the confirmation
     }
     setTaste((t) => applySwipe(t, p, dir))   // every swipe teaches it
-    setUndoable({ pick: p, dir, wasSaved })  // offer a brief take-back
+    setUndoable({ pick: p, dir, wasSaved })  // offer a brief take-back…
+    // …but defer showing it: each swipe resets a settle timer, so the bar only appears once you
+    // stop (no entrance animation mid-flurry to stutter the next fling).
+    setUndoShown(false)
+    if (undoTimer.current) clearTimeout(undoTimer.current)
+    undoTimer.current = window.setTimeout(() => setUndoShown(true), 600)
     if (!hintDone) dismissHint()             // they've got it — retire the coaching
   }
   // bring the last-swiped card back to the top (un-swipe → it re-enters the ranked deck
@@ -363,6 +372,8 @@ export default function App() {
       setSaved((s) => { const n = new Set(s); n.delete(pick.id); return n })
     }
     setUndoable(null)
+    setUndoShown(false)
+    if (undoTimer.current) clearTimeout(undoTimer.current)
     haptic(8)
   }
   function handleListToggle(p: Pick, dir: SwipeDir) {
@@ -789,7 +800,7 @@ export default function App() {
           full-width anchor flex-centres the pill so framer's animated transform can't
           knock it off-centre. */}
       <AnimatePresence>
-        {undoable && view === 'stack' && !intro && !barOpen && !savesOpen && (
+        {undoable && undoShown && view === 'stack' && !intro && !barOpen && !savesOpen && (
           <motion.div
             key="undo"
             className="undo-anchor"

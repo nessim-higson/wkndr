@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, Sparkles, Heart } from 'lucide-react'
 import type { Pick, SwipeDir } from '../types'
@@ -101,11 +101,17 @@ function MatchSlam({
 }: { pick: Pick; partnerName: string; count: number; onDismiss: () => void }) {
   const initial = partnerName.charAt(0).toUpperCase()
   const collide = { type: 'spring' as const, stiffness: 260, damping: 13 }
+  // ARM DELAY — until the moment has fully composed, ignore taps. A queued tap from a fast swipe
+  // streak (meant for the deck) can otherwise dismiss the slam the instant it appears, so the
+  // match gets missed. ~700ms lets it land before any dismiss (incl. a stray backdrop tap) works.
+  const [armed, setArmed] = useState(false)
+  useEffect(() => { const id = setTimeout(() => setArmed(true), 700); return () => clearTimeout(id) }, [])
+  const dismiss = () => { if (armed) onDismiss() }
   return (
     <motion.div
       className="mg-slam"
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-      transition={{ duration: 0.2 }} onClick={onDismiss}
+      transition={{ duration: 0.2 }} onClick={dismiss}
     >
       <motion.div
         className="mg-slam-inner" onClick={(e) => e.stopPropagation()}
@@ -153,8 +159,8 @@ function MatchSlam({
         </motion.div>
 
         <motion.button
-          className="mg-slam-go" onClick={onDismiss}
-          initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.62 }}
+          className="mg-slam-go" onClick={dismiss}
+          initial={{ opacity: 0 }} animate={{ opacity: armed ? 1 : 0.5 }} transition={{ delay: 0.5 }}
         >Keep swiping{count > 1 ? ` · ${count} matched` : ''}</motion.button>
       </motion.div>
     </motion.div>
