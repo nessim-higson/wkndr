@@ -2,7 +2,7 @@
 // gradient + lens/rim/sheen. UI removed; default P values fixed; weather driven by
 // setMode(). Owns its own WebGL canvas (kept separate from the 2D looks).
 import type { Mode } from '../../types'
-import { modeToKey, type LookRenderer } from './types'
+import { modeToKey, type LookParam, type LookRenderer } from './types'
 
 type WKey = 'sunny' | 'overcast' | 'rain' | 'wind' | 'storm' | 'snow'
 
@@ -15,7 +15,17 @@ const MODES: Record<WKey, { label: string; cols: string[] }> = {
   snow: { label: 'Snow', cols: ['#a5f3fc', '#c4b5fd', '#fbcfe8', '#e0f2fe', '#ddd6fe'] },
 }
 
-const P = { speed: 0.7, soft: 0.3, travel: 0.36, warp: 0.13, depth: 0.68, sheen: 0.45, rim: 0.85, radius: 0.16, frame: true }
+const DEFAULTS = { speed: 0.7, soft: 0.3, travel: 0.36, warp: 0.13, depth: 0.68, sheen: 0.45, rim: 0.85, radius: 0.16, frame: true }
+
+const KNOBS: Omit<LookParam, 'value'>[] = [
+  { key: 'speed', label: 'Speed', min: 0, max: 1.5, step: 0.05 },
+  { key: 'travel', label: 'Travel', min: 0.05, max: 0.6, step: 0.01 },
+  { key: 'warp', label: 'Warp', min: 0, max: 0.4, step: 0.01 },
+  { key: 'soft', label: 'Softness', min: 0.1, max: 0.9, step: 0.02 },
+  { key: 'sheen', label: 'Sheen', min: 0, max: 1, step: 0.05 },
+  { key: 'rim', label: 'Rim', min: 0, max: 1.5, step: 0.05 },
+  { key: 'depth', label: 'Depth', min: 0, max: 1, step: 0.05 },
+]
 
 function hexRgb(h: string) {
   h = h.replace('#', '')
@@ -106,6 +116,13 @@ export class AGradientRenderer implements LookRenderer {
   private last = performance.now()
   private reduced = false
   private ctxLostHandler = (e: Event) => e.preventDefault()
+  private P = { ...DEFAULTS }
+
+  params(): LookParam[] { return KNOBS.map((k) => ({ ...k, value: this.P[k.key as 'speed'] })) }
+  setParam(key: string, value: number) {
+    this.P[key as 'speed'] = value
+    if (this.reduced || document.hidden) this.renderOnce()   // live loop picks it up next frame
+  }
 
   mount(host: HTMLElement, mode: Mode) {
     this.host = host
@@ -200,14 +217,14 @@ export class AGradientRenderer implements LookRenderer {
     const gl = this.gl!
     gl.uniform1f(this.U.uTime, this.simTime)
     gl.uniform2f(this.U.uRes, this.canvas.width, this.canvas.height)
-    gl.uniform1f(this.U.uSoft, P.soft)
-    gl.uniform1f(this.U.uTravel, P.travel)
-    gl.uniform1f(this.U.uWarp, P.warp)
-    gl.uniform1f(this.U.uDepth, P.depth)
-    gl.uniform1f(this.U.uSheen, P.sheen)
-    gl.uniform1f(this.U.uRim, P.rim)
-    gl.uniform1f(this.U.uRadius, P.radius)
-    gl.uniform1f(this.U.uFrame, P.frame ? 1 : 0)
+    gl.uniform1f(this.U.uSoft, this.P.soft)
+    gl.uniform1f(this.U.uTravel, this.P.travel)
+    gl.uniform1f(this.U.uWarp, this.P.warp)
+    gl.uniform1f(this.U.uDepth, this.P.depth)
+    gl.uniform1f(this.U.uSheen, this.P.sheen)
+    gl.uniform1f(this.U.uRim, this.P.rim)
+    gl.uniform1f(this.U.uRadius, this.P.radius)
+    gl.uniform1f(this.U.uFrame, this.P.frame ? 1 : 0)
   }
 
   private renderOnce() {
@@ -219,7 +236,7 @@ export class AGradientRenderer implements LookRenderer {
   private frame = (now: number) => {
     const gl = this.gl; if (!gl) return
     const dt = (now - this.last) / 1000; this.last = now
-    this.simTime += dt * P.speed
+    this.simTime += dt * this.P.speed
     this.setUniforms()
     gl.drawArrays(gl.TRIANGLES, 0, 3)
     this.raf = requestAnimationFrame(this.frame)

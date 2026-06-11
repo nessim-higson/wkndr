@@ -3,7 +3,7 @@ import type { Mode } from '../types'
 import { WeatherField } from './WeatherField'
 import { MODE_META } from './modes'
 import { FieldEngine, type Look, type FieldStats } from './ambientEngine'
-import type { LookRenderer } from './looks/types'
+import type { LookParam, LookRenderer } from './looks/types'
 import { AurasRenderer } from './looks/auras'
 import { RisoRenderer } from './looks/riso'
 import { FormsRenderer } from './looks/forms'
@@ -47,14 +47,29 @@ const DEV = import.meta.env.DEV
 // looks with a seeded generative composition that can be re-rolled
 const SEEDED: Look[] = ['auras', 'riso', 'forms']
 
+// the last-rolled seed sticks per look, so a favourite composition survives reload
+const seedKey = (l: Look) => `wkndr.field.seed.${l}`
+
 export function AmbientField({ mode, look, onLookChange, rerollNonce }: { mode: Mode; look: Look; onLookChange?: (l: Look) => void; rerollNonce?: number }) {
   const [stats, setStats] = useState<FieldStats | null>(null)
+  const [params, setParams] = useState<LookParam[] | null>(null)   // dev knobs of the active look
+  const [seed, setSeed] = useState<number | null>(null)
+  const [fps, setFps] = useState<number | null>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const engineRef = useRef<FieldEngine | null>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const rendererRef = useRef<LookRenderer | null>(null)
 
   const isPlugin = look in RENDERERS
+
+  // re-seed + persist, so the same composition is back on next launch
+  const reroll = () => {
+    const r = rendererRef.current
+    if (!r?.reroll) return
+    r.reroll()
+    const s = r.getSeed?.()
+    if (s != null) { localStorage.setItem(seedKey(look), String(s)); setSeed(s) }
+  }
 
   // mount the FieldEngine for `silk` (skipped for `off` and the plugin looks)
   useEffect(() => {
@@ -75,9 +90,25 @@ export function AmbientField({ mode, look, onLookChange, rerollNonce }: { mode: 
     const renderer = RENDERERS[look]!()
     rendererRef.current = renderer
     renderer.mount(containerRef.current, mode)
+    const stored = Number(localStorage.getItem(seedKey(look)))
+    if (stored && renderer.setSeed) renderer.setSeed(stored)   // restore the locked favourite
+    setSeed(renderer.getSeed?.() ?? null)
+    setParams(renderer.params?.() ?? null)
     const fit = () => renderer.resize()
     window.addEventListener('resize', fit)
-    return () => { window.removeEventListener('resize', fit); renderer.destroy(); rendererRef.current = null }
+    return () => {
+      window.removeEventListener('resize', fit)
+      renderer.destroy(); rendererRef.current = null
+      setSeed(null); setParams(null)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [look])
+
+  // dev-panel fps readout for the frame-capped looks
+  useEffect(() => {
+    if (!DEV || !isPlugin) { setFps(null); return }
+    const id = setInterval(() => setFps(rendererRef.current?.fps?.() ?? null), 500)
+    return () => { clearInterval(id); setFps(null) }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [look])
 
@@ -86,9 +117,10 @@ export function AmbientField({ mode, look, onLookChange, rerollNonce }: { mode: 
     rendererRef.current?.setMode(mode)
   }, [mode])
 
-  // reroll the seeded composition when the nonce bumps (driven by the field picker's ⟳ button)
+  // reroll the seeded composition when the nonce bumps (driven by the settings-bar Randomize)
   useEffect(() => {
-    if (rerollNonce) rendererRef.current?.reroll?.()
+    if (rerollNonce) reroll()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rerollNonce])
 
   return (
@@ -110,13 +142,31 @@ export function AmbientField({ mode, look, onLookChange, rerollNonce }: { mode: 
               <button key={l} className={l === look ? 'on' : ''} onClick={() => onLookChange?.(l)}>{LOOK_LABEL[l]}</button>
             ))}
             {SEEDED.includes(look) && (
-              <button onClick={() => rendererRef.current?.reroll?.()} title="New seed">⟳</button>
+              <button onClick={reroll} title="New seed">⟳</button>
             )}
           </div>
+          {params && params.length > 0 && (
+            <div className="field-dev-knobs">
+              {params.map((p) => (
+                <label key={p.key}>
+                  <span>{p.label}</span>
+                  <input
+                    type="range" min={p.min} max={p.max} step={p.step} value={p.value}
+                    onChange={(e) => {
+                      const v = Number(e.target.value)
+                      rendererRef.current?.setParam?.(p.key, v)
+                      setParams((ps) => ps && ps.map((q) => (q.key === p.key ? { ...q, value: v } : q)))
+                    }}
+                  />
+                  <em>{Math.round(p.value * 100) / 100}</em>
+                </label>
+              ))}
+            </div>
+          )}
           <div className="field-dev-stats">
             {look === 'off' ? 'CSS gradient · 0 canvas cost'
               : look === 'silk' ? (stats ? `${stats.fps} fps · ${stats.ms}ms/frame · ${stats.res} buf` : '…')
-              : LOOK_LABEL[look]}
+              : [fps != null ? `${fps} fps` : null, seed != null ? `seed ${seed}` : null].filter(Boolean).join(' · ') || LOOK_LABEL[look]}
           </div>
         </div>
       )}

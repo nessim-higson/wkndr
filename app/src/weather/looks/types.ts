@@ -14,6 +14,45 @@ export interface LookRenderer {
   destroy(): void
   /** re-seed the generative composition (seeded looks only; no-op/absent otherwise) */
   reroll?(): void
+  /** current seed of the generative composition (seeded looks only) */
+  getSeed?(): number
+  /** restore a specific seed — recomposes deterministically (seeded looks only) */
+  setSeed?(seed: number): void
+  /** the look's tunable knobs, rendered as sliders in the dev panel */
+  params?(): LookParam[]
+  setParam?(key: string, value: number): void
+  /** measured draw rate (frame-capped looks only) */
+  fps?(): number
+}
+
+// a tunable knob the dev panel renders as a slider
+export interface LookParam {
+  key: string
+  label: string
+  min: number
+  max: number
+  step: number
+  value: number
+}
+
+// ~30fps frame gate for the canvas-2D looks — the ambient layer must never outdraw
+// the swipe deck (same budget as Silk's FieldEngine). Call tick() each RAF; draw
+// only when it returns true.
+export class FrameCap {
+  private acc = 0
+  private last = 0
+  private ema = 33.4
+  tick(now: number): boolean {
+    if (!this.last) { this.last = now; return true }
+    this.acc += now - this.last
+    this.last = now
+    if (this.acc < 33) return false
+    this.ema = this.ema * 0.9 + this.acc * 0.1
+    this.acc = 0
+    return true
+  }
+  get fps() { return Math.round(1000 / this.ema) }
+  reset() { this.acc = 0; this.last = 0 }
 }
 
 // shared WKNDR Mode → source weather-key mapping helper. Each source names its keys

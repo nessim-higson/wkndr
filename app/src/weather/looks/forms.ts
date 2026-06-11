@@ -2,7 +2,7 @@
 // shapes w/ blend modes. UI removed; default P values fixed; weather driven by
 // setMode(); fixed seed (1).
 import type { Mode } from '../../types'
-import { modeToKey, type LookRenderer } from './types'
+import { FrameCap, modeToKey, type LookParam, type LookRenderer } from './types'
 
 type WKey = 'sun' | 'rain' | 'cloud' | 'wind' | 'storm' | 'snow'
 type Ctx = CanvasRenderingContext2D
@@ -69,7 +69,15 @@ interface Form {
   lobes?: number[][]; amp?: number; freq?: number; freq2?: number; phase?: number; bandH?: number
 }
 
-const P = { shapes: 3, soft: 0.5, half: 0.4, grain: 0.35, motion: 0.7, seed: 1 }
+const DEFAULTS = { shapes: 3, soft: 0.5, half: 0.4, grain: 0.35, motion: 0.7, seed: 1 }
+
+const KNOBS: Omit<LookParam, 'value'>[] = [
+  { key: 'shapes', label: 'Shapes', min: 1, max: 8, step: 1 },
+  { key: 'soft', label: 'Softness', min: 0, max: 1, step: 0.05 },
+  { key: 'half', label: 'Halftone', min: 0, max: 1, step: 0.05 },
+  { key: 'grain', label: 'Grain', min: 0, max: 1, step: 0.05 },
+  { key: 'motion', label: 'Motion', min: 0, max: 1.5, step: 0.05 },
+]
 
 export class FormsRenderer implements LookRenderer {
   private host!: HTMLElement
@@ -84,8 +92,10 @@ export class FormsRenderer implements LookRenderer {
   private halftone: CanvasPattern | null = null
   private grainTile: CanvasPattern | null = null
   private forms: Form[] = []
+  private cap = new FrameCap()
+  private P = { ...DEFAULTS }
 
-  private seed = P.seed
+  private seed = DEFAULTS.seed
   private rng = mulberry32(1)
   private rr = (a: number, b: number) => a + this.rng() * (b - a)
   private pick = <T,>(arr: T[]): T => arr[(this.rng() * arr.length) | 0]
@@ -112,10 +122,18 @@ export class FormsRenderer implements LookRenderer {
     this.render()
   }
 
+  getSeed() { return this.seed }
+  setSeed(seed: number) { this.seed = seed >>> 0; this.render() }
+
+  params(): LookParam[] { return KNOBS.map((k) => ({ ...k, value: this.P[k.key as 'shapes'] })) }
+  setParam(key: string, value: number) { this.P[key as 'shapes'] = value; this.render() }
+  fps() { return this.cap.fps }
+
   resize() {
     this.DPR = Math.min(1.5, window.devicePixelRatio || 1)
-    this.W = this.host.clientWidth || window.innerWidth
-    this.H = this.host.clientHeight || window.innerHeight
+    // the window can still be 0-sized at boot — never size the canvas to 0
+    this.W = this.host.clientWidth || window.innerWidth || 640
+    this.H = this.host.clientHeight || window.innerHeight || 640
     this.c.width = Math.floor(this.W * this.DPR); this.c.height = Math.floor(this.H * this.DPR)
     this.buildHalftone(); this.buildGrain()
     this.render()
@@ -146,7 +164,7 @@ export class FormsRenderer implements LookRenderer {
 
   private buildForms(m: ModeDef): Form[] {
     const rng = this.rng, rr = this.rr, pick = this.pick
-    const N = Math.max(1, Math.round(P.shapes * (m.countMul || 1))), out: Form[] = []
+    const N = Math.max(1, Math.round(this.P.shapes * (m.countMul || 1))), out: Form[] = []
     for (let i = 0; i < N; i++) {
       const p = this.place(m.place, i, N), type = pick(m.shapes)
       const s: Form = {
@@ -200,14 +218,14 @@ export class FormsRenderer implements LookRenderer {
     ctx.save()
     ctx.globalCompositeOperation = blend
     if (s.type === 'blob') {
-      const R = r * (1.0 + P.soft * 0.5) * (1 + 0.1 * Math.sin(tt * 0.9 + s.dphase))
+      const R = r * (1.0 + this.P.soft * 0.5) * (1 + 0.1 * Math.sin(tt * 0.9 + s.dphase))
       const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, R)
       g.addColorStop(0, rgba(s.cols[0], 1)); g.addColorStop(0.5, rgba(s.cols[1], 0.92)); g.addColorStop(1, rgba(s.cols[1], 0))
       ctx.fillStyle = g; ctx.beginPath(); ctx.arc(cx, cy, R, 0, 6.2832); ctx.fill()
     } else if (s.type === 'cloud') {
       for (const lo of s.lobes!) {
         const lx = cx + (lo[0] + Math.sin(tt * 0.5 + lo[3]) * 0.2) * r, ly = cy + (lo[1] + Math.cos(tt * 0.43 + lo[3]) * 0.13) * r
-        const lr = lo[2] * r * (1 + P.soft * 0.4) * (1 + 0.13 * Math.sin(tt * 0.62 + lo[3]))
+        const lr = lo[2] * r * (1 + this.P.soft * 0.4) * (1 + 0.13 * Math.sin(tt * 0.62 + lo[3]))
         const g = ctx.createRadialGradient(lx, ly, 0, lx, ly, lr)
         g.addColorStop(0, rgba(s.cols[0], 0.8)); g.addColorStop(0.5, rgba(s.cols[1], 0.5)); g.addColorStop(1, rgba(s.cols[1], 0))
         ctx.fillStyle = g; ctx.beginPath(); ctx.arc(lx, ly, lr, 0, 6.2832); ctx.fill()
@@ -229,8 +247,8 @@ export class FormsRenderer implements LookRenderer {
       const g = ctx.createLinearGradient(-dx, -dy, dx, dy)
       g.addColorStop(0, s.cols[0]); g.addColorStop(0.5, s.cols[1]); g.addColorStop(1, s.cols[2])
       ctx.fillStyle = g; ctx.fillRect(-r * 1.8, -r * 1.8, r * 3.6, r * 3.6)
-      if (P.half > 0.01 && s.ht && this.halftone) {
-        ctx.globalCompositeOperation = 'multiply'; ctx.globalAlpha = P.half * 0.55
+      if (this.P.half > 0.01 && s.ht && this.halftone) {
+        ctx.globalCompositeOperation = 'multiply'; ctx.globalAlpha = this.P.half * 0.55
         ctx.fillStyle = this.halftone; ctx.fillRect(-r * 1.8, -r * 1.8, r * 3.6, r * 3.6); ctx.globalAlpha = 1
       }
     }
@@ -240,7 +258,7 @@ export class FormsRenderer implements LookRenderer {
   private drawRainLines(m: ModeDef, t: number) {
     const ctx = this.ctx, rng = this.rng, rr = this.rr, pick = this.pick, W = this.W, H = this.H
     ctx.globalCompositeOperation = 'multiply'
-    const n = Math.round(20 + P.shapes * 6)
+    const n = Math.round(20 + this.P.shapes * 6)
     for (let i = 0; i < n; i++) {
       const x = rng() * W, dotted = rng() < 0.5
       ctx.strokeStyle = rgba(pick(m.cols), rr(0.12, 0.35)); ctx.lineWidth = rr(0.6, 1.4) * this.DPR
@@ -275,7 +293,7 @@ export class FormsRenderer implements LookRenderer {
     for (const s of this.forms) this.drawForm(s, t, m)
     if (m.rainLines) this.drawRainLines(m, t)
     ctx.globalCompositeOperation = 'overlay'
-    if (P.grain > 0.01 && this.grainTile) { ctx.globalAlpha = P.grain * 0.85; ctx.fillStyle = this.grainTile; ctx.fillRect(0, 0, W, H); ctx.globalAlpha = 1 }
+    if (this.P.grain > 0.01 && this.grainTile) { ctx.globalAlpha = this.P.grain * 0.85; ctx.fillStyle = this.grainTile; ctx.fillRect(0, 0, W, H); ctx.globalAlpha = 1 }
     ctx.globalCompositeOperation = 'source-over'
     const g = ctx.createRadialGradient(W / 2, H * 0.45, Math.min(W, H) * 0.25, W / 2, H * 0.5, Math.max(W, H) * 0.8)
     g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(20,18,15,0.06)')
@@ -283,13 +301,15 @@ export class FormsRenderer implements LookRenderer {
   }
 
   private loop = () => {
-    const t = (performance.now() - this.t0) / 1000 * P.motion
-    this.draw(t)
     this.raf = requestAnimationFrame(this.loop)
+    const now = performance.now()
+    if (!this.cap.tick(now)) return   // ~30fps — never outdraw the swipe deck
+    this.draw((now - this.t0) / 1000 * this.P.motion)
   }
   private render() {
     cancelAnimationFrame(this.raf)
+    this.cap.reset()
     if (this.reduced || document.hidden) { this.draw(0); return }
-    if (P.motion > 0.001) this.loop(); else this.draw(0)
+    if (this.P.motion > 0.001) this.loop(); else this.draw(0)
   }
 }

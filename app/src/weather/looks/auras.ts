@@ -2,7 +2,7 @@
 // radial-gradient "orb / ringOrb" compositions per weather. UI removed; default P
 // values are fixed constants; weather driven by setMode(); fixed seed (1).
 import type { Mode } from '../../types'
-import { modeToKey, type LookRenderer } from './types'
+import { FrameCap, modeToKey, type LookParam, type LookRenderer } from './types'
 
 type WKey = 'sun' | 'rain' | 'cloud' | 'wind' | 'storm' | 'snow'
 
@@ -38,7 +38,13 @@ interface Layout {
   snow: { ax: number; ay: number; bx: number; by: number; wx: number; wy: number }
 }
 
-const P = { scale: 1, motion: 0.6, grain: 0.12, seed: 1 }
+const DEFAULTS = { scale: 1, motion: 0.6, grain: 0.12, seed: 1 }
+
+const KNOBS: Omit<LookParam, 'value'>[] = [
+  { key: 'scale', label: 'Scale', min: 0.6, max: 1.6, step: 0.05 },
+  { key: 'motion', label: 'Motion', min: 0, max: 1.5, step: 0.05 },
+  { key: 'grain', label: 'Grain', min: 0, max: 0.4, step: 0.02 },
+]
 
 export class AurasRenderer implements LookRenderer {
   private host!: HTMLElement
@@ -52,8 +58,10 @@ export class AurasRenderer implements LookRenderer {
   private reduced = false
   private grainTile: CanvasPattern | null = null
   private L!: Layout
+  private cap = new FrameCap()
+  private P = { ...DEFAULTS }
 
-  private seed = P.seed
+  private seed = DEFAULTS.seed
   private rng = mulberry32(1)
   private rr = (a: number, b: number) => a + this.rng() * (b - a)
 
@@ -82,10 +90,18 @@ export class AurasRenderer implements LookRenderer {
     this.render()
   }
 
+  getSeed() { return this.seed }
+  setSeed(seed: number) { this.seed = seed >>> 0; this.layout(); this.render() }
+
+  params(): LookParam[] { return KNOBS.map((k) => ({ ...k, value: this.P[k.key as 'scale'] })) }
+  setParam(key: string, value: number) { this.P[key as 'scale'] = value; this.render() }
+  fps() { return this.cap.fps }
+
   resize() {
     this.DPR = Math.min(1.5, window.devicePixelRatio || 1)
-    this.W = this.host.clientWidth || window.innerWidth
-    this.H = this.host.clientHeight || window.innerHeight
+    // the window can still be 0-sized at boot — never size the canvas to 0
+    this.W = this.host.clientWidth || window.innerWidth || 640
+    this.H = this.host.clientHeight || window.innerHeight || 640
     this.c.width = Math.floor(this.W * this.DPR)
     this.c.height = Math.floor(this.H * this.DPR)
     this.buildGrain()
@@ -161,7 +177,7 @@ export class AurasRenderer implements LookRenderer {
     const ctx = this.ctx, W = this.W, H = this.H, L = this.L
     switch (this.mode) {
       case 'sun': {
-        const s = L.sun, u = Math.min(W, H) * P.scale
+        const s = L.sun, u = Math.min(W, H) * this.P.scale
         this.bgFill('#a9cde9', '#c2dcee')
         const cx = W * s.cx, cy = H * s.cy, R = u * s.r
         const breathe = 1 + 0.015 * Math.sin(t * 0.6)
@@ -176,7 +192,7 @@ export class AurasRenderer implements LookRenderer {
         break
       }
       case 'rain': {
-        const s = L.rain, u = Math.min(W, H) * P.scale
+        const s = L.rain, u = Math.min(W, H) * this.P.scale
         this.bgFill('#6d8aa6', '#33506b')
         for (const v of s.veils) {
           const y = ((((v.y + t * 0.03 * v.sp) % 1.4) + 1.4) % 1.4 - 0.2) * H
@@ -188,7 +204,7 @@ export class AurasRenderer implements LookRenderer {
         break
       }
       case 'cloud': {
-        const s = L.cloud, u = Math.min(W, H) * P.scale
+        const s = L.cloud, u = Math.min(W, H) * this.P.scale
         this.bgFill('#e9e8e3', '#d4d7da')
         const glow = 1 + 0.025 * Math.sin(t * 0.4)
         const cx = W * (s.cx + s.lean * Math.sin(t * 0.15)), cy = H * s.cy
@@ -198,7 +214,7 @@ export class AurasRenderer implements LookRenderer {
         break
       }
       case 'wind': {
-        const s = L.wind, u = Math.min(W, H) * P.scale
+        const s = L.wind, u = Math.min(W, H) * this.P.scale
         this.bgFill('#c9dcc4', '#e9efdd')
         for (const k of s.streams) {
           const x = ((((k.x + t * 0.035 * k.sp) % 1.6) + 1.6) % 1.6 - 0.3) * W
@@ -207,7 +223,7 @@ export class AurasRenderer implements LookRenderer {
         break
       }
       case 'storm': {
-        const s = L.storm, u = Math.min(W, H) * P.scale
+        const s = L.storm, u = Math.min(W, H) * this.P.scale
         this.bgFill('#241c48', '#0d0922')
         this.orb(ctx, W * s.fcx, H * s.fcy + H * 0.02 * Math.sin(t * 0.3), u * 0.85, '#3a2c6e', 0.5, 0.1)
         this.orb(ctx, W * (s.fcx - 0.05), H * (s.fcy + 0.5), u * 0.7, '#1f4458', 0.45, 0.1)
@@ -232,7 +248,7 @@ export class AurasRenderer implements LookRenderer {
         break
       }
       case 'snow': {
-        const s = L.snow, u = Math.min(W, H) * P.scale
+        const s = L.snow, u = Math.min(W, H) * this.P.scale
         this.bgFill('#eef2f7', '#dde7f0')
         const breath = 1 + 0.008 * Math.sin(t * 0.35)
         this.orb(ctx, W * s.bx, H * s.by, u * 0.95, '#7fa8d0', 0.5, 0.05)
@@ -257,20 +273,22 @@ export class AurasRenderer implements LookRenderer {
     ctx.setTransform(this.DPR, 0, 0, this.DPR, 0, 0)
     ctx.globalCompositeOperation = 'source-over'
     this.weather(t)
-    if (P.grain > 0.005 && this.grainTile) {
-      ctx.save(); ctx.globalCompositeOperation = 'overlay'; ctx.globalAlpha = P.grain
+    if (this.P.grain > 0.005 && this.grainTile) {
+      ctx.save(); ctx.globalCompositeOperation = 'overlay'; ctx.globalAlpha = this.P.grain
       ctx.fillStyle = this.grainTile; ctx.fillRect(0, 0, this.W, this.H); ctx.restore()
     }
   }
 
   private loop = () => {
-    const t = (performance.now() - this.t0) / 1000 * P.motion
-    this.draw(t)
     this.raf = requestAnimationFrame(this.loop)
+    const now = performance.now()
+    if (!this.cap.tick(now)) return   // ~30fps — never outdraw the swipe deck
+    this.draw((now - this.t0) / 1000 * this.P.motion)
   }
   private render() {
     cancelAnimationFrame(this.raf)
+    this.cap.reset()
     if (this.reduced || document.hidden) { this.draw(0); return }
-    if (P.motion > 0.001) this.loop(); else this.draw(0)
+    if (this.P.motion > 0.001) this.loop(); else this.draw(0)
   }
 }

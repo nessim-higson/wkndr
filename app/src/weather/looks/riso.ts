@@ -2,7 +2,7 @@
 // arcs + a per-weather signature motif. UI removed; default P values fixed; weather
 // driven by setMode(); fixed seed (1); variants fixed at default 0.
 import type { Mode } from '../../types'
-import { modeToKey, type LookRenderer } from './types'
+import { FrameCap, modeToKey, type LookParam, type LookRenderer } from './types'
 
 type WKey = 'sun' | 'rain' | 'cloud' | 'wind' | 'storm' | 'snow'
 type Ctx = CanvasRenderingContext2D
@@ -33,8 +33,15 @@ const MODES: Record<WKey, ModeDef> = {
   snow: { label: 'Snow', bg: ['#cfe0ef', '#e6eef6', '#f6f9fc'], cols: ['#b8cbe0', '#d4e0ee', '#eef4fa', '#ffffff'], lines: ['#ffffff', '#9fb6d4'], motif: 'rings' },
 }
 
-const P = { density: 1, grain: 0.5, motion: 0.6, timeOfDay: 0.5, shimmer: false, seed: 1 }
+const DEFAULTS = { density: 1, grain: 0.5, motion: 0.6, timeOfDay: 0.5, shimmer: false, seed: 1 }
 const VAR = { wind: 0, storm: 0 }   // fixed at default (no reroll/variant in app)
+
+const KNOBS: Omit<LookParam, 'value'>[] = [
+  { key: 'density', label: 'Density', min: 0.4, max: 2, step: 0.05 },
+  { key: 'grain', label: 'Grain', min: 0, max: 1, step: 0.05 },
+  { key: 'motion', label: 'Motion', min: 0, max: 1.5, step: 0.05 },
+  { key: 'timeOfDay', label: 'Time of day', min: 0, max: 1, step: 0.01 },
+]
 
 export class RisoRenderer implements LookRenderer {
   private host!: HTMLElement
@@ -49,8 +56,10 @@ export class RisoRenderer implements LookRenderer {
   private t0 = performance.now()
   private reduced = false
   private grainTile: HTMLCanvasElement | null = null
+  private cap = new FrameCap()
+  private P = { ...DEFAULTS }
 
-  private seed = P.seed
+  private seed = DEFAULTS.seed
   private rng = mulberry32(1)
   private rr = (a: number, b: number) => a + this.rng() * (b - a)
   private pick = <T,>(arr: T[]): T => arr[(this.rng() * arr.length) | 0]
@@ -78,10 +87,18 @@ export class RisoRenderer implements LookRenderer {
     this.render()
   }
 
+  getSeed() { return this.seed }
+  setSeed(seed: number) { this.seed = seed >>> 0; this.render() }
+
+  params(): LookParam[] { return KNOBS.map((k) => ({ ...k, value: this.P[k.key as 'density'] })) }
+  setParam(key: string, value: number) { this.P[key as 'density'] = value; this.render() }
+  fps() { return this.cap.fps }
+
   resize() {
     this.DPR = Math.min(1.5, window.devicePixelRatio || 1)
-    this.W = this.host.clientWidth || window.innerWidth
-    this.H = this.host.clientHeight || window.innerHeight
+    // the window can still be 0-sized at boot — a 0-width comp canvas makes drawImage throw
+    this.W = this.host.clientWidth || window.innerWidth || 640
+    this.H = this.host.clientHeight || window.innerHeight || 640
     this.c.width = Math.floor(this.W * this.DPR); this.c.height = Math.floor(this.H * this.DPR)
     this.buildGrain()
     this.render()
@@ -109,7 +126,7 @@ export class RisoRenderer implements LookRenderer {
     const nCols = 2 + (rng() < 0.55 ? 1 : 0)
     const xs = this.edges(nCols, W)
     for (let i = 0; i < nCols; i++) {
-      const nRows = 1 + ((rng() * 3 * P.density) | 0) % 3
+      const nRows = 1 + ((rng() * 3 * this.P.density) | 0) % 3
       const ys = this.edges(Math.max(1, nRows), H)
       for (let j = 0; j < ys.length - 1; j++) {
         const x0 = xs[i], y0 = ys[j], x1 = xs[i + 1], y1 = ys[j + 1], w = x1 - x0, h = y1 - y0
@@ -147,7 +164,7 @@ export class RisoRenderer implements LookRenderer {
   // ---- wind variants ----
   private windCurves(g: Ctx, m: ModeDef, t: number) {
     const rng = this.rng, rr = this.rr, W = this.W, H = this.H
-    const n = Math.round((3 + rng() * 2) * P.density) + 2; g.lineCap = 'round'; g.setLineDash([])
+    const n = Math.round((3 + rng() * 2) * this.P.density) + 2; g.lineCap = 'round'; g.setLineDash([])
     for (let i = 0; i < n; i++) {
       const baseY = rr(0.1, 0.9) * H, ph = i * 1.3, off = (rng() < 0.5 ? 0 : 0.025) * H
       const bow = (rr(-0.26, 0.26) + 0.09 * Math.sin(t * 0.6 + ph)) * H, updown = rr(-0.12, 0.12) * H
@@ -158,7 +175,7 @@ export class RisoRenderer implements LookRenderer {
   }
   private windFlecks(g: Ctx, m: ModeDef, t: number) {
     const rng = this.rng, rr = this.rr, W = this.W, H = this.H
-    const lanes = Math.round((5 + rng() * 4) * P.density) + 2; g.lineCap = 'round'
+    const lanes = Math.round((5 + rng() * 4) * this.P.density) + 2; g.lineCap = 'round'
     for (let i = 0; i < lanes; i++) {
       const baseY = rr(0.06, 0.94) * H, ph = i * 1.1, bow = (rr(-0.2, 0.2) + 0.06 * Math.sin(t * 0.5 + ph)) * H
       g.setLineDash([rr(2, 5) * this.DPR, rr(10, 26) * this.DPR])
@@ -171,7 +188,7 @@ export class RisoRenderer implements LookRenderer {
   }
   private windStreaks(g: Ctx, m: ModeDef, t: number) {
     const rng = this.rng, rr = this.rr, W = this.W, H = this.H
-    const n = Math.round((5 + rng() * 4) * P.density) + 2
+    const n = Math.round((5 + rng() * 4) * this.P.density) + 2
     for (let i = 0; i < n; i++) {
       const y = rr(0.05, 0.95) * H, lw = rr(4, 12) * this.DPR, lean = rr(-0.05, 0.05) * H
       const drift = (((t * 0.08 + rng()) % 1.5) - 0.25) * W, x0 = -0.25 * W + drift, len = rr(0.5, 1.0) * W
@@ -187,7 +204,7 @@ export class RisoRenderer implements LookRenderer {
   private stormShards(g: Ctx, m: ModeDef, t: number) {
     const rng = this.rng, rr = this.rr, pick = this.pick, W = this.W, H = this.H
     g.save(); g.filter = `blur(${H * 0.045}px)`
-    const mn = 3 + ((rng() * 3 * P.density) | 0)
+    const mn = 3 + ((rng() * 3 * this.P.density) | 0)
     for (let i = 0; i < mn; i++) {
       g.fillStyle = col(m.cols[0], rr(0.25, 0.5))
       const jx = Math.sin(t * 0.8 + i * 2) * 0.03 * W, jy = Math.cos(t * 0.6 + i) * 0.022 * H
@@ -198,7 +215,7 @@ export class RisoRenderer implements LookRenderer {
     g.save(); g.filter = `blur(${W * 0.012}px)`
     const grad = g.createLinearGradient(0, 0, 0, H); grad.addColorStop(0, col('#e63320', 0.85)); grad.addColorStop(0.5, col('#e63320', 0.3)); grad.addColorStop(1, col('#e63320', 0.6))
     g.fillStyle = grad; g.fillRect(sx + Math.sin(t * 1.1) * 0.01 * W, 0, sw, H); g.restore()
-    const sh = 5 + ((rng() * 4 * P.density) | 0); g.lineCap = 'round'
+    const sh = 5 + ((rng() * 4 * this.P.density) | 0); g.lineCap = 'round'
     const SC = [m.lines[0], m.lines[1], '#e63320', '#8a7fb0']
     for (let s = 0; s < sh; s++) {
       const cx = rng() * W, cy = rng() * H, ang = rng() * 3.1416 + 0.18 * Math.sin(t * 2.2 + s * 3), len = rr(0.3, 1.0) * H, jit = Math.sin(t * 3 + s) * 5 * this.DPR
@@ -229,7 +246,7 @@ export class RisoRenderer implements LookRenderer {
       g.beginPath(); g.ellipse(rng() * W + Math.sin(t * 0.7 + i) * 0.03 * W, rng() * H, rr(0.2, 0.45) * W, rr(0.1, 0.22) * H, 0, 0, 6.2832); g.fill()
     }
     g.restore()
-    const slices = Math.round((8 + rng() * 9) * P.density)
+    const slices = Math.round((8 + rng() * 9) * this.P.density)
     for (let i = 0; i < slices; i++) {
       const sy = rng() * (H - 10), sh = rr(0.008, 0.045) * H, off = (rr(-0.1, 0.1) + Math.sin(t * 2.2 + i * 1.7) * 0.045) * W
       g.globalAlpha = rr(0.55, 0.95)
@@ -254,7 +271,7 @@ export class RisoRenderer implements LookRenderer {
     const rng = this.rng, rr = this.rr, pick = this.pick, W = this.W, H = this.H
     switch (m.motif) {
       case 'glow': {
-        const a = ((P.timeOfDay + t * 0.02) % 1 + 1) % 1
+        const a = ((this.P.timeOfDay + t * 0.02) % 1 + 1) % 1
         const cx = (0.12 + a * 0.76) * W, cy = (0.58 - Math.sin(a * Math.PI) * 0.44) * H, R = rr(0.18, 0.28) * Math.min(W, H)
         const breathe = 1 + 0.09 * Math.sin(t * 1.1)
         g.save(); g.globalCompositeOperation = 'lighter'
@@ -267,14 +284,14 @@ export class RisoRenderer implements LookRenderer {
       }
       case 'streaks': {
         const fade = m.bg[m.bg.length - 1]
-        const wn = 2 + ((rng() * 2 * P.density) | 0)
+        const wn = 2 + ((rng() * 2 * this.P.density) | 0)
         for (let i = 0; i < wn; i++) {
           const x = rng() * W, w = rr(0.04, 0.11) * W, top = rr(-0.1, 0.1) * H, len = rr(0.7, 1.15) * H
           g.save(); g.filter = `blur(${Math.max(2, w * 0.4)}px)`
           const grad = g.createLinearGradient(0, top, 0, top + len); grad.addColorStop(0, col(pick(m.cols), rr(0.32, 0.55))); grad.addColorStop(1, col(fade, 0))
           g.fillStyle = grad; g.fillRect(x, top, w, len); g.restore()
         }
-        const n = Math.round((16 + rng() * 16) * P.density)
+        const n = Math.round((16 + rng() * 16) * this.P.density)
         for (let i = 0; i < n; i++) {
           const x = rng() * W, dotted = rng() < 0.55
           g.strokeStyle = col(rng() < 0.35 ? m.lines[1] : m.lines[0], rr(0.18, 0.5)); g.lineWidth = rr(0.6, 1.5) * this.DPR
@@ -285,7 +302,7 @@ export class RisoRenderer implements LookRenderer {
         break
       }
       case 'bands': {
-        const n = Math.round((3 + rng() * 3) * P.density) + 1
+        const n = Math.round((3 + rng() * 3) * this.P.density) + 1
         for (let i = 0; i < n; i++) {
           const y = rr(0.05, 0.92) * H, h = rr(0.05, 0.16) * H, dx = Math.sin(t * 0.18 + i * 1.3) * 0.05 * W
           g.save(); g.filter = `blur(${H * rr(0.02, 0.04)}px)`
@@ -306,7 +323,7 @@ export class RisoRenderer implements LookRenderer {
         break
       }
       case 'rings': {
-        const n = Math.round((9 + rng() * 9) * P.density)
+        const n = Math.round((9 + rng() * 9) * this.P.density)
         for (let i = 0; i < n; i++) {
           const x = rng() * W, baseY = rng() * (H + 120) - 60, rad = rr(5, 30) * this.DPR
           const speed = (10 + rad * 0.7)
@@ -345,6 +362,7 @@ export class RisoRenderer implements LookRenderer {
   }
 
   private present(t: number) {
+    if (!this.comp.width || !this.comp.height) return   // drawImage throws on a 0-sized source
     const ctx = this.ctx, m = MODES[this.mode]
     ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, this.c.width, this.c.height)
     ctx.drawImage(this.comp, 0, 0)
@@ -352,13 +370,13 @@ export class RisoRenderer implements LookRenderer {
     this.rng = mulberry32((this.seed >>> 0) ^ 0x9e3779b9)
     this.sig(ctx, m, t)
     ctx.setTransform(1, 0, 0, 1, 0, 0)
-    if (P.grain > 0.01 && this.grainTile) {
-      ctx.save(); ctx.globalCompositeOperation = 'overlay'; ctx.globalAlpha = P.grain * 0.9
+    if (this.P.grain > 0.01 && this.grainTile) {
+      ctx.save(); ctx.globalCompositeOperation = 'overlay'; ctx.globalAlpha = this.P.grain * 0.9
       const pat = ctx.createPattern(this.grainTile, 'repeat')!
-      const ox = P.shimmer ? (Math.random() * 240 | 0) : 0, oy = P.shimmer ? (Math.random() * 240 | 0) : 0
+      const ox = this.P.shimmer ? (Math.random() * 240 | 0) : 0, oy = this.P.shimmer ? (Math.random() * 240 | 0) : 0
       ctx.translate(-ox, -oy); ctx.fillStyle = pat; ctx.fillRect(ox, oy, this.c.width, this.c.height); ctx.restore()
     }
-    const td = P.timeOfDay
+    const td = this.P.timeOfDay
     ctx.setTransform(1, 0, 0, 1, 0, 0)
     if (td < 0.48) { ctx.globalAlpha = (0.48 - td) / 0.48 * 0.42; ctx.fillStyle = '#eef2f7'; ctx.fillRect(0, 0, this.c.width, this.c.height) }
     else if (td > 0.52) { ctx.globalAlpha = (td - 0.52) / 0.48 * 0.6; ctx.fillStyle = '#14101f'; ctx.fillRect(0, 0, this.c.width, this.c.height) }
@@ -366,14 +384,16 @@ export class RisoRenderer implements LookRenderer {
   }
 
   private loop = () => {
-    const t = (performance.now() - this.t0) / 1000 * P.motion
-    this.present(t)
     this.raf = requestAnimationFrame(this.loop)
+    const now = performance.now()
+    if (!this.cap.tick(now)) return   // ~30fps — never outdraw the swipe deck
+    this.present((now - this.t0) / 1000 * this.P.motion)
   }
   private render() {
     this.compose()
     cancelAnimationFrame(this.raf)
+    this.cap.reset()
     if (this.reduced || document.hidden) { this.present(0); return }
-    if (P.motion > 0.001 || P.shimmer) this.loop(); else this.present(0)
+    if (this.P.motion > 0.001 || this.P.shimmer) this.loop(); else this.present(0)
   }
 }

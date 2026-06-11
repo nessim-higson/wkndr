@@ -32,11 +32,14 @@ bottom for history._
   card copy, multi-category pipeline.
 
 ## Open — near-term polish
-- **Background looks** — pick a keeper / default (or keep switchable). Expose the prototypes'
-  knobs (Riso/Forms had density, grain, time-of-day sliders). Lock favourite seeds. The one soft
+- **Background looks** — pick a keeper / default (or keep switchable). The one soft
   palette seam is **Cool → cloud** (calm grey vs WKNDR's crisp teal Cool) — leave or crisp it
-  (verified the rest of the weather→look mapping is sound). **Perf:** Riso/Forms run full-rate
-  (no 30fps cap like Silk's FieldEngine) — add a cap if the swipe deck ever hitches on old phones.
+  (verified the rest of the weather→look mapping is sound). ✅ V.4.7 shipped the mechanics:
+  every look's knobs are dev-panel sliders (Riso density/grain/motion/time-of-day, Forms
+  shapes/softness/halftone/grain/motion, Auras scale/motion/grain, A Gradient's 7 shader
+  uniforms), the last-rolled seed persists per look (favourite compositions survive reload;
+  seed shown in dev stats), and the 2D looks are capped at ~30fps like Silk. When favourite
+  slider values are found, bake them into the look's `DEFAULTS`.
 - **Matching — symmetric round** — today the partner only reacts to the planner's list (every yes =
   overlap). Next: blend a few of the partner's OWN picks (from the full weather-filtered feed) into
   their deck and round-trip those back so the planner swipes them too. The "Send the plan" return
