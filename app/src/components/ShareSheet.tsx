@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import type { Mode, Pick } from '../types'
 import { MODE_META } from '../weather/modes'
+import { shareLink } from '../lib/share'
 import './ShareSheet.css'
 
 function cover(mode: Mode): string {
@@ -28,9 +29,9 @@ export function ShareSheet({
     setName(clean)
     localStorage.setItem('wkndr.name', clean)
   }
-  // …?w=ids&from=Name → the recipient lands on the Stack greeted "<name> shared some picks"
-  const link = `${location.origin}${location.pathname}?w=${picks.map((p) => p.id).join(',')}`
-    + (name.trim() ? `&from=${encodeURIComponent(name.trim())}` : '')
+  // …?w=codes&from=Name → the recipient lands greeted "<name> shared some picks".
+  // Short stable codes (lib/share.ts), not raw ids — ~90 chars for 10 picks, not 400+.
+  const link = shareLink(picks, name)
 
   function copy() {
     navigator.clipboard?.writeText(link).then(() => {

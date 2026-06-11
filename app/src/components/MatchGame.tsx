@@ -4,6 +4,7 @@ import { X, Sparkles, Heart } from 'lucide-react'
 import type { Pick, SwipeDir, Mode } from '../types'
 import { CATEGORY_LABEL } from '../types'
 import { SwipeStack } from './SwipeStack'
+import { shareLink } from '../lib/share'
 import './MatchGame.css'
 
 // PROTOTYPE — the swipe-to-match slice. Reuses the real SwipeStack physics; the "partner" is
@@ -225,8 +226,7 @@ function MatchPlan({
   // both agreed on (from your name, stored when you last shared).
   function shareBack() {
     const me = (localStorage.getItem('wkndr.name') || '').trim()
-    const url = `${location.origin}${location.pathname}?w=${matched.map((p) => p.id).join(',')}`
-      + (me ? `&from=${encodeURIComponent(me)}` : '')
+    const url = shareLink(matched, me)
     const data = { title: 'WKNDR — our match', text: `${n} we both want to do`, url }
     if (navigator.share) { navigator.share(data).catch(() => {}); return }
     navigator.clipboard?.writeText(url).then(() => { setSent(true); setTimeout(() => setSent(false), 1800) })

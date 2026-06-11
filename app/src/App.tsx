@@ -38,6 +38,7 @@ const TEMP_TINT: Record<Mode, string> = {
 }
 import { CATEGORY_LABEL, type Category } from './types'
 import { fixWhen, whenDayGroup, whenSortKey, whenTime } from './lib/when'
+import { inShared } from './lib/share'
 import {
   type Taste, applySwipe, hasTaste, loadSaved, loadTaste, persistSaved, persistTaste,
 } from './taste'
@@ -139,10 +140,6 @@ export default function App() {
   const [seed, setSeed] = useState(0)            // 0 = forecast order; bumped by Refresh
   const [dealKey, setDealKey] = useState(0)      // bump → stack re-deals (refresh signal)
   const [matching, setMatching] = useState(false)   // match-mode overlay
-  // a shared link (?w=ids&from=Name) IS a match invite — the sender's picks are the partner's yes-set
-  const [matchPartner] = useState<{ name: string; ids: string[] } | null>(
-    SHARED_IDS ? { name: SHARED_FROM || 'A friend', ids: [...SHARED_IDS] } : null,
-  )
   const matchLaunched = useRef(false)
   const [detail, setDetail] = useState<Pick | null>(null)  // open card detail
   // where the detail should expand FROM (the tapped card's on-screen rect) — App Store style.
@@ -187,6 +184,17 @@ export default function App() {
   const cityPicks = useMemo(
     () => rawPicks.map((p) => (p.when ? { ...p, when: fixWhen(p.when) } : p)),
     [rawPicks],
+  )
+  // resolve the share-link tokens (short codes, or legacy full ids) against the ACTIVE pool —
+  // everything downstream (filter, save-all, match deck) works in real pick ids
+  const sharedPickIds = useMemo(
+    () => (SHARED_IDS ? new Set(cityPicks.filter((p) => inShared(p, SHARED_IDS)).map((p) => p.id)) : null),
+    [cityPicks],
+  )
+  // a shared link (?w=codes&from=Name) IS a match invite — the sender's picks are the partner's yes-set
+  const matchPartner = useMemo<{ name: string; ids: string[] } | null>(
+    () => (SHARED_IDS ? { name: SHARED_FROM || 'A friend', ids: sharedPickIds ? [...sharedPickIds] : [] } : null),
+    [sharedPickIds],
   )
   const feedAt = feeds[city.key]?.generatedAt ?? null
 
@@ -302,7 +310,7 @@ export default function App() {
           : p.freshness === w
       const filtered = rankedAll.filter((p) => {
         if (filter === 'saved') return saved.has(p.id)
-        if (filter === 'shared') return !!SHARED_IDS?.has(p.id)
+        if (filter === 'shared') return !!sharedPickIds?.has(p.id)
         // browse: multi-select category + when (empty set = no constraint; selections are a UNION)
         const whatOk = cats.length === 0 || cats.some((c) => (c === 'kids' ? p.kid : p.category === c))
         const whenOk = whens.length === 0 || whens.some((w) => matchesWhen(p, w))
@@ -321,7 +329,7 @@ export default function App() {
       const sample = [...ever, ...ever].slice(start, start + RESERVE)
       return [...fresh, ...sample]
     },
-    [rankedAll, filter, cats, whens, saved, seed],
+    [rankedAll, filter, cats, whens, saved, seed, sharedPickIds],
   )
   const filterActive = filter !== 'all' || cats.length > 0 || whens.length > 0
   const deck = useMemo(() => shown.filter((p) => !swiped.has(p.id)), [shown, swiped])
@@ -756,9 +764,9 @@ export default function App() {
         )}
         {filter === 'shared' && SHARED_IDS && (
           <div className="ctx-bar shared">
-            <span>💌 {SHARED_FROM || 'A friend'} shared {SHARED_IDS.size} picks</span>
+            <span>💌 {SHARED_FROM || 'A friend'} shared {sharedPickIds?.size || SHARED_IDS.size} picks</span>
             <button className="ctx-match" onClick={() => setMatching(true)}><Heart size={13} strokeWidth={2.6} fill="currentColor" /> Match</button>
-            <button onClick={() => setSaved((s) => new Set([...s, ...SHARED_IDS]))}>Save all</button>
+            <button onClick={() => setSaved((s) => new Set([...s, ...(sharedPickIds ?? [])]))}>Save all</button>
           </div>
         )}
         {/* Share nudge — appears once you've saved enough to be worth planning together (and not
