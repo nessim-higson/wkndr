@@ -6,8 +6,8 @@ bottom for history._
 
 ## Where we are
 - **Live build: V.4.6** — https://nessim-higson.github.io/wkndr/
-- Versioning: `V.<major>.<sub>`, the sub rolls at `.9` → next whole version (`bun run bump`).
-  Whole versions are git milestone tags (`v1.0.0` … `v4.0`).
+- Versioning: `V.<major>.<sub>`, the sub rolls at `.19` → next whole version (`bun run bump`;
+  was `.9` through V.4.7). Whole versions are git milestone tags (`v1.0.0` … `v4.0`).
 - Feed: ~100 Amsterdam picks; evergreen library ~84 (classic / bespoke tiers). Monday refresh
   cron + buzz-ranking pipeline. New evergreen are injected into `public/data/picks.amsterdam.json`.
 
