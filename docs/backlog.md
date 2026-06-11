@@ -32,6 +32,9 @@ bottom for history._
   card copy, multi-category pipeline.
 
 ## Open — near-term polish
+- **Share-link fragility** — a `?w=ids` link silently breaks when the Monday refresh rotates the
+  feed's ids (V.4.8 added an honest "these picks have moved on" state, but the durable fix is
+  stable pick ids across refreshes — key them on venue+title, not the crawl row).
 - **Background looks** — pick a keeper / default (or keep switchable). The one soft
   palette seam is **Cool → cloud** (calm grey vs WKNDR's crisp teal Cool) — leave or crisp it
   (verified the rest of the weather→look mapping is sound). ✅ V.4.7 shipped the mechanics:

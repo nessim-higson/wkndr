@@ -51,14 +51,17 @@ export const MODE_META: Record<Mode, ModeMeta> = {
  * Rule-based classifier (thresholds from engine/weather-engine.ts).
  * Temperature gates the cold bucket — "wet" alone never means "cold". A warm rainy
  * day is changeable (VOLATILE: "keep a rain layer in the bag"), not COLD_WET.
+ * HEAT leads the swing rule: hot climates swing 9–10° between night and day EVERY day
+ * (New Orleans in June: 33°/23°), and that's just a hot day, not a volatile one —
+ * the old swing-first rule painted a 33° header on a stormy purple field.
  */
 export function classify(high: number, precipProb: number, swing: number): Mode {
-  if (swing >= 9) return 'VOLATILE'
   if (high < 10) return 'COLD_WET'                                  // genuinely cold
   if (precipProb > 65) return high < 16 ? 'COLD_WET' : 'VOLATILE'   // wet: cold→cold&wet, warm→changeable
-  if (high >= 24 && precipProb < 30) return 'HOT'
+  if (high >= 24) return 'HOT'                                      // heat leads — see note above
+  if (swing >= 9) return 'VOLATILE'                                 // a true can't-decide day
   if (high >= 16) return 'WARM'
-  if (high >= 10 && high <= 15) return 'COOL'
+  if (high >= 10) return 'COOL'
   return 'WARM'
 }
 

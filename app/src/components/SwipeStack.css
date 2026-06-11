@@ -42,7 +42,7 @@
      would make the card vanish mid-screen before it reaches the edge. Let it ride off. */
 }
 
-/* drag indicators */
+/* drag indicators (vertical directions only — left/right carry the stamps below) */
 .ind {
   position: absolute;
   top: 22px;
@@ -56,12 +56,30 @@
   border: 2.5px solid currentColor;
   pointer-events: none;
 }
-.ind-like { right: 22px; color: #2faa6a; transform: rotate(12deg); }
-.ind-nope { left: 22px; color: #d2402e; transform: rotate(-12deg); }
 .ind-save { left: 50%; transform: translateX(-50%); top: 22px; color: var(--accent); }
 .ind-skip { left: 50%; transform: translateX(-50%); top: auto; bottom: 120px; color: var(--ink-3); }
 
-/* full-card colour wash while dragging: red = dismiss (left), green = keep (right) */
+/* the commit STAMP — a large white ✓ / ✕ on a glass ring, centred on the card. Quiet
+   materials (frost, hairline ring, soft shadow); the colour comes from the tint below. */
+.stamp {
+  position: absolute;
+  top: 50%; left: 50%;
+  margin: -54px 0 0 -54px;
+  width: 108px; height: 108px;
+  z-index: 18;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #fff;
+  border: 1.5px solid rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 10px 44px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  pointer-events: none;
+}
+
+/* full-card colour wash while dragging — softened to a wash now that the stamp leads */
 .swipe-tint {
   position: absolute;
   inset: 0;
@@ -69,8 +87,8 @@
   border-radius: 22px;
   pointer-events: none;
 }
-.swipe-tint.red { background: linear-gradient(to bottom, #ec3b22 0%, rgba(236, 59, 34, 0.94) 52%, rgba(236, 59, 34, 0.6) 100%); }
-.swipe-tint.green { background: linear-gradient(to bottom, #16a85a 0%, rgba(22, 168, 90, 0.94) 52%, rgba(22, 168, 90, 0.6) 100%); }
+.swipe-tint.red { background: linear-gradient(to bottom, rgba(236, 59, 34, 0.86) 0%, rgba(236, 59, 34, 0.7) 52%, rgba(236, 59, 34, 0.42) 100%); }
+.swipe-tint.green { background: linear-gradient(to bottom, rgba(22, 168, 90, 0.86) 0%, rgba(22, 168, 90, 0.7) 52%, rgba(22, 168, 90, 0.42) 100%); }
 
 /* action buttons */
 .stack-actions {

@@ -1,4 +1,7 @@
-/* MATCH MODE — a focused full-screen swipe session that sits above the app. */
+/* MATCH MODE — a focused full-screen swipe session that sits above the app.
+   It used to paint solid paper over everything (the whole app went creme and the brand
+   vanished); now it's a frosted VEIL over the live weather field, so match mode still
+   visibly belongs to WKNDR — same world, just quieter. */
 .mg {
   position: fixed;
   inset: 0;
@@ -7,7 +10,18 @@
   flex-direction: column;
   background:
     radial-gradient(120% 80% at 50% -10%, rgba(255, 77, 31, 0.10), transparent 60%),
-    var(--paper);
+    linear-gradient(180deg, rgba(250, 248, 243, 0.8) 0%, rgba(250, 248, 243, 0.66) 100%);
+  backdrop-filter: blur(26px) saturate(1.15);
+  -webkit-backdrop-filter: blur(26px) saturate(1.15);
+}
+
+/* the wordmark — match mode stays branded */
+.mg-brand {
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: var(--ink-3);
 }
 
 /* ——— header ——— */

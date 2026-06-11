@@ -375,11 +375,12 @@ export default function App() {
     }
     setTaste((t) => applySwipe(t, p, dir))   // every swipe teaches it
     setUndoable({ pick: p, dir, wasSaved })  // offer a brief take-back…
-    // …but defer showing it: each swipe resets a settle timer, so the bar only appears once you
-    // stop (no entrance animation mid-flurry to stutter the next fling).
+    // …but defer showing it: each swipe resets a settle timer, so the pill only appears once
+    // you've genuinely STOPPED (1.1s — longer than any rapid-streak gap, so it never animates
+    // in/out between fast swipes and never stutters the next fling).
     setUndoShown(false)
     if (undoTimer.current) clearTimeout(undoTimer.current)
-    undoTimer.current = window.setTimeout(() => setUndoShown(true), 600)
+    undoTimer.current = window.setTimeout(() => setUndoShown(true), 1100)
     if (!hintDone) dismissHint()             // they've got it — retire the coaching
   }
   // bring the last-swiped card back to the top (un-swipe → it re-enters the ranked deck
@@ -449,27 +450,34 @@ export default function App() {
 
   function locate() {
     if (!navigator.geolocation) return
+    setLocating(true)   // feedback starts the moment you ask — not once the fix lands
     navigator.geolocation.getCurrentPosition(
       (pos) => goLive(pos.coords.latitude, pos.coords.longitude),
       () => goLive(city.lat, city.lon),
-      { timeout: 8000 },
+      // maximumAge: accept a cached OS fix (≤10 min old) — the single biggest wait was the
+      // device acquiring a FRESH fix; for city-level weather a recent one is just as good.
+      { timeout: 8000, maximumAge: 600_000 },
     )
   }
   async function goLive(lat: number, lon: number) {
     setLocating(true)
     try {
       // the app is about the COMING WEEKEND — pull the week's daily forecast and read the
-      // weekend out of it, not today's weather.
-      const w = await fetch(
+      // weekend out of it, not today's weather. Forecast + reverse-geocode run in PARALLEL
+      // (they used to be sequential), and the geocode is capped at 2.5s so a slow lookup
+      // can only ever delay the city NAME, never the weather.
+      const wP = fetch(
         `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}` +
         `&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max` +
         `&timezone=auto&forecast_days=10`,
       ).then((r) => r.json())
+      const gP = fetch(
+        `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}`,
+        { signal: AbortSignal.timeout(2500) },
+      ).then((r) => r.json()).catch(() => null)
+      const [w, g] = await Promise.all([wP, gP])
       let placeName = city.name
-      try {
-        const g = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}`).then((r) => r.json())
-        placeName = g.city || g.locality || g.principalSubdivision || placeName
-      } catch { /* keep current */ }
+      if (g) placeName = g.city || g.locality || g.principalSubdivision || placeName
       // if the live location is somewhere we actually have a feed for, swap to it
       const matched = cityByName(placeName) ?? nearestCity(lat, lon)
       if (matched && matched.key !== city.key) selectCity(matched, true)
@@ -754,8 +762,9 @@ export default function App() {
           </div>
         )}
         {/* Share nudge — appears once you've saved enough to be worth planning together (and not
-            already in a saved/shared context). Dismissible; it's the growth lever for matching. */}
-        {!shareNudgeOff && saved.size >= 3 && !SHARED_IDS && filter === 'all' && !intro && (
+            already in a saved/shared context). Dismissible; it's the growth lever for matching.
+            Yields while the undo pill is up — they share the under-header slot. */}
+        {!shareNudgeOff && saved.size >= 3 && !SHARED_IDS && filter === 'all' && !intro && !(undoable && undoShown) && (
           <div className="ctx-bar nudge">
             <span>💛 Plan these together</span>
             <button className="ctx-match" onClick={() => { setShareOpen(true) }}><Heart size={13} strokeWidth={2.6} fill="currentColor" /> Match</button>
@@ -818,21 +827,22 @@ export default function App() {
       )}
 
       {/* MATCH MODE — focused swipe-to-match over a partner's shared picks. A real ?w= link drives
-          partnerName/partnerIds (the sender's yes-set); with no link it falls back to a demo. */}
-      <AnimatePresence>
-        {matching && (
-          <MatchGame
-            picks={rankedAll}
-            temp={wx.temp}
-            mode={mode}
-            partnerName={matchPartner?.name ?? 'Robin'}
-            partnerIds={matchPartner?.ids}
-            onOpen={openDetail}
-            onClose={() => setMatching(false)}
-            onComplete={(m) => { setSaved((s) => new Set([...s, ...m.map((p) => p.id)])); flash(`${m.length} added to your list`, true) }}
-          />
-        )}
-      </AnimatePresence>
+          partnerName/partnerIds (the sender's yes-set); with no link it falls back to a demo.
+          NOT inside AnimatePresence: the overlay got stuck mid-exit (opacity 0, pointer-events
+          still on — an invisible wall that "froze" the whole app). MatchGame now runs its own
+          fade-out and THEN asks to unmount, which can't strand it. */}
+      {matching && (
+        <MatchGame
+          picks={rankedAll}
+          temp={wx.temp}
+          mode={mode}
+          partnerName={matchPartner?.name ?? 'Robin'}
+          partnerIds={matchPartner?.ids}
+          onOpen={openDetail}
+          onClose={() => setMatching(false)}
+          onComplete={(m) => { setSaved((s) => new Set([...s, ...m.map((p) => p.id)])); flash(`${m.length} added to your list`, true) }}
+        />
+      )}
 
       {/* Undo — a brief take-back after a stack swipe (the card returns to the top). The
           full-width anchor flex-centres the pill so framer's animated transform can't
@@ -842,10 +852,9 @@ export default function App() {
           <motion.div
             key="undo"
             className="undo-anchor"
-            initial={{ opacity: 0, y: 14 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 14 }}
-            transition={{ type: 'spring', stiffness: 420, damping: 34 }}
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0, transition: { duration: 0.24, ease: [0.22, 1, 0.36, 1] } }}
+            exit={{ opacity: 0, y: -8, transition: { duration: 0.12, ease: 'easeIn' } }}
           >
             <button className="undo-bar" onClick={undoSwipe}>
               <span className="undo-what">

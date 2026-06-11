@@ -76,6 +76,22 @@ export function weatherPill(p: Pick, live?: Mode): { text: string; perfect: bool
   return { text: perfect ? 'Perfect today' : text, perfect }
 }
 
+// THE one pill a card front may carry — the single highest-signal fact, or nothing.
+// Priority: the live weather peak ("Perfect today") > scarcity (selling fast / final week)
+// > time-sensitivity (new / ending). Everything quieter — the static weather affinity,
+// kids, trending, category — lives on the card's detail, not its face.
+export interface CardSignal { text: string; tone: 'accent' | 'red' | 'green' | 'dim'; glow?: boolean }
+export function cardSignal(p: Pick, live?: Mode): CardSignal | null {
+  if (weatherPill(p, live).perfect) return { text: 'Perfect today', tone: 'accent', glow: true }
+  if (p.status) {
+    const tone = p.status === 'final-week' ? 'red' : p.status === 'free' ? 'green' : p.status === 'sold-out' ? 'dim' : 'accent'
+    return { text: STATUS_LABEL[p.status], tone }
+  }
+  if (p.freshness === 'new') return { text: FRESHNESS_LABEL.new, tone: 'accent' }
+  if (p.freshness === 'ending') return { text: FRESHNESS_LABEL.ending, tone: 'red' }
+  return null
+}
+
 export const FRESHNESS_LABEL: Record<Freshness, string> = {
   new: 'New this week',
   weekend: 'This weekend',

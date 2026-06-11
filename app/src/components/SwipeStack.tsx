@@ -5,7 +5,7 @@ import {
   motion, useMotionValue, useTransform, animate,
   type MotionValue, type PanInfo,
 } from 'framer-motion'
-import { X, Star } from 'lucide-react'
+import { X, Star, Check } from 'lucide-react'
 import type { Pick, SwipeDir, Mode } from '../types'
 import { Card } from './Card'
 import './SwipeStack.css'
@@ -105,12 +105,16 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
     const tilt = lx * (0.026 - 0.055 * grabLever.current)
     return Math.max(-20, Math.min(20, tilt)) + ls
   })
-  // drag feedback: left → bold red wash (dismiss), right → bold green wash (keep)
+  // drag feedback: left → red wash (dismiss), right → green wash (keep). The wash is a
+  // supporting tint — the STAMP (the big ✓ / ✕ below) carries the signal.
   const redOp = useTransform(x, [-104, -8], [1, 0])
   const greenOp = useTransform(x, [8, 104], [0, 1])
   // up = save, down = skip — drag feedback for the non-obvious vertical directions
   const saveOp = useTransform(y, [-104, -8], [1, 0])
   const skipOp = useTransform(y, [8, 104], [0, 1])
+  // the stamps grow into place as the drag commits — a slow settle, not a pop
+  const likeScale = useTransform(x, [8, 120], [0.6, 1])
+  const nopeScale = useTransform(x, [-120, -8], [1, 0.6])
   // 3D dimension WHILE dragging: the card turns on its Y axis as you pull sideways and tilts
   // on X as you pull up/down — and these compound with the exit flip (flipY/flipX) on release.
   const turnY = useTransform([x, flipY], ([lx, f]: number[]) => Math.max(-34, Math.min(34, lx * 0.07)) + f)
@@ -236,9 +240,15 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
           <>
             <motion.div className="swipe-tint red" style={{ opacity: redOp }} aria-hidden />
             <motion.div className="swipe-tint green" style={{ opacity: greenOp }} aria-hidden />
-            {/* directional signifiers — light up as you drag toward each commit */}
-            <motion.span className="ind ind-like" style={{ opacity: greenOp }} aria-hidden>LIKE</motion.span>
-            <motion.span className="ind ind-nope" style={{ opacity: redOp }} aria-hidden>NOPE</motion.span>
+            {/* the commit STAMPS — a large glass ✓ / ✕ that settles into the card's centre
+                as the drag commits. White-on-glass; the tint beneath supplies the colour. */}
+            <motion.div className="stamp" style={{ opacity: greenOp, scale: likeScale, rotate: 6 }} aria-hidden>
+              <Check size={46} strokeWidth={2.4} />
+            </motion.div>
+            <motion.div className="stamp" style={{ opacity: redOp, scale: nopeScale, rotate: -6 }} aria-hidden>
+              <X size={46} strokeWidth={2.4} />
+            </motion.div>
+            {/* the vertical directions keep their quiet word signifiers */}
             <motion.span className="ind ind-save" style={{ opacity: saveOp }} aria-hidden>SAVE</motion.span>
             <motion.span className="ind ind-skip" style={{ opacity: skipOp }} aria-hidden>SKIP</motion.span>
           </>

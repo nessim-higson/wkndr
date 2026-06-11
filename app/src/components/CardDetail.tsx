@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import { AnimatePresence, motion, useDragControls } from 'framer-motion'
 import { X, Star, ArrowUpRight, Check } from 'lucide-react'
 import type { Pick } from '../types'
-import { CATEGORY_LABEL, FRESHNESS_LABEL, STATUS_LABEL } from '../types'
+import { CATEGORY_LABEL, FRESHNESS_LABEL, STATUS_LABEL, weatherPill } from '../types'
 import './CardDetail.css'
 
 // the detail body fades/rises in just after the sheet lands — staggered children
@@ -49,7 +49,8 @@ export function CardDetail({
 
   const isMusic = pick ? MUSIC.has(pick.category) : false
   const q = pick ? encodeURIComponent(pick.title) : ''
-  const weather = pick?.outdoor ? 'Best in dry, mild weather' : 'Indoor — any weather'
+  // the static weather affinity moved OFF the card front (V.4.8) — this is its home now
+  const weather = pick ? `${weatherPill(pick).text}${pick.outdoor ? ' · outdoor' : ' · indoor'}` : ''
 
   // share THIS pick — a link that opens straight to it (no backend)
   async function share() {

@@ -60,9 +60,9 @@
   align-items: flex-start;
   gap: 8px;
 }
-/* the weather-affinity pill — leads the top-left stack (matches the landing). A clean white pill;
-   when the pick peaks in TODAY's forecast it flips to an accent "Perfect today" with a glow. */
-.card-weather {
+/* THE one signal pill — at most one per card front (cardSignal: live weather peak >
+   scarcity > new/ending). Tones carry the semantics; the glow marks "Perfect today". */
+.card-signal {
   align-self: flex-start;
   padding: 6px 11px;
   border-radius: 999px;
@@ -70,17 +70,16 @@
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: #1a1a1a;
-  background: rgba(255, 255, 255, 0.93);
+  color: #fff;
   backdrop-filter: blur(6px);
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
   white-space: nowrap;
 }
-.card-weather--perfect {
-  color: #fff;
-  background: var(--accent);
-  box-shadow: 0 2px 16px rgba(255, 77, 31, 0.55);
-}
+.card-signal--accent { background: var(--accent); }
+.card-signal--red    { background: #d2402e; }
+.card-signal--green  { background: #2faa6a; }
+.card-signal--dim    { background: rgba(26, 26, 26, 0.7); color: rgba(255, 255, 255, 0.8); }
+.card-signal--glow   { box-shadow: 0 2px 16px rgba(255, 77, 31, 0.55); }
 
 /* the WHEN stamp — a frosted ticket stamp: clock + day/time (+ temp on outdoor) */
 .card-when {

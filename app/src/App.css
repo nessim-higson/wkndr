@@ -574,15 +574,18 @@
   color: #faf8f3;
   box-shadow: 0 10px 34px rgba(0, 0, 0, 0.32);
   animation: toast-in 0.32s var(--ease-spring);
+  pointer-events: none;   /* purely informational — never intercept a swipe aimed at the deck */
 }
 .toast--save { background: var(--accent); color: #fff; }   /* save reads warm + positive */
 
-/* Undo — a tappable take-back pill after a stack swipe. A full-width anchor flex-centres
-   the pill so framer's animated transform can never knock it off-centre. */
+/* Undo — a tappable take-back pill after a stack swipe. Lives at the TOP, under the
+   header module — OUT of the bottom swipe/action zone, so it can never block or steal
+   a fast swipe (it used to sit right over the ✕/★ buttons). A full-width anchor
+   flex-centres the pill so framer's animated transform can never knock it off-centre. */
 .undo-anchor {
   position: fixed;
   left: 0; right: 0;
-  bottom: 28px;
+  top: calc(env(safe-area-inset-top) + 86px);
   z-index: 201;
   display: flex;
   justify-content: center;

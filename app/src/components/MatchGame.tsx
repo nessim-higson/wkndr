@@ -35,11 +35,13 @@ export function MatchGame({
 }) {
   const real = !!partnerIds && partnerIds.length > 0
   // REAL: the deck IS the partner's shared picks (in feed-rank order) — "which of these do you
-  // want too?", so every yes is genuine overlap. DEMO: a slice of the feed with a simulated set.
+  // want too?", so every yes is genuine overlap. No image requirement — picks without a photo
+  // render the typographic poster, and silently dropping shared picks broke the count.
+  // DEMO: a slice of the feed with a simulated set.
   const session = useMemo(() => {
     if (real) {
       const want = new Set(partnerIds)
-      return picks.filter((p) => want.has(p.id) && p.image).slice(0, 30)
+      return picks.filter((p) => want.has(p.id)).slice(0, 30)
     }
     return picks.filter((p) => p.image).slice(0, SESSION)
   }, [picks, real, partnerIds])
@@ -49,13 +51,26 @@ export function MatchGame({
       : new Set(session.filter((p) => rand(`${p.id}·${partnerName}`) > 0.5).map((p) => p.id))),
     [real, partnerIds, session, partnerName],
   )
-  const [queue, setQueue] = useState<Pick[]>(session)
+  // the queue is DERIVED (session minus what you've swiped) — not snapshotted at mount, so a
+  // live feed landing mid-launch (which changes which shared ids resolve) flows straight in
+  // instead of stranding a stale empty deck.
+  const [swipedIds, setSwipedIds] = useState<Set<string>>(new Set())
+  const queue = useMemo(() => session.filter((p) => !swipedIds.has(p.id)), [session, swipedIds])
   const [matched, setMatched] = useState<Pick[]>([])
   const [slam, setSlam] = useState<Pick | null>(null)
   const total = session.length
 
+  // self-managed exit: fade the overlay, THEN unmount. (AnimatePresence used to own this and
+  // could strand the overlay mid-exit — invisible but still swallowing every tap: the "freeze".)
+  const [leaving, setLeaving] = useState(false)
+  function requestClose() {
+    if (leaving) return
+    setLeaving(true)
+    window.setTimeout(onClose, 240)
+  }
+
   function onSwipe(p: Pick, dir: SwipeDir) {
-    setQueue((q) => q.filter((x) => x.id !== p.id))
+    setSwipedIds((s) => new Set(s).add(p.id))
     const yes = dir === 'like' || dir === 'save'
     if (yes && partnerYes.has(p.id)) {
       haptic([14, 50, 22])
@@ -70,12 +85,13 @@ export function MatchGame({
   return (
     <motion.div
       className="mg"
-      initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-      transition={{ duration: 0.26, ease: [0.22, 1, 0.36, 1] }}
+      initial={{ opacity: 0 }} animate={{ opacity: leaving ? 0 : 1 }}
+      transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
     >
       <div className="mg-head">
-        <button className="mg-close" onClick={onClose} aria-label="Close match"><X size={20} strokeWidth={2.4} /></button>
+        <button className="mg-close" onClick={requestClose} aria-label="Close match"><X size={20} strokeWidth={2.4} /></button>
         <div className="mg-head-mid">
+          <span className="mg-brand">WKNDR</span>
           <span className="mg-with">Matching with <b>{partnerName}</b></span>
           {!done && <span className="mg-progress">{Math.min(seen + 1, total)} of {total}</span>}
         </div>
@@ -88,7 +104,7 @@ export function MatchGame({
         {done ? (
           <MatchPlan
             matched={matched} total={total} partnerName={partnerName} real={real} onOpen={onOpen}
-            onSave={() => { onComplete?.(matched); onClose() }} onClose={onClose}
+            onSave={() => { onComplete?.(matched); requestClose() }} onClose={requestClose}
           />
         ) : (
           <SwipeStack picks={queue} temp={temp} mode={mode} onSwipe={onSwipe} onOpen={onOpen} />
@@ -188,6 +204,23 @@ function MatchPlan({
 }) {
   const n = matched.length
   const [sent, setSent] = useState(false)
+  // a shared link can outlive the feed (it refreshes weekly; ids rotate) — when NONE of its
+  // picks resolve, say so honestly instead of "you ran through all 0".
+  if (total === 0) {
+    return (
+      <div className="mg-plan">
+        <span className="mg-plan-eyebrow">Matching with {partnerName}</span>
+        <h2 className="mg-plan-title">These picks have moved on</h2>
+        <p className="mg-plan-sub">
+          The feed refreshes every week, and the picks in this link aren’t in it anymore.
+          Ask {partnerName} to share a fresh weekend.
+        </p>
+        <div className="mg-plan-actions">
+          <button className="mg-btn" onClick={onClose}>Done</button>
+        </div>
+      </div>
+    )
+  }
   // close the loop: send your matches BACK as the same kind of link, so they land on the plan you
   // both agreed on (from your name, stored when you last shared).
   function shareBack() {

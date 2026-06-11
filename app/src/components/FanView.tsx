@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef } from 'react'
 import type { PointerEvent as RPointerEvent } from 'react'
 import { animate, motion, useMotionValue, type PanInfo } from 'framer-motion'
 import type { Pick, Mode } from '../types'
-import { weatherPill } from '../types'
+import { cardSignal } from '../types'
 import { Coverflow } from './Coverflow'
 import './FanView.css'
 
@@ -195,9 +195,9 @@ function WheelFan({
               <span className="wcard-shade" aria-hidden />
               <span className="wcard-dim" aria-hidden />
               <span className="wcard-info">
-                {(() => { const w = weatherPill(p, mode); return (
-                  <span className={`wcard-cat mono${w.perfect ? ' wcard-cat--perfect' : ''}`}>{w.text}</span>
-                ) })()}
+                {(() => { const s = cardSignal(p, mode); return s ? (
+                  <span className={`wcard-cat mono${s.glow ? ' wcard-cat--perfect' : ''}`}>{s.text}</span>
+                ) : null })()}
                 <span className="wcard-title">{p.title}</span>
                 <span className="wcard-when mono">{p.when}</span>
               </span>
