@@ -31,6 +31,11 @@ const SHARED_FROM = (() => {
   const f = new URLSearchParams(window.location.search).get('from')
   return f ? f.trim().slice(0, 24) : null
 })()
+// MVP surface gate (V.5): the trimmed product is the default — one view (Stack), one
+// ambient look, Amsterdam only. `?dev=1` reveals the full exploration surface (all views,
+// the ambient-look switcher, the city picker) for working sessions. Full version frozen
+// at /wkndr/versions/v4-10/.
+const DEVUI = new URLSearchParams(window.location.search).has('dev')
 // the header degrees take on the live weather's hue — a cool day reads cool, a hot day warm —
 // so the number itself signals the mood (muted tints, readable on the cream pill)
 const TEMP_TINT: Record<Mode, string> = {
@@ -114,9 +119,9 @@ const SEEDED_FIELDS: Look[] = ['auras', 'riso', 'forms']
 
 export default function App() {
   const [mode, setMode] = useState<Mode>('HOT')
-  // a shared weekend opens on the FAN — the recipient sees everything you sent at once and taps
-  // in, instead of a one-at-a-time Stack (confusing before the Match flow exists). Normal = Stack.
-  const [view, setView] = useState<View>(SHARED_IDS ? 'fan' : 'stack')
+  // one view in the MVP — the Stack. (Fan/List live behind ?dev=1.) A shared-link recipient
+  // goes through the match overlay, then lands on the full Stack (never boxed into the set).
+  const [view, setView] = useState<View>('stack')
   const [wx, setWx] = useState<Wx>(DEMO.HOT)
   const [live, setLive] = useState(false)        // true once the real forecast loads
   const [swiped, setSwiped] = useState<Set<string>>(new Set())
@@ -583,6 +588,7 @@ export default function App() {
             <div className={`tb-panel${barOpen ? ' open' : ''}`} aria-hidden={!barOpen}>
               <div className="tb-panel-clip">
                 <div className="tb-panel-inner">
+                    {DEVUI && (
                     <div className="bar-group">
                       <span className="bar-label">View</span>
                       <div className="bar-row">
@@ -600,6 +606,7 @@ export default function App() {
                         </div>
                       )}
                     </div>
+                    )}
 
                     <div className="bar-group">
                       <span className="bar-label">Filter</span>
@@ -618,7 +625,7 @@ export default function App() {
                       <div className="bar-row">
                         <button
                           className={`bar-pill${filter === 'saved' ? ' on' : ''}`}
-                          onClick={() => { setFilter('saved'); setView('list'); setBarOpen(false) }}
+                          onClick={() => { if (DEVUI) { setFilter('saved'); setView('list') } else { setSavesOpen(true) } ; setBarOpen(false) }}
                         ><Star size={14} strokeWidth={2.2} fill="currentColor" /> Saved · {saved.size}</button>
                         {saved.size > 0 && <button className="bar-pill" onClick={() => { setShareOpen(true); setBarOpen(false) }}>Share <ArrowUpRight size={14} strokeWidth={2.2} /></button>}
                         {(saved.size > 0 || hasTaste(taste)) && (
@@ -636,6 +643,7 @@ export default function App() {
                       </div>
                     </div>
 
+                    {DEVUI && (
                     <div className="bar-group">
                       <span className="bar-label">City</span>
                       <div className="mode-pills">
@@ -646,6 +654,7 @@ export default function App() {
                         ))}
                       </div>
                     </div>
+                    )}
 
                     <div className="bar-group">
                       <span className="bar-label">Weather</span>
@@ -662,6 +671,7 @@ export default function App() {
                       </div>
                     </div>
 
+                    {DEVUI && (
                     <div className="bar-group">
                       <span className="bar-label">Ambient field</span>
                       <div className="mode-pills field-pills">
@@ -677,9 +687,10 @@ export default function App() {
                         </button>
                       )}
                     </div>
+                    )}
 
                     <button className="bar-foot" onClick={() => { setInputsOpen(true); setBarOpen(false) }}>
-                      <Info size={13} strokeWidth={2.2} /> Built from {city.sourceCount} sources · weather × freshness{hasTaste(taste) ? ' × you' : ''}
+                      <Info size={13} strokeWidth={2.2} /> Built from {city.sourceCount} sources · weather × freshness
                     </button>
                     <span className="bar-build">{APP_VERSION}</span>
                   </div>
@@ -741,9 +752,11 @@ export default function App() {
                             </div>
                           ))}
                         </div>
-                        <button className="sv-open" onClick={() => { setFilter('saved'); setView('list'); setSavesOpen(false) }}>
-                          Open as list <ArrowUpRight size={14} strokeWidth={2.2} />
-                        </button>
+                        {DEVUI && (
+                          <button className="sv-open" onClick={() => { setFilter('saved'); setView('list'); setSavesOpen(false) }}>
+                            Open as list <ArrowUpRight size={14} strokeWidth={2.2} />
+                          </button>
+                        )}
                       </>
                     )}
                   </motion.div>
@@ -843,7 +856,7 @@ export default function App() {
           partnerName={matchPartner?.name ?? 'Robin'}
           partnerIds={matchPartner?.ids}
           onOpen={openDetail}
-          onClose={() => setMatching(false)}
+          onClose={() => { setMatching(false); setFilter('all') }}   /* land on the full feed — recipients can keep discovering, never boxed into the shared set */
           onComplete={(m) => { setSaved((s) => new Set([...s, ...m.map((p) => p.id)])); flash(`${m.length} added to your list`, true) }}
         />
       )}

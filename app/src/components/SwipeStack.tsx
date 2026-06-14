@@ -16,7 +16,8 @@ const RENDER = 4         // cards kept in the DOM
 const VISIBLE_DEPTH = 2  // only 3 cards show; anything deeper parks behind the back one — a hidden
                          // buffer, so a card cycling in mounts unseen and only appears by being revealed
 const STEP_SCALE = 0.05
-const STEP_Y = 18
+const STEP_Y = 12   // depth offset per card — tightened (was 18) so the stack is compact
+                    // and the ✕/★ controls can sit close beneath it without overlap
 
 // unit direction the card travels when committed
 const DIR: Record<SwipeDir, { x: number; y: number }> = {

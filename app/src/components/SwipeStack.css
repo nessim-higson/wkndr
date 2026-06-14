@@ -3,10 +3,10 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  /* the deck's rotated back cards peek ~52px BELOW it (depth offset + tilt); the old 16px
-     gap let them ride over the ✕/★ buttons (Ivan: "menu buttons cut off by the cards").
-     72px clears the peek with air so the controls read as their own row. */
-  gap: 72px;
+  /* the controls sit CLOSE beneath the deck (the older, tighter feel) — with the tightened
+     STEP_Y the back cards peek less, so this smaller gap clears them without the overlap
+     Ivan flagged. (Was 72px airy → 30px overlapped; 44px is tight but fully clear.) */
+  gap: 44px;
   width: 100%;
   height: 100%;       /* fill the main area so the deck can shrink to fit */
 }

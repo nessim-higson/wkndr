@@ -214,10 +214,10 @@ function MatchPlan({
         <h2 className="mg-plan-title">These picks have moved on</h2>
         <p className="mg-plan-sub">
           The feed refreshes every week, and the picks in this link aren’t in it anymore.
-          Ask {partnerName} to share a fresh weekend.
+          Ask {partnerName} to share a fresh weekend — or see what’s on right now.
         </p>
         <div className="mg-plan-actions">
-          <button className="mg-btn" onClick={onClose}>Done</button>
+          <button className="mg-btn primary" onClick={onClose}>Explore Amsterdam →</button>
         </div>
       </div>
     )
@@ -261,7 +261,7 @@ function MatchPlan({
       <div className="mg-plan-actions">
         {n > 0 && <button className="mg-btn primary" onClick={onSave}>Add {n} to my list</button>}
         {real && n > 0 && <button className="mg-btn" onClick={shareBack}>{sent ? '✓ Link copied' : `Send ${partnerName} the plan`}</button>}
-        <button className="mg-btn" onClick={onClose}>Done</button>
+        <button className="mg-btn" onClick={onClose}>See what else is on →</button>
       </div>
     </div>
   )
