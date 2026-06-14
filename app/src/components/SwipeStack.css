@@ -3,7 +3,10 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 16px;
+  /* the deck's rotated back cards peek ~52px BELOW it (depth offset + tilt); the old 16px
+     gap let them ride over the ✕/★ buttons (Ivan: "menu buttons cut off by the cards").
+     72px clears the peek with air so the controls read as their own row. */
+  gap: 72px;
   width: 100%;
   height: 100%;       /* fill the main area so the deck can shrink to fit */
 }
@@ -11,7 +14,7 @@
 .stack-deck {
   position: relative;
   width: min(300px, 74vw);   /* mobile: leave the weather field visible around the deck */
-  flex: 0 1 440px;           /* prefer 440px tall, shrink when space is tight */
+  flex: 0 1 400px;           /* prefer 400px tall, shrink when space is tight */
   min-height: 0;
   max-height: 100%;
 }
