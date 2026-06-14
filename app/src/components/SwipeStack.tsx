@@ -109,9 +109,6 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
   // supporting tint — the STAMP (the big ✓ / ✕ below) carries the signal.
   const redOp = useTransform(x, [-104, -8], [1, 0])
   const greenOp = useTransform(x, [8, 104], [0, 1])
-  // up = save, down = skip — drag feedback for the non-obvious vertical directions
-  const saveOp = useTransform(y, [-104, -8], [1, 0])
-  const skipOp = useTransform(y, [8, 104], [0, 1])
   // the stamps grow into place as the drag commits — a slow settle, not a pop
   const likeScale = useTransform(x, [8, 120], [0.6, 1])
   const nopeScale = useTransform(x, [-120, -8], [1, 0.6])
@@ -201,8 +198,7 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
     const { offset, velocity } = info
     if (offset.x > THRESHOLD || velocity.x > VELOCITY) return fling('like', info)
     if (offset.x < -THRESHOLD || velocity.x < -VELOCITY) return fling('nope', info)
-    if (offset.y < -THRESHOLD || velocity.y < -VELOCITY) return fling('save', info)
-    if (offset.y > THRESHOLD || velocity.y > VELOCITY) return fling('skip', info)
+    // two gestures only — right = save, left = pass (was 4: up/down save/skip dropped)
     // not committed → ease the card home and the stack eases back (soft). We snap home
     // ourselves rather than via dragSnapToOrigin, which would otherwise fight a committed
     // exit on release and stutter for a frame.
@@ -224,7 +220,7 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
         ref={cardRef}
         className="swipe-card"
         style={interactive ? { x, y, rotate, rotateY: turnY, rotateX: turnX, scale: pop, transformPerspective: 1100 } : undefined}
-        drag={interactive}
+        drag={interactive ? 'x' : false}   /* two gestures: the card only slides left/right */
         dragElastic={0.6}
         dragMomentum={false}   /* WE own the release animation (exit or ease-home); framer's
                                   inertia would otherwise coast the card and fight it → the snap */
@@ -248,9 +244,6 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
             <motion.div className="stamp" style={{ opacity: redOp, scale: nopeScale, rotate: -6 }} aria-hidden>
               <X size={46} strokeWidth={2.4} />
             </motion.div>
-            {/* the vertical directions keep their quiet word signifiers */}
-            <motion.span className="ind ind-save" style={{ opacity: saveOp }} aria-hidden>SAVE</motion.span>
-            <motion.span className="ind ind-skip" style={{ opacity: skipOp }} aria-hidden>SKIP</motion.span>
           </>
         )}
         <Card pick={pick} temp={temp} mode={mode} />

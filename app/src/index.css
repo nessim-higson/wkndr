@@ -63,6 +63,9 @@
 html, body, #root {
   height: 100%;
 }
+/* dvh = the VISIBLE viewport (excludes mobile browser chrome), so the app never
+   extends behind the URL bar / home-indicator and clips its own bottom controls */
+#root { height: 100dvh; }
 body {
   font-family: var(--font-body);
   background: var(--paper);

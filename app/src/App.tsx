@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Shuffle, Clock, ChevronDown, LayoutGrid, Star, ArrowUpRight, LocateFixed, Info, RotateCw, RotateCcw, X, ArrowUp, ArrowDown, ArrowLeft, ArrowRight, Heart } from 'lucide-react'
+import { Shuffle, Clock, ChevronDown, LayoutGrid, Star, ArrowUpRight, LocateFixed, Info, RotateCw, RotateCcw, X, Heart } from 'lucide-react'
 
 // subtle haptic on commit/save (Android/Chrome; iOS Safari ignores navigator.vibrate)
 const haptic = (ms = 10) => { try { navigator.vibrate?.(ms) } catch { /* unsupported */ } }
@@ -127,9 +127,6 @@ export default function App() {
   const [undoable, setUndoable] = useState<{ pick: Pick; dir: SwipeDir; wasSaved: boolean } | null>(null)
   const [undoShown, setUndoShown] = useState(false)   // surfaces only after you PAUSE — never mid-flurry
   const undoTimer = useRef<number | null>(null)
-  // one-time swipe coaching — the 4 directions aren't obvious (up=save, down=skip)
-  const [hintDone, setHintDone] = useState(() => localStorage.getItem('wkndr.swipehint') === '1')
-  const dismissHint = () => { setHintDone(true); localStorage.setItem('wkndr.swipehint', '1') }
   const [locating, setLocating] = useState(false)   // weather/location fetch in flight
   const [visits] = useState(() => {                  // for progressive-reduction of hints
     const v = Number(localStorage.getItem('wkndr.visits') || 0) + 1
@@ -389,7 +386,6 @@ export default function App() {
     setUndoShown(false)
     if (undoTimer.current) clearTimeout(undoTimer.current)
     undoTimer.current = window.setTimeout(() => setUndoShown(true), 1100)
-    if (!hintDone) dismissHint()             // they've got it — retire the coaching
   }
   // bring the last-swiped card back to the top (un-swipe → it re-enters the ranked deck
   // at its old position, which was the front). Un-saves only if the swipe was what saved it.
@@ -870,30 +866,6 @@ export default function App() {
                 <span className="undo-title"> · {undoable.pick.title}</span>
               </span>
               <span className="undo-action"><RotateCcw size={14} strokeWidth={2.5} /> Undo</span>
-            </button>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* one-time swipe coaching — a coachmark centered on the deck; retires itself on
-          the first swipe (or a tap). Full-screen anchor animates opacity only so framer's
-          transform never fights the flex-centering. */}
-      <AnimatePresence>
-        {!hintDone && view === 'stack' && !intro && !barOpen && !savesOpen && deck.length > 0 && (
-          <motion.div
-            key="hint"
-            className="swipe-hint-anchor"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-          >
-            <button className="swipe-hint" onClick={dismissHint}>
-              <span className="swipe-hint-lead">Swipe the card</span>
-              <span className="swipe-hint-dir"><ArrowRight size={13} strokeWidth={2.6} /> Like</span>
-              <span className="swipe-hint-dir"><ArrowLeft size={13} strokeWidth={2.6} /> Pass</span>
-              <span className="swipe-hint-dir"><ArrowUp size={13} strokeWidth={2.6} /> Save</span>
-              <span className="swipe-hint-dir"><ArrowDown size={13} strokeWidth={2.6} /> Skip</span>
             </button>
           </motion.div>
         )}
