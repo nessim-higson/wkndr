@@ -1,11 +1,11 @@
-# WKNDR — feedback collation (first link recipients, 2026-06-13)
+# WKNDR — feedback collation (first link recipient, 2026-06-13)
 
-_Reactions from friends Ness shared the live link with (WhatsApp). Read through the
-Mom Test lens: these are supportive friends reacting to the IDEA, not strangers who
-round-tripped a link to plan a real weekend. Most of it is the compliment/feature-idea
-zone — useful for direction, weak as demand evidence. The behavioral round-trip test
-(docs/validation-log.md) is still open. One finding here IS hard behavioral data; it's
-listed first._
+_Reactions from ONE friend (Tiwirayi) Ness shared the live link with (WhatsApp) — n=1,
+not a chorus. Read through the Mom Test lens: a supportive friend reacting to the IDEA,
+not a stranger who round-tripped a link to plan a real weekend. Most of it is the
+compliment/feature-idea zone — useful for direction, weak as demand evidence. The
+behavioral round-trip test (docs/validation-log.md) is still open. One finding here IS
+hard behavioral data; it's listed first._
 
 ## 1. THE hard signal (behavioral, not opinion)
 
@@ -24,7 +24,7 @@ Two facts in that one message:
   with your partner/group) did not land at all. People pattern-match WKNDR to
   Meetup/social-discovery before they pattern-match it to couples-planning.
 
-## 2. The three-product fork (where the friends pulled)
+## 2. The three-product fork (where the friend pulled)
 
 The feedback keeps splitting WKNDR into three different products. Naming them so we
 choose on purpose instead of drifting:
@@ -35,10 +35,11 @@ choose on purpose instead of drifting:
 | **B — The Alignment tool** | swipe-to-match so a couple/group converges on a plan | agreement (our validated wedge) | "interesting from an alignment purpose… it's analysis paralysis" | **high** — needs BOTH people to get it cold |
 | **C — The Social network** | meet new *curated* interesting people | meet-people | "filter the people I ask to go with… so you don't end up with people that lack taste or intelligence" + The Breakfast ref | high — two-sided marketplace |
 
-Both friends pulled hardest toward **C** (the people are the interesting variable to
-them), citing **The Breakfast** as the model: members-only offline social network,
-~62k members × €11/mo. That's a real local proof that curated-social monetizes — but
-it's a different job with a different cold-start, not WKNDR's validated direction.
+The friend pulled hardest toward **C** (people are the interesting variable to them),
+citing **The Breakfast** as the model: members-only offline social network, ~62k members
+× €11/mo. That's a real local proof that curated-social monetizes — but it's a different
+job with a different cold-start, not WKNDR's validated direction. Caveat: this is ONE
+person's pull, not a pattern — a Mom Test probe for the next recipients, not a turn.
 
 ## 3. Convergent MVP advice (independent of our strategy work)
 

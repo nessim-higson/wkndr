@@ -4,11 +4,12 @@ _One row per person/conversation. Facts (what they DID) separate from interpreta
 Decision thresholds live in docs/mom-test-interviews.md: ≥7/10 unprompted pain,
 ≥3 completed round-trips, ≥1 plan actually lived._
 
-> **2026-06-13 — idea-reaction round (NOT the behavioral test).** First friends reacted
-> to the link via WhatsApp. Collated in docs/feedback-collation-2026-06-13.md. Hard
-> finding: recipients couldn't tell what the product is on open ("missing an about
-> section"). The rest was supportive idea-feedback (compliments + feature/business
-> ideas) — direction, not demand. The round-trip behavioral test below is still open.
+> **2026-06-13 — idea-reaction round (NOT the behavioral test, n=1).** One friend
+> (Tiwirayi) reacted to the link via WhatsApp. Collated in
+> docs/feedback-collation-2026-06-13.md. Hard finding: the recipient couldn't tell what
+> the product is on open ("missing an about section"). The rest was supportive
+> idea-feedback (compliments + feature/business ideas) from a single voice — direction,
+> not demand. The round-trip behavioral test below is still open.
 
 ## Link recipients
 
