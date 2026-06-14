@@ -1,35 +1,10 @@
 {
   "city": "amsterdam",
   "label": "Amsterdam",
-  "generatedAt": "2026-06-08T15:22:21.307Z",
+  "generatedAt": "2026-06-14T20:28:05.307Z",
   "live": true,
-  "count": 81,
+  "count": 93,
   "picks": [
-    {
-      "id": "llm-your-little-black-book-women-in-street-art-weekend",
-      "title": "Women in Street Art Weekend",
-      "venue": "STRAAT Museum, NDSM-werf",
-      "area": "Amsterdam North",
-      "when": "Sat–Sun 13–14 Jun",
-      "category": "art",
-      "freshness": "new",
-      "outdoor": false,
-      "kid": true,
-      "price": "ticketed",
-      "blurb": "First-ever Women in Street Art festival showcasing female urban artists; murals, installations, and performances.",
-      "why": "Inaugural event, cultural spotlight",
-      "source": "Your Little Black Book",
-      "link": "https://www.yourlittleblackbook.me/en/",
-      "image": "https://api.straatmuseum.com/assets/museum/0340.jpg",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "verify": true
-    },
     {
       "id": "yumna-al-arashi",
       "title": "Yumna Al-Arashi — Body as Resistance",
@@ -121,96 +96,21 @@
       ]
     },
     {
-      "id": "llm-songkick-billy-talent",
-      "title": "Billy Talent",
-      "venue": "Melkweg",
-      "area": "Amsterdam",
-      "when": "Sat 13 Jun · 20:00",
-      "category": "live",
-      "freshness": "weekend",
-      "outdoor": false,
-      "kid": false,
-      "price": "ticketed",
-      "blurb": "Canadian rock legends bring high-energy anthems to iconic Amsterdam venue this weekend.",
-      "why": "Weekend headliner, sells out fast",
-      "source": "Songkick",
-      "link": "https://www.songkick.com/search?query=Billy%20Talent",
-      "image": "https://wallpaperaccess.com/full/11353398.jpg",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "verify": true
-    },
-    {
-      "id": "llm-songkick-cabaret-voltaire",
-      "title": "Cabaret Voltaire",
-      "venue": "Paradiso",
-      "area": "Amsterdam",
-      "when": "Sat 13 Jun",
-      "category": "live",
-      "freshness": "weekend",
-      "outdoor": false,
-      "kid": false,
-      "price": "ticketed",
-      "blurb": "Electronic pioneers deliver industrial post-punk reimagined for 2026—rare Amsterdam date.",
-      "why": "Cult act, experimental live show",
-      "source": "Paradiso",
-      "link": "https://www.paradiso.nl/programma/cabaret-voltaire/2754537",
-      "image": "https://assets.paradiso.nl/images/transforms/event/_1200x630_crop_center-center_none/Cabaret-Voltaire-2025-4042.jpeg",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "verify": false
-    },
-    {
       "id": "llm-songkick-olivia-dean-and-jalen-ngonda",
       "title": "OLIVIA DEAN and Jalen Ngonda",
       "venue": "Ziggo Dome",
       "area": "Amsterdam",
-      "when": "Sun 14 Jun",
+      "when": "Sun 14 Jun · (time not listed)",
       "category": "live",
       "freshness": "weekend",
       "outdoor": false,
       "kid": false,
       "price": "ticketed",
-      "blurb": "UK soul sensation and producer collaborator in rare Amsterdam pairing at the city's premier dome.",
-      "why": "Rising stars, intimate collaboration",
+      "blurb": "British soul sensation OLIVIA DEAN brings her lush, genre-blending sound to Amsterdam's largest venue with guest Jalen Ngonda.",
+      "why": "Rising soul star, full-capacity venue",
       "source": "Songkick",
-      "link": "https://www.songkick.com/search?query=OLIVIA%20DEAN",
-      "image": "https://upload.wikimedia.org/wikipedia/commons/3/3e/Olivia_Dean_-_Sabrina_Carpenter_at_BST_Hyde_Park_-_20250706_-_115_%28cropped%29_%28cropped%29.jpg",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "verify": false
-    },
-    {
-      "id": "llm-songkick-blu-exile-jeru-the-damaja",
-      "title": "Blu Exile + Jeru the Damaja",
-      "venue": "Bitterzoet",
-      "area": "Amsterdam",
-      "when": "Sat 13 Jun",
-      "category": "live",
-      "freshness": "weekend",
-      "outdoor": false,
-      "kid": false,
-      "price": "ticketed",
-      "blurb": "Golden-age hip-hop legends reunite for intimate Amsterdam club show—rare chance to see underground classics live.",
-      "why": "Cult producers, limited capacity",
-      "source": "Songkick",
-      "link": "https://www.songkick.com/search?query=Blu%20Exile",
-      "image": "https://www.urbanworld.com.au/cdn/shop/files/blu_and_exile_below_the_heavens_lp_2.jpg?v=1729055998",
+      "link": "https://www.songkick.com/metro-areas/31366-amsterdam",
+      "image": "https://auditoriumfilms.com/wp-content/uploads/2024/09/TV-MONACO-1920-X-1080-7-2.png",
       "weatherFit": [
         "HOT",
         "WARM",
@@ -221,21 +121,21 @@
       "verify": true
     },
     {
-      "id": "llm-your-little-black-book-bacchus-wine-festival",
-      "title": "Bacchus Wine Festival",
-      "venue": "Amsterdamse Bos",
-      "area": "Amstelveen",
-      "when": "Fri–Sun 12–14 Jun",
-      "category": "drink",
+      "id": "llm-songkick-vondelpark-2026-festival-alain-clark-toine-k-zia",
+      "title": "Vondelpark 2026 Festival: Alain Clark, Toine, K.ZIA",
+      "venue": "Vondelpark Openluchttheater",
+      "area": "Amsterdam",
+      "when": "Sun 14 Jun",
+      "category": "live",
       "freshness": "weekend",
       "outdoor": true,
-      "kid": false,
+      "kid": true,
       "price": "ticketed",
-      "blurb": "Wine festival in the sprawling lakeside park; curated tastings, food pairings, and summer vibes.",
-      "why": "Praised event, perfect weather setting",
-      "source": "Your Little Black Book",
-      "link": "https://www.bacchuswijnfestival.nl/",
-      "image": "https://cdn.webshopapp.com/shops/122770/files/476676166/bacchus-wine-festival-raise-a-glass-in-amsterdams.jpg",
+      "blurb": "Free-spirited outdoor festival in Amsterdam's most beloved park featuring Dutch indie and international acts under open sky.",
+      "why": "Outdoor, Vondelpark, family-friendly summer vibes",
+      "source": "Songkick",
+      "link": "https://www.songkick.com/metro-areas/31366-amsterdam",
+      "image": "https://fox4kc.com/wp-content/uploads/sites/16/2025/05/68236b0f0e6b05.94557829.jpeg?w=2560&h=1440&crop=1",
       "weatherFit": [
         "HOT",
         "WARM",
@@ -244,119 +144,44 @@
       "verify": true
     },
     {
-      "id": "llm-your-little-black-book-sunday-market-at-westergas",
-      "title": "Sunday Market at Westergas",
-      "venue": "Westergas",
-      "area": "Amsterdam West",
+      "id": "llm-kidsproof-keti-koti-4-kids-concert",
+      "title": "Keti Koti 4 Kids Concert",
+      "venue": "ZOJazz Stage",
+      "area": "Amsterdam",
       "when": "Sun 14 Jun",
-      "category": "market",
+      "category": "live",
       "freshness": "weekend",
       "outdoor": true,
       "kid": true,
-      "price": "free",
-      "blurb": "Vintage, craft, and design market in the beloved Westergas cultural space; local vendors and food stalls.",
-      "why": "Recurring favorite, great Sunday activity",
-      "source": "Your Little Black Book",
-      "link": "https://www.yourlittleblackbook.me/en/",
-      "image": "https://whereisthemarket.com/wp-content/uploads/2023/07/IMG_7768_jpg.jpg",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL"
-      ],
-      "verify": true
-    },
-    {
-      "id": "llm-your-little-black-book-fort-negen-pizza-pop-up",
-      "title": "Fort Negen Pizza Pop-up",
-      "venue": "Fort Negen",
-      "area": "Amsterdam North",
-      "when": "Sat–Sun 13–14 Jun",
-      "category": "eat",
-      "freshness": "weekend",
-      "outdoor": false,
-      "kid": true,
-      "price": "from €15",
-      "blurb": "Cult-favorite pizza pop-up returns for two nights only; wood-fired pies and lively atmosphere.",
-      "why": "Limited run, locals queue for it",
-      "source": "Your Little Black Book",
-      "link": "https://www.yourlittleblackbook.me/en/",
-      "image": "https://www.bartsboekje.com/wp-content/uploads/2020/09/Fort-Negen-1-scaled.jpg",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "verify": true
-    },
-    {
-      "id": "llm-your-little-black-book-le-french-caf-oysters-brocante",
-      "title": "Le French Café — Oysters & Brocante",
-      "venue": "Le French Café",
-      "area": "Amsterdam Centre",
-      "when": "Sat 13 Jun",
-      "category": "eat",
-      "freshness": "weekend",
-      "outdoor": false,
-      "kid": false,
-      "price": "from €25",
-      "blurb": "Afternoon of fresh oysters paired with vintage and brocante shopping; French bistro charm meets flea-market finds.",
-      "why": "Unique hybrid experience, French classic vibe",
-      "source": "Your Little Black Book",
-      "link": "https://www.yourlittleblackbook.me/en/",
-      "image": "https://www.dewestkrant.nl/wp-content/uploads/2023/10/FRENCHCAFE2.jpg",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "verify": true
-    },
-    {
-      "id": "llm-kidsproof-grimm",
-      "title": "GRIMM",
-      "venue": "Nationale Opera Ballet",
-      "area": "Amsterdam",
-      "when": "Sat–Sun 13–14 Jun",
-      "category": "stage",
-      "freshness": "weekend",
-      "outdoor": false,
-      "kid": true,
       "price": "ticketed",
-      "blurb": "Classic fairy tales collide with hip-hop ballet in a wild, kinetic show for ages 8+.",
-      "why": "Critics' pick, energetic family spectacle",
-      "source": "Kidsproof",
-      "link": "https://www.kidsproof.nl/amsterdam/nationale-opera-ballet-grimm/",
-      "image": "https://oyster.ignimgs.com/mediawiki/apis.ign.com/grimm/b/b3/Grimm-cover-art.jpg",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "verify": true
-    },
-    {
-      "id": "llm-kidsproof-de-waanzinnige-boomhut-van-13-verdiepingen",
-      "title": "De waanzinnige boomhut van 13 verdiepingen",
-      "venue": "Theater",
-      "area": "Amsterdam",
-      "when": "Sat–Sun 13–14 Jun",
-      "category": "stage",
-      "freshness": "weekend",
-      "outdoor": false,
-      "kid": true,
-      "price": "ticketed",
-      "blurb": "Theatre show based on beloved Dutch children's book series; imaginative adventure for ages 6+.",
-      "why": "Bestselling book adapted for stage",
+      "blurb": "Family-friendly celebration of Keti Koti with live music, dance, and traditional dress catwalk—a vibrant festival experience for all ages.",
+      "why": "Unique cultural celebration, family-focused music & dance",
       "source": "Kidsproof",
       "link": "https://www.kidsproof.nl/amsterdam",
-      "image": "https://imgv2-2-f.scribdassets.com/img/document/963803806/original/476e95f1d8/1?v=1",
+      "image": "https://jazzorchestra.nl/media/Foto's%20voor%20concertagenda/00_keti%20koti%20galaconcert%202025%20hoofdbeeld_header%20website%20.jpg",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL"
+      ],
+      "verify": true
+    },
+    {
+      "id": "llm-kidsproof-finale-koninklijk-concertgebouw-concours-2026",
+      "title": "Finale Koninklijk Concertgebouw Concours 2026",
+      "venue": "Het Concertgebouw",
+      "area": "Amsterdam",
+      "when": "Sat 13 Jun or Sun 14 Jun",
+      "category": "live",
+      "freshness": "weekend",
+      "outdoor": false,
+      "kid": true,
+      "price": "ticketed",
+      "blurb": "Watch six mini-concerts in the thrilling finale of this prestigious young musicians' competition at Amsterdam's iconic concert hall.",
+      "why": "Elite classical showcase, exciting competition finale",
+      "source": "Kidsproof",
+      "link": "https://www.kidsproof.nl/amsterdam",
+      "image": "https://assets.isu.pub/document-structure/250225142627-234fd85347ab8ce6bf806a1b7b8d68f0/v1/6c4931d181d0c6907089cd76e10f538d.jpeg",
       "weatherFit": [
         "HOT",
         "WARM",
@@ -386,81 +211,6 @@
         "HOT",
         "WARM",
         "COOL"
-      ],
-      "verify": true
-    },
-    {
-      "id": "llm-eater-amsterdam-belly-pepper",
-      "title": "Belly Pepper",
-      "venue": "De Clercqstraat 128, Amsterdam West",
-      "area": "Amsterdam West",
-      "when": "Sat–Sun 13–14 Jun · breakfast, brunch, lunch",
-      "category": "eat",
-      "freshness": "always",
-      "outdoor": false,
-      "kid": true,
-      "price": "from €15",
-      "blurb": "Turkish-inspired brunch with seasonal egg dishes, börek towers, and vegan options in a cosy, welcoming space.",
-      "why": "Friendly staff, creative remixed brunch, perfect weekend mor",
-      "source": "Eater Amsterdam",
-      "link": "https://www.eater.com/maps/best-amsterdam-restaurants-netherlands-guide",
-      "image": "https://platform.eater.com/wp-content/uploads/sites/2/chorus/uploads/chorus_asset/file/25823097/6.1_BELLY.jpg?quality=90&strip=all&crop=0%2C25%2C100%2C50&w=2400",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "verify": true
-    },
-    {
-      "id": "llm-eater-amsterdam-tropico-latin-flavors",
-      "title": "Tropico Latin Flavors",
-      "venue": "Hoofdweg 294, Amsterdam West",
-      "area": "Amsterdam West",
-      "when": "Sat–Sun 13–14 Jun · lunch & dinner",
-      "category": "eat",
-      "freshness": "always",
-      "outdoor": false,
-      "kid": false,
-      "price": "from €20",
-      "blurb": "Colombian ceviches, empanadas, and Bandeja Paisa in a lively resto-bar with live music and karaoke vibes.",
-      "why": "Energetic weekend crowd, South American specialties, spirite",
-      "source": "Eater Amsterdam",
-      "link": "https://www.eater.com/maps/best-amsterdam-restaurants-netherlands-guide",
-      "image": "https://platform.eater.com/wp-content/uploads/sites/2/chorus/uploads/chorus_asset/file/25823091/3.1_CHEZ_copy.jpg?quality=90&amp;strip=all&amp;crop=0%2C32.546049155644%2C100%2C34.907901688712&amp;w=1200",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "verify": true
-    },
-    {
-      "id": "llm-eater-amsterdam-restaurant-kenneh",
-      "title": "Restaurant Kenneh",
-      "venue": "Amsterdam",
-      "area": "",
-      "when": "Sat–Sun 13–14 Jun · lunch & dinner",
-      "category": "eat",
-      "freshness": "always",
-      "outdoor": false,
-      "kid": false,
-      "price": "from €30",
-      "blurb": "Netherlands' first West African fine dining restaurant from Liberian-Dutch chef Samuka Kenneh; bold, distinctive cuisine.",
-      "why": "Groundbreaking West African tasting menu, critically acclaim",
-      "source": "Eater Amsterdam",
-      "link": "https://www.eater.com/maps/best-amsterdam-restaurants-netherlands-guide",
-      "image": "https://platform.eater.com/wp-content/uploads/sites/2/chorus/uploads/chorus_asset/file/25823122/14.1_KENNEH_copy.jpg?quality=90&strip=all&crop=0%2C23.333333333333%2C100%2C53.333333333333&w=2400",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
       ],
       "verify": true
     },
@@ -599,6 +349,50 @@
       ]
     },
     {
+      "id": "moeders",
+      "title": "Moeders — Dutch home cooking",
+      "venue": "Moeders",
+      "area": "Jordaan",
+      "when": "Daily · dinner",
+      "image": "https://images.unsplash.com/photo-1723511413901-99439b957bbf?w=1200&q=80",
+      "category": "eat",
+      "freshness": "always",
+      "outdoor": false,
+      "kid": false,
+      "price": "€€",
+      "blurb": "Walls papered with strangers’ mothers’ photos and a stamppot-and-stew menu built for a grey evening.",
+      "why": "Snug · classic Dutch · ideal in the rain",
+      "source": "Het Parool · PS",
+      "link": "https://www.moeders.com/",
+      "weatherFit": [
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ]
+    },
+    {
+      "id": "cafe-de-klos",
+      "title": "Café de Klos — ribs & grill",
+      "venue": "Café de Klos",
+      "area": "Centrum",
+      "when": "Daily · from 17:00",
+      "image": "https://images.unsplash.com/photo-1569352304334-6e422cd70ecd?w=1200&q=80",
+      "category": "eat",
+      "freshness": "always",
+      "outdoor": false,
+      "kid": false,
+      "price": "€€",
+      "blurb": "A tiny, packed grill house off the canals famous for sticky spare ribs — no frills, no reservations.",
+      "why": "Warm · cheap · duck in out of the wet",
+      "source": "The Infatuation",
+      "link": "https://www.theinfatuation.com/amsterdam",
+      "weatherFit": [
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ]
+    },
+    {
       "id": "wynand-fockink",
       "title": "Wynand Fockink — jenever tasting",
       "venue": "Wynand Fockink",
@@ -727,6 +521,30 @@
       "source": "Your Little Black Book",
       "link": "https://pllek.nl/",
       "weatherFit": [
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ]
+    },
+    {
+      "id": "tony-chocolonely",
+      "title": "Tony’s Chocolonely Super Store",
+      "venue": "Tony’s Super Store",
+      "area": "West",
+      "when": "Daily · 10:00–18:00",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/Tony%27s_Chocolonely_shop_Amsterdam.jpg/1280px-Tony%27s_Chocolonely_shop_Amsterdam.jpg",
+      "category": "eat",
+      "freshness": "always",
+      "outdoor": false,
+      "kid": true,
+      "price": "€",
+      "blurb": "The flagship of the slavery-free chocolate brand — make-your-own bars, a café, and a serious sweet-tooth detour.",
+      "why": "Indoor · kid-friendly · a happy rainy hour",
+      "source": "Kidsproof",
+      "link": "https://tonyschocolonely.com/",
+      "weatherFit": [
+        "HOT",
         "WARM",
         "COOL",
         "COLD_WET",
@@ -999,6 +817,7 @@
     },
     {
       "id": "ams-eat-as",
+      "tier": "classic",
       "title": "As",
       "venue": "As",
       "area": "Zuid",
@@ -1019,11 +838,11 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "when": "Lunch & dinner · book ahead",
-      "tier": "classic"
+      "when": "Lunch & dinner · book ahead"
     },
     {
       "id": "ams-eat-bak",
+      "tier": "classic",
       "title": "BAK",
       "venue": "BAK",
       "area": "Houthavens",
@@ -1044,11 +863,11 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "when": "Dinner · book ahead",
-      "tier": "classic"
+      "when": "Dinner · book ahead"
     },
     {
       "id": "ams-eat-brut-de-mer",
+      "tier": "bespoke",
       "title": "Brut de Mer",
       "venue": "Brut de Mer",
       "area": "De Pijp",
@@ -1069,11 +888,11 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "when": "Dinner · walk-in",
-      "tier": "bespoke"
+      "when": "Dinner · walk-in"
     },
     {
       "id": "ams-eat-buffet-van-odette",
+      "tier": "bespoke",
       "title": "Buffet van Odette",
       "venue": "Buffet van Odette",
       "area": "Centrum",
@@ -1094,11 +913,11 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "when": "All day",
-      "tier": "bespoke"
+      "when": "All day"
     },
     {
       "id": "ams-eat-cafe-caron",
+      "tier": "bespoke",
       "title": "Café Caron",
       "venue": "Café Caron",
       "area": "De Pijp",
@@ -1119,11 +938,11 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "when": "Dinner · book ahead",
-      "tier": "bespoke"
+      "when": "Dinner · book ahead"
     },
     {
       "id": "ams-eat-bar-centraal",
+      "tier": "bespoke",
       "title": "Bar Centraal",
       "venue": "Bar Centraal",
       "area": "Oud-West",
@@ -1144,11 +963,11 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "when": "All day · walk-in",
-      "tier": "bespoke"
+      "when": "All day · walk-in"
     },
     {
       "id": "ams-eat-choux",
+      "tier": "bespoke",
       "title": "Choux",
       "venue": "Choux",
       "area": "Centrum",
@@ -1169,11 +988,11 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "when": "Dinner · book ahead",
-      "tier": "bespoke"
+      "when": "Dinner · book ahead"
     },
     {
       "id": "ams-eat-the-cottage",
+      "tier": "bespoke",
       "title": "The Cottage",
       "venue": "The Cottage",
       "area": "De Pijp",
@@ -1194,11 +1013,11 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "when": "All day",
-      "tier": "bespoke"
+      "when": "All day"
     },
     {
       "id": "ams-eat-entrepot",
+      "tier": "bespoke",
       "title": "Entrepot",
       "venue": "Entrepot",
       "area": "Oost",
@@ -1219,11 +1038,11 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "when": "Dinner · book ahead",
-      "tier": "bespoke"
+      "when": "Dinner · book ahead"
     },
     {
       "id": "ams-eat-fc-hyena",
+      "tier": "bespoke",
       "title": "FC Hyena",
       "venue": "FC Hyena",
       "area": "Noord",
@@ -1244,11 +1063,11 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "when": "Eve · around a film",
-      "tier": "bespoke"
+      "when": "Eve · around a film"
     },
     {
       "id": "ams-eat-bar-fisk",
+      "tier": "bespoke",
       "title": "Bar Fisk",
       "venue": "Bar Fisk",
       "area": "De Pijp",
@@ -1269,11 +1088,11 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "when": "Dinner · book ahead",
-      "tier": "bespoke"
+      "when": "Dinner · book ahead"
     },
     {
       "id": "ams-eat-gebr-hartering",
+      "tier": "classic",
       "title": "Gebr. Hartering",
       "venue": "Gebr. Hartering",
       "area": "Centrum",
@@ -1294,11 +1113,11 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "when": "Dinner · book ahead",
-      "tier": "classic"
+      "when": "Dinner · book ahead"
     },
     {
       "id": "ams-eat-le-hollandais",
+      "tier": "classic",
       "title": "Le Hollandais",
       "venue": "Le Hollandais",
       "area": "Oost",
@@ -1319,11 +1138,11 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "when": "Dinner · book ahead",
-      "tier": "classic"
+      "when": "Dinner · book ahead"
     },
     {
       "id": "ams-eat-kaagman-kortekaas",
+      "tier": "bespoke",
       "title": "Kaagman & Kortekaas",
       "venue": "Kaagman & Kortekaas",
       "area": "Centrum",
@@ -1344,11 +1163,11 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "when": "Dinner · book ahead",
-      "tier": "bespoke"
+      "when": "Dinner · book ahead"
     },
     {
       "id": "ams-eat-cafe-de-klepel",
+      "tier": "bespoke",
       "title": "Café de Klepel",
       "venue": "Café de Klepel",
       "area": "Centrum",
@@ -1369,11 +1188,11 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "when": "Dinner · book ahead",
-      "tier": "bespoke"
+      "when": "Dinner · book ahead"
     },
     {
       "id": "ams-eat-cafe-modern",
+      "tier": "classic",
       "title": "Café Modern",
       "venue": "Café Modern",
       "area": "Noord",
@@ -1394,11 +1213,11 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "when": "Dinner · book ahead",
-      "tier": "classic"
+      "when": "Dinner · book ahead"
     },
     {
       "id": "ams-eat-bar-parry",
+      "tier": "bespoke",
       "title": "Bar Parry",
       "venue": "Bar Parry",
       "area": "De Pijp",
@@ -1419,11 +1238,11 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "when": "Dinner · walk-in",
-      "tier": "bespoke"
+      "when": "Dinner · walk-in"
     },
     {
       "id": "ams-eat-rijsel",
+      "tier": "classic",
       "title": "Rijsel",
       "venue": "Rijsel",
       "area": "Oost",
@@ -1444,11 +1263,11 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "when": "Dinner · book ahead",
-      "tier": "classic"
+      "when": "Dinner · book ahead"
     },
     {
       "id": "ams-eat-scheepskameel",
+      "tier": "bespoke",
       "title": "Scheepskameel",
       "venue": "Scheepskameel",
       "area": "Kattenburg",
@@ -1469,11 +1288,11 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "when": "Dinner · book ahead",
-      "tier": "bespoke"
+      "when": "Dinner · book ahead"
     },
     {
       "id": "ams-eat-toscanini",
+      "tier": "classic",
       "title": "Toscanini",
       "venue": "Toscanini",
       "area": "Jordaan",
@@ -1494,11 +1313,11 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "when": "Dinner · book well ahead",
-      "tier": "classic"
+      "when": "Dinner · book well ahead"
     },
     {
       "id": "ams-eat-de-vrouw-met-de-baard",
+      "tier": "bespoke",
       "title": "De Vrouw met de Baard",
       "venue": "De Vrouw met de Baard",
       "area": "Oost",
@@ -1519,11 +1338,11 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "when": "All day",
-      "tier": "bespoke"
+      "when": "All day"
     },
     {
       "id": "ams-eat-wilde-zwijnen",
+      "tier": "bespoke",
       "title": "Wilde Zwijnen",
       "venue": "Wilde Zwijnen",
       "area": "Oost",
@@ -1544,8 +1363,7 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "when": "Dinner · book ahead",
-      "tier": "bespoke"
+      "when": "Dinner · book ahead"
     },
     {
       "id": "ams-lostin-petit-gateau",
