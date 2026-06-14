@@ -609,18 +609,6 @@ export default function App() {
                     )}
 
                     <div className="bar-group">
-                      <span className="bar-label">Filter</span>
-                      <div className="bar-row">
-                        <button className={`filter-trigger${whens.length > 0 ? ' on' : ''}`} onClick={() => setWhenOpen(true)}>
-                          <Clock className="ft-icon" size={14} strokeWidth={2.2} /> {whenSummary}<ChevronDown className="ft-caret" size={14} strokeWidth={2.2} />
-                        </button>
-                        <button className={`filter-trigger${cats.length > 0 ? ' on' : ''}`} onClick={() => setFilterOpen(true)}>
-                          <LayoutGrid className="ft-icon" size={14} strokeWidth={2.2} /> {catSummary}<ChevronDown className="ft-caret" size={14} strokeWidth={2.2} />
-                        </button>
-                      </div>
-                    </div>
-
-                    <div className="bar-group">
                       <span className="bar-label">Your list</span>
                       <div className="bar-row">
                         <button
@@ -639,6 +627,18 @@ export default function App() {
                       <div className="bar-row">
                         <button className="bar-pill bar-pill--match" onClick={() => { setShareOpen(true); setBarOpen(false) }}>
                           <Heart size={14} strokeWidth={2.4} fill="currentColor" /> Match with someone
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="bar-group">
+                      <span className="bar-label">Filter</span>
+                      <div className="bar-row">
+                        <button className={`filter-trigger${whens.length > 0 ? ' on' : ''}`} onClick={() => setWhenOpen(true)}>
+                          <Clock className="ft-icon" size={14} strokeWidth={2.2} /> {whenSummary}<ChevronDown className="ft-caret" size={14} strokeWidth={2.2} />
+                        </button>
+                        <button className={`filter-trigger${cats.length > 0 ? ' on' : ''}`} onClick={() => setFilterOpen(true)}>
+                          <LayoutGrid className="ft-icon" size={14} strokeWidth={2.2} /> {catSummary}<ChevronDown className="ft-caret" size={14} strokeWidth={2.2} />
                         </button>
                       </div>
                     </div>
