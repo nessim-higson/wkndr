@@ -7,7 +7,7 @@ const FOLLOW = ''
 /** Full-screen intro over the live field: the line, then it lifts away as the app
  *  rises in. Plays every load; tap to skip. `lead` is overridable so a shared visit
  *  can be greeted personally ("Ness shared some picks."). */
-export function Intro({ onDone, lead = 'Tinder your events.', showHint = true }: { onDone: () => void; lead?: string; showHint?: boolean }) {
+export function Intro({ onDone, lead = 'Tinder your events.', sub, showHint = true }: { onDone: () => void; lead?: string; sub?: string; showHint?: boolean }) {
   const LEAD = lead
   useEffect(() => {
     const id = setTimeout(onDone, 2600)
@@ -32,6 +32,14 @@ export function Intro({ onDone, lead = 'Tinder your events.', showHint = true }:
         <span className="intro-mark"><span className="intro-dot" aria-hidden />WKNDR</span>
         <div className="intro-line">
           <h1 className="intro-lead">{LEAD}</h1>
+          {sub && (
+            <motion.p
+              className="intro-sub"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            >{sub}</motion.p>
+          )}
           {FOLLOW && (
             <motion.span
               className="intro-follow"

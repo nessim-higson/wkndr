@@ -1,14 +1,15 @@
 .stack-wrap {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  /* BOTTOM-anchored: the deck + controls sit LOW, the empty breathing room goes to the
+     TOP (cards lower, per feedback) and the dead space BELOW the buttons is gone. The
+     per-element margins below set the spacing (deck→controls clearance + controls→shuffle);
+     no flex `gap` so each gap is tuned independently. */
+  justify-content: flex-end;
   align-items: center;
-  /* the controls sit CLOSE beneath the deck (the older, tighter feel) — with the tightened
-     STEP_Y the back cards peek less, so this smaller gap clears them without the overlap
-     Ivan flagged. (Was 72px airy → 30px overlapped; 44px is tight but fully clear.) */
-  gap: 44px;
   width: 100%;
   height: 100%;       /* fill the main area so the deck can shrink to fit */
+  padding-bottom: 6px;
 }
 
 .stack-deck {
@@ -98,6 +99,7 @@
   display: flex;
   gap: 14px;
   align-items: center;
+  margin-top: 44px;   /* clears the deck's back-card peek (replaces the old flex gap) */
 }
 .act {
   width: 54px;
@@ -130,7 +132,7 @@
 }
 /* tertiary "serve me more" affordance under the action buttons */
 .stack-more {
-  display: block; margin: 14px auto 0;
+  display: block; margin: 16px auto 0;
   font-size: 12px; letter-spacing: 0.01em;
   color: var(--field-text); opacity: 0.6;
   transition: opacity 0.15s;

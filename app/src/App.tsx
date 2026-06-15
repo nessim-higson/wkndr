@@ -516,7 +516,12 @@ export default function App() {
       <AmbientField mode={mode} look={look} onLookChange={setLook} rerollNonce={fieldReroll} />
 
       <AnimatePresence>
-        {intro && <Intro lead={SHARED_FROM ? `${SHARED_FROM} shared some picks.` : undefined} showHint={visits <= 3} onDone={() => setIntro(false)} />}
+        {intro && <Intro
+          lead={SHARED_FROM ? `${SHARED_FROM} sent you some picks.` : undefined}
+          sub={SHARED_FROM ? 'Match to find out what you should do →' : undefined}
+          showHint={visits <= 3}
+          onDone={() => setIntro(false)}
+        />}
       </AnimatePresence>
 
       <motion.div

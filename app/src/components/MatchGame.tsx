@@ -67,7 +67,7 @@ export function MatchGame({
   function requestClose() {
     if (leaving) return
     setLeaving(true)
-    window.setTimeout(onClose, 240)
+    window.setTimeout(onClose, 440)   // let the lift-away animation finish before unmounting
   }
 
   function onSwipe(p: Pick, dir: SwipeDir) {
@@ -86,8 +86,11 @@ export function MatchGame({
   return (
     <motion.div
       className="mg"
-      initial={{ opacity: 0 }} animate={{ opacity: leaving ? 0 : 1 }}
-      transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
+      /* enters with a quick fade; LEAVES by gently lifting away (fade + slight scale-up over
+         a longer ease) so the hand-off to the app underneath feels like a reveal, not a cut. */
+      initial={{ opacity: 0, scale: 1.01 }}
+      animate={leaving ? { opacity: 0, scale: 1.03 } : { opacity: 1, scale: 1 }}
+      transition={{ duration: leaving ? 0.44 : 0.26, ease: [0.22, 1, 0.36, 1] }}
     >
       <div className="mg-head">
         <button className="mg-close" onClick={requestClose} aria-label="Close match"><X size={20} strokeWidth={2.4} /></button>
@@ -259,8 +262,10 @@ function MatchPlan({
         </ul>
       )}
       <div className="mg-plan-actions">
-        {n > 0 && <button className="mg-btn primary" onClick={onSave}>Add {n} to my list</button>}
-        {real && n > 0 && <button className="mg-btn" onClick={shareBack}>{sent ? '✓ Link copied' : `Send ${partnerName} the plan`}</button>}
+        {/* the boomerang: closing the loop back to the sender is the primary move for a real
+            match — one tap sends your matches back so THEY see what you both want. */}
+        {real && n > 0 && <button className="mg-btn primary" onClick={shareBack}>{sent ? '✓ Copied — paste it to ' + partnerName : `Send ${partnerName} your matches`}</button>}
+        {n > 0 && <button className={`mg-btn${real ? '' : ' primary'}`} onClick={onSave}>Add {n} to my list</button>}
         <button className="mg-btn" onClick={onClose}>See what else is on →</button>
       </div>
     </div>

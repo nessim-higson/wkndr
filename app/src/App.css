@@ -591,14 +591,16 @@
   z-index: 201;
   display: flex;
   justify-content: center;
+  padding: 0 20px;          /* same side padding as .app, so the pill lines up with the nav */
   pointer-events: none;
 }
 .undo-bar {
   pointer-events: auto;
-  display: inline-flex;
+  display: flex;
   align-items: center;
+  justify-content: space-between;   /* text left, Undo right — like the nav row */
   gap: 12px;
-  max-width: calc(100vw - 36px);
+  width: min(340px, 100%);   /* matches the nav module (anchor pads 20px like .app) */
   padding: 8px 8px 8px 16px;
   border: none;
   border-radius: 999px;
