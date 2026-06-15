@@ -36,6 +36,10 @@ const SHARED_FROM = (() => {
 // the ambient-look switcher, the city picker) for working sessions. Full version frozen
 // at /wkndr/versions/v4-10/.
 const DEVUI = new URLSearchParams(window.location.search).has('dev')
+// Current ISO-ish week index. Drives the evergreen rotation so the deep library
+// (~84 always-good picks) surfaces a DIFFERENT slice each week automatically — without
+// it, the same dozen always led and the feed felt identical week over week.
+const WEEK = Math.floor(Date.now() / 6.048e8)
 // the header degrees take on the live weather's hue — a cool day reads cool, a hot day warm —
 // so the number itself signals the mood (muted tints, readable on the cream pill)
 const TEMP_TINT: Record<Mode, string> = {
@@ -319,15 +323,16 @@ export default function App() {
         return whatOk && whenOk
       })
       // RESERVE: in the default browse (no filter), lead with the weekend's time-sensitive picks and
-      // hold the deep evergreen library back — only a rotating sample surfaces, and Shuffle (seed)
-      // rotates it, so "show me more" keeps revealing fresh evergreens without flooding the feed.
-      // Any explicit filter (incl. the Evergreen tiers) shows the full set.
+      // hold the deep evergreen library back — only a rotating sample surfaces. The window advances
+      // automatically every WEEK (so the feed is a different slice week over week, cycling the whole
+      // library over ~7 weeks) and Shuffle (seed) advances it further within a week. Any explicit
+      // filter (incl. the Evergreen tiers) shows the full set.
       if (filter !== 'all' || cats.length > 0 || whens.length > 0) return filtered
       const RESERVE = 12
       const fresh = filtered.filter((p) => p.freshness !== 'always')
       const ever = filtered.filter((p) => p.freshness === 'always')
       if (ever.length <= RESERVE) return filtered
-      const start = (seed * RESERVE) % ever.length
+      const start = ((WEEK + seed) * RESERVE) % ever.length
       const sample = [...ever, ...ever].slice(start, start + RESERVE)
       return [...fresh, ...sample]
     },
