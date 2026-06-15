@@ -23,6 +23,7 @@ import { dedupe, balanceByCategory, isGoodImage, fetchOgImage, wikiImage, webIma
 import { fixWhen } from '../src/lib/when'
 import { songkickAdapter } from './adapters/songkick'
 import { llmExtract } from './adapters/llm'
+import { websearchExtract } from './adapters/websearch'
 import { rssExtract } from './adapters/rss'
 import { ROSTERS } from './roster'
 
@@ -55,6 +56,11 @@ async function buildCity(city: City) {
     const n = got.reduce((a, b) => a + b.length, 0)
     got.forEach((g) => fromRoster.push(...g))
     console.log(`  llm:      ${llmSrc.length} sources → ${n} picks`)
+    // WEB SEARCH — the fresh-event engine: finds what's ACTUALLY on this weekend via live search
+    // (catches the JS-rendered listings the scrape above can't see). Same key.
+    const web = await websearchExtract(city.key, city.name)
+    fromRoster.push(...web)
+    console.log(`  search:   ${web.length} picks via web search`)
   } else {
     console.log(`  llm:      skipped (no ANTHROPIC_API_KEY) — set it to pull the diverse feed`)
   }
@@ -68,7 +74,7 @@ async function buildCity(city: City) {
 
   // DEDUPE (sets buzz = distinct sources) — roster first so live picks win the merge over canon.
   let picks = dedupe([...fromRoster, ...canon])
-  const isLive = (p: Pick) => p.id.startsWith('llm-')
+  const isLive = (p: Pick) => p.id.startsWith('llm-') || p.id.startsWith('web-')
 
   // DROP STALE — past-dated picks (hardcoded canon dates that have rolled by, or LLM picks that
   // scraped an already-finished event). Evergreen "Daily"/"Always" whens are kept.
