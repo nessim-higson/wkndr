@@ -272,8 +272,11 @@ export async function webImage(query: string): Promise<string | null> {
       const ar = w / h
       return ar > 2.0 ? 3 : ar > 1.7 ? 1 : 0       // demote panoramas a few slots; nudge wide shots one
     }
+    // STOCK-PHOTO BLOCK — agencies plaster a watermark across the image (the "alamy"/"Getty"
+    // scrawl on the Celeste card). Never use one; drop the host entirely.
+    const STOCK = /alamy|shutterstock|gettyimages|istockphoto|\bistock\b|dreamstime|123rf|depositphotos|stock\.adobe|adobestock|stockphoto|\.stock\.|bigstock|agefotostock|picfair|pond5|vectorstock|stocksy/i
     const ranked = results
-      .filter((r) => typeof r.image === 'string' && r.image!.startsWith('http'))
+      .filter((r) => typeof r.image === 'string' && r.image!.startsWith('http') && !STOCK.test(r.image!))
       .map((r, i) => ({ r, key: i + penalty(r) }))   // relevance index + a small shape nudge
       .sort((a, b) => a.key - b.key)
     for (const { r } of ranked.slice(0, 10)) {

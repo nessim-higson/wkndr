@@ -11,6 +11,9 @@
   height: 100%;       /* fill the main area so the deck can shrink to fit */
   padding-bottom: 6px;
 }
+/* Reserve the strip the UNDO pill drops into (app stack only) so the bigger cards never
+   sit under it. The MATCH screen has no undo, so its deck still fills top-to-bottom. */
+.main-stack .stack-wrap { padding-top: 48px; }
 
 .stack-deck {
   position: relative;
