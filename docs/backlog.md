@@ -1,10 +1,10 @@
 # WKNDR — backlog & strategic handoff
 
-_Last updated 2026-06-11, after the V.4 arc. This is the live working set + the strategic
-threads to carry forward. The original 2026-06-04 V2 plan (mostly shipped) is archived at the
-bottom for history._
+_Strategy + bigger threads. For the current build/pipeline snapshot see `../STATE.md` (kept current).
+This file's "Where we are" below is the V.4-era baseline; the V.5 MVP + web-search pipeline arc is in
+STATE.md. The original 2026-06-04 V2 plan (mostly shipped) is archived at the bottom for history._
 
-## Where we are
+## Where we are (V.4 baseline — see STATE.md for current V.5.x)
 - **Live build: V.4.6** — https://nessim-higson.github.io/wkndr/
 - Versioning: `V.<major>.<sub>`, the sub rolls at `.19` → next whole version (`bun run bump`;
   was `.9` through V.4.7). Whole versions are git milestone tags (`v1.0.0` … `v4.0`).
