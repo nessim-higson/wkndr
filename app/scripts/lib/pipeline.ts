@@ -12,14 +12,19 @@ export function deriveWeatherFit(outdoor: boolean): Mode[] {
   return outdoor ? [...FAIR_MODES] : [...ALL_MODES]
 }
 
-const norm = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim()
+// A loose IDENTITY key for an event title, for dedupe across adapters that title the same thing
+// differently ("Holland Festival" vs "Holland Festival 2026: Alain Clark…"). Drop a year, take
+// the part before the first separator, strip to alphanumerics. Venue is NOT part of the key —
+// a festival arriving from two sources with different "venue" strings is still ONE event.
+const titleKey = (s: string) =>
+  s.toLowerCase().replace(/\b(19|20)\d{2}\b/g, '').split(/[:–—·|(]/)[0].replace(/[^a-z0-9]+/g, '').slice(0, 28)
 
 // Merge the same event arriving from multiple adapters. Key = title+venue. The richest
 // record wins; we union the source credits (the cross-source "buzz" signal lives here).
 export function dedupe(picks: Pick[]): Pick[] {
   const byKey = new Map<string, Pick & { sources?: string[] }>()
   for (const p of picks) {
-    const key = `${norm(p.title)}|${norm(p.venue)}`
+    const key = titleKey(p.title)
     const existing = byKey.get(key)
     if (!existing) {
       byKey.set(key, { ...p })

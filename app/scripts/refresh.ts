@@ -150,9 +150,14 @@ async function buildCity(city: City) {
     const seen = new Map<string, number>()
     for (const p of live) if (p.image) seen.set(p.image, (seen.get(p.image) || 0) + 1)
     for (const p of live) if (p.image && (seen.get(p.image) || 0) > 1) p.image = undefined   // shared hero = generic
+    // DROP rule, relaxed for freshness: a scraped (llm-) pick with no real photo is dropped (low
+    // signal, not worth a poster). A WEB-SEARCH (web-) pick is genuinely fresh + dated, so if we
+    // couldn't photo it we KEEP it and let the card render its category poster — better a fresh
+    // event with a poster than no fresh events at all. (Was: drop ALL imageless live picks.)
     const before = picks.length
-    picks = picks.filter((p) => !isLive(p) || p.image)
-    console.log(`  images:   ${live.filter((p) => p.image).length}/${live.length} live picks kept a real photo (dropped ${before - picks.length})`)
+    picks = picks.filter((p) => !p.id.startsWith('llm-') || p.image)
+    const webNoImg = picks.filter((p) => p.id.startsWith('web-') && !p.image).length
+    console.log(`  images:   ${live.filter((p) => p.image).length}/${live.length} live imaged · dropped ${before - picks.length} scraped · kept ${webNoImg} fresh web picks on posters`)
   }
   // belt-and-suspenders: any remaining http:// image (e.g. an old canon URL) → https, else it's a
   // mixed-content blank card on the https site.

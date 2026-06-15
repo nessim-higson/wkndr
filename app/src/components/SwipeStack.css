@@ -14,17 +14,20 @@
 
 .stack-deck {
   position: relative;
-  width: min(300px, 74vw);   /* mobile: leave the weather field visible around the deck */
-  flex: 0 1 400px;           /* prefer 400px tall, shrink when space is tight */
+  /* GROW to fill the vertical space between the nav and the controls — the card commands the
+     screen instead of floating with a big gap above it (per feedback: cards too small / too
+     much empty space). Width steps up by breakpoint; height just fills. */
+  flex: 1 1 0;
   min-height: 0;
   max-height: 100%;
+  width: min(91vw, 460px);   /* mobile — wider than the old 300px */
+  margin: 0 auto;
 }
-/* desktop has room — let the card grow and command the space */
 @media (min-width: 720px) {
-  .stack-deck { width: min(440px, 46vw); flex-basis: 600px; }
+  .stack-deck { width: min(52vw, 560px); }   /* desktop — bigger, but stays portrait (height fills) */
 }
 @media (min-width: 1200px) {
-  .stack-deck { width: 500px; flex-basis: 680px; }
+  .stack-deck { width: 600px; }
 }
 .stack-actions { flex-shrink: 0; }
 
