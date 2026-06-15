@@ -44,12 +44,19 @@ const GEO: Record<string, { city: string; region?: string; country: string; time
   'new-orleans': { city: 'New Orleans', region: 'Louisiana', country: 'US', timezone: 'America/Chicago' },
 }
 
-// the facets to search — the same editorial spread as the roster, but discovered live
+// the facets to search — broad editorial spread, discovered live. MORE facets = more genuinely
+// fresh, dated events per run (the freshness lever), and they cover the experiential categories
+// real users asked for (workshops, talks, markets, family). Each facet is one paced API call.
 const FACETS = [
-  'festivals, markets, free + outdoor events, and the most interesting one-off things to do',
-  'live music — gigs, concerts and club nights',
-  'art & museum exhibitions (especially shows closing soon) and theatre/film',
-  'notable new restaurant & bar openings and food & drink events',
+  'festivals, street fairs and big outdoor/free events',
+  'live music — concerts and gigs at music venues',
+  'club nights, DJ sets and electronic/dance events',
+  'art & museum exhibitions opening or closing soon, plus theatre, dance and film',
+  'notable new restaurant & bar openings, food festivals and tastings',
+  'markets, fairs and pop-ups (design, vintage, food, makers)',
+  'workshops, classes and creative sessions — ceramics, cooking, life-drawing, run clubs',
+  'talks, lectures and special or late-night museum openings',
+  'family- and kid-friendly things to do',
 ]
 
 function systemPrompt(cityName: string): string {

@@ -16,7 +16,7 @@ export function deriveWeatherFit(outdoor: boolean): Mode[] {
 // differently ("Holland Festival" vs "Holland Festival 2026: Alain Clark…"). Drop a year, take
 // the part before the first separator, strip to alphanumerics. Venue is NOT part of the key —
 // a festival arriving from two sources with different "venue" strings is still ONE event.
-const titleKey = (s: string) =>
+export const titleKey = (s: string) =>
   s.toLowerCase().replace(/\b(19|20)\d{2}\b/g, '').split(/[:–—·|(]/)[0].replace(/[^a-z0-9]+/g, '').slice(0, 28)
 
 // Merge the same event arriving from multiple adapters. Key = title+venue. The richest
@@ -77,6 +77,9 @@ const UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (
 const MIN_DIM = 600                 // shortest side must be ≥ this
 const ASPECT_RANGE: [number, number] = [0.42, 2.6]   // not a banner strip, not a square icon
 const LOGO_URL = /logo|favicon|icon|sprite|placeholder|wordmark|social[-_]?shar|sharing[-_]?image|og[-_]?default|default[-_]?(og|share)|avatar|thumbnail|pictogram|picotogram|badge|emblem/i
+// Stock-agency hosts plaster a watermark across the image (the "alamy"/"getty" scrawl). Reject
+// by host from ANY source (web search, og:image, scraped) — never let one reach a card.
+const STOCK_URL = /alamy|shutterstock|gettyimages|istockphoto|\bistock\b|dreamstime|123rf|depositphotos|stock\.adobe|adobestock|stockphoto|\.stock\.|bigstock|agefotostock|picfair|pond5|vectorstock|stocksy/i
 
 // Parse pixel dimensions from the first bytes of PNG / JPEG / GIF / WEBP.
 function imageDims(b: Uint8Array): [number, number] | null {
@@ -104,7 +107,7 @@ function imageDims(b: Uint8Array): [number, number] | null {
  *  HTTPS — an http:// image is mixed-content-blocked by the browser on the https site (a blank
  *  card), even though a server-side fetch of it succeeds. */
 export async function isGoodImage(url: string, timeoutMs = 8000): Promise<boolean> {
-  if (!url.startsWith('https://') || LOGO_URL.test(url)) return false
+  if (!url.startsWith('https://') || LOGO_URL.test(url) || STOCK_URL.test(url)) return false
   try {
     const ctrl = new AbortController()
     const t = setTimeout(() => ctrl.abort(), timeoutMs)
@@ -272,11 +275,8 @@ export async function webImage(query: string): Promise<string | null> {
       const ar = w / h
       return ar > 2.0 ? 3 : ar > 1.7 ? 1 : 0       // demote panoramas a few slots; nudge wide shots one
     }
-    // STOCK-PHOTO BLOCK — agencies plaster a watermark across the image (the "alamy"/"Getty"
-    // scrawl on the Celeste card). Never use one; drop the host entirely.
-    const STOCK = /alamy|shutterstock|gettyimages|istockphoto|\bistock\b|dreamstime|123rf|depositphotos|stock\.adobe|adobestock|stockphoto|\.stock\.|bigstock|agefotostock|picfair|pond5|vectorstock|stocksy/i
     const ranked = results
-      .filter((r) => typeof r.image === 'string' && r.image!.startsWith('http') && !STOCK.test(r.image!))
+      .filter((r) => typeof r.image === 'string' && r.image!.startsWith('http') && !STOCK_URL.test(r.image!))
       .map((r, i) => ({ r, key: i + penalty(r) }))   // relevance index + a small shape nudge
       .sort((a, b) => a.key - b.key)
     for (const { r } of ranked.slice(0, 10)) {

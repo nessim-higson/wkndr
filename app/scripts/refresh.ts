@@ -19,7 +19,7 @@
  */
 import { CITIES, type City } from '../src/data/cities'
 import type { Pick } from '../src/types'
-import { dedupe, balanceByCategory, isGoodImage, fetchOgImage, wikiImage, webImage, whenIsPast, whenBeforeWeekend, upcomingWeekend, linkOk, mapLimit } from './lib/pipeline'
+import { dedupe, balanceByCategory, isGoodImage, fetchOgImage, wikiImage, webImage, whenIsPast, whenBeforeWeekend, upcomingWeekend, linkOk, mapLimit, titleKey } from './lib/pipeline'
 import { fixWhen } from '../src/lib/when'
 import { songkickAdapter } from './adapters/songkick'
 import { llmExtract } from './adapters/llm'
@@ -39,6 +39,15 @@ const FRESH_RANK: Record<string, number> = { new: 3, ending: 3, weekend: 2, alwa
 async function buildCity(city: City) {
   console.log(`\n● ${city.label}`)
   const roster = ROSTERS[city.key] ?? []
+
+  // NOVELTY — read LAST week's feed (the file we're about to overwrite) so we can lead with what's
+  // genuinely NEW this week. Returning users should see fresh content first, not the same deck.
+  let seenLastWeek = new Set<string>()
+  try {
+    const prior = await Bun.file(`${OUT_DIR}/picks.${city.key}.json`).json()
+    seenLastWeek = new Set<string>((prior.picks ?? []).map((p: Pick) => titleKey(p.title)))
+    console.log(`  novelty:  ${seenLastWeek.size} titles seen last week (new ones will lead)`)
+  } catch { /* first run / no prior feed */ }
 
   // FETCH + NORMALIZE — every adapter emits Pick[] in our shape.
   const canon = city.picks                                          // hand-authored floor (always)
@@ -165,13 +174,21 @@ async function buildCity(city: City) {
 
   // RANK by what's-talked-about (buzz) then freshness. Cap per category only when there's a real
   // live pull to balance — a failed/empty pull must never trim the curated canon.
-  picks.sort((a, b) => (b.buzz ?? 1) - (a.buzz ?? 1) || (FRESH_RANK[b.freshness] - FRESH_RANK[a.freshness]))
+  // NOVELTY-FIRST rank: genuinely-new-this-week picks lead, THEN buzz, THEN freshness. Because the
+  // per-category cap below keeps the top N per category, novel events also SURVIVE over stale
+  // repeats — so a returning user gets a feed that actually turned over (the retention lever).
+  const isNew = (p: Pick) => isLive(p) && !seenLastWeek.has(titleKey(p.title))
+  const novelCount = picks.filter(isNew).length
+  picks.sort((a, b) =>
+    (isNew(b) ? 1 : 0) - (isNew(a) ? 1 : 0) ||
+    (b.buzz ?? 1) - (a.buzz ?? 1) ||
+    (FRESH_RANK[b.freshness] - FRESH_RANK[a.freshness]))
   if (picks.filter(isLive).length > 6) {
-    const balanced = balanceByCategory(picks, 6)
-    console.log(`  ranked:   ${picks.length} → ${balanced.length} after per-category cap`)
+    const balanced = balanceByCategory(picks, 8)   // a touch higher (was 6) so more fresh events survive
+    console.log(`  ranked:   ${picks.length} → ${balanced.length} after per-category cap · ${novelCount} new this week`)
     picks = balanced
   } else {
-    console.log(`  ranked:   ${picks.length} (canon floor)`)
+    console.log(`  ranked:   ${picks.length} (canon floor) · ${novelCount} new this week`)
   }
 
   // PUBLISH — the app reads this at runtime.
