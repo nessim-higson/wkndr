@@ -1,8 +1,9 @@
 # CLAUDE.md — WKNDR
 
-> Read this first. It is the working memory for the WKNDR project. It exists so any
-> fresh Claude Code session can be productive immediately without re-onboarding.
-> Update it as decisions are made. Treat it the way `moms-library` treats its own CLAUDE.md.
+> **➜ For the CURRENT state (live version, MVP posture, pipeline, open decisions), read
+> [`STATE.md`](STATE.md) first — it's kept current.** This file is the design-lineage /
+> onboarding history (much of it predates the V.5 MVP + web-search pipeline; where it differs
+> from STATE.md, STATE.md wins). `docs/backlog.md` = strategy; `CHANGELOG.md` = version history.
 
 ---
 
