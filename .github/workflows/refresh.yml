@@ -1,12 +1,14 @@
 name: Refresh content
 
-# Runs WEEKLY — automatically every MONDAY 06:00 UTC (full week's lead before the weekend) — and
-# ON DEMAND (the "Run workflow" button in the Actions tab). Pulls fresh picks via the pipeline,
-# ranks them by buzz (how many sources flag each), commits the updated picks.json, then kicks the
-# Pages deploy so the live app serves the new feed. No manual prompting needed.
+# Runs WEEKLY — automatically every THURSDAY 13:00 UTC (15:00 CET) — and ON DEMAND (the "Run
+# workflow" button in the Actions tab). THURSDAY, not Monday: the key sources (Your Little Black
+# Book's weekend agenda, I amsterdam's weekend curation) publish mid-to-late week, so a Monday
+# pull predated them and the weekend always felt stale. Thursday afternoon catches the fresh
+# weekend guides while still leaving Fri–Sun to plan. Pulls fresh picks via the pipeline, ranks
+# them by buzz, commits the updated picks.json, then kicks the Pages deploy. No prompting needed.
 on:
   schedule:
-    - cron: '0 6 * * 1'      # Monday 06:00 UTC
+    - cron: '0 13 * * 4'     # Thursday 13:00 UTC (15:00 CET) — after the weekend guides drop
   workflow_dispatch:
 
 permissions:
