@@ -138,8 +138,13 @@ async function buildCity(city: City) {
     const PERFORMER = new Set(['live', 'stage'])
     const CAT_HINT: Record<string, string> = { eat: 'restaurant', drink: 'bar', art: 'museum gallery', market: 'market', daytrip: '', out: '' }
     const ACT_HINT: Record<string, string> = { live: 'band concert', stage: 'theatre show' }
+    // DON'T open-web-search a GENERIC EVENT TITLE — "Open Garden Days" returned a Pride photo,
+    // "Bite of Amsterdam" returns random Amsterdam shots. DuckDuckGo can't verify the subject, so
+    // for a web-search EVENT (non-performer) we trust ONLY its real link's og:image, else a poster.
+    // Named performers (gigs/shows) still search — a disambiguated act name resolves reliably.
+    const skipWebImage = (p: Pick) => p.id.startsWith('web-') && !PERFORMER.has(p.category)
     let webGot = 0
-    await mapLimit(live.filter((p) => !p.image), 2, async (p) => {
+    await mapLimit(live.filter((p) => !p.image && !skipWebImage(p)), 2, async (p) => {
       const q = PERFORMER.has(p.category)
         ? `${p.title.split(/\s*[:–—]\s*/)[0].split(/\s+(?:and|&|\+|x|w\/|ft\.?|feat\.?|with|presents)\s+/i)[0].trim()} ${ACT_HINT[p.category] ?? ''}`.trim()
         : `${p.title} ${city.name} ${CAT_HINT[p.category] ?? ''}`.replace(/\s+/g, ' ').trim()
