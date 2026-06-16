@@ -73,7 +73,9 @@ export function weatherPill(p: Pick, live?: Mode): { text: string; perfect: bool
   else text = 'Better when dry'
   const sensitive = text !== 'Rain or shine'
   const perfect = !!live && sensitive && fit.includes(live)
-  return { text: perfect ? 'Perfect today' : text, perfect }
+  // the app is about the COMING WEEKEND, not today — so the peak pill reads "this weekend"
+  // (an event "Perfect today" was misleading when it's actually on Sat/Sun).
+  return { text: perfect ? 'Perfect this weekend' : text, perfect }
 }
 
 // THE one pill a card front may carry — the single highest-signal fact, or nothing.
@@ -82,7 +84,7 @@ export function weatherPill(p: Pick, live?: Mode): { text: string; perfect: bool
 // kids, trending, category — lives on the card's detail, not its face.
 export interface CardSignal { text: string; tone: 'accent' | 'red' | 'green' | 'dim'; glow?: boolean }
 export function cardSignal(p: Pick, live?: Mode): CardSignal | null {
-  if (weatherPill(p, live).perfect) return { text: 'Perfect today', tone: 'accent', glow: true }
+  if (weatherPill(p, live).perfect) return { text: 'Perfect this weekend', tone: 'accent', glow: true }
   if (p.status) {
     const tone = p.status === 'final-week' ? 'red' : p.status === 'free' ? 'green' : p.status === 'sold-out' ? 'dim' : 'accent'
     return { text: STATUS_LABEL[p.status], tone }

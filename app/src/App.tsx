@@ -518,7 +518,7 @@ export default function App() {
       <AnimatePresence>
         {intro && <Intro
           lead={SHARED_FROM ? `${SHARED_FROM} sent you some picks.` : undefined}
-          sub={SHARED_FROM ? 'Match to find out what you should do →' : undefined}
+          sub={SHARED_FROM ? 'Match to find out what you should do →' : 'Swipe what’s on — match with friends to plan the weekend together.'}
           showHint={visits <= 3}
           onDone={() => setIntro(false)}
         />}
