@@ -128,23 +128,25 @@ async function buildCity(city: City) {
   // Curated canon (all imaged) is the floor, so the deck stays full.
   if (!SKIP_IMAGES) {
     const live = picks.filter(isLive)
-    await mapLimit(live.filter((p) => p.image), 5, async (p) => { if (!(await isGoodImage(p.image!))) p.image = undefined })
-    await mapLimit(live.filter((p) => !p.image && p.link), 6, async (p) => { const img = await fetchOgImage(p.link); if (img) p.image = img })
-
-    // WEB IMAGE SEARCH (DuckDuckGo, keyless) — the broad fallback for everything the sources didn't
-    // image: a real, subject-accurate photo from the open web. Performers get a DISAMBIGUATING term
-    // ("band"/"live") so an ambiguous name ("Cabaret Voltaire") resolves to the act, not a same-named
-    // landmark; venues → name + city + a category hint so a restaurant resolves to the actual place.
     const PERFORMER = new Set(['live', 'stage'])
+    // A web-search EVENT (festival/market/garden-days — not a named performer) has NO reliable
+    // automated photo. Open-web search returns the wrong subject ("Open Garden Days" → a Pride
+    // photo) AND the source's own og:image is often a generic civic hero (I amsterdam serves its
+    // Canal Parade shot as the page image). Both pass every quality screen yet are simply WRONG.
+    // So these get NO guessed image — they render a clean category poster. Named performers +
+    // scraped picks still try og → web → wiki (a disambiguated act name resolves reliably).
+    const genericWebEvent = (p: Pick) => p.id.startsWith('web-') && !PERFORMER.has(p.category)
+
+    await mapLimit(live.filter((p) => p.image), 5, async (p) => { if (!(await isGoodImage(p.image!))) p.image = undefined })
+    await mapLimit(live.filter((p) => !p.image && p.link && !genericWebEvent(p)), 6, async (p) => { const img = await fetchOgImage(p.link); if (img) p.image = img })
+
+    // WEB IMAGE SEARCH (DuckDuckGo, keyless) — subject-accurate photo from the open web for
+    // performers/scraped picks. Performers get a DISAMBIGUATING term ("band"/"live") so an
+    // ambiguous name resolves to the act; venues → name + city + a category hint.
     const CAT_HINT: Record<string, string> = { eat: 'restaurant', drink: 'bar', art: 'museum gallery', market: 'market', daytrip: '', out: '' }
     const ACT_HINT: Record<string, string> = { live: 'band concert', stage: 'theatre show' }
-    // DON'T open-web-search a GENERIC EVENT TITLE — "Open Garden Days" returned a Pride photo,
-    // "Bite of Amsterdam" returns random Amsterdam shots. DuckDuckGo can't verify the subject, so
-    // for a web-search EVENT (non-performer) we trust ONLY its real link's og:image, else a poster.
-    // Named performers (gigs/shows) still search — a disambiguated act name resolves reliably.
-    const skipWebImage = (p: Pick) => p.id.startsWith('web-') && !PERFORMER.has(p.category)
     let webGot = 0
-    await mapLimit(live.filter((p) => !p.image && !skipWebImage(p)), 2, async (p) => {
+    await mapLimit(live.filter((p) => !p.image && !genericWebEvent(p)), 2, async (p) => {
       const q = PERFORMER.has(p.category)
         ? `${p.title.split(/\s*[:–—]\s*/)[0].split(/\s+(?:and|&|\+|x|w\/|ft\.?|feat\.?|with|presents)\s+/i)[0].trim()} ${ACT_HINT[p.category] ?? ''}`.trim()
         : `${p.title} ${city.name} ${CAT_HINT[p.category] ?? ''}`.replace(/\s+/g, ' ').trim()

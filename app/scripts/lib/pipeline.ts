@@ -107,7 +107,9 @@ function imageDims(b: Uint8Array): [number, number] | null {
  *  HTTPS — an http:// image is mixed-content-blocked by the browser on the https site (a blank
  *  card), even though a server-side fetch of it succeeds. */
 export async function isGoodImage(url: string, timeoutMs = 8000): Promise<boolean> {
-  if (!url.startsWith('https://') || LOGO_URL.test(url) || STOCK_URL.test(url)) return false
+  // also reject the notorious I amsterdam "Canal Parade" site hero (a Pride photo it serves as the
+  // og:image on unrelated event pages) — passes every quality screen but is the wrong subject.
+  if (!url.startsWith('https://') || LOGO_URL.test(url) || STOCK_URL.test(url) || /canal[-_]?parade/i.test(url)) return false
   try {
     const ctrl = new AbortController()
     const t = setTimeout(() => ctrl.abort(), timeoutMs)
