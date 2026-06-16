@@ -31,6 +31,10 @@ const SHARED_FROM = (() => {
   const f = new URLSearchParams(window.location.search).get('from')
   return f ? f.trim().slice(0, 24) : null
 })()
+// `&m=1` marks the RETURN leg of the boomerang: the partner swiped your picks and sent their
+// matches BACK. Same ?w=codes shape, but we greet it as a confirmation ("you're matched") and
+// skip relaunching the swipe game (you'd just be re-swiping your own picks). The breadcrumb.
+const SHARED_CONFIRM = new URLSearchParams(window.location.search).get('m') === '1'
 // MVP surface gate (V.5): the trimmed product is the default — one view (Stack), one
 // ambient look, Amsterdam only. `?dev=1` reveals the full exploration surface (all views,
 // the ambient-look switcher, the city picker) for working sessions. Full version frozen
@@ -280,7 +284,9 @@ export default function App() {
   // opening a shared link launches the match game once the intro lifts — you swipe their picks to
   // find what you both want. Closing it drops you onto the shared list (the 💌 banner can re-launch).
   useEffect(() => {
-    if (matchPartner && !intro && !matchLaunched.current) { matchLaunched.current = true; setMatching(true) }
+    // …unless this is the RETURN leg (m=1): the partner already matched, so don't make the sender
+    // re-swipe their own picks — just show the confirmed plan.
+    if (matchPartner && !intro && !matchLaunched.current && !SHARED_CONFIRM) { matchLaunched.current = true; setMatching(true) }
   }, [intro, matchPartner])
 
   // pulse the persistent saves counter whenever a new save lands in it (the toast's
@@ -517,8 +523,8 @@ export default function App() {
 
       <AnimatePresence>
         {intro && <Intro
-          lead={SHARED_FROM ? `${SHARED_FROM} sent you some picks.` : undefined}
-          sub={SHARED_FROM ? 'Match to find out what you should do →' : 'Swipe what’s on — match with friends to plan the weekend together.'}
+          lead={SHARED_CONFIRM ? `It’s a match with ${SHARED_FROM || 'your friend'}.` : SHARED_FROM ? `${SHARED_FROM} sent you some picks.` : undefined}
+          sub={SHARED_CONFIRM ? 'The plans you both want — here’s your weekend.' : SHARED_FROM ? 'Match to find out what you should do →' : 'Swipe what’s on — match with friends to plan the weekend together.'}
           showHint={visits <= 3}
           onDone={() => setIntro(false)}
         />}
@@ -783,9 +789,18 @@ export default function App() {
         )}
         {filter === 'shared' && SHARED_IDS && (
           <div className="ctx-bar shared">
-            <span>💌 {SHARED_FROM || 'A friend'} shared {sharedPickIds?.size || SHARED_IDS.size} picks</span>
-            <button className="ctx-match" onClick={() => setMatching(true)}><Heart size={13} strokeWidth={2.6} fill="currentColor" /> Match</button>
-            <button onClick={() => setSaved((s) => new Set([...s, ...(sharedPickIds ?? [])]))}>Save all</button>
+            {SHARED_CONFIRM ? (
+              <>
+                <span>🎉 You &amp; {SHARED_FROM || 'your friend'} matched · {sharedPickIds?.size || SHARED_IDS.size} plans</span>
+                <button onClick={() => setSaved((s) => new Set([...s, ...(sharedPickIds ?? [])]))}>Save all</button>
+              </>
+            ) : (
+              <>
+                <span>💌 {SHARED_FROM || 'A friend'} shared {sharedPickIds?.size || SHARED_IDS.size} picks</span>
+                <button className="ctx-match" onClick={() => setMatching(true)}><Heart size={13} strokeWidth={2.6} fill="currentColor" /> Match</button>
+                <button onClick={() => setSaved((s) => new Set([...s, ...(sharedPickIds ?? [])]))}>Save all</button>
+              </>
+            )}
           </div>
         )}
         {/* Share nudge — appears once you've saved enough to be worth planning together (and not

@@ -229,8 +229,10 @@ function MatchPlan({
   // both agreed on (from your name, stored when you last shared).
   function shareBack() {
     const me = (localStorage.getItem('wkndr.name') || '').trim()
-    const url = shareLink(matched, me)
-    const data = { title: 'WKNDR — our match', text: `${n} we both want to do`, url }
+    // `&m=1` = the confirmation breadcrumb: tells the original sender's app this is the RETURN leg
+    // (you both matched), so it greets them with "it's a match" instead of a fresh invite.
+    const url = shareLink(matched, me) + '&m=1'
+    const data = { title: 'WKNDR — it’s a match', text: `${n} we both want to do this weekend`, url }
     if (navigator.share) { navigator.share(data).catch(() => {}); return }
     navigator.clipboard?.writeText(url).then(() => { setSent(true); setTimeout(() => setSent(false), 1800) })
   }
