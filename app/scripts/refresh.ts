@@ -137,6 +137,19 @@ async function buildCity(city: City) {
     // scraped picks still try og → web → wiki (a disambiguated act name resolves reliably).
     const genericWebEvent = (p: Pick) => p.id.startsWith('web-') && !PERFORMER.has(p.category)
 
+    // THEMED-PHOTO BANK — the hand-authored canon is fully imaged with curated, proven,
+    // category-tagged PHOTOGRAPHS. Borrow them, by category, as the final fallback so an imageless
+    // live pick renders a real, category-appropriate photo (a market stall, a gig crowd, a gallery)
+    // instead of a flat text-on-colour poster. This is the reliable image source for generic web
+    // events (festivals/markets/garden-days) that have no trustworthy per-event photo — atmospheric
+    // and always on-theme, never a wrong subject (the Pride-on-garden-days class of error). Chosen
+    // deterministically by id so a given event keeps the same photo run-to-run.
+    const bank: Record<string, string[]> = {}
+    for (const p of city.picks) if (p.image && p.image.startsWith('http')) (bank[p.category] ??= []).push(p.image)
+    const bankPool = [...new Set(Object.values(bank).flat())]
+    const idHash = (s: string) => { let h = 0; for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0; return Math.abs(h) }
+    const themedPhoto = (p: Pick) => { const pool = bank[p.category]?.length ? bank[p.category] : bankPool; return pool.length ? pool[idHash(p.id) % pool.length] : undefined }
+
     await mapLimit(live.filter((p) => p.image), 5, async (p) => { if (!(await isGoodImage(p.image!))) p.image = undefined })
     await mapLimit(live.filter((p) => !p.image && p.link && !genericWebEvent(p)), 6, async (p) => { const img = await fetchOgImage(p.link); if (img) p.image = img })
 
@@ -166,14 +179,18 @@ async function buildCity(city: City) {
     const seen = new Map<string, number>()
     for (const p of live) if (p.image) seen.set(p.image, (seen.get(p.image) || 0) + 1)
     for (const p of live) if (p.image && (seen.get(p.image) || 0) > 1) p.image = undefined   // shared hero = generic
-    // DROP rule, relaxed for freshness: a scraped (llm-) pick with no real photo is dropped (low
-    // signal, not worth a poster). A WEB-SEARCH (web-) pick is genuinely fresh + dated, so if we
-    // couldn't photo it we KEEP it and let the card render its category poster — better a fresh
-    // event with a poster than no fresh events at all. (Was: drop ALL imageless live picks.)
+
+    // BANK FILL — anything still imageless (generic web events, or a pick that just lost a shared
+    // hero) gets a real category photo from the canon bank. Runs AFTER the dedup so these curated
+    // borrows are never stripped. Result: every live card carries a photograph, none are text-on-colour.
+    let banked = 0
+    for (const p of live) if (!p.image) { const img = themedPhoto(p); if (img) { p.image = img; banked++ } }
+    if (banked) console.log(`  bank:     +${banked} imageless live picks → themed canon photo`)
+
+    // safety net: with the bank, no live pick should be imageless; drop any that somehow still is.
     const before = picks.length
-    picks = picks.filter((p) => !p.id.startsWith('llm-') || p.image)
-    const webNoImg = picks.filter((p) => p.id.startsWith('web-') && !p.image).length
-    console.log(`  images:   ${live.filter((p) => p.image).length}/${live.length} live imaged · dropped ${before - picks.length} scraped · kept ${webNoImg} fresh web picks on posters`)
+    picks = picks.filter((p) => !isLive(p) || p.image)
+    console.log(`  images:   ${live.filter((p) => p.image).length}/${live.length} live imaged${before !== picks.length ? ` · dropped ${before - picks.length} imageless` : ''}`)
   }
   // belt-and-suspenders: any remaining http:// image (e.g. an old canon URL) → https, else it's a
   // mixed-content blank card on the https site.

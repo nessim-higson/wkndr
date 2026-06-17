@@ -27,8 +27,8 @@
   margin: 0 auto;
 }
 @media (min-width: 720px) {
-  /* desktop — stays portrait; height capped ~15% under a full fill so it isn't too tall */
-  .stack-deck { width: min(52vw, 560px); max-height: 57vh; }
+  /* desktop — a gentle trim off the full fill (57vh was too short, full fill ~68vh too tall) */
+  .stack-deck { width: min(52vw, 560px); max-height: 62vh; }
 }
 @media (min-width: 1200px) {
   .stack-deck { width: 600px; }
