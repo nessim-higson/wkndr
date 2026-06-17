@@ -4,7 +4,7 @@ _Living "where are we right now" doc. Updated 2026-06-16. For strategy + the big
 `docs/backlog.md`; for the full version history see `CHANGELOG.md`; for onboarding see `CLAUDE.md`._
 
 ## Live right now
-- **App: V.5.7** — https://nessim-higson.github.io/wkndr/ (cache-bust `?v=V.5.7`)
+- **App: V.5.9** — https://nessim-higson.github.io/wkndr/ (cache-bust `?v=V.5.9`)
 - **`?dev=1`** reveals the full exploration surface (all views, ambient-look switcher, city picker).
 - **Full pre-MVP build frozen** at `/wkndr/versions/v4-10/` (git tag `v4.10`) for side-by-side.
 - Milestone tag `v5.0` = the MVP baseline.
@@ -35,11 +35,15 @@ undo pill (nav-width). Weather-peak pill reads **"Perfect this weekend"** (not "
   per-category cap (8) means novel events also *survive* over stale repeats. (Weekly cadence assumed.)
 - Floor: keyless RSS + hand-authored canon (~84 evergreen); the app rotates the evergreen slice weekly.
 - Cron: **Thursday 13:00 UTC** (after LBB / I amsterdam publish weekend guides).
-- **Images = correctness over prettiness.** Stock-agency URLs (alamy/getty/shutterstock/…) and the
-  I amsterdam "Canal Parade" hero are blocked everywhere. **Generic web-search EVENTS** (festivals,
-  markets, garden days) get **NO guessed photo** — open-web search returns wrong subjects ("Open
-  Garden Days" → a Pride photo) and the source og:image is often a civic hero, so these render a
-  clean **category poster**. Named performers (gigs/shows) still get real photos.
+- **Images = every card is a photograph (V.5.9).** Stock-agency URLs (alamy/getty/shutterstock/…)
+  and the I amsterdam "Canal Parade" hero are blocked everywhere. Named performers (gigs/shows) get
+  real photos (og → web search → wiki). **Generic web-search EVENTS** (festivals/markets/garden-days)
+  have no trustworthy per-event photo — open-web search returns wrong subjects ("Open Garden Days" →
+  a Pride photo) and the source og:image is often a civic hero — so they (and any pick that loses a
+  shared hero to the dedup) borrow a **real, category-tagged photo from the fully-imaged canon bank**,
+  picked deterministically by id. Result: no text-on-colour posters, always on-theme, never a wrong
+  subject. Trade-off: a borrowed photo is atmospheric/category-right, not the exact event — the
+  durable upgrade to true per-event photos is an events/image API (see Open decisions #2).
 
 ### ⚠️ Pipeline ops — read before touching the cron/pipeline
 - **Anthropic account is on the LOWEST tier: 10k input tokens/min.** Web-search responses are
@@ -66,8 +70,9 @@ push-race + rate-limit fixes.
 ## Open decisions (need Ness)
 1. **Raise the Anthropic tier?** — the single biggest unlock for pipeline throughput/freshness (more
    facets, faster runs). It's a spend decision on the API account.
-2. **Posters vs photos for fresh events** — correctness won (no wrong/watermarked images), so generic
-   events show posters. Live with it, or invest in a real image source (events API / licensed images)?
+2. **Per-event photos** — V.5.9 killed posters: generic events now borrow a category-matched canon
+   photo (real, on-theme, but not the exact event). Good enough, or invest in a real per-event image
+   source (events API like Ticketmaster/Eventbrite that ships images, or a licensed image API)?
 3. **Freshness ceiling** — web search is deep but not an exhaustive event DB; comprehensive coverage
    (every gig/screening) = a dedicated events-API integration (bigger build).
 4. **Success metric** — agreed: the unit of success is a **completed round-trip that ends in a
