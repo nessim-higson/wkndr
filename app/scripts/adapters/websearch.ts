@@ -19,9 +19,11 @@ import { deriveWeatherFit, upcomingWeekend } from '../lib/pipeline'
 const KEY = process.env.ANTHROPIC_API_KEY
 const MODEL = process.env.ANTHROPIC_MODEL || 'claude-haiku-4-5'
 
-// Pace calls so a low-tier account's per-minute limits aren't tripped (web-search responses pull
-// the search-result text in as input tokens, so each call is heavier than a plain extract).
-const RPM = Math.max(1, Number(process.env.ANTHROPIC_RPM) || 3)
+// Pace calls so a low-tier account's per-minute limits aren't tripped. Web-search responses pull
+// the search RESULTS in as input tokens (several k per call), so on the lowest Anthropic tier
+// (10k input tokens/min) we must keep to ~1 call/min — anything faster trips rate_limit_error and
+// the fresh-event yield collapses. Override with WEBSEARCH_RPM as the account tier grows.
+const RPM = Math.max(0.5, Number(process.env.WEBSEARCH_RPM) || 1)
 const GAP = Math.ceil(60000 / RPM)
 let nextAt = 0
 async function gate(): Promise<void> {
@@ -47,16 +49,15 @@ const GEO: Record<string, { city: string; region?: string; country: string; time
 // the facets to search — broad editorial spread, discovered live. MORE facets = more genuinely
 // fresh, dated events per run (the freshness lever), and they cover the experiential categories
 // real users asked for (workshops, talks, markets, family). Each facet is one paced API call.
+// 6 consolidated facets — broad coverage while staying within the per-minute token budget
+// (each is one paced call). Was 9, which tripped the rate limit on the lowest tier.
 const FACETS = [
-  'festivals, street fairs and big outdoor/free events',
-  'live music — concerts and gigs at music venues',
-  'club nights, DJ sets and electronic/dance events',
+  'festivals, street fairs, markets/pop-ups and big free or outdoor events',
+  'live music — concerts, gigs and club/DJ nights',
   'art & museum exhibitions opening or closing soon, plus theatre, dance and film',
   'notable new restaurant & bar openings, food festivals and tastings',
-  'markets, fairs and pop-ups (design, vintage, food, makers)',
-  'workshops, classes and creative sessions — ceramics, cooking, life-drawing, run clubs',
-  'talks, lectures and special or late-night museum openings',
-  'family- and kid-friendly things to do',
+  'workshops, classes and active things — ceramics, cooking, life-drawing, run clubs',
+  'talks & lectures, special or late-night museum openings, and family-friendly things',
 ]
 
 function systemPrompt(cityName: string): string {
@@ -122,7 +123,7 @@ export async function websearchExtract(cityKey: string, cityName: string): Promi
         tools: [{
           type: 'web_search_20250305',
           name: 'web_search',
-          max_uses: 4,
+          max_uses: 3,
           ...(geo ? { user_location: { type: 'approximate', ...geo } } : {}),
         }],
         system: sys,
