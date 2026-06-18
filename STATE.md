@@ -4,7 +4,7 @@ _Living "where are we right now" doc. Updated 2026-06-18. For strategy + the big
 `docs/backlog.md`; for the full version history see `CHANGELOG.md`; for onboarding see `CLAUDE.md`._
 
 ## Live right now
-- **App: V.5.9** — https://nessim-higson.github.io/wkndr/ (cache-bust `?v=V.5.9`)
+- **App: V.5.10** — https://nessim-higson.github.io/wkndr/ (cache-bust `?v=V.5.10`)
 - **`?dev=1`** reveals the full exploration surface (all views, ambient-look switcher, city picker).
 - **Full pre-MVP build frozen** at `/wkndr/versions/v4-10/` (git tag `v4.10`) for side-by-side.
 - Milestone tag `v5.0` = the MVP baseline.
@@ -12,8 +12,10 @@ _Living "where are we right now" doc. Updated 2026-06-18. For strategy + the big
 ## Product posture — V.5 is the MVP trim
 One view (**Stack** only), one ambient look, **Amsterdam only**, taste engine runs silently (off the
 surface). Menu = Your list · Plan together · Filter · Weather. Fan/List/looks/cities all live behind
-`?dev=1`. Cards fill the screen; ✕/★ controls sit tight beneath, with a reserved strip above for the
-undo pill (nav-width). Weather-peak pill reads **"Perfect this weekend"** (not "today"). Intro: lead
+`?dev=1`. Desktop card geometry is dialed to Ness's guide lines (V.5.10): top rides just under the
+nav/undo pill (~13vh), fills down (max-height 70vh, ~594px), with the ✕/★ controls + "Shuffle for
+more" lifted ~9vh off the bottom edge. Weather-peak pill reads **"Perfect this weekend"** (not
+"today"). Intro: lead
 "Tinder your events." + a matching subline.
 
 ## The boomerang (share → match → confirm) — no backend, all in the URL
@@ -60,13 +62,14 @@ undo pill (nav-width). Weather-peak pill reads **"Perfect this weekend"** (not "
   fills every imageless live pick with a real category photo. The push-race + rate-limit fixes hold
   (runs 2026-06-17 and 2026-06-18 both green and committed).
 
-## Shipped this arc (V.4.8 → V.5.7)
+## Shipped this arc (V.4.8 → V.5.10)
 Quieter card fronts + ✓/✕ swipe stamps · 2-gesture swipe · undo out of the swipe path, nav-width,
 reserved strip · faster geolocate · NOLA weather fix · match-mode freeze fixed + branded · short
 stable share links · MVP trim · weekly evergreen rotation · bigger cards (fill the screen) · festival
 dedup · **web-search pipeline → novelty → facets** · stock + wrong-subject image blocks (posters for
 generic events) · **boomerang confirmation (`&m=1`)** · "Perfect this weekend" pill · refresh-run
-push-race + rate-limit fixes.
+push-race + rate-limit fixes · **canon-photo bank → every card is a photo (no posters)** · desktop
+card sizing dialed to the guide lines.
 
 ## Open decisions (need Ness)
 1. **Raise the Anthropic tier?** — the single biggest unlock for pipeline throughput/freshness (more
