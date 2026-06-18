@@ -169,13 +169,13 @@ export default function App() {
   const [filterOpen, setFilterOpen] = useState(false)      // What sheet
   const [whenOpen, setWhenOpen] = useState(false)          // When sheet
   const [look, setLook] = useState<Look>(() => {       // ambient field (validated)
-    // The MVP ships ONE canonical look (Silk). Only honour a stored/switched look inside ?dev=1;
-    // otherwise a look picked during a dev session (Riso's grid+arcs, Forms, Auras) would leak
-    // into the single-look live app. Non-dev always renders Silk, and the persist effect below
-    // self-heals any stale stored value back to 'silk'.
-    if (!DEVUI) return 'silk'
+    // The MVP ships ONE canonical look (Auras). Only honour a stored/switched look inside ?dev=1;
+    // otherwise a look picked during a dev session (Riso's grid+arcs, Forms, Silk) would leak
+    // into the single-look live app. Non-dev always renders Auras, and the persist effect below
+    // self-heals any stale stored value back to 'auras'.
+    if (!DEVUI) return 'auras'
     const s = localStorage.getItem('wkndr.field') as Look
-    return FIELD_OPTS.some((o) => o.key === s) ? s : 'silk'
+    return FIELD_OPTS.some((o) => o.key === s) ? s : 'auras'
   })
   const [fieldReroll, setFieldReroll] = useState(0)   // bump → reroll the seeded field's composition
   const [barOpen, setBarOpen] = useState(false)            // command bar expanded?
