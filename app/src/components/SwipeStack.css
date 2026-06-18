@@ -32,9 +32,9 @@
      (✕/★ then the shuffle line) is lifted ~9vh off the bottom edge so the copy line lands ~89vh
      — not jammed at the very bottom. */
   .stack-deck { width: min(52vw, 560px); max-height: 70vh; }
-  /* tighten the top reserve (the undo pill is fixed at 86px, ~32px tall) so the card top rides
-     just under it instead of floating 48px below — gets the top edge up to the guide line. */
-  .main-stack .stack-wrap { padding-top: 30px; padding-bottom: 9vh; }
+  /* top reserve below the nav — the undo pill is fixed at 86px and ~32px tall (bottom ~118px), so
+     this keeps a clear ~16px gap beneath it: the pill never covers the card top when it drops in. */
+  .main-stack .stack-wrap { padding-top: 40px; padding-bottom: 9vh; }
 }
 @media (min-width: 1200px) {
   .stack-deck { width: 600px; }

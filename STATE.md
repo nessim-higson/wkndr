@@ -4,7 +4,7 @@ _Living "where are we right now" doc. Updated 2026-06-18. For strategy + the big
 `docs/backlog.md`; for the full version history see `CHANGELOG.md`; for onboarding see `CLAUDE.md`._
 
 ## Live right now
-- **App: V.5.10** — https://nessim-higson.github.io/wkndr/ (cache-bust `?v=V.5.10`)
+- **App: V.5.11** — https://nessim-higson.github.io/wkndr/ (cache-bust `?v=V.5.11`)
 - **`?dev=1`** reveals the full exploration surface (all views, ambient-look switcher, city picker).
 - **Full pre-MVP build frozen** at `/wkndr/versions/v4-10/` (git tag `v4.10`) for side-by-side.
 - Milestone tag `v5.0` = the MVP baseline.
