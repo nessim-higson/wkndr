@@ -37,15 +37,17 @@ more" lifted ~9vh off the bottom edge. Weather-peak pill reads **"Perfect this w
   per-category cap (8) means novel events also *survive* over stale repeats. (Weekly cadence assumed.)
 - Floor: keyless RSS + hand-authored canon (~84 evergreen); the app rotates the evergreen slice weekly.
 - Cron: **Thursday 13:00 UTC** (after LBB / I amsterdam publish weekend guides).
-- **Images = every card is a photograph (V.5.9).** Stock-agency URLs (alamy/getty/shutterstock/…)
-  and the I amsterdam "Canal Parade" hero are blocked everywhere. Named performers (gigs/shows) get
-  real photos (og → web search → wiki). **Generic web-search EVENTS** (festivals/markets/garden-days)
-  have no trustworthy per-event photo — open-web search returns wrong subjects ("Open Garden Days" →
-  a Pride photo) and the source og:image is often a civic hero — so they (and any pick that loses a
-  shared hero to the dedup) borrow a **real, category-tagged photo from the fully-imaged canon bank**,
-  picked deterministically by id. Result: no text-on-colour posters, always on-theme, never a wrong
-  subject. Trade-off: a borrowed photo is atmospheric/category-right, not the exact event — the
-  durable upgrade to true per-event photos is an events/image API (see Open decisions #2).
+- **Images — the layered ladder (canon bank → Pexels themed stock).** Stock-agency URLs
+  (alamy/getty/shutterstock/…) and the I amsterdam "Canal Parade" hero are blocked everywhere. Named
+  performers (gigs/shows) get real photos (og → web search → wiki). For everything still imageless
+  (generic web events; performers those passes missed) the order is now: **(1) Pexels themed stock**
+  — vivid, licensed photography queried by the event's OWN theme ("Queer Power" → queer-art imagery)
+  with a category-hint fallback, id-salted so same-theme events vary; **(2) canon-photo bank** —
+  borrow a category-tagged photo from the fully-imaged canon, the keyless last resort so a missing
+  key never blanks a card. This replaced the old bank-only behaviour that made cards **dull and
+  sometimes mismatched** (Queer Power, an art pick, had borrowed the Rijksmuseum). **Needs the
+  `PEXELS_API_KEY` repo secret** (free, https://www.pexels.com/api/) — without it the pipeline
+  silently falls back to the bank (dull but safe).
 
 ### ⚠️ Pipeline ops — read before touching the cron/pipeline
 - **Anthropic account is on the LOWEST tier: 10k input tokens/min.** Web-search responses are
@@ -74,9 +76,10 @@ card sizing dialed to the guide lines.
 ## Open decisions (need Ness)
 1. **Raise the Anthropic tier?** — the single biggest unlock for pipeline throughput/freshness (more
    facets, faster runs). It's a spend decision on the API account.
-2. **Per-event photos** — V.5.9 killed posters: generic events now borrow a category-matched canon
-   photo (real, on-theme, but not the exact event). Good enough, or invest in a real per-event image
-   source (events API like Ticketmaster/Eventbrite that ships images, or a licensed image API)?
+2. **Per-event photos** — DECIDED: Pexels themed stock (vivid, on-theme, licensed) layered above the
+   canon bank. ⚠️ **ACTION: add the free `PEXELS_API_KEY` repo secret** (https://www.pexels.com/api/),
+   then re-run refresh — until then cards fall back to the dull-but-safe bank. Still not the *literal*
+   event photo; true per-event imagery would need an events API (Ticketmaster/Eventbrite) — see #3.
 3. **Freshness ceiling** — web search is deep but not an exhaustive event DB; comprehensive coverage
    (every gig/screening) = a dedicated events-API integration (bigger build).
 4. **Success metric** — agreed: the unit of success is a **completed round-trip that ends in a
