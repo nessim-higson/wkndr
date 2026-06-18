@@ -33,8 +33,8 @@
      — not jammed at the very bottom. */
   .stack-deck { width: min(52vw, 560px); max-height: 70vh; }
   /* top reserve below the nav — the undo pill is fixed at 86px and ~32px tall (bottom ~118px), so
-     this keeps a clear ~16px gap beneath it: the pill never covers the card top when it drops in. */
-  .main-stack .stack-wrap { padding-top: 40px; padding-bottom: 9vh; }
+     this keeps a comfortable ~40px gap beneath it: the pill drops in well clear of the card top. */
+  .main-stack .stack-wrap { padding-top: 64px; padding-bottom: 9vh; }
 }
 @media (min-width: 1200px) {
   .stack-deck { width: 600px; }
