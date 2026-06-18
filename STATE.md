@@ -1,6 +1,6 @@
 # WKNDR — STATE (catch-me-up snapshot)
 
-_Living "where are we right now" doc. Updated 2026-06-16. For strategy + the bigger backlog see
+_Living "where are we right now" doc. Updated 2026-06-18. For strategy + the bigger backlog see
 `docs/backlog.md`; for the full version history see `CHANGELOG.md`; for onboarding see `CLAUDE.md`._
 
 ## Live right now
@@ -55,9 +55,10 @@ undo pill (nav-width). Weather-peak pill reads **"Perfect this weekend"** (not "
   commit but main had moved; fixed to **rebase-before-push + retry** in `.github/workflows/refresh.yml`.
 - **Verify a refresh actually committed**: `gh run list --workflow=refresh.yml`. A green run that
   found no changes won't commit; a failed run means the feed is stale.
-- **Last known-good feed: 2026-06-15** (59 picks / 14 fresh / 0 stock). A corrected run (image fixes
-  + pacing + push fix) is being verified as of 2026-06-16 — confirm Open Garden Days is a poster, not
-  Pride, and that fresh content + no stock/canal-parade images landed.
+- **Last known-good feed: 2026-06-18** (63 picks · **63/63 imaged**, incl. all 22 live + 9 web-search
+  picks). Verified: 0 stock, 0 canal-parade, **0 text-on-colour posters** — the V.5.9 canon-photo bank
+  fills every imageless live pick with a real category photo. The push-race + rate-limit fixes hold
+  (runs 2026-06-17 and 2026-06-18 both green and committed).
 
 ## Shipped this arc (V.4.8 → V.5.7)
 Quieter card fronts + ✓/✕ swipe stamps · 2-gesture swipe · undo out of the swipe path, nav-width,
