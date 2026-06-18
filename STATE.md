@@ -50,6 +50,12 @@ more" lifted ~9vh off the bottom edge. Weather-peak pill reads **"Perfect this w
   silently falls back to the bank (dull but safe).
 
 ### ⚠️ Pipeline ops — read before touching the cron/pipeline
+- 🚨 **BLOCKER (2026-06-19): the Anthropic account is OUT OF CREDITS.** Every live pull (scrape +
+  web-search) errors `"credit balance is too low"`, so refresh runs find **0 fresh events** and the
+  feed collapses to the **canon evergreen floor (88 picks, 0 web)**. **Fresh content is DOWN until
+  credits are added** at console.anthropic.com → Plans & Billing (the account behind the
+  `ANTHROPIC_API_KEY` secret). Pexels imagery is unaffected but only acts on live events, so with no
+  live events it shows nothing new. After topping up: `gh workflow run refresh.yml`.
 - **Anthropic account is on the LOWEST tier: 10k input tokens/min.** Web-search responses are
   token-heavy, so web search is paced to **~1 call/min** (`WEBSEARCH_RPM`, default 1) and facets were
   cut 9→6. Faster = `rate_limit_error` and fresh-event yield collapses. **Durable fix: raise the tier
@@ -59,9 +65,12 @@ more" lifted ~9vh off the bottom edge. Weather-peak pill reads **"Perfect this w
   commit but main had moved; fixed to **rebase-before-push + retry** in `.github/workflows/refresh.yml`.
 - **Verify a refresh actually committed**: `gh run list --workflow=refresh.yml`. A green run that
   found no changes won't commit; a failed run means the feed is stale.
-- **Last known-good feed: 2026-06-18** (63 picks · **63/63 imaged**, incl. all 22 live + 9 web-search
-  picks). Verified: 0 stock, 0 canal-parade, **0 text-on-colour posters** — the V.5.9 canon-photo bank
-  fills every imageless live pick with a real category photo. The push-race + rate-limit fixes hold
+- **Live feed now: the 2026-06-18 16:32 good feed, manually restored + re-imaged** (63 picks · 63/63
+  imaged · 9 weekend web events now on **vivid Pexels stock**). It was hand-restored after the 22:18
+  run clobbered it with canon-only (the credit outage). The 9 Pexels images were applied offline of
+  Anthropic (the picks already existed) — proof the Pexels layer works; it just needs live events to
+  act on. ⚠️ The weekly cron will re-clobber this with canon-only on its next run **unless Anthropic
+  credits are restored first.** The push-race + rate-limit fixes hold
   (runs 2026-06-17 and 2026-06-18 both green and committed).
 
 ## Shipped this arc (V.4.8 → V.5.10)
