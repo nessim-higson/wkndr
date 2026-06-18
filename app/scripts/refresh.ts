@@ -19,7 +19,7 @@
  */
 import { CITIES, type City } from '../src/data/cities'
 import type { Pick } from '../src/types'
-import { dedupe, balanceByCategory, isGoodImage, fetchOgImage, wikiImage, webImage, whenIsPast, whenBeforeWeekend, upcomingWeekend, linkOk, mapLimit, titleKey } from './lib/pipeline'
+import { dedupe, balanceByCategory, isGoodImage, fetchOgImage, wikiImage, webImage, pexelsImage, whenIsPast, whenBeforeWeekend, upcomingWeekend, linkOk, mapLimit, titleKey } from './lib/pipeline'
 import { fixWhen } from '../src/lib/when'
 import { songkickAdapter } from './adapters/songkick'
 import { llmExtract } from './adapters/llm'
@@ -179,6 +179,24 @@ async function buildCity(city: City) {
     const seen = new Map<string, number>()
     for (const p of live) if (p.image) seen.set(p.image, (seen.get(p.image) || 0) + 1)
     for (const p of live) if (p.image && (seen.get(p.image) || 0) > 1) p.image = undefined   // shared hero = generic
+
+    // THEMED STOCK (Pexels) — the vivid, on-theme layer. For every pick still imageless (generic web
+    // events, or a performer the og/web/wiki passes missed) query Pexels by the event's OWN theme,
+    // with a category-hint fallback so a too-niche title still resolves. Vibrant + relevant + never a
+    // wrong civic subject — this is what replaces the dull/mismatched canon-borrow. Skipped with no
+    // PEXELS_API_KEY (the bank below then carries it, so a missing key never blanks a card).
+    const PEX_HINT: Record<string, string> = { art: 'art exhibition gallery', live: 'concert crowd lights', stage: 'theatre stage performance', eat: 'restaurant plated food', drink: 'bar cocktails', market: 'open air market stalls', out: 'people outdoors park summer', daytrip: 'dutch landscape countryside' }
+    const idHash2 = (s: string) => { let h = 0; for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0; return Math.abs(h) }
+    const pexQuery = (p: Pick) => `${p.title.split(/\s*[:–—|·]\s*/)[0].replace(/\b(19|20)\d{2}\b/g, '').replace(/\b(editie|edition|vol\.?|#?\d+(st|nd|rd|th)?)\b/gi, '').trim()} ${PEX_HINT[p.category] ?? ''}`.replace(/\s+/g, ' ').trim()
+    if (process.env.PEXELS_API_KEY) {
+      let pexGot = 0
+      await mapLimit(live.filter((p) => !p.image), 3, async (p) => {
+        const salt = idHash2(p.id)
+        const img = (await pexelsImage(pexQuery(p), salt)) || (await pexelsImage(PEX_HINT[p.category] ?? p.category, salt))
+        if (img) { p.image = img; pexGot++ }
+      })
+      if (pexGot) console.log(`  pexels:   +${pexGot} live picks imaged via themed stock`)
+    }
 
     // BANK FILL — anything still imageless (generic web events, or a pick that just lost a shared
     // hero) gets a real category photo from the canon bank. Runs AFTER the dedup so these curated

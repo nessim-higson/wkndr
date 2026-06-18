@@ -291,6 +291,29 @@ export async function webImage(query: string): Promise<string | null> {
   }
 }
 
+// THEMED STOCK (Pexels) — vivid, licensed photography keyed to the event's theme. The fix for the
+// "dull / wrong borrowed photo" problem: for an event with no trustworthy per-event photo we query
+// Pexels by its OWN theme ("Queer Power" → queer-art imagery, "Bacchus Wine Festival" → wine shots)
+// so the image is vibrant AND on-theme, and never an embarrassing wrong civic subject. Needs a free
+// PEXELS_API_KEY (https://www.pexels.com/api/). `salt` (an id hash) varies which of the top results
+// we take, so several same-theme events don't all land on the identical photo. Returns null on any
+// miss → the caller falls back to the canon bank, so a missing key never blanks a card.
+export async function pexelsImage(query: string, salt = 0): Promise<string | null> {
+  const key = process.env.PEXELS_API_KEY
+  if (!key || !query.trim()) return null
+  try {
+    const url = `https://api.pexels.com/v1/search?query=${encodeURIComponent(query)}&per_page=12&orientation=portrait&size=medium`
+    const res = await fetch(url, { headers: { Authorization: key } }).then((r) => r.json()).catch(() => null)
+    const photos: { src?: { portrait?: string; large?: string; large2x?: string } }[] = res?.photos || []
+    if (!photos.length) return null
+    const p = photos[salt % photos.length]
+    const src = p?.src?.portrait || p?.src?.large2x || p?.src?.large
+    return typeof src === 'string' && src.startsWith('https://') ? src : null
+  } catch {
+    return null
+  }
+}
+
 // Run an async fn over items with a concurrency cap (be polite to source servers).
 export async function mapLimit<T, R>(items: T[], limit: number, fn: (item: T, i: number) => Promise<R>): Promise<R[]> {
   const out: R[] = new Array(items.length)

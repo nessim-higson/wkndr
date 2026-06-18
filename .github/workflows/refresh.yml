@@ -32,6 +32,7 @@ jobs:
           # add these as repo secrets to turn the live pull on:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}   # the diverse/interesting LLM pull
           SONGKICK_API_KEY: ${{ secrets.SONGKICK_API_KEY }}     # optional clean gigs
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}         # vivid on-theme stock for events w/o a real photo
         run: cd app && bun run refresh
       - name: Commit if the feed changed
         id: commit
