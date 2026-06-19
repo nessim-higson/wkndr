@@ -38,17 +38,17 @@ more" lifted ~9vh off the bottom edge. Weather-peak pill reads **"Perfect this w
   per-category cap (8) means novel events also *survive* over stale repeats. (Weekly cadence assumed.)
 - Floor: keyless RSS + hand-authored canon (~84 evergreen); the app rotates the evergreen slice weekly.
 - Cron: **Thursday 13:00 UTC** (after LBB / I amsterdam publish weekend guides).
-- **Images — the layered ladder (canon bank → Pexels themed stock).** Stock-agency URLs
-  (alamy/getty/shutterstock/…) and the I amsterdam "Canal Parade" hero are blocked everywhere. Named
-  performers (gigs/shows) get real photos (og → web search → wiki). For everything still imageless
-  (generic web events; performers those passes missed) the order is now: **(1) Pexels themed stock**
-  — vivid, licensed photography queried by the event's OWN theme ("Queer Power" → queer-art imagery)
-  with a category-hint fallback, id-salted so same-theme events vary; **(2) canon-photo bank** —
-  borrow a category-tagged photo from the fully-imaged canon, the keyless last resort so a missing
-  key never blanks a card. This replaced the old bank-only behaviour that made cards **dull and
-  sometimes mismatched** (Queer Power, an art pick, had borrowed the Rijksmuseum). **Needs the
-  `PEXELS_API_KEY` repo secret** (free, https://www.pexels.com/api/) — without it the pipeline
-  silently falls back to the bank (dull but safe).
+- **Images — vision-verified real photos, then themed fallback (the ladder).** Per imageless live
+  pick: **(1) gather real-photo candidates** — open-web image search by name (`webImageCandidates`),
+  + the Wikipedia portrait FIRST for performers (Wikimedia is always downloadable), + the event-page
+  og for non-performer scraped picks; **(2) VISION VERIFY** (`verifyImageForEvent`) — Claude downloads
+  the candidate bytes itself (browser UA — Anthropic's own fetcher 403s on hotlink-protected hosts)
+  and LOOKS at them, picking the one that genuinely depicts the event or rejecting all (so Celeste
+  never gets a Japan blog, Open Garden Days never gets a Pride parade); **(3) Pexels themed stock**
+  for what vision couldn't verify; **(4) canon bank** last resort. Typical run: **~50/61 real verified
+  web photos, ~4 Pexels, ~6 canon** — Guns N' Roses shows the band, Open Garden Days the gardens.
+  Stock-agency + I amsterdam "Canal Parade" URLs blocked everywhere. Needs `ANTHROPIC_API_KEY` (vision)
+  + `PEXELS_API_KEY` (both set); with neither, degrades to top-ranked candidate / canon bank.
 
 ### ⚠️ Pipeline ops — read before touching the cron/pipeline
 - ✅ **RESOLVED 2026-06-19: credits added + tier raised — the pipeline is LIVE and deep.** A clean run
