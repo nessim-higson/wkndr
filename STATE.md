@@ -51,12 +51,14 @@ more" lifted ~9vh off the bottom edge. Weather-peak pill reads **"Perfect this w
   silently falls back to the bank (dull but safe).
 
 ### ⚠️ Pipeline ops — read before touching the cron/pipeline
-- 🚨 **BLOCKER (2026-06-19): the Anthropic account is OUT OF CREDITS.** Every live pull (scrape +
-  web-search) errors `"credit balance is too low"`, so refresh runs find **0 fresh events** and the
-  feed collapses to the **canon evergreen floor (88 picks, 0 web)**. **Fresh content is DOWN until
-  credits are added** at console.anthropic.com → Plans & Billing (the account behind the
-  `ANTHROPIC_API_KEY` secret). Pexels imagery is unaffected but only acts on live events, so with no
-  live events it shows nothing new. After topping up: `gh workflow run refresh.yml`.
+- ✅ **RESOLVED 2026-06-19: credits added + tier raised — the pipeline is LIVE and deep.** A clean run
+  fired all 10 facets + scrapers → **62 picks, 62/62 imaged, 37 new this week** for Amsterdam (NOLA
+  full too). Per-run cost ≈ **$1–2** (web_search $10/1k + Haiku tokens). NOTE: right after a top-up
+  the billing state lags ~2–3 min, so the FIRST run after adding credits may still 401 its early
+  facets — just re-run once and it's clean.
+- **`open-air cinema / outdoor screenings` facet returned 0 both runs** — either none are dated this
+  exact weekend (the big season e.g. Pluk de Nacht starts later) or the facet needs tuning. Worth a
+  look if Ness still doesn't see screenings he expects.
 - **Anthropic account is on the LOWEST tier: 10k input tokens/min.** Web-search responses are
   token-heavy, so web search is paced to **~1 call/min** (`WEBSEARCH_RPM`, default 1) and facets were
   cut 9→6. Faster = `rate_limit_error` and fresh-event yield collapses. **Durable fix: raise the tier
