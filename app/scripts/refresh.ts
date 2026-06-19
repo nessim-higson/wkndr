@@ -19,7 +19,7 @@
  */
 import { CITIES, type City } from '../src/data/cities'
 import type { Pick } from '../src/types'
-import { dedupe, balanceByCategory, isGoodImage, fetchOgImage, wikiImage, webImage, pexelsImage, whenIsPast, whenBeforeWeekend, upcomingWeekend, linkOk, mapLimit, titleKey } from './lib/pipeline'
+import { dedupe, balanceByCategory, isGoodImage, fetchOgImage, wikiImage, webImageCandidates, verifyImageForEvent, pexelsImage, whenIsPast, whenBeforeWeekend, upcomingWeekend, linkOk, mapLimit, titleKey } from './lib/pipeline'
 import { fixWhen } from '../src/lib/when'
 import { songkickAdapter } from './adapters/songkick'
 import { llmExtract } from './adapters/llm'
@@ -151,35 +151,33 @@ async function buildCity(city: City) {
     const themedPhoto = (p: Pick) => { const pool = bank[p.category]?.length ? bank[p.category] : bankPool; return pool.length ? pool[idHash(p.id) % pool.length] : undefined }
 
     await mapLimit(live.filter((p) => p.image), 5, async (p) => { if (!(await isGoodImage(p.image!))) p.image = undefined })
-    // og:image FROM THE PICK'S OWN PAGE — but NOT for named performers. A gig's link is usually a
-    // listing/metro page (Songkick) whose og is a generic shared hero; taking it pre-empts the
-    // artist photo AND gets nuked by the reused-image guard below, dropping the act to generic
-    // stock. Performers go straight to the web/wiki artist search instead (reliably the real act).
-    await mapLimit(live.filter((p) => !p.image && p.link && !genericWebEvent(p) && !PERFORMER.has(p.category)), 6, async (p) => { const img = await fetchOgImage(p.link); if (img) p.image = img })
 
-    // WEB IMAGE SEARCH (DuckDuckGo, keyless) — subject-accurate photo from the open web for
-    // performers/scraped picks. Performers get a DISAMBIGUATING term ("band"/"live") so an
-    // ambiguous name resolves to the act; venues → name + city + a category hint.
-    const CAT_HINT: Record<string, string> = { eat: 'restaurant', drink: 'bar', art: 'museum gallery', market: 'market', daytrip: '', out: '' }
-    const ACT_HINT: Record<string, string> = { live: 'band concert', stage: 'theatre show' }
-    let webGot = 0
-    await mapLimit(live.filter((p) => !p.image && !genericWebEvent(p)), 2, async (p) => {
-      const q = PERFORMER.has(p.category)
-        ? `${p.title.split(/\s*[:–—]\s*/)[0].split(/\s+(?:and|&|\+|x|w\/|ft\.?|feat\.?|with|presents)\s+/i)[0].trim()} ${ACT_HINT[p.category] ?? ''}`.trim()
+    // CANDIDATE-GATHER + VISION VERIFY — the agentic image step. For every imageless live pick we
+    // gather real-photo CANDIDATES (open-web image search by name; + the act's Wikipedia portrait for
+    // performers; + the event page's og:image for non-performer scraped picks), then a Claude VISION
+    // call LOOKS at them and picks the one that genuinely depicts the event — or rejects them all, so
+    // a wrong subject never lands (Celeste → a Japan travel blog, "Open Garden Days" → a Pride parade).
+    // Whatever it can't verify falls through to Pexels themed stock → bank. With no ANTHROPIC_API_KEY
+    // it degrades to the old behaviour (top-ranked candidate, unverified).
+    const CAT_HINT: Record<string, string> = { eat: 'restaurant', drink: 'bar', art: 'exhibition', market: 'market', daytrip: '', out: '' }
+    const ACT_HINT: Record<string, string> = { live: 'live music', stage: 'theatre' }
+    const actName = (p: Pick) => p.title.split(/\s*[:–—]\s*/)[0].split(/\s+(?:and|&|\+|x|w\/|ft\.?|feat\.?|with|presents)\s+/i)[0].trim()
+    const visionOn = !!process.env.ANTHROPIC_API_KEY
+    let visGot = 0, visRej = 0
+    await mapLimit(live.filter((p) => !p.image), 2, async (p) => {
+      const perf = PERFORMER.has(p.category)
+      const q = perf
+        ? `${actName(p)} ${ACT_HINT[p.category] ?? ''}`.trim()
         : `${p.title} ${city.name} ${CAT_HINT[p.category] ?? ''}`.replace(/\s+/g, ' ').trim()
-      const img = await webImage(q)
-      if (img) { p.image = img; webGot++ }
+      const cands = await webImageCandidates(q, 5)
+      if (perf) { const wk = await wikiImage(actName(p)); if (wk && (await isGoodImage(wk))) cands.push(wk) }
+      else if (!genericWebEvent(p) && p.link) { const og = await fetchOgImage(p.link); if (og) cands.push(og) }
+      if (!cands.length) return
+      const best = visionOn ? await verifyImageForEvent(cands, p, city.name) : cands[0]
+      if (best) { p.image = best; visGot++ } else if (visionOn) visRej++
     })
-    if (webGot) console.log(`  web:      +${webGot} live picks imaged via web search`)
+    console.log(`  vision:   +${visGot} live picks imaged via verified search${visRej ? ` · ${visRej} rejected → themed stock` : ''}`)
 
-    // last-resort backup for named entities the web search missed (clean Wikimedia portraits)
-    let wikiGot = 0
-    await mapLimit(live.filter((p) => !p.image && PERFORMER.has(p.category)), 2, async (p) => {
-      const q = p.title.split(/\s*[:–—]\s*/)[0].split(/\s+(?:and|&|\+|x|w\/|ft\.?|feat\.?|with|presents)\s+/i)[0].trim()
-      const img = await wikiImage(q)
-      if (img && (await isGoodImage(img))) { p.image = img; wikiGot++ }
-    })
-    if (wikiGot) console.log(`  wiki:     +${wikiGot} via wikipedia backup`)
     const seen = new Map<string, number>()
     for (const p of live) if (p.image) seen.set(p.image, (seen.get(p.image) || 0) + 1)
     for (const p of live) if (p.image && (seen.get(p.image) || 0) > 1) p.image = undefined   // shared hero = generic

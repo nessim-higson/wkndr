@@ -264,40 +264,87 @@ export async function wikiImage(query: string): Promise<string | null> {
   return null
 }
 
-// WEB IMAGE SEARCH (keyless, via DuckDuckGo) — the broad fallback: find a real, subject-accurate
-// photo from the open web for any pick the sources don't supply one for (a restaurant's own
-// shot, a venue, an artist). Returns the first result that passes the quality screen AND is
-// actually hotlinkable; tries several so a blocked/low-res top hit doesn't sink it.
-export async function webImage(query: string): Promise<string | null> {
+// WEB IMAGE SEARCH (keyless, via DuckDuckGo) — find real, subject-accurate photos from the open web.
+// `webImageCandidates` returns up to `max` hotlinkable, quality-screened URLs in relevance order, so
+// a vision verifier (below) can pick the one that ACTUALLY depicts the event. `webImage` keeps the
+// old single-result behaviour (first good hit) for callers that don't verify.
+export async function webImageCandidates(query: string, max = 6): Promise<string[]> {
   try {
     const page = await fetch('https://duckduckgo.com/?q=' + encodeURIComponent(query) + '&iax=images&ia=images',
       { headers: { 'user-agent': UA, accept: 'text/html' } }).then((r) => r.text())
     const vqd = page.match(/vqd=["']?([\d-]+)["']?/)?.[1]
-    if (!vqd) return null
+    if (!vqd) return []
     await sleep(250)
     const data = await fetch(`https://duckduckgo.com/i.js?l=us-en&o=json&q=${encodeURIComponent(query)}&vqd=${vqd}&f=,,,,,&p=1`,
       { headers: { 'user-agent': UA, referer: 'https://duckduckgo.com/' } }).then((r) => r.json()).catch(() => null)
     const results: { image?: string; width?: number; height?: number }[] = data?.results || []
-    // RANK relevance-FIRST (DuckDuckGo's order ≈ subject accuracy — critical, since we can't
-    // verify the subject), with image SHAPE as a gentle tiebreak: only an EXTREME banner/panorama
-    // (aspect > ~2.0) — which crops to a broken seam on a portrait card — gets pushed down. We
-    // never reorder a merely-landscape shot ahead of the most on-topic result. Dimensions come
-    // from DuckDuckGo's payload, so ranking costs no extra fetches.
+    // RANK relevance-FIRST (DuckDuckGo's order ≈ subject accuracy), with image SHAPE as a gentle
+    // tiebreak: only an EXTREME banner/panorama (aspect > ~2.0) — which crops to a broken seam on a
+    // portrait card — gets pushed down. Dimensions come from DuckDuckGo's payload (no extra fetch).
     const penalty = (r: { width?: number; height?: number }) => {
       const w = Number(r.width), h = Number(r.height)
       if (!w || !h) return 0
       const ar = w / h
-      return ar > 2.0 ? 3 : ar > 1.7 ? 1 : 0       // demote panoramas a few slots; nudge wide shots one
+      return ar > 2.0 ? 3 : ar > 1.7 ? 1 : 0
     }
     const ranked = results
       .filter((r) => typeof r.image === 'string' && r.image!.startsWith('http') && !STOCK_URL.test(r.image!))
-      .map((r, i) => ({ r, key: i + penalty(r) }))   // relevance index + a small shape nudge
+      .map((r, i) => ({ r, key: i + penalty(r) }))
       .sort((a, b) => a.key - b.key)
-    for (const { r } of ranked.slice(0, 10)) {
-      const u = r.image!.replace(/^http:\/\//i, 'https://')   // secure version (most hosts serve both; http = mixed-content-blocked)
-      if (await isGoodImage(u)) return u
+    const out: string[] = []
+    for (const { r } of ranked.slice(0, 16)) {
+      const u = r.image!.replace(/^http:\/\//i, 'https://')   // secure version (http = mixed-content-blocked)
+      if (await isGoodImage(u)) { out.push(u); if (out.length >= max) break }
     }
-    return null
+    return out
+  } catch {
+    return []
+  }
+}
+export async function webImage(query: string): Promise<string | null> {
+  return (await webImageCandidates(query, 1))[0] ?? null
+}
+
+// VISION VERIFIER — the agent that LOOKS at candidate photos and picks the one that genuinely depicts
+// the event, or rejects them all. This is what makes open-web image search safe for generic events:
+// a text search for "Open Garden Days" returns canal-garden shots AND wrong subjects (a Pride parade,
+// another city) — Claude's vision call sees each image and the event context and chooses the honest
+// fit, or returns null so we fall back to themed stock rather than show a misleading photo. Needs
+// ANTHROPIC_API_KEY (vision-capable model). Sends candidates as URL image blocks (no download).
+export async function verifyImageForEvent(
+  candidates: string[],
+  ev: { title: string; venue?: string; area?: string; category?: string; blurb?: string },
+  cityName: string,
+): Promise<string | null> {
+  const key = process.env.ANTHROPIC_API_KEY
+  const model = process.env.ANTHROPIC_MODEL || 'claude-haiku-4-5'
+  const uniq = [...new Set(candidates)].slice(0, 6)
+  if (!key || !uniq.length) return null
+  const content: Record<string, unknown>[] = []
+  uniq.forEach((url, i) => {
+    content.push({ type: 'text', text: `Image ${i + 1}:` })
+    content.push({ type: 'image', source: { type: 'url', url } })
+  })
+  content.push({ type: 'text', text:
+    `This is for an events app card. EVENT: "${ev.title}"` +
+    `${ev.venue ? ` at ${ev.venue}` : ''}${ev.area ? `, ${ev.area}` : ''}, ${cityName}.` +
+    `${ev.category ? ` Category: ${ev.category}.` : ''}${ev.blurb ? ` ${ev.blurb}` : ''}\n\n` +
+    `Which image is a GENUINE, on-subject photo for THIS event — the right performer/place/activity ` +
+    `(the actual band for a gig, canal gardens for an open-gardens day, a food festival for a food event, ` +
+    `the real venue or scene)? REJECT any image showing a clearly different subject (a different artist or ` +
+    `event, an unrelated landmark or city, a parade when it isn't one), and reject logos, posters, text ` +
+    `graphics, watermarked stock, or anything misleading. Prefer a real photograph. ` +
+    `Reply with ONLY JSON: {"best": <the 1-based image number that fits, or 0 if NONE are an honest fit>}.` })
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'x-api-key': key, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },
+      body: JSON.stringify({ model, max_tokens: 60, messages: [{ role: 'user', content }] }),
+    }).then((r) => r.json())
+    if (res?.error || !Array.isArray(res?.content)) return null
+    const text = res.content.filter((b: { type?: string }) => b?.type === 'text').map((b: { text?: string }) => b.text).join('')
+    const idx = Number(text.match(/"best"\s*:\s*(\d+)/)?.[1] ?? 0)
+    return idx >= 1 && idx <= uniq.length ? uniq[idx - 1] : null
   } catch {
     return null
   }
