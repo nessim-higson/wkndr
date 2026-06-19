@@ -129,7 +129,9 @@ export default function App() {
   const [mode, setMode] = useState<Mode>('HOT')
   // one view in the MVP — the Stack. (Fan/List live behind ?dev=1.) A shared-link recipient
   // goes through the match overlay, then lands on the full Stack (never boxed into the set).
-  const [view, setView] = useState<View>('stack')
+  // EXCEPTION: the boomerang RETURN leg (m=1) opens straight into the LIST — the confirmed plans
+  // you both picked read as an agenda you'd act on, not a deck to swipe through again.
+  const [view, setView] = useState<View>(SHARED_CONFIRM ? 'list' : 'stack')
   const [wx, setWx] = useState<Wx>(DEMO.HOT)
   const [live, setLive] = useState(false)        // true once the real forecast loads
   const [swiped, setSwiped] = useState<Set<string>>(new Set())
@@ -858,7 +860,7 @@ export default function App() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
             >
-              {filter === 'saved'
+              {filter === 'saved' || SHARED_CONFIRM
                 ? <Itinerary picks={shown} onOpen={openDetail} onSwipe={handleListToggle} />
                 : <ListView picks={shown} savedIds={saved} onSwipe={handleListToggle} onOpen={openDetail} listStyle={listStyle} />}
             </motion.div>

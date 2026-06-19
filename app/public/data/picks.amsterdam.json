@@ -3,8 +3,31 @@
   "label": "Amsterdam",
   "generatedAt": "2026-06-18T16:32:25.615Z",
   "live": true,
-  "count": 63,
+  "count": 64,
   "picks": [
+    {
+      "id": "web-yourlittleblackbook-opera-in-the-park",
+      "title": "Opera in the Park",
+      "venue": "Park Frankendael",
+      "area": "Oost",
+      "when": "Fri 19 Jun · evening",
+      "category": "stage",
+      "freshness": "weekend",
+      "outdoor": true,
+      "kid": false,
+      "price": "free",
+      "blurb": "Verdi's Simon Boccanegra, open-air. Spread a blanket, bring a picnic, catch opera under a summer sky.",
+      "why": "Free open-air opera",
+      "source": "Your Little Black Book",
+      "link": "https://www.yourlittleblackbook.me/en/weekendtips-amsterdam/",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL"
+      ],
+      "verify": true,
+      "image": "https://images.pexels.com/photos/37377493/pexels-photo-37377493.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=800"
+    },
     {
       "id": "llm-songkick-guns-n-roses-and-mammoth",
       "title": "Guns N' Roses and Mammoth",
