@@ -17,28 +17,40 @@ export function deriveWeatherFit(outdoor: boolean): Mode[] {
 // the part before the first separator, strip to alphanumerics. Venue is NOT part of the key —
 // a festival arriving from two sources with different "venue" strings is still ONE event.
 export const titleKey = (s: string) =>
-  s.toLowerCase().replace(/\b(19|20)\d{2}\b/g, '').split(/[:–—·|(]/)[0].replace(/[^a-z0-9]+/g, '').slice(0, 28)
+  s.toLowerCase()
+    .replace(/\b(19|20)\d{2}\b/g, '')                         // drop a year
+    .split(/[:–—·|(]/)[0]                                      // take the part before the first separator
+    .replace(/\b(amsterdam|nieuw-?west|new orleans|nola)\b/g, '')  // drop city/area tokens ("…Amsterdam")
+    .replace(/[^a-z0-9]+/g, '')
+    .slice(0, 28)
 
 // Merge the same event arriving from multiple adapters. Key = title+venue. The richest
 // record wins; we union the source credits (the cross-source "buzz" signal lives here).
 export function dedupe(picks: Pick[]): Pick[] {
-  const byKey = new Map<string, Pick & { sources?: string[] }>()
+  // merge b INTO a: richer record (longer blurb / has image) wins, credits union, buzz = #sources
+  const merge = (a: Pick, b: Pick): Pick => {
+    const richer = (b.blurb?.length ?? 0) + (b.image ? 50 : 0) > (a.blurb?.length ?? 0) + (a.image ? 50 : 0) ? b : a
+    const credits = new Set((a.source + ' · ' + b.source).split(' · ').filter(Boolean))
+    return { ...a, ...richer, source: [...credits].join(' · '), buzz: credits.size }
+  }
+
+  // PASS 1 — exact normalized-title key.
+  const byKey = new Map<string, Pick>()
   for (const p of picks) {
     const key = titleKey(p.title)
-    const existing = byKey.get(key)
-    if (!existing) {
-      byKey.set(key, { ...p })
-      continue
-    }
-    // keep the one with more info (longer blurb / has image), union the credits
-    const richer = (p.blurb?.length ?? 0) + (p.image ? 50 : 0) > (existing.blurb?.length ?? 0) + (existing.image ? 50 : 0) ? p : existing
-    const merged: Pick = { ...existing, ...richer }
-    const credits = new Set((existing.source + ' · ' + p.source).split(' · ').filter(Boolean))
-    merged.source = [...credits].join(' · ')
-    merged.buzz = credits.size                                   // distinct sources = the "talked about" signal
-    byKey.set(key, merged)
+    byKey.set(key, byKey.has(key) ? merge(byKey.get(key)!, p) : { ...p })
   }
-  return [...byKey.values()]
+
+  // PASS 2 — collapse near-dups where one key is a PREFIX of another (≥10 chars): catches
+  // "Guns N' Roses" vs "Guns N' Roses and Mammoth", "Open Garden Days" vs "…(Open Tuinen Dagen)".
+  // Shortest key is the canonical survivor (sort ascending so prefixes are seen first).
+  const out = new Map<string, Pick>()
+  for (const key of [...byKey.keys()].sort((a, b) => a.length - b.length || a.localeCompare(b))) {
+    const base = [...out.keys()].find((o) => o.length >= 10 && key.startsWith(o))
+    if (base) out.set(base, merge(out.get(base)!, byKey.get(key)!))
+    else out.set(key, byKey.get(key)!)
+  }
+  return [...out.values()]
 }
 
 // Keep the pool DIVERSE: cap how many of each category make the cut, so a firehose source

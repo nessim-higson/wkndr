@@ -239,7 +239,10 @@ async function buildCity(city: City) {
   console.log(`  → wrote picks.${city.key}.json (${picks.length} picks)`)
 }
 
-const targets = CITIES.filter((c) => !ONLY_CITY || c.key === ONLY_CITY)
+// PAUSED cities — tabled, not in the live MVP (Amsterdam-only). The pipeline skips them so we don't
+// spend API on a city no one sees. Pass --city=new-orleans to build one explicitly (manual override).
+const PAUSED = new Set(['new-orleans'])
+const targets = CITIES.filter((c) => (ONLY_CITY ? c.key === ONLY_CITY : !PAUSED.has(c.key)))
 console.log(`WKNDR refresh · ${targets.length} cit${targets.length === 1 ? 'y' : 'ies'}` +
   `${LLM_ON ? ' · LLM on' : ' · LLM off'}${SK_KEY ? ' · Songkick' : ''}${SKIP_IMAGES ? ' · no images' : ''}`)
 for (const c of targets) await buildCity(c)
