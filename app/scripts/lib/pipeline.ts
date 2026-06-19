@@ -310,7 +310,10 @@ export async function webImage(query: string): Promise<string | null> {
 // a text search for "Open Garden Days" returns canal-garden shots AND wrong subjects (a Pride parade,
 // another city) — Claude's vision call sees each image and the event context and chooses the honest
 // fit, or returns null so we fall back to themed stock rather than show a misleading photo. Needs
-// ANTHROPIC_API_KEY (vision-capable model). Sends candidates as URL image blocks (no download).
+// ANTHROPIC_API_KEY (vision-capable model). We DOWNLOAD each candidate ourselves (browser UA) and
+// send the bytes as base64 — NOT the URL — because Anthropic's own image fetcher fails on the many
+// hotlink-protected hosts that pass our HEAD check, which would error the whole call and reject a
+// perfectly good photo. Fetching the bytes here makes the verify reliable.
 export async function verifyImageForEvent(
   candidates: string[],
   ev: { title: string; venue?: string; area?: string; category?: string; blurb?: string },
@@ -318,23 +321,37 @@ export async function verifyImageForEvent(
 ): Promise<string | null> {
   const key = process.env.ANTHROPIC_API_KEY
   const model = process.env.ANTHROPIC_MODEL || 'claude-haiku-4-5'
-  const uniq = [...new Set(candidates)].slice(0, 6)
+  const uniq = [...new Set(candidates)].slice(0, 4)
   if (!key || !uniq.length) return null
+  // download + base64 the candidates that actually return a real image (skip the rest)
+  const imgs: { url: string; data: string; mt: string }[] = []
+  await Promise.all(uniq.map(async (url) => {
+    try {
+      const r = await fetch(url, { headers: { 'user-agent': UA }, signal: AbortSignal.timeout(8000) })
+      const mt = (r.headers.get('content-type') || '').split(';')[0].trim()
+      if (!r.ok || !/^image\/(jpeg|png|webp|gif)$/.test(mt)) return
+      const buf = Buffer.from(await r.arrayBuffer())
+      if (buf.length < 2000 || buf.length > 5_000_000) return
+      imgs.push({ url, data: buf.toString('base64'), mt })
+    } catch { /* unreachable/blocked — drop this candidate */ }
+  }))
+  if (!imgs.length) return null
   const content: Record<string, unknown>[] = []
-  uniq.forEach((url, i) => {
+  imgs.forEach((im, i) => {
     content.push({ type: 'text', text: `Image ${i + 1}:` })
-    content.push({ type: 'image', source: { type: 'url', url } })
+    content.push({ type: 'image', source: { type: 'base64', media_type: im.mt, data: im.data } })
   })
   content.push({ type: 'text', text:
     `This is for an events app card. EVENT: "${ev.title}"` +
     `${ev.venue ? ` at ${ev.venue}` : ''}${ev.area ? `, ${ev.area}` : ''}, ${cityName}.` +
     `${ev.category ? ` Category: ${ev.category}.` : ''}${ev.blurb ? ` ${ev.blurb}` : ''}\n\n` +
-    `Which image is a GENUINE, on-subject photo for THIS event — the right performer/place/activity ` +
-    `(the actual band for a gig, canal gardens for an open-gardens day, a food festival for a food event, ` +
-    `the real venue or scene)? REJECT any image showing a clearly different subject (a different artist or ` +
-    `event, an unrelated landmark or city, a parade when it isn't one), and reject logos, posters, text ` +
-    `graphics, watermarked stock, or anything misleading. Prefer a real photograph. ` +
-    `Reply with ONLY JSON: {"best": <the 1-based image number that fits, or 0 if NONE are an honest fit>}.` })
+    `Which image best fits THIS event? For a concert/gig/show, ANY genuine photo of the named ` +
+    `performer or band is a CORRECT fit (it need not be from this date or city). For a place / festival ` +
+    `/ market / garden / food event, pick a photo showing that kind of place or activity. ONLY reject an ` +
+    `image if it shows a clearly DIFFERENT subject (a different artist, an unrelated event/landmark/city, ` +
+    `a parade when it isn't one) or is a logo / poster / text graphic / watermarked stock. Favour a real ` +
+    `photograph and pick one whenever a reasonable fit exists. ` +
+    `Reply with ONLY JSON: {"best": <the 1-based image number that fits, or 0 if NONE fit>}.` })
   try {
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
@@ -344,7 +361,7 @@ export async function verifyImageForEvent(
     if (res?.error || !Array.isArray(res?.content)) return null
     const text = res.content.filter((b: { type?: string }) => b?.type === 'text').map((b: { text?: string }) => b.text).join('')
     const idx = Number(text.match(/"best"\s*:\s*(\d+)/)?.[1] ?? 0)
-    return idx >= 1 && idx <= uniq.length ? uniq[idx - 1] : null
+    return idx >= 1 && idx <= imgs.length ? imgs[idx - 1].url : null
   } catch {
     return null
   }
