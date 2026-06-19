@@ -151,7 +151,11 @@ async function buildCity(city: City) {
     const themedPhoto = (p: Pick) => { const pool = bank[p.category]?.length ? bank[p.category] : bankPool; return pool.length ? pool[idHash(p.id) % pool.length] : undefined }
 
     await mapLimit(live.filter((p) => p.image), 5, async (p) => { if (!(await isGoodImage(p.image!))) p.image = undefined })
-    await mapLimit(live.filter((p) => !p.image && p.link && !genericWebEvent(p)), 6, async (p) => { const img = await fetchOgImage(p.link); if (img) p.image = img })
+    // og:image FROM THE PICK'S OWN PAGE — but NOT for named performers. A gig's link is usually a
+    // listing/metro page (Songkick) whose og is a generic shared hero; taking it pre-empts the
+    // artist photo AND gets nuked by the reused-image guard below, dropping the act to generic
+    // stock. Performers go straight to the web/wiki artist search instead (reliably the real act).
+    await mapLimit(live.filter((p) => !p.image && p.link && !genericWebEvent(p) && !PERFORMER.has(p.category)), 6, async (p) => { const img = await fetchOgImage(p.link); if (img) p.image = img })
 
     // WEB IMAGE SEARCH (DuckDuckGo, keyless) — subject-accurate photo from the open web for
     // performers/scraped picks. Performers get a DISAMBIGUATING term ("band"/"live") so an
