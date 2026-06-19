@@ -46,18 +46,23 @@ const GEO: Record<string, { city: string; region?: string; country: string; time
   'new-orleans': { city: 'New Orleans', region: 'Louisiana', country: 'US', timezone: 'America/Chicago' },
 }
 
-// the facets to search — broad editorial spread, discovered live. MORE facets = more genuinely
-// fresh, dated events per run (the freshness lever), and they cover the experiential categories
-// real users asked for (workshops, talks, markets, family). Each facet is one paced API call.
-// 6 consolidated facets — broad coverage while staying within the per-minute token budget
-// (each is one paced call). Was 9, which tripped the rate limit on the lowest tier.
+// FACET SET — one paced web_search "agent" per facet. MORE facets = deeper, less-stale coverage
+// (each facet surfaces a different slice the others miss). The extra facets target the gaps Ness
+// flagged: open-air cinema/screenings, rooftop/terrace season, late-night programming, and
+// neighbourhood/community happenings. This assumes the RAISED Anthropic tier (set WEBSEARCH_RPM=3+
+// in the workflow) — on the lowest tier this many facets at speed trips rate limits. To drop back
+// down a tier, trim this array.
 const FACETS = [
   'festivals, street fairs, markets/pop-ups and big free or outdoor events',
   'live music — concerts, gigs and club/DJ nights',
-  'art & museum exhibitions opening or closing soon, plus theatre, dance and film',
+  'art & museum exhibitions opening or closing soon, plus theatre and dance',
+  'open-air cinema and outdoor film screenings, plus special one-off film events',
   'notable new restaurant & bar openings, food festivals and tastings',
+  'rooftop bars, terraces, canal/boat events and summer pop-up venues',
+  'late-night and after-hours programming — club nights, museum lates, night markets',
   'workshops, classes and active things — ceramics, cooking, life-drawing, run clubs',
-  'talks & lectures, special or late-night museum openings, and family-friendly things',
+  'talks & lectures, book launches, and family-friendly / kids things',
+  'neighbourhood & community events — street parties, block festivals, local markets by area',
 ]
 
 function systemPrompt(cityName: string): string {
@@ -123,7 +128,7 @@ export async function websearchExtract(cityKey: string, cityName: string): Promi
         tools: [{
           type: 'web_search_20250305',
           name: 'web_search',
-          max_uses: 3,
+          max_uses: 5,   // deeper: more searches per facet so the agent digs past the first guide
           ...(geo ? { user_location: { type: 'approximate', ...geo } } : {}),
         }],
         system: sys,

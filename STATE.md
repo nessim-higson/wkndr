@@ -30,9 +30,10 @@ more" lifted ~9vh off the bottom edge. Weather-peak pill reads **"Perfect this w
 
 ## Content pipeline — the freshness engine
 - **Web-search-grounded extraction** (the core fix for stale content): Claude's web_search tool finds
-  the coming weekend's events across **6 facets** (festivals/markets/outdoor · gigs/club nights ·
-  art/theatre/film · food openings · workshops/classes/run-clubs · talks/late-openings/family).
-  Real links from search results; signal-+-link, never republish.
+  the coming weekend's events across **10 facets** (festivals/markets · gigs/club nights · art/theatre
+  · open-air cinema/screenings · food openings · rooftop/terrace/canal · late-night/after-hours ·
+  workshops/classes · talks/family · neighbourhood/community), one paced "agent" each, `max_uses` 5.
+  Real links from search results; signal-+-link, never republish. (Dormant until Anthropic credits.)
 - **Novelty-first ranking**: each run reads last week's feed and leads with genuinely-new events; the
   per-category cap (8) means novel events also *survive* over stale repeats. (Weekly cadence assumed.)
 - Floor: keyless RSS + hand-authored canon (~84 evergreen); the app rotates the evergreen slice weekly.
@@ -83,12 +84,16 @@ push-race + rate-limit fixes · **canon-photo bank → every card is a photo (no
 card sizing dialed to the guide lines.
 
 ## Open decisions (need Ness)
-1. **Raise the Anthropic tier?** — the single biggest unlock for pipeline throughput/freshness (more
-   facets, faster runs). It's a spend decision on the API account.
-2. **Per-event photos** — DECIDED: Pexels themed stock (vivid, on-theme, licensed) layered above the
-   canon bank. ⚠️ **ACTION: add the free `PEXELS_API_KEY` repo secret** (https://www.pexels.com/api/),
-   then re-run refresh — until then cards fall back to the dull-but-safe bank. Still not the *literal*
-   event photo; true per-event imagery would need an events API (Ticketmaster/Eventbrite) — see #3.
+1. **Research depth — DECIDED 2026-06-19: raise tier + multi-agent deep research.** Code shipped:
+   FACETS 6→**10** (added open-air cinema/screenings, rooftop/terrace, late-night/after-hours,
+   neighbourhood/community — the gaps Ness flagged), `max_uses` 3→5 per facet, `WEBSEARCH_RPM=3` in
+   the workflow. ⚠️ **This assumes the RAISED tier — it stays dormant until Anthropic credits are
+   added AND the tier is high enough** (add a deposit at console.anthropic.com; tier rises with
+   cumulative deposit). On the lowest tier this many facets at RPM 3 will rate-limit.
+2. **Per-event photos — DECIDED: keep Pexels themed stock for now** (vivid, on-theme, licensed; not
+   the *literal* event photo). Ness chose to focus effort on content depth over image perfection.
+   The agentic real-photo path (event-page hero → name image-search → agent verify) and a paid image
+   API (Google/Bing/SerpAPI) are both parked as future upgrades. `PEXELS_API_KEY` secret is set.
 3. **Freshness ceiling** — web search is deep but not an exhaustive event DB; comprehensive coverage
    (every gig/screening) = a dedicated events-API integration (bigger build).
 4. **Success metric** — agreed: the unit of success is a **completed round-trip that ends in a
