@@ -169,9 +169,13 @@ async function buildCity(city: City) {
       const q = perf
         ? `${actName(p)} ${ACT_HINT[p.category] ?? ''}`.trim()
         : `${p.title} ${city.name} ${CAT_HINT[p.category] ?? ''}`.replace(/\s+/g, ' ').trim()
-      const cands = await webImageCandidates(q, 5)
+      // For performers, lead with the Wikipedia portrait — it's the most reliable + always
+      // downloadable (Wikimedia doesn't hotlink-block), so it survives the verifier's 4-candidate
+      // download cap even when web hits are on strict hosts (Billboard/Rolling Stone 403 our fetch).
+      const cands: string[] = []
       if (perf) { const wk = await wikiImage(actName(p)); if (wk && (await isGoodImage(wk))) cands.push(wk) }
-      else if (!genericWebEvent(p) && p.link) { const og = await fetchOgImage(p.link); if (og) cands.push(og) }
+      cands.push(...await webImageCandidates(q, 5))
+      if (!perf && !genericWebEvent(p) && p.link) { const og = await fetchOgImage(p.link); if (og) cands.push(og) }
       if (!cands.length) return
       const best = visionOn ? await verifyImageForEvent(cands, p, city.name) : cands[0]
       if (best) { p.image = best; visGot++ } else if (visionOn) visRej++
