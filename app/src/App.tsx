@@ -12,6 +12,7 @@ import type { Look } from './weather/ambientEngine'
 import { APP_VERSION } from './version'
 import { SwipeStack } from './components/SwipeStack'
 import { ListView } from './components/ListView'
+import { Feedback } from './components/Feedback'
 import { Itinerary } from './components/Itinerary'
 import { FanView } from './components/FanView'
 import { CardDetail } from './components/CardDetail'
@@ -962,6 +963,17 @@ export default function App() {
         onToggle={toggleCat}
         clearKey={'all'}
       />
+      {/* tester feedback — captures version + which screen/card they're on so notes aren't vague */}
+      {!intro && (
+        <Feedback getContext={() => ({
+          version: APP_VERSION,
+          screen: matching ? 'match' : SHARED_CONFIRM ? 'confirm' : view,
+          city: city.label,
+          weather: mode,
+          filter,
+          card: (shown?.[0]?.title ?? '').slice(0, 60),
+        })} />
+      )}
     </>
   )
 }
