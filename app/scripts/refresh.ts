@@ -232,7 +232,12 @@ async function buildCity(city: City) {
     if (/volkskrant/.test(s)) return 1
     return 0
   }
-  const LOW_QUALITY = /escape\.nl|escape amsterdam|concerts50|songkick\.com\/metro|\/whats?-?-on|\/what-s-on|\/agenda(\/|$|\?)|amsterdamtips\.com\/whats-on/i
+  // Narrow to genuinely low-value sources only: a cheesy club's self-promo (Escape), generic
+  // aggregators (concerts50), the Songkick METRO index (non-specific), and the AmsterdamTips month
+  // INDEX (a dead-end /whats-on-amsterdam-<month> page → the wrong-date 'Mirror Floor' culprit).
+  // Do NOT match a bare "/whats-on" path — trusted venues (I amsterdam, Eye Filmmuseum) host their
+  // REAL event pages under it, and we must keep those.
+  const LOW_QUALITY = /escape\.nl|escape amsterdam|concerts50|songkick\.com\/metro|amsterdamtips\.com\/whats-on/i
   {
     const before = picks.length
     picks = picks.filter((p) => !isLive(p) || !LOW_QUALITY.test(`${p.source || ''} ${p.link || ''}`))
