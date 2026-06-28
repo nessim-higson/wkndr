@@ -278,14 +278,16 @@ export async function webImageCandidates(query: string, max = 6): Promise<string
     const data = await fetch(`https://duckduckgo.com/i.js?l=us-en&o=json&q=${encodeURIComponent(query)}&vqd=${vqd}&f=,,,,,&p=1`,
       { headers: { 'user-agent': UA, referer: 'https://duckduckgo.com/' } }).then((r) => r.json()).catch(() => null)
     const results: { image?: string; width?: number; height?: number }[] = data?.results || []
-    // RANK relevance-FIRST (DuckDuckGo's order ≈ subject accuracy), with image SHAPE as a gentle
-    // tiebreak: only an EXTREME banner/panorama (aspect > ~2.0) — which crops to a broken seam on a
-    // portrait card — gets pushed down. Dimensions come from DuckDuckGo's payload (no extra fetch).
+    // RANK relevance-FIRST (DuckDuckGo's order ≈ subject accuracy), with image SHAPE as a tiebreak.
+    // The card is a TALL PORTRAIT filled with `cover`, so LANDSCAPE photos get cropped to a thin band
+    // (the "image looks cropped" complaint). Bias toward portrait/square images that fill the card
+    // with minimal loss; demote landscape, and bury panoramas. Dimensions come from DuckDuckGo's
+    // payload (no extra fetch); shapeless results (no dims) stay neutral so we don't lose good hits.
     const penalty = (r: { width?: number; height?: number }) => {
       const w = Number(r.width), h = Number(r.height)
       if (!w || !h) return 0
       const ar = w / h
-      return ar > 2.0 ? 3 : ar > 1.7 ? 1 : 0
+      return ar > 2.0 ? 6 : ar > 1.5 ? 3 : ar > 1.2 ? 1.5 : 0   // wide = worse; portrait/square = ideal
     }
     const ranked = results
       .filter((r) => typeof r.image === 'string' && r.image!.startsWith('http') && !STOCK_URL.test(r.image!))
