@@ -45,11 +45,6 @@ const DEVUI = new URLSearchParams(window.location.search).has('dev')
 // (~84 always-good picks) surfaces a DIFFERENT slice each week automatically — without
 // it, the same dozen always led and the feed felt identical week over week.
 const WEEK = Math.floor(Date.now() / 6.048e8)
-
-// Serve the deck in small, digestible SETS — not one big fatiguing pile. The deck exposes BATCH
-// picks at a time; swiping through them reveals "that's the set" and "Serve another set" reveals the
-// next BATCH (genuinely new, never repeats), reshuffling for a fresh slice once you've seen them all.
-const BATCH = 7
 // the header degrees take on the live weather's hue — a cool day reads cool, a hot day warm —
 // so the number itself signals the mood (muted tints, readable on the cream pill)
 const TEMP_TINT: Record<Mode, string> = {
@@ -157,7 +152,6 @@ export default function App() {
   const flash = (text: string, save = false) => setToast({ text, save })
   const [seed, setSeed] = useState(0)            // 0 = forecast order; bumped by Refresh
   const [dealKey, setDealKey] = useState(0)      // bump → stack re-deals (refresh signal)
-  const [served, setServed] = useState(BATCH)    // how many of `shown` are exposed (grows by BATCH)
   const [matching, setMatching] = useState(false)   // match-mode overlay
   const matchLaunched = useRef(false)
   const [detail, setDetail] = useState<Pick | null>(null)  // open card detail
@@ -343,26 +337,24 @@ export default function App() {
         return whatOk && whenOk
       })
       if (filter !== 'all' || cats.length > 0 || whens.length > 0) return filtered
-      // Default browse order: genuinely-this-weekend LIVE picks (pipeline: web-/llm-) lead, then the
-      // FULL canon library — its ORDER rotated weekly (+ on each reshuffle) so a different slice leads,
-      // but ALL of it stays available. No RESERVE cap: the deck's BATCH window (served, in sets of 7)
-      // is what paces discovery now, so "Serve another set" keeps yielding genuinely NEW picks until
-      // the whole library is exhausted — instead of recycling the same dozen.
+      // ENDLESS browse (per Ness — this functioned better than fixed sets): the weekend's LIVE picks
+      // lead, then a ROTATING slice of the deep canon library. The slice advances every WEEK and on
+      // each Shuffle (seed), cycling the whole library across reshuffles. The split is LIVE-vs-canon
+      // (not freshness) so canon tagged "new" — e.g. De Pimpelmees — rotates too instead of sticking
+      // every week.
+      const RESERVE = 14
       const isLiveP = (p: Pick) => p.id.startsWith('web-') || p.id.startsWith('llm-')
       const fresh = filtered.filter(isLiveP)
       const ever = filtered.filter((p) => !isLiveP(p))
-      if (ever.length === 0) return fresh
-      const start = ((WEEK + seed) % ever.length + ever.length) % ever.length
-      const rotated = [...ever.slice(start), ...ever.slice(0, start)]
-      return [...fresh, ...rotated]
+      if (ever.length <= RESERVE) return filtered
+      const start = ((WEEK + seed) * RESERVE) % ever.length
+      const sample = [...ever, ...ever].slice(start, start + RESERVE)
+      return [...fresh, ...sample]
     },
     [rankedAll, filter, cats, whens, saved, seed, sharedPickIds],
   )
   const filterActive = filter !== 'all' || cats.length > 0 || whens.length > 0
-  // the deck is the current SET — the first `served` of `shown`, minus what you've swiped. Swipe
-  // through the set → it empties → "Serve another set" grows `served` by BATCH (the next, new picks).
-  const deck = useMemo(() => shown.slice(0, served).filter((p) => !swiped.has(p.id)), [shown, served, swiped])
-  const moreLeft = served < shown.length        // are there un-served picks beyond the current window?
+  const deck = useMemo(() => shown.filter((p) => !swiped.has(p.id)), [shown, swiped])
   // saved picks in rank order — fuels the saves-dock peek
   const savedPicks = useMemo(() => rankedAll.filter((p) => saved.has(p.id)), [rankedAll, saved])
   // …grouped into a day-by-day itinerary for the saves dock: dated picks first (chronological,
@@ -398,20 +390,12 @@ export default function App() {
   // not the same high-scorers. Keep what you've already seen hidden so "more" really is more;
   // only start the pool over once you've been through most of it.
   function refresh() {
+    setSeed((s) => s + 1)
     setDealKey((k) => k + 1)
-    if (moreLeft) {
-      // reveal the NEXT set (keep what you've swiped hidden so it really is new)
-      setServed((s) => Math.min(s + BATCH, shown.length))
-      flash('A fresh set')
-    } else {
-      // you've been through everything → reshuffle for a genuinely new ordering/evergreen slice
-      setSeed((s) => s + 1)
-      setSwiped(new Set())
-      flash('Starting fresh')
-    }
+    const nearlyDone = deck.length <= Math.max(3, Math.round(shown.length * 0.25))
+    if (nearlyDone) { setSwiped(new Set()); flash('Starting fresh') }
+    else flash('More for you')
   }
-  // a new context (filter / time-window / reshuffle) starts the set window over at the first BATCH
-  useEffect(() => { setServed(BATCH) }, [filter, cats, whens, seed])
 
   function handleStackSwipe(p: Pick, dir: SwipeDir) {
     const wasSaved = saved.has(p.id)
@@ -857,7 +841,6 @@ export default function App() {
                 onSwipe={handleStackSwipe}
                 onOpen={openDetail}
                 onRefresh={refresh}
-                moreLeft={moreLeft}
                 filterLabel={filterActive ? 'this filter' : null}
                 onClearFilter={() => { setFilter('all'); setCats([]); setWhens([]) }}
                 onSeeList={() => setView('list')}

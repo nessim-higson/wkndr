@@ -254,7 +254,7 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
 })
 
 export function SwipeStack({
-  picks, temp, mode, onSwipe, onOpen, onRefresh, moreLeft, filterLabel, onClearFilter, onSeeList,
+  picks, temp, mode, onSwipe, onOpen, onRefresh, filterLabel, onClearFilter, onSeeList,
 }: {
   picks: Pick[]
   temp?: number
@@ -262,7 +262,6 @@ export function SwipeStack({
   onSwipe: (p: Pick, dir: SwipeDir) => void
   onOpen?: (p: Pick, origin?: DOMRect) => void
   onRefresh?: () => void
-  moreLeft?: boolean        // true → more un-served picks exist; "more" reveals the next set
   filterLabel?: string | null
   onClearFilter?: () => void
   onSeeList?: () => void
@@ -282,21 +281,19 @@ export function SwipeStack({
     return (
       <div className="stack-empty">
         <p className="stack-empty-title">
-          {filterLabel ? 'That’s everything in this filter.' : moreLeft ? 'That’s the set.' : 'That’s the weekend.'}
+          {filterLabel ? 'That’s everything in this filter.' : 'That’s the weekend.'}
         </p>
         <span>
           {filterLabel
             ? 'Clear the filters for the full set, or check back as the week refreshes.'
-            : moreLeft
-              ? 'Want more options? Here’s another fresh set.'
-              : 'You’ve seen every pick. Fresh ones land each week — start over, or browse the full list.'}
+            : 'You’ve seen every pick. Fresh ones land each week — run through again, or browse the full list.'}
         </span>
         <div className="stack-empty-actions">
           {filterLabel && onClearFilter && (
             <button className="stack-btn primary" onClick={onClearFilter}>Clear filters</button>
           )}
-          {onRefresh && <button className="stack-btn primary" onClick={onRefresh}>{moreLeft ? 'Serve another set' : 'Start over'}</button>}
           {onSeeList && <button className="stack-btn" onClick={onSeeList}>See all in List</button>}
+          {onRefresh && <button className="stack-btn" onClick={onRefresh}>Refresh</button>}
         </div>
       </div>
     )
@@ -329,7 +326,7 @@ export function SwipeStack({
 
       {onRefresh && (
         <button className="stack-more" onClick={onRefresh}>
-          Not feeling these? <b>{moreLeft ? 'Serve another set' : 'Shuffle for more'}</b>
+          Not feeling these? <b>Shuffle for more</b>
         </button>
       )}
     </div>
