@@ -342,24 +342,19 @@ export default function App() {
         const whenOk = whens.length === 0 || whens.some((w) => matchesWhen(p, w))
         return whatOk && whenOk
       })
-      // RESERVE: in the default browse (no filter), lead with the weekend's time-sensitive picks and
-      // hold the deep evergreen library back — only a rotating sample surfaces. The window advances
-      // automatically every WEEK (so the feed is a different slice week over week, cycling the whole
-      // library over ~7 weeks) and Shuffle (seed) advances it further within a week. Any explicit
-      // filter (incl. the Evergreen tiers) shows the full set.
       if (filter !== 'all' || cats.length > 0 || whens.length > 0) return filtered
-      const RESERVE = 12
-      // ALWAYS-show only the genuinely-this-weekend LIVE picks (from the pipeline: web-/llm-). ALL
-      // hand-authored canon rotates through a weekly window — including canon tagged "new" (newly-
-      // opened bars/restaurants like De Pimpelmees). Previously those bypassed rotation and so
-      // reappeared every single week (stale/fatiguing). Now the whole canon library cycles.
+      // Default browse order: genuinely-this-weekend LIVE picks (pipeline: web-/llm-) lead, then the
+      // FULL canon library — its ORDER rotated weekly (+ on each reshuffle) so a different slice leads,
+      // but ALL of it stays available. No RESERVE cap: the deck's BATCH window (served, in sets of 7)
+      // is what paces discovery now, so "Serve another set" keeps yielding genuinely NEW picks until
+      // the whole library is exhausted — instead of recycling the same dozen.
       const isLiveP = (p: Pick) => p.id.startsWith('web-') || p.id.startsWith('llm-')
       const fresh = filtered.filter(isLiveP)
       const ever = filtered.filter((p) => !isLiveP(p))
-      if (ever.length <= RESERVE) return filtered
-      const start = ((WEEK + seed) * RESERVE) % ever.length
-      const sample = [...ever, ...ever].slice(start, start + RESERVE)
-      return [...fresh, ...sample]
+      if (ever.length === 0) return fresh
+      const start = ((WEEK + seed) % ever.length + ever.length) % ever.length
+      const rotated = [...ever.slice(start), ...ever.slice(0, start)]
+      return [...fresh, ...rotated]
     },
     [rankedAll, filter, cats, whens, saved, seed, sharedPickIds],
   )

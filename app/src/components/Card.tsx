@@ -10,16 +10,10 @@ import './Card.css'
 export function Card({ pick, temp, mode }: { pick: Pick; temp?: number; mode?: Mode }) {
   const sig = cardSignal(pick, mode)
   return (
-    <article className={`card${pick.image ? '' : ` poster poster--${pick.category}`}`}>
-      {/* BLUR-FILL: the whole photo (contain, never cropped) over a blurred/darkened copy of itself
-          (cover) so there are no hard letterbox bars AND no cropped subjects — landscape event
-          photos show in full on a tall card. */}
-      {pick.image && (
-        <>
-          <div className="card-img-blur" style={{ backgroundImage: `url(${pick.image})` }} aria-hidden />
-          <div className="card-img" style={{ backgroundImage: `url(${pick.image})` }} aria-hidden />
-        </>
-      )}
+    <article
+      className={`card${pick.image ? '' : ` poster poster--${pick.category}`}`}
+      style={pick.image ? { backgroundImage: `url(${pick.image})` } : undefined}
+    >
       {!pick.image && <span className="poster-mark">{CATEGORY_LABEL[pick.category]}</span>}
       <div className="card-scrim" aria-hidden />
 

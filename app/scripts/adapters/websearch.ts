@@ -52,17 +52,20 @@ const GEO: Record<string, { city: string; region?: string; country: string; time
 // neighbourhood/community happenings. This assumes the RAISED Anthropic tier (set WEBSEARCH_RPM=3+
 // in the workflow) — on the lowest tier this many facets at speed trips rate limits. To drop back
 // down a tier, trim this array.
+// SOURCE-LED facets first (Ness's ranked trusted sources), then topical breadth to fill gaps the
+// four miss. The source-scoped searches pull each publication's actual weekend agenda; ranking in
+// refresh.ts then orders picks by that same source priority.
 const FACETS = [
-  'festivals, street fairs, markets/pop-ups and big free or outdoor events',
-  'live music — concerts, gigs and club/DJ nights',
+  "Your Little Black Book (yourlittleblackbook.me) — its Amsterdam weekend agenda / weekend tips for this weekend",
+  "I amsterdam (iamsterdam.com/whats-on) — festivals, exhibitions and events on this weekend",
+  "Resident Advisor (ra.co) — club nights, DJ sets and electronic events in Amsterdam this weekend",
+  "de Volkskrant (volkskrant.nl) — this weekend's cultural agenda: concerts, theatre, art, film",
+  'festivals, street fairs, markets and big free or outdoor events',
   'art & museum exhibitions opening or closing soon, plus theatre and dance',
-  'open-air cinema and outdoor film screenings, plus special one-off film events',
+  'open-air cinema and outdoor film screenings',
   'notable new restaurant & bar openings, food festivals and tastings',
-  'rooftop bars, terraces, canal/boat events and summer pop-up venues',
-  'late-night and after-hours programming — club nights, museum lates, night markets',
-  'workshops, classes and active things — ceramics, cooking, life-drawing, run clubs',
-  'talks & lectures, book launches, and family-friendly / kids things',
-  'neighbourhood & community events — street parties, block festivals, local markets by area',
+  'rooftop bars, terraces, canal/boat events and summer pop-ups',
+  'workshops, classes, run clubs and active daytime things',
 ]
 
 function systemPrompt(cityName: string): string {
@@ -70,19 +73,27 @@ function systemPrompt(cityName: string): string {
 genuinely interesting things to do THE COMING WEEKEND: ${WEEKEND} (and its Friday run-up), plus
 ongoing things (a run "until <date>", a "daily" thing, a restaurant/show open that weekend).
 
-Use the web_search tool to find what is ACTUALLY ON in ${cityName} that weekend — search official
-city guides, venue pages, listings and event sites. Prefer specific, dated, real events over
-generic evergreen filler.
+Use the web_search tool to find what is ACTUALLY ON in ${cityName} that weekend.
+
+TRUSTED SOURCES — strongly prefer these, in this priority order, and CREDIT the one you used:
+  1. Your Little Black Book (yourlittleblackbook.me)
+  2. I amsterdam (iamsterdam.com)
+  3. Resident Advisor (ra.co) — the source for club nights & electronic music
+  4. de Volkskrant (volkskrant.nl)
+An event you can confirm on one of these is far better than one from a random blog or a venue's own
+marketing. Open the SPECIFIC event page (not just a month-listing index) to read the real date + details.
 
 RULES:
-- DATES MUST BE REAL AND EXACT, taken from a source you actually found in search. Never guess or
-  shift a date to make something fall on the weekend. If you can't confirm an event is on or
-  spanning ${WEEKEND}, OMIT it. A wrong date is far worse than a missing event.
+- DATES MUST BE REAL AND EXACT, read off the specific event page. Never guess or shift a date to make
+  something fall on the weekend. If you can't CONFIRM it's on or spanning ${WEEKEND}, OMIT it. A wrong
+  date is far worse than a missing event. (Watch end-dates: an exhibition that closed last week is OUT.)
+- For club / DJ / electronic nights, use RESIDENT ADVISOR — do NOT surface a commercial club's own
+  self-promotion (e.g. big touristy clubs advertising their weekly night). Quality over hype.
 - Do NOT include mid-week one-offs that finish before that weekend, or anything already past.
-- LINKS MUST BE REAL URLs that appeared in your search results — never invent a slug. Use the most
-  specific event/booking page you found; else the listing/source page.
+- LINKS MUST be the most SPECIFIC real event page you found (not a generic "/whats-on" month index) —
+  if all you have is a generic listing index, OMIT the item rather than attach a vague link.
 - Legal: signal + link, never republish. Use only FACTS; write your OWN ≤22-word blurb.
-- Return the 4–7 best, most worth-knowing items for the weekend. Skip weak filler.
+- Return the 4–7 best, most worth-knowing items. Skip weak filler and anything you can't date-confirm.
 
 Return ONLY a JSON array (no prose), each item:
 {

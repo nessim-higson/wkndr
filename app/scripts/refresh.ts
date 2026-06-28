@@ -220,14 +220,32 @@ async function buildCity(city: City) {
   // mixed-content blank card on the https site.
   for (const p of picks) if (p.image && p.image.startsWith('http://')) p.image = 'https://' + p.image.slice(7)
 
-  // RANK by what's-talked-about (buzz) then freshness. Cap per category only when there's a real
-  // live pull to balance — a failed/empty pull must never trim the curated canon.
-  // NOVELTY-FIRST rank: genuinely-new-this-week picks lead, THEN buzz, THEN freshness. Because the
-  // per-category cap below keeps the top N per category, novel events also SURVIVE over stale
-  // repeats — so a returning user gets a feed that actually turned over (the retention lever).
+  // SOURCE TRUST — Ness's ranked sources (LBB > I amsterdam > Resident Advisor > Volkskrant) lead the
+  // feed. First DROP low-confidence web picks: cheesy club self-promo (Escape), generic aggregators
+  // (concerts50, Songkick metro index), and items whose only link is a month-listing INDEX rather than
+  // a specific event page — that class produced the wrong-date/wrong-image "Mirror Floor" pick.
+  const srcRank = (p: Pick) => {
+    const s = `${p.source || ''} ${p.link || ''}`.toLowerCase()
+    if (/little black book|yourlittleblackbook/.test(s)) return 4
+    if (/i ?amsterdam|iamsterdam/.test(s)) return 3
+    if (/resident advisor|residentadvisor|\bra\.co\b/.test(s)) return 2
+    if (/volkskrant/.test(s)) return 1
+    return 0
+  }
+  const LOW_QUALITY = /escape\.nl|escape amsterdam|concerts50|songkick\.com\/metro|\/whats?-?-on|\/what-s-on|\/agenda(\/|$|\?)|amsterdamtips\.com\/whats-on/i
+  {
+    const before = picks.length
+    picks = picks.filter((p) => !isLive(p) || !LOW_QUALITY.test(`${p.source || ''} ${p.link || ''}`))
+    if (before !== picks.length) console.log(`  trust:    dropped ${before - picks.length} low-confidence web picks (self-promo / index links)`)
+  }
+
+  // RANK: TRUSTED SOURCE first (Ness's order), then genuinely-new-this-week, then buzz, then freshness.
+  // The per-category cap below keeps the top N per category, so each category is LED by the trusted
+  // sources; curated canon (source rank 0) backfills behind them.
   const isNew = (p: Pick) => isLive(p) && !seenLastWeek.has(titleKey(p.title))
   const novelCount = picks.filter(isNew).length
   picks.sort((a, b) =>
+    srcRank(b) - srcRank(a) ||
     (isNew(b) ? 1 : 0) - (isNew(a) ? 1 : 0) ||
     (b.buzz ?? 1) - (a.buzz ?? 1) ||
     (FRESH_RANK[b.freshness] - FRESH_RANK[a.freshness]))

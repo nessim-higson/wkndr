@@ -4,24 +4,12 @@
   height: 100%;
   border-radius: 22px;
   overflow: hidden;
+  background-size: cover;
+  background-position: center;
   background-color: var(--paper-3);
   box-shadow: 0 18px 50px rgba(0, 0, 0, 0.22), 0 2px 8px rgba(0, 0, 0, 0.12);
   user-select: none;
 }
-
-/* BLUR-FILL image layers — see Card.tsx. The blurred copy fills the whole card (cover) so there
-   are no hard bars; the sharp copy shows the COMPLETE photo (contain) so nothing is cropped. */
-.card-img-blur, .card-img {
-  position: absolute; inset: 0; z-index: 0;
-  background-position: center;
-  background-repeat: no-repeat;
-}
-.card-img-blur {
-  background-size: cover;
-  filter: blur(26px) brightness(0.5) saturate(1.15);
-  transform: scale(1.18);   /* overscan so the blur's soft edge never reveals the card behind */
-}
-.card-img { background-size: contain; }
 
 /* poster fallback — no real photo: a category-tinted gradient + the category set large */
 .poster { background-color: #2a2540; }
