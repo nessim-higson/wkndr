@@ -89,8 +89,9 @@ export function CardDetail({
               dragListener={false}
               dragControls={dragControls}
               dragConstraints={{ top: 0, bottom: 0 }}
-              dragElastic={{ top: 0.02, bottom: 0.7 }}
-              onDragEnd={(_, info) => { if (info.offset.y > 120 || info.velocity.y > 600) onClose() }}
+              dragElastic={0.7}                       /* both directions follow the finger */
+              /* dismiss on a decisive pull in EITHER direction — grab the image and fling up OR down */
+              onDragEnd={(_, info) => { if (Math.abs(info.offset.y) > 110 || Math.abs(info.velocity.y) > 550) onClose() }}
             >
               <button
                 className="detail-close"
