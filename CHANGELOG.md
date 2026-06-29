@@ -5,7 +5,52 @@ Format loosely follows [Keep a Changelog](https://keepachangelog.com/). The vers
 shown in the app's "What's feeding this" sheet matches the latest tag here.
 
 ## [Unreleased]
-- (next up — unique card displays · GPU-shader backgrounds · the content pipeline · "Wrapped")
+- (next up — wire the Feedback widget's Formspree endpoint · confirm V.6.2 pull-to-dismiss on device)
+
+> **Versioning note:** from V.1 the app moved off semver to **`V.<major>.<sub>`** (shown in the menu
+> footer; `bun run bump`). Whole versions are git tags (`v1.0.0`, `v2.0`, `v3.0`, `v4.0`, `v4.10`,
+> `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
+> version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
+
+## [V.6 → V.6.2] — 2026-06-28 — "Trusted-source engine + endless deck"
+- **Ranked trusted sources** — the pipeline now leads with Ness's four: Your Little Black Book ›
+  I amsterdam › Resident Advisor (nightlife) › de Volkskrant. Source-scoped search facets + a
+  source-priority ranking so every category is led by trusted sources; canon backfills.
+- **Trust filter** — drops low-confidence web picks: cheesy club self-promo (Escape), aggregators
+  (concerts50), Songkick metro index, AmsterdamTips month-index links (the wrong-date/wrong-image
+  "Mirror Floor" class). Narrow enough to keep I amsterdam / Eye real event pages.
+- **Reverts after Ness feedback** — the blur-fill "whole photo" card (V.5.19) and the "sets of 7"
+  batching (V.5.18) were both **reverted**: back to full-bleed `cover` cards and the **endless deck +
+  Shuffle for more** that worked better.
+- **V.6.2** — card detail dismisses on a pull **up or down** (was down-only). Frozen reference build
+  at `/wkndr/versions/v6-2/` (tag `v6.2`).
+
+## [V.5 → V.5.19] — 2026-06-15 → 06-28 — "MVP trim, freshness pipeline, boomerang, imagery"
+- **MVP trim (V.5)** — one view (Stack), one ambient look (Auras), Amsterdam-only; full surface behind
+  `?dev=1`. New Orleans later paused in the pipeline.
+- **Freshness engine** — web-search deep-research pipeline (Claude `web_search`, grew to **10 facets**),
+  novelty-first ranking, weekly evergreen rotation; **canon split fixed** so "new"-tagged canon (De
+  Pimpelmees) rotates instead of repeating every week. Anthropic credits + raised tier.
+- **Boomerang** — short stable share links; the `&m=1` return leg greets "it's a match" and opens the
+  **itinerary list** of matched plans (not the deck).
+- **Imagery** — canon-photo bank → Pexels themed stock → **vision-verified real photos**
+  (`verifyImageForEvent` downloads candidates and Claude picks/rejects by subject); stock + Canal-Parade
+  blocks. Pill reads "Perfect this weekend".
+- **Polish** — card sizing dialed to Ness's guide lines; mobile card == header width; canonical look
+  forced (no stale dev looks); in-app **tester feedback widget** (Formspree + mailto fallback).
+
+## [V.4 → V.4.11] — 2026-06 — "Match mode, share round-trip, ambient looks"
+- **Match mode** — swipe-to-match prototype + the real share-link round-trip; weather pills on cards;
+  evergreen batch 2 + a Shops section; 4 new generative ambient looks with knobs/seeds + a 30fps cap.
+- **QA + simplify** — quieter cards, ✓/✕ stamps, undo out of the swipe path, faster geolocate, NOLA
+  weather fix, match-mode freeze fix; **2 gestures not 4**, coaching overlay dropped, controls shifted
+  clear of the deck; short stable 7-char share codes. Pre-MVP build frozen at `/wkndr/versions/v4-10/`.
+
+## [V.2] — 2026-06 — "App Store expand, real imagery, richer cards"
+- App-Store-style expand replaces the card flip; the back keeps the photo + carries more info; richer
+  front tags; when-stamp moved up with forecast temp on outdoor cards; **every card a real image**
+  (logo/placeholder screening in the pipeline); Eater best-restaurants wired; bigger header temp.
+- (V.1 = the frozen landmark at `/wkndr/v1/`; V.3 = Coverflow/dimmed-fan + the first live pipeline.)
 
 ## [0.7.0] — 2026-06-02 — "Floating bar, weather intro, real weekend"
 - **Floating command module** — the top bar is now a centered, floating product card

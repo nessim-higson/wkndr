@@ -1,8 +1,10 @@
 # WKNDR — STATE (catch-me-up snapshot)
 
-_Living "where are we right now" doc. **Updated 2026-06-28.** Read this FIRST in a new chat. For
-strategy + the bigger backlog see `docs/backlog.md`; full version history `CHANGELOG.md`; onboarding
-`CLAUDE.md`. App lives in `/app` (Vite + React + TS, run with `bun`); deployed to GitHub Pages._
+_Living "where are we right now" doc — a **snapshot, not a history**. **Updated 2026-06-28.** Read this
+FIRST in a new chat. For strategy + backlog see `docs/backlog.md`; for full **version history** see
+`CHANGELOG.md` (current to V.6.2) and the **git log / tags** (every `V.x.x` ship is a commit;
+milestones are tags `v4.0`/`v4.10`/`v5.0`/`v6.2`); onboarding `CLAUDE.md`. App lives in `/app` (Vite +
+React + TS, run with `bun`); deployed to GitHub Pages._
 
 ## Live right now
 - **App: V.6.2** — https://nessim-higson.github.io/wkndr/ (cache-bust `?v=V.6.2`)
