@@ -18,8 +18,21 @@ export const CURATED_IMAGES: { match: RegExp; image: string; note: string }[] = 
     image: 'https://upload.wikimedia.org/wikipedia/commons/b/b0/BrunoMars24KMagicWorldTourLive_%28cropped%29.jpg',
     note: 'Wikipedia portrait — tall, face-on, crops to the card clean (auto-pipeline served anonymous concert stock)',
   },
-  // Add hero events here, e.g.:
-  // { match: /\bvunzige deuntjes\b/i, image: 'https://…', note: 'festival crowd, hi-res' },
+  {
+    match: /\bvunzige deuntjes\b/i,
+    image: 'https://www.amsterdamnow.com/app/uploads/main_stage_vunzige_deuntjes.jpg',
+    note: 'Main-stage pyro shot, 1700×1133 (auto-pipeline served a 200px blur)',
+  },
+  {
+    match: /\bhomelanding\b/i,
+    image: 'https://www.amsterdamnow.com/app/uploads/marineterrein-amsterdam3.jpg',
+    note: 'Waterside Marineterrein (the festival’s site), 1700×1134 (auto served a generic restaurant terrace, then dropped it)',
+  },
+  {
+    match: /\bwonderfeel\b/i,
+    image: 'https://admin.wonderfeel.nl/app/uploads/program-image/1200x1200/9544-1.jpg',
+    note: 'Official outdoor orchestra photo — locks the good auto-pick so a future refresh can’t regress it',
+  },
 ]
 
 /** The curated image URL for a pick title, or undefined. First match wins. */
