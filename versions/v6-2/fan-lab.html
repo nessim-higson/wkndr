@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>WKNDR · fan lab</title>
+<style>
+  :root{ --ink:#1a1a1a; --paper:#faf8f3; --accent:#ff4d1f; --font:'Helvetica Neue',Helvetica,Arial,sans-serif; }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased}
+  html,body{height:100%}
+  body{font-family:var(--font);background:radial-gradient(120% 90% at 30% 10%,#caa36a,#7a6f96 55%,#3a3a55);
+    color:var(--paper);overflow:hidden;display:flex;flex-direction:column;touch-action:pan-y}
+  .bar{position:fixed;top:max(14px,env(safe-area-inset-top));left:50%;transform:translateX(-50%);z-index:50;
+    display:flex;gap:6px;background:rgba(20,20,22,.6);backdrop-filter:blur(10px);padding:6px;border-radius:999px;border:1px solid rgba(255,255,255,.12)}
+  .bar button{font-family:inherit;font-size:13px;font-weight:700;color:#fff;background:transparent;border:none;padding:8px 16px;border-radius:999px;cursor:pointer;opacity:.6}
+  .bar button.on{background:#fff;color:#1a1a1a;opacity:1}
+  .hint{position:fixed;bottom:max(18px,env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);z-index:50;
+    font-size:12px;font-weight:600;opacity:.7;background:rgba(20,20,22,.5);padding:7px 14px;border-radius:999px;white-space:nowrap}
+  .stage{position:fixed;inset:0;z-index:1;display:none}
+  .stage.on{display:block}
+
+  /* shared card face */
+  .face{position:relative;border-radius:22px;overflow:hidden;background-size:cover;background-position:center;
+    background-color:#2a2540;box-shadow:0 18px 50px rgba(0,0,0,.34)}
+  .face .scrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.28) 0%,transparent 32%,transparent 50%,rgba(0,0,0,.6) 76%,rgba(0,0,0,.86) 100%)}
+  .face .body{position:absolute;left:16px;right:16px;bottom:16px;color:#fff}
+  .face .eyebrow{font-size:10px;letter-spacing:.14em;text-transform:uppercase;opacity:.82;font-weight:600}
+  .face .title{font-size:21px;font-weight:800;letter-spacing:-.03em;line-height:1.06;margin-top:3px}
+  .face .stamp{position:absolute;top:12px;left:12px;background:rgba(20,20,22,.5);color:#fff;font-size:12px;font-weight:700;padding:5px 10px;border-radius:999px}
+
+  /* ===== A · COVERFLOW (horizontal scroll-snap) ===== */
+  #cover .scroll{position:absolute;inset:0;display:flex;align-items:center;gap:18px;overflow-x:auto;overflow-y:hidden;
+    scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding:0 calc(50vw - 130px);scrollbar-width:none}
+  #cover .scroll::-webkit-scrollbar{display:none}
+  #cover .cf{flex:0 0 260px;height:380px;scroll-snap-align:center;will-change:transform,opacity;
+    transition:transform .18s ease, opacity .18s ease}
+
+  /* ===== B · RIFFLE FAN (linear hand-fan, bottom pivot, drag) ===== */
+  #riffle{touch-action:none;cursor:grab}
+  #riffle.drag{cursor:grabbing}
+  #riffle .rf{position:absolute;left:50%;top:50%;width:240px;height:340px;margin-left:-120px;margin-top:-150px;
+    transform-origin:50% 150%;will-change:transform}
+  @media(max-width:540px){
+    #riffle .rf{width:200px;height:286px;margin-left:-100px;margin-top:-130px}
+    #cover .cf{flex-basis:230px;height:340px}
+    #cover .scroll{padding:0 calc(50vw - 115px)}
+  }
+</style>
+</head>
+<body>
+  <div class="bar">
+    <button data-v="cover" class="on">Coverflow</button>
+    <button data-v="riffle">Riffle fan</button>
+  </div>
+
+  <section class="stage on" id="cover"><div class="scroll" id="coverScroll"></div></section>
+  <section class="stage" id="riffle"></section>
+
+  <div class="hint" id="hint">← swipe sideways →</div>
+
+<script>
+const CARDS = [
+  {t:"Doja Cat", c:"Live & gigs", w:"Sat 6 Jun · 20:00", img:"https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=900&q=80"},
+  {t:"Rue D'Alger", c:"Eat", w:"Lunch & dinner", img:"https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=900&q=80"},
+  {t:"Holland Festival", c:"Stage & screen", w:"Until Sun · last days", img:"https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=900&q=80"},
+  {t:"Iron Maiden", c:"Live & gigs", w:"Sat 6 Jun · 21:00", img:"https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=900&q=80"},
+  {t:"STRAAT Museum", c:"Art & galleries", w:"Daily · 10–18", img:"https://images.unsplash.com/photo-1499781350541-7783f6c6a0c8?w=900&q=80"},
+  {t:"Café 't Smalle", c:"Drink", w:"Brown café", img:"https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=900&q=80"},
+  {t:"Noordermarkt", c:"Markets", w:"Sat · 09–16", img:"https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=900&q=80"},
+];
+const faceHTML = (c)=>`<div class="scrim"></div><span class="stamp">🕗 ${c.w}</span>
+  <div class="body"><div class="eyebrow">${c.c}</div><div class="title">${c.t}</div></div>`;
+
+/* ---- A · Coverflow ---- */
+const cs = document.getElementById('coverScroll');
+CARDS.forEach(c=>{ const d=document.createElement('div'); d.className='face cf'; d.style.backgroundImage=`url('${c.img}')`; d.innerHTML=faceHTML(c); cs.appendChild(d); });
+function coverPaint(){
+  const mid = cs.scrollLeft + cs.clientWidth/2;
+  [...cs.children].forEach(el=>{
+    const cmid = el.offsetLeft + el.offsetWidth/2;
+    const d = Math.min(1, Math.abs(cmid - mid) / (el.offsetWidth*1.25));
+    const s = 1 - d*0.26, o = 1 - d*0.5;
+    el.style.transform = `scale(${s.toFixed(3)})`;
+    el.style.opacity = o.toFixed(3);
+    el.style.zIndex = String(100 - Math.round(d*100));
+  });
+}
+let craf=0; cs.addEventListener('scroll',()=>{ if(craf) return; craf=requestAnimationFrame(()=>{coverPaint();craf=0;}); });
+window.addEventListener('resize', coverPaint);
+setTimeout(()=>{ cs.scrollLeft = (cs.scrollWidth - cs.clientWidth)/2 * 0; coverPaint(); }, 30);
+
+/* ---- B · Riffle fan ---- */
+const rf = document.getElementById('riffle');
+const STEP = 15, MAX = CARDS.length;       // degrees between cards
+let pos = 0;                                // float index at the top
+CARDS.forEach((c,i)=>{ const d=document.createElement('div'); d.className='face rf'; d.style.backgroundImage=`url('${c.img}')`; d.dataset.i=i; d.innerHTML=faceHTML(c); rf.appendChild(d); });
+function rifflePaint(){
+  [...rf.children].forEach((el)=>{
+    const i = +el.dataset.i;
+    const a = (i - pos) * STEP;             // angle from top
+    const aa = Math.abs(a);
+    const hero = Math.max(0, 1 - aa/STEP);  // 1 at top
+    const lift = hero*hero;
+    el.style.transform = `rotate(${a}deg) translateY(${-lift*40}px) scale(${0.9 + lift*0.18})`;
+    el.style.zIndex = String(300 - Math.round(aa));
+    el.style.opacity = String(Math.max(0, 1 - (aa-STEP*3)/STEP));
+    el.style.filter = `brightness(${(0.62 + 0.38*hero).toFixed(2)})`;
+  });
+}
+rifflePaint();
+let dragging=false, startX=0, startPos=0;
+rf.addEventListener('pointerdown', e=>{ dragging=true; startX=e.clientX; startPos=pos; rf.classList.add('drag'); rf.setPointerCapture(e.pointerId); });
+rf.addEventListener('pointermove', e=>{ if(!dragging) return; pos = startPos - (e.clientX-startX)/40; pos=Math.max(0,Math.min(MAX-1,pos)); rifflePaint(); });
+rf.addEventListener('pointerup', ()=>{ dragging=false; rf.classList.remove('drag'); pos=Math.round(pos); rifflePaint(); });
+
+/* ---- tabs ---- */
+const hint=document.getElementById('hint');
+document.querySelectorAll('.bar button').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('.bar button').forEach(x=>x.classList.toggle('on', x===b));
+  document.querySelectorAll('.stage').forEach(s=>s.classList.toggle('on', s.id===b.dataset.v));
+  hint.textContent = b.dataset.v==='cover' ? '← swipe sideways →' : 'drag to riffle through';
+  if(b.dataset.v==='cover'){ coverPaint(); } else { rifflePaint(); }
+}));
+</script>
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>WKNDR · opening coach-mark samples</title>
+<style>
+  :root{
+    --ink:#1a1a1a; --ink-3:#5a5a5a; --paper:#faf8f3; --paper-2:#f1efe8;
+    --accent:#ff4d1f; --green:#16a85a; --red:#d2402e; --kid:#4a5a7a;
+    --font:'Helvetica Neue',Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased}
+  body{font-family:var(--font);background:#0e0e12;color:var(--paper);padding:28px 16px 80px}
+  header{max-width:520px;margin:0 auto 26px;text-align:center}
+  header h1{font-size:22px;letter-spacing:-.02em}
+  header p{font-size:14px;opacity:.6;margin-top:8px;line-height:1.5}
+  .grid{display:grid;gap:34px;max-width:1100px;margin:0 auto;grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+  .sample{display:flex;flex-direction:column;align-items:center;gap:14px}
+  .label{text-align:center}
+  .label .n{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+  .label h2{font-size:17px;letter-spacing:-.01em;margin-top:4px}
+  .label p{font-size:12.5px;opacity:.55;margin-top:6px;line-height:1.45;max-width:300px}
+
+  /* phone mock */
+  .phone{position:relative;width:300px;height:600px;border-radius:34px;overflow:hidden;
+    background:linear-gradient(150deg,#caa36a,#6b6a86 55%,#3a3a55);box-shadow:0 22px 60px rgba(0,0,0,.5)}
+  .topbar{position:absolute;top:14px;left:14px;right:14px;height:46px;border-radius:16px;background:rgba(250,248,243,.94);
+    display:flex;align-items:center;gap:8px;padding:0 14px;z-index:8;color:var(--ink)}
+  .topbar b{font-weight:800;letter-spacing:-.02em;font-size:15px}
+  .topbar .dot{width:7px;height:7px;border-radius:50%;background:var(--accent)}
+  .topbar .meta{margin-left:auto;font-size:10px;text-align:right;line-height:1.15;opacity:.75;font-weight:600}
+
+  /* the card */
+  .card{position:absolute;left:34px;right:34px;top:96px;bottom:96px;border-radius:22px;overflow:hidden;
+    background-size:cover;background-position:center;box-shadow:0 18px 50px rgba(0,0,0,.35)}
+  .card .scrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.32) 0%,transparent 30%,transparent 46%,rgba(0,0,0,.6) 74%,rgba(0,0,0,.85) 100%)}
+  .card .body{position:absolute;left:18px;right:18px;bottom:18px;color:#fff;z-index:3}
+  .card .eyebrow{font-size:10px;letter-spacing:.14em;text-transform:uppercase;opacity:.82;font-weight:600}
+  .card .title{font-size:24px;font-weight:800;letter-spacing:-.03em;line-height:1.05;margin-top:4px}
+  .card .when{margin-top:8px;font-size:13px;font-weight:700;opacity:.92}
+  .stamp{position:absolute;top:14px;left:14px;z-index:4;display:inline-flex;align-items:center;gap:6px;
+    padding:6px 11px;border-radius:999px;background:rgba(20,20,22,.55);color:#fff;font-size:13px;font-weight:700}
+
+  /* ===== concept 1 — edge ghost arrows on the card ===== */
+  .c1 .arrow{position:absolute;z-index:5;color:#fff;font-weight:800;display:flex;flex-direction:column;align-items:center;gap:2px;
+    font-size:11px;letter-spacing:.08em;text-transform:uppercase;text-shadow:0 2px 10px rgba(0,0,0,.5);opacity:.95}
+  .c1 .arrow .g{font-size:26px;line-height:1}
+  .c1 .a-like{right:10px;top:50%;transform:translateY(-50%);color:#bff5d4}
+  .c1 .a-pass{left:10px;top:50%;transform:translateY(-50%);color:#ffc4bd}
+  .c1 .a-save{top:8px;left:50%;transform:translateX(-50%);color:#ffd9a8}
+  .c1 .a-skip{bottom:74px;left:50%;transform:translateX(-50%);color:#dfe3ee}
+  .pulse{animation:pulse 1.8s ease-in-out infinite}
+  @keyframes pulse{0%,100%{opacity:.55;transform:translateY(-50%) scale(.94)}50%{opacity:1;transform:translateY(-50%) scale(1)}}
+  .pulse.v{animation:pulseV 1.8s ease-in-out infinite}
+  @keyframes pulseV{0%,100%{opacity:.55;transform:translateX(-50%) scale(.94)}50%{opacity:1;transform:translateX(-50%) scale(1)}}
+
+  /* ===== concept 2 — ghost-hand demo ===== */
+  .c2 .hand{position:absolute;z-index:6;left:50%;top:54%;font-size:44px;filter:drop-shadow(0 6px 14px rgba(0,0,0,.5));
+    transform-origin:center;animation:hand 3.2s ease-in-out infinite}
+  @keyframes hand{0%,12%{transform:translate(-50%,0) rotate(0)}30%{transform:translate(28px,-6px) rotate(8deg)}
+    45%{transform:translate(-50%,0) rotate(0)}63%{transform:translate(-78px,-6px) rotate(-8deg)}80%,100%{transform:translate(-50%,0) rotate(0)}}
+  .c2 .tip{position:absolute;z-index:6;left:50%;transform:translateX(-50%);bottom:30px;background:rgba(20,20,22,.78);
+    color:#fff;padding:9px 16px;border-radius:999px;font-size:13px;font-weight:700;white-space:nowrap}
+
+  /* ===== concept 3 — colour edge zones (Tinder-style, shown upfront) ===== */
+  .c3 .zone{position:absolute;z-index:5;display:flex;align-items:center;justify-content:center;gap:6px;
+    font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.4)}
+  .c3 .z-like{right:0;top:0;bottom:0;width:42%;background:linear-gradient(270deg,rgba(22,168,90,.6),transparent);justify-content:flex-end;padding-right:14px}
+  .c3 .z-pass{left:0;top:0;bottom:0;width:42%;background:linear-gradient(90deg,rgba(210,64,46,.6),transparent);justify-content:flex-start;padding-left:14px}
+  .c3 .z-save{left:0;right:0;top:0;height:34%;background:linear-gradient(180deg,rgba(255,77,31,.55),transparent);align-items:flex-start;padding-top:12px}
+
+  /* ===== concept 4 — a "how it works" first card ===== */
+  .c4 .how{position:absolute;inset:0;background:#16161c;display:flex;flex-direction:column;justify-content:center;padding:28px;gap:18px}
+  .c4 .how h3{font-size:24px;font-weight:800;letter-spacing:-.03em;line-height:1.08}
+  .c4 .how .row{display:flex;align-items:center;gap:12px;font-size:15px;font-weight:600}
+  .c4 .how .row .k{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-size:17px;flex-shrink:0;background:rgba(255,255,255,.1)}
+  .c4 .how .go{margin-top:8px;align-self:flex-start;background:var(--accent);color:#fff;font-weight:800;padding:11px 20px;border-radius:999px;font-size:14px}
+  .c4 .how .sub{font-size:12.5px;opacity:.55;line-height:1.5}
+</style>
+</head>
+<body>
+<header>
+  <h1>WKNDR · opening coach-mark options</h1>
+  <p>Four ways to teach the swipe on first open. Each shows over the real card. They all retire after the first swipe. Open on your phone to feel the motion.</p>
+</header>
+
+<div class="grid">
+
+  <!-- 1 -->
+  <div class="sample">
+    <div class="label"><span class="n">Option 1</span><h2>Edge ghost arrows</h2></div>
+    <div class="phone c1">
+      <div class="topbar"><span class="dot"></span><b>WKNDR</b><span class="meta">Sat–Sun · 6–7 Jun<br>19°</span></div>
+      <div class="card" style="background-image:url('https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=800&q=80')">
+        <div class="scrim"></div>
+        <span class="stamp">🕗 Sat 6 Jun · 20:00</span>
+        <span class="arrow a-save pulse v"><span class="g">↑</span>Save</span>
+        <span class="arrow a-like pulse"><span class="g">→</span>Like</span>
+        <span class="arrow a-pass pulse"><span class="g">←</span>Pass</span>
+        <span class="arrow a-skip pulse v"><span class="g">↓</span>Skip</span>
+        <div class="body"><div class="eyebrow">Live & gigs</div><div class="title">FKA twigs</div></div>
+      </div>
+    </div>
+    <div class="label"><p>Faint arrows hug the card's four edges and pulse once. Most "on the thing," least chrome. Up/down (the non-obvious ones) get emphasis.</p></div>
+  </div>
+
+  <!-- 2 -->
+  <div class="sample">
+    <div class="label"><span class="n">Option 2</span><h2>Ghost-hand demo</h2></div>
+    <div class="phone c2">
+      <div class="topbar"><span class="dot"></span><b>WKNDR</b><span class="meta">Sat–Sun · 6–7 Jun<br>19°</span></div>
+      <div class="card" style="background-image:url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80')">
+        <div class="scrim"></div>
+        <span class="stamp">🍽 Lunch & dinner</span>
+        <div class="body"><div class="eyebrow">Eat</div><div class="title">Rue D'Alger</div></div>
+      </div>
+      <div class="hand">👆</div>
+      <div class="tip">Swipe to choose · tap for more</div>
+    </div>
+    <div class="label"><p>A finger physically nudges the card left↔right — the universal "you can swipe this" demo. Warmest, most obvious; slightly more motion.</p></div>
+  </div>
+
+  <!-- 3 -->
+  <div class="sample">
+    <div class="label"><span class="n">Option 3</span><h2>Colour edge zones</h2></div>
+    <div class="phone c3">
+      <div class="topbar"><span class="dot"></span><b>WKNDR</b><span class="meta">Sat–Sun · 6–7 Jun<br>19°</span></div>
+      <div class="card" style="background-image:url('https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=800&q=80')">
+        <div class="scrim"></div>
+        <span class="zone z-save">↑ Save</span>
+        <span class="zone z-pass">← Pass</span>
+        <span class="zone z-like">Like →</span>
+        <div class="body"><div class="eyebrow">Live & gigs</div><div class="title">Doja Cat</div></div>
+      </div>
+    </div>
+    <div class="label"><p>Previews the colour wash you'll see while dragging (green=like, red=pass, orange=save). Teaches the feedback before you feel it. Boldest.</p></div>
+  </div>
+
+  <!-- 4 -->
+  <div class="sample">
+    <div class="label"><span class="n">Option 4</span><h2>"How it works" first card</h2></div>
+    <div class="phone c4">
+      <div class="topbar"><span class="dot"></span><b>WKNDR</b><span class="meta">Sat–Sun · 6–7 Jun<br>19°</span></div>
+      <div class="card">
+        <div class="how">
+          <h3>Your weekend,<br>one swipe at a time.</h3>
+          <div class="row"><span class="k">→</span> Like it</div>
+          <div class="row"><span class="k">←</span> Pass</div>
+          <div class="row"><span class="k">↑</span> Save for later</div>
+          <div class="row"><span class="k">↓</span> Skip for now</div>
+          <div class="go">Start swiping</div>
+          <div class="sub">Tap any card for details, Spotify & to open the source.</div>
+        </div>
+      </div>
+    </div>
+    <div class="label"><p>The first "card" in the deck explains the game, then you swipe it away to begin. Clearest for true first-timers; one extra swipe before content.</p></div>
+  </div>
+
+</div>
+</body>
+</html>
