@@ -26,6 +26,7 @@ import { llmExtract } from './adapters/llm'
 import { websearchExtract } from './adapters/websearch'
 import { editorialScores } from './adapters/editor'
 import { raExtract } from './adapters/ra'
+import { curatedImage } from './curated'
 import { rssExtract } from './adapters/rss'
 import { ROSTERS } from './roster'
 
@@ -233,6 +234,12 @@ async function buildCity(city: City) {
     let banked = 0
     for (const p of live) if (!p.image) { const img = themedPhoto(p); if (img) { p.image = img; banked++ } }
     if (banked) console.log(`  bank:     +${banked} imageless live picks → themed canon photo`)
+
+    // CURATED OVERRIDES — hand-pinned images for hero/recurring events the auto-pipeline gets wrong, applied
+    // LAST so they always win (and rescue an event that would otherwise be dropped imageless). See curated.ts.
+    let curated = 0
+    for (const p of live) { const c = curatedImage(p.title); if (c) { p.image = c; curated++ } }
+    if (curated) console.log(`  curated:  ${curated} hero events → hand-pinned image`)
 
     // PORTRAIT NORMALIZE — reshape every live photo to a tall portrait (wsrv.nl saliency crop) so a
     // landscape source fills the tall cover-card with its subject centred instead of cropping to a band.
