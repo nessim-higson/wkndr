@@ -103,6 +103,24 @@ export function whenDayGroup(when: string, now: Date = new Date()): { key: strin
   return { key: start.toISOString().slice(0, 10), label }
 }
 
+/** The LATEST concrete date a `when` refers to, or null if it's undated / evergreen. */
+export function latestDateOf(when: string, now: Date = new Date()): Date | null {
+  const dates = datesIn(when || '', now)
+  return dates.length ? dates[dates.length - 1] : null
+}
+
+/** Has this `when` already finished? (Its latest date is before today.) Undated / open-ended / recurring
+ *  picks — "Daily", "Until <future>", a market's "Mon–Sat", evergreen canon — have no concrete latest date
+ *  and return false (kept). This is the RUNTIME guard: the feed is rebuilt weekly for the coming weekend,
+ *  so between refreshes it can lag into a now-past weekend; filtering on this in the app means last
+ *  weekend's events never reach a card no matter how stale the feed is. Mirrors the build-time whenIsPast. */
+export function whenIsPast(when: string, now: Date = new Date()): boolean {
+  const latest = latestDateOf(when, now)
+  if (!latest) return false
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+  return latest < today
+}
+
 /** Just the time / part-of-day slice of a `when`, for the row's time chip ("" if none). */
 export function whenTime(when: string): string {
   const t = when.match(/\b\d{1,2}:\d{2}\b/)

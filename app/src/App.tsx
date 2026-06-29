@@ -51,7 +51,7 @@ const TEMP_TINT: Record<Mode, string> = {
   HOT: '#c2310e', WARM: '#b5791f', COOL: '#3f7d74', COLD_WET: '#4a6491', VOLATILE: '#7a5a7a',
 }
 import { CATEGORY_LABEL, type Category } from './types'
-import { fixWhen, whenDayGroup, whenSortKey, whenTime } from './lib/when'
+import { fixWhen, whenDayGroup, whenSortKey, whenTime, whenIsPast } from './lib/when'
 import { inShared } from './lib/share'
 import {
   type Taste, applySwipe, hasTaste, loadSaved, loadTaste, persistSaved, persistTaste,
@@ -200,7 +200,11 @@ export default function App() {
   // shows a weekday that actually matches the date (the feed's can be wrong/stale).
   const rawPicks = feeds[city.key]?.picks ?? city.picks
   const cityPicks = useMemo(
-    () => rawPicks.map((p) => (p.when ? { ...p, when: fixWhen(p.when) } : p)),
+    // correct the weekday from the date, THEN drop anything already past — the feed is rebuilt weekly for
+    // the coming weekend, so this runtime guard keeps last weekend's events off the cards between refreshes.
+    () => rawPicks
+      .map((p) => (p.when ? { ...p, when: fixWhen(p.when) } : p))
+      .filter((p) => !whenIsPast(p.when)),
     [rawPicks],
   )
   // resolve the share-link tokens (short codes, or legacy full ids) against the ACTIVE pool —
