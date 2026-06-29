@@ -6,6 +6,56 @@
   "count": 72,
   "picks": [
     {
+      "id": "web-hero-bruno-mars",
+      "title": "Bruno Mars – The Romantic Tour",
+      "venue": "Johan Cruijff ArenA",
+      "area": "Southeast (Bijlmer)",
+      "when": "Sat 4 Jul · 20:00 / Sun 5 Jul · 20:00",
+      "category": "live",
+      "freshness": "weekend",
+      "outdoor": false,
+      "kid": false,
+      "price": "ticketed",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fb%2Fb0%2FBrunoMars24KMagicWorldTourLive_%2528cropped%2529.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg",
+      "blurb": "GRAMMY-winning pop sensation brings his first full stadium tour to Amsterdam, with DJ Pee Wee and Victoria Monét.",
+      "why": "Huge global tour · both nights",
+      "source": "I amsterdam",
+      "link": "https://www.iamsterdam.com/en/whats-on/calendar",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "verify": false,
+      "buzz": 2
+    },
+    {
+      "id": "web-hero-homelanding",
+      "title": "Homelanding",
+      "venue": "Marineterrein",
+      "area": "Centrum (Marineterrein)",
+      "when": "Wed 1 Jul – Sun 5 Jul",
+      "category": "out",
+      "freshness": "weekend",
+      "outdoor": true,
+      "kid": false,
+      "price": "free",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.amsterdamnow.com%2Fapp%2Fuploads%2Fmarineterrein-amsterdam3.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg",
+      "blurb": "A free summer festival on the waterfront Marineterrein — food, music, a swim spot and design across the old naval yard.",
+      "why": "Free · waterside summer festival",
+      "source": "Your Little Black Book",
+      "link": "https://www.marineterrein.nl/en/",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL"
+      ],
+      "verify": false,
+      "buzz": 2
+    },
+    {
       "id": "web-your-little-black-book-trek-food-festival",
       "title": "TREK Food Festival",
       "venue": "Amstelpark",

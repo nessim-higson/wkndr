@@ -27,6 +27,7 @@ import { websearchExtract } from './adapters/websearch'
 import { editorialScores } from './adapters/editor'
 import { raExtract } from './adapters/ra'
 import { curatedImage } from './curated'
+import { heroPicks } from './heroes'
 import { rssExtract } from './adapters/rss'
 import { ROSTERS } from './roster'
 
@@ -255,6 +256,21 @@ async function buildCity(city: City) {
   // mixed-content blank card on the https site.
   for (const p of picks) if (p.image && p.image.startsWith('http://')) p.image = 'https://' + p.image.slice(7)
 
+  // HERO EVENTS — GUARANTEE the confirmed must-sees are in the feed. The web-search adapters are
+  // non-deterministic, so a flagship (Bruno Mars at the ArenA) can be surfaced one run and gone the next.
+  // Inject any hero not already present (by title key), carrying its hand-picked image (portrait-wrapped
+  // here, since it skips the auto image pass above); it auto-expires via the date filters and is exempt from
+  // the per-category cap below. A hero the adapters DID find keeps its found record + curated image and is
+  // simply not re-injected (and is still cap-exempt). See scripts/heroes.ts.
+  const heroKeys = new Set(heroPicks(city.key).map((h) => titleKey(h.title)))
+  {
+    const present = new Set(picks.map((p) => titleKey(p.title)))
+    const inject = heroPicks(city.key)
+      .filter((h) => !whenIsPast(h.when) && !whenBeforeWeekend(h.when) && !present.has(titleKey(h.title)))
+      .map((h) => ({ ...h, when: fixWhen(h.when), image: h.image ? toPortrait(h.image) : h.image }))
+    if (inject.length) { picks = [...inject, ...picks]; console.log(`  heroes:   +${inject.length} guaranteed (${inject.map((h) => h.id.replace('web-hero-', '')).join(', ')})`) }
+  }
+
   // SOURCE TRUST — Ness's ranked sources (LBB > I amsterdam > Resident Advisor > Volkskrant) lead the
   // feed. First DROP low-confidence web picks: cheesy club self-promo (Escape), generic aggregators
   // (concerts50, Songkick metro index), and items whose only link is a month-listing INDEX rather than
@@ -290,9 +306,13 @@ async function buildCity(city: City) {
     (b.buzz ?? 1) - (a.buzz ?? 1) ||
     (FRESH_RANK[b.freshness] - FRESH_RANK[a.freshness]))
   if (picks.filter(isLive).length > 6) {
-    const balanced = balanceByCategory(picks, 8)   // a touch higher (was 6) so more fresh events survive
-    console.log(`  ranked:   ${picks.length} → ${balanced.length} after per-category cap · ${novelCount} new this week`)
-    picks = balanced
+    // HERO EVENTS bypass the cap entirely (found OR injected — matched by title), so a must-see can never be
+    // capped out of an over-full category; the rest is balanced as before, with heroes leading.
+    const heroesInPool = picks.filter((p) => heroKeys.has(titleKey(p.title)))
+    const balanced = balanceByCategory(picks.filter((p) => !heroKeys.has(titleKey(p.title))), 8)
+    const out = [...heroesInPool, ...balanced]
+    console.log(`  ranked:   ${picks.length} → ${out.length} after per-category cap (${heroesInPool.length} hero-exempt) · ${novelCount} new this week`)
+    picks = out
   } else {
     console.log(`  ranked:   ${picks.length} (canon floor) · ${novelCount} new this week`)
   }
