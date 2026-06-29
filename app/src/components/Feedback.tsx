@@ -6,7 +6,7 @@ import './Feedback.css'
 // dashboard). The form id is PUBLIC by design (client-embedded, spam-filtered by Formspree), so it's
 // safe to commit. Until it's set, the widget gracefully falls back to a prefilled mailto so feedback
 // still works. Every submit carries CONTEXT (version + which screen/card) so notes aren't vague.
-const FORM = 'https://formspree.io/f/REPLACE_ME'   // ← paste the Formspree endpoint here
+const FORM = 'https://formspree.io/f/xykqpwkw'   // Formspree → emails Ness + logs a dashboard
 const FORM_READY = !/REPLACE_ME/.test(FORM)
 const MAILTO = 'ness@iamalwayshungry.com'
 

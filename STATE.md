@@ -7,7 +7,7 @@ milestones are tags `v4.0`/`v4.10`/`v5.0`/`v6.2`); onboarding `CLAUDE.md`. App l
 React + TS, run with `bun`); deployed to GitHub Pages._
 
 ## Live right now
-- **App: V.6.2** — https://nessim-higson.github.io/wkndr/ (cache-bust `?v=V.6.2`)
+- **App: V.6.3** — https://nessim-higson.github.io/wkndr/ (cache-bust `?v=V.6.3`)
 - **`?dev=1`** reveals the full exploration surface (all views, ambient-look switcher, city picker).
 - **Frozen reference builds:** this build at **`/wkndr/versions/v6-2/`** (git tag `v6.2`) and the
   pre-MVP build at `/wkndr/versions/v4-10/` (git tag `v4.10`). Frozen builds live in the repo's
@@ -93,9 +93,9 @@ the endless deck.
 ## Open items / next (need Ness or pending)
 1. **Detail pull-to-dismiss (V.6.2)** — verified by code only; Ness to confirm the gesture on device
    (framer drag/tap can't be exercised in the headless preview).
-2. **Feedback widget → Formspree NOT wired yet.** `FORM` in `Feedback.tsx` is still the `REPLACE_ME`
-   placeholder, so it falls back to a prefilled **mailto** to ness@. To enable the in-app form: make a
-   free form at formspree.io, paste the `https://formspree.io/f/<id>` endpoint into `FORM`, ship.
+2. ✅ **Feedback widget → Formspree WIRED (V.6.3).** `FORM` in `Feedback.tsx` =
+   `https://formspree.io/f/xykqpwkw`; tester feedback (👍/👎 + note + auto-context) lands in the
+   Formspree dashboard + emails Ness. (Confirmed live with a test POST → `{ok:true}`.)
 3. **Card cropping** — full-bleed `cover` crops landscape; blur-fill was rejected. If it keeps bugging,
    the real fix is an "image-top + text-panel" card layout (a deliberate look change).
 4. **Per-event photos** — vision-verify gets ~real for most; the rest are Pexels themed. A paid image
