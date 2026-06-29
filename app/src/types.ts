@@ -42,6 +42,10 @@ export interface Pick {
   verify?: boolean     // true = detail (venue/time) needs confirming before relying
   status?: Status      // live availability/scarcity from the crawl
   buzz?: number        // how many independent sources flagged it (the "what's talked about" signal)
+  editorScore?: number // 0..10 editorial quality from the build-time judge (scripts/adapters/editor.ts);
+                       // a term in rankPicks so "best" actually ranks. Live picks only; undefined → 0.
+  popularity?: number  // real-draw signal from structured sources (e.g. Resident Advisor "attending"
+                       // count); a log-scaled term in rankPicks. Structured-source picks only; undefined → 0.
   tier?: 'classic' | 'bespoke'   // evergreen only: well-known staple vs cooler/curated find (browse filter)
 }
 

@@ -34,6 +34,7 @@ jobs:
           SONGKICK_API_KEY: ${{ secrets.SONGKICK_API_KEY }}     # optional clean gigs
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}         # vivid on-theme stock for events w/o a real photo
           WEBSEARCH_RPM: '3'                                    # deeper research — assumes the RAISED Anthropic tier
+          ANTHROPIC_JUDGE_MODEL: 'claude-sonnet-4-6'            # the stronger "best of the weekend" editor (NOT the haiku extractor)
         run: cd app && bun run refresh
       - name: Commit if the feed changed
         id: commit

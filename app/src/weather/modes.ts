@@ -108,15 +108,30 @@ function jitter(id: string, seed: number): number {
   for (let i = 0; i < id.length; i++) h = Math.imul(h ^ id.charCodeAt(i), 16777619) >>> 0
   return (h >>> 8) / 16777216   // 0..1, stable per (id, seed)
 }
+// Editorial-quality weight: the build-time judge (scripts/adapters/editor.ts) scores live picks 0..10;
+// scaled to ~0..5 here so a genuinely-better event leads WITHIN its weather tier. Like taste (also a
+// sub-term, cap 6), a very high editor score can occasionally cross the +10 weather boundary — weather-fit
+// is the strong default, NOT a hard lock. Undefined editorScore (canon, or no judge run) → 0 → today's
+// behaviour. (If weather should ever be a HARD gate, make the +10 an outer tier — a deliberate change.)
+const EDITOR_W = 0.5
+// The evergreen FLOOR: how strongly an always-good canon pick competes with timely events. Was an inline
+// 0.6 in freshBoost; named here as the single legible knob (raise → classics surface more on quiet weeks).
+const EVERGREEN_FLOOR = 0.6
 export function rankPicks(picks: Pick[], mode: Mode, taste?: Taste, seed = 0): Pick[] {
   const freshBoost = (p: Pick) =>
-    p.freshness === 'new' ? 1.5 : p.freshness === 'ending' ? 1.2 : p.freshness === 'weekend' ? 1 : 0.6
+    p.freshness === 'new' ? 1.5 : p.freshness === 'ending' ? 1.2 : p.freshness === 'weekend' ? 1 : EVERGREEN_FLOOR
   const buzzBoost = (p: Pick) => Math.min(3, Math.max(0, (p.buzz ?? 0) - 1)) // 2 sources→+1 … capped +3
+  // real-draw signal (e.g. RA "attending") on a log curve so 50 vs 500 separates but a mega-event can't run
+  // away — a within-tier sub-term capped ~2.5, like buzz. Only picks that carry popularity get the bump.
+  const popBoost = (p: Pick) => (p.popularity ? Math.min(2.5, Math.log10(p.popularity + 1)) : 0)
   const score = (p: Pick) =>
-    (p.weatherFit.includes(mode) ? 10 : 0) + freshBoost(p) + buzzBoost(p)
+    (p.weatherFit.includes(mode) ? 10 : 0) + freshBoost(p) + buzzBoost(p) + popBoost(p)
+    + (p.editorScore ?? 0) * EDITOR_W
     + (taste ? tasteScore(p, taste) : 0) + (seed ? jitter(p.id, seed) * 3.5 : 0)
-  const sorted = [...picks].sort((a, b) => score(b) - score(a))
-  return diversify(sorted)
+  // Pure score order. De-clustering used to run HERE (diversify), but App.tsx re-segments the deck into
+  // [live, canonSlice] afterward, which discarded it (→ category "waves"). diversify is now exported and
+  // applied to the ACTUAL served sequence in App.tsx instead.
+  return [...picks].sort((a, b) => score(b) - score(a))
 }
 
 /**
@@ -124,7 +139,7 @@ export function rankPicks(picks: Pick[], mode: Mode, taste?: Taste, seed = 0): P
  * museums in a row). Greedy: always take the highest-ranked pick whose category differs
  * from the one just placed — keeps score order roughly intact while interleaving.
  */
-function diversify(ranked: Pick[]): Pick[] {
+export function diversify(ranked: Pick[]): Pick[] {
   const out: Pick[] = []
   const pool = [...ranked]
   while (pool.length) {

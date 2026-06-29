@@ -19,11 +19,13 @@
  */
 import { CITIES, type City } from '../src/data/cities'
 import type { Pick } from '../src/types'
-import { dedupe, balanceByCategory, isGoodImage, fetchOgImage, wikiImage, webImageCandidates, verifyImageForEvent, pexelsImage, whenIsPast, whenBeforeWeekend, upcomingWeekend, linkOk, mapLimit, titleKey } from './lib/pipeline'
+import { dedupe, balanceByCategory, isGoodImage, fetchEventImage, toPortrait, wikiImage, webImageCandidates, verifyImageForEvent, pexelsImage, whenIsPast, whenBeforeWeekend, upcomingWeekend, linkOk, mapLimit, titleKey } from './lib/pipeline'
 import { fixWhen } from '../src/lib/when'
 import { songkickAdapter } from './adapters/songkick'
 import { llmExtract } from './adapters/llm'
 import { websearchExtract } from './adapters/websearch'
+import { editorialScores } from './adapters/editor'
+import { raExtract } from './adapters/ra'
 import { rssExtract } from './adapters/rss'
 import { ROSTERS } from './roster'
 
@@ -59,6 +61,12 @@ async function buildCity(city: City) {
 
   for (const r of (await mapLimit(rssSrc, 4, (s) => rssExtract(s)))) fromRoster.push(...r)
   console.log(`  rss:      ${rssSrc.length} feeds → ${fromRoster.length} picks (keyless)`)
+
+  // RESIDENT ADVISOR — keyless structured club/electronic listings: exact dates, real flyer images, and an
+  // `attending` popularity signal. Ness's #3 trusted source; runs alongside RSS (no API key needed).
+  const ra = await raExtract(city.key)
+  fromRoster.push(...ra)
+  if (ra.length) console.log(`  ra:       ${ra.length} club nights (Resident Advisor)`)
 
   if (LLM_ON) {
     const got = await mapLimit(llmSrc, 1, (s) => llmExtract(city.name, s))   // sequential — the gate paces the API calls
@@ -129,13 +137,11 @@ async function buildCity(city: City) {
   if (!SKIP_IMAGES) {
     const live = picks.filter(isLive)
     const PERFORMER = new Set(['live', 'stage'])
-    // A web-search EVENT (festival/market/garden-days — not a named performer) has NO reliable
-    // automated photo. Open-web search returns the wrong subject ("Open Garden Days" → a Pride
-    // photo) AND the source's own og:image is often a generic civic hero (I amsterdam serves its
-    // Canal Parade shot as the page image). Both pass every quality screen yet are simply WRONG.
-    // So these get NO guessed image — they render a clean category poster. Named performers +
-    // scraped picks still try og → web → wiki (a disambiguated act name resolves reliably).
-    const genericWebEvent = (p: Pick) => p.id.startsWith('web-') && !PERFORMER.has(p.category)
+    // EVERY imageless live pick now gathers candidates and is VISION-VERIFIED — including generic web
+    // events (festival/market/garden-days). They get their OWN event page's image (schema.org Event
+    // JSON-LD → og, via fetchEventImage), which is the organizer's per-event photo, plus open-web hits;
+    // the vision verifier (below) rejects the wrong-subject class ("Open Garden Days" → a Pride photo),
+    // so only a genuine fit lands. isGoodImage already blocks the I amsterdam "Canal Parade" civic hero.
 
     // THEMED-PHOTO BANK — the hand-authored canon is fully imaged with curated, proven,
     // category-tagged PHOTOGRAPHS. Borrow them, by category, as the final fallback so an imageless
@@ -175,7 +181,7 @@ async function buildCity(city: City) {
       const cands: string[] = []
       if (perf) { const wk = await wikiImage(actName(p)); if (wk && (await isGoodImage(wk))) cands.push(wk) }
       cands.push(...await webImageCandidates(q, 5))
-      if (!perf && !genericWebEvent(p) && p.link) { const og = await fetchOgImage(p.link); if (og) cands.push(og) }
+      if (!perf && p.link) { const og = await fetchEventImage(p.link); if (og) cands.push(og) }
       if (!cands.length) return
       const best = visionOn ? await verifyImageForEvent(cands, p, city.name) : cands[0]
       if (best) { p.image = best; visGot++ } else if (visionOn) visRej++
@@ -210,6 +216,11 @@ async function buildCity(city: City) {
     let banked = 0
     for (const p of live) if (!p.image) { const img = themedPhoto(p); if (img) { p.image = img; banked++ } }
     if (banked) console.log(`  bank:     +${banked} imageless live picks → themed canon photo`)
+
+    // PORTRAIT NORMALIZE — reshape every live photo to a tall portrait (wsrv.nl saliency crop) so a
+    // landscape source fills the tall cover-card with its subject centred instead of cropping to a band.
+    // Last, so the shared-hero dedup above compared the original URLs. Canon is hand-curated → left as-is.
+    for (const p of live) if (p.image) p.image = toPortrait(p.image)
 
     // safety net: with the bank, no live pick should be imageless; drop any that somehow still is.
     const before = picks.length
@@ -260,6 +271,19 @@ async function buildCity(city: City) {
     picks = balanced
   } else {
     console.log(`  ranked:   ${picks.length} (canon floor) · ${novelCount} new this week`)
+  }
+
+  // EDITORIAL SCORE — a stronger judge (ANTHROPIC_JUDGE_MODEL, default Sonnet) rates the live candidates
+  // 0..10 on editorial merit; the score rides on each pick as editorScore and becomes a term in the app's
+  // rankPicks (src/weather/modes.ts), so the genuinely-BEST events lead the deck. Facts never touched.
+  if (LLM_ON) {
+    const liveNow = picks.filter(isLive)
+    const scores = await editorialScores(liveNow, city.name)
+    if (scores.size) {
+      let n = 0
+      for (const p of picks) { const s = scores.get(p.id); if (s != null) { p.editorScore = s; n++ } }
+      console.log(`  editor:   scored ${n}/${liveNow.length} live picks (judge ${process.env.ANTHROPIC_JUDGE_MODEL || 'claude-sonnet-4-6'})`)
+    }
   }
 
   // PUBLISH — the app reads this at runtime.

@@ -5,7 +5,7 @@ import { Shuffle, Clock, ChevronDown, LayoutGrid, Star, ArrowUpRight, LocateFixe
 // subtle haptic on commit/save (Android/Chrome; iOS Safari ignores navigator.vibrate)
 const haptic = (ms = 10) => { try { navigator.vibrate?.(ms) } catch { /* unsupported */ } }
 import type { Mode, Pick, SwipeDir } from './types'
-import { MODES, MODE_META, classify, applyMode, rankPicks } from './weather/modes'
+import { MODES, MODE_META, classify, applyMode, rankPicks, diversify } from './weather/modes'
 import { CITIES, DEFAULT_CITY, cityByKey, cityByName, nearestCity, type City } from './data/cities'
 import { AmbientField } from './weather/AmbientField'
 import type { Look } from './weather/ambientEngine'
@@ -322,6 +322,9 @@ export default function App() {
     () => rankPicks(cityPicks, mode, hasTaste(tasteRef.current) ? tasteRef.current : undefined, seed),
     [cityPicks, mode, seed],   // seed jitters the order ("show me more"); NOT [taste] — keeps the deck stable while swiping
   )
+  // De-clustered full ranking for the MATCH game (it presents picks in order). rankPicks no longer
+  // diversifies — the served deck de-clusters in `shown` — so do it here too or the match deck waves.
+  const rankedDeck = useMemo(() => diversify(rankedAll), [rankedAll])
   const shown = useMemo(
     () => {
       const matchesWhen = (p: Pick, w: When) =>
@@ -336,20 +339,25 @@ export default function App() {
         const whenOk = whens.length === 0 || whens.some((w) => matchesWhen(p, w))
         return whatOk && whenOk
       })
-      if (filter !== 'all' || cats.length > 0 || whens.length > 0) return filtered
+      if (filter !== 'all' || cats.length > 0 || whens.length > 0) return diversify(filtered)
       // ENDLESS browse (per Ness — this functioned better than fixed sets): the weekend's LIVE picks
       // lead, then a ROTATING slice of the deep canon library. The slice advances every WEEK and on
       // each Shuffle (seed), cycling the whole library across reshuffles. The split is LIVE-vs-canon
       // (not freshness) so canon tagged "new" — e.g. De Pimpelmees — rotates too instead of sticking
       // every week.
-      const RESERVE = 14
       const isLiveP = (p: Pick) => p.id.startsWith('web-') || p.id.startsWith('llm-')
       const fresh = filtered.filter(isLiveP)
       const ever = filtered.filter((p) => !isLiveP(p))
-      if (ever.length <= RESERVE) return filtered
-      const start = ((WEEK + seed) * RESERVE) % ever.length
-      const sample = [...ever, ...ever].slice(start, start + RESERVE)
-      return [...fresh, ...sample]
+      // ADAPTIVE backfill: when the live feed is thin, widen the canon slice so a quiet weekend still
+      // fills the deck; when it's rich, narrow toward a floor of 8 so timely picks dominate (was a fixed
+      // 14). Bounded by how much canon there actually is.
+      const RESERVE = Math.min(ever.length, Math.max(8, 22 - fresh.length))
+      const start = ever.length ? ((WEEK + seed) * RESERVE) % ever.length : 0
+      const sample = ever.length ? [...ever, ...ever].slice(start, start + RESERVE) : []
+      // DE-CLUSTER on the ACTUAL served order. The old diversify ran on rankedAll, which this
+      // [...fresh, ...sample] re-segmentation then discarded → category "waves". De-cluster the live
+      // and canon blocks SEPARATELY so neither runs in waves while LIVE still leads the deck.
+      return [...diversify(fresh), ...diversify(sample)]
     },
     [rankedAll, filter, cats, whens, saved, seed, sharedPickIds],
   )
@@ -884,7 +892,7 @@ export default function App() {
           fade-out and THEN asks to unmount, which can't strand it. */}
       {matching && (
         <MatchGame
-          picks={rankedAll}
+          picks={rankedDeck}
           temp={wx.temp}
           mode={mode}
           partnerName={matchPartner?.name ?? 'Robin'}

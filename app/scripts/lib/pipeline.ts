@@ -31,7 +31,10 @@ export function dedupe(picks: Pick[]): Pick[] {
   const merge = (a: Pick, b: Pick): Pick => {
     const richer = (b.blurb?.length ?? 0) + (b.image ? 50 : 0) > (a.blurb?.length ?? 0) + (a.image ? 50 : 0) ? b : a
     const credits = new Set((a.source + ' · ' + b.source).split(' · ').filter(Boolean))
-    return { ...a, ...richer, source: [...credits].join(' · '), buzz: credits.size }
+    // keep the strongest draw signal through the merge — the {...richer} spread would otherwise drop it
+    // when the richer record is the one WITHOUT a popularity count (e.g. a web-search dup of an RA night).
+    const popularity = Math.max(a.popularity ?? 0, b.popularity ?? 0) || undefined
+    return { ...a, ...richer, source: [...credits].join(' · '), buzz: credits.size, popularity }
   }
 
   // PASS 1 — exact normalized-title key.
@@ -212,9 +215,35 @@ export async function linkOk(url: string, timeoutMs = 8000): Promise<boolean> {
   }
 }
 
-// Best-effort og:image scrape for a single page, SCREENED for quality. Returns a real-photo
-// URL or null. Never throws — a blocked/slow page or a logo-only og:image → poster fallback.
-export async function fetchOgImage(url: string, timeoutMs = 8000): Promise<string | null> {
+// Pull an image out of schema.org Event / ImageObject JSON-LD — the organizer's per-event photo, which is
+// more reliable for events than the page's social og:image (often a generic site hero). Walks every
+// <script type="application/ld+json"> block for the first usable `image` (string | string[] | {url|contentUrl}).
+function jsonLdImage(html: string): string | null {
+  const pickFrom = (img: unknown): string | null => {
+    if (typeof img === 'string') return img
+    if (Array.isArray(img)) { for (const it of img) { const u = pickFrom(it); if (u) return u } return null }
+    if (img && typeof img === 'object') { const o = img as Record<string, unknown>; const u = o.url ?? o.contentUrl; return typeof u === 'string' ? u : null }
+    return null
+  }
+  const walk = (node: unknown): string | null => {
+    if (!node || typeof node !== 'object') return null
+    if (Array.isArray(node)) { for (const it of node) { const u = walk(it); if (u) return u } return null }
+    const o = node as Record<string, unknown>
+    if (o.image) { const u = pickFrom(o.image); if (u) return u }
+    for (const v of Object.values(o)) if (v && typeof v === 'object') { const u = walk(v); if (u) return u }
+    return null
+  }
+  for (const m of html.matchAll(/<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)) {
+    try { const u = walk(JSON.parse(m[1].trim())); if (u) return u } catch { /* malformed block — skip */ }
+  }
+  return null
+}
+
+// Event-page image, screened: schema.org Event JSON-LD image FIRST (the organizer's per-event photo), then
+// og:image / twitter:image — ONE fetch, returns a real-photo URL or null. The per-event JSON-LD image is
+// what lets a festival/market/exhibition (no reliable open-web photo of itself) get a TRUE picture; the
+// caller still runs the result through the vision verifier, so a generic civic hero is rejected anyway.
+export async function fetchEventImage(url: string, timeoutMs = 8000): Promise<string | null> {
   try {
     const ctrl = new AbortController()
     const t = setTimeout(() => ctrl.abort(), timeoutMs)
@@ -222,20 +251,34 @@ export async function fetchOgImage(url: string, timeoutMs = 8000): Promise<strin
     clearTimeout(t)
     if (!res.ok) return null
     const html = await res.text()
-    const m =
-      html.match(/<meta[^>]+property=["']og:image(?::secure_url)?["'][^>]+content=["']([^"']+)["']/i) ||
-      html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:image["']/i) ||
-      html.match(/<meta[^>]+name=["']twitter:image["'][^>]+content=["']([^"']+)["']/i)
-    if (!m) return null
-    let img = m[1].trim()
-    if (img.startsWith('//')) img = 'https:' + img
-    if (img.startsWith('/')) { const u = new URL(url); img = u.origin + img }
-    img = img.replace(/^http:\/\//i, 'https://')          // avoid mixed-content blanks
-    if (!img.startsWith('http')) return null
-    return (await isGoodImage(img)) ? img : null          // SCREEN: reject logos / low-res / wrong-shape / non-https
+    const candidates = [
+      jsonLdImage(html),
+      html.match(/<meta[^>]+property=["']og:image(?::secure_url)?["'][^>]+content=["']([^"']+)["']/i)?.[1],
+      html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:image["']/i)?.[1],
+      html.match(/<meta[^>]+name=["']twitter:image["'][^>]+content=["']([^"']+)["']/i)?.[1],
+    ]
+    for (const raw of candidates) {
+      if (!raw) continue
+      let img = raw.trim()
+      if (img.startsWith('//')) img = 'https:' + img
+      else if (img.startsWith('/')) { const u = new URL(url); img = u.origin + img }
+      img = img.replace(/^http:\/\//i, 'https://')                          // avoid mixed-content blanks
+      if (img.startsWith('http') && (await isGoodImage(img))) return img     // SCREEN each candidate
+    }
+    return null
   } catch {
     return null
   }
+}
+
+// Reshape any image URL to a tall PORTRAIT via the keyless wsrv.nl proxy (libvips saliency crop), so a
+// landscape source fills the tall `cover` card with its salient region centred instead of cropping to a
+// thin band. CDN-cached, free, no key; wsrv fetches server-side, so it can also rescue some hotlink-blocked
+// images. Tradeoff: routes images through a third-party CDN — trivially reverted; the caller applies it to
+// LIVE picks only (canon photos are hand-curated). Verified: a landscape source → a true 800×1200 JPEG.
+export function toPortrait(url: string, w = 800, h = 1200): string {
+  if (!url || !url.startsWith('https://') || /images\.weserv\.nl/i.test(url)) return url
+  return `https://images.weserv.nl/?url=${encodeURIComponent(url)}&w=${w}&h=${h}&fit=cover&a=attention&output=jpg`
 }
 
 // WEB-SEARCH image fallback via Wikipedia: search for the entity (artist / film / show /
