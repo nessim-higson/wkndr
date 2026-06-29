@@ -19,7 +19,7 @@
  */
 import { CITIES, type City } from '../src/data/cities'
 import type { Pick } from '../src/types'
-import { dedupe, balanceByCategory, isGoodImage, fetchEventImage, toPortrait, wikiImage, webImageCandidates, verifyImageForEvent, pexelsImage, whenIsPast, whenBeforeWeekend, upcomingWeekend, linkOk, mapLimit, titleKey } from './lib/pipeline'
+import { dedupe, balanceByCategory, isGoodImage, isPortraitImage, fetchEventImage, toPortrait, wikiImage, webImageCandidates, verifyImageForEvent, pexelsImage, whenIsPast, whenBeforeWeekend, upcomingWeekend, linkOk, mapLimit, titleKey } from './lib/pipeline'
 import { fixWhen } from '../src/lib/when'
 import { songkickAdapter } from './adapters/songkick'
 import { llmExtract } from './adapters/llm'
@@ -168,7 +168,24 @@ async function buildCity(city: City) {
     const CAT_HINT: Record<string, string> = { eat: 'restaurant', drink: 'bar', art: 'exhibition', market: 'market', daytrip: '', out: '' }
     const ACT_HINT: Record<string, string> = { live: 'live music', stage: 'theatre' }
     const actName = (p: Pick) => p.title.split(/\s*[:–—]\s*/)[0].split(/\s+(?:and|&|\+|x|w\/|ft\.?|feat\.?|with|presents)\s+/i)[0].trim()
+
     const visionOn = !!process.env.ANTHROPIC_API_KEY
+
+    // PERFORMER PORTRAITS — for a named live/stage act, a tall Wikipedia portrait crops to the portrait
+    // card FAR better than a wide concert/og shot, which the smart-crop severs (it chases the stage lights,
+    // not the person — Bruno Mars cut off at the edge). Prefer the wiki portrait when it's portrait-oriented
+    // + sharp, EVEN over an image the pick already has — but VERIFY it's really this act first (a festival
+    // name like "Wonderfeel" can match a wrong wiki portrait): vision confirms the subject when the key is
+    // set; without it we only fill an imageless act, never overwrite. Wikimedia never hotlink-blocks.
+    let portraits = 0
+    await mapLimit(live.filter((p) => PERFORMER.has(p.category)), 2, async (p) => {
+      const wk = await wikiImage(actName(p))
+      if (!wk || !(await isPortraitImage(wk))) return
+      const use = visionOn ? !!(await verifyImageForEvent([wk], p, city.name)) : !p.image
+      if (use) { p.image = wk; portraits++ }
+    })
+    if (portraits) console.log(`  portrait: ${portraits} performer cards → verified Wikipedia portrait`)
+
     let visGot = 0, visRej = 0
     await mapLimit(live.filter((p) => !p.image), 2, async (p) => {
       const perf = PERFORMER.has(p.category)

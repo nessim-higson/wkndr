@@ -89,7 +89,7 @@ const UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (
 // A card image must be a real PHOTO, not a logo/favicon/placeholder/share-graphic.
 // We reject by URL shape AND by real pixel dimensions, so a blown-up 100×100 logo
 // (e.g. a site's facebook.png) can never reach a card again.
-const MIN_DIM = 600                 // shortest side must be ≥ this
+const MIN_DIM = 700                 // shortest side ≥ this — a 1200-tall card upscales smaller sources to blur
 const ASPECT_RANGE: [number, number] = [0.42, 2.6]   // not a banner strip, not a square icon
 const LOGO_URL = /logo|favicon|icon|sprite|placeholder|wordmark|social[-_]?shar|sharing[-_]?image|og[-_]?default|default[-_]?(og|share)|avatar|thumbnail|pictogram|picotogram|badge|emblem/i
 // Stock-agency hosts plaster a watermark across the image (the "alamy"/"getty" scrawl). Reject
@@ -135,6 +135,27 @@ export async function isGoodImage(url: string, timeoutMs = 8000): Promise<boolea
     if (!wh) return true                                  // couldn't parse (progressive/odd) — give benefit of the doubt
     const [w, h] = wh, ar = w / h
     return Math.min(w, h) >= MIN_DIM && ar >= ASPECT_RANGE[0] && ar <= ASPECT_RANGE[1]
+  } catch {
+    return false
+  }
+}
+
+/** True if `url` is a good photo AND PORTRAIT (taller than wide). The card is a tall portrait, so a
+ *  portrait source fills it with almost no crop — and since a named act's promo/Wikipedia portrait is
+ *  tall while a wrong-subject landmark/crowd shot is usually landscape, requiring portrait also doubles
+ *  as a light wrong-subject guard. Needs real, parseable dimensions (no benefit-of-the-doubt here). */
+export async function isPortraitImage(url: string, timeoutMs = 8000): Promise<boolean> {
+  if (!url.startsWith('https://') || LOGO_URL.test(url) || STOCK_URL.test(url) || /canal[-_]?parade/i.test(url)) return false
+  try {
+    const ctrl = new AbortController()
+    const t = setTimeout(() => ctrl.abort(), timeoutMs)
+    const res = await fetch(url, { headers: { 'user-agent': UA, range: 'bytes=0-65535' }, signal: ctrl.signal, redirect: 'follow' })
+    clearTimeout(t)
+    if (!res.ok || !(res.headers.get('content-type') || '').startsWith('image/')) return false
+    const wh = imageDims(new Uint8Array(await res.arrayBuffer()))
+    if (!wh) return false
+    const [w, h] = wh
+    return Math.min(w, h) >= MIN_DIM && h >= w * 1.05   // portrait (allow a hair off square), sharp enough
   } catch {
     return false
   }
@@ -390,12 +411,15 @@ export async function verifyImageForEvent(
     `This is for an events app card. EVENT: "${ev.title}"` +
     `${ev.venue ? ` at ${ev.venue}` : ''}${ev.area ? `, ${ev.area}` : ''}, ${cityName}.` +
     `${ev.category ? ` Category: ${ev.category}.` : ''}${ev.blurb ? ` ${ev.blurb}` : ''}\n\n` +
-    `Which image best fits THIS event? For a concert/gig/show, ANY genuine photo of the named ` +
-    `performer or band is a CORRECT fit (it need not be from this date or city). For a place / festival ` +
-    `/ market / garden / food event, pick a photo showing that kind of place or activity. ONLY reject an ` +
-    `image if it shows a clearly DIFFERENT subject (a different artist, an unrelated event/landmark/city, ` +
-    `a parade when it isn't one) or is a logo / poster / text graphic / watermarked stock. Favour a real ` +
-    `photograph and pick one whenever a reasonable fit exists. ` +
+    `Which image best fits THIS event, shown as a TALL PORTRAIT card? It will be cropped to a vertical ` +
+    `frame, so prefer images where the main subject is clearly framed and survives a portrait crop (not a ` +
+    `tiny figure lost in a wide shot). For a concert/gig/show, ANY genuine photo of the named performer or ` +
+    `band is a CORRECT fit (it need not be from this date or city) — prefer a clean photo of the artist over ` +
+    `a wide crowd-and-stage-lights shot. For a place / festival / market / garden / food event, pick a photo ` +
+    `showing that kind of place or activity. REJECT an image if it shows a clearly DIFFERENT subject (a ` +
+    `different artist, an unrelated event/landmark/city, a parade when it isn't one), OR is a promotional ` +
+    `POSTER / FLYER with prominent text, dates or line-up overlaid, a logo, a screenshot, or watermarked ` +
+    `stock. Prefer the cleanest real photograph; pick one whenever a reasonable, on-subject photo exists, else 0. ` +
     `Reply with ONLY JSON: {"best": <the 1-based image number that fits, or 0 if NONE fit>}.` })
   try {
     const res = await fetch('https://api.anthropic.com/v1/messages', {
