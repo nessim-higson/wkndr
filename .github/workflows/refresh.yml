@@ -33,6 +33,7 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}   # the diverse/interesting LLM pull
           SONGKICK_API_KEY: ${{ secrets.SONGKICK_API_KEY }}     # optional clean gigs
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}         # vivid on-theme stock for events w/o a real photo
+          SERPER_API_KEY: ${{ secrets.SERPER_API_KEY }}         # Google-Images candidate pool (better than the keyless DDG fallback)
           WEBSEARCH_RPM: '3'                                    # deeper research — assumes the RAISED Anthropic tier
           ANTHROPIC_JUDGE_MODEL: 'claude-sonnet-4-6'            # the stronger "best of the weekend" editor (NOT the haiku extractor)
         run: cd app && bun run refresh

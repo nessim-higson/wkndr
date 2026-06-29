@@ -332,7 +332,23 @@ export async function wikiImage(query: string): Promise<string | null> {
 // `webImageCandidates` returns up to `max` hotlinkable, quality-screened URLs in relevance order, so
 // a vision verifier (below) can pick the one that ACTUALLY depicts the event. `webImage` keeps the
 // old single-result behaviour (first good hit) for callers that don't verify.
-export async function webImageCandidates(query: string, max = 6): Promise<string[]> {
+// Raw image hits in relevance order, with dimensions. Prefers SERPER (a Google-Images API — far better
+// relevance + reliable dims) when SERPER_API_KEY is set; falls back to the keyless DuckDuckGo scrape (the
+// vqd token is fragile and silently breaks, which is why a paid key is worth it). Both → {image,width,height}[].
+async function rawImageResults(query: string): Promise<{ image?: string; width?: number; height?: number }[]> {
+  if (process.env.SERPER_API_KEY) {
+    try {
+      const res = await fetch('https://google.serper.dev/images', {
+        method: 'POST',
+        headers: { 'X-API-KEY': process.env.SERPER_API_KEY, 'content-type': 'application/json' },
+        body: JSON.stringify({ q: query, num: 20, gl: 'nl' }),
+        signal: AbortSignal.timeout(12000),
+      }).then((r) => r.json())
+      const imgs = (res?.images || []).map((r: { imageUrl?: string; imageWidth?: number; imageHeight?: number }) =>
+        ({ image: r.imageUrl, width: r.imageWidth, height: r.imageHeight })).filter((r: { image?: string }) => typeof r.image === 'string')
+      if (imgs.length) return imgs
+    } catch { /* fall through to DuckDuckGo */ }
+  }
   try {
     const page = await fetch('https://duckduckgo.com/?q=' + encodeURIComponent(query) + '&iax=images&ia=images',
       { headers: { 'user-agent': UA, accept: 'text/html' } }).then((r) => r.text())
@@ -341,8 +357,17 @@ export async function webImageCandidates(query: string, max = 6): Promise<string
     await sleep(250)
     const data = await fetch(`https://duckduckgo.com/i.js?l=us-en&o=json&q=${encodeURIComponent(query)}&vqd=${vqd}&f=,,,,,&p=1`,
       { headers: { 'user-agent': UA, referer: 'https://duckduckgo.com/' } }).then((r) => r.json()).catch(() => null)
-    const results: { image?: string; width?: number; height?: number }[] = data?.results || []
-    // RANK relevance-FIRST (DuckDuckGo's order ≈ subject accuracy), with image SHAPE as a tiebreak.
+    return data?.results || []
+  } catch {
+    return []
+  }
+}
+
+export async function webImageCandidates(query: string, max = 6): Promise<string[]> {
+  try {
+    const results = await rawImageResults(query)
+    if (!results.length) return []
+    // RANK relevance-FIRST (the source's order ≈ subject accuracy), with image SHAPE as a tiebreak.
     // The card is a TALL PORTRAIT filled with `cover`, so LANDSCAPE photos get cropped to a thin band
     // (the "image looks cropped" complaint). Bias toward portrait/square images that fill the card
     // with minimal loss; demote landscape, and bury panoramas. Dimensions come from DuckDuckGo's
