@@ -19,7 +19,7 @@
  */
 import { CITIES, type City } from '../src/data/cities'
 import type { Pick } from '../src/types'
-import { dedupe, balanceByCategory, isGoodImage, isPortraitImage, fetchEventImage, toPortrait, wikiImage, webImageCandidates, verifyImageForEvent, pexelsImage, whenIsPast, whenBeforeWeekend, upcomingWeekend, linkOk, mapLimit, titleKey } from './lib/pipeline'
+import { dedupe, balanceByCategory, isGoodImage, isPortraitImage, imageBroken, fetchEventImage, toPortrait, wikiImage, webImageCandidates, verifyImageForEvent, pexelsImage, whenIsPast, whenBeforeWeekend, upcomingWeekend, linkOk, mapLimit, titleKey } from './lib/pipeline'
 import { fixWhen } from '../src/lib/when'
 import { songkickAdapter } from './adapters/songkick'
 import { llmExtract } from './adapters/llm'
@@ -157,6 +157,16 @@ async function buildCity(city: City) {
     const bankPool = [...new Set(Object.values(bank).flat())]
     const idHash = (s: string) => { let h = 0; for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0; return Math.abs(h) }
     const themedPhoto = (p: Pick) => { const pool = bank[p.category]?.length ? bank[p.category] : bankPool; return pool.length ? pool[idHash(p.id) % pool.length] : undefined }
+    // A bank photo that ACTUALLY LOADS — scans the category pool (then all canon) from the deterministic
+    // index, skipping any dead entry, so a fallback can never itself blank. Returns a wsrv-wrapped URL.
+    const workingBankPhoto = async (p: Pick): Promise<string | undefined> => {
+      const pool = bank[p.category]?.length ? bank[p.category] : bankPool
+      for (let i = 0; i < pool.length; i++) {
+        const wrapped = toPortrait(pool[(idHash(p.id) + i) % pool.length])
+        if (!(await imageBroken(wrapped))) return wrapped
+      }
+      return undefined
+    }
 
     await mapLimit(live.filter((p) => p.image), 5, async (p) => { if (!(await isGoodImage(p.image!))) p.image = undefined })
 
@@ -246,6 +256,15 @@ async function buildCity(city: City) {
     // landscape source fills the tall cover-card with its subject centred instead of cropping to a band.
     // Last, so the shared-hero dedup above compared the original URLs. Canon is hand-curated → left as-is.
     for (const p of live) if (p.image) p.image = toPortrait(p.image)
+
+    // FINAL VALIDATION — fetch EVERY published image (live + canon) and replace any DEFINITIVELY broken one
+    // (a dead source, a wsrv 4xx, a 404 — the things that blank a card) with a bank photo that actually
+    // loads. This is the guarantee that the feed never ships a blank card; a transient 429/timeout is kept.
+    let revived = 0, lost = 0
+    await mapLimit(picks.filter((p) => p.image), 6, async (p) => {
+      if (await imageBroken(p.image!)) { const fb = await workingBankPhoto(p); if (fb) { p.image = fb; revived++ } else { p.image = undefined; lost++ } }
+    })
+    if (revived || lost) console.log(`  validate: ${revived} broken images → working bank photo${lost ? ` · ${lost} unfixable` : ''}`)
 
     // safety net: with the bank, no live pick should be imageless; drop any that somehow still is.
     const before = picks.length

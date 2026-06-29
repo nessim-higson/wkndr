@@ -43,7 +43,7 @@ const ROWS: Row[] = [
     img: 'https://puremarkt.nl/wp-content/uploads/2023/12/PURE-MARKT-ADAM-BOS-DSC_4276-bezoekers-1170x600.jpg',
     blurb: 'An artisan food-and-craft market in a green park — small makers, slow food and a relaxed Sunday-stroll crowd in Frankendael.', why: 'Artisan market · in a park' },
   { slug: 'bloemenmarkt', title: 'Bloemenmarkt', area: 'Centrum (Singel)', category: 'market', tier: 'classic', price: 'free', when: 'Mon–Sat · 09:00–17:30', outdoor: true,
-    img: 'https://paulmarina.com/wp-content/uploads/2023/04/flower-market-1.jpg',
+    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Amsterdam_Bloemenmarkt_2.JPG/1280px-Amsterdam_Bloemenmarkt_2.JPG',
     blurb: 'The world’s only floating flower market — barges of tulips, bulbs and seeds moored along the Singel since 1862.', why: 'Floating flower market · since 1862' },
 
   // ——— DAY-TRIPS (4 → 9) ———

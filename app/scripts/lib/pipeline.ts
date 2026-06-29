@@ -161,6 +161,25 @@ export async function isPortraitImage(url: string, timeoutMs = 8000): Promise<bo
   }
 }
 
+/** Is `url` DEFINITIVELY broken for a browser (i.e. would blank a card)? True only on a hard failure —
+ *  404/410/400, a non-https URL, or a 2xx that isn't actually an image (e.g. an error page/JSON, which is
+ *  exactly what a dead wsrv source returns). A 429/5xx/timeout/network hiccup returns FALSE (transient —
+ *  never replace a good image over a rate-limit). Used for the final feed sweep so no dead image ships. */
+export async function imageBroken(url: string, timeoutMs = 9000): Promise<boolean> {
+  if (!url || !url.startsWith('https://')) return true
+  try {
+    const ctrl = new AbortController()
+    const t = setTimeout(() => ctrl.abort(), timeoutMs)
+    const res = await fetch(url, { headers: { 'user-agent': UA, accept: 'image/*' }, signal: ctrl.signal, redirect: 'follow' })
+    clearTimeout(t)
+    if (res.status === 404 || res.status === 410 || res.status === 400) return true
+    if (!res.ok) return false                                    // 429 / 5xx → transient, keep
+    return !(res.headers.get('content-type') || '').startsWith('image/')   // 2xx but not an image → broken
+  } catch {
+    return false                                                  // network / timeout → keep (don't nuke over a hiccup)
+  }
+}
+
 // ─── STALE-DATE FILTER ───────────────────────────────────────────────────────
 // A pick's human `when` ("Sat 6 Jun", "Fri–Sun 5–7 Jun", "Until 21 Jun", "Opens 5 Jun ·
 // until 25 Oct", "Daily · dinner") → is its LATEST date already in the past? Undated /
