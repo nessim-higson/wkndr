@@ -9,6 +9,32 @@
   background-color: var(--paper-3);
   box-shadow: 0 18px 50px rgba(0, 0, 0, 0.22), 0 2px 8px rgba(0, 0, 0, 0.12);
   user-select: none;
+  isolation: isolate;   /* keep the house-treatment blend modes inside the card */
+}
+
+/* ── HOUSE TREATMENT ──────────────────────────────────────────────────────────
+   One weather-keyed glaze + a fine film grain over EVERY photo, so a mixed bag of
+   real-but-mismatched sources (a sharp RA flyer, a soft stock photo, a portrait) reads
+   as ONE designed WKNDR system that breathes with the live weather palette. A glaze,
+   not a filter — subtle enough never to fight a genuinely good image. Strengths are
+   CSS vars (tune globally or live via the dev panel). */
+.card-grade {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(150deg, var(--field-1, #ff9a3d) 0%, var(--field-2, #c2310e) 52%, var(--field-3, #5a1606) 100%);
+  mix-blend-mode: soft-light;
+  opacity: var(--card-grade, 0.42);
+  transition: opacity 0.6s ease, background 0.8s ease;
+}
+.card-grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 140px 140px;
+  mix-blend-mode: overlay;
+  opacity: var(--card-grain, 0.09);
 }
 
 /* poster fallback — no real photo: a category-tinted gradient + the category set large */

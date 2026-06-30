@@ -349,6 +349,43 @@ async function buildCity(city: City) {
     }
   }
 
+  // PUBLISH GATE — refuse to ship a BROKEN feed. A quiet/thin weekend is NOT broken (it just warns); only the
+  // things that would actually embarrass us hard-fail. On failure we ABSTAIN — exit(1) WITHOUT writing — so the
+  // last-good feed keeps serving and the failed Actions run emails Ness. A one-line HEALTH summary always lands
+  // in the run's step-summary (the email he already gets), so the pipeline reports its own health — no need to
+  // open the app to find blanks/stale dates/missing flagships. Cheap data-only checks (no extra network).
+  {
+    const past = picks.filter((p) => whenIsPast(p.when))
+    const httpImg = picks.filter((p) => p.image && p.image.startsWith('http://'))
+    const imagelessLive = picks.filter((p) => isLive(p) && !p.image)
+    const heroesMissing = heroPicks(city.key)
+      .filter((h) => !whenIsPast(h.when) && !whenBeforeWeekend(h.when))
+      .filter((h) => !picks.some((p) => titleKey(p.title) === titleKey(h.title)))
+    const liveN = picks.filter(isLive).length
+    const catN = new Set(picks.map((p) => p.category)).size
+
+    const fail: string[] = []
+    if (picks.length === 0) fail.push('empty feed')
+    if (past.length) fail.push(`${past.length} past-dated`)
+    if (httpImg.length) fail.push(`${httpImg.length} http (mixed-content) images`)
+    if (imagelessLive.length) fail.push(`${imagelessLive.length} imageless live`)
+    if (heroesMissing.length) fail.push(`heroes missing: ${heroesMissing.map((h) => titleKey(h.title)).join(', ')}`)
+    const warn: string[] = []
+    if (liveN < 8) warn.push(`thin live feed (${liveN})`)
+
+    const tag = fail.length ? '❌ BROKEN' : warn.length ? '⚠️ OK' : '✅ HEALTHY'
+    const health = `${tag} · ${city.label} · ${picks.length} picks (${liveN} live · ${catN}/9 cats)${warn.length ? ' · warn: ' + warn.join(', ') : ''}${fail.length ? ' · FAIL: ' + fail.join(', ') : ''}`
+    console.log(`\n  ${health}`)
+    if (process.env.GITHUB_STEP_SUMMARY) {
+      try { const f = Bun.file(process.env.GITHUB_STEP_SUMMARY); const prev = (await f.exists()) ? await f.text() : ''; await Bun.write(process.env.GITHUB_STEP_SUMMARY, `${prev}- ${health}\n`) } catch { /* summary is best-effort */ }
+    }
+    if (fail.length) {
+      console.error(`  ✖ publish gate FAILED — abstaining, NOT writing picks.${city.key}.json (last-good keeps serving)`)
+      if (process.env.HEALTHCHECK_URL) { try { await fetch(`${process.env.HEALTHCHECK_URL}/fail`, { method: 'POST', body: health }) } catch { /* ignore */ } }
+      process.exit(1)
+    }
+  }
+
   // PUBLISH — the app reads this at runtime.
   const feed = { city: city.key, label: city.label, generatedAt: new Date().toISOString(), live: LLM_ON, count: picks.length, picks }
   await Bun.write(`${OUT_DIR}/picks.${city.key}.json`, JSON.stringify(feed, null, 2))
@@ -362,4 +399,8 @@ const targets = CITIES.filter((c) => (ONLY_CITY ? c.key === ONLY_CITY : !PAUSED.
 console.log(`WKNDR refresh · ${targets.length} cit${targets.length === 1 ? 'y' : 'ies'}` +
   `${LLM_ON ? ' · LLM on' : ' · LLM off'}${SK_KEY ? ' · Songkick' : ''}${SKIP_IMAGES ? ' · no images' : ''}`)
 for (const c of targets) await buildCity(c)
+// DEAD-MAN'S SWITCH — ping healthchecks.io on a clean run (gate-passed, feed written). If this ping doesn't
+// arrive on the cron's schedule, healthchecks.io pages Ness — catching a SILENT non-run (the failure mode a
+// status-in-the-repo can't). Dormant until HEALTHCHECK_URL is set; pages only on regression / no-run.
+if (process.env.HEALTHCHECK_URL) { try { await fetch(process.env.HEALTHCHECK_URL, { method: 'POST', body: 'ok' }) } catch { /* ignore */ } }
 console.log('\n✓ done')

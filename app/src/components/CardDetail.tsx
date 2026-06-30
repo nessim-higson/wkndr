@@ -107,6 +107,8 @@ export function CardDetail({
                 transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
               >
                 <span className="detail-grip" aria-hidden />
+                {pick.image && <div className="card-grade" aria-hidden />}
+                {pick.image && <div className="card-grain" aria-hidden />}
                 {!pick.image && <span className="poster-mark">{CATEGORY_LABEL[pick.category]}</span>}
                 <div className="detail-tags">
                   {pick.status && <span className={`chip chip-status chip-status--${pick.status}`}>{STATUS_LABEL[pick.status]}</span>}

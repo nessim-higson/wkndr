@@ -15,6 +15,8 @@ export function Card({ pick, temp, mode }: { pick: Pick; temp?: number; mode?: M
       style={pick.image ? { backgroundImage: `url(${pick.image})` } : undefined}
     >
       {!pick.image && <span className="poster-mark">{CATEGORY_LABEL[pick.category]}</span>}
+      {pick.image && <div className="card-grade" aria-hidden />}
+      {pick.image && <div className="card-grain" aria-hidden />}
       <div className="card-scrim" aria-hidden />
 
       {/* TOP — the when stamp, and (only when it earns it) the one signal pill */}

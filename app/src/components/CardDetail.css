@@ -69,6 +69,7 @@
   background-position: center;
   background-color: var(--paper-3);
   cursor: grab;
+  isolation: isolate;           /* so the house-treatment glaze blends within the image */
 }
 .detail-img:active { cursor: grabbing; }
 /* drag affordance — a small handle hinting the sheet can be flicked down to close */
