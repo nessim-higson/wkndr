@@ -92,9 +92,11 @@ const UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (
 const MIN_DIM = 700                 // shortest side ≥ this — a 1200-tall card upscales smaller sources to blur
 const ASPECT_RANGE: [number, number] = [0.42, 2.6]   // not a banner strip, not a square icon
 const LOGO_URL = /logo|favicon|icon|sprite|placeholder|wordmark|social[-_]?shar|sharing[-_]?image|og[-_]?default|default[-_]?(og|share)|avatar|thumbnail|pictogram|picotogram|badge|emblem/i
-// Stock-agency hosts plaster a watermark across the image (the "alamy"/"getty" scrawl). Reject
-// by host from ANY source (web search, og:image, scraped) — never let one reach a card.
-const STOCK_URL = /alamy|shutterstock|gettyimages|istockphoto|\bistock\b|dreamstime|123rf|depositphotos|stock\.adobe|adobestock|stockphoto|\.stock\.|bigstock|agefotostock|picfair|pond5|vectorstock|stocksy/i
+// Stock-agency + AI-upscaler hosts plaster a watermark across the image (the "alamy"/"getty"/"Magnific"
+// scrawl) and/or serve a generic non-event subject. Reject by host from ANY source (web search, og:image,
+// scraped) — never let one reach a card. freepik/magnific especially: Freepik owns Magnific and tiles
+// "Magnific" across its premium previews (caught on a generic-theatre card for "Eye Classics").
+const STOCK_URL = /alamy|shutterstock|gettyimages|istockphoto|\bistock\b|dreamstime|123rf|depositphotos|stock\.adobe|adobestock|stockphoto|\.stock\.|bigstock|agefotostock|picfair|pond5|vectorstock|stocksy|freepik|magnific|vecteezy|rawpixel|\bcanva\b|placeit|dreamfusion|lummi/i
 
 // Parse pixel dimensions from the first bytes of PNG / JPEG / GIF / WEBP.
 function imageDims(b: Uint8Array): [number, number] | null {

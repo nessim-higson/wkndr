@@ -252,10 +252,12 @@ async function buildCity(city: City) {
     for (const p of live) { const c = curatedImage(p.title); if (c) { p.image = c; curated++ } }
     if (curated) console.log(`  curated:  ${curated} hero events → hand-pinned image`)
 
-    // PORTRAIT NORMALIZE — reshape every live photo to a tall portrait (wsrv.nl saliency crop) so a
-    // landscape source fills the tall cover-card with its subject centred instead of cropping to a band.
-    // Last, so the shared-hero dedup above compared the original URLs. Canon is hand-curated → left as-is.
-    for (const p of live) if (p.image) p.image = toPortrait(p.image)
+    // PORTRAIT NORMALIZE — reshape EVERY photo (live AND canon) to a tall portrait via the wsrv.nl proxy.
+    // Two wins: (1) a landscape source fills the tall cover-card with its salient region centred instead of
+    // cropping to a band; (2) wsrv fetches SERVER-SIDE, so a canon image on a hotlink-protected or
+    // rate-limited host (pinterest, linkedin, Wikimedia 429…) can no longer BLANK in the user's browser —
+    // it always loads from wsrv's CDN. Idempotent (skips already-wrapped). Heroes are wrapped on injection.
+    for (const p of picks) if (p.image) p.image = toPortrait(p.image)
 
     // FINAL VALIDATION — fetch EVERY published image (live + canon) and replace any DEFINITIVELY broken one
     // (a dead source, a wsrv 4xx, a 404 — the things that blank a card) with a bank photo that actually
