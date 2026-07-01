@@ -10,4 +10,4 @@
 // History: V.1 = the frozen landmark (served at /wkndr/v1/). V.2 = the command-bar / fan line
 // (the old 2.0.0-devN counter). V.3 = this line — Coverflow on mobile, the dimmed wide fan on
 // desktop, the live content pipeline, and the refined card detail.
-export const APP_VERSION = 'V.6.16'
+export const APP_VERSION = 'V.6.17'

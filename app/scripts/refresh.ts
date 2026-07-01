@@ -146,6 +146,12 @@ async function buildCity(city: City) {
   // Curated canon (all imaged) is the floor, so the deck stays full.
   if (!SKIP_IMAGES) {
     const live = picks.filter(isLive)
+    // TRUSTED IMAGES — structured sources (I amsterdam, RA) ship the ORGANISER'S real per-event image (a film
+    // poster, a flyer — often already portrait + hi-res, ideal for the card). Re-processing them was the
+    // sabotage: the resolution floor nulled them and the gather/vision-QA replaced them with SCRAPED junk
+    // (Agatha's Almanac's poster → a wide EYE-building sky-crop). So we TRUST these images: skip the null/gather/
+    // shared-dedup/vision-QA and just portrait-wrap them. Only the dead-URL sweep still applies (→ bank if 404).
+    const trustedImg = (p: Pick) => /^web-(iams|ra)-/.test(p.id) && !!p.image
     const PERFORMER = new Set(['live', 'stage'])
     // EVERY imageless live pick now gathers candidates and is VISION-VERIFIED — including generic web
     // events (festival/market/garden-days). They get their OWN event page's image (schema.org Event
@@ -176,7 +182,7 @@ async function buildCity(city: City) {
       return undefined
     }
 
-    await mapLimit(live.filter((p) => p.image), 5, async (p) => { if (!(await isGoodImage(p.image!))) p.image = undefined })
+    await mapLimit(live.filter((p) => p.image && !trustedImg(p)), 5, async (p) => { if (!(await isGoodImage(p.image!))) p.image = undefined })
 
     // CANDIDATE-GATHER + VISION VERIFY — the agentic image step. For every imageless live pick we
     // gather real-photo CANDIDATES (open-web image search by name; + the act's Wikipedia portrait for
@@ -226,8 +232,8 @@ async function buildCity(city: City) {
     console.log(`  vision:   +${visGot} live picks imaged via verified search${visRej ? ` · ${visRej} rejected → themed stock` : ''}`)
 
     const seen = new Map<string, number>()
-    for (const p of live) if (p.image) seen.set(p.image, (seen.get(p.image) || 0) + 1)
-    for (const p of live) if (p.image && (seen.get(p.image) || 0) > 1) p.image = undefined   // shared hero = generic
+    for (const p of live) if (p.image && !trustedImg(p)) seen.set(p.image, (seen.get(p.image) || 0) + 1)
+    for (const p of live) if (p.image && !trustedImg(p) && (seen.get(p.image) || 0) > 1) p.image = undefined   // shared hero = generic
 
     // THEMED STOCK (Pexels) — the vivid, on-theme layer. For every pick still imageless (generic web
     // events, or a performer the og/web/wiki passes missed) query Pexels by the event's OWN theme,
@@ -284,7 +290,7 @@ async function buildCity(city: City) {
     // re-judged. Needs ANTHROPIC_API_KEY; never-throws; ~cents/run (one Haiku vision call per live pick).
     if (visionOn) {
       let qa = 0
-      await mapLimit(live.filter((p) => p.image), 3, async (p) => {
+      await mapLimit(live.filter((p) => p.image && !trustedImg(p)), 3, async (p) => {
         if (await verifyImageForEvent([p.image!], p, city.name)) return   // vision confirms it fits → keep
         // rejected — try bank photos until one both loads AND passes vision (else leave it for the safety net)
         const pool = bank[p.category]?.length ? bank[p.category] : bankPool
