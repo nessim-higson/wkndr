@@ -127,6 +127,7 @@ export async function isGoodImage(url: string, timeoutMs = 8000): Promise<boolea
   // also reject the notorious I amsterdam "Canal Parade" site hero (a Pride photo it serves as the
   // og:image on unrelated event pages) — passes every quality screen but is the wrong subject.
   if (!url.startsWith('https://') || LOGO_URL.test(url) || STOCK_URL.test(url) || /canal[-_]?parade/i.test(url)) return false
+  if (/[()\s]/.test(url.split('?')[0])) return false   // malformed path (raw parens/space, e.g. a Kirby "img.jpg(mediaclass-…).jpg") — wsrv chokes → grey card
   try {
     const ctrl = new AbortController()
     const t = setTimeout(() => ctrl.abort(), timeoutMs)
@@ -148,6 +149,7 @@ export async function isGoodImage(url: string, timeoutMs = 8000): Promise<boolea
  *  as a light wrong-subject guard. Needs real, parseable dimensions (no benefit-of-the-doubt here). */
 export async function isPortraitImage(url: string, timeoutMs = 8000): Promise<boolean> {
   if (!url.startsWith('https://') || LOGO_URL.test(url) || STOCK_URL.test(url) || /canal[-_]?parade/i.test(url)) return false
+  if (/[()\s]/.test(url.split('?')[0])) return false   // malformed path (raw parens/space, e.g. a Kirby "img.jpg(mediaclass-…).jpg") — wsrv chokes → grey card
   try {
     const ctrl = new AbortController()
     const t = setTimeout(() => ctrl.abort(), timeoutMs)
