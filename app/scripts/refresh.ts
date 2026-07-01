@@ -268,6 +268,28 @@ async function buildCity(city: City) {
     })
     if (revived || lost) console.log(`  validate: ${revived} broken images → working bank photo${lost ? ` · ${lost} unfixable` : ''}`)
 
+    // VISION QA — the image arm of the publish gate, and the end of image whack-a-mole. Look at EVERY live
+    // pick's FINAL (portrait-wrapped) image and confirm with Claude vision that it's a real photo that
+    // genuinely suits the event. Anything blank / grey-placeholder / watermarked / a poster / a wrong subject
+    // is swapped for a bank photo that ALSO passes the same check — so a bad image can't reach a card whatever
+    // the failure mode (a class the HTTP-level checks above can't catch). Canon is hand-curated → trusted, not
+    // re-judged. Needs ANTHROPIC_API_KEY; never-throws; ~cents/run (one Haiku vision call per live pick).
+    if (visionOn) {
+      let qa = 0
+      await mapLimit(live.filter((p) => p.image), 3, async (p) => {
+        if (await verifyImageForEvent([p.image!], p, city.name)) return   // vision confirms it fits → keep
+        // rejected — try bank photos until one both loads AND passes vision (else leave it for the safety net)
+        const pool = bank[p.category]?.length ? bank[p.category] : bankPool
+        for (let i = 0; i < Math.min(pool.length, 4); i++) {
+          const cand = toPortrait(pool[(idHash(p.id) + i) % pool.length])
+          if (!(await imageBroken(cand)) && (await verifyImageForEvent([cand], p, city.name))) { p.image = cand; qa++; return }
+        }
+        // no vision-approved bank photo — fall back to any loading bank photo rather than blank
+        const fb = await workingBankPhoto(p); if (fb) { p.image = fb; qa++ }
+      })
+      if (qa) console.log(`  vision-qa: ${qa} bad final images → vetted bank photo`)
+    }
+
     // safety net: with the bank, no live pick should be imageless; drop any that somehow still is.
     const before = picks.length
     picks = picks.filter((p) => !isLive(p) || p.image)
