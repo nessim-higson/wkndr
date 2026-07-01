@@ -26,6 +26,7 @@ import { llmExtract } from './adapters/llm'
 import { websearchExtract } from './adapters/websearch'
 import { editorialScores } from './adapters/editor'
 import { raExtract } from './adapters/ra'
+import { iamsterdamExtract } from './adapters/iamsterdam'
 import { curatedImage } from './curated'
 import { heroPicks } from './heroes'
 import { rssExtract } from './adapters/rss'
@@ -63,6 +64,13 @@ async function buildCity(city: City) {
 
   for (const r of (await mapLimit(rssSrc, 4, (s) => rssExtract(s)))) fromRoster.push(...r)
   console.log(`  rss:      ${rssSrc.length} feeds → ${fromRoster.length} picks (keyless)`)
+
+  // I AMSTERDAM — the deterministic VARIETY engine: The Feed Factory's schema.org Event JSON-LD across 7
+  // categories (exhibitions, festivals, concerts, theatre, food, nightlife, shopping). Keyless. This is what
+  // makes week-over-week content varied by construction instead of a web-search lucky draw.
+  const iams = await iamsterdamExtract(city.key)
+  fromRoster.push(...iams)
+  if (iams.length) console.log(`  iams:     ${iams.length} events (I amsterdam · deterministic variety)`)
 
   // RESIDENT ADVISOR — keyless structured club/electronic listings: exact dates, real flyer images, and an
   // `attending` popularity signal. Ness's #3 trusted source; runs alongside RSS (no API key needed).

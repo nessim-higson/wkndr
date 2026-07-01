@@ -37,23 +37,46 @@ export function dedupe(picks: Pick[]): Pick[] {
     return { ...a, ...richer, source: [...credits].join(' · '), buzz: credits.size, popularity }
   }
 
-  // PASS 1 — exact normalized-title key.
+  // Structured sources (I amsterdam, RA) carry a STABLE per-event id (a slug), so two similarly-titled but
+  // DISTINCT events must never collapse — key those by id. Everything keyless (web-search, canon, rss, llm)
+  // keys by normalized title as before. This is what makes unioning many sources safe.
+  const STRUCTURED = /^web-(iams|ra)-/
+
+  // PASS 1 — structured picks keyed by their id; the rest by 't:'+titleKey.
   const byKey = new Map<string, Pick>()
   for (const p of picks) {
-    const key = titleKey(p.title)
+    const key = STRUCTURED.test(p.id) ? p.id : 't:' + titleKey(p.title)
     byKey.set(key, byKey.has(key) ? merge(byKey.get(key)!, p) : { ...p })
   }
 
-  // PASS 2 — collapse near-dups where one key is a PREFIX of another (≥10 chars): catches
-  // "Guns N' Roses" vs "Guns N' Roses and Mammoth", "Open Garden Days" vs "…(Open Tuinen Dagen)".
-  // Shortest key is the canonical survivor (sort ascending so prefixes are seen first).
+  // PASS 2 — collapse near-dups where one TITLE key is a PREFIX of another (≥10 chars): catches "Guns N'
+  // Roses" vs "Guns N' Roses and Mammoth". Only among title-keyed picks; structured ids never prefix-collapse.
   const out = new Map<string, Pick>()
   for (const key of [...byKey.keys()].sort((a, b) => a.length - b.length || a.localeCompare(b))) {
-    const base = [...out.keys()].find((o) => o.length >= 10 && key.startsWith(o))
-    if (base) out.set(base, merge(out.get(base)!, byKey.get(key)!))
-    else out.set(key, byKey.get(key)!)
+    const p = byKey.get(key)!
+    if (!key.startsWith('t:')) { out.set(key, p); continue }
+    const base = [...out.keys()].find((o) => o.startsWith('t:') && o.length >= 12 && key.startsWith(o))
+    if (base) out.set(base, merge(out.get(base)!, p))
+    else out.set(key, p)
   }
-  return [...out.values()]
+
+  // PASS 3 — RECONCILE across sources: a keyless pick that is the SAME event as a structured one (same
+  // normalized title) folds INTO it — so an event found by BOTH I amsterdam and web-search shows ONCE, with
+  // the structured pick's exact date/link/flyer kept and both sources credited (buzz counts the corroboration).
+  const all = [...out.values()]
+  const struct = new Map(all.filter((p) => STRUCTURED.test(p.id)).map((p) => [titleKey(p.title), p]))
+  const kept: Pick[] = []
+  for (const p of all) {
+    if (STRUCTURED.test(p.id)) { kept.push(p); continue }
+    const s = struct.get(titleKey(p.title))
+    if (s) {
+      const credits = new Set((s.source + ' · ' + p.source).split(' · ').filter(Boolean))
+      s.source = [...credits].join(' · ')
+      s.buzz = credits.size
+      s.popularity = Math.max(s.popularity ?? 0, p.popularity ?? 0) || undefined
+    } else kept.push(p)
+  }
+  return kept
 }
 
 // Keep the pool DIVERSE: cap how many of each category make the cut, so a firehose source
