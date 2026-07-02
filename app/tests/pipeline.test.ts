@@ -58,6 +58,16 @@ describe('dedupe — unioning many sources safely', () => {
     ])
     expect(out.length).toBe(1)
   })
+
+  it('folds a near-match keyless title into its structured twin (prefix, both directions)', () => {
+    const out = dedupe([
+      P({ id: 'web-iams-world-press-photo-2026', title: 'World Press Photo 2026', source: 'I amsterdam' }),
+      P({ id: 'web-lbb-world-press-photo-exhibition-2026', title: 'World Press Photo Exhibition 2026', source: 'Your Little Black Book' }),
+    ])
+    expect(out.length).toBe(1)
+    expect(out[0].id).toBe('web-iams-world-press-photo-2026')
+    expect(out[0].buzz).toBe(2)
+  })
 })
 
 describe('image URL screens', () => {

@@ -270,8 +270,12 @@ async function buildCity(city: City) {
       // download cap even when web hits are on strict hosts (Billboard/Rolling Stone 403 our fetch).
       const cands: string[] = []
       if (perf) { const wk = await wikiImage(actName(p)); if (wk && (await isGoodImage(wk))) cands.push(wk) }
-      cands.push(...await webImageCandidates(q, 5))
-      if (!perf && p.link) { const og = await fetchEventImage(p.link); if (og) cands.push(og) }
+      // LBB picks carry the event's REAL outbound link (the venue's own page) — its og:image is the
+      // honest photo. NO open-web search for these: that's how "Nara Nara" got a Hamburg food-guide
+      // shot. og → vision → Pexels/bank; a themed photo beats a plausible-but-wrong one.
+      const lbbPick = p.id.startsWith('web-lbb-')
+      if (!lbbPick) cands.push(...await webImageCandidates(q, 5))
+      if ((lbbPick || !perf) && p.link) { const og = await fetchEventImage(p.link); if (og) cands.push(og) }
       if (!cands.length) return
       const best = visionOn ? await verifyImageForEvent(cands, p, city.name) : cands[0]
       if (best) { p.image = best; visGot++ } else if (visionOn) visRej++

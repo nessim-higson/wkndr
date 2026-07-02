@@ -14,6 +14,7 @@
 // article text); returns [] without it. Never throws. id prefix `web-lbb-*` (live; images trusted).
 import type { Pick, Category } from '../../src/types'
 import { deriveWeatherFit, upcomingWeekend, mapLimit } from '../lib/pipeline'
+import { latestDateOf } from '../../src/lib/when'
 
 const KEY = process.env.ANTHROPIC_API_KEY
 const MODEL = process.env.ANTHROPIC_MODEL || 'claude-haiku-4-5'
@@ -90,8 +91,9 @@ export async function lbbExtract(cityKey: string): Promise<Pick[]> {
             system: `You are WKNDR's extractor reading a Your Little Black Book (Amsterdam city guide) article.
 The coming weekend is ${WEEKEND}. Extract the ${MAX_PER_ARTICLE} BEST items genuinely relevant to that
 weekend in/around Amsterdam — a dated event on those days, an ongoing exhibition/run open then, or a
-distinctive place/hotspot worth going to that weekend. Skip anything already past, national round-up
-items outside the Amsterdam area, and thin filler. FACTS ONLY from the text; never invent dates.
+distinctive place/hotspot worth going to that weekend. Skip anything already past, anything that only
+STARTS after ${fmt(wk.sun)} (a monthly agenda lists the whole month — later items are NOT this weekend),
+national round-up items outside the Amsterdam area, and thin filler. FACTS ONLY; never invent dates.
 Return ONLY a JSON array, each item:
 {"title": string, "venue": string, "area": string,
  "when": string,          // ENGLISH, e.g. "Sat 4 Jul · 20:00", "Fri–Sun 3–5 Jul", "Until Sun 30 Aug", or "" if the text gives none
@@ -137,6 +139,15 @@ Return ONLY a JSON array, each item:
             weatherFit: deriveWeatherFit(outdoor),
             verify: false,
           }]
+        }).filter((p) => {
+          // BELT + BRACES for the prompt rule above: the monthly agendas list ALL of July, and the model
+          // still leaks "From Thu 9 Jul" items into the weekend deck. Open-ended runs ("Until…", daily)
+          // are already-running → keep; otherwise a pick whose dates fall wholly AFTER the weekend's
+          // Sunday is next week's news → drop.
+          if (/until|t\/m|ongoing|daily|dagelijks/i.test(p.when)) return true
+          const latest = latestDateOf(p.when)
+          if (!latest) return true                              // undated hotspot → fine this weekend
+          return latest.getTime() <= wk.sun.getTime() + 864e5   // ends by Sunday (+1d slack for midnight)
         })
       } catch { return [] }
     })
