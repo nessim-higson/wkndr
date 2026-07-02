@@ -3,11 +3,11 @@
 _Living "where are we right now" doc — a **snapshot, not a history**. **Updated 2026-07-02.** Read this
 FIRST in a new chat. For strategy + backlog see `docs/backlog.md`; for the pipeline architecture see
 `docs/pipeline-architecture.md` + `docs/source-map.md`; for full **version history** see `CHANGELOG.md`
-(current to V.6.20) and the **git log / tags**. Onboarding: `CLAUDE.md`. App lives in `/app` (Vite +
+(current to V.7) and the **git log / tags**. Onboarding: `CLAUDE.md`. App lives in `/app` (Vite +
 React + TS, run with `bun`); deployed to GitHub Pages._
 
 ## Live right now
-- **App: V.6.20** — https://nessim-higson.github.io/wkndr/ (cache-bust `?v=V.6.20`)
+- **App: V.7** — https://nessim-higson.github.io/wkndr/ (cache-bust `?v=V.7`)
 - **`?dev=1`** reveals the full exploration surface (all views, ambient-look switcher, city picker).
 - **Frozen reference builds:** `/wkndr/versions/v6-2/` (tag `v6.2`) and `/wkndr/versions/v4-10/` (tag `v4.10`).
 - **Ship loop:** `cd app && bun run bump` → `bun run build` → commit → push (auto-deploys) → reply with
@@ -18,7 +18,7 @@ One view (**Stack**), one ambient look (**Auras**), **Amsterdam only**; taste en
 Endless deck (batching was tried + REVERTED) · full-bleed `cover` cards (blur-fill tried + REVERTED) ·
 boomerang share→match→confirm all in the URL (`?w=`, `&m=1`) — see git history/CHANGELOG for details.
 
-## The content pipeline (V.6.4 → V.6.20 — the "pipeline era")
+## The content pipeline (V.6.4 → V.7 — the "pipeline era")
 The weekly feed is now **deterministic-varied, self-checking, and largely set-and-forget**. Architecture
 docs: `docs/pipeline-architecture.md` (north star + roadmap), `docs/source-map.md` (source registry).
 

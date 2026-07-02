@@ -14,7 +14,7 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
-## [V.6.3 → V.6.19] — 2026-06-29 → 07-02 — "The pipeline era: deterministic variety, self-checking feed, house look"
+## [V.6.3 → V.7] — 2026-06-29 → 07-02 — "The pipeline era: deterministic variety, self-checking feed, house look"
 _The arc: two deep-research passes (docs/pipeline-redesign.md → docs/pipeline-architecture.md +
 docs/source-map.md) turned the scrape-and-pray refresh into a deterministic, self-checking content
 engine. Sixteen ships in four days; the granular story is the git log._
@@ -46,7 +46,7 @@ engine. Sixteen ships in four days; the granular story is the git log._
 - **Variety + talked-about (V.6.18–6.19)** — I amsterdam capped 5/category; steeper cross-source
   buzzBoost + the editorial judge up-weights multi-publication events; specific event links (never the
   generic index); evergreen canon fill-in (markets 0→8, day-trips 4→9, venues 2→5).
-- **Tests + living docs (V.6.20)** — 31-test `bun test` guard over `when.ts`/`dedupe`/`rankPicks`,
+- **Tests + living docs (V.7 — the roll)** — 31-test `bun test` guard over `when.ts`/`dedupe`/`rankPicks`,
   gating the CI refresh; STATE.md + this changelog brought current.
 
 ## [V.6 → V.6.2] — 2026-06-28 — "Trusted-source engine + endless deck"
