@@ -545,7 +545,8 @@ async function buildCity(city: City) {
     for (const p of picks) if (keeps.some((k) => p.title.toLowerCase().includes(k.match))) { p.editorScore = Math.max(p.editorScore ?? 0, 8); floored++ }
     for (const k of keeps) {
       if (picks.some((p) => p.title.toLowerCase().includes(k.match))) continue
-      const prior = priorPicks.find((p) => p.title.toLowerCase().includes(k.match))
+      const prior = prePool.find((p) => p.title.toLowerCase().includes(k.match))
+        ?? priorPicks.find((p) => p.title.toLowerCase().includes(k.match))
       if (!prior || whenIsPast(prior.when) || whenBeforeWeekend(prior.when)) continue
       const pin = curatedImage(prior.title)
       if (pin) prior.image = toPortrait(pin)
