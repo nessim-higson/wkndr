@@ -48,3 +48,6 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v5
+        with:
+          timeout: 1800000   # 30 min queue patience — rides out GitHub Pages "degraded performance" incidents
+          error_count: 15
