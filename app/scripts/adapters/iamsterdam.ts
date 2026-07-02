@@ -89,7 +89,14 @@ export async function iamsterdamExtract(cityKey: string): Promise<Pick[]> {
           const area = String((locality && locality !== 'Amsterdam' ? locality : (loc.address?.streetAddress || '')) || '').slice(0, 40)
           const offer = (Array.isArray(ev.offers) ? ev.offers[0] : ev.offers) as { price?: string | number } | undefined
           const priceStr = offer?.price != null ? (Number(offer.price) === 0 ? 'free' : `from €${offer.price}`) : 'ticketed'
-          const blurb = htmlToText(String(ev.description || '')).slice(0, 160)
+          // strip HTML; collapse a doubled leading phrase ("David Levinthal David Levinthal (born…)" — the
+          // page repeats the heading at the start of its body text)
+          const blurb = htmlToText(String(ev.description || '')).replace(/^((?:\S+\s+){1,5})\1/, '$1').slice(0, 160)
+          // LINK — the most direct page we can offer. The JSON-LD `url` is unreliable (often the generic
+          // /en/whats-on index, which dead-ends the card's "open at"). Rule: an OFF-SITE organiser/venue event
+          // page wins (the "talked about elsewhere" link); otherwise the exact detail page we just crawled.
+          const evUrl = typeof ev.url === 'string' && (ev.url as string).startsWith('http') ? (ev.url as string) : ''
+          const link = evUrl && !/iamsterdam\.com/i.test(evUrl) ? evUrl : BASE + rel
           return {
             id: `web-iams-${slugOf(rel)}`,
             title: name.slice(0, 90),
@@ -105,7 +112,7 @@ export async function iamsterdamExtract(cityKey: string): Promise<Pick[]> {
             blurb: blurb || name,
             why: 'On I amsterdam',
             source: 'I amsterdam',
-            link: typeof ev.url === 'string' && (ev.url as string).startsWith('http') ? (ev.url as string) : BASE + rel,
+            link,
             weatherFit: deriveWeatherFit(category === 'out'),
             verify: false,
           } satisfies Pick

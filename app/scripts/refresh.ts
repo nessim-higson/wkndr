@@ -19,7 +19,7 @@
  */
 import { CITIES, type City } from '../src/data/cities'
 import type { Pick } from '../src/types'
-import { dedupe, balanceByCategory, isGoodImage, isPortraitImage, imageBroken, fetchEventImage, toPortrait, wikiImage, webImageCandidates, verifyImageForEvent, pexelsImage, whenIsPast, whenBeforeWeekend, upcomingWeekend, linkOk, mapLimit, titleKey } from './lib/pipeline'
+import { dedupe, balanceByCategory, isGoodImage, isPortraitImage, imageBroken, urlLooksNonPhoto, imageIsCardworthy, fetchEventImage, toPortrait, wikiImage, webImageCandidates, verifyImageForEvent, pexelsImage, whenIsPast, whenBeforeWeekend, upcomingWeekend, linkOk, mapLimit, titleKey } from './lib/pipeline'
 import { fixWhen } from '../src/lib/when'
 import { songkickAdapter } from './adapters/songkick'
 import { llmExtract } from './adapters/llm'
@@ -180,6 +180,20 @@ async function buildCity(city: City) {
         if (!(await imageBroken(wrapped))) return wrapped
       }
       return undefined
+    }
+
+    // TRUST, BUT SCREEN FOR THE LOGO CLASS — organisers sometimes upload their LOGO/wordmark instead of a
+    // photo ("LOGO___WORDMARK_square_black.webp" → a solid-black card). Trusted images stay untouched on
+    // SUBJECT (no re-scraping — that was the old sabotage), but two sanity screens apply: (1) keyless URL
+    // smell test (logo/wordmark/stock in the filename), (2) a narrow vision check that rejects ONLY
+    // logos/flat graphics/blank frames while KEEPING real posters (the Agatha class). Rejects → bank photo.
+    {
+      let sane = 0
+      await mapLimit(live.filter(trustedImg), 3, async (p) => {
+        const bad = urlLooksNonPhoto(p.image!) || !(await imageIsCardworthy(p.image!))
+        if (bad) { const fb = await workingBankPhoto(p); p.image = fb; if (fb) sane++ }
+      })
+      if (sane) console.log(`  sanity:   ${sane} organiser logos/blank frames → bank photo`)
     }
 
     await mapLimit(live.filter((p) => p.image && !trustedImg(p)), 5, async (p) => { if (!(await isGoodImage(p.image!))) p.image = undefined })
@@ -362,6 +376,24 @@ async function buildCity(city: City) {
     (isNew(b) ? 1 : 0) - (isNew(a) ? 1 : 0) ||
     (b.buzz ?? 1) - (a.buzz ?? 1) ||
     (FRESH_RANK[b.freshness] - FRESH_RANK[a.freshness]))
+
+  // SOURCE DIVERSITY — no single source may flood a category. I amsterdam ranks high (srcRank 3) and returns
+  // ~46 events, so without a cap it takes nearly every live slot and the feed reads as "the I amsterdam app".
+  // Cap it at 5 per category (of the 8 balanceByCategory keeps), leaving real room for RA club nights,
+  // web-search serendipity and the other editorial finds. Picks are already best-first, so the strongest survive.
+  {
+    const CAP_PER_SOURCE = 5
+    const n: Record<string, number> = {}
+    const before = picks.length
+    picks = picks.filter((p) => {
+      if (!p.id.startsWith('web-iams-')) return true
+      const k = p.category
+      n[k] = (n[k] ?? 0) + 1
+      return n[k] <= CAP_PER_SOURCE
+    })
+    if (before !== picks.length) console.log(`  variety:  capped I amsterdam to ${CAP_PER_SOURCE}/category (dropped ${before - picks.length})`)
+  }
+
   if (picks.filter(isLive).length > 6) {
     // HERO EVENTS bypass the cap entirely (found OR injected — matched by title), so a must-see can never be
     // capped out of an over-full category; the rest is balanced as before, with heroes leading.

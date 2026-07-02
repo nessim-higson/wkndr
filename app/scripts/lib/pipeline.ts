@@ -115,6 +115,13 @@ const UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (
 const MIN_DIM = 700                 // shortest side ≥ this — a 1200-tall card upscales smaller sources to blur
 const ASPECT_RANGE: [number, number] = [0.42, 2.6]   // not a banner strip, not a square icon
 const LOGO_URL = /logo|favicon|icon|sprite|placeholder|wordmark|social[-_]?shar|sharing[-_]?image|og[-_]?default|default[-_]?(og|share)|avatar|thumbnail|pictogram|picotogram|badge|emblem/i
+
+/** Keyless URL-level screen: does this image URL smell like a logo/wordmark/stock asset rather than a real
+ *  photo? Used to sanity-screen even TRUSTED organiser images — a Feed Factory upload literally named
+ *  "LOGO___WORDMARK_square_black.webp" flattened to a solid black card. Cheap, deterministic, no fetch. */
+export function urlLooksNonPhoto(url: string): boolean {
+  return LOGO_URL.test(url) || STOCK_URL.test(url)
+}
 // Stock-agency + AI-upscaler hosts plaster a watermark across the image (the "alamy"/"getty"/"Magnific"
 // scrawl) and/or serve a generic non-event subject. Reject by host from ANY source (web search, og:image,
 // scraped) — never let one reach a card. freepik/magnific especially: Freepik owns Magnific and tiles
@@ -504,6 +511,45 @@ export async function verifyImageForEvent(
     return idx >= 1 && idx <= imgs.length ? imgs[idx - 1].url : null
   } catch {
     return null
+  }
+}
+
+// TRUSTED-IMAGE SANITY — a narrower vision question than verifyImageForEvent, for ORGANISER-uploaded images
+// (Feed Factory / RA flyers). These are trusted on subject, but organisers sometimes upload their LOGO or a
+// wordmark instead of a photo — which flattens to a solid black/blank card. So we only ask "is this usable as
+// a card background at all?": real photographs AND designed posters/flyers WITH imagery are KEEP (a film
+// poster like Agatha's Almanac is exactly what we want); logos, wordmarks, icons, flat/solid graphics,
+// near-blank or near-black frames, QR codes and text-only slides are REJECT. Needs ANTHROPIC_API_KEY;
+// returns true (keep) on any API failure so a hiccup never strips a good image.
+export async function imageIsCardworthy(url: string): Promise<boolean> {
+  const key = process.env.ANTHROPIC_API_KEY
+  const model = process.env.ANTHROPIC_MODEL || 'claude-haiku-4-5'
+  if (!key) return true
+  try {
+    const r = await fetch(url, { headers: { 'user-agent': UA }, signal: AbortSignal.timeout(10000) })
+    const mt = (r.headers.get('content-type') || '').split(';')[0].trim()
+    if (!r.ok || !/^image\/(jpeg|png|webp|gif)$/.test(mt)) return true
+    const buf = Buffer.from(await r.arrayBuffer())
+    if (buf.length < 2000 || buf.length > 5_000_000) return true
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'x-api-key': key, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },
+      body: JSON.stringify({
+        model, max_tokens: 30,
+        messages: [{ role: 'user', content: [
+          { type: 'image', source: { type: 'base64', media_type: mt, data: buf.toString('base64') } },
+          { type: 'text', text:
+            'Is this image usable as an event-card BACKGROUND? KEEP if it is a real photograph OR a designed ' +
+            'event poster/flyer with pictorial imagery. REJECT only if it is essentially a logo, wordmark, icon, ' +
+            'flat/solid-colour graphic, near-blank or near-black frame, QR code, or a text-only slide. ' +
+            'Reply ONLY JSON: {"keep": true|false}.' },
+        ] }],
+      }),
+    }).then((x) => x.json())
+    const text = Array.isArray(res?.content) ? res.content.filter((b: { type?: string }) => b?.type === 'text').map((b: { text?: string }) => b.text).join('') : ''
+    return !/"keep"\s*:\s*false/.test(text)
+  } catch {
+    return true
   }
 }
 

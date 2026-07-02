@@ -25,13 +25,15 @@ export async function editorialScores(candidates: Pick[], cityName: string): Pro
   if (!KEY || candidates.length === 0) return out
   const list = [...candidates]
     .sort((a, b) => idHash(a.id) - idHash(b.id))
-    .map((p) => ({ id: p.id, title: p.title, venue: p.venue, area: p.area, when: p.when, category: p.category, source: p.source, why: p.why }))
+    .map((p) => ({ id: p.id, title: p.title, venue: p.venue, area: p.area, when: p.when, category: p.category, source: p.source, buzz: p.buzz, why: p.why }))
 
   const sys = `You are WKNDR's culture editor for ${cityName}. You will receive a JSON list of events already
 confirmed to be on this coming weekend. Score EACH 0-10 for how much a culture-savvy local would want to KNOW
 about it this weekend. Weigh: distinctiveness/originality, genuine local credibility, timeliness/urgency (a
 one-off, a closing show, a real moment beats an always-on listing), and variety (don't let several
-near-identical items all score high). A generic tourist-trap or a thin listing scores low even from a good
+near-identical items all score high). CROSS-SOURCE BUZZ matters: an event whose "source" credits SEVERAL
+independent publications (or buzz ≥ 2) is being talked about across the city's press — up-weight it; that is
+the "everyone's going" signal. A generic tourist-trap or a thin listing scores low even from a good
 source; a singular, only-this-weekend thing scores high. Do NOT invent, rewrite or re-date anything — judge
 only what is given. Reply with ONLY a JSON array, no prose: [{"id": string, "score": number}].`
 

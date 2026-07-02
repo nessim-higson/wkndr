@@ -120,7 +120,10 @@ const EVERGREEN_FLOOR = 0.6
 export function rankPicks(picks: Pick[], mode: Mode, taste?: Taste, seed = 0): Pick[] {
   const freshBoost = (p: Pick) =>
     p.freshness === 'new' ? 1.5 : p.freshness === 'ending' ? 1.2 : p.freshness === 'weekend' ? 1 : EVERGREEN_FLOOR
-  const buzzBoost = (p: Pick) => Math.min(3, Math.max(0, (p.buzz ?? 0) - 1)) // 2 sources→+1 … capped +3
+  // cross-source corroboration — an event INDEPENDENTLY surfaced by 2+ sources (I amsterdam AND web-search
+  // AND an editorial guide…) is the "most talked about" signal; weight it steeply so those lead their tier:
+  // 2 sources → +1.5, 3 → +3, 4+ → +4 (capped). Single-source picks are unaffected.
+  const buzzBoost = (p: Pick) => Math.min(4, Math.max(0, (p.buzz ?? 0) - 1) * 1.5)
   // real-draw signal (e.g. RA "attending") on a log curve so 50 vs 500 separates but a mega-event can't run
   // away — a within-tier sub-term capped ~2.5, like buzz. Only picks that carry popularity get the bump.
   const popBoost = (p: Pick) => (p.popularity ? Math.min(2.5, Math.log10(p.popularity + 1)) : 0)
