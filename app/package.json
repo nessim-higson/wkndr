@@ -8,6 +8,7 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "refresh": "bun run scripts/refresh.ts",
+    "test": "bun test tests",
     "bump": "bun run scripts/bump.ts"
   },
   "dependencies": {

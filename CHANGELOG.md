@@ -5,12 +5,49 @@ Format loosely follows [Keep a Changelog](https://keepachangelog.com/). The vers
 shown in the app's "What's feeding this" sheet matches the latest tag here.
 
 ## [Unreleased]
-- (next up — wire the Feedback widget's Formspree endpoint · confirm V.6.2 pull-to-dismiss on device)
+- (next up — Phase 2: demote web_search to 2–3 serendipity facets · eat/drink/shop fresh sources ·
+  "Talked about" pill on the card face · add SERPER_API_KEY + HEALTHCHECK_URL secrets · city #2 (an EU
+  city, not NOLA as-is) once Amsterdam is locked)
 
 > **Versioning note:** from V.1 the app moved off semver to **`V.<major>.<sub>`** (shown in the menu
 > footer; `bun run bump`). Whole versions are git tags (`v1.0.0`, `v2.0`, `v3.0`, `v4.0`, `v4.10`,
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
+
+## [V.6.3 → V.6.19] — 2026-06-29 → 07-02 — "The pipeline era: deterministic variety, self-checking feed, house look"
+_The arc: two deep-research passes (docs/pipeline-redesign.md → docs/pipeline-architecture.md +
+docs/source-map.md) turned the scrape-and-pray refresh into a deterministic, self-checking content
+engine. Sixteen ships in four days; the granular story is the git log._
+- **V.6.3** — Feedback widget wired to Formspree (confirmed live).
+- **Ranking that reaches the user (V.6.4)** — `editorScore` (a Sonnet editorial judge,
+  `ANTHROPIC_JUDGE_MODEL`) + `popularity`/`popBoost` + `EVERGREEN_FLOOR` as real terms in `rankPicks`;
+  `diversify()` moved onto the SERVED deck (the old call was discarded by re-segmentation → category
+  waves); adaptive RESERVE (canon backfill widens on thin weeks).
+- **Resident Advisor adapter (V.6.4)** — keyless GraphQL, exact dates + flyers + `attending`;
+  **protected 2-slot lane (V.6.19)** so club nights never rank out of the feed.
+- **Runtime date guard (V.6.5)** — `whenIsPast` filters the deck in the browser: last weekend's events
+  can never render, however stale the feed.
+- **Imagery, the long war (V.6.6–V.6.18)** — performer portraits + resolution floor + stricter vision
+  verify (V.6.6); curated pins (V.6.7–6.8); Serper wired-dormant (V.6.9); wsrv.nl portrait wrap for
+  every image + stock/watermark/malformed-URL screens + dead-image self-healing (V.6.11–6.14); vision
+  QA net (V.6.15); **the root-cause fix (V.6.17): TRUST structured-source images** — the safety layers
+  were discarding organiser posters and re-scraping junk; now they flow untouched, **screened only for
+  the logo/blank class** (V.6.18, keyless URL smell-test + narrow vision sanity). House treatment
+  (V.6.12): weather-keyed soft-light glaze + grain on both card faces.
+- **Guaranteed heroes (V.6.10)** — hand-maintained must-sees injected + cap-exempt (web-search is
+  non-deterministic; Bruno Mars vanished between runs). Auto-expire via date filters.
+- **Publish gate + observability (V.6.12)** — the run grades itself: hard-fail only truly-broken
+  states, abstain → last-good keeps serving; health line in `$GITHUB_STEP_SUMMARY`; optional
+  healthchecks.io dead-man ping.
+- **I amsterdam adapter — the variety engine (V.6.16)** — keyless schema.org Event JSON-LD crawl of The
+  Feed Factory (~1,500 live events, 7 of 9 categories, real per-event images); multi-source dedupe:
+  structured picks key by stable id, keyless dups FOLD INTO their structured twin (corroboration =
+  buzz, structured facts win).
+- **Variety + talked-about (V.6.18–6.19)** — I amsterdam capped 5/category; steeper cross-source
+  buzzBoost + the editorial judge up-weights multi-publication events; specific event links (never the
+  generic index); evergreen canon fill-in (markets 0→8, day-trips 4→9, venues 2→5).
+- **Tests + living docs (V.6.20)** — 31-test `bun test` guard over `when.ts`/`dedupe`/`rankPicks`,
+  gating the CI refresh; STATE.md + this changelog brought current.
 
 ## [V.6 → V.6.2] — 2026-06-28 — "Trusted-source engine + endless deck"
 - **Ranked trusted sources** — the pipeline now leads with Ness's four: Your Little Black Book ›

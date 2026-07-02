@@ -1,116 +1,94 @@
 # WKNDR — STATE (catch-me-up snapshot)
 
-_Living "where are we right now" doc — a **snapshot, not a history**. **Updated 2026-06-28.** Read this
-FIRST in a new chat. For strategy + backlog see `docs/backlog.md`; for full **version history** see
-`CHANGELOG.md` (current to V.6.2) and the **git log / tags** (every `V.x.x` ship is a commit;
-milestones are tags `v4.0`/`v4.10`/`v5.0`/`v6.2`); onboarding `CLAUDE.md`. App lives in `/app` (Vite +
+_Living "where are we right now" doc — a **snapshot, not a history**. **Updated 2026-07-02.** Read this
+FIRST in a new chat. For strategy + backlog see `docs/backlog.md`; for the pipeline architecture see
+`docs/pipeline-architecture.md` + `docs/source-map.md`; for full **version history** see `CHANGELOG.md`
+(current to V.6.20) and the **git log / tags**. Onboarding: `CLAUDE.md`. App lives in `/app` (Vite +
 React + TS, run with `bun`); deployed to GitHub Pages._
 
 ## Live right now
-- **App: V.6.3** — https://nessim-higson.github.io/wkndr/ (cache-bust `?v=V.6.3`)
+- **App: V.6.20** — https://nessim-higson.github.io/wkndr/ (cache-bust `?v=V.6.20`)
 - **`?dev=1`** reveals the full exploration surface (all views, ambient-look switcher, city picker).
-- **Frozen reference builds:** this build at **`/wkndr/versions/v6-2/`** (git tag `v6.2`) and the
-  pre-MVP build at `/wkndr/versions/v4-10/` (git tag `v4.10`). Frozen builds live in the repo's
-  top-level `versions/<slug>/` (the deploy copies them to `site/versions/`); each is a normal `vite
-  build` with `--base=/wkndr/versions/<slug>/`.
-- **Ship loop:** `cd app && bun run bump` (V.<major>.<sub>, sub 1–19 then rolls a whole version + a
-  milestone tag) → `bun run build` → commit → push (auto-deploys) → reply with the `?v=` link.
+- **Frozen reference builds:** `/wkndr/versions/v6-2/` (tag `v6.2`) and `/wkndr/versions/v4-10/` (tag `v4.10`).
+- **Ship loop:** `cd app && bun run bump` → `bun run build` → commit → push (auto-deploys) → reply with
+  the `?v=` link. **Tests:** `bun run test` (31 logic tests; CI runs them before every content refresh).
 
-## Product posture — the MVP
+## Product posture — the MVP (unchanged)
 One view (**Stack**), one ambient look (**Auras**), **Amsterdam only**; taste engine runs silently.
-Menu = Your list · Plan together · Filter · Weather. Fan/List/looks/cities all behind `?dev=1`.
-- **Cards: full-bleed `cover`.** (A blur-fill "show whole photo" variant was tried and **reverted** —
-  Ness preferred clean cover. Landscape photos crop somewhat; accepted.)
-- Desktop geometry dialed to Ness's guide lines: top under the nav/undo pill (~14vh), fills to
-  `max-height:70vh`, ✕/★ + "Shuffle for more" lifted ~9vh off the bottom. **Mobile card width ==
-  header width** exactly (`min(340px,100%)`).
-- Weather-peak pill = **"Perfect this weekend"**. Intro lead "Tinder your events." + matching subline.
-- **Card detail dismisses on a pull UP or DOWN** (grab the image and fling either way) — V.6.2.
+Endless deck (batching was tried + REVERTED) · full-bleed `cover` cards (blur-fill tried + REVERTED) ·
+boomerang share→match→confirm all in the URL (`?w=`, `&m=1`) — see git history/CHANGELOG for details.
 
-## Deck behaviour — ENDLESS (do not re-add fixed sets)
-The deck is **endless**: all un-swiped picks of the current slice; **"Shuffle for more"** bumps the
-seed → a new slice. A **"sets of 7" batching model was tried and REVERTED** — it recycled cards and
-Ness said the endless deck "functioned a lot better." `shown` (default browse) = the weekend's **LIVE
-picks** (pipeline ids `web-`/`llm-`) + a **rotating RESERVE(14) slice** of the deep canon; the slice
-advances each WEEK and on each Shuffle. The fresh/canon split is **LIVE-vs-id** (not `freshness`), so
-canon tagged `"new"` (e.g. **De Pimpelmees**) rotates too — fixing the "same pick every week" fatigue.
+## The content pipeline (V.6.4 → V.6.20 — the "pipeline era")
+The weekly feed is now **deterministic-varied, self-checking, and largely set-and-forget**. Architecture
+docs: `docs/pipeline-architecture.md` (north star + roadmap), `docs/source-map.md` (source registry).
 
-## The boomerang (share → match → confirm) — no backend, all in the URL
-- Share a saved list → short stable link `?w=<7-char codes>&from=<name>` (codes survive the weekly
-  refresh). Recipient lands in the **match** overlay (branded), swipes; closing drops them on the full
-  feed (never boxed into the shared set).
-- Return leg: "Send <name> your matches" → link with **`&m=1`**. Sender's app greets **"It's a match
-  with <name>"** + banner, and opens the **itinerary LIST** ("Your weekend") of the matched plans —
-  not the swipe deck. Passive confirmation (you open the returned link); a true push = backend (parked).
+**Sources (adapters in `app/scripts/adapters/`):**
+- **I amsterdam (`iamsterdam.ts`) — the deterministic VARIETY engine.** Keyless crawl of The Feed
+  Factory's schema.org Event JSON-LD (~1,500 live events, category-namespaced) across 7 of 9 categories.
+  **Capped at 5 picks/category** so it can't flood the feed. Links always point at the specific event page
+  (or an off-site organiser page when the JSON-LD gives one).
+- **Resident Advisor (`ra.ts`)** — keyless GraphQL (Amsterdam area 29): exact dates, flyer images, and an
+  `attending` → `popularity` signal. **Protected lane: the top 2 RA nights are cap-exempt** (they
+  otherwise lose every `live` slot to higher-ranked sources — Amsterdam must ship club nights).
+- **web_search (`websearch.ts`)** — 10 Claude-Haiku facets; now the **serendipity edge**, no longer the
+  spine. (Phase 2 = demote to 2–3 facets once a few more deterministic runs look healthy.)
+- **`heroes.ts`** — hand-maintained guaranteed must-sees (injected if the adapters missed them, cap-exempt,
+  auto-expire via date filters). **`curated.ts`** — hand-pinned images by title for recurring offenders.
+- `llm.ts` (static scrape) + `rss.ts` (keyless floor) + `songkick.ts` (key-gated, optional).
 
-## Content pipeline — the trusted-source engine
-- **Ranked TRUSTED SOURCES (Ness's call):** 1. Your Little Black Book · 2. I amsterdam · 3. Resident
-  Advisor (the source for club/electronic nights) · 4. de Volkskrant. The web-search adapter leads
-  with **source-scoped facets** for these four, then topical breadth; `refresh.ts` ranks picks by this
-  **source priority** so every category is LED by trusted sources, with curated canon backfilling.
-- **10 facets**, one paced web_search "agent" each, `max_uses` 5, `WEBSEARCH_RPM=3`. Cron **Thu 13:00
-  UTC** (after LBB / I amsterdam publish weekend guides).
-- **TRUST FILTER** (`LOW_QUALITY` in refresh.ts) drops low-confidence web picks: cheesy club
-  self-promo (**Escape**), generic aggregators (concerts50), the **Songkick metro index**, and the
-  **AmsterdamTips month-index** `/whats-on-amsterdam-<month>` links — the wrong-date/wrong-image
-  "**Mirror Floor**" class. (Narrow on purpose: it does NOT match a bare `/whats-on` path, so I
-  amsterdam / Eye Filmmuseum real event pages survive.) Strict end-date checks; prefer specific pages.
-- **Novelty-first** within source tiers; per-category cap (8). Floor: keyless RSS + **~109
-  hand-authored canon** (all imaged), rotated weekly.
+**Cross-source identity + "most talked about":** `dedupe()` keys structured picks (`web-iams-`/`web-ra-`)
+by **stable id** (distinct instances never collapse), keyless picks by normalized title, then **folds a
+keyless duplicate into its structured twin** — corroboration counted as `buzz`, structured facts + flyer
+win, `popularity` carried. Ranking **up-levels corroborated events steeply** (buzz 2→+1.5, 3→+3, 4+→+4)
+and the Sonnet editorial judge explicitly up-weights multi-publication events.
 
-## Images — vision-verified real photos → themed fallback
-Per imageless live pick: **(1)** gather real-photo candidates — open-web image search by name
-(`webImageCandidates`, biased toward portrait/tall to fit the card) + the **Wikipedia portrait FIRST**
-for performers + the event-page og for scraped picks; **(2) VISION VERIFY** (`verifyImageForEvent`) —
-Claude **downloads the candidate bytes itself** (browser UA — Anthropic's fetcher 403s on
-hotlink-protected hosts) and LOOKS at them, picking the genuine fit or rejecting all (so Celeste≠Japan
-blog, Open-Garden-Days≠Pride parade); **(3) Pexels** themed stock; **(4) canon bank** last resort.
-Typical run ~50/61 real verified photos. Stock-agency + I amsterdam "Canal Parade" URLs blocked.
-Needs `ANTHROPIC_API_KEY` (vision) + `PEXELS_API_KEY` (both set).
+**Ranking (runtime `rankPicks`):** weatherFit(+10, dominant) + freshness (EVERGREEN_FLOOR 0.6) +
+buzzBoost + popBoost(log attending) + editorScore×0.5 (Sonnet judge, `ANTHROPIC_JUDGE_MODEL`) + taste +
+seed jitter; `diversify()` de-clusters the **served** deck (and MatchGame) so no category waves.
+Adaptive RESERVE widens canon backfill on thin weeks. Runtime `whenIsPast` guard: a stale feed
+self-corrects in the browser — past events never render.
 
-## Pipeline ops — read before touching the cron/pipeline
-- ✅ **Anthropic credits added + tier raised — pipeline is LIVE and deep.** Per-run cost ≈ **$1–2**
-  (web_search $10/1k + Haiku tokens) + ~$0.20 vision. Runs ~7–10 min (Amsterdam only; **New Orleans is
-  PAUSED** — `PAUSED` set in refresh.ts; pass `--city=new-orleans` to override).
-- **Billing lag:** right after a top-up the first run may 401 its early facets (~2–3 min) — just re-run.
-- **Dispatch race:** `gh workflow run` can checkout `main` a beat before a just-pushed commit
-  propagates → it once ran pre-fix code. Confirm with `gh run list --workflow=refresh.yml --json
-  headSha` and wait for the SHA to match before dispatching.
-- **open-air cinema facet returns 0** most weeks (season starts ~July) — not a bug.
-- **Last good feed: 2026-06-28** — 58 picks, trusted-source-led (I amsterdam ×6, LBB ×3), `trust:
-  dropped 4`, Escape + Mirror-Floor gone. Verify a refresh committed: `gh run list --workflow=refresh.yml`.
-- Refresh workflow commits with **rebase-before-push + retry** (fixed an old push race).
+**Imagery (the hard-won part):** structured-source images are **trusted-but-screened** — organiser
+posters/flyers flow untouched (re-processing them was the great sabotage of V.6.6–6.16), with two sanity
+screens: a keyless URL smell-test (logo/wordmark/stock filenames) + a narrow vision check that rejects
+ONLY logos/flat graphics/blank frames (keeps real posters). Untrusted (web-scraped) images get the full
+gather → vision-verify → Pexels → canon-bank chain. **Every image routes through wsrv.nl** (800×1200
+saliency portrait crop + server-side fetch = no hotlink blanks). Dead images self-heal to a verified bank
+photo. **House treatment:** a weather-keyed soft-light glaze + film grain on both card faces
+(`--card-grade`/`--card-grain`) so mixed sources read as one designed system.
 
-## Shipped this arc (V.4.8 → V.6.2)
-Quieter card fronts + ✓/✕ stamps · 2-gesture swipe · undo nav-width out of the swipe path · faster
-geolocate · match-mode freeze fix · short stable share links · MVP trim · **boomerang confirmation
-(`&m=1`) → itinerary list** · "Perfect this weekend" pill · **web-search deep-research pipeline (10
-facets)** · **vision-verified imagery** · **trusted-source ranking + trust filter (Escape/Mirror-Floor
-gone)** · canon rotation fix (De Pimpelmees) · mobile card == header width · **in-app feedback widget**
-· detail pull-to-dismiss both directions · blur-fill tried + reverted · batching tried + reverted to
-the endless deck.
+**Self-sufficiency:** the run **grades itself** — a publish gate hard-fails only truly-broken states
+(empty/past-dated/http images/imageless live/missing hero) and **abstains** (last-good keeps serving);
+thin weekends warn but ship. Health line lands in `$GITHUB_STEP_SUMMARY` (the Actions email); optional
+`HEALTHCHECK_URL` dead-man ping catches silent non-runs. **31 logic tests gate the cron** (`app/tests/`).
 
-## Open items / next (need Ness or pending)
-1. **Detail pull-to-dismiss (V.6.2)** — verified by code only; Ness to confirm the gesture on device
-   (framer drag/tap can't be exercised in the headless preview).
-2. ✅ **Feedback widget → Formspree WIRED (V.6.3).** `FORM` in `Feedback.tsx` =
-   `https://formspree.io/f/xykqpwkw`; tester feedback (👍/👎 + note + auto-context) lands in the
-   Formspree dashboard + emails Ness. (Confirmed live with a test POST → `{ok:true}`.)
-3. **Card cropping** — full-bleed `cover` crops landscape; blur-fill was rejected. If it keeps bugging,
-   the real fix is an "image-top + text-panel" card layout (a deliberate look change).
-4. **Per-event photos** — vision-verify gets ~real for most; the rest are Pexels themed. A paid image
-   API (Google/Bing/SerpAPI) is the ceiling, parked.
-5. **Success metric** — a **completed round-trip that ends in a real-world plan**. Auto-notify-the-
-   sender the moment a friend finishes = backend (parked).
+## Pipeline ops
+- Cron **Thu 13:00 UTC** + on-demand (`gh workflow run refresh.yml`). ~$1–2/run. Dispatch race caveat
+  still applies (confirm `headSha` matches after a fresh push).
+- **Keys set:** `ANTHROPIC_API_KEY`, `PEXELS_API_KEY`, `ANTHROPIC_JUDGE_MODEL`. **Pending:**
+  `SERPER_API_KEY` (Google-Images candidates, wired + dormant), `HEALTHCHECK_URL` (ping, wired + dormant).
+  **Declined for now:** Ticketmaster (Ness: variety > ticketing spine).
+- **Last good feed: 2026-07-02** — 76 picks, 9/9 categories, mix ≈ iams 27 · web/llm 13 · RA lane 2 ·
+  canon 32 · heroes 2; 42 editor-scored; 7 cross-source-corroborated events up-leveled.
 
-## Validation status (the real gate)
-- Kit + rules: `docs/mom-test-interviews.md`; log: `docs/validation-log.md`.
-- So far: **n=1 idea-reaction** (Tiwirayi) + many rounds of Ness's own UX feedback. The **behavioral
-  round-trip** (friend opens link → matches → a plan actually gets lived) is still the open test.
-- **Now:** Ness sharing with friends/family — the feedback widget + trusted-source freshness are to
-  make that round feel current. Watch: do links come back with matches (`&m=1`), does anything happen IRL.
+## Evergreen canon
+~125 hand-authored picks incl. the V.6.4 fill-in (`picks.evergreen.ts`: markets 0→8, day-trips 4→9,
+music venues 2→5 — subject-verified images, wsrv-wrapped). Canon = the imaged floor + search surface.
+
+## Open items / next
+1. **Phase 2 — demote web_search** to 2–3 serendipity facets once a few more runs look healthy.
+2. **Thin slices:** eat/drink/shop fresh sources — re-run the (stubbed) research sweeps for food/community
+   feeds and venue ICS calendars.
+3. **"Talked about" pill** — make the buzz up-level visible on the card face, not just the ranking.
+4. **Keys:** add `SERPER_API_KEY` + `HEALTHCHECK_URL` repo secrets to activate the dormant layers.
+5. **City #2** — a dense-coverage EU city (NOT NOLA as-is), only after Amsterdam feels locked; the
+  four remaining Amsterdam literals are mapped in `docs/pipeline-architecture.md` §3.5.
+6. **Validation (the real gate, unchanged):** behavioral boomerang round-trip still open — n=1
+  idea-reaction + Ness's own UX rounds. Feedback widget live (Formspree). Watch: do links come back
+  with matches (`&m=1`), does a plan happen IRL.
 
 ## Doc map
-`backlog.md` (strategy/handoff) · `moat.md` · `discovery-direction.md` · `content-pipeline.md` ·
-`pipeline-freshness.md` · `jtbd-analysis.md` · `office-hours-review.md` · `market-scan-2026-06.md` ·
-`mom-test-interviews.md` · `validation-log.md` · `feedback-collation-2026-06-13.md`.
+`backlog.md` (strategy) · `pipeline-architecture.md` (north star/roadmap) · `source-map.md` (source
+registry) · `pipeline-redesign.md` (the 5-problem deep-dive) · `moat.md` · `discovery-direction.md` ·
+`content-pipeline.md` · `jtbd-analysis.md` · `market-scan-2026-06.md` · `mom-test-interviews.md` ·
+`validation-log.md`.

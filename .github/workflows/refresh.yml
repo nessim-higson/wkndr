@@ -27,6 +27,8 @@ jobs:
       - uses: oven-sh/setup-bun@v2
       - name: Install deps
         run: cd app && bun install --frozen-lockfile
+      - name: Logic tests   # date parsing / dedupe / ranking regression guard — a red suite means
+        run: cd app && bun test tests   # no content run: last-good keeps serving + the failure emails Ness
       - name: Run pipeline
         env:
           # add these as repo secrets to turn the live pull on:
