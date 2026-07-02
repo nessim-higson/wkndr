@@ -28,6 +28,7 @@ import { editorialScores } from './adapters/editor'
 import { raExtract } from './adapters/ra'
 import { iamsterdamExtract } from './adapters/iamsterdam'
 import { lbbExtract } from './adapters/lbb'
+import { scoutedExtract } from './adapters/scouted'
 import { curatedImage } from './curated'
 import { heroPicks } from './heroes'
 import corpus from './taste/corpus.json'
@@ -81,6 +82,12 @@ async function buildCity(city: City) {
   const ra = await raExtract(city.key)
   fromRoster.push(...ra)
   if (ra.length) console.log(`  ra:       ${ra.length} club nights (Resident Advisor)`)
+
+  // SCOUTED FINDS — the agent-scouted new-openings/pop-ups slate (scripts/taste/scouted.json), curated
+  // through the board. Fresh by definition; they graduate to canon, get killed, or expire.
+  const scout = scoutedExtract(city.key)
+  fromRoster.push(...scout)
+  if (scout.length) console.log(`  scout:    ${scout.length} fresh finds (new openings · pop-ups)`)
 
   if (LLM_ON) {
     // YOUR LITTLE BLACK BOOK — Ness's #1 source, read DIRECTLY from its RSS agenda articles (weekendtips +
@@ -184,7 +191,7 @@ async function buildCity(city: City) {
     // (lbb images are LBB's own editorial photos, matched to the event by the extractor — trusted like
     //  iams/RA organiser images, and screened by the same sanity pass below. NOTE: lbb picks stay
     //  TITLE-keyed in dedupe on purpose, so an LBB event that iams also lists FOLDS in → buzz.)
-    const trustedImg = (p: Pick) => /^web-(iams|ra|lbb)-/.test(p.id) && !!p.image
+    const trustedImg = (p: Pick) => /^web-(iams|ra|lbb|scout)-/.test(p.id) && !!p.image
     const PERFORMER = new Set(['live', 'stage'])
     // EVERY imageless live pick now gathers candidates and is VISION-VERIFIED — including generic web
     // events (festival/market/garden-days). They get their OWN event page's image (schema.org Event
