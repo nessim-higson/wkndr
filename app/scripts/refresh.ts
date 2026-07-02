@@ -445,6 +445,8 @@ async function buildCity(city: City) {
     const n: Record<string, number> = {}
     const before = picks.length
     picks = picks.filter((p) => {
+      if ((p.buzz ?? 1) >= 2) return true   // corroborated ("talked about") events are cap-EXEMPT — the caps
+                                            // once ate BOTH language-twins of the H'ART Canal Parade show
       const fam = FAMILIES.find((f) => p.id.startsWith(f))
       if (!fam) return true
       const k = fam + p.category

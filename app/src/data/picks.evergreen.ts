@@ -11,7 +11,7 @@ import type { Pick, Category, Mode } from '../types'
 // the local / under-the-radar pick. Maps link per row (day-trips link the place itself, not "… Amsterdam").
 const ALL: Mode[] = ['HOT', 'WARM', 'COOL', 'COLD_WET', 'VOLATILE']
 const FAIR: Mode[] = ['HOT', 'WARM', 'COOL']
-const portrait = (url: string) => `https://images.weserv.nl/?url=${encodeURIComponent(url)}&w=800&h=1200&fit=cover&a=attention&output=jpg`
+const portrait = (url: string) => `https://images.weserv.nl/?url=${encodeURIComponent(url)}&w=800&h=1200&fit=cover&a=attention&output=jpg&default=${encodeURIComponent(url)}`
 const mapsOf = (q: string) => `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q)}`
 
 type Row = {
