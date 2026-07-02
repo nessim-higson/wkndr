@@ -572,6 +572,8 @@ async function buildCity(city: City) {
 
     const fail: string[] = []
     if (picks.length === 0) fail.push('empty feed')
+    const malformed = picks.filter((p) => !Array.isArray(p.weatherFit) || !p.freshness)
+    if (malformed.length) fail.push(`${malformed.length} schema-broken picks`)
     if (past.length) fail.push(`${past.length} past-dated`)
     if (httpImg.length) fail.push(`${httpImg.length} http (mixed-content) images`)
     if (imagelessLive.length) fail.push(`${imagelessLive.length} imageless live`)
@@ -616,7 +618,7 @@ async function buildCity(city: City) {
         return true
       })
       .slice(0, 60)
-      .map((p) => ({ id: p.id, title: p.title, venue: p.venue, area: p.area, when: p.when, category: p.category, image: p.image, blurb: p.blurb, source: p.source, link: p.link, buzz: p.buzz }))
+      .map((p) => ({ id: p.id, title: p.title, venue: p.venue, area: p.area, when: p.when, category: p.category, image: p.image, blurb: p.blurb, source: p.source, link: p.link, buzz: p.buzz, weatherFit: p.weatherFit, freshness: p.freshness, outdoor: p.outdoor, kid: p.kid, price: p.price, why: p.why, editorScore: p.editorScore }))
     await Bun.write(`${OUT_DIR}/candidates.${city.key}.json`, JSON.stringify({ generatedAt: feed.generatedAt, count: cands.length, candidates: cands }, null, 2))
     console.log(`  → wrote candidates.${city.key}.json (${cands.length} bench events for the Curation Board)`)
   }

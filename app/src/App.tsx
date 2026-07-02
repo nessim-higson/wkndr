@@ -203,6 +203,9 @@ export default function App() {
     // correct the weekday from the date, THEN drop anything already past — the feed is rebuilt weekly for
     // the coming weekend, so this runtime guard keeps last weekend's events off the cards between refreshes.
     () => rawPicks
+      // NORMALIZE first — a malformed feed pick (missing weatherFit etc.) must degrade, never crash the
+      // app: V.7.11 shipped five bench-promoted picks without weatherFit and white-screened the deck.
+      .map((p) => ({ outdoor: false, kid: false, price: '', why: '', freshness: 'weekend' as const, ...p, weatherFit: Array.isArray(p.weatherFit) && p.weatherFit.length ? p.weatherFit : (['HOT', 'WARM', 'COOL', 'COLD_WET', 'VOLATILE'] as Mode[]) }))
       .map((p) => (p.when ? { ...p, when: fixWhen(p.when) } : p))
       .filter((p) => !whenIsPast(p.when)),
     [rawPicks],

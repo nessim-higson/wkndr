@@ -1378,7 +1378,18 @@
       "source": "Your Little Black Book",
       "link": "https://cinemaculinair.nl",
       "editorScore": 8,
-      "freshness": "weekend"
+      "freshness": "weekend",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "outdoor": false,
+      "kid": false,
+      "price": "",
+      "why": ""
     },
     {
       "id": "web-lbb-the-jollof-club",
@@ -1392,7 +1403,18 @@
       "source": "Your Little Black Book",
       "link": "https://thejollofclub.com/",
       "editorScore": 8,
-      "freshness": "weekend"
+      "freshness": "weekend",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "outdoor": false,
+      "kid": false,
+      "price": "",
+      "why": ""
     },
     {
       "id": "web-ra-2433840",
@@ -1406,7 +1428,18 @@
       "source": "Resident Advisor",
       "link": "https://ra.co/events/2433840",
       "editorScore": 8,
-      "freshness": "weekend"
+      "freshness": "weekend",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "outdoor": false,
+      "kid": false,
+      "price": "",
+      "why": ""
     },
     {
       "id": "web-iams-nicolas-van-poucke-pianorecital",
@@ -1420,7 +1453,18 @@
       "source": "I amsterdam",
       "link": "https://www.iamsterdam.com/en/whats-on/calendar/concerts-and-music/concerts/nicolas-van-poucke-pianorecital",
       "editorScore": 8,
-      "freshness": "weekend"
+      "freshness": "weekend",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "outdoor": false,
+      "kid": false,
+      "price": "",
+      "why": ""
     },
     {
       "id": "web-lbb-the-little-big-things",
@@ -1434,7 +1478,18 @@
       "source": "Your Little Black Book",
       "link": "https://carre.nl/voorstelling/the-little-big-things#speeldata",
       "editorScore": 8,
-      "freshness": "weekend"
+      "freshness": "weekend",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "outdoor": false,
+      "kid": false,
+      "price": "",
+      "why": ""
     }
   ]
 }
