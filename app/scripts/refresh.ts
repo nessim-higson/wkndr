@@ -27,6 +27,7 @@ import { websearchExtract } from './adapters/websearch'
 import { editorialScores } from './adapters/editor'
 import { raExtract } from './adapters/ra'
 import { iamsterdamExtract } from './adapters/iamsterdam'
+import { lbbExtract } from './adapters/lbb'
 import { curatedImage } from './curated'
 import { heroPicks } from './heroes'
 import { rssExtract } from './adapters/rss'
@@ -79,6 +80,13 @@ async function buildCity(city: City) {
   if (ra.length) console.log(`  ra:       ${ra.length} club nights (Resident Advisor)`)
 
   if (LLM_ON) {
+    // YOUR LITTLE BLACK BOOK — Ness's #1 source, read DIRECTLY from its RSS agenda articles (weekendtips +
+    // museum/theatre/film agendas): LBB's own curation, editorial images, and per-event outbound links —
+    // no more hoping web_search stumbles on LBB's picks and scrapes random photos for them.
+    const lbb = await lbbExtract(city.key)
+    fromRoster.push(...lbb)
+    if (lbb.length) console.log(`  lbb:      ${lbb.length} picks (Your Little Black Book · direct from the agenda)`)
+
     const got = await mapLimit(llmSrc, 1, (s) => llmExtract(city.name, s))   // sequential — the gate paces the API calls
     const n = got.reduce((a, b) => a + b.length, 0)
     got.forEach((g) => fromRoster.push(...g))
@@ -170,7 +178,10 @@ async function buildCity(city: City) {
     // sabotage: the resolution floor nulled them and the gather/vision-QA replaced them with SCRAPED junk
     // (Agatha's Almanac's poster → a wide EYE-building sky-crop). So we TRUST these images: skip the null/gather/
     // shared-dedup/vision-QA and just portrait-wrap them. Only the dead-URL sweep still applies (→ bank if 404).
-    const trustedImg = (p: Pick) => /^web-(iams|ra)-/.test(p.id) && !!p.image
+    // (lbb images are LBB's own editorial photos, matched to the event by the extractor — trusted like
+    //  iams/RA organiser images, and screened by the same sanity pass below. NOTE: lbb picks stay
+    //  TITLE-keyed in dedupe on purpose, so an LBB event that iams also lists FOLDS in → buzz.)
+    const trustedImg = (p: Pick) => /^web-(iams|ra|lbb)-/.test(p.id) && !!p.image
     const PERFORMER = new Set(['live', 'stage'])
     // EVERY imageless live pick now gathers candidates and is VISION-VERIFIED — including generic web
     // events (festival/market/garden-days). They get their OWN event page's image (schema.org Event
