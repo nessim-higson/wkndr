@@ -75,8 +75,9 @@ function bakedFor(title){const t=title.toLowerCase();for(const k in baked){if(t.
 Promise.all([
  fetch('../data/picks.amsterdam.json?t='+Date.now()).then(r=>r.json()),
  fetch('../data/candidates.amsterdam.json?t='+Date.now()).then(r=>r.ok?r.json():{candidates:[]}).catch(()=>({candidates:[]})),
- fetch('../data/verdicts.amsterdam.json?t='+Date.now()).then(r=>r.ok?r.json():{byTitle:{}}).catch(()=>({byTitle:{}}))
-]).then(([d,c,v])=>{
+ fetch('../data/verdicts.amsterdam.json?t='+Date.now()).then(r=>r.ok?r.json():{byTitle:{}}).catch(()=>({byTitle:{}})),
+ fetch('../data/canon-candidates.amsterdam.json?t='+Date.now()).then(r=>r.ok?r.json():{candidates:[]}).catch(()=>({candidates:[]}))
+]).then(([d,c,v,cc])=>{
   baked=v.byTitle||{};
   feedKey='wkndr.curate.'+(d.generatedAt||'x');
   restore();
@@ -94,6 +95,12 @@ Promise.all([
     const h=document.createElement('div');h.className='cathead bench';h.textContent='THE BENCH — '+bench.length+' ALTERNATIVES (star to promote · +canon to keep forever)';board.appendChild(h);
     const g=document.createElement('div');g.className='grid';board.appendChild(g);
     bench.forEach(p=>addCard(p,g,true));
+  }
+  const canonC=(cc.candidates||[]);
+  if(canonC.length){
+    const h=document.createElement('div');h.className='cathead bench';h.textContent='CANON CANDIDATES — '+canonC.length+' SCOUTED FOR THE PERMANENT LIBRARY (+canon to approve · ✕ to reject)';board.appendChild(h);
+    const g=document.createElement('div');g.className='grid';board.appendChild(g);
+    canonC.forEach(p=>addCard({...p,id:'canon-cand-'+p.title.toLowerCase().replace(/[^a-z0-9]+/g,'-')},g,true));
   }
   update();
 }).catch(e=>{document.getElementById('board').textContent='Could not load the feed: '+e});
