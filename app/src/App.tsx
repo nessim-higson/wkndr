@@ -205,7 +205,7 @@ export default function App() {
     () => rawPicks
       // NORMALIZE first — a malformed feed pick (missing weatherFit etc.) must degrade, never crash the
       // app: V.7.11 shipped five bench-promoted picks without weatherFit and white-screened the deck.
-      .map((p) => ({ outdoor: false, kid: false, price: '', why: '', freshness: 'weekend' as const, ...p, weatherFit: Array.isArray(p.weatherFit) && p.weatherFit.length ? p.weatherFit : (['HOT', 'WARM', 'COOL', 'COLD_WET', 'VOLATILE'] as Mode[]) }))
+      .map((p) => ({ ...p, outdoor: p.outdoor ?? false, kid: p.kid ?? false, price: p.price ?? '', why: p.why ?? '', freshness: p.freshness ?? ('weekend' as const), weatherFit: Array.isArray(p.weatherFit) && p.weatherFit.length ? p.weatherFit : (['HOT', 'WARM', 'COOL', 'COLD_WET', 'VOLATILE'] as Mode[]) }))
       .map((p) => (p.when ? { ...p, when: fixWhen(p.when) } : p))
       .filter((p) => !whenIsPast(p.when)),
     [rawPicks],
