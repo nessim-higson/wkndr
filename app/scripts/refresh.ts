@@ -398,9 +398,14 @@ async function buildCity(city: City) {
     // HERO EVENTS bypass the cap entirely (found OR injected — matched by title), so a must-see can never be
     // capped out of an over-full category; the rest is balanced as before, with heroes leading.
     const heroesInPool = picks.filter((p) => heroKeys.has(titleKey(p.title)))
-    const balanced = balanceByCategory(picks.filter((p) => !heroKeys.has(titleKey(p.title))), 8)
-    const out = [...heroesInPool, ...balanced]
-    console.log(`  ranked:   ${picks.length} → ${out.length} after per-category cap (${heroesInPool.length} hero-exempt) · ${novelCount} new this week`)
+    // RA LANE — club nights are a distinct slice of Amsterdam (and RA is a ranked trusted source), but RA's
+    // srcRank (2) sits below I amsterdam (3) and LBB (4), so its picks kept losing every `live` slot and the
+    // feed shipped with ZERO club nights. Reserve the top 2 RA nights (already popularity-led) cap-exempt.
+    const raLane = picks.filter((p) => p.id.startsWith('web-ra-')).slice(0, 2)
+    const exempt = new Set([...heroesInPool, ...raLane].map((p) => p.id))
+    const balanced = balanceByCategory(picks.filter((p) => !exempt.has(p.id)), 8)
+    const out = [...heroesInPool, ...raLane, ...balanced]
+    console.log(`  ranked:   ${picks.length} → ${out.length} after per-category cap (${heroesInPool.length} hero-exempt · ${raLane.length} RA lane) · ${novelCount} new this week`)
     picks = out
   } else {
     console.log(`  ranked:   ${picks.length} (canon floor) · ${novelCount} new this week`)

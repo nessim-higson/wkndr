@@ -33,6 +33,11 @@ export const CURATED_IMAGES: { match: RegExp; image: string; note: string }[] = 
     image: 'https://admin.wonderfeel.nl/app/uploads/program-image/1200x1200/9544-1.jpg',
     note: 'Official outdoor orchestra photo — locks the good auto-pick so a future refresh can’t regress it',
   },
+  {
+    match: /\bcheeky monday\b/i,
+    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Melkweg_en_Rabozaal.jpg/1280px-Melkweg_en_Rabozaal.jpg',
+    note: 'Recurring Melkweg jungle/dnb night — organiser uploads its panther LOGO (slips the vision screen as a "flyer"); pin the lit Melkweg instead',
+  },
 ]
 
 /** The curated image URL for a pick title, or undefined. First match wins. */
