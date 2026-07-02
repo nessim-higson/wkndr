@@ -200,8 +200,11 @@ async function buildCity(city: City) {
     // (FKA twigs' Songkick portrait) — borrowing one as a "themed fallback" put a recognizable different
     // artist's face on an unrelated act's card ("Kay Slice" wearing FKA twigs). Evergreen canon is places
     // and atmospheres (venues, markets, museums) — safe to borrow; a person's face never is.
+    // …and never a NAMED-VENUE facade: borrowing the Concertgebouw's front for a Bostheater card is the
+    // wrong-landmark class — instantly false to any local. Landmark canon keeps its image for ITSELF only.
+    const LANDMARK_CANON = /paradiso|melkweg|concertgebouw|rijksmuseum|stedelijk|sexyland|garage-noord|foam|eye|moco|nemo|hart|huis-marseille/i
     const bank: Record<string, string[]> = {}
-    for (const p of city.picks) if (p.image && p.image.startsWith('http') && p.freshness === 'always') (bank[p.category] ??= []).push(p.image)
+    for (const p of city.picks) if (p.image && p.image.startsWith('http') && p.freshness === 'always' && !LANDMARK_CANON.test(p.id)) (bank[p.category] ??= []).push(p.image)
     const bankPool = [...new Set(Object.values(bank).flat())]
     const idHash = (s: string) => { let h = 0; for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0; return Math.abs(h) }
     const themedPhoto = (p: Pick) => { const pool = bank[p.category]?.length ? bank[p.category] : bankPool; return pool.length ? pool[idHash(p.id) % pool.length] : undefined }
@@ -266,20 +269,20 @@ async function buildCity(city: City) {
     let visGot = 0, visRej = 0
     await mapLimit(live.filter((p) => !p.image), 2, async (p) => {
       const perf = PERFORMER.has(p.category)
+      // VENUE-AWARE QUERY — Ness's manual test proved it: "Martine Gutierrez Huis Marseille" returns the
+      // museum's own images of the actual show, where "title + Amsterdam" returned junk. The venue is the
+      // highest-signal token; include it whenever the pick carries a real one.
+      const vtok = p.venue && p.venue.length > 2 && !/^(amsterdam|the web|i amsterdam|your little black book)$/i.test(p.venue.trim()) ? p.venue : ''
       const q = perf
-        ? `${actName(p)} ${ACT_HINT[p.category] ?? ''}`.trim()
-        : `${p.title} ${city.name} ${CAT_HINT[p.category] ?? ''}`.replace(/\s+/g, ' ').trim()
+        ? `${actName(p)} ${vtok} ${ACT_HINT[p.category] ?? ''}`.replace(/\s+/g, ' ').trim()
+        : `${p.title} ${vtok} ${vtok ? '' : city.name} ${CAT_HINT[p.category] ?? ''}`.replace(/\s+/g, ' ').trim()
       // For performers, lead with the Wikipedia portrait — it's the most reliable + always
       // downloadable (Wikimedia doesn't hotlink-block), so it survives the verifier's 4-candidate
       // download cap even when web hits are on strict hosts (Billboard/Rolling Stone 403 our fetch).
       const cands: string[] = []
       if (perf) { const wk = await wikiImage(actName(p)); if (wk && (await isGoodImage(wk))) cands.push(wk) }
-      // LBB picks carry the event's REAL outbound link (the venue's own page) — its og:image is the
-      // honest photo. NO open-web search for these: that's how "Nara Nara" got a Hamburg food-guide
-      // shot. og → vision → Pexels/bank; a themed photo beats a plausible-but-wrong one.
-      const lbbPick = p.id.startsWith('web-lbb-')
-      if (!lbbPick) cands.push(...await webImageCandidates(q, 5))
-      if ((lbbPick || !perf) && p.link) { const og = await fetchEventImage(p.link); if (og) cands.push(og) }
+      cands.push(...await webImageCandidates(q, 5))
+      if (p.link) { const og = await fetchEventImage(p.link); if (og) cands.push(og) }
       if (!cands.length) return
       const best = visionOn ? await verifyImageForEvent(cands, p, city.name) : cands[0]
       if (best) { p.image = best; visGot++ } else if (visionOn) visRej++
@@ -312,7 +315,7 @@ async function buildCity(city: City) {
     // hero) gets a real category photo from the canon bank. Runs AFTER the dedup so these curated
     // borrows are never stripped. Result: every live card carries a photograph, none are text-on-colour.
     let banked = 0
-    for (const p of live) if (!p.image) { const img = themedPhoto(p); if (img) { p.image = img; banked++ } }
+    for (const p of live) if (!p.image) { const img = await workingBankPhoto(p); if (img) { p.image = img; banked++ } }
     if (banked) console.log(`  bank:     +${banked} imageless live picks → themed canon photo`)
 
     // CURATED OVERRIDES — hand-pinned images for hero/recurring events the auto-pipeline gets wrong, applied

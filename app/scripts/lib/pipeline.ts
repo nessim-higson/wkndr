@@ -501,7 +501,10 @@ export async function verifyImageForEvent(
     `tiny figure lost in a wide shot). For a concert/gig/show, ANY genuine photo of the named performer or ` +
     `band is a CORRECT fit (it need not be from this date or city) — prefer a clean photo of the artist over ` +
     `a wide crowd-and-stage-lights shot; for a PERFORMER event REJECT images that show only a building, ` +
-    `facade or empty venue exterior (a cinema front is not a gig). For a place / festival / market / garden / food event, pick a photo ` +
+    `facade or empty venue exterior (a cinema front is not a gig). The image must plausibly match the NAMED ` +
+    `venue and artist: REJECT a photo of a DIFFERENT recognizable venue or landmark (the Concertgebouw on a ` +
+    `forest-theatre card, a maritime museum on a Royal Palace show) and REJECT a DIFFERENT identifiable ` +
+    `performer. For a place / festival / market / garden / food event, pick a photo ` +
     `showing that kind of place or activity. REJECT an image if it shows a clearly DIFFERENT subject (a ` +
     `different artist, an unrelated event/landmark/city, a parade when it isn't one), OR is a promotional ` +
     `POSTER / FLYER with prominent text, dates or line-up overlaid, a logo, a screenshot, or watermarked ` +

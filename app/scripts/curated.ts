@@ -38,6 +38,33 @@ export const CURATED_IMAGES: { match: RegExp; image: string; note: string }[] = 
     image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Melkweg_en_Rabozaal.jpg/1280px-Melkweg_en_Rabozaal.jpg',
     note: 'Recurring Melkweg jungle/dnb night — organiser uploads its panther LOGO (slips the vision screen as a "flyer"); pin the lit Melkweg instead',
   },
+  // ——— Ness's 2026-07-02 review: five long-running shows pinned to venue-verified images (each found via
+  //     the venue-aware query — "title + venue" — and chosen by eye; runs of weeks/months, so pins pay off) ———
+  {
+    match: /martine gutierrez/i,
+    image: 'https://huismarseille.nl/app/uploads/2026/02/Still_Life_Moms_Refrigerator.jpg',
+    note: 'Wunderkind at Huis Marseille (until Oct) — an actual work from the show, from the museum’s own site',
+  },
+  {
+    match: /nederland\s*[–—-]\s*japan/i,
+    image: 'https://cms.koninklijkeverzamelingen.nl/api/images/rendition/100027/fill-3840x5120/',
+    note: 'Royal Palace NL–Japan show (until Sep) — the Citizens’ Hall, from the Royal Collections CMS (auto had the Scheepvaartmuseum!)',
+  },
+  {
+    match: /bostheater|amsterdamse bos(?:\b|$)/i,
+    image: 'https://bostheater.nl/wp-content/uploads/2023/04/5R4A0839-1536x1024.jpg',
+    note: 'Bostheater summer season — the actual forest amphitheatre mid-show, official site photo (auto had the Concertgebouw!)',
+  },
+  {
+    match: /hortus.*(zomeravond|summer)/i,
+    image: 'https://www.amsterdamnow.com/app/uploads/hortus-by-night-amsterdam_6.jpg',
+    note: 'Hortus Summer Evenings (recurring Sundays) — the real greenhouses lit at night',
+  },
+  {
+    match: /standout.*comedy|arabic comedy showcase/i,
+    image: 'https://app.thefeedfactory.nl/api/assets/67dc4f0cc5d3406178d32b0b/gevel_richel_1800x1020.jpg',
+    note: 'StandOut showcase at De Richel — the club’s own frontage (byte-verified against the eyeballed candidate)',
+  },
 ]
 
 /** The curated image URL for a pick title, or undefined. First match wins. */
