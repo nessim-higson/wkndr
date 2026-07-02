@@ -441,6 +441,11 @@ async function buildCity(city: City) {
     (b.buzz ?? 1) - (a.buzz ?? 1) ||
     (FRESH_RANK[b.freshness] - FRESH_RANK[a.freshness]))
 
+  // Snapshot the full ranked, imaged pool BEFORE the caps — everything dropped from here on is a
+  // perfectly good event that simply lost a slot. The Curation Board serves these as REPLACEMENTS:
+  // when Ness kills a card, the next candidate of that category deals in.
+  const prePool = picks.filter(isLive)
+
   // SOURCE DIVERSITY — no single source may flood a category. Applies to EVERY high-volume source family
   // (I amsterdam flooded first; then LBB's 29 picks made the deck read "the LBB app"). Cap each at 4 per
   // category (of the 8 balanceByCategory keeps) so the mix stays a MIX: iams + LBB + RA + web-search
@@ -559,6 +564,20 @@ async function buildCity(city: City) {
   const feed = { city: city.key, label: city.label, generatedAt: new Date().toISOString(), live: LLM_ON, count: picks.length, picks }
   await Bun.write(`${OUT_DIR}/picks.${city.key}.json`, JSON.stringify(feed, null, 2))
   console.log(`  → wrote picks.${city.key}.json (${picks.length} picks)`)
+
+  // CANDIDATES — the imaged, date-valid live events that lost a slot to the caps (never junk: they passed
+  // every screen). The Curation Board deals these in as replacements when Ness KILLS a card. Excluded:
+  // anything published, and title-twins of published picks (the semantic-dedup class).
+  {
+    const pubIds = new Set(picks.map((p) => p.id))
+    const pubKeys = new Set(picks.map((p) => titleKey(p.title)))
+    const cands = prePool
+      .filter((p) => !pubIds.has(p.id) && !pubKeys.has(titleKey(p.title)) && p.image && !whenIsPast(p.when))
+      .slice(0, 60)
+      .map((p) => ({ id: p.id, title: p.title, venue: p.venue, area: p.area, when: p.when, category: p.category, image: p.image, blurb: p.blurb, source: p.source, link: p.link, buzz: p.buzz }))
+    await Bun.write(`${OUT_DIR}/candidates.${city.key}.json`, JSON.stringify({ generatedAt: feed.generatedAt, count: cands.length, candidates: cands }, null, 2))
+    console.log(`  → wrote candidates.${city.key}.json (${cands.length} bench events for the Curation Board)`)
+  }
 }
 
 // PAUSED cities — tabled, not in the live MVP (Amsterdam-only). The pipeline skips them so we don't

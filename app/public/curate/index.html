@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex">
 <title>WKNDR — Curation Board</title>
 <style>
-:root{--paper:#F4F1E9;--ink:#1B1A17;--accent:#FF4A21;--dim:#8B8578;--line:rgba(27,26,23,.14)}
+:root{--paper:#F4F1E9;--ink:#1B1A17;--accent:#FF4A21;--gold:#E8A33D;--dim:#8B8578;--line:rgba(27,26,23,.14)}
 *{box-sizing:border-box}
 html{background:var(--paper)}
 body{font-family:-apple-system,'Helvetica Neue',Helvetica,system-ui,sans-serif;color:var(--ink);margin:0;padding:0 16px 150px}
@@ -15,42 +15,45 @@ header{padding:38px 0 10px}
 .eyebrow{font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:11px;letter-spacing:.14em;color:var(--dim);margin:0 0 6px}
 h1{font-size:clamp(28px,5vw,40px);font-weight:800;letter-spacing:-.03em;margin:0}
 h1 .dot{color:var(--accent)}
-header p{color:#4a463e;max-width:64ch;line-height:1.5;margin:10px 0 0;font-size:15px}
+header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:15px}
 .cathead{font-family:ui-monospace,monospace;font-size:12px;letter-spacing:.14em;color:var(--dim);margin:40px 0 12px;padding-top:18px;border-top:1px solid var(--line);text-transform:uppercase}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
-.card{background:#fff;border-radius:16px;overflow:hidden;border:1px solid var(--line);display:flex;flex-direction:column}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+.card{background:#fff;border-radius:16px;overflow:hidden;border:1px solid var(--line);display:flex;flex-direction:column;position:relative;transition:opacity .3s,transform .3s}
+.card.dead{opacity:0;transform:scale(.92);pointer-events:none}
 .card img{width:100%;aspect-ratio:2/3;object-fit:cover;display:block;background:#e8e4da}
+.fresh{position:absolute;top:10px;left:10px;background:var(--accent);color:#fff;font-family:ui-monospace,monospace;font-size:10px;font-weight:700;letter-spacing:.08em;padding:5px 10px;border-radius:999px}
+.kill{position:absolute;top:10px;right:10px;width:34px;height:34px;border-radius:999px;border:0;background:rgba(27,26,23,.75);color:#fff;font-size:16px;line-height:1;cursor:pointer;backdrop-filter:blur(4px)}
+.kill:hover{background:#c33}
 .meta{padding:10px 11px 12px;display:flex;flex-direction:column;gap:8px;flex:1}
 .meta h3{font-size:14px;line-height:1.25;letter-spacing:-.01em;margin:0}
 .meta .sub{font-size:11.5px;color:var(--dim);line-height:1.35}
 .meta .src{font-family:ui-monospace,monospace;font-size:9.5px;letter-spacing:.06em;color:var(--dim)}
+.stars{display:flex;gap:2px}
+.star{border:0;background:none;font-size:21px;line-height:1;cursor:pointer;color:#D8D2C4;padding:1px 2px}
+.star.on{color:var(--gold)}
+.star:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
 .row{display:flex;gap:5px;flex-wrap:wrap}
 .b{font-family:ui-monospace,monospace;font-size:10px;font-weight:700;letter-spacing:.06em;padding:6px 9px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--dim);cursor:pointer}
 .b:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.b.on{color:#fff}
-.b.imgup.on{background:#2faa6a;border-color:#2faa6a}
-.b.imgdn.on{background:#c33;border-color:#c33}
-.b.love.on{background:var(--accent);border-color:var(--accent)}
-.b.keep.on{background:var(--ink);border-color:var(--ink)}
-.b.kill.on{background:#fff;border-color:#c33;color:#c33;text-decoration:line-through}
-.better{width:100%;border:1px dashed var(--line);border-radius:9px;padding:7px 9px;font:inherit;font-size:11px;background:#faf8f3}
-.better:focus{outline:2px solid var(--accent);outline-offset:1px}
+.b.imgup.on{background:#2faa6a;border-color:#2faa6a;color:#fff}
+.b.imgdn.on{background:#c33;border-color:#c33;color:#fff}
+.inp{width:100%;border:1px dashed var(--line);border-radius:9px;padding:7px 9px;font:inherit;font-size:11px;background:#faf8f3}
+.inp:focus{outline:2px solid var(--accent);outline-offset:1px}
 .bar{position:fixed;left:0;right:0;bottom:0;background:rgba(27,26,23,.97);color:#fff;padding:13px 16px calc(13px + env(safe-area-inset-bottom));z-index:9}
 .barin{max-width:1180px;margin:0 auto;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
-.count{font-family:ui-monospace,monospace;font-size:11.5px;color:rgba(255,255,255,.75);flex:1;min-width:180px}
+.count{font-family:ui-monospace,monospace;font-size:11.5px;color:rgba(255,255,255,.75);flex:1;min-width:200px}
 .send,.copybtn{border:0;font-weight:700;font-size:13.5px;padding:11px 18px;border-radius:999px;cursor:pointer}
 .send{background:var(--accent);color:#fff}
 .copybtn{background:rgba(255,255,255,.14);color:#fff}
 .send.done{background:#2faa6a}
-.note{font-size:12px;color:var(--dim)}
 </style>
 </head>
 <body>
 <div class="wrap">
 <header>
-<p class="eyebrow">WKNDR · CURATION BOARD · LIVE FEED</p>
+<p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD</p>
 <h1>Every card, your call<span class="dot">.</span></h1>
-<p>This is the entire deck being served right now. Judge the <strong>image</strong> (✓/✗) and the <strong>event</strong> (love/keep/kill) on any card — skip what's fine. Got a more striking image? Paste its URL in the card's field, or drop the file into our chat with the event's name and I'll pin it. <strong>Send</strong> delivers your verdicts (they train the judges); <strong>Copy</strong> puts them on your clipboard for chat.</p>
+<p><strong>Stars</strong> — ★★★★★ = love it, ★ = weak (the judges learn your scale). <strong>✕ kills</strong> a card — a fresh candidate from the bench deals in to replace it. Judge the <strong>image</strong> ✓/✗, drop a <strong>note</strong> on anything (why it's great, what's off), and paste a <strong>better image URL</strong> if you found a more striking one — or drop the file in our chat with the event's name. Your progress saves in this browser. <strong>Send</strong> when done (or Copy → paste to Claude).</p>
 </header>
 <div id="board">Loading the live feed…</div>
 </div>
@@ -62,48 +65,92 @@ header p{color:#4a463e;max-width:64ch;line-height:1.5;margin:10px 0 0;font-size:
 <script>
 const FORM='https://formspree.io/f/xykqpwkw';
 const CAT={out:'Out & about',eat:'Eat',drink:'Drink',art:'Art & galleries',live:'Live & gigs',stage:'Stage & screen',daytrip:'Day-trips',market:'Markets & one-offs',shop:'Shops'};
-const V={};
-fetch('../data/picks.amsterdam.json?t='+Date.now()).then(r=>r.json()).then(d=>{
+let V={},bench=[],usedBench=new Set(),feedKey='';
+const grids={};
+function store(){try{localStorage.setItem(feedKey,JSON.stringify({V,used:[...usedBench]}))}catch(e){}}
+function restore(){try{const s=JSON.parse(localStorage.getItem(feedKey)||'{}');V=s.V||{};(s.used||[]).forEach(x=>usedBench.add(x))}catch(e){}}
+Promise.all([
+ fetch('../data/picks.amsterdam.json?t='+Date.now()).then(r=>r.json()),
+ fetch('../data/candidates.amsterdam.json?t='+Date.now()).then(r=>r.ok?r.json():{candidates:[]}).catch(()=>({candidates:[]}))
+]).then(([d,c])=>{
+  bench=c.candidates||[];
+  feedKey='wkndr.curate.'+(d.generatedAt||'x');
+  restore();
+  document.getElementById('eyebrow').textContent='WKNDR · CURATION BOARD · FEED '+(d.generatedAt||'').slice(0,16).replace('T',' · ')+' · '+d.picks.length+' CARDS · BENCH '+bench.length;
   const byCat={};
   d.picks.forEach(p=>{(byCat[p.category]??=[]).push(p)});
   const board=document.getElementById('board');board.innerHTML='';
-  document.querySelector('header .eyebrow').textContent='WKNDR · CURATION BOARD · FEED '+(d.generatedAt||'').slice(0,16).replace('T',' · ')+' · '+d.picks.length+' CARDS';
-  Object.keys(CAT).filter(c=>byCat[c]).forEach(c=>{
-    const h=document.createElement('div');h.className='cathead';h.textContent=CAT[c]+' — '+byCat[c].length;board.appendChild(h);
-    const g=document.createElement('div');g.className='grid';board.appendChild(g);
-    byCat[c].forEach(p=>{
-      const el=document.createElement('div');el.className='card';
-      el.innerHTML='<img loading="lazy" src="'+(p.image||'')+'" alt="">'
-        +'<div class="meta"><h3>'+p.title+'</h3>'
-        +'<div class="sub">'+(p.venue||'')+' · '+(p.when||'')+'</div>'
-        +'<div class="src">'+(p.source||'')+(p.editorScore!=null?' · judge '+p.editorScore:'')+(p.buzz>1?' · buzz '+p.buzz:'')+'</div>'
-        +'<div class="row"><button class="b imgup">IMG ✓</button><button class="b imgdn">IMG ✗</button>'
-        +'<button class="b love">LOVE</button><button class="b keep">KEEP</button><button class="b kill">KILL</button></div>'
-        +'<input class="better" placeholder="better image URL (optional)"></div>';
-      const id=p.id, get=()=>V[id]??={t:p.title};
-      const btns=el.querySelectorAll('.b');
-      const set=(cls,group)=>{btns.forEach(b=>{if(group.some(g=>b.classList.contains(g))&&!b.classList.contains(cls))b.classList.remove('on')});};
-      btns.forEach(b=>b.addEventListener('click',()=>{
-        const isImg=b.classList.contains('imgup')||b.classList.contains('imgdn');
-        const group=isImg?['imgup','imgdn']:['love','keep','kill'];
-        const was=b.classList.contains('on');
-        set('',group); if(!was)b.classList.add('on');
-        const v=get();
-        if(isImg)v.img=was?undefined:(b.classList.contains('imgup')?'good':'bad');
-        else v.event=was?undefined:(b.classList.contains('love')?'LOVE':b.classList.contains('keep')?'KEEP':'KILL');
-        update();
-      }));
-      el.querySelector('.better').addEventListener('change',e=>{get().betterImage=e.target.value.trim()||undefined;update();});
-      g.appendChild(el);
-    });
+  Object.keys(CAT).filter(cc=>byCat[cc]).forEach(cc=>{
+    const h=document.createElement('div');h.className='cathead';h.textContent=CAT[cc]+' — '+byCat[cc].length;board.appendChild(h);
+    const g=document.createElement('div');g.className='grid';board.appendChild(g);grids[cc]=g;
+    byCat[cc].forEach(p=>addCard(p,g,false));
   });
+  // re-deal previously-used bench cards + re-apply kills from storage
+  bench.filter(b=>usedBench.has(b.id)).forEach(b=>{const g=grids[b.category]||Object.values(grids)[0];if(g)addCard(b,g,true)});
+  Object.entries(V).forEach(([id,v])=>{if(v.killed){const el=document.querySelector('[data-id="'+CSS.escape(id)+'"]');if(el)el.remove()}});
   update();
 }).catch(e=>{document.getElementById('board').textContent='Could not load the feed: '+e});
-function verdicts(){return Object.values(V).filter(v=>v.img||v.event||v.betterImage)}
-function update(){document.getElementById('count').textContent=verdicts().length+' verdicts marked';}
+
+function addCard(p,g,fresh){
+  const el=document.createElement('div');el.className='card';el.dataset.id=p.id;
+  el.innerHTML=(fresh?'<span class="fresh">FRESH DEAL</span>':'')
+    +'<button class="kill" title="Kill this event">✕</button>'
+    +'<img loading="lazy" src="'+(p.image||'')+'" alt="">'
+    +'<div class="meta"><h3>'+p.title+'</h3>'
+    +'<div class="sub">'+(p.venue||'')+' · '+(p.when||'')+'</div>'
+    +'<div class="src">'+(p.source||'')+(p.editorScore!=null?' · judge '+p.editorScore:'')+(p.buzz>1?' · buzz '+p.buzz:'')+'</div>'
+    +'<div class="stars" role="radiogroup" aria-label="rating">'+[1,2,3,4,5].map(n=>'<button class="star" data-n="'+n+'" aria-label="'+n+' stars">★</button>').join('')+'</div>'
+    +'<div class="row"><button class="b imgup">IMG ✓</button><button class="b imgdn">IMG ✗</button></div>'
+    +'<input class="inp note" placeholder="note — why / what&#39;s off">'
+    +'<input class="inp better" placeholder="better image URL">'
+    +'</div>';
+  const get=()=>V[p.id]??={t:p.title};
+  const v=V[p.id];
+  const stars=el.querySelectorAll('.star');
+  function paint(n){stars.forEach(s=>s.classList.toggle('on',+s.dataset.n<=n))}
+  stars.forEach(s=>s.addEventListener('click',()=>{
+    const n=+s.dataset.n,cur=get().stars;
+    get().stars=(cur===n?undefined:n);paint(get().stars||0);update();
+  }));
+  el.querySelector('.kill').addEventListener('click',()=>{
+    get().killed=true;el.classList.add('dead');
+    setTimeout(()=>el.remove(),320);
+    const nxt=bench.find(b=>b.category===p.category&&!usedBench.has(b.id))||bench.find(b=>!usedBench.has(b.id));
+    if(nxt){usedBench.add(nxt.id);addCard(nxt,g,true)}
+    update();
+  });
+  el.querySelectorAll('.b').forEach(b=>b.addEventListener('click',()=>{
+    const up=b.classList.contains('imgup'),was=b.classList.contains('on');
+    el.querySelectorAll('.b').forEach(x=>x.classList.remove('on'));
+    if(!was)b.classList.add('on');
+    get().img=was?undefined:(up?'good':'bad');update();
+  }));
+  el.querySelector('.note').addEventListener('change',e=>{get().note=e.target.value.trim()||undefined;update()});
+  el.querySelector('.better').addEventListener('change',e=>{get().betterImage=e.target.value.trim()||undefined;update()});
+  // restore saved state onto this card
+  if(v){if(v.stars)paint(v.stars);if(v.img)el.querySelector(v.img==='good'?'.imgup':'.imgdn').classList.add('on');
+    if(v.note)el.querySelector('.note').value=v.note;if(v.betterImage)el.querySelector('.better').value=v.betterImage;}
+  g.appendChild(el);
+}
+function verdicts(){return Object.values(V).filter(v=>v.stars||v.killed||v.img||v.note||v.betterImage)}
+function update(){
+  const vs=Object.values(V);
+  const s=vs.filter(v=>v.stars).length,k=vs.filter(v=>v.killed).length,n=vs.filter(v=>v.note||v.betterImage).length;
+  document.getElementById('count').textContent=s+' starred · '+k+' killed · '+n+' notes/images';
+  store();
+}
 function payload(){
-  return 'WKNDR curation — '+new Date().toISOString().slice(0,16)+'\n'+verdicts().map(v=>
-    '· '+v.t+(v.event?' — '+v.event:'')+(v.img?' — image '+v.img:'')+(v.betterImage?' — better: '+v.betterImage:'')).join('\n');
+  const vs=verdicts();
+  const lines=vs.map(v=>{
+    const bits=[];
+    if(v.stars)bits.push('★'.repeat(v.stars));
+    if(v.killed)bits.push('KILL');
+    if(v.img)bits.push('image '+v.img);
+    if(v.note)bits.push('“'+v.note+'”');
+    if(v.betterImage)bits.push('better: '+v.betterImage);
+    return '· '+v.t+' — '+bits.join(' · ');
+  });
+  return 'WKNDR curation — '+new Date().toISOString().slice(0,16)+' — '+vs.length+' verdicts\n'+lines.join('\n');
 }
 document.getElementById('copy').addEventListener('click',async()=>{
   try{await navigator.clipboard.writeText(payload())}catch(e){}
