@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>WKNDR — Curation Board</title>
+<style>
+:root{--paper:#F4F1E9;--ink:#1B1A17;--accent:#FF4A21;--dim:#8B8578;--line:rgba(27,26,23,.14)}
+*{box-sizing:border-box}
+html{background:var(--paper)}
+body{font-family:-apple-system,'Helvetica Neue',Helvetica,system-ui,sans-serif;color:var(--ink);margin:0;padding:0 16px 150px}
+.wrap{max-width:1180px;margin:0 auto}
+header{padding:38px 0 10px}
+.eyebrow{font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:11px;letter-spacing:.14em;color:var(--dim);margin:0 0 6px}
+h1{font-size:clamp(28px,5vw,40px);font-weight:800;letter-spacing:-.03em;margin:0}
+h1 .dot{color:var(--accent)}
+header p{color:#4a463e;max-width:64ch;line-height:1.5;margin:10px 0 0;font-size:15px}
+.cathead{font-family:ui-monospace,monospace;font-size:12px;letter-spacing:.14em;color:var(--dim);margin:40px 0 12px;padding-top:18px;border-top:1px solid var(--line);text-transform:uppercase}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
+.card{background:#fff;border-radius:16px;overflow:hidden;border:1px solid var(--line);display:flex;flex-direction:column}
+.card img{width:100%;aspect-ratio:2/3;object-fit:cover;display:block;background:#e8e4da}
+.meta{padding:10px 11px 12px;display:flex;flex-direction:column;gap:8px;flex:1}
+.meta h3{font-size:14px;line-height:1.25;letter-spacing:-.01em;margin:0}
+.meta .sub{font-size:11.5px;color:var(--dim);line-height:1.35}
+.meta .src{font-family:ui-monospace,monospace;font-size:9.5px;letter-spacing:.06em;color:var(--dim)}
+.row{display:flex;gap:5px;flex-wrap:wrap}
+.b{font-family:ui-monospace,monospace;font-size:10px;font-weight:700;letter-spacing:.06em;padding:6px 9px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--dim);cursor:pointer}
+.b:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.b.on{color:#fff}
+.b.imgup.on{background:#2faa6a;border-color:#2faa6a}
+.b.imgdn.on{background:#c33;border-color:#c33}
+.b.love.on{background:var(--accent);border-color:var(--accent)}
+.b.keep.on{background:var(--ink);border-color:var(--ink)}
+.b.kill.on{background:#fff;border-color:#c33;color:#c33;text-decoration:line-through}
+.better{width:100%;border:1px dashed var(--line);border-radius:9px;padding:7px 9px;font:inherit;font-size:11px;background:#faf8f3}
+.better:focus{outline:2px solid var(--accent);outline-offset:1px}
+.bar{position:fixed;left:0;right:0;bottom:0;background:rgba(27,26,23,.97);color:#fff;padding:13px 16px calc(13px + env(safe-area-inset-bottom));z-index:9}
+.barin{max-width:1180px;margin:0 auto;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.count{font-family:ui-monospace,monospace;font-size:11.5px;color:rgba(255,255,255,.75);flex:1;min-width:180px}
+.send,.copybtn{border:0;font-weight:700;font-size:13.5px;padding:11px 18px;border-radius:999px;cursor:pointer}
+.send{background:var(--accent);color:#fff}
+.copybtn{background:rgba(255,255,255,.14);color:#fff}
+.send.done{background:#2faa6a}
+.note{font-size:12px;color:var(--dim)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+<p class="eyebrow">WKNDR · CURATION BOARD · LIVE FEED</p>
+<h1>Every card, your call<span class="dot">.</span></h1>
+<p>This is the entire deck being served right now. Judge the <strong>image</strong> (✓/✗) and the <strong>event</strong> (love/keep/kill) on any card — skip what's fine. Got a more striking image? Paste its URL in the card's field, or drop the file into our chat with the event's name and I'll pin it. <strong>Send</strong> delivers your verdicts (they train the judges); <strong>Copy</strong> puts them on your clipboard for chat.</p>
+</header>
+<div id="board">Loading the live feed…</div>
+</div>
+<div class="bar"><div class="barin">
+<span class="count" id="count">—</span>
+<button class="copybtn" id="copy">Copy</button>
+<button class="send" id="send">Send verdicts</button>
+</div></div>
+<script>
+const FORM='https://formspree.io/f/xykqpwkw';
+const CAT={out:'Out & about',eat:'Eat',drink:'Drink',art:'Art & galleries',live:'Live & gigs',stage:'Stage & screen',daytrip:'Day-trips',market:'Markets & one-offs',shop:'Shops'};
+const V={};
+fetch('../data/picks.amsterdam.json?t='+Date.now()).then(r=>r.json()).then(d=>{
+  const byCat={};
+  d.picks.forEach(p=>{(byCat[p.category]??=[]).push(p)});
+  const board=document.getElementById('board');board.innerHTML='';
+  document.querySelector('header .eyebrow').textContent='WKNDR · CURATION BOARD · FEED '+(d.generatedAt||'').slice(0,16).replace('T',' · ')+' · '+d.picks.length+' CARDS';
+  Object.keys(CAT).filter(c=>byCat[c]).forEach(c=>{
+    const h=document.createElement('div');h.className='cathead';h.textContent=CAT[c]+' — '+byCat[c].length;board.appendChild(h);
+    const g=document.createElement('div');g.className='grid';board.appendChild(g);
+    byCat[c].forEach(p=>{
+      const el=document.createElement('div');el.className='card';
+      el.innerHTML='<img loading="lazy" src="'+(p.image||'')+'" alt="">'
+        +'<div class="meta"><h3>'+p.title+'</h3>'
+        +'<div class="sub">'+(p.venue||'')+' · '+(p.when||'')+'</div>'
+        +'<div class="src">'+(p.source||'')+(p.editorScore!=null?' · judge '+p.editorScore:'')+(p.buzz>1?' · buzz '+p.buzz:'')+'</div>'
+        +'<div class="row"><button class="b imgup">IMG ✓</button><button class="b imgdn">IMG ✗</button>'
+        +'<button class="b love">LOVE</button><button class="b keep">KEEP</button><button class="b kill">KILL</button></div>'
+        +'<input class="better" placeholder="better image URL (optional)"></div>';
+      const id=p.id, get=()=>V[id]??={t:p.title};
+      const btns=el.querySelectorAll('.b');
+      const set=(cls,group)=>{btns.forEach(b=>{if(group.some(g=>b.classList.contains(g))&&!b.classList.contains(cls))b.classList.remove('on')});};
+      btns.forEach(b=>b.addEventListener('click',()=>{
+        const isImg=b.classList.contains('imgup')||b.classList.contains('imgdn');
+        const group=isImg?['imgup','imgdn']:['love','keep','kill'];
+        const was=b.classList.contains('on');
+        set('',group); if(!was)b.classList.add('on');
+        const v=get();
+        if(isImg)v.img=was?undefined:(b.classList.contains('imgup')?'good':'bad');
+        else v.event=was?undefined:(b.classList.contains('love')?'LOVE':b.classList.contains('keep')?'KEEP':'KILL');
+        update();
+      }));
+      el.querySelector('.better').addEventListener('change',e=>{get().betterImage=e.target.value.trim()||undefined;update();});
+      g.appendChild(el);
+    });
+  });
+  update();
+}).catch(e=>{document.getElementById('board').textContent='Could not load the feed: '+e});
+function verdicts(){return Object.values(V).filter(v=>v.img||v.event||v.betterImage)}
+function update(){document.getElementById('count').textContent=verdicts().length+' verdicts marked';}
+function payload(){
+  return 'WKNDR curation — '+new Date().toISOString().slice(0,16)+'\n'+verdicts().map(v=>
+    '· '+v.t+(v.event?' — '+v.event:'')+(v.img?' — image '+v.img:'')+(v.betterImage?' — better: '+v.betterImage:'')).join('\n');
+}
+document.getElementById('copy').addEventListener('click',async()=>{
+  try{await navigator.clipboard.writeText(payload())}catch(e){}
+  const b=document.getElementById('copy');b.textContent='Copied';setTimeout(()=>b.textContent='Copy',2000);
+});
+document.getElementById('send').addEventListener('click',async()=>{
+  const b=document.getElementById('send');b.textContent='Sending…';
+  try{
+    const r=await fetch(FORM,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({subject:'WKNDR curation verdicts',verdicts:payload()})});
+    if(r.ok){b.textContent='Sent ✓';b.classList.add('done')}else throw 0;
+  }catch(e){b.textContent='Send failed — use Copy';}
+  setTimeout(()=>{b.textContent='Send verdicts';b.classList.remove('done')},3000);
+});
+</script>
+</body>
+</html>
