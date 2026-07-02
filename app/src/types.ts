@@ -84,8 +84,9 @@ export function weatherPill(p: Pick, live?: Mode): { text: string; perfect: bool
 
 // THE one pill a card front may carry — the single highest-signal fact, or nothing.
 // Priority: the live weather peak ("Perfect today") > scarcity (selling fast / final week)
-// > time-sensitivity (new / ending). Everything quieter — the static weather affinity,
-// kids, trending, category — lives on the card's detail, not its face.
+// > cross-source buzz ("Talked about" — 2+ independent publications flagged it, the rare
+// everyone's-going signal, ~10% of cards) > time-sensitivity (new / ending). Everything
+// quieter — static weather affinity, kids, category — lives on the card's detail, not its face.
 export interface CardSignal { text: string; tone: 'accent' | 'red' | 'green' | 'dim'; glow?: boolean }
 export function cardSignal(p: Pick, live?: Mode): CardSignal | null {
   if (weatherPill(p, live).perfect) return { text: 'Perfect this weekend', tone: 'accent', glow: true }
@@ -93,6 +94,7 @@ export function cardSignal(p: Pick, live?: Mode): CardSignal | null {
     const tone = p.status === 'final-week' ? 'red' : p.status === 'free' ? 'green' : p.status === 'sold-out' ? 'dim' : 'accent'
     return { text: STATUS_LABEL[p.status], tone }
   }
+  if ((p.buzz ?? 0) >= 2) return { text: 'Talked about', tone: 'accent' }
   if (p.freshness === 'new') return { text: FRESHNESS_LABEL.new, tone: 'accent' }
   if (p.freshness === 'ending') return { text: FRESHNESS_LABEL.ending, tone: 'red' }
   return null

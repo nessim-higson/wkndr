@@ -20,7 +20,7 @@
 import { CITIES, type City } from '../src/data/cities'
 import type { Pick } from '../src/types'
 import { dedupe, balanceByCategory, isGoodImage, isPortraitImage, imageBroken, urlLooksNonPhoto, imageIsCardworthy, fetchEventImage, toPortrait, wikiImage, webImageCandidates, verifyImageForEvent, pexelsImage, whenIsPast, whenBeforeWeekend, upcomingWeekend, linkOk, mapLimit, titleKey } from './lib/pipeline'
-import { fixWhen } from '../src/lib/when'
+import { fixWhen, latestDateOf } from '../src/lib/when'
 import { songkickAdapter } from './adapters/songkick'
 import { llmExtract } from './adapters/llm'
 import { websearchExtract } from './adapters/websearch'
@@ -126,6 +126,25 @@ async function buildCity(city: City) {
   // source that wrote "Sun 8 Jun" when the 8th is a Monday is corrected in the stored feed too.
   for (const p of picks) if (p.when) p.when = fixWhen(p.when)
 
+  // FRESHNESS FROM DATES — model tags lie ("ENDING SOON" on a run that starts tomorrow and ends in
+  // September). Derive the label from the pick's REAL dates instead: a live pick whose run extends
+  // more than ~3 weeks out is wallpaper — an always-on listing, not a weekend event — so it's
+  // re-labelled 'always' (freshBoost 0.6, ranks below genuine one-offs; the flat/unsurprising-deck
+  // fix). And 'ending' is only honest within ~2 weeks of the actual end. Canon is left alone.
+  {
+    const now = new Date()
+    let demoted = 0
+    for (const p of picks) {
+      if (!isLive(p) || !p.when) continue
+      const latest = latestDateOf(p.when, now)
+      if (!latest) continue
+      const daysOut = (latest.getTime() - now.getTime()) / 864e5
+      if (daysOut > 21 && p.freshness !== 'always') { p.freshness = 'always'; demoted++ }
+      else if (p.freshness === 'ending' && daysOut > 14) { p.freshness = 'weekend'; demoted++ }
+    }
+    if (demoted) console.log(`  fresh:    ${demoted} long-run picks re-labelled from real dates (wallpaper ↓, one-offs ↑)`)
+  }
+
   // VALIDATE LINKS — LLM picks sometimes carry a GUESSED url slug that 404s, which both dead-ends
   // the card's "open at" and starves the og:image pass (→ a wrong web image). Any live link that
   // doesn't resolve falls back to its source page URL (always real).
@@ -173,10 +192,11 @@ async function buildCity(city: City) {
     const themedPhoto = (p: Pick) => { const pool = bank[p.category]?.length ? bank[p.category] : bankPool; return pool.length ? pool[idHash(p.id) % pool.length] : undefined }
     // A bank photo that ACTUALLY LOADS — scans the category pool (then all canon) from the deterministic
     // index, skipping any dead entry, so a fallback can never itself blank. Returns a wsrv-wrapped URL.
-    const workingBankPhoto = async (p: Pick): Promise<string | undefined> => {
+    const workingBankPhoto = async (p: Pick, used?: Set<string>): Promise<string | undefined> => {
       const pool = bank[p.category]?.length ? bank[p.category] : bankPool
       for (let i = 0; i < pool.length; i++) {
         const wrapped = toPortrait(pool[(idHash(p.id) + i) % pool.length])
+        if (used?.has(wrapped)) continue               // caller is de-duplicating — never hand out a repeat
         if (!(await imageBroken(wrapped))) return wrapped
       }
       return undefined
@@ -190,7 +210,9 @@ async function buildCity(city: City) {
     {
       let sane = 0
       await mapLimit(live.filter(trustedImg), 3, async (p) => {
-        const bad = urlLooksNonPhoto(p.image!) || !(await imageIsCardworthy(p.image!))
+        // isGoodImage = logo/stock URL smell + REAL pixel dims (≥700 shortest side — a low-res organiser
+        // upload upscaled to the 1200-tall card is mush: the Amsterdamse Bos class) + sane aspect.
+        const bad = !(await isGoodImage(p.image!)) || !(await imageIsCardworthy(p.image!))
         if (bad) { const fb = await workingBankPhoto(p); p.image = fb; if (fb) sane++ }
       })
       if (sane) console.log(`  sanity:   ${sane} organiser logos/blank frames → bank photo`)
@@ -286,6 +308,23 @@ async function buildCity(city: City) {
     // rate-limited host (pinterest, linkedin, Wikimedia 429…) can no longer BLANK in the user's browser —
     // it always loads from wsrv's CDN. Idempotent (skips already-wrapped). Heroes are wrapped on injection.
     for (const p of picks) if (p.image) p.image = toPortrait(p.image)
+
+    // NO TWO CARDS SHARE A PHOTO — final dedup on the FINAL urls, across ALL live picks (trusted included:
+    // a reseller submits the same photo to several Feed Factory listings, and two web-search picks can land
+    // on the same blog image — "Love on the Canals" and "Rembrandt & Life" shipped identical STRAAT shots).
+    // Keep the first (feed order = best-ranked), re-image the rest from the bank, never repeating a photo.
+    {
+      const used = new Set<string>()
+      let dupes = 0
+      for (const p of picks) {
+        if (!p.image) continue
+        if (used.has(p.image)) {
+          if (isLive(p)) { const fb = await workingBankPhoto(p, used); if (fb) { p.image = fb; dupes++ } else { p.image = undefined } }
+        }
+        if (p.image) used.add(p.image)
+      }
+      if (dupes) console.log(`  unique:   ${dupes} duplicate card photos → distinct bank photos`)
+    }
 
     // FINAL VALIDATION — fetch EVERY published image (live + canon) and replace any DEFINITIVELY broken one
     // (a dead source, a wsrv 4xx, a 404 — the things that blank a card) with a bank photo that actually
