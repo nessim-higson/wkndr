@@ -50,8 +50,10 @@ async function buildCity(city: City) {
   // NOVELTY — read LAST week's feed (the file we're about to overwrite) so we can lead with what's
   // genuinely NEW this week. Returning users should see fresh content first, not the same deck.
   let seenLastWeek = new Set<string>()
+  let priorPicks: Pick[] = []
   try {
     const prior = await Bun.file(`${OUT_DIR}/picks.${city.key}.json`).json()
+    priorPicks = prior.picks ?? []
     seenLastWeek = new Set<string>((prior.picks ?? []).map((p: Pick) => titleKey(p.title)))
     console.log(`  novelty:  ${seenLastWeek.size} titles seen last week (new ones will lead)`)
   } catch { /* first run / no prior feed */ }
@@ -531,6 +533,25 @@ async function buildCity(city: City) {
     const before = picks.length
     picks = picks.filter((p) => !veto.some((v) => p.title.toLowerCase().includes(v)))
     if (before !== picks.length) console.log(`  veto:     dropped ${before - picks.length} Ness-killed events`)
+  }
+
+  // STARRED KEEPS — events Ness rated ★4-5 on the Curation Board. Two guarantees: (a) when present they
+  // carry an editorScore FLOOR of 8 (his stars outrank the judge), and (b) when an adapter fails to
+  // re-surface one that's still date-valid, it's CARRIED FORWARD from the prior feed — his curation
+  // investment must not evaporate because web-search rolled differently this week.
+  {
+    const keeps = (corpus.starredKeeps as { match: string; stars: number }[]).filter((k) => k.stars >= 4)
+    let floored = 0, carried = 0
+    for (const p of picks) if (keeps.some((k) => p.title.toLowerCase().includes(k.match))) { p.editorScore = Math.max(p.editorScore ?? 0, 8); floored++ }
+    for (const k of keeps) {
+      if (picks.some((p) => p.title.toLowerCase().includes(k.match))) continue
+      const prior = priorPicks.find((p) => p.title.toLowerCase().includes(k.match))
+      if (!prior || whenIsPast(prior.when) || whenBeforeWeekend(prior.when)) continue
+      const pin = curatedImage(prior.title)
+      if (pin) prior.image = toPortrait(pin)
+      picks.push(prior); carried++
+    }
+    if (floored || carried) console.log(`  starred:  ${floored} score-floored (his ★) · ${carried} carried forward from the prior feed`)
   }
 
   // PUBLISH GATE — refuse to ship a BROKEN feed. A quiet/thin weekend is NOT broken (it just warns); only the

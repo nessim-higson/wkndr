@@ -25,7 +25,7 @@ const HEROES: Record<string, Hero[]> = {
       blurb: 'GRAMMY-winning pop sensation brings his first full stadium tour to Amsterdam, with DJ Pee Wee and Victoria Monét.',
       why: 'Huge global tour · both nights', source: 'I amsterdam',
       link: 'https://www.iamsterdam.com/en/whats-on/calendar',
-      image: 'https://upload.wikimedia.org/wikipedia/commons/b/b0/BrunoMars24KMagicWorldTourLive_%28cropped%29.jpg',
+      image: 'https://i.wfolio.com/x/uZ-vrbqj2EegGiEP2PkuXsznqV8gaoGg/cNtZ_MSjbOEP2eLU2__oPeAAQGn0NK35/yXhfxlFmzf7IvhdXN8iX4vDLlxP5xcQj/zZ_QPu5Xm6ghtzaTGdROz0Rerda5lFNq/vxJ3owfZMHQBHB-EggWsoA.jpg',
     },
     {
       slug: 'homelanding', title: 'Homelanding', venue: 'Marineterrein', area: 'Centrum (Marineterrein)',
