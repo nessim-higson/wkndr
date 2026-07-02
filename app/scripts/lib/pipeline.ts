@@ -2,6 +2,7 @@
 // (source → Pick[]); this does the rest: DEDUPE → DERIVE → ENRICH(og:image) → PUBLISH.
 // Plain Bun TypeScript, no app/React imports beyond the Pick type.
 import type { Mode, Pick } from '../../src/types'
+import corpus from '../taste/corpus.json'
 
 const ALL_MODES: Mode[] = ['HOT', 'WARM', 'COOL', 'COLD_WET', 'VOLATILE']
 const FAIR_MODES: Mode[] = ['HOT', 'WARM', 'COOL']
@@ -509,6 +510,7 @@ export async function verifyImageForEvent(
     `different artist, an unrelated event/landmark/city, a parade when it isn't one), OR is a promotional ` +
     `POSTER / FLYER with prominent text, dates or line-up overlaid, a logo, a screenshot, or watermarked ` +
     `stock. Prefer the cleanest real photograph; pick one whenever a reasonable, on-subject photo exists, else 0. ` +
+    `THE CURATOR'S EYE (Ness — these preferences win ties): ` + (corpus.imageRules as string[]).join(' ') + ` ` +
     `Reply with ONLY JSON: {"best": <the 1-based image number that fits, or 0 if NONE fit>}.` })
   try {
     const res = await fetch('https://api.anthropic.com/v1/messages', {

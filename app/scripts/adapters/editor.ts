@@ -16,6 +16,7 @@
 // extractor). One call per city per run, a few cents. Never throws: any failure → empty result →
 // every editorScore stays undefined and nothing merges → today's behaviour.
 import type { Pick } from '../../src/types'
+import corpus from '../taste/corpus.json'
 
 const KEY = process.env.ANTHROPIC_API_KEY
 const MODEL = process.env.ANTHROPIC_JUDGE_MODEL || 'claude-sonnet-4-6'
@@ -49,6 +50,11 @@ LANGUAGES (e.g. "Festival TREK" / "TREK Amsterdam (Street Food Festival)" / "TRE
 festival; "Love on the Canals" and "Liefde op de Grachten" are one exhibition). Same venue + same dates +
 same concept = one event. Different editions, dates or genuinely different events are NOT duplicates —
 when unsure, do NOT pair them.
+
+NESS'S TASTE (the curator this feed serves — these override your instincts where they conflict):
+${(corpus.eventRules as string[]).map((r) => '- ' + r).join('\n')}
+His calibration anchors (title → his 1-5 stars):
+${(corpus.starAnchors as { title: string; stars: number; note?: string }[]).map((a) => `- "${a.title}" → ${'★'.repeat(a.stars)}${a.note ? ' (' + a.note + ')' : ''}`).join('\n')}
 
 Do NOT invent, rewrite or re-date anything — judge only what is given. Reply with ONLY JSON, no prose:
 {"scores": [{"id": string, "score": number}, ...], "dupes": [[string, string, ...], ...]}

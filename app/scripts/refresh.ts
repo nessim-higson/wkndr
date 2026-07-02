@@ -30,6 +30,7 @@ import { iamsterdamExtract } from './adapters/iamsterdam'
 import { lbbExtract } from './adapters/lbb'
 import { curatedImage } from './curated'
 import { heroPicks } from './heroes'
+import corpus from './taste/corpus.json'
 import { rssExtract } from './adapters/rss'
 import { ROSTERS } from './roster'
 
@@ -523,6 +524,15 @@ async function buildCity(city: City) {
     }
   }
 
+  // NESS VETO — events killed on the Curation Board (taste kills, not dupe-kills) never ship again,
+  // from any source, any run. The list lives in scripts/taste/corpus.json and grows with each round.
+  {
+    const veto = (corpus.eventVeto as string[]).map((v) => v.toLowerCase())
+    const before = picks.length
+    picks = picks.filter((p) => !veto.some((v) => p.title.toLowerCase().includes(v)))
+    if (before !== picks.length) console.log(`  veto:     dropped ${before - picks.length} Ness-killed events`)
+  }
+
   // PUBLISH GATE — refuse to ship a BROKEN feed. A quiet/thin weekend is NOT broken (it just warns); only the
   // things that would actually embarrass us hard-fail. On failure we ABSTAIN — exit(1) WITHOUT writing — so the
   // last-good feed keeps serving and the failed Actions run emails Ness. A one-line HEALTH summary always lands
@@ -572,7 +582,17 @@ async function buildCity(city: City) {
     const pubIds = new Set(picks.map((p) => p.id))
     const pubKeys = new Set(picks.map((p) => titleKey(p.title)))
     const cands = prePool
-      .filter((p) => !pubIds.has(p.id) && !pubKeys.has(titleKey(p.title)) && p.image && !whenIsPast(p.when))
+      .filter((p) => {
+        if (pubIds.has(p.id) || !p.image || whenIsPast(p.when)) return false
+        const k = titleKey(p.title)
+        if (pubKeys.has(k)) return false
+        // near-match twins of published cards stay off the bench (killing "Festival TREK" must not deal
+        // "TREK Amstelpark" back in) — same ≥12-char prefix rule the dedupe uses
+        for (const pk of pubKeys) if ((pk.length >= 12 && k.startsWith(pk)) || (k.length >= 12 && pk.startsWith(k))) return false
+        const veto = (corpus.eventVeto as string[])
+        if (veto.some((v) => p.title.toLowerCase().includes(v.toLowerCase()))) return false
+        return true
+      })
       .slice(0, 60)
       .map((p) => ({ id: p.id, title: p.title, venue: p.venue, area: p.area, when: p.when, category: p.category, image: p.image, blurb: p.blurb, source: p.source, link: p.link, buzz: p.buzz }))
     await Bun.write(`${OUT_DIR}/candidates.${city.key}.json`, JSON.stringify({ generatedAt: feed.generatedAt, count: cands.length, candidates: cands }, null, 2))

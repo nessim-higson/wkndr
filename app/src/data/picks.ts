@@ -332,7 +332,7 @@ export const PICKS: Pick[] = [
   },
   {
     id: 'cafe-chris', title: 'Café Chris — oldest brown café', venue: 'Café Chris', area: 'Jordaan', when: 'Daily · afternoon–late',
-    image: "https://images.unsplash.com/photo-1558210598-89ba75b1724e?w=1200&q=80",
+    image: "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2a/ea/21/79/caption.jpg?w=1200&h=-1&s=1",
     category: 'drink', freshness: 'always', outdoor: false, kid: false, price: '€',
     blurb: 'Open since 1624: a creaky, golden-lit Jordaan brown café for a slow afternoon beer while it pours outside.',
     why: 'Cozy · low-lit · quintessential rainy-day Amsterdam',

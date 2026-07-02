@@ -15,7 +15,7 @@
 export const CURATED_IMAGES: { match: RegExp; image: string; note: string }[] = [
   {
     match: /\bbruno mars\b/i,
-    image: 'https://upload.wikimedia.org/wikipedia/commons/b/b0/BrunoMars24KMagicWorldTourLive_%28cropped%29.jpg',
+    image: 'https://i.wfolio.com/x/uZ-vrbqj2EegGiEP2PkuXsznqV8gaoGg/cNtZ_MSjbOEP2eLU2__oPeAAQGn0NK35/yXhfxlFmzf7IvhdXN8iX4vDLlxP5xcQj/zZ_QPu5Xm6ghtzaTGdROz0Rerda5lFNq/vxJ3owfZMHQBHB-EggWsoA.jpg',
     note: 'Wikipedia portrait — tall, face-on, crops to the card clean (auto-pipeline served anonymous concert stock)',
   },
   {
@@ -65,6 +65,18 @@ export const CURATED_IMAGES: { match: RegExp; image: string; note: string }[] = 
     image: 'https://app.thefeedfactory.nl/api/assets/67dc4f0cc5d3406178d32b0b/gevel_richel_1800x1020.jpg',
     note: 'StandOut showcase at De Richel — the club’s own frontage (byte-verified against the eyeballed candidate)',
   },
+  // ——— NESS'S PICKS (Curation Board round 1, 2026-07-02) — his eye, pinned. All URL-verified. ———
+  { match: /cinema culinair/i, image: 'https://cinemaculinair.nl/wp-content/uploads/above-view-cinema-culinair-voorstellingen.webp', note: 'Ness pick — overhead dinner-cinema scene, official site' },
+  { match: /jollof club/i, image: 'https://www.kookboekhandel.com/cdn/shop/files/Nicolas-1.jpg?v=1760095844&width=1445', note: 'Ness pick' },
+  { match: /throwback/i, image: 'https://app.thefeedfactory.nl/api/assets/67d47399f653b54a9ab132f9/Het_Sieraad.webp', note: 'Ness pick — the actual Het Sieraad' },
+  { match: /world press photo/i, image: 'https://www.nieuwekerk.nl/wp-content/uploads/2026/02/2026-04-23_De-Nieuwe-Kerk_World-Press-Photo-2026__Tomek-Dersu-Aaron_1967.jpg', note: 'Ness pick — the exhibition inside De Nieuwe Kerk' },
+  { match: /festival trek|trek.*(street food|foodfestival|food festival)/i, image: 'https://littlewanderbook.com/wp-content/uploads/2015/07/Food-Truck-Festival-Trek6.jpg', note: 'Ness pick' },
+  { match: /nicolas van poucke/i, image: 'https://denieuwemuze.nl/wp-content/uploads/2024/10/59F966E8-F1CC-46B7-9C77-5692C9FD8179.jpg', note: 'Ness pick — the pianist himself' },
+  { match: /kwaku/i, image: 'https://mydailyfavorite.nl/storage/content/optimized/my_daily_favorite_kwakoe_zomer_festival_2024jpg-01153.jpg.webp', note: 'Ness pick — the festival crowd in the park' },
+  { match: /kay slice/i, image: 'https://www.agogo-records.com/wp-content/uploads/2026/01/2.-CC-Roasted-Kweku-1330x1920.jpg', note: 'Ness pick — the artist, tall portrait (ends the wrong-image saga on this card)' },
+  { match: /stoornis of my life/i, image: 'https://www.kunstmin.nl/assets/uploads/2025/12/MarkEngelen_StoornisOfMyLife_Groep_compleet_KimJoey-scaled-e1774620693437.jpg', note: 'Ness pick — cast photo' },
+  { match: /little big things/i, image: 'https://d3s3zh7icgjwgd.cloudfront.net/AcuCustom/Sitename/DAM/345/Cast-of-The-Little-Big-Things.-Photo--Pamela-Raith-1_LargeLandscape.jpg', note: 'Ness pick — cast photo' },
+  { match: /land art weekend/i, image: 'https://storage.pubble.nl/39aff116/content/2025/4/ee4bcf1f-8214-44a4-add3-afcf1d8b332a_thumb1920.jpg', note: 'Ness pick' },
 ]
 
 /** The curated image URL for a pick title, or undefined. First match wins. */

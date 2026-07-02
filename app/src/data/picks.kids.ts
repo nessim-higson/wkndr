@@ -82,7 +82,7 @@ const RAW: Pick[] = [
   },
   {
     id: 'ams-madurodam', title: 'Madurodam', venue: 'Madurodam', area: 'The Hague · ~50 min',
-    image: 'https://www.madurodam.nl/sites/madurodam_corp/files/2018-07/Madurodam-waterpret-homepage-og.jpg',
+    image: 'https://www.public-transport-holland.com/wp-content/uploads/2017/05/Gezin-tussen-miniatuur-scaled.jpg',
     category: 'daytrip', freshness: 'always', outdoor: true, kid: true, price: 'from €21.50',
     blurb: 'The whole of the Netherlands at 1:25 — miniature canals, Schiphol and windmills kids can tower over.',
     why: 'Easy train day-trip · all ages', source: 'Madurodam', link: 'https://www.madurodam.nl/en',
@@ -90,7 +90,7 @@ const RAW: Pick[] = [
   },
   {
     id: 'ams-efteling', title: 'Efteling', venue: 'Efteling', area: 'Kaatsheuvel · ~1h15',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/b/b9/Efteling_The_House_of_the_Five_Senses.jpg',
+    image: 'https://www.efteling.com/en/-/media/images/social-open-graph/1200x628-python-kurkentrekker.jpg',
     category: 'daytrip', freshness: 'always', outdoor: true, kid: true, price: 'from €44',
     blurb: 'Europe’s oldest fairytale theme park — enchanted forest, dark rides and proper coasters in a storybook world.',
     why: 'The dream kid day-trip', source: 'Efteling', link: 'https://www.efteling.com/en',

@@ -1,0 +1,56 @@
+{
+  "_": "WKNDR TASTE CORPUS — Ness's judgments, injected into every judge (editor + vision). Grows with each curation round. v1 = Curation Board round 1, 2026-07-02, 86 verdicts.",
+  "northStar": "",
+  "imageRules": [
+    "Prefer atmosphere WITH people in the real place over empty rooms or generic scenery — a market mid-shop, a festival crowd at golden hour, a terrace in use.",
+    "For an artist or performer: their actual work or a genuine photo of them — never a stand-in, never another venue.",
+    "For theatre/shows: a cast or performance photo beats the venue and beats the poster.",
+    "Editorial/official-quality photography preferred; anything that reads as generic stock is bad even when technically on-subject.",
+    "No odd crops — the subject must survive the tall portrait frame.",
+    "Designed posters with pictorial imagery are fine; text-only posters, logos and wordmarks are not.",
+    "Never a different identifiable person, never another venue's recognizable landmark."
+  ],
+  "imageExemplars": [
+    { "event": "Homelanding", "verdict": "bad", "why": "generic-looking image" },
+    { "event": "Bonburger Noord", "verdict": "bad", "why": "odd crop" },
+    { "event": "Bottomless Brunch", "verdict": "good", "why": "great image — appetizing, in-place" },
+    { "event": "Martine Gutierrez – Wunderkind", "verdict": "good", "why": "the artist's actual work" },
+    { "event": "Julidans (contemporary dance)", "verdict": "good", "why": "company mid-movement — performance photo" },
+    { "event": "Kwaku Summer Festival", "verdict": "upgraded", "why": "chose the festival crowd in the park over a generic shot" },
+    { "event": "Bloemenmarkt", "verdict": "upgraded", "why": "chose the floating market seen from the water — the thing that makes it singular" }
+  ],
+  "eventRules": [
+    "Community-authentic gatherings are NOT filler: neighbourhood singing sessions, maker markets, museum markets, open-air food culture score WELL when they are genuinely local and warm.",
+    "Food culture is core WKNDR: supper clubs, chef one-offs, food-film mashups, brunch institutions rate high.",
+    "Design/craft retail with a strong point of view (concept stores, ateliers, specialist shops) rates high as weekend material.",
+    "Quirky-unique formats (a lying-down concert, cinema-dinner hybrids) are exactly the surprising texture the deck needs.",
+    "KILL on sight: tribute acts and cover shows; VR/game/experience museums; branded comedy-franchise nights; church lunch concerts; generic revue/cabaret listings; arthouse reruns with no occasion; wide-release cinema.",
+    "Institutional museum wallpaper (a permanent collection with no distinct show) ranks low; a distinct exhibition with strong imagery ranks high.",
+    "Recurring is fine when it is beloved and local (a weekly market, a legendary club night); recurring is filler when it is a venue's self-promo."
+  ],
+  "starAnchors": [
+    { "title": "Hortus Botanicus (summer evening)", "stars": 5 },
+    { "title": "Bottomless Brunch", "stars": 5 },
+    { "title": "Martine Gutierrez – Wunderkind", "stars": 5 },
+    { "title": "Vlieger / Moise / Mobilia (design shops)", "stars": 5 },
+    { "title": "Cinema Culinair", "stars": 4 },
+    { "title": "The Jollof Club", "stars": 4 },
+    { "title": "Kwaku Summer Festival", "stars": 4 },
+    { "title": "Ligconcert — lying-down concert, Maritime Museum", "stars": 4 },
+    { "title": "De Roode Remise Singing Session", "stars": 4, "note": "the judge called this filler (1); Ness rates community-authentic warmth highly" },
+    { "title": "Museum Market / The Maker Market", "stars": 4, "note": "judge said filler; wrong — beloved local markets" },
+    { "title": "Openluchttheater Vondelpark", "stars": 3 },
+    { "title": "Bostheater", "stars": 2 },
+    { "title": "Homelanding", "stars": 1, "note": "hero event but a weak card — generic image dragged it" },
+    { "title": "Wynand Fockink jenever tasting", "stars": 1 }
+  ],
+  "eventVeto": [
+    "bops queer. pop. party", "love on the canals", "lunchtime organ concert", "spinoza",
+    "moco amsterdam", "kees verwey", "entr vr museum", "game on", "man in the mirror",
+    "lunchconcerten in de westerkerk", "artis summer nights", "gohan", "boom chicago",
+    "cabaret at the end of the world", "standout's arabic comedy", "amsterdam gay men's chorus",
+    "une femme est une femme", "showgirls", "haarlem — the easy escape", "ten katemarkt",
+    "art amsterdam spui"
+  ],
+  "_vetoNote": "Taste kills from the board — dropped at publish, every run, any source. Dupe-kills (Julidans/TREK/Vondelpark twins) are deliberately NOT here: those were dedup actions; their kept twins scored ★3-4."
+}
