@@ -281,8 +281,11 @@ async function buildCity(city: City) {
       // download cap even when web hits are on strict hosts (Billboard/Rolling Stone 403 our fetch).
       const cands: string[] = []
       if (perf) { const wk = await wikiImage(actName(p)); if (wk && (await isGoodImage(wk))) cands.push(wk) }
-      cands.push(...await webImageCandidates(q, 5))
+      // ORGANISER FIRST: the event page's own image leads the candidate list — when it and a web hit both
+      // "fit", vision tie-breaks toward the honest source (a Hamburg guide's japanese-food photo "fits" a
+      // japanese restaurant; only the restaurant's OWN photo is true). Web hits fill in behind it.
       if (p.link) { const og = await fetchEventImage(p.link); if (og) cands.push(og) }
+      cands.push(...await webImageCandidates(q, 5))
       if (!cands.length) return
       const best = visionOn ? await verifyImageForEvent(cands, p, city.name) : cands[0]
       if (best) { p.image = best; visGot++ } else if (visionOn) visRej++
