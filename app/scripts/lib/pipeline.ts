@@ -356,7 +356,10 @@ export async function fetchEventImage(url: string, timeoutMs = 8000): Promise<st
 // LIVE picks only (canon photos are hand-curated). Verified: a landscape source → a true 800×1200 JPEG.
 export function toPortrait(url: string, w = 800, h = 1200): string {
   if (!url || !url.startsWith('https://') || /images\.weserv\.nl/i.test(url)) return url
-  return `https://images.weserv.nl/?url=${encodeURIComponent(url)}&w=${w}&h=${h}&fit=cover&a=attention&output=jpg`
+  // &default=<original> — if wsrv can't fetch the source at RENDER time (intermittent upstream failure),
+  // it redirects the browser to the raw image instead of serving its grey error gradient. Uncropped
+  // original beats a grey card; build-time checks can't catch a render-time flake.
+  return `https://images.weserv.nl/?url=${encodeURIComponent(url)}&w=${w}&h=${h}&fit=cover&a=attention&output=jpg&default=${encodeURIComponent(url)}`
 }
 
 // WEB-SEARCH image fallback via Wikipedia: search for the entity (artist / film / show /

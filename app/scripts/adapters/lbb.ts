@@ -93,7 +93,10 @@ The coming weekend is ${WEEKEND}. Extract the ${MAX_PER_ARTICLE} BEST items genu
 weekend in/around Amsterdam — a dated event on those days, an ongoing exhibition/run open then, or a
 distinctive place/hotspot worth going to that weekend. Skip anything already past, anything that only
 STARTS after ${fmt(wk.sun)} (a monthly agenda lists the whole month — later items are NOT this weekend),
-national round-up items outside the Amsterdam area, and thin filler. FACTS ONLY; never invent dates.
+national round-up items outside the Amsterdam area, and thin filler. A WIDE-RELEASE cinema listing (a
+Hollywood movie simply playing in theatres) is filler — include a film ONLY for a special screening
+(open-air, festival, premiere, classics night at a distinctive venue), and films/theatre = category
+"stage". FACTS ONLY; never invent dates.
 Return ONLY a JSON array, each item:
 {"title": string, "venue": string, "area": string,
  "when": string,          // ENGLISH, e.g. "Sat 4 Jul · 20:00", "Fri–Sun 3–5 Jul", "Until Sun 30 Aug", or "" if the text gives none

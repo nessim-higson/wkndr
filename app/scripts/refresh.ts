@@ -196,8 +196,12 @@ async function buildCity(city: City) {
     // events (festivals/markets/garden-days) that have no trustworthy per-event photo — atmospheric
     // and always on-theme, never a wrong subject (the Pride-on-garden-days class of error). Chosen
     // deterministically by id so a given event keeps the same photo run-to-run.
+    // ONLY evergreen canon feeds the bank. The dated-gig canon entries carry a SPECIFIC ARTIST'S photo
+    // (FKA twigs' Songkick portrait) — borrowing one as a "themed fallback" put a recognizable different
+    // artist's face on an unrelated act's card ("Kay Slice" wearing FKA twigs). Evergreen canon is places
+    // and atmospheres (venues, markets, museums) — safe to borrow; a person's face never is.
     const bank: Record<string, string[]> = {}
-    for (const p of city.picks) if (p.image && p.image.startsWith('http')) (bank[p.category] ??= []).push(p.image)
+    for (const p of city.picks) if (p.image && p.image.startsWith('http') && p.freshness === 'always') (bank[p.category] ??= []).push(p.image)
     const bankPool = [...new Set(Object.values(bank).flat())]
     const idHash = (s: string) => { let h = 0; for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0; return Math.abs(h) }
     const themedPhoto = (p: Pick) => { const pool = bank[p.category]?.length ? bank[p.category] : bankPool; return pool.length ? pool[idHash(p.id) % pool.length] : undefined }
@@ -431,21 +435,23 @@ async function buildCity(city: City) {
     (b.buzz ?? 1) - (a.buzz ?? 1) ||
     (FRESH_RANK[b.freshness] - FRESH_RANK[a.freshness]))
 
-  // SOURCE DIVERSITY — no single source may flood a category. I amsterdam ranks high (srcRank 3) and returns
-  // ~46 events, so without a cap it takes nearly every live slot and the feed reads as "the I amsterdam app".
-  // Cap it at 5 per category (of the 8 balanceByCategory keeps), leaving real room for RA club nights,
-  // web-search serendipity and the other editorial finds. Picks are already best-first, so the strongest survive.
+  // SOURCE DIVERSITY — no single source may flood a category. Applies to EVERY high-volume source family
+  // (I amsterdam flooded first; then LBB's 29 picks made the deck read "the LBB app"). Cap each at 4 per
+  // category (of the 8 balanceByCategory keeps) so the mix stays a MIX: iams + LBB + RA + web-search
+  // serendipity + canon. Picks are already best-first, so each source's strongest survive.
   {
-    const CAP_PER_SOURCE = 5
+    const CAP_PER_SOURCE = 4
+    const FAMILIES = ['web-iams-', 'web-lbb-']
     const n: Record<string, number> = {}
     const before = picks.length
     picks = picks.filter((p) => {
-      if (!p.id.startsWith('web-iams-')) return true
-      const k = p.category
+      const fam = FAMILIES.find((f) => p.id.startsWith(f))
+      if (!fam) return true
+      const k = fam + p.category
       n[k] = (n[k] ?? 0) + 1
       return n[k] <= CAP_PER_SOURCE
     })
-    if (before !== picks.length) console.log(`  variety:  capped I amsterdam to ${CAP_PER_SOURCE}/category (dropped ${before - picks.length})`)
+    if (before !== picks.length) console.log(`  variety:  per-source cap ${CAP_PER_SOURCE}/category (dropped ${before - picks.length})`)
   }
 
   if (picks.filter(isLive).length > 6) {
@@ -470,11 +476,37 @@ async function buildCity(city: City) {
   // rankPicks (src/weather/modes.ts), so the genuinely-BEST events lead the deck. Facts never touched.
   if (LLM_ON) {
     const liveNow = picks.filter(isLive)
-    const scores = await editorialScores(liveNow, city.name)
+    const { scores, dupes } = await editorialScores(liveNow, city.name)
     if (scores.size) {
       let n = 0
       for (const p of picks) { const s = scores.get(p.id); if (s != null) { p.editorScore = s; n++ } }
       console.log(`  editor:   scored ${n}/${liveNow.length} live picks (judge ${process.env.ANTHROPIC_JUDGE_MODEL || 'claude-sonnet-4-6'})`)
+    }
+    // SEMANTIC DEDUP — the judge names clusters that are the SAME real-world event under different
+    // titles/languages ("Festival TREK" ×3, "Love on the Canals"/"Liefde op de Grachten") — the class
+    // titleKey/prefix rules can't catch. Merge each cluster into ONE card: structured id preferred,
+    // then best editor score, then has-image; credits union into buzz (a triple-listed event IS the
+    // talked-about signal); strongest popularity carried.
+    if (dupes.length) {
+      let mergedAway = 0
+      for (const cluster of dupes) {
+        const members = picks.filter((p) => cluster.includes(p.id))
+        if (members.length < 2) continue
+        members.sort((a, b) =>
+          (Number(/^web-(iams|ra)-/.test(b.id)) - Number(/^web-(iams|ra)-/.test(a.id))) ||
+          ((b.editorScore ?? 0) - (a.editorScore ?? 0)) ||
+          (Number(!!b.image) - Number(!!a.image)))
+        const keep = members[0]
+        const credits = new Set(members.flatMap((m) => (m.source || '').split(' · ')).filter(Boolean))
+        keep.source = [...credits].join(' · ')
+        keep.buzz = Math.max(keep.buzz ?? 1, credits.size)
+        const pop = Math.max(...members.map((m) => m.popularity ?? 0))
+        if (pop > 0) keep.popularity = pop
+        const drop = new Set(members.slice(1).map((m) => m.id))
+        picks = picks.filter((p) => !drop.has(p.id))
+        mergedAway += drop.size
+      }
+      if (mergedAway) console.log(`  semdupe:  merged ${mergedAway} same-event cards (cross-language/phrasing)`)
     }
   }
 
