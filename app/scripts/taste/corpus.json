@@ -1,5 +1,5 @@
 {
-  "_": "WKNDR TASTE CORPUS — Ness's judgments, injected into every judge (editor + vision). Grows with each curation round. v1 = Curation Board round 1, 2026-07-02, 86 verdicts.",
+  "_": "WKNDR TASTE CORPUS — Ness's judgments, injected into every judge (editor + vision). Grows with each curation round. v1 = Board round 1, 2026-07-02, 86 verdicts. v2 = Board round 2, 2026-07-03, 115 verdicts (20 generic club nights killed; 22 canon approvals → src/data/picks.canon2.ts).",
   "northStar": "",
   "imageRules": [
     "Prefer atmosphere WITH people in the real place over empty rooms or generic scenery — a market mid-shop, a festival crowd at golden hour, a terrace in use.",
@@ -14,7 +14,7 @@
     {
       "event": "Homelanding",
       "verdict": "bad",
-      "why": "generic-looking image"
+      "why": "generic-looking image — flagged in BOTH rounds; in R2 it killed the whole event"
     },
     {
       "event": "Bonburger Noord",
@@ -53,12 +53,15 @@
     "Design/craft retail with a strong point of view (concept stores, ateliers, specialist shops) rates high as weekend material.",
     "Quirky-unique formats (a lying-down concert, cinema-dinner hybrids) are exactly the surprising texture the deck needs.",
     "KILL on sight: tribute acts and cover shows; VR/game/experience museums; branded comedy-franchise nights; church lunch concerts; generic revue/cabaret listings; arthouse reruns with no occasion; wide-release cinema.",
+    "Club nights need a curatorial identity to ship: BRET- or POISED-class programming passes; generic weekly party formats — 'X All Night Long' residencies, hip-hop/R&B/latin 'vibes' nights, lineup-dump hard-techno bills — are filler even at good venues (Ness killed 20 of them in one round).",
+    "Judge the event, not the address: a beloved venue does not carry a weak event (Hortus Botanicus is ★5; its Zomeravonden listing was killed).",
+    "A pick is only as good as its card: a generic image can kill an otherwise fine event (Homelanding died on its image two rounds running).",
     "Institutional museum wallpaper (a permanent collection with no distinct show) ranks low; a distinct exhibition with strong imagery ranks high.",
     "Recurring is fine when it is beloved and local (a weekly market, a legendary club night); recurring is filler when it is a venue's self-promo."
   ],
   "starAnchors": [
     {
-      "title": "Hortus Botanicus (summer evening)",
+      "title": "Hortus Botanicus (the place)",
       "stars": 5
     },
     {
@@ -71,6 +74,14 @@
     },
     {
       "title": "Vlieger / Moise / Mobilia (design shops)",
+      "stars": 5
+    },
+    {
+      "title": "Foodhallen",
+      "stars": 5
+    },
+    {
+      "title": "BAK",
       "stars": 5
     },
     {
@@ -90,6 +101,25 @@
       "stars": 4
     },
     {
+      "title": "BRET Club Night",
+      "stars": 4,
+      "note": "the club-night class that PASSES — curated programming with a distinct identity"
+    },
+    {
+      "title": "POISED (Force Reaction, Oxygeno…)",
+      "stars": 4,
+      "note": "a lineup bill CAN pass when the curation is real — contrast the 20 generic nights killed the same round"
+    },
+    {
+      "title": "Nara Nara",
+      "stars": 4
+    },
+    {
+      "title": "Open Podium Noord",
+      "stars": 4,
+      "note": "judge scored it 1; Ness ★4 — community-authentic warmth again"
+    },
+    {
       "title": "De Roode Remise Singing Session",
       "stars": 4,
       "note": "the judge called this filler (1); Ness rates community-authentic warmth highly"
@@ -105,16 +135,23 @@
     },
     {
       "title": "Bostheater",
-      "stars": 2
+      "stars": 2,
+      "note": "killed outright in R2"
+    },
+    {
+      "title": "Generic weekly club nights ('All Night Long' residencies, R&B/latin party formats, lineup-dump techno)",
+      "stars": 1,
+      "note": "R2: 20 of these killed in one pass — the strongest single signal in the corpus"
     },
     {
       "title": "Homelanding",
       "stars": 1,
-      "note": "hero event but a weak card — generic image dragged it"
+      "note": "was a hero event; killed in R2 — a generic image dragged it two rounds running"
     },
     {
       "title": "Wynand Fockink jenever tasting",
-      "stars": 1
+      "stars": 1,
+      "note": "killed in R2"
     }
   ],
   "eventVeto": [
@@ -138,9 +175,44 @@
     "showgirls",
     "haarlem — the easy escape",
     "ten katemarkt",
-    "art amsterdam spui"
+    "art amsterdam spui",
+    "homelanding",
+    "wynand fockink",
+    "latin wednesday",
+    "bostheater",
+    "hortus zomeravonden",
+    "hortus zomeravond",
+    "monne",
+    "carel visser",
+    "rembrandt het leven",
+    "madam by night",
+    "sheep detectives",
+    "devil wears prada",
+    "lindengrachtmarkt",
+    "oatly",
+    "bibi presents",
+    "amsterdam nights",
+    "undivulged",
+    "undivilged",
+    "hop on the top",
+    "crackhouse",
+    "alec dienaar",
+    "mad miran",
+    "d stone",
+    "aifss",
+    "jøase",
+    "siempre",
+    "under one groove",
+    "farola",
+    "all the way up",
+    "chanca invites",
+    "sissi's friday",
+    "leidse amsterdam",
+    "stones taro",
+    "berkan v8",
+    "doka summer studio"
   ],
-  "_vetoNote": "Taste kills from the board — dropped at publish, every run, any source. Dupe-kills (Julidans/TREK/Vondelpark twins) are deliberately NOT here: those were dedup actions; their kept twins scored ★3-4.",
+  "_vetoNote": "Taste kills from the board — dropped at publish, every run, any source; matched with WORD BOUNDARIES (refresh.ts) so short names like 'monne' can't hit 'Monnickendam'. Dupe-kills are deliberately NOT here: R1's Julidans/TREK/Vondelpark twins, and R2's 'The Netherlands – Japan: Connected Through Time' (EN twin of the ★4 Dutch-titled show) were dedup actions, not taste.",
   "starredKeeps": [
     {
       "match": "cinema culinair",
@@ -151,15 +223,19 @@
       "stars": 4
     },
     {
-      "match": "oatly x radio radio",
+      "match": "bret",
       "stars": 4
     },
     {
-      "match": "bret (",
+      "match": "poised",
       "stars": 4
     },
     {
       "match": "american myth memory",
+      "stars": 4
+    },
+    {
+      "match": "american identities",
       "stars": 4
     },
     {
@@ -255,9 +331,45 @@
       "stars": 5
     },
     {
+      "match": "nara nara",
+      "stars": 4
+    },
+    {
+      "match": "open podium noord",
+      "stars": 4
+    },
+    {
+      "match": "amsterdam yard sale",
+      "stars": 4
+    },
+    {
+      "match": "worn in the rijksmuseum",
+      "stars": 4
+    },
+    {
+      "match": "straat collectie",
+      "stars": 4
+    },
+    {
+      "match": "two story",
+      "stars": 4
+    },
+    {
+      "match": "foodhallen",
+      "stars": 5
+    },
+    {
+      "match": "bak",
+      "stars": 5
+    },
+    {
+      "match": "pure markt",
+      "stars": 4
+    },
+    {
       "match": "throwback",
       "stars": 3
     }
   ],
-  "_starredNote": "★4-5 live events from the board: (a) editorScore floor 8 when present, (b) CARRIED FORWARD from the prior feed when an adapter fails to re-surface them and they're still date-valid — Ness's investment must not evaporate between runs."
+  "_starredNote": "★4-5 live events from the board: (a) editorScore floor 8 when present, (b) CARRIED FORWARD from the prior feed when an adapter fails to re-surface them and they're still date-valid — Ness's investment must not evaporate between runs. Matched with word boundaries (so 'bak' ≠ 'bakkerij'). R2 removals: 'oatly x radio radio' (reversed to KILL — now vetoed)."
 }

@@ -1,64 +1,584 @@
 {
-  "round": 1, "date": "2026-07-02",
+  "round": 2,
+  "date": "2026-07-03",
   "byTitle": {
-    "hortus botanicus": {"stars":5,"img":"good"},
-    "homelanding": {"stars":1,"img":"bad","note":"Generic looking image"},
-    "bostheater": {"stars":2},
-    "bottomless brunch": {"stars":5,"img":"good","note":"Great image"},
-    "jazz @ h'art": {"stars":4,"img":"good"},
-    "openluchttheater vondelpark": {"stars":3,"img":"good"},
-    "garlic festival": {"stars":4,"img":"good"},
-    "bonburger": {"stars":1,"img":"bad","note":"Odd crop"},
-    "chef's evening": {"stars":3},
-    "cinema culinair": {"stars":4,"img":"good"},
-    "jollof club": {"stars":4,"img":"good"},
-    "oatly x radio radio": {"stars":4,"img":"bad"},
-    "pllek": {"stars":4,"img":"good"},
-    "café chris": {"stars":4,"img":"good"},
-    "throwback": {"stars":3,"img":"good"},
-    "bret": {"stars":4,"img":"bad","note":"wrong image"},
-    "american myth memory": {"stars":4,"img":"good"},
-    "martine gutierrez": {"stars":5,"img":"good"},
-    "ekō": {"stars":4,"img":"good"},
-    "nederland – japan": {"stars":4,"img":"good"},
-    "world press photo": {"stars":4,"img":"good"},
-    "bruno mars": {"stars":3,"img":"good"},
-    "wynand fockink": {"stars":1,"img":"bad"},
-    "festival trek": {"stars":4,"img":"good"},
-    "milkshake festival": {"stars":3,"img":"bad"},
-    "latin wednesday": {"stars":1,"img":"bad","note":"Not the right event"},
-    "nicolas van poucke": {"stars":4,"img":"good"},
-    "kwaku": {"stars":4,"img":"good"},
-    "kay slice": {"stars":3,"img":"good"},
-    "muiderslot": {"stars":3},
-    "madurodam": {"stars":4,"img":"good"},
-    "marken & volendam": {"stars":4,"img":"good"},
-    "zandvoort": {"stars":4,"img":"good"},
-    "ij-hallen": {"stars":4,"img":"good"},
-    "dappermarkt": {"stars":3,"img":"good"},
-    "bloemenmarkt": {"stars":4,"img":"good"},
-    "utrecht": {"stars":4,"img":"good"},
-    "efteling": {"stars":4,"img":"good"},
-    "cinair europe": {"stars":3},
-    "stoornis of my life": {"stars":4,"img":"good"},
-    "the little big things": {"stars":4,"img":"good"},
-    "julidans": {"stars":4,"img":"good"},
-    "the thing": {"stars":4,"img":"good"},
-    "agatha's almanac": {"stars":4,"img":"good"},
-    "land art weekend": {"stars":4,"img":"good"},
-    "mobilia": {"stars":5,"img":"good"},
-    "x bank": {"stars":4,"img":"good"},
-    "patta": {"stars":4,"img":"good"},
-    "vlieger": {"stars":5,"img":"good"},
-    "moise": {"stars":5,"img":"good"},
-    "the maker market": {"stars":4,"img":"good"},
-    "museum market": {"stars":4,"img":"good"},
-    "albert cuypmarkt": {"stars":4},
-    "waterlooplein": {"stars":4},
-    "vbx summer": {"stars":4,"img":"good"},
-    "prncptl": {"stars":4,"img":"good"},
-    "ligconcert": {"stars":4,"img":"good"},
-    "de roode remise": {"stars":4,"img":"good"},
-    "straat collectie": {"stars":4,"img":"good"}
+    "hortus botanicus": {
+      "stars": 5,
+      "img": "good"
+    },
+    "homelanding": {
+      "stars": 1,
+      "kill": true,
+      "img": "bad",
+      "note": "Generic looking image"
+    },
+    "bostheater": {
+      "stars": 2,
+      "kill": true
+    },
+    "bottomless brunch": {
+      "stars": 5,
+      "img": "good",
+      "note": "Great image"
+    },
+    "jazz @ h'art": {
+      "stars": 4,
+      "img": "good"
+    },
+    "openluchttheater vondelpark": {
+      "stars": 3,
+      "img": "good"
+    },
+    "garlic festival": {
+      "stars": 4,
+      "img": "good"
+    },
+    "bonburger": {
+      "stars": 1,
+      "img": "bad",
+      "note": "Odd crop"
+    },
+    "chef's evening": {
+      "stars": 3
+    },
+    "cinema culinair": {
+      "stars": 4,
+      "img": "good"
+    },
+    "jollof club": {
+      "stars": 4,
+      "img": "good"
+    },
+    "oatly x radio radio": {
+      "stars": 4,
+      "img": "bad"
+    },
+    "pllek": {
+      "stars": 4,
+      "img": "good"
+    },
+    "café chris": {
+      "stars": 4,
+      "img": "good"
+    },
+    "throwback": {
+      "stars": 3,
+      "img": "good"
+    },
+    "bret": {
+      "stars": 4,
+      "img": "bad",
+      "note": "wrong image"
+    },
+    "american myth memory": {
+      "stars": 4,
+      "img": "good"
+    },
+    "martine gutierrez": {
+      "stars": 5,
+      "img": "good"
+    },
+    "ekō": {
+      "stars": 4,
+      "img": "good"
+    },
+    "nederland – japan": {
+      "stars": 4,
+      "img": "good"
+    },
+    "world press photo": {
+      "stars": 4,
+      "img": "good"
+    },
+    "bruno mars": {
+      "stars": 3,
+      "img": "good"
+    },
+    "wynand fockink": {
+      "stars": 1,
+      "img": "bad"
+    },
+    "festival trek": {
+      "stars": 4,
+      "img": "good"
+    },
+    "milkshake festival": {
+      "stars": 3,
+      "img": "bad"
+    },
+    "latin wednesday": {
+      "stars": 1,
+      "img": "bad",
+      "note": "Not the right event"
+    },
+    "nicolas van poucke": {
+      "stars": 4,
+      "img": "good"
+    },
+    "kwaku": {
+      "stars": 4,
+      "img": "good"
+    },
+    "kay slice": {
+      "stars": 3,
+      "img": "good"
+    },
+    "muiderslot": {
+      "stars": 3
+    },
+    "madurodam": {
+      "stars": 4,
+      "img": "good"
+    },
+    "marken & volendam": {
+      "stars": 4,
+      "img": "good"
+    },
+    "zandvoort": {
+      "stars": 4,
+      "img": "good"
+    },
+    "ij-hallen": {
+      "stars": 4,
+      "img": "good"
+    },
+    "dappermarkt": {
+      "stars": 3,
+      "img": "good"
+    },
+    "bloemenmarkt": {
+      "stars": 4,
+      "img": "good"
+    },
+    "utrecht": {
+      "stars": 4,
+      "img": "good"
+    },
+    "efteling": {
+      "stars": 4,
+      "img": "good"
+    },
+    "cinair europe": {
+      "stars": 3
+    },
+    "stoornis of my life": {
+      "stars": 4,
+      "img": "good"
+    },
+    "the little big things": {
+      "stars": 4,
+      "img": "good"
+    },
+    "julidans": {
+      "stars": 4,
+      "img": "good"
+    },
+    "the thing": {
+      "stars": 4,
+      "img": "good"
+    },
+    "agatha's almanac": {
+      "stars": 4,
+      "img": "good"
+    },
+    "land art weekend": {
+      "stars": 4,
+      "img": "good"
+    },
+    "mobilia": {
+      "stars": 5,
+      "img": "good"
+    },
+    "x bank": {
+      "stars": 4,
+      "img": "good"
+    },
+    "patta": {
+      "stars": 4,
+      "img": "good"
+    },
+    "vlieger": {
+      "stars": 5,
+      "img": "good"
+    },
+    "moise": {
+      "stars": 5,
+      "img": "good"
+    },
+    "the maker market": {
+      "stars": 4,
+      "img": "good"
+    },
+    "museum market": {
+      "stars": 4,
+      "img": "good"
+    },
+    "albert cuypmarkt": {
+      "stars": 4
+    },
+    "waterlooplein": {
+      "stars": 4
+    },
+    "vbx summer": {
+      "stars": 4,
+      "img": "good"
+    },
+    "prncptl": {
+      "stars": 4,
+      "img": "good"
+    },
+    "ligconcert": {
+      "stars": 4,
+      "img": "good"
+    },
+    "de roode remise": {
+      "stars": 4,
+      "img": "good"
+    },
+    "straat collectie": {
+      "stars": 4,
+      "img": "good"
+    },
+    "the jollof club": {
+      "stars": 4,
+      "img": "good"
+    },
+    "pllek — waterfront hang": {
+      "stars": 4,
+      "img": "good"
+    },
+    "café chris — oldest brown café": {
+      "stars": 4,
+      "img": "good"
+    },
+    "wynand fockink — jenever tasting": {
+      "stars": 1,
+      "kill": true,
+      "img": "bad"
+    },
+    "bret club night: ciel, jesse maas, julian anthony, caro": {
+      "stars": 4,
+      "img": "bad",
+      "note": "wrong image"
+    },
+    "bruno mars – the romantic tour": {
+      "stars": 3,
+      "img": "good"
+    },
+    "kay slice quanza at openluchttheater vondelpark": {
+      "stars": 3,
+      "img": "good"
+    },
+    "de roode remise singing session": {
+      "stars": 4,
+      "img": "good"
+    },
+    "throwback amsterdam - back to 80s, 90s & 00s": {
+      "stars": 3,
+      "img": "good"
+    },
+    "nicolas van poucke - pianorecital": {
+      "stars": 4,
+      "img": "good"
+    },
+    "julidans – international contemporary dance festival": {
+      "stars": 4,
+      "img": "good"
+    },
+    "zandvoort beach": {
+      "stars": 4,
+      "img": "good"
+    },
+    "waterlooplein flea market": {
+      "stars": 4
+    },
+    "homelanding zomerfestival": {
+      "stars": 1,
+      "img": "bad",
+      "note": "Generic looking image"
+    },
+    "ekō – japan in twee beeldverhalen": {
+      "stars": 4,
+      "img": "good"
+    },
+    "nederland – japan. door de tijd verbonden": {
+      "stars": 4,
+      "img": "good"
+    },
+    "martine gutierrez – wunderkind": {
+      "stars": 5,
+      "img": "good"
+    },
+    "julidans contemporary dance festival": {
+      "stars": 4,
+      "img": "good"
+    },
+    "ligconcert® presents: lying down concert at the maritime museum": {
+      "stars": 4,
+      "img": "good"
+    },
+    "jazz @ h'art museum": {
+      "stars": 4,
+      "img": "good"
+    },
+    "latin wednesday bij out latin club amsterdam": {
+      "stars": 1,
+      "kill": true,
+      "img": "bad",
+      "note": "Not the right event"
+    },
+    "hortus zomeravonden": {
+      "kill": true
+    },
+    "pure markt": {
+      "stars": 4,
+      "img": "good"
+    },
+    "open podium noord": {
+      "stars": 4,
+      "img": "good"
+    },
+    "monne": {
+      "kill": true
+    },
+    "nara nara": {
+      "stars": 4,
+      "img": "good"
+    },
+    "foodhallen": {
+      "stars": 5,
+      "img": "good"
+    },
+    "bak": {
+      "stars": 5,
+      "img": "good"
+    },
+    "radioradio oatly oatly pop-up": {
+      "kill": true
+    },
+    "carel visser in de rijksmuseumtuinen": {
+      "kill": true
+    },
+    "american identities": {
+      "stars": 4,
+      "img": "good"
+    },
+    "rembrandt het leven": {
+      "kill": true
+    },
+    "madam by night invites: velvet": {
+      "kill": true
+    },
+    "poised w/ force reaction, oxygeno, ozum, joey marcel, raeon": {
+      "stars": 4,
+      "img": "good"
+    },
+    "the sheep detectives": {
+      "kill": true
+    },
+    "the devil wears prada 2": {
+      "kill": true
+    },
+    "kinderdijk windmills": {
+      "stars": 4,
+      "img": "good"
+    },
+    "amsterdam yard sale braderie": {
+      "stars": 4,
+      "img": "good"
+    },
+    "lindengrachtmarkt": {
+      "kill": true
+    },
+    "exhibition worn in the rijksmuseum": {
+      "stars": 4,
+      "img": "good"
+    },
+    "bibi presents sam alfred, the trip": {
+      "kill": true
+    },
+    "amsterdam nights: hard techno & hard bounce with molly [de], ean mack [be], saskia laval": {
+      "kill": true
+    },
+    "undivilged all night long": {
+      "kill": true
+    },
+    "hop on the top amsterdam pres: hip hop / r&b / funk / soul": {
+      "kill": true
+    },
+    "crackhouse gdańsk - radion club tour": {
+      "kill": true
+    },
+    "alec dienaar b2b gabriel munõz, lacaty, bumpr, micky hurts & more": {
+      "kill": true,
+      "img": "bad"
+    },
+    "mad miran all night long": {
+      "kill": true,
+      "img": "bad"
+    },
+    "d stone, make a dance & roi perez": {
+      "kill": true,
+      "img": "bad"
+    },
+    "aifss": {
+      "kill": true
+    },
+    "jøase all night long - free indoor festival": {
+      "kill": true
+    },
+    "siempre": {
+      "kill": true
+    },
+    "under one groove": {
+      "kill": true
+    },
+    "farola": {
+      "kill": true
+    },
+    "all the way up": {
+      "kill": true
+    },
+    "chanca invites": {
+      "kill": true
+    },
+    "sissi's friday w/ tonno disko, brenda, malindi & ferré": {
+      "kill": true
+    },
+    "doka summer studio x doodle": {
+      "kill": true
+    },
+    "leidse amsterdam: old school r&b • hip hop • latin • caribbean vibes": {
+      "kill": true
+    },
+    "stones taro • ineffekt": {
+      "kill": true
+    },
+    "berkan v8 • merve": {
+      "kill": true
+    },
+    "the netherlands – japan: connected through time": {
+      "kill": true,
+      "note": "dupe of the Dutch-titled twin (starred ★4) — dedup action, not taste"
+    },
+    "two story": {
+      "stars": 4,
+      "img": "good"
+    },
+    "strand van oost": {
+      "stars": 4,
+      "canon": true,
+      "img": "bad",
+      "better": "https://www.bartsboekje.com/wp-content/uploads/2026/06/SnapInsta.to_657553581_17860290618673607_1528539394225661251_n.jpg"
+    },
+    "wils at the farm": {
+      "stars": 4,
+      "canon": true
+    },
+    "mr. watson": {
+      "stars": 3,
+      "canon": true
+    },
+    "kama handroll bar": {
+      "stars": 4,
+      "canon": true,
+      "img": "good"
+    },
+    "bouillon d'amsterdam — zuid": {
+      "stars": 4,
+      "canon": true,
+      "img": "good"
+    },
+    "bar staal": {
+      "stars": 4,
+      "canon": true,
+      "img": "good"
+    },
+    "rotate": {
+      "stars": 4,
+      "canon": true,
+      "img": "good"
+    },
+    "de baanderij": {
+      "stars": 5,
+      "canon": true,
+      "img": "good"
+    },
+    "rem is back": {
+      "stars": 5,
+      "canon": true,
+      "img": "good"
+    },
+    "tacite": {
+      "stars": 5,
+      "canon": true,
+      "img": "good"
+    },
+    "tête": {
+      "stars": 4,
+      "canon": true,
+      "img": "good"
+    },
+    "warung spang makandra": {
+      "stars": 4,
+      "canon": true,
+      "img": "good"
+    },
+    "bakers & roasters": {
+      "stars": 4,
+      "canon": true,
+      "img": "good"
+    },
+    "de kas": {
+      "stars": 4,
+      "canon": true,
+      "img": "bad",
+      "better": "https://framerusercontent.com/images/trAhNBsemvq6RLebmYYQmHVH7E.jpeg?width=2250&height=1502"
+    },
+    "brouwerij 't ij": {
+      "stars": 4,
+      "canon": true,
+      "img": "good"
+    },
+    "glou glou": {
+      "stars": 4,
+      "canon": true,
+      "img": "good"
+    },
+    "droog": {
+      "stars": 5,
+      "canon": true,
+      "img": "good"
+    },
+    "rush hour records": {
+      "stars": 5,
+      "canon": true,
+      "img": "good"
+    },
+    "mendo": {
+      "stars": 5,
+      "canon": true,
+      "img": "good"
+    },
+    "red light records": {
+      "stars": 5,
+      "canon": true,
+      "img": "bad",
+      "better": "https://www.volkshotel.nl/content/uploads/2016/09/Red-Light-Radio-1020x575.jpg"
+    },
+    "museum van loon": {
+      "stars": 4,
+      "canon": true
+    },
+    "amsterdamse bos": {
+      "stars": 4,
+      "canon": true
+    },
+    "nxt museum": {
+      "stars": 4,
+      "canon": true,
+      "img": "bad",
+      "better": "https://admin.nxtmuseum.com/content/uploads/2023/07/Living-Room-by-Random-International-Picture-by-Riccardo-de-Vecci_01-scaled.jpg"
+    }
   }
 }

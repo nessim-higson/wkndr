@@ -36,9 +36,7 @@ const ROWS: Row[] = [
   { slug: 'dappermarkt', title: 'Dappermarkt', area: 'Oost', category: 'market', tier: 'bespoke', price: 'free', when: 'Mon–Sat · 09:00–17:00', outdoor: true,
     img: 'https://www.volkshotel.nl/content/uploads/2016/02/Amsterdam-Dappermarkt-5-862x575.jpg',
     blurb: 'A buzzing, multicultural Oost street market — spices, textiles and world food at honest neighbourhood prices.', why: 'Multicultural Oost market' },
-  { slug: 'lindengracht', title: 'Lindengrachtmarkt', area: 'Jordaan', category: 'market', tier: 'classic', price: 'free', when: 'Sat · 09:00–16:00', outdoor: true,
-    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Kaas_stand_Lindengrachtmarkt.jpg/1280px-Kaas_stand_Lindengrachtmarkt.jpg',
-    blurb: 'The Jordaan’s beloved Saturday market — farm cheese, flowers and Amsterdam’s best market-stall fish, all down a leafy street.', why: 'Saturday in the Jordaan' },
+  // Lindengrachtmarkt REMOVED (R2, 2026-07-03): Ness killed it on the board — also in the corpus veto.
   { slug: 'pure-markt', title: 'Pure Markt', area: 'Oost (Park Frankendael)', category: 'market', tier: 'bespoke', price: 'free', when: 'Select Sundays · 11:00–18:00', outdoor: true,
     img: 'https://puremarkt.nl/wp-content/uploads/2023/12/PURE-MARKT-ADAM-BOS-DSC_4276-bezoekers-1170x600.jpg',
     blurb: 'An artisan food-and-craft market in a green park — small makers, slow food and a relaxed Sunday-stroll crowd in Frankendael.', why: 'Artisan market · in a park' },

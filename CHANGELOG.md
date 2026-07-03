@@ -14,6 +14,24 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.7.16] — 2026-07-03 — "Round 2: the canon doubles by hand"
+_Curation Board round 2 — 115 verdicts — converted into product. The Taste Engine loop closed a second
+time: his approvals became code, his kills became law._
+- **22 canon approvals → `src/data/picks.canon2.ts`** — 23 rows, the hand-trained half of the
+  evergreen canon: De Kas, Droog, Rush Hour, MENDO, Red Light Records, De Baanderij, REM Eiland,
+  Tacite, TÊTE, Glou Glou, Brouwerij 't IJ, Museum Van Loon, Nxt Museum, Amsterdamse Bos… Each
+  scout-verified image + 4 of Ness's own replacements; `stars` field carried. 11 canonized places
+  graduated OUT of `scouted.json` (no live/canon duplicate cards).
+- **The club-night purge** — 20 generic weekly nights killed in one pass while BRET + POISED got ★4:
+  new corpus rule ("club nights need a curatorial identity"), 30+ new veto entries.
+- **Word-boundary taste matchers** — veto + starredKeeps now match on `\b` bounds ("Monne" can't hit
+  "Monnickendam", "BAK" can't hit "bakkerij"; non-ASCII edges like "ekō"/"jøase" keep matching).
+- **Kills honored in code** — Homelanding hero removed; Lindengrachtmarkt out of the evergreen file;
+  Monne/Oatly/Bostheater/Hortus-Zomeravonden vetoed; stale pins (homelanding, bostheater — which also
+  shadowed "Amsterdamse Bos" — hortus) deleted. EN "Netherlands–Japan" twin removed from scouting
+  (dupe of the starred Dutch-titled show, not a taste kill).
+- **Verdicts baked** — board now shows all 144 merged R1+R2 judgments as badges.
+
 ## [V.6.3 → V.7] — 2026-06-29 → 07-02 — "The pipeline era: deterministic variety, self-checking feed, house look"
 _The arc: two deep-research passes (docs/pipeline-redesign.md → docs/pipeline-architecture.md +
 docs/source-map.md) turned the scrape-and-pray refresh into a deterministic, self-checking content

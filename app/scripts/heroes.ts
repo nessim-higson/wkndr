@@ -27,14 +27,8 @@ const HEROES: Record<string, Hero[]> = {
       link: 'https://www.iamsterdam.com/en/whats-on/calendar',
       image: 'https://i.wfolio.com/x/uZ-vrbqj2EegGiEP2PkuXsznqV8gaoGg/cNtZ_MSjbOEP2eLU2__oPeAAQGn0NK35/yXhfxlFmzf7IvhdXN8iX4vDLlxP5xcQj/zZ_QPu5Xm6ghtzaTGdROz0Rerda5lFNq/vxJ3owfZMHQBHB-EggWsoA.jpg',
     },
-    {
-      slug: 'homelanding', title: 'Homelanding', venue: 'Marineterrein', area: 'Centrum (Marineterrein)',
-      when: 'Wed 1 Jul – Sun 5 Jul', category: 'out', price: 'free', outdoor: true,
-      blurb: 'A free summer festival on the waterfront Marineterrein — food, music, a swim spot and design across the old naval yard.',
-      why: 'Free · waterside summer festival', source: 'Your Little Black Book',
-      link: 'https://www.marineterrein.nl/en/',
-      image: 'https://www.amsterdamnow.com/app/uploads/marineterrein-amsterdam3.jpg',
-    },
+    // Homelanding REMOVED (R2, 2026-07-03): Ness killed it on the board twice — a generic image
+    // dragged a hero. Now in the corpus veto; never re-add without a genuinely great card.
   ],
 }
 

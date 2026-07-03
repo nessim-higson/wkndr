@@ -23,11 +23,7 @@ export const CURATED_IMAGES: { match: RegExp; image: string; note: string }[] = 
     image: 'https://www.amsterdamnow.com/app/uploads/main_stage_vunzige_deuntjes.jpg',
     note: 'Main-stage pyro shot, 1700×1133 (auto-pipeline served a 200px blur)',
   },
-  {
-    match: /\bhomelanding\b/i,
-    image: 'https://www.amsterdamnow.com/app/uploads/marineterrein-amsterdam3.jpg',
-    note: 'Waterside Marineterrein (the festival’s site), 1700×1134 (auto served a generic restaurant terrace, then dropped it)',
-  },
+  // homelanding pin REMOVED (R2): Ness killed the event — it's in the corpus veto now.
   {
     match: /\bwonderfeel\b/i,
     image: 'https://admin.wonderfeel.nl/app/uploads/program-image/1200x1200/9544-1.jpg',
@@ -50,16 +46,9 @@ export const CURATED_IMAGES: { match: RegExp; image: string; note: string }[] = 
     image: 'https://cms.koninklijkeverzamelingen.nl/api/images/rendition/100027/fill-3840x5120/',
     note: 'Royal Palace NL–Japan show (until Sep) — the Citizens’ Hall, from the Royal Collections CMS (auto had the Scheepvaartmuseum!)',
   },
-  {
-    match: /bostheater|amsterdamse bos(?:\b|$)/i,
-    image: 'https://bostheater.nl/wp-content/uploads/2023/04/5R4A0839-1536x1024.jpg',
-    note: 'Bostheater summer season — the actual forest amphitheatre mid-show, official site photo (auto had the Concertgebouw!)',
-  },
-  {
-    match: /hortus.*(zomeravond|summer)/i,
-    image: 'https://www.amsterdamnow.com/app/uploads/hortus-by-night-amsterdam_6.jpg',
-    note: 'Hortus Summer Evenings (recurring Sundays) — the real greenhouses lit at night',
-  },
+  // bostheater + hortus-zomeravonden pins REMOVED (R2): both events killed on the board (vetoed).
+  // NB the old bostheater pin also matched "amsterdamse bos" — that would have stamped the
+  // amphitheatre photo onto the Amsterdamse Bos canon card. Gone with it.
   {
     match: /standout.*comedy|arabic comedy showcase/i,
     image: 'https://app.thefeedfactory.nl/api/assets/67dc4f0cc5d3406178d32b0b/gevel_richel_1800x1020.jpg',

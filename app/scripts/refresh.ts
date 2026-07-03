@@ -35,6 +35,19 @@ import corpus from './taste/corpus.json'
 import { rssExtract } from './adapters/rss'
 import { ROSTERS } from './roster'
 
+// TASTE MATCHERS — corpus veto + starredKeeps entries match with WORD BOUNDARIES, not raw substring:
+// R2 added short venue names ("Monne", "BAK") that a substring test would find inside unrelated words
+// ("Monnickendam", "bakkerij"). A \b is only asserted when the entry's edge char is ASCII-alphanumeric —
+// JS \b is \w-based, so a trailing \b after "ekō"/"jøase" would silently never match.
+const rxOf = (s: string) => {
+  const esc = s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  const lead = /^[a-z0-9]/i.test(s) ? '\\b' : ''
+  const tail = /[a-z0-9]$/i.test(s) ? '\\b' : ''
+  return new RegExp(lead + esc + tail, 'i')
+}
+const VETO_RX = (corpus.eventVeto as string[]).map(rxOf)
+const isVetoed = (title: string) => VETO_RX.some((rx) => rx.test(title))
+
 const args = process.argv.slice(2)
 const SKIP_IMAGES = args.includes('--no-images')
 const ONLY_CITY = args.find((a) => a.startsWith('--city='))?.split('=')[1]
@@ -536,9 +549,8 @@ async function buildCity(city: City) {
   // NESS VETO — events killed on the Curation Board (taste kills, not dupe-kills) never ship again,
   // from any source, any run. The list lives in scripts/taste/corpus.json and grows with each round.
   {
-    const veto = (corpus.eventVeto as string[]).map((v) => v.toLowerCase())
     const before = picks.length
-    picks = picks.filter((p) => !veto.some((v) => p.title.toLowerCase().includes(v)))
+    picks = picks.filter((p) => !isVetoed(p.title))
     if (before !== picks.length) console.log(`  veto:     dropped ${before - picks.length} Ness-killed events`)
   }
 
@@ -547,13 +559,15 @@ async function buildCity(city: City) {
   // re-surface one that's still date-valid, it's CARRIED FORWARD from the prior feed — his curation
   // investment must not evaporate because web-search rolled differently this week.
   {
-    const keeps = (corpus.starredKeeps as { match: string; stars: number }[]).filter((k) => k.stars >= 4)
+    const keeps = (corpus.starredKeeps as { match: string; stars: number }[])
+      .filter((k) => k.stars >= 4)
+      .map((k) => ({ ...k, rx: rxOf(k.match) }))
     let floored = 0, carried = 0
-    for (const p of picks) if (keeps.some((k) => p.title.toLowerCase().includes(k.match))) { p.editorScore = Math.max(p.editorScore ?? 0, 8); floored++ }
+    for (const p of picks) if (keeps.some((k) => k.rx.test(p.title))) { p.editorScore = Math.max(p.editorScore ?? 0, 8); floored++ }
     for (const k of keeps) {
-      if (picks.some((p) => p.title.toLowerCase().includes(k.match))) continue
-      const prior = prePool.find((p) => p.title.toLowerCase().includes(k.match))
-        ?? priorPicks.find((p) => p.title.toLowerCase().includes(k.match))
+      if (picks.some((p) => k.rx.test(p.title))) continue
+      const prior = prePool.find((p) => k.rx.test(p.title))
+        ?? priorPicks.find((p) => k.rx.test(p.title))
       if (!prior || whenIsPast(prior.when) || whenBeforeWeekend(prior.when)) continue
       const pin = curatedImage(prior.title)
       if (pin) prior.image = toPortrait(pin)
@@ -620,8 +634,7 @@ async function buildCity(city: City) {
         // near-match twins of published cards stay off the bench (killing "Festival TREK" must not deal
         // "TREK Amstelpark" back in) — same ≥12-char prefix rule the dedupe uses
         for (const pk of pubKeys) if ((pk.length >= 12 && k.startsWith(pk)) || (k.length >= 12 && pk.startsWith(k))) return false
-        const veto = (corpus.eventVeto as string[])
-        if (veto.some((v) => p.title.toLowerCase().includes(v.toLowerCase()))) return false
+        if (isVetoed(p.title)) return false
         return true
       })
       .slice(0, 120)
