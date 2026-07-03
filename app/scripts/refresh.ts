@@ -576,6 +576,24 @@ async function buildCity(city: City) {
     if (floored || carried) console.log(`  starred:  ${floored} score-floored (his ★) · ${carried} carried forward from the prior feed`)
   }
 
+  // TOP PICKS — Ness's 👑 escalations (the tier above starredKeeps): stamped `top` + editorScore 10.
+  // A topped pick is GUARANTEED into the feed — if the balance stages cut it (or it's a canon place the
+  // selection skipped), it's pulled back from the pre-publish pool / bundled canon. The match list also
+  // ships as feed.topMatches so the app re-stamps at ingestion (belt and braces). Tops lead the deck.
+  {
+    const tops = (corpus.topPicks as string[]).map(rxOf)
+    let stamped = 0, pulled = 0
+    for (const p of picks) if (tops.some((rx) => rx.test(p.title))) { p.top = true; p.editorScore = 10; stamped++ }
+    for (const rx of tops) {
+      if (picks.some((p) => rx.test(p.title))) continue
+      const extra = prePool.find((p) => rx.test(p.title)) ?? canon.find((p) => rx.test(p.title))
+      if (!extra || whenIsPast(extra.when)) continue
+      extra.top = true; extra.editorScore = 10
+      picks.push(extra); pulled++
+    }
+    if (stamped || pulled) console.log(`  top:      ${stamped + pulled} 👑 escalated to deck-lead${pulled ? ` (${pulled} pulled back in)` : ''}`)
+  }
+
   // PUBLISH GATE — refuse to ship a BROKEN feed. A quiet/thin weekend is NOT broken (it just warns); only the
   // things that would actually embarrass us hard-fail. On failure we ABSTAIN — exit(1) WITHOUT writing — so the
   // last-good feed keeps serving and the failed Actions run emails Ness. A one-line HEALTH summary always lands
@@ -616,7 +634,7 @@ async function buildCity(city: City) {
   }
 
   // PUBLISH — the app reads this at runtime.
-  const feed = { city: city.key, label: city.label, generatedAt: new Date().toISOString(), live: LLM_ON, count: picks.length, picks }
+  const feed = { city: city.key, label: city.label, generatedAt: new Date().toISOString(), live: LLM_ON, count: picks.length, topMatches: corpus.topPicks as string[], picks }
   await Bun.write(`${OUT_DIR}/picks.${city.key}.json`, JSON.stringify(feed, null, 2))
   console.log(`  → wrote picks.${city.key}.json (${picks.length} picks)`)
 

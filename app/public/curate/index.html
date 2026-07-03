@@ -50,6 +50,7 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 .b.imgup.on{background:#2faa6a;border-color:#2faa6a;color:#fff}
 .b.imgdn.on{background:#c33;border-color:#c33;color:#fff}
 .b.canon.on{background:var(--gold);border-color:var(--gold);color:#fff}
+.b.topb.on{background:var(--ink);border-color:var(--ink);color:var(--gold)}
 .inp{width:100%;border:1px dashed var(--line);border-radius:9px;padding:7px 9px;font:inherit;font-size:11px;background:#faf8f3}
 .inp:focus{outline:2px solid var(--accent);outline-offset:1px}
 .bar{position:fixed;left:0;right:0;bottom:0;background:rgba(27,26,23,.97);color:#fff;padding:13px 16px calc(13px + env(safe-area-inset-bottom));z-index:9}
@@ -66,7 +67,7 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 <header>
 <p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD · ROUND 3</p>
 <h1>In rotation vs. new finds<span class="dot">.</span></h1>
-<p><strong>IN ROTATION</strong> = this weekend's live feed plus the approved canon library (green = your board-approved picks — kill one to retire it). <strong>NEW FINDS</strong> = the weekly trending inbox: fresh scouting, the bench, and canon candidates — star what deserves rotation, <strong>+CANON</strong> what should live forever. Titles link to the actual place/event page — click through and flag any link that lands somewhere dumb. Gold ★ badges are your saved verdicts. Progress saves in this browser.</p>
+<p><strong>IN ROTATION</strong> = this weekend's live feed plus the approved canon library (green = your board-approved picks — kill one to retire it). <strong>NEW FINDS</strong> = the weekly trending inbox: fresh scouting, the bench, and canon candidates — star what deserves rotation, <strong>+CANON</strong> what should live forever, <strong>👑 TOP</strong> to escalate: a top pick leads the deck ahead of everything and wears a "Top pick" pill (use sparingly — if everything is top, nothing is). Titles link to the actual place/event page — flag any link that lands somewhere dumb. Gold ★ badges are your saved verdicts. Progress saves in this browser.</p>
 </header>
 <div class="tabs" id="tabs" hidden>
 <button class="tab on" data-tab="rot">IN ROTATION <span class="n" id="nrot"></span></button>
@@ -166,7 +167,7 @@ function addCard(p,g,tag){
     +'<div class="sub">'+(p.venue||'')+' · '+(p.when||'')+'</div>'
     +'<div class="src">'+(p.source||p.tier||'')+(p.editorScore!=null?' · judge '+p.editorScore:'')+(p.buzz>1?' · buzz '+p.buzz:'')+'</div>'
     +'<div class="stars">'+[1,2,3,4,5].map(n=>'<button class="star" data-n="'+n+'" aria-label="'+n+' stars">★</button>').join('')+'</div>'
-    +'<div class="row"><button class="b imgup">IMG ✓</button><button class="b imgdn">IMG ✗</button><button class="b canon">+CANON</button></div>'
+    +'<div class="row"><button class="b imgup">IMG ✓</button><button class="b imgdn">IMG ✗</button><button class="b canon">+CANON</button><button class="b topb" title="Escalate: leads the deck with a Top pick pill">👑 TOP</button></div>'
     +'<input class="inp note" placeholder="note — why / what&#39;s off / bad link">'
     +'<input class="inp better" placeholder="better image URL">'
     +'</div>';
@@ -179,6 +180,7 @@ function addCard(p,g,tag){
   el.querySelector('.kill').addEventListener('click',()=>{get().killed=true;el.classList.add('dead');setTimeout(()=>el.remove(),320);update()});
   el.querySelectorAll('.b').forEach(b=>b.addEventListener('click',()=>{
     if(b.classList.contains('canon')){b.classList.toggle('on');get().canon=b.classList.contains('on')||undefined;update();return}
+    if(b.classList.contains('topb')){b.classList.toggle('on');get().top=b.classList.contains('on')||undefined;update();return}
     const up=b.classList.contains('imgup'),was=b.classList.contains('on');
     el.querySelectorAll('.imgup,.imgdn').forEach(x=>x.classList.remove('on'));
     if(!was)b.classList.add('on');
@@ -188,20 +190,22 @@ function addCard(p,g,tag){
   el.querySelector('.better').addEventListener('change',e=>{get().betterImage=e.target.value.trim()||undefined;update()});
   if(v){if(v.stars)paint(v.stars);if(v.img)el.querySelector(v.img==='good'?'.imgup':'.imgdn').classList.add('on');
     if(v.canon)el.querySelector('.canon').classList.add('on');
+    if(v.top)el.querySelector('.topb').classList.add('on');
     if(v.note)el.querySelector('.note').value=v.note;if(v.betterImage)el.querySelector('.better').value=v.betterImage;
     if(v.killed){el.remove();return}}
   g.appendChild(el);
 }
-function verdicts(){return Object.values(V).filter(v=>v.stars||v.killed||v.img||v.note||v.betterImage||v.canon)}
+function verdicts(){return Object.values(V).filter(v=>v.stars||v.killed||v.img||v.note||v.betterImage||v.canon||v.top)}
 function update(){
   const vs=Object.values(V);
-  document.getElementById('count').textContent=vs.filter(v=>v.stars).length+' starred · '+vs.filter(v=>v.killed).length+' killed · '+vs.filter(v=>v.canon).length+' canon · '+vs.filter(v=>v.note||v.betterImage).length+' notes';
+  document.getElementById('count').textContent=vs.filter(v=>v.top).length+' top · '+vs.filter(v=>v.stars).length+' starred · '+vs.filter(v=>v.killed).length+' killed · '+vs.filter(v=>v.canon).length+' canon · '+vs.filter(v=>v.note||v.betterImage).length+' notes';
   store();
 }
 function payload(){
   const vs=verdicts();
   return 'WKNDR curation R3 — '+new Date().toISOString().slice(0,16)+' — '+vs.length+' verdicts\n'+vs.map(v=>{
     const bits=[];
+    if(v.top)bits.push('👑TOP');
     if(v.stars)bits.push('★'.repeat(v.stars));
     if(v.killed)bits.push('KILL');
     if(v.canon)bits.push('CANON');

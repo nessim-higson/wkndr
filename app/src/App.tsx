@@ -191,7 +191,7 @@ export default function App() {
     return s === 'flux' ? 'flux' : 'wheel'
   })
   const [city, setCity] = useState<City>(INITIAL_CITY)   // which city's feed is active
-  const [feeds, setFeeds] = useState<Record<string, { picks: Pick[]; generatedAt: string }>>({})
+  const [feeds, setFeeds] = useState<Record<string, { picks: Pick[]; generatedAt: string; topMatches?: string[] }>>({})
   const fetchedFeeds = useRef<Set<string>>(new Set())
 
   // THE LIVE SEAM: prefer the generated feed (scripts/refresh.ts → public/data/picks.<city>.json)
@@ -199,16 +199,23 @@ export default function App() {
   // Dates are normalized HERE (once) so every surface — cards, saves dock, fan, detail, share —
   // shows a weekday that actually matches the date (the feed's can be wrong/stale).
   const rawPicks = feeds[city.key]?.picks ?? city.picks
+  // TOP escalations (Ness's board 👑, shipped as feed.topMatches): the pipeline stamps live picks,
+  // but CANON picks never pass through it — stamp them here at ingestion. Word-ish match, lowercase.
+  const topMatches = feeds[city.key]?.topMatches
   const cityPicks = useMemo(
     // correct the weekday from the date, THEN drop anything already past — the feed is rebuilt weekly for
     // the coming weekend, so this runtime guard keeps last weekend's events off the cards between refreshes.
-    () => rawPicks
-      // NORMALIZE first — a malformed feed pick (missing weatherFit etc.) must degrade, never crash the
-      // app: V.7.11 shipped five bench-promoted picks without weatherFit and white-screened the deck.
-      .map((p) => ({ ...p, outdoor: p.outdoor ?? false, kid: p.kid ?? false, price: p.price ?? '', why: p.why ?? '', freshness: p.freshness ?? ('weekend' as const), weatherFit: Array.isArray(p.weatherFit) && p.weatherFit.length ? p.weatherFit : (['HOT', 'WARM', 'COOL', 'COLD_WET', 'VOLATILE'] as Mode[]) }))
-      .map((p) => (p.when ? { ...p, when: fixWhen(p.when) } : p))
-      .filter((p) => !whenIsPast(p.when)),
-    [rawPicks],
+    () => {
+      const topRx = (topMatches ?? []).map((m) => new RegExp('(^|[^a-z0-9])' + m.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '($|[^a-z0-9])', 'i'))
+      return rawPicks
+        // NORMALIZE first — a malformed feed pick (missing weatherFit etc.) must degrade, never crash the
+        // app: V.7.11 shipped five bench-promoted picks without weatherFit and white-screened the deck.
+        .map((p) => ({ ...p, outdoor: p.outdoor ?? false, kid: p.kid ?? false, price: p.price ?? '', why: p.why ?? '', freshness: p.freshness ?? ('weekend' as const), weatherFit: Array.isArray(p.weatherFit) && p.weatherFit.length ? p.weatherFit : (['HOT', 'WARM', 'COOL', 'COLD_WET', 'VOLATILE'] as Mode[]) }))
+        .map((p) => (p.top || topRx.some((rx) => rx.test(p.title)) ? { ...p, top: true } : p))
+        .map((p) => (p.when ? { ...p, when: fixWhen(p.when) } : p))
+        .filter((p) => !whenIsPast(p.when))
+    },
+    [rawPicks, topMatches],
   )
   // resolve the share-link tokens (short codes, or legacy full ids) against the ACTIVE pool —
   // everything downstream (filter, save-all, match deck) works in real pick ids
@@ -257,7 +264,7 @@ export default function App() {
       .then((r) => (r.ok ? r.json() : null))
       .then((j) => {
         if (!j || !Array.isArray(j.picks) || !j.picks.length) return
-        setFeeds((prev) => ({ ...prev, [key]: { picks: j.picks as Pick[], generatedAt: j.generatedAt } }))
+        setFeeds((prev) => ({ ...prev, [key]: { picks: j.picks as Pick[], generatedAt: j.generatedAt, topMatches: Array.isArray(j.topMatches) ? j.topMatches : [] } }))
       })
       .catch(() => { /* keep bundled */ })
   }, [city.key])
@@ -331,7 +338,8 @@ export default function App() {
   )
   // De-clustered full ranking for the MATCH game (it presents picks in order). rankPicks no longer
   // diversifies — the served deck de-clusters in `shown` — so do it here too or the match deck waves.
-  const rankedDeck = useMemo(() => diversify(rankedAll), [rankedAll])
+  // TOP picks (Ness's 👑) lead here too — stable partition preserves the diversified order within each half.
+  const rankedDeck = useMemo(() => { const d = diversify(rankedAll); return [...d.filter((p) => p.top), ...d.filter((p) => !p.top)] }, [rankedAll])
   const shown = useMemo(
     () => {
       const matchesWhen = (p: Pick, w: When) =>
@@ -361,10 +369,16 @@ export default function App() {
       const RESERVE = Math.min(ever.length, Math.max(8, 22 - fresh.length))
       const start = ever.length ? ((WEEK + seed) * RESERVE) % ever.length : 0
       const sample = ever.length ? [...ever, ...ever].slice(start, start + RESERVE) : []
+      // a TOP canon pick doesn't wait for the rotation to reach it — escalations are always dealt in
+      ever.filter((p) => p.top && !sample.some((s) => s.id === p.id)).forEach((p) => sample.unshift(p))
       // DE-CLUSTER on the ACTUAL served order. The old diversify ran on rankedAll, which this
       // [...fresh, ...sample] re-segmentation then discarded → category "waves". De-cluster the live
       // and canon blocks SEPARATELY so neither runs in waves while LIVE still leads the deck.
-      return [...diversify(fresh), ...diversify(sample)]
+      // TOP picks (Ness's 👑 escalations) lead the whole deck — a canon TOP jumps the live block, and
+      // a TOP in this week's canon-slice rotation always surfaces first. Stable partition, so the
+      // diversified order is preserved within each half (no re-clustering).
+      const served = [...diversify(fresh), ...diversify(sample)]
+      return [...served.filter((p) => p.top), ...served.filter((p) => !p.top)]
     },
     [rankedAll, filter, cats, whens, saved, seed, sharedPickIds],
   )

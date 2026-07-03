@@ -47,6 +47,9 @@ export interface Pick {
   popularity?: number  // real-draw signal from structured sources (e.g. Resident Advisor "attending"
                        // count); a log-scaled term in rankPicks. Structured-source picks only; undefined → 0.
   tier?: 'classic' | 'bespoke'   // evergreen only: well-known staple vs cooler/curated find (browse filter)
+  top?: boolean        // Ness's TOP escalation (Curation Board 👑 → corpus.topPicks): leads the served
+                       // deck ahead of everything and carries the "Top pick" pill. Stamped by the
+                       // pipeline (live picks) and at feed ingestion (canon picks, via feed.topMatches).
 }
 
 export const CATEGORY_LABEL: Record<Category, string> = {
@@ -89,6 +92,7 @@ export function weatherPill(p: Pick, live?: Mode): { text: string; perfect: bool
 // quieter — static weather affinity, kids, category — lives on the card's detail, not its face.
 export interface CardSignal { text: string; tone: 'accent' | 'red' | 'green' | 'dim'; glow?: boolean }
 export function cardSignal(p: Pick, live?: Mode): CardSignal | null {
+  if (p.top) return { text: 'Top pick', tone: 'accent', glow: true }   // Ness's escalation outranks everything
   if (weatherPill(p, live).perfect) return { text: 'Perfect this weekend', tone: 'accent', glow: true }
   if (p.status) {
     const tone = p.status === 'final-week' ? 'red' : p.status === 'free' ? 'green' : p.status === 'sold-out' ? 'dim' : 'accent'

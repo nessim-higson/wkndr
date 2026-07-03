@@ -14,6 +14,16 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.7.18] — 2026-07-03 — "👑 TOP escalation"
+- **Board 👑 TOP button** — the tier above stars: escalates a pick to guaranteed deck-lead. Verdict
+  flows → `corpus.topPicks` → pipeline stamps `top` + editorScore 10 and GUARANTEES the pick into the
+  feed (pulled back from the pre-publish pool / bundled canon if the balance stages cut it) →
+  `feed.topMatches` re-stamps canon picks at app ingestion → the served deck (and the match deck)
+  stable-partitions tops to the front → the card wears a glowing **"Top pick"** pill (outranks every
+  other signal). Verified live in preview: a topped pick led the deck with the pill on.
+- **Veto patch** — "De Hortus Summer Evenings" (EN twin of the killed Zomeravonden) leaked the feed;
+  both EN forms vetoed.
+
 ## [V.7.17] — 2026-07-03 — "Board v4: rotation vs. trending, real links"
 - **Curation Board tabs** — `IN ROTATION` (this weekend's feed + the full 147-pick canon library, green
   ✓ APPROVED badges on Ness's 23) vs `NEW FINDS` (TRENDING inbox → bench → canon candidates).
