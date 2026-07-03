@@ -7,11 +7,12 @@ FIRST in a new chat. For strategy + backlog see `docs/backlog.md`; for the pipel
 React + TS, run with `bun`); deployed to GitHub Pages._
 
 ## Live right now
-- **App: V.7** — https://nessim-higson.github.io/wkndr/ (cache-bust `?v=V.7`)
+- **App: V.7.16** — https://nessim-higson.github.io/wkndr/ (cache-bust `?v=V.7.16`) · **Curation
+  Board:** https://nessim-higson.github.io/wkndr/curate/
 - **`?dev=1`** reveals the full exploration surface (all views, ambient-look switcher, city picker).
 - **Frozen reference builds:** `/wkndr/versions/v6-2/` (tag `v6.2`) and `/wkndr/versions/v4-10/` (tag `v4.10`).
 - **Ship loop:** `cd app && bun run bump` → `bun run build` → commit → push (auto-deploys) → reply with
-  the `?v=` link. **Tests:** `bun run test` (31 logic tests; CI runs them before every content refresh).
+  the `?v=` link. **Tests:** `bun run test` (32 logic tests; CI runs them before every content refresh).
 
 ## Product posture — the MVP (unchanged)
 One view (**Stack**), one ambient look (**Auras**), **Amsterdam only**; taste engine runs silently.
@@ -72,8 +73,17 @@ thin weekends warn but ship. Health line lands in `$GITHUB_STEP_SUMMARY` (the Ac
   canon 32 · heroes 2; 42 editor-scored; 7 cross-source-corroborated events up-leveled.
 
 ## Evergreen canon
-~125 hand-authored picks incl. the V.6.4 fill-in (`picks.evergreen.ts`: markets 0→8, day-trips 4→9,
-music venues 2→5 — subject-verified images, wsrv-wrapped). Canon = the imaged floor + search surface.
+~147 hand-authored picks. Two halves: the V.6.4 fill-in (`picks.evergreen.ts`: markets, day-trips,
+music venues — subject-verified images, wsrv-wrapped) + **`picks.canon2.ts` (V.7.16): 23 places Ness
++CANON-approved on the Curation Board** (De Kas, Droog, Rush Hour, Red Light Records, REM Eiland,
+Tacite… — scout-verified images, 4 his own, `stars` carried). Canon = the imaged floor + search surface.
+
+## Taste Engine (the closed loop)
+Curation Board (`/curate/`) → Ness's verdicts → `scripts/taste/corpus.json` (rules + anchors + veto +
+starredKeeps) → injected into the Sonnet editor judge + vision prompts every run. **Two rounds done
+(86 + 115 verdicts).** Veto + keeps match with WORD BOUNDARIES (refresh.ts `rxOf`). His ★4-5 get an
+editorScore floor of 8 + carry-forward between runs; his kills never ship again, any source. R2's
+biggest signal: 20 generic club nights killed while BRET/POISED passed → "curatorial identity" rule.
 
 ## Open items / next
 1. **Phase 2 — demote web_search** to 2–3 serendipity facets once a few more runs look healthy.
