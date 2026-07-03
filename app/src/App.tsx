@@ -45,6 +45,16 @@ const DEVUI = new URLSearchParams(window.location.search).has('dev')
 // (~84 always-good picks) surfaces a DIFFERENT slice each week automatically — without
 // it, the same dozen always led and the feed felt identical week over week.
 const WEEK = Math.floor(Date.now() / 6.048e8)
+
+// THE PILE ORDER — Ness's curation tiers decide who opens the deck, everything else keeps its
+// diversified order: 👑 TOP (permanent escalation) → ▲ LEAD (this weekend's slate) → the ranked
+// middle → ▼ LATER (this weekend's "not now" — published, but at the back). Stable partition.
+const orderServed = (arr: Pick[]): Pick[] => [
+  ...arr.filter((p) => p.top),
+  ...arr.filter((p) => !p.top && p.lead),
+  ...arr.filter((p) => !p.top && !p.lead && !p.later),
+  ...arr.filter((p) => !p.top && !p.lead && p.later),
+]
 // the header degrees take on the live weather's hue — a cool day reads cool, a hot day warm —
 // so the number itself signals the mood (muted tints, readable on the cream pill)
 const TEMP_TINT: Record<Mode, string> = {
@@ -338,8 +348,8 @@ export default function App() {
   )
   // De-clustered full ranking for the MATCH game (it presents picks in order). rankPicks no longer
   // diversifies — the served deck de-clusters in `shown` — so do it here too or the match deck waves.
-  // TOP picks (Ness's 👑) lead here too — stable partition preserves the diversified order within each half.
-  const rankedDeck = useMemo(() => { const d = diversify(rankedAll); return [...d.filter((p) => p.top), ...d.filter((p) => !p.top)] }, [rankedAll])
+  // The pile order (👑 TOP → ▲ LEAD → middle → ▼ LATER) applies here too.
+  const rankedDeck = useMemo(() => orderServed(diversify(rankedAll)), [rankedAll])
   const shown = useMemo(
     () => {
       const matchesWhen = (p: Pick, w: When) =>
@@ -374,11 +384,10 @@ export default function App() {
       // DE-CLUSTER on the ACTUAL served order. The old diversify ran on rankedAll, which this
       // [...fresh, ...sample] re-segmentation then discarded → category "waves". De-cluster the live
       // and canon blocks SEPARATELY so neither runs in waves while LIVE still leads the deck.
-      // TOP picks (Ness's 👑 escalations) lead the whole deck — a canon TOP jumps the live block, and
-      // a TOP in this week's canon-slice rotation always surfaces first. Stable partition, so the
-      // diversified order is preserved within each half (no re-clustering).
-      const served = [...diversify(fresh), ...diversify(sample)]
-      return [...served.filter((p) => p.top), ...served.filter((p) => !p.top)]
+      // Then the PILE ORDER: 👑 TOPs open the deck (a canon TOP jumps the live block), ▲ LEADs follow
+      // (this weekend's slate), ▼ LATERs sink to the back. Stable partition — the diversified order
+      // is preserved within each tier (no re-clustering).
+      return orderServed([...diversify(fresh), ...diversify(sample)])
     },
     [rankedAll, filter, cats, whens, saved, seed, sharedPickIds],
   )

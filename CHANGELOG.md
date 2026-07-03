@@ -14,6 +14,17 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.7.19] — 2026-07-03 — "THE WEEKEND PILE — weekly slate controls"
+- **Board opens with THE WEEKEND PILE** — the 10 projected opening cards, numbered in serve order
+  (top → lead → editorScore → buzz), so Ness SEES the top of the pile before users do.
+- **▲ LEAD / ▼ LATER** — ephemeral weekly controls on every card: LEAD puts a card in the pile THIS
+  weekend only (guaranteed into the feed, opens the deck just under 👑 TOPs, score floor 9); LATER
+  sinks it to the back without killing it. Live in `taste/weekly.json` keyed to the upcoming Saturday —
+  a stale file is ignored, so weekend calls auto-expire. Permanent taste stays in corpus.json.
+- **Deck pile order** (served deck + match deck): 👑 TOP → ▲ LEAD → ranked middle → ▼ LATER, stable
+  partition preserving the de-clustered order within each tier.
+- The full ladder: kill → ★1-3 → ★4-5 (protected) → +CANON (library) → ▲/▼ (this weekend) → 👑 (always).
+
 ## [V.7.18] — 2026-07-03 — "👑 TOP escalation"
 - **Board 👑 TOP button** — the tier above stars: escalates a pick to guaranteed deck-lead. Verdict
   flows → `corpus.topPicks` → pipeline stamps `top` + editorScore 10 and GUARANTEES the pick into the

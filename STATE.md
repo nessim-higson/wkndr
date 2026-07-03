@@ -7,12 +7,15 @@ FIRST in a new chat. For strategy + backlog see `docs/backlog.md`; for the pipel
 React + TS, run with `bun`); deployed to GitHub Pages._
 
 ## Live right now
-- **App: V.7.18** — https://nessim-higson.github.io/wkndr/ (cache-bust `?v=V.7.18`) · **Curation
-  Board:** https://nessim-higson.github.io/wkndr/curate/ — tabbed (V.7.17): `IN ROTATION` (feed +
-  147-pick canon library w/ ✓ APPROVED badges) vs `NEW FINDS` (TRENDING inbox → bench → canon
-  candidates); card titles link OUT to the real venue/event page. **👑 TOP button (V.7.18)** =
-  escalation above stars: → `corpus.topPicks` → guaranteed into the feed + leads the served deck +
-  glowing "Top pick" pill. Keep ≤6 tops.
+- **App: V.7.19** — https://nessim-higson.github.io/wkndr/ (cache-bust `?v=V.7.19`) · **Curation
+  Board:** https://nessim-higson.github.io/wkndr/curate/ — tabbed (V.7.17): `IN ROTATION` (opens with
+  **THE WEEKEND PILE** — the 10 projected opening cards in serve order — then the feed + 147-pick canon
+  library w/ ✓ APPROVED badges) vs `NEW FINDS` (TRENDING inbox → bench → canon candidates); card titles
+  link OUT to the real venue/event page. **Curation ladder:** kill → ★1-3 → ★4-5 (score floor 8 +
+  carry-forward) → +CANON (permanent library) → **▲ LEAD / ▼ LATER (V.7.19,** `taste/weekly.json`
+  keyed to the upcoming Saturday, auto-expires — this weekend's slate**)** → **👑 TOP (V.7.18,**
+  `corpus.topPicks`, permanent: guaranteed into the feed + leads the deck + "Top pick" pill; keep ≤6**)**.
+  Deck pile order everywhere: TOP → LEAD → ranked middle → LATER.
 - **`?dev=1`** reveals the full exploration surface (all views, ambient-look switcher, city picker).
 - **Frozen reference builds:** `/wkndr/versions/v6-2/` (tag `v6.2`) and `/wkndr/versions/v4-10/` (tag `v4.10`).
 - **Ship loop:** `cd app && bun run bump` → `bun run build` → commit → push (auto-deploys) → reply with

@@ -50,6 +50,10 @@ export interface Pick {
   top?: boolean        // Ness's TOP escalation (Curation Board 👑 → corpus.topPicks): leads the served
                        // deck ahead of everything and carries the "Top pick" pill. Stamped by the
                        // pipeline (live picks) and at feed ingestion (canon picks, via feed.topMatches).
+  lead?: boolean       // WEEKEND SLATE ▲ (board → taste/weekly.json, THIS weekend only): opens the
+                       // deck just under the TOPs; guaranteed into the feed. Auto-expires weekly.
+  later?: boolean      // WEEKEND SLATE ▼ (this weekend only): stays in the feed but sinks to the back
+                       // of the pile — a "not this week", NOT a kill. Auto-expires weekly.
 }
 
 export const CATEGORY_LABEL: Record<Category, string> = {

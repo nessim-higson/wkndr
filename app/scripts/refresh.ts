@@ -32,6 +32,7 @@ import { scoutedExtract } from './adapters/scouted'
 import { curatedImage } from './curated'
 import { heroPicks } from './heroes'
 import corpus from './taste/corpus.json'
+import weekly from './taste/weekly.json'
 import { rssExtract } from './adapters/rss'
 import { ROSTERS } from './roster'
 
@@ -592,6 +593,34 @@ async function buildCity(city: City) {
       picks.push(extra); pulled++
     }
     if (stamped || pulled) console.log(`  top:      ${stamped + pulled} 👑 escalated to deck-lead${pulled ? ` (${pulled} pulled back in)` : ''}`)
+  }
+
+  // WEEKEND SLATE — Ness's ephemeral ▲ LEAD / ▼ LATER calls (taste/weekly.json). Applies ONLY while
+  // the file's `weekend` matches the upcoming Saturday — stale calls are ignored, so a lead can never
+  // drag into next week. LEAD opens the deck just under the 👑 TOPs and is guaranteed into the feed
+  // (same pull-back as tops); LATER stays published but sinks to the back of the pile (not a kill).
+  {
+    const { sat } = upcomingWeekend()
+    const satKey = `${sat.getFullYear()}-${String(sat.getMonth() + 1).padStart(2, '0')}-${String(sat.getDate()).padStart(2, '0')}`
+    const leadList = weekly.lead as string[], laterList = weekly.later as string[]
+    if ((weekly.weekend as string) === satKey) {
+      const leads = leadList.map(rxOf), laters = laterList.map(rxOf)
+      let l = 0, d = 0
+      for (const p of picks) {
+        if (leads.some((rx) => rx.test(p.title))) { p.lead = true; p.editorScore = Math.max(p.editorScore ?? 0, 9); l++ }
+        else if (laters.some((rx) => rx.test(p.title))) { p.later = true; d++ }
+      }
+      for (const rx of leads) {
+        if (picks.some((p) => rx.test(p.title))) continue
+        const extra = prePool.find((p) => rx.test(p.title)) ?? canon.find((p) => rx.test(p.title))
+        if (!extra || whenIsPast(extra.when)) continue
+        extra.lead = true; extra.editorScore = Math.max(extra.editorScore ?? 0, 9)
+        picks.push(extra); l++
+      }
+      if (l || d) console.log(`  slate:    ${l} ▲ lead this weekend · ${d} ▼ pushed later`)
+    } else if (leadList.length || laterList.length) {
+      console.log(`  slate:    stale (${weekly.weekend} ≠ ${satKey}) — ignored`)
+    }
   }
 
   // PUBLISH GATE — refuse to ship a BROKEN feed. A quiet/thin weekend is NOT broken (it just warns); only the
