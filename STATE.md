@@ -7,8 +7,12 @@ FIRST in a new chat. For strategy + backlog see `docs/backlog.md`; for the pipel
 React + TS, run with `bun`); deployed to GitHub Pages._
 
 ## Live right now
-- **App: V.7.16** — https://nessim-higson.github.io/wkndr/ (cache-bust `?v=V.7.16`) · **Curation
-  Board:** https://nessim-higson.github.io/wkndr/curate/
+- **App: V.7.18** — https://nessim-higson.github.io/wkndr/ (cache-bust `?v=V.7.18`) · **Curation
+  Board:** https://nessim-higson.github.io/wkndr/curate/ — tabbed (V.7.17): `IN ROTATION` (feed +
+  147-pick canon library w/ ✓ APPROVED badges) vs `NEW FINDS` (TRENDING inbox → bench → canon
+  candidates); card titles link OUT to the real venue/event page. **👑 TOP button (V.7.18)** =
+  escalation above stars: → `corpus.topPicks` → guaranteed into the feed + leads the served deck +
+  glowing "Top pick" pill. Keep ≤6 tops.
 - **`?dev=1`** reveals the full exploration surface (all views, ambient-look switcher, city picker).
 - **Frozen reference builds:** `/wkndr/versions/v6-2/` (tag `v6.2`) and `/wkndr/versions/v4-10/` (tag `v4.10`).
 - **Ship loop:** `cd app && bun run bump` → `bun run build` → commit → push (auto-deploys) → reply with
