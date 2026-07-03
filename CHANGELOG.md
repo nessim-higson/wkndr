@@ -14,6 +14,19 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.7.17] — 2026-07-03 — "Board v4: rotation vs. trending, real links"
+- **Curation Board tabs** — `IN ROTATION` (this weekend's feed + the full 147-pick canon library, green
+  ✓ APPROVED badges on Ness's 23) vs `NEW FINDS` (TRENDING inbox → bench → canon candidates).
+- **TRENDING inbox** — Volkshotel's summer-festival guide scouted + audited: 5 future festivals flowed in
+  (De Parade, Het Landjuweel/Ruigoord, Milkshake, WorldPride Amsterdam, Dekmantel — all images + links
+  verified); 3 skipped as already-past (Lentekabinet, Festifest, Keti Koti), OLT skipped as already known.
+  Also appended to `scouted.json` so they enter the live feed when their weekends arrive.
+- **Real links, not discovery links** — 15 places re-pointed from magazine roundups to their own sites
+  (canon2 ×8: misterwatson.nl, bouillondamsterdam.nl, rotate.nl, rem.amsterdam… + scouted ×7). Board card
+  titles now link out (↗) so bad links get caught on sight.
+- **`export-canon.ts`** — dumps the full rotation library to `data/canon.amsterdam.json` on every build
+  (wired into `bun run build`), so the board can never drift from the code.
+
 ## [V.7.16] — 2026-07-03 — "Round 2: the canon doubles by hand"
 _Curation Board round 2 — 115 verdicts — converted into product. The Taste Engine loop closed a second
 time: his approvals became code, his kills became law._

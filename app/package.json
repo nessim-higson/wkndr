@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "bun run scripts/export-canon.ts && tsc -b && vite build",
     "preview": "vite preview",
     "refresh": "bun run scripts/refresh.ts",
     "test": "bun test tests",

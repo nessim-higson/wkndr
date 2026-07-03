@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex">
 <title>WKNDR — Curation Board</title>
 <style>
-:root{--paper:#F4F1E9;--ink:#1B1A17;--accent:#FF4A21;--gold:#E8A33D;--dim:#8B8578;--line:rgba(27,26,23,.14)}
+:root{--paper:#F4F1E9;--ink:#1B1A17;--accent:#FF4A21;--gold:#E8A33D;--green:#2faa6a;--dim:#8B8578;--line:rgba(27,26,23,.14)}
 *{box-sizing:border-box}
 html{background:var(--paper)}
 body{font-family:-apple-system,'Helvetica Neue',Helvetica,system-ui,sans-serif;color:var(--ink);margin:0;padding:0 16px 150px}
@@ -16,18 +16,28 @@ header{padding:38px 0 10px}
 h1{font-size:clamp(28px,5vw,40px);font-weight:800;letter-spacing:-.03em;margin:0}
 h1 .dot{color:var(--accent)}
 header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:15px}
+.tabs{position:sticky;top:0;z-index:8;display:flex;gap:8px;padding:14px 0 12px;background:linear-gradient(var(--paper) 82%,rgba(244,241,233,0))}
+.tab{font-family:ui-monospace,monospace;font-size:12px;font-weight:700;letter-spacing:.08em;padding:11px 18px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--dim);cursor:pointer}
+.tab.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.tab .n{opacity:.6;font-weight:400}
 .cathead{font-family:ui-monospace,monospace;font-size:12px;letter-spacing:.14em;color:var(--dim);margin:40px 0 12px;padding-top:18px;border-top:1px solid var(--line);text-transform:uppercase}
-.cathead.bench{color:var(--accent);border-top:2px solid var(--accent)}
+.cathead.hot{color:var(--accent);border-top:2px solid var(--accent)}
+.cathead.lib{color:var(--gold);border-top:2px solid var(--gold)}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
 .card{background:#fff;border-radius:16px;overflow:hidden;border:1px solid var(--line);display:flex;flex-direction:column;position:relative;transition:opacity .3s,transform .3s}
 .card.dead{opacity:0;transform:scale(.92);pointer-events:none}
 .card img{width:100%;aspect-ratio:2/3;object-fit:cover;display:block;background:#e8e4da}
-.r1{position:absolute;top:10px;left:10px;background:var(--gold);color:#fff;font-family:ui-monospace,monospace;font-size:9.5px;font-weight:700;letter-spacing:.08em;padding:4px 8px;border-radius:999px}
-.benchtag{position:absolute;top:10px;left:10px;background:var(--ink);color:#fff;font-family:ui-monospace,monospace;font-size:9.5px;font-weight:700;letter-spacing:.08em;padding:4px 8px;border-radius:999px}
+.badge{position:absolute;top:10px;left:10px;color:#fff;font-family:ui-monospace,monospace;font-size:9.5px;font-weight:700;letter-spacing:.08em;padding:4px 8px;border-radius:999px}
+.badge.saved{background:var(--gold)}
+.badge.new{background:var(--ink)}
+.badge.appr{background:var(--green)}
 .kill{position:absolute;top:10px;right:10px;width:34px;height:34px;border-radius:999px;border:0;background:rgba(27,26,23,.75);color:#fff;font-size:16px;line-height:1;cursor:pointer;backdrop-filter:blur(4px)}
 .kill:hover{background:#c33}
 .meta{padding:10px 11px 12px;display:flex;flex-direction:column;gap:8px;flex:1}
 .meta h3{font-size:14px;line-height:1.25;letter-spacing:-.01em;margin:0}
+.meta h3 a{color:inherit;text-decoration:none;border-bottom:1px solid rgba(27,26,23,.25)}
+.meta h3 a:hover{color:var(--accent);border-color:var(--accent)}
+.meta h3 .ext{font-size:10px;color:var(--dim);margin-left:3px}
 .meta .sub{font-size:11.5px;color:var(--dim);line-height:1.35}
 .meta .src{font-family:ui-monospace,monospace;font-size:9.5px;letter-spacing:.06em;color:var(--dim)}
 .stars{display:flex;gap:2px}
@@ -54,10 +64,14 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 <body>
 <div class="wrap">
 <header>
-<p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD · ROUND 2</p>
-<h1>Your selects, plus the bench<span class="dot">.</span></h1>
-<p>Gold <strong>R1</strong> cards carry your round-1 verdicts — already applied, edit freely. Below the feed, <strong>THE BENCH</strong>: every alternative the pipeline gathered that didn't make the cut — star the good ones and they earn their place. <strong>+CANON</strong> nominates a card for the permanent collection (the always-good library). Stars, ✕ kill, image ✓/✗, notes and better-image URLs all work as before. Progress saves in this browser.</p>
+<p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD · ROUND 3</p>
+<h1>In rotation vs. new finds<span class="dot">.</span></h1>
+<p><strong>IN ROTATION</strong> = this weekend's live feed plus the approved canon library (green = your board-approved picks — kill one to retire it). <strong>NEW FINDS</strong> = the weekly trending inbox: fresh scouting, the bench, and canon candidates — star what deserves rotation, <strong>+CANON</strong> what should live forever. Titles link to the actual place/event page — click through and flag any link that lands somewhere dumb. Gold ★ badges are your saved verdicts. Progress saves in this browser.</p>
 </header>
+<div class="tabs" id="tabs" hidden>
+<button class="tab on" data-tab="rot">IN ROTATION <span class="n" id="nrot"></span></button>
+<button class="tab" data-tab="new">NEW FINDS <span class="n" id="nnew"></span></button>
+</div>
 <div id="board">Loading the live feed…</div>
 </div>
 <div class="bar"><div class="barin">
@@ -67,60 +81,96 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 </div></div>
 <script>
 const FORM='https://formspree.io/f/xykqpwkw';
-const CAT={out:'Out & about',eat:'Eat',drink:'Drink',art:'Art & galleries',live:'Live & gigs',stage:'Stage & screen',daytrip:'Day-trips',market:'Markets & one-offs',shop:'Shops'};
+const CAT={out:'Out & about',eat:'Eat',drink:'Drink',art:'Art & galleries',live:'Live & gigs',stage:'Stage & screen',daytrip:'Day-trips',market:'Markets & one-offs',shop:'Shops',kid:'Kids'};
 let V={},baked={},feedKey='';
 function store(){try{localStorage.setItem(feedKey,JSON.stringify({V}))}catch(e){}}
 function restore(){try{const s=JSON.parse(localStorage.getItem(feedKey)||'{}');V=s.V||{}}catch(e){}}
-function bakedFor(title){const t=title.toLowerCase();for(const k in baked){if(t.includes(k))return baked[k]}return null}
+// longest matching key wins ("bakers & roasters" beats "bak")
+function bakedFor(title){const t=title.toLowerCase();let best=null,len=-1;for(const k in baked){if(t.includes(k)&&k.length>len){best=baked[k];len=k.length}}return best}
+const jf=(u,fb)=>fetch(u+'?t='+Date.now()).then(r=>r.ok?r.json():fb).catch(()=>fb);
 Promise.all([
- fetch('../data/picks.amsterdam.json?t='+Date.now()).then(r=>r.json()),
- fetch('../data/candidates.amsterdam.json?t='+Date.now()).then(r=>r.ok?r.json():{candidates:[]}).catch(()=>({candidates:[]})),
- fetch('../data/verdicts.amsterdam.json?t='+Date.now()).then(r=>r.ok?r.json():{byTitle:{}}).catch(()=>({byTitle:{}})),
- fetch('../data/canon-candidates.amsterdam.json?t='+Date.now()).then(r=>r.ok?r.json():{candidates:[]}).catch(()=>({candidates:[]}))
-]).then(([d,c,v,cc])=>{
+ jf('../data/picks.amsterdam.json',{picks:[]}),
+ jf('../data/candidates.amsterdam.json',{candidates:[]}),
+ jf('../data/verdicts.amsterdam.json',{byTitle:{}}),
+ jf('../data/canon-candidates.amsterdam.json',{candidates:[]}),
+ jf('../data/canon.amsterdam.json',{canon:[]}),
+ jf('../data/trending.amsterdam.json',{trending:[]})
+]).then(([d,c,v,cc,lib,tr])=>{
   baked=v.byTitle||{};
   feedKey='wkndr.curate.'+(d.generatedAt||'x');
   restore();
-  const bench=(c.candidates||[]);
-  document.getElementById('eyebrow').textContent='WKNDR · CURATION BOARD · FEED '+(d.generatedAt||'').slice(0,16).replace('T',' · ')+' · '+d.picks.length+' IN + '+bench.length+' BENCH';
-  const byCat={};
-  d.picks.forEach(p=>{(byCat[p.category]??=[]).push(p)});
+  const bench=(c.candidates||[]),canonC=(cc.candidates||[]),canon=(lib.canon||[]),trending=(tr.trending||[]);
+  document.getElementById('eyebrow').textContent='WKNDR · CURATION BOARD · FEED '+(d.generatedAt||'').slice(0,16).replace('T',' · ');
   const board=document.getElementById('board');board.innerHTML='';
-  Object.keys(CAT).filter(cc=>byCat[cc]).forEach(cc=>{
-    const h=document.createElement('div');h.className='cathead';h.textContent=CAT[cc]+' — '+byCat[cc].length;board.appendChild(h);
-    const g=document.createElement('div');g.className='grid';board.appendChild(g);
-    byCat[cc].forEach(p=>addCard(p,g,false));
+  const rot=document.createElement('div');rot.id='tab-rot';board.appendChild(rot);
+  const nw=document.createElement('div');nw.id='tab-new';nw.style.display='none';board.appendChild(nw);
+
+  // ——— IN ROTATION: this weekend's feed ———
+  const byCat={};
+  (d.picks||[]).forEach(p=>{(byCat[p.category]??=[]).push(p)});
+  const fh=document.createElement('div');fh.className='cathead hot';fh.textContent="THIS WEEKEND'S FEED — "+(d.picks||[]).length+' LIVE';rot.appendChild(fh);
+  Object.keys(CAT).filter(k=>byCat[k]).forEach(k=>{
+    const h=document.createElement('div');h.className='cathead';h.textContent=CAT[k]+' — '+byCat[k].length;rot.appendChild(h);
+    const g=document.createElement('div');g.className='grid';rot.appendChild(g);
+    byCat[k].forEach(p=>addCard(p,g,null));
   });
+  // ——— IN ROTATION: the approved canon library ———
+  if(canon.length){
+    const lh=document.createElement('div');lh.className='cathead lib';lh.textContent='THE CANON LIBRARY — '+canon.length+' IN ROTATION ('+canon.filter(p=>p.approved).length+' board-approved) · kill to retire';rot.appendChild(lh);
+    const byC={};canon.forEach(p=>{(byC[p.category]??=[]).push(p)});
+    Object.keys(CAT).filter(k=>byC[k]).forEach(k=>{
+      const h=document.createElement('div');h.className='cathead';h.textContent=CAT[k]+' — '+byC[k].length;rot.appendChild(h);
+      const g=document.createElement('div');g.className='grid';rot.appendChild(g);
+      byC[k].sort((a,b)=>(b.approved?1:0)-(a.approved?1:0)).forEach(p=>addCard(p,g,p.approved?'appr':null));
+    });
+  }
+  // ——— NEW FINDS: trending → bench → canon candidates ———
+  if(trending.length){
+    const h=document.createElement('div');h.className='cathead hot';h.textContent='TRENDING THIS WEEK — '+trending.length+' FRESH FINDS (star to flow in · ✕ to pass)';nw.appendChild(h);
+    const g=document.createElement('div');g.className='grid';nw.appendChild(g);
+    trending.forEach(p=>addCard({...p,id:'trend-'+p.title.toLowerCase().replace(/[^a-z0-9]+/g,'-')},g,'new'));
+  }
   if(bench.length){
-    const h=document.createElement('div');h.className='cathead bench';h.textContent='THE BENCH — '+bench.length+' ALTERNATIVES (star to promote · +canon to keep forever)';board.appendChild(h);
-    const g=document.createElement('div');g.className='grid';board.appendChild(g);
-    bench.forEach(p=>addCard(p,g,true));
+    const h=document.createElement('div');h.className='cathead';h.textContent='THE BENCH — '+bench.length+' ALTERNATIVES (star to promote)';nw.appendChild(h);
+    const g=document.createElement('div');g.className='grid';nw.appendChild(g);
+    bench.forEach(p=>addCard(p,g,'new'));
   }
-  const canonC=(cc.candidates||[]);
   if(canonC.length){
-    const h=document.createElement('div');h.className='cathead bench';h.textContent='CANON CANDIDATES — '+canonC.length+' SCOUTED FOR THE PERMANENT LIBRARY (+canon to approve · ✕ to reject)';board.appendChild(h);
-    const g=document.createElement('div');g.className='grid';board.appendChild(g);
-    canonC.forEach(p=>addCard({...p,id:'canon-cand-'+p.title.toLowerCase().replace(/[^a-z0-9]+/g,'-')},g,true));
+    const h=document.createElement('div');h.className='cathead';h.textContent='CANON CANDIDATES — '+canonC.length+' FOR THE PERMANENT LIBRARY (+canon to approve · ✕ to reject)';nw.appendChild(h);
+    const g=document.createElement('div');g.className='grid';nw.appendChild(g);
+    canonC.forEach(p=>addCard({...p,id:'canon-cand-'+p.title.toLowerCase().replace(/[^a-z0-9]+/g,'-')},g,'new'));
   }
+  document.getElementById('nrot').textContent='('+((d.picks||[]).length+canon.length)+')';
+  document.getElementById('nnew').textContent='('+(trending.length+bench.length+canonC.length)+')';
+  const tabs=document.getElementById('tabs');tabs.hidden=false;
+  tabs.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
+    tabs.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===t));
+    rot.style.display=t.dataset.tab==='rot'?'':'none';
+    nw.style.display=t.dataset.tab==='new'?'':'none';
+    window.scrollTo({top:0});
+  }));
   update();
 }).catch(e=>{document.getElementById('board').textContent='Could not load the feed: '+e});
 
-function addCard(p,g,isBench){
+function addCard(p,g,tag){
   const el=document.createElement('div');el.className='card';el.dataset.id=p.id;
   const bk=bakedFor(p.title);
-  el.innerHTML=(isBench?'<span class="benchtag">BENCH</span>':(bk?'<span class="r1">R1 ★'+(bk.stars||'')+'</span>':''))
+  const badge=tag==='appr'?'<span class="badge appr">✓'+(bk&&bk.stars?' ★'+bk.stars:'')+' APPROVED</span>'
+    :bk?'<span class="badge saved">★'+(bk.stars||'·')+' SAVED</span>'
+    :tag==='new'?'<span class="badge new">NEW</span>':'';
+  const title=p.link?'<a href="'+p.link+'" target="_blank" rel="noopener">'+p.title+'<span class="ext">↗</span></a>':p.title;
+  el.innerHTML=badge
     +'<button class="kill" title="Kill">✕</button>'
     +'<img loading="lazy" src="'+(p.image||'')+'" alt="">'
-    +'<div class="meta"><h3>'+p.title+'</h3>'
+    +'<div class="meta"><h3>'+title+'</h3>'
     +'<div class="sub">'+(p.venue||'')+' · '+(p.when||'')+'</div>'
-    +'<div class="src">'+(p.source||'')+(p.editorScore!=null?' · judge '+p.editorScore:'')+(p.buzz>1?' · buzz '+p.buzz:'')+'</div>'
+    +'<div class="src">'+(p.source||p.tier||'')+(p.editorScore!=null?' · judge '+p.editorScore:'')+(p.buzz>1?' · buzz '+p.buzz:'')+'</div>'
     +'<div class="stars">'+[1,2,3,4,5].map(n=>'<button class="star" data-n="'+n+'" aria-label="'+n+' stars">★</button>').join('')+'</div>'
     +'<div class="row"><button class="b imgup">IMG ✓</button><button class="b imgdn">IMG ✗</button><button class="b canon">+CANON</button></div>'
-    +'<input class="inp note" placeholder="note — why / what&#39;s off">'
+    +'<input class="inp note" placeholder="note — why / what&#39;s off / bad link">'
     +'<input class="inp better" placeholder="better image URL">'
     +'</div>';
   const get=()=>V[p.id]??={t:p.title};
-  // seed from baked R1 verdict unless the user already has local state for this card
   if(!V[p.id]&&bk){V[p.id]={t:p.title,stars:bk.stars,img:bk.img,note:bk.note,r1:true}}
   const v=V[p.id];
   const stars=el.querySelectorAll('.star');
@@ -150,7 +200,7 @@ function update(){
 }
 function payload(){
   const vs=verdicts();
-  return 'WKNDR curation R2 — '+new Date().toISOString().slice(0,16)+' — '+vs.length+' verdicts\n'+vs.map(v=>{
+  return 'WKNDR curation R3 — '+new Date().toISOString().slice(0,16)+' — '+vs.length+' verdicts\n'+vs.map(v=>{
     const bits=[];
     if(v.stars)bits.push('★'.repeat(v.stars));
     if(v.killed)bits.push('KILL');
@@ -168,10 +218,10 @@ document.getElementById('copy').addEventListener('click',async()=>{
 document.getElementById('send').addEventListener('click',async()=>{
   const b=document.getElementById('send');b.textContent='Sending…';
   try{
-    const r=await fetch(FORM,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({subject:'WKNDR curation R2',verdicts:payload()})});
+    const r=await fetch(FORM,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({subject:'WKNDR curation R3',verdicts:payload()})});
     if(r.ok){b.textContent='Sent ✓';b.classList.add('done')}else throw 0;
   }catch(e){b.textContent='Send failed — use Copy';}
-  setTimeout(()=>{b.textContent='Send verdicts';b.classList.remove('done')},3000);
+  setTimeout(()=>{b.textContent='Send verdicts',b.classList.remove('done')},3000);
 });
 </script>
 </body>
