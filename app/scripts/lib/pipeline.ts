@@ -25,6 +25,19 @@ export const titleKey = (s: string) =>
     .replace(/[^a-z0-9]+/g, '')
     .slice(0, 28)
 
+// WORD-ORDER-BLIND identity key: strip diacritics + stopwords, SORT the tokens. Catches the twins
+// prefix rules can't — "Openluchttheater Vondelpark" ⇄ "Vondelpark Openluchttheater", "Throwback
+// AMSTERDAM - Back to 80s…" ⇄ "Throwback | Back to 80s…". Returns '' (= no key, never matches)
+// under 2 meaningful tokens so short names can't over-merge.
+const TOK_STOP = new Set(['the', 'a', 'an', 'de', 'het', 'een', 'at', 'in', 'on', 'of', 'and', 'en', 'bij', 'to', 'met', 'with', 'w', 'amsterdam', 'festival', 'back'])
+export const tokKey = (s: string): string => {
+  const toks = s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
+    .replace(/\b(19|20)\d{2}\b/g, '')
+    .replace(/[^a-z0-9 ]/g, ' ')
+    .split(/\s+/).filter((x) => x && !TOK_STOP.has(x))
+  return toks.length >= 2 ? [...new Set(toks)].sort().join(' ') : ''
+}
+
 // Merge the same event arriving from multiple adapters. Key = title+venue. The richest
 // record wins; we union the source credits (the cross-source "buzz" signal lives here).
 export function dedupe(picks: Pick[]): Pick[] {
@@ -59,6 +72,21 @@ export function dedupe(picks: Pick[]): Pick[] {
     const base = [...out.keys()].find((o) => o.startsWith('t:') && o.length >= 12 && key.startsWith(o))
     if (base) out.set(base, merge(out.get(base)!, p))
     else out.set(key, p)
+  }
+
+  // PASS 2.5 — TOKEN-SET collapse among title-keyed picks: same words, different order/punctuation
+  // ("Openluchttheater Vondelpark" ⇄ "Vondelpark Openluchttheater"). Prefix rules can't see these;
+  // sorting the tokens can. Structured ids never collapse (two distinct events may share every word).
+  {
+    const byTok = new Map<string, string>()   // tokKey → the out-map key that owns it
+    for (const key of [...out.keys()]) {
+      if (!key.startsWith('t:')) continue
+      const tk = tokKey(out.get(key)!.title)
+      if (!tk) continue
+      const owner = byTok.get(tk)
+      if (owner && owner !== key && out.has(owner)) { out.set(owner, merge(out.get(owner)!, out.get(key)!)); out.delete(key) }
+      else byTok.set(tk, key)
+    }
   }
 
   // PASS 3 — RECONCILE across sources: a keyless pick that is the SAME event as a structured one (same
@@ -142,6 +170,7 @@ function imageDims(b: Uint8Array): [number, number] | null {
     const fmt = String.fromCharCode(b[12], b[13], b[14], b[15])
     if (fmt === 'VP8 ') return [(b[26] | b[27] << 8) & 0x3fff, (b[28] | b[29] << 8) & 0x3fff]
     if (fmt === 'VP8X') return [1 + (b[24] | b[25] << 8 | b[26] << 16), 1 + (b[27] | b[28] << 8 | b[29] << 16)]
+    if (fmt === 'VP8L') return [1 + (b[21] | (b[22] & 0x3f) << 8), 1 + ((b[22] >> 6) | b[23] << 2 | (b[24] & 0x0f) << 10)]   // lossless
   }
   if (b[0] === 0xff && b[1] === 0xd8) {                                                                                                    // JPEG
     let i = 2
@@ -166,13 +195,21 @@ export async function isGoodImage(url: string, timeoutMs = 8000): Promise<boolea
   try {
     const ctrl = new AbortController()
     const t = setTimeout(() => ctrl.abort(), timeoutMs)
-    const res = await fetch(url, { headers: { 'user-agent': UA, range: 'bytes=0-65535' }, signal: ctrl.signal, redirect: 'follow' })
+    // 256KB range — EXIF-heavy JPEGs park the SOF frame past 64KB; those used to slip the floor unparsed
+    const res = await fetch(url, { headers: { 'user-agent': UA, range: 'bytes=0-262143' }, signal: ctrl.signal, redirect: 'follow' })
     clearTimeout(t)
     if (!res.ok || !(res.headers.get('content-type') || '').startsWith('image/')) return false
     const wh = imageDims(new Uint8Array(await res.arrayBuffer()))
-    if (!wh) return true                                  // couldn't parse (progressive/odd) — give benefit of the doubt
+    // UNPARSEABLE = UNVERIFIABLE = REJECT. The old benefit-of-the-doubt pass was the low-res back door:
+    // an image whose dims couldn't be read skipped the resolution floor entirely — exactly the tiny
+    // organiser uploads that render as bitmapped mush on the 1200-tall card. Every caller has a
+    // fallback (gather chain → bank), so rejecting an oddball container costs a photo swap, not a card.
+    if (!wh) return false
     const [w, h] = wh, ar = w / h
-    return Math.min(w, h) >= MIN_DIM && ar >= ASPECT_RANGE[0] && ar <= ASPECT_RANGE[1]
+    if (Math.min(w, h) < MIN_DIM || ar < ASPECT_RANGE[0] || ar > ASPECT_RANGE[1]) return false
+    // RENDER-AWARE upscale guard: the card is 800×1200 cover, so scale = max(800/w, 1200/h). A landscape
+    // 1200×720 passes the 700 floor on width but stretches 1.67× in height → visible bitmap. Cap 1.6×.
+    return Math.max(800 / w, 1200 / h) <= 1.6
   } catch {
     return false
   }
@@ -553,8 +590,10 @@ export async function imageIsCardworthy(url: string): Promise<boolean> {
           { type: 'image', source: { type: 'base64', media_type: mt, data: buf.toString('base64') } },
           { type: 'text', text:
             'Is this image usable as an event-card BACKGROUND? KEEP if it is a real photograph OR a designed ' +
-            'event poster/flyer with pictorial imagery. REJECT only if it is essentially a logo, wordmark, icon, ' +
+            'event poster/flyer with pictorial imagery. REJECT if it is essentially a logo, wordmark, icon, ' +
             'flat/solid-colour graphic, near-blank or near-black frame, QR code, or a text-only slide. ' +
+            'ALSO REJECT if the image is visibly pixelated, upscaled-looking, out of focus, or wrecked by ' +
+            'compression artifacts — it will be blown up to a full-screen card and must survive that. ' +
             'Reply ONLY JSON: {"keep": true|false}.' },
         ] }],
       }),

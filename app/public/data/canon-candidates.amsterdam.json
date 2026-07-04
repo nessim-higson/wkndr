@@ -1,33 +1,7 @@
 {
   "generatedAt": "2026-07-02",
-  "count": 41,
+  "count": 29,
   "candidates": [
-    {
-      "title": "De Kas",
-      "category": "eat",
-      "area": "Park Frankendael, Oost",
-      "when": "Tue–Sat · lunch & dinner",
-      "price": "€€€€",
-      "blurb": "Chefs cook what the on-site nursery grew that morning, served inside a 1926 municipal greenhouse. Amsterdam's greenest dinner ritual.",
-      "why": "Dinner inside a working greenhouse",
-      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Kom_in_de_kas_%28Westland%29.JPG/1280px-Kom_in_de_kas_%28Westland%29.JPG",
-      "imageDims": "1280x960",
-      "link": "https://restaurantdekas.com",
-      "tier": "classic"
-    },
-    {
-      "title": "Bakers & Roasters",
-      "category": "eat",
-      "area": "De Pijp",
-      "when": "Daily · 8:30–16:00",
-      "price": "€€",
-      "blurb": "Kiwi-Brazilian brunch institution: banana bread, proper flat whites and benedicts that still set the city's weekend standard.",
-      "why": "The brunch that started it",
-      "image": "https://my.pocketmenu.nl/uploads/images/websites/bakers-roasters/crop_rectangle/bakersroasters-51s-1.jpg",
-      "imageDims": "1900x1100",
-      "link": "https://www.bakersandroasters.com",
-      "tier": "bespoke"
-    },
     {
       "title": "Balthazar's Keuken",
       "category": "eat",
@@ -39,19 +13,6 @@
       "image": "https://balthazarskeuken.nl/bg-barparry.png",
       "imageDims": "1400x637",
       "link": "https://www.balthazarskeuken.nl",
-      "tier": "bespoke"
-    },
-    {
-      "title": "Warung Spang Makandra",
-      "category": "eat",
-      "area": "Gerard Doustraat, De Pijp",
-      "when": "Daily · lunch & dinner",
-      "price": "€",
-      "blurb": "Surinamese-Javanese counter where the roti and bami outclass restaurants triple the price. A De Pijp constant since 1978.",
-      "why": "Best-value plate in De Pijp",
-      "image": "https://static.wixstatic.com/media/a0673b_0779ccb8c0a144cfa569252cba2adbf9~mv2.jpg/v1/fill/w_1200,h_800,al_c,q_85/spang.jpg",
-      "imageDims": "1200x800",
-      "link": "https://spangmakandra.nl",
       "tier": "bespoke"
     },
     {
@@ -120,19 +81,6 @@
       "tier": "classic"
     },
     {
-      "title": "Glou Glou",
-      "category": "drink",
-      "area": "Tweede v.d. Helststraat, De Pijp",
-      "when": "Daily · from 16:00",
-      "price": "€€",
-      "blurb": "The bar that taught De Pijp to drink natural: a chalkboard of funky glasses, cheese plates, and standing-room spill onto the square.",
-      "why": "De Pijp's natural-wine common room",
-      "image": "https://www.yourlittleblackbook.me/wp-content/uploads/2015/04/glouglou02.jpg",
-      "imageDims": "600x450",
-      "link": "https://glouglou.nl",
-      "tier": "bespoke"
-    },
-    {
       "title": "Lot Sixty One",
       "category": "drink",
       "area": "Kinkerstraat, West",
@@ -144,19 +92,6 @@
       "imageDims": "1200x630",
       "link": "https://lot61.com",
       "tier": "bespoke"
-    },
-    {
-      "title": "Brouwerij 't IJ",
-      "category": "drink",
-      "area": "Funenkade, Oost",
-      "when": "Daily · 14:00–20:00",
-      "price": "€",
-      "blurb": "The brewery under the De Gooyer windmill: Zatte and ossenworst on a terrace that invented the Amsterdam craft-beer afternoon.",
-      "why": "IPA under a windmill",
-      "image": "https://cms.brouwerijhetij.nl/storage/transforms/images/De-brouwerij/_1200x630_crop_center-center_82_none/Brouwerij-t-IJ.jpg?mtime=1770885270",
-      "imageDims": "1200x630",
-      "link": "https://www.brouwerijhetij.nl",
-      "tier": "classic"
     },
     {
       "title": "Café de Dokter",
@@ -183,58 +118,6 @@
       "imageDims": "1280x1700",
       "link": "https://papeneiland.nl",
       "tier": "classic"
-    },
-    {
-      "title": "Droog",
-      "category": "shop",
-      "area": "Staalstraat, Centrum",
-      "when": "Tue–Sun",
-      "price": "€€€",
-      "blurb": "Where Dutch conceptual design was born: gallery, shop, courtyard garden and a single hotel room in a Staalstraat warehouse.",
-      "why": "Dutch design's conceptual mothership",
-      "image": "https://www.droog.com/wp-content/uploads/2020/04/85_lamps_01.png",
-      "imageDims": "1190x893",
-      "link": "https://www.droog.com",
-      "tier": "classic"
-    },
-    {
-      "title": "Rush Hour Records",
-      "category": "shop",
-      "area": "Spuistraat, Centrum",
-      "when": "Mon–Sat",
-      "price": "€€",
-      "blurb": "Globally revered house and techno shop and label — the racks where Amsterdam's DJ lineage actually gets built.",
-      "why": "World-class electronic record shop",
-      "image": "https://app.thefeedfactory.nl/api/assets/6887707794ebc638398be041/Rush_Hour.webp",
-      "imageDims": "1342x1020",
-      "link": "https://www.rushhour.nl",
-      "tier": "bespoke"
-    },
-    {
-      "title": "Red Light Records",
-      "category": "shop",
-      "area": "Oudekerksplein, De Wallen",
-      "when": "Mon–Sat · 12:00–18:00",
-      "price": "€€",
-      "blurb": "Crate den in a former red-light window: staff-picked obscurities, listening decks, zero algorithm. Ring the bell.",
-      "why": "Vinyl in a former window brothel",
-      "image": "https://images.vinylworld.org/record-store/s600/1d2wpwouhB7bHEKM0.webp",
-      "imageDims": "450x600",
-      "link": "https://redlightrecordsamsterdam.com",
-      "tier": "bespoke"
-    },
-    {
-      "title": "MENDO",
-      "category": "shop",
-      "area": "Berenstraat, Negen Straatjes",
-      "when": "Daily",
-      "price": "€€",
-      "blurb": "A self-described candy store for book aficionados: black-walled cabinet of photography, design and fashion monographs.",
-      "why": "Coffee-table-book candy store",
-      "image": "https://mendo.nl/cdn/shop/files/Frankey_Positive_Disruption_plain.png?v=1732108299&width=480",
-      "imageDims": "480x634",
-      "link": "https://mendo.nl",
-      "tier": "bespoke"
     },
     {
       "title": "Laura Dols",
@@ -302,19 +185,6 @@
       "tier": "bespoke"
     },
     {
-      "title": "Museum Van Loon",
-      "category": "out",
-      "area": "Keizersgracht",
-      "when": "Wed–Mon · 10:00–17:00",
-      "price": "€€",
-      "blurb": "A patrician canal house still furnished as lived: portraits, coach house, and the quietest formal garden inside the ring.",
-      "why": "Canal-house time capsule with garden",
-      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Amsterdam_-_Museum_Van_Loon_-_Gardens.jpg/1280px-Amsterdam_-_Museum_Van_Loon_-_Gardens.jpg",
-      "imageDims": "1280x853",
-      "link": "https://www.museumvanloon.nl",
-      "tier": "classic"
-    },
-    {
       "title": "De Hollandsche Manege",
       "category": "out",
       "area": "Vondelstraat, Oud-West",
@@ -326,19 +196,6 @@
       "imageDims": "470x740",
       "link": "https://www.dehollandschemanege.nl",
       "tier": "bespoke"
-    },
-    {
-      "title": "Amsterdamse Bos",
-      "category": "out",
-      "area": "Zuid / Amstelveen",
-      "when": "Always open",
-      "price": "Free",
-      "blurb": "A hand-planted 1930s forest three times Central Park's size: canoes, an open-air theatre and hidden meadows, twenty minutes from De Pijp.",
-      "why": "The city's own forest",
-      "image": "https://upload.wikimedia.org/wikipedia/commons/6/61/Amsterdamse-bos-heuvel.jpg",
-      "imageDims": "1024x768",
-      "link": "https://www.amsterdamsebos.nl",
-      "tier": "classic"
     },
     {
       "title": "Zuiderbad",
@@ -416,19 +273,6 @@
       "image": "https://framerframed.nl/wp-content/uploads/2026/05/Wild-Waters_Website-01-1400x933.png",
       "imageDims": "1400x933",
       "link": "https://framerframed.nl",
-      "tier": "bespoke"
-    },
-    {
-      "title": "Nxt Museum",
-      "category": "art",
-      "area": "Asterweg, Noord",
-      "when": "Wed–Sun (daily in summer)",
-      "price": "€€",
-      "blurb": "Warehouse-scale new-media museum in Noord: room-sized audiovisual installations rewired each season by artists and coders.",
-      "why": "Room-scale digital art in Noord",
-      "image": "https://admin.nxtmuseum.com/content/uploads/2025/02/Nxt-Museum-Still-Processing-opening-028-low-res-–-foto-Maarten-Nauw.jpg",
-      "imageDims": "1350x900",
-      "link": "https://nxtmuseum.com",
       "tier": "bespoke"
     },
     {

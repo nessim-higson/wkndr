@@ -32,6 +32,7 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 .badge.new{background:var(--ink)}
 .badge.appr{background:var(--green)}
 .badge.pile{background:var(--accent)}
+.lowres{position:absolute;bottom:10px;left:10px;background:#c33;color:#fff;font-family:ui-monospace,monospace;font-size:9px;font-weight:700;letter-spacing:.06em;padding:3px 8px;border-radius:999px}
 .kill{position:absolute;top:10px;right:10px;width:34px;height:34px;border-radius:999px;border:0;background:rgba(27,26,23,.75);color:#fff;font-size:16px;line-height:1;cursor:pointer;backdrop-filter:blur(4px)}
 .kill:hover{background:#c33}
 .meta{padding:10px 11px 12px;display:flex;flex-direction:column;gap:8px;flex:1}
@@ -91,6 +92,27 @@ function store(){try{localStorage.setItem(feedKey,JSON.stringify({V}))}catch(e){
 function restore(){try{const s=JSON.parse(localStorage.getItem(feedKey)||'{}');V=s.V||{}}catch(e){}}
 // longest matching key wins ("bakers & roasters" beats "bak")
 function bakedFor(title){const t=title.toLowerCase();let best=null,len=-1;for(const k in baked){if(t.includes(k)&&k.length>len){best=baked[k];len=k.length}}return best}
+// word-order-blind identity key (mirror of the pipeline's tokKey) — powers cross-section dupe suppression
+const TOKSTOP=new Set(['the','a','an','de','het','een','at','in','on','of','and','en','bij','to','met','with','w','amsterdam','festival','back']);
+function tok(t){const x=t.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/\b(19|20)\d{2}\b/g,'').replace(/[^a-z0-9 ]/g,' ').split(/\s+/).filter(y=>y&&!TOKSTOP.has(y));return x.length>=2?[...new Set(x)].sort().join(' '):t.toLowerCase().replace(/[^a-z0-9]/g,'')}
+const seenTok=new Set();
+// filter rows against everything already rendered; seed=false leaves the seen-set untouched (the PILE mirrors the feed by design)
+function fresh(rows,seed=true){const keep=[],skipped=[];for(const p of rows){const k=tok(p.title);if(seenTok.has(k))skipped.push(p);else{keep.push(p);if(seed)seenTok.add(k)}}return{keep,hidden:skipped.length}}
+// LOW-RES probe: load the ORIGINAL image (unwrap the weserv proxy — it masks true size by upscaling
+// to 800×1200) and flag any source the card must stretch >1.6× — the "bitmapped" class.
+const probeQ=[];let probing=0;
+function probeRes(el,imgUrl){
+  let orig=imgUrl;try{const u=new URL(imgUrl);if(u.hostname==='images.weserv.nl'&&u.searchParams.get('url'))orig=decodeURIComponent(u.searchParams.get('url'))}catch(e){}
+  if(!/^https?:/.test(orig))return;
+  probeQ.push(()=>{const im=new Image();
+    im.onload=()=>{probing--;pump();const w=im.naturalWidth,h=im.naturalHeight;if(!w||!h)return;
+      const f=Math.max(800/w,1200/h);
+      if(f>1.6){const t=document.createElement('span');t.className='lowres';t.textContent='LOW RES · '+w+'×'+h;el.appendChild(t)}};
+    im.onerror=()=>{probing--;pump()};
+    im.src=orig});
+  pump();
+}
+function pump(){while(probing<4&&probeQ.length){probing++;probeQ.shift()()}}
 const jf=(u,fb)=>fetch(u+'?t='+Date.now()).then(r=>r.ok?r.json():fb).catch(()=>fb);
 Promise.all([
  jf('../data/picks.amsterdam.json',{picks:[]}),
@@ -117,42 +139,46 @@ Promise.all([
   if(pile.length){
     const ph=document.createElement('div');ph.className='cathead hot';ph.textContent='THE WEEKEND PILE — THE '+pile.length+' OPENING CARDS, IN ORDER (▲ lead = put it here this weekend · ▼ later = not this week · applies next run)';rot.appendChild(ph);
     const pg=document.createElement('div');pg.className='grid';rot.appendChild(pg);
-    pile.forEach((p,i)=>addCard(p,pg,'pile',i+1));
+    pile.forEach((p,i)=>addCard(p,pg,'pile',i+1,true));
   }
-  // ——— IN ROTATION: this weekend's feed ———
+  // ——— IN ROTATION: this weekend's feed (canonical — seeds the cross-section dupe suppressor) ———
   const byCat={};
-  (d.picks||[]).forEach(p=>{(byCat[p.category]??=[]).push(p)});
+  (d.picks||[]).forEach(p=>{(byCat[p.category]??=[]).push(p);seenTok.add(tok(p.title))});
   const fh=document.createElement('div');fh.className='cathead hot';fh.textContent="THIS WEEKEND'S FEED — "+(d.picks||[]).length+' LIVE';rot.appendChild(fh);
   Object.keys(CAT).filter(k=>byCat[k]).forEach(k=>{
     const h=document.createElement('div');h.className='cathead';h.textContent=CAT[k]+' — '+byCat[k].length;rot.appendChild(h);
     const g=document.createElement('div');g.className='grid';rot.appendChild(g);
-    byCat[k].forEach(p=>addCard(p,g,null));
+    byCat[k].forEach(p=>addCard(p,g,null,0,true));
   });
-  // ——— IN ROTATION: the approved canon library ———
+  // ——— IN ROTATION: the approved canon library (twins already in this week's feed are hidden) ———
   if(canon.length){
-    const lh=document.createElement('div');lh.className='cathead lib';lh.textContent='THE CANON LIBRARY — '+canon.length+' IN ROTATION ('+canon.filter(p=>p.approved).length+' board-approved) · kill to retire';rot.appendChild(lh);
-    const byC={};canon.forEach(p=>{(byC[p.category]??=[]).push(p)});
+    const lc=fresh(canon);
+    const lh=document.createElement('div');lh.className='cathead lib';lh.textContent='THE CANON LIBRARY — '+lc.keep.length+' IN ROTATION ('+canon.filter(p=>p.approved).length+' board-approved) · kill to retire'+(lc.hidden?' · '+lc.hidden+' hidden (in this week\'s feed above)':'');rot.appendChild(lh);
+    const byC={};lc.keep.forEach(p=>{(byC[p.category]??=[]).push(p)});
     Object.keys(CAT).filter(k=>byC[k]).forEach(k=>{
       const h=document.createElement('div');h.className='cathead';h.textContent=CAT[k]+' — '+byC[k].length;rot.appendChild(h);
       const g=document.createElement('div');g.className='grid';rot.appendChild(g);
       byC[k].sort((a,b)=>(b.approved?1:0)-(a.approved?1:0)).forEach(p=>addCard(p,g,p.approved?'appr':null));
     });
   }
-  // ——— NEW FINDS: trending → bench → canon candidates ———
-  if(trending.length){
-    const h=document.createElement('div');h.className='cathead hot';h.textContent='TRENDING THIS WEEK — '+trending.length+' FRESH FINDS (star to flow in · ✕ to pass)';nw.appendChild(h);
+  // ——— NEW FINDS: trending → bench → canon candidates (each hides twins shown in ANY earlier section) ———
+  const tr2=fresh(trending);
+  if(tr2.keep.length){
+    const h=document.createElement('div');h.className='cathead hot';h.textContent='TRENDING THIS WEEK — '+tr2.keep.length+' FRESH FINDS (star to flow in · ✕ to pass)';nw.appendChild(h);
     const g=document.createElement('div');g.className='grid';nw.appendChild(g);
-    trending.forEach(p=>addCard({...p,id:'trend-'+p.title.toLowerCase().replace(/[^a-z0-9]+/g,'-')},g,'new'));
+    tr2.keep.forEach(p=>addCard({...p,id:'trend-'+p.title.toLowerCase().replace(/[^a-z0-9]+/g,'-')},g,'new',0,true));
   }
-  if(bench.length){
-    const h=document.createElement('div');h.className='cathead';h.textContent='THE BENCH — '+bench.length+' ALTERNATIVES (star to promote)';nw.appendChild(h);
+  const be2=fresh(bench);
+  if(be2.keep.length){
+    const h=document.createElement('div');h.className='cathead';h.textContent='THE BENCH — '+be2.keep.length+' ALTERNATIVES (star to promote)'+(be2.hidden?' · '+be2.hidden+' hidden (shown above)':'');nw.appendChild(h);
     const g=document.createElement('div');g.className='grid';nw.appendChild(g);
-    bench.forEach(p=>addCard(p,g,'new'));
+    be2.keep.forEach(p=>addCard(p,g,'new',0,true));
   }
-  if(canonC.length){
-    const h=document.createElement('div');h.className='cathead';h.textContent='CANON CANDIDATES — '+canonC.length+' FOR THE PERMANENT LIBRARY (+canon to approve · ✕ to reject)';nw.appendChild(h);
+  const cc2=fresh(canonC);
+  if(cc2.keep.length){
+    const h=document.createElement('div');h.className='cathead';h.textContent='CANON CANDIDATES — '+cc2.keep.length+' FOR THE PERMANENT LIBRARY (+canon to approve · ✕ to reject)'+(cc2.hidden?' · '+cc2.hidden+' hidden (already in rotation)':'');nw.appendChild(h);
     const g=document.createElement('div');g.className='grid';nw.appendChild(g);
-    canonC.forEach(p=>addCard({...p,id:'canon-cand-'+p.title.toLowerCase().replace(/[^a-z0-9]+/g,'-')},g,'new'));
+    cc2.keep.forEach(p=>addCard({...p,id:'canon-cand-'+p.title.toLowerCase().replace(/[^a-z0-9]+/g,'-')},g,'new',0,true));
   }
   document.getElementById('nrot').textContent='('+((d.picks||[]).length+canon.length)+')';
   document.getElementById('nnew').textContent='('+(trending.length+bench.length+canonC.length)+')';
@@ -166,8 +192,9 @@ Promise.all([
   update();
 }).catch(e=>{document.getElementById('board').textContent='Could not load the feed: '+e});
 
-function addCard(p,g,tag,pos){
+function addCard(p,g,tag,pos,probe){
   const el=document.createElement('div');el.className='card';el.dataset.id=p.id+(tag==='pile'?'::pile':'');
+  if(probe&&p.image)probeRes(el,p.image);
   const bk=bakedFor(p.title);
   const badge=tag==='pile'?'<span class="badge pile">#'+pos+(p.top?' · 👑':p.lead?' · ▲':'')+'</span>'
     :tag==='appr'?'<span class="badge appr">✓'+(bk&&bk.stars?' ★'+bk.stars:'')+' APPROVED</span>'

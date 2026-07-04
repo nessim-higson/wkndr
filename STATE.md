@@ -7,7 +7,7 @@ FIRST in a new chat. For strategy + backlog see `docs/backlog.md`; for the pipel
 React + TS, run with `bun`); deployed to GitHub Pages._
 
 ## Live right now
-- **App: V.7.19** — https://nessim-higson.github.io/wkndr/ (cache-bust `?v=V.7.19`) · **Curation
+- **App: V.8** — https://nessim-higson.github.io/wkndr/ (cache-bust `?v=V.8`) · **Curation
   Board:** https://nessim-higson.github.io/wkndr/curate/ — tabbed (V.7.17): `IN ROTATION` (opens with
   **THE WEEKEND PILE** — the 10 projected opening cards in serve order — then the feed + 147-pick canon
   library w/ ✓ APPROVED badges) vs `NEW FINDS` (TRENDING inbox → bench → canon candidates); card titles

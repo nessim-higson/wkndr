@@ -19,7 +19,7 @@
  */
 import { CITIES, type City } from '../src/data/cities'
 import type { Pick } from '../src/types'
-import { dedupe, balanceByCategory, isGoodImage, isPortraitImage, imageBroken, urlLooksNonPhoto, imageIsCardworthy, fetchEventImage, toPortrait, wikiImage, webImageCandidates, verifyImageForEvent, pexelsImage, whenIsPast, whenBeforeWeekend, upcomingWeekend, linkOk, mapLimit, titleKey } from './lib/pipeline'
+import { dedupe, balanceByCategory, isGoodImage, isPortraitImage, imageBroken, urlLooksNonPhoto, imageIsCardworthy, fetchEventImage, toPortrait, wikiImage, webImageCandidates, verifyImageForEvent, pexelsImage, whenIsPast, whenBeforeWeekend, upcomingWeekend, linkOk, mapLimit, titleKey, tokKey } from './lib/pipeline'
 import { fixWhen, latestDateOf } from '../src/lib/when'
 import { songkickAdapter } from './adapters/songkick'
 import { llmExtract } from './adapters/llm'
@@ -673,14 +673,24 @@ async function buildCity(city: City) {
   {
     const pubIds = new Set(picks.map((p) => p.id))
     const pubKeys = new Set(picks.map((p) => titleKey(p.title)))
+    const pubToks = new Set(picks.map((p) => tokKey(p.title)).filter(Boolean))
+    const benchToks = new Set<string>()   // no word-order twins WITHIN the bench either
     const cands = prePool
       .filter((p) => {
         if (pubIds.has(p.id) || !p.image || whenIsPast(p.when)) return false
         const k = titleKey(p.title)
         if (pubKeys.has(k)) return false
         // near-match twins of published cards stay off the bench (killing "Festival TREK" must not deal
-        // "TREK Amstelpark" back in) — same ≥12-char prefix rule the dedupe uses
-        for (const pk of pubKeys) if ((pk.length >= 12 && k.startsWith(pk)) || (k.length >= 12 && pk.startsWith(k))) return false
+        // "TREK Amstelpark" back in) — the dedupe's prefix rule, at a LOWER ≥8 threshold: the bench is
+        // alternatives, so over-filtering a borderline twin ("Julidans" vs "Julidans Festival") beats
+        // showing Ness the same event twice. The published feed keeps the conservative 12.
+        for (const pk of pubKeys) if ((pk.length >= 8 && k.startsWith(pk)) || (k.length >= 8 && pk.startsWith(k))) return false
+        // word-order/punctuation twins: no bench card may share a token-set with a PUBLISHED card
+        // ("Vondelpark Openluchttheater" when "Openluchttheater Vondelpark" shipped) or with an
+        // earlier bench card (both orderings of the same thing side by side ON the bench).
+        const tk = tokKey(p.title)
+        if (tk && (pubToks.has(tk) || benchToks.has(tk))) return false
+        if (tk) benchToks.add(tk)
         if (isVetoed(p.title)) return false
         return true
       })

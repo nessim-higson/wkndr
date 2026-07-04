@@ -14,6 +14,27 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.8] — 2026-07-04 — "Low-res detection + dupe suppression, everywhere" (tag `v8.0`)
+_Ness: "detect resolution / flag low res — I still see bitmapped images. And I still see dupes." Both
+root-caused and closed at every layer._
+- **The low-res back door, shut** — `isGoodImage` used to PASS any image whose dimensions it couldn't
+  parse (the tiny-organiser-upload class slipped the 700px floor unverified). Now: 256KB probe range
+  (EXIF-heavy JPEGs), WEBP-lossless parsing, and **unparseable = reject** (fallbacks: gather → bank).
+- **Render-aware upscale guard** — the card renders 800×1200 cover; any source stretching >1.6×
+  (e.g. landscape 1200×720 — passed the old floor on width!) is rejected. Vision screens now also
+  reject visibly pixelated / upscaled / compression-wrecked images.
+- **LOW RES flags on the board** — every fresh-facing card probes its ORIGINAL image (unwrapping the
+  wsrv proxy that masks true size) and wears a red `LOW RES · w×h` tag when it would stretch >1.6×.
+  First pass flagged 22 — including several of Ness's own picks (MENDO 480×634, IJ-Hallen 660×440):
+  fine as thumbnails, mush at card size. The better-image field is the fix lever.
+- **Dupes: 43 cross-surface twins found and closed** — (a) board sections now suppress token-set twins
+  shown in an earlier section (canon-in-feed no longer double-renders; TRENDING festivals no longer
+  re-appear on the bench) with "N hidden" counts; (b) `dedupe()` PASS 2.5: word-order/punctuation
+  twins collapse ("Openluchttheater Vondelpark" ⇄ "Vondelpark Openluchttheater"); (c) bench filter:
+  token-set + ≥8-char prefix vs published; (d) canon-candidates pruned of the 12 already-approved;
+  (e) veto: Hortus-Botanicus-summer-evenings EN variants + "Live at Amsterdamse Bos" (killed
+  Bostheater programming under another name).
+
 ## [V.7.19] — 2026-07-03 — "THE WEEKEND PILE — weekly slate controls"
 - **Board opens with THE WEEKEND PILE** — the 10 projected opening cards, numbered in serve order
   (top → lead → editorScore → buzz), so Ness SEES the top of the pile before users do.
