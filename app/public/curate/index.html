@@ -33,6 +33,11 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 .badge.appr{background:var(--green)}
 .badge.pile{background:var(--accent)}
 .lowres{position:absolute;bottom:10px;left:10px;background:#c33;color:#fff;font-family:ui-monospace,monospace;font-size:9px;font-weight:700;letter-spacing:.06em;padding:3px 8px;border-radius:999px}
+.card img{cursor:zoom-in}
+#veil{position:fixed;inset:0;z-index:60;display:none;place-items:center;background:rgba(6,5,4,.94);backdrop-filter:blur(8px);cursor:zoom-out;padding:20px}
+#veil.on{display:grid}
+#veil img{max-width:100%;max-height:calc(100dvh - 80px);object-fit:contain;border-radius:6px;box-shadow:0 18px 60px rgba(0,0,0,.6);cursor:zoom-out}
+#veilcap{position:absolute;bottom:16px;left:20px;right:20px;text-align:center;font-family:ui-monospace,monospace;font-size:11px;letter-spacing:.06em;color:rgba(255,255,255,.75);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .kill{position:absolute;top:10px;right:10px;width:34px;height:34px;border-radius:999px;border:0;background:rgba(27,26,23,.75);color:#fff;font-size:16px;line-height:1;cursor:pointer;backdrop-filter:blur(4px)}
 .kill:hover{background:#c33}
 .meta{padding:10px 11px 12px;display:flex;flex-direction:column;gap:8px;flex:1}
@@ -114,6 +119,19 @@ function probeRes(el,imgUrl){
   pump();
 }
 function pump(){while(probing<4&&probeQ.length){probing++;probeQ.shift()()}}
+// THE LOUPE — click any card photo to see the ORIGINAL, uncropped, with true dimensions.
+// (Every card render is a wsrv 800×1200 crop; judging an image means seeing the whole frame.)
+const veil=document.createElement('div');veil.id='veil';veil.innerHTML='<img alt=""><span id="veilcap"></span>';document.body.appendChild(veil);
+veil.addEventListener('click',()=>veil.classList.remove('on'));
+document.addEventListener('keydown',e=>{if(e.key==='Escape')veil.classList.remove('on')});
+function focusImg(p){
+  let orig=p.image;try{const u=new URL(p.image);if(u.hostname==='images.weserv.nl'&&u.searchParams.get('url'))orig=decodeURIComponent(u.searchParams.get('url'))}catch(e){}
+  const im=veil.querySelector('img'),cap=document.getElementById('veilcap');
+  cap.textContent=p.title+' · loading original…';
+  im.onload=()=>{cap.textContent=p.title+' · original '+im.naturalWidth+'×'+im.naturalHeight+(Math.max(800/im.naturalWidth,1200/im.naturalHeight)>1.6?' · LOW RES for the card':'')};
+  im.onerror=()=>{if(im.src!==p.image){im.src=p.image;cap.textContent=p.title+' · original blocked — showing the card render'}};
+  im.src=orig;veil.classList.add('on');
+}
 const jf=(u,fb)=>fetch(u+'?t='+Date.now()).then(r=>r.ok?r.json():fb).catch(()=>fb);
 Promise.all([
  jf('../data/picks.amsterdam.json',{picks:[]}),
@@ -233,6 +251,7 @@ function addCard(p,g,tag,pos,probe){
     if(!was)b.classList.add('on');
     get().img=was?undefined:(up?'good':'bad');update();
   }));
+  el.querySelector('img').addEventListener('click',()=>{if(p.image)focusImg(p)});
   el.querySelector('.note').addEventListener('change',e=>{get().note=e.target.value.trim()||undefined;update()});
   el.querySelector('.better').addEventListener('change',e=>{get().betterImage=e.target.value.trim()||undefined;update()});
   if(v){if(v.stars)paint(v.stars);if(v.img)el.querySelector(v.img==='good'?'.imgup':'.imgdn').classList.add('on');

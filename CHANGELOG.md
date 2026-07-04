@@ -14,6 +14,14 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.8.3] — 2026-07-04 — "The loupe on the board + no more crop-of-a-crop"
+- **Board loupe** — click any card photo on the Curation Board → the ORIGINAL, uncropped, full-screen
+  with true dimensions (and a "LOW RES for the card" verdict when it can't survive the render). The
+  judging tool now shows the whole frame — Ness's actual ask.
+- **Detail-sheet double-crop fixed** — the sheet's 3/2 landscape header was fed the card's 800×1200
+  PORTRAIT render: a crop OF a crop showing the middle ~44% ("the crop is too tight"). The header now
+  re-derives a 3/2 render from the ORIGINAL via the same wsrv pipeline — one crop, right aspect.
+
 ## [V.8.2] — 2026-07-04 — "Submit → GitHub + the focus view"
 - **Submit → GitHub (board)** — one click files the verdict round as a labeled issue on the repo
   (prefilled issue URL, no token, Ness is already signed in): durable, versioned, and the canonical
