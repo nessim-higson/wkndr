@@ -269,9 +269,10 @@ function update(){
   document.getElementById('count').textContent=vs.filter(v=>v.top).length+' top · '+vs.filter(v=>v.lead).length+' lead · '+vs.filter(v=>v.later).length+' later · '+vs.filter(v=>v.stars).length+' starred · '+vs.filter(v=>v.killed).length+' killed · '+vs.filter(v=>v.canon).length+' canon';
   store();
 }
+// pretty, human-readable — for Copy + Email (no size limit there)
 function payload(){
   const vs=verdicts();
-  return 'WKNDR curation R3 — '+new Date().toISOString().slice(0,16)+' — '+vs.length+' verdicts\n'+vs.map(v=>{
+  return 'WKNDR curation — '+new Date().toISOString().slice(0,16)+' — '+vs.length+' verdicts\n'+vs.map(v=>{
     const bits=[];
     if(v.top)bits.push('👑TOP');
     if(v.lead)bits.push('▲LEAD');
@@ -285,6 +286,25 @@ function payload(){
     return '· '+v.t+' — '+bits.join(' · ');
   }).join('\n');
 }
+// COMPACT ASCII — for the GitHub prefill URL only. Multi-byte glyphs (★ → %E2%98%85 = 9 chars each,
+// 👑 ▲ ▼ · — “ ”) blow the ~8KB URL cap fast; plain ASCII (4* etc.) keeps even an 80-verdict round
+// under the limit, so the issue opens fully prefilled — no paste. Reads + compiles identically.
+function payloadCompact(){
+  const vs=verdicts();
+  return 'WKNDR curation '+new Date().toISOString().slice(0,16)+' - '+vs.length+' verdicts\n'+vs.map(v=>{
+    const bits=[];
+    if(v.top)bits.push('TOP');
+    if(v.lead)bits.push('LEAD');
+    if(v.later)bits.push('LATER');
+    if(v.stars)bits.push(v.stars+'*');
+    if(v.killed)bits.push('KILL');
+    if(v.canon)bits.push('CANON');
+    if(v.img==='bad')bits.push('img:bad');   // img:good omitted from the URL (no-action) → headroom; full record is in Copy/Email
+    if(v.note)bits.push('note:'+v.note);
+    if(v.betterImage)bits.push('img-url:'+v.betterImage);
+    return '- '+v.t+' | '+bits.join(' ');
+  }).join('\n');
+}
 document.getElementById('copy').addEventListener('click',async()=>{
   try{await navigator.clipboard.writeText(payload())}catch(e){}
   const b=document.getElementById('copy');b.textContent='Copied';setTimeout(()=>b.textContent='Copy',2000);
@@ -295,13 +315,13 @@ document.getElementById('copy').addEventListener('click',async()=>{
 // goes to the clipboard and the issue opens ready to paste.
 document.getElementById('ghfile').addEventListener('click',async()=>{
   const b=document.getElementById('ghfile');
-  const p=payload();
   const base='https://github.com/nessim-higson/wkndr/issues/new';
   const title='WKNDR curation '+new Date().toISOString().slice(0,10);
-  const full=base+'?labels=curation&title='+encodeURIComponent(title)+'&body='+encodeURIComponent(p);
-  if(full.length<7500){window.open(full,'_blank');b.textContent='Filed ✓'}
+  const full=base+'?labels=curation&title='+encodeURIComponent(title)+'&body='+encodeURIComponent(payloadCompact());
+  if(full.length<7900){window.open(full,'_blank');b.textContent='Filed ✓ — hit Submit'}
   else{
-    try{await navigator.clipboard.writeText(p)}catch(e){}
+    // only a monster round (many long image URLs) overflows even compact — clipboard fallback
+    try{await navigator.clipboard.writeText(payload())}catch(e){}
     window.open(base+'?labels=curation&title='+encodeURIComponent(title)+'&body='+encodeURIComponent('(long round — verdicts are on your clipboard, paste here)'),'_blank');
     b.textContent='Copied — paste in issue';
   }
@@ -310,7 +330,7 @@ document.getElementById('ghfile').addEventListener('click',async()=>{
 document.getElementById('send').addEventListener('click',async()=>{
   const b=document.getElementById('send');b.textContent='Sending…';
   try{
-    const r=await fetch(FORM,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({subject:'WKNDR curation R3',verdicts:payload()})});
+    const r=await fetch(FORM,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({subject:'WKNDR curation',verdicts:payload()})});
     if(r.ok){b.textContent='Sent ✓';b.classList.add('done')}else throw 0;
   }catch(e){b.textContent='Send failed — use Copy';}
   setTimeout(()=>{b.textContent='Email',b.classList.remove('done')},3000);

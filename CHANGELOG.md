@@ -14,6 +14,15 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.8.4] — 2026-07-04 — "Submit → GitHub is truly one-click"
+- **Compact ASCII payload for the prefill URL** — the pretty payload (★, 👑▲▼, ·—"") ballooned once
+  URL-encoded (each ★ = 9 chars), so any real 80+ verdict round overflowed GitHub's ~8KB URL cap and
+  fell to clipboard-+-paste. A separate `payloadCompact()` uses plain ASCII (`4*`, `TOP`, `KILL`, `-`);
+  `img:good` (the no-action case) is omitted from the URL for headroom but stays in Copy/Email. A
+  128-verdict worst-case round now encodes to ~7.3KB — one click, fully prefilled, no paste. Clipboard
+  fallback still catches an extreme round; nothing can silently truncate.
+- Dropped the stale hardcoded "R3" round label (Copy/Email/Formspree subject now date-based).
+
 ## [V.8.3] — 2026-07-04 — "The loupe on the board + no more crop-of-a-crop"
 - **Board loupe** — click any card photo on the Curation Board → the ORIGINAL, uncropped, full-screen
   with true dimensions (and a "LOW RES for the card" verdict when it can't survive the render). The
