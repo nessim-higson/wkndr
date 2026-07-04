@@ -237,6 +237,16 @@
       "match": "land art weekend",
       "until": "2026-07-25",
       "note": "★4 + KILL (R3) — fatigue, not taste"
+    },
+    {
+      "match": "pure markt",
+      "until": "2026-07-25",
+      "note": "★4 + KILL (R3, issue #3) — likes it, tired of the market cycle; image also swapped for its return"
+    },
+    {
+      "match": "trek foodfestival",
+      "until": "2026-07-25",
+      "note": "R3 issue #3 KILL — a TREK variant the 'festival trek' match misses; same fatigue class"
     }
   ],
   "_restedNote": "The ★4+KILL class from the board: events Ness LIKES but is tired of seeing. NOT a veto — dropped from the feed AND the bench only until their `until` date (then they may return fresh). Their starAnchors and starredKeeps stay: the taste signal is intact, only the exposure rests. Dropped AFTER the starredKeeps pass so carry-forward can't resurrect them.",
@@ -400,9 +410,14 @@
     {
       "match": "lunchtime organ concerts",
       "stars": 4
+    },
+    {
+      "match": "vriendenloterij",
+      "stars": 4
     }
   ],
   "_starredNote": "★4-5 live events from the board: (a) editorScore floor 8 when present, (b) CARRIED FORWARD from the prior feed when an adapter fails to re-surface them and they're still date-valid — Ness's investment must not evaporate between runs. Matched with word boundaries (so 'bak' ≠ 'bakkerij'). R2 removals: 'oatly x radio radio' (reversed to KILL — now vetoed).",
-  "topPicks": [],
+  "topPicks": ["milkshake festival", "dekmantel", "'t lemmeke", "artis royal zoo"],
+  "_topPicksNote": "R3 issue #3 👑 escalations. Milkshake + Dekmantel are future festivals (late Jul) — TOP is armed and activates when they enter the feed. 't Lemmeke = current restaurant. ARTIS: Ness starred the bench 'ARTIS-Aquarium' card (weak kidsproof.nl link); routed to the canon 'ARTIS Royal Zoo' entry (same visit, real artis.nl link, guaranteed availability) so TOP actually sticks.",
   "_topNote": "Ness's 👑 TOP escalations from the board — the tier ABOVE starredKeeps. Matched picks (word-boundary, any source incl. canon via feed.topMatches) get editorScore 10, lead the served deck ahead of everything, and carry the 'Top pick' pill. Keep this list SHORT (≤6) — if everything is top, nothing is."
 }

@@ -38,7 +38,8 @@ const ROWS: Row[] = [
     blurb: 'A buzzing, multicultural Oost street market — spices, textiles and world food at honest neighbourhood prices.', why: 'Multicultural Oost market' },
   // Lindengrachtmarkt REMOVED (R2, 2026-07-03): Ness killed it on the board — also in the corpus veto.
   { slug: 'pure-markt', title: 'Pure Markt', area: 'Oost (Park Frankendael)', category: 'market', tier: 'bespoke', price: 'free', when: 'Select Sundays · 11:00–18:00', outdoor: true,
-    img: 'https://puremarkt.nl/wp-content/uploads/2023/12/PURE-MARKT-ADAM-BOS-DSC_4276-bezoekers-1170x600.jpg',
+    // R3 issue #3: Ness flagged the old image bad, gave this replacement (the market's Feed Factory photo)
+    img: 'https://app.thefeedfactory.nl/api/assets/600a80ecf21e8920ab28277e/0112feda-7dc2-4d02-93aa-fe4f4f4f4c22.webp',
     blurb: 'An artisan food-and-craft market in a green park — small makers, slow food and a relaxed Sunday-stroll crowd in Frankendael.', why: 'Artisan market · in a park' },
   { slug: 'bloemenmarkt', title: 'Bloemenmarkt', area: 'Centrum (Singel)', category: 'market', tier: 'classic', price: 'free', when: 'Mon–Sat · 09:00–17:30', outdoor: true,
     img: 'https://aboutnl.com/wp-content/uploads/2023/10/floating-market-amsterdam.jpg',

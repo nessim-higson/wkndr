@@ -1,6 +1,6 @@
 {
   "generatedAt": "build-time",
-  "count": 141,
+  "count": 143,
   "canon": [
     {
       "id": "fka-twigs",
@@ -1486,7 +1486,7 @@
       "area": "Oost (Park Frankendael)",
       "when": "Select Sundays · 11:00–18:00",
       "category": "market",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fpuremarkt.nl%2Fwp-content%2Fuploads%2F2023%2F12%2FPURE-MARKT-ADAM-BOS-DSC_4276-bezoekers-1170x600.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fpuremarkt.nl%2Fwp-content%2Fuploads%2F2023%2F12%2FPURE-MARKT-ADAM-BOS-DSC_4276-bezoekers-1170x600.jpg",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F600a80ecf21e8920ab28277e%2F0112feda-7dc2-4d02-93aa-fe4f4f4f4c22.webp&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F600a80ecf21e8920ab28277e%2F0112feda-7dc2-4d02-93aa-fe4f4f4f4c22.webp",
       "blurb": "An artisan food-and-craft market in a green park — small makers, slow food and a relaxed Sunday-stroll crowd in Frankendael.",
       "link": "https://www.google.com/maps/search/?api=1&query=Pure%20Markt%20Amsterdam",
       "price": "free",
@@ -1937,6 +1937,34 @@
       "image": "https://images.weserv.nl/?url=https%3A%2F%2Fadmin.nxtmuseum.com%2Fcontent%2Fuploads%2F2024%2F05%2FLife-In-Our-Minds_-Motherflock-_-III-2023-by-Random-International-%25E2%2580%2593-exhibited-in-%25E2%2580%2598Life-in-a-Different-Resolution-at-Nxt-Museum-The-Netherlands_-Photographer_Maarten-Nauw_01-scaled.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fadmin.nxtmuseum.com%2Fcontent%2Fuploads%2F2024%2F05%2FLife-In-Our-Minds_-Motherflock-_-III-2023-by-Random-International-%25E2%2580%2593-exhibited-in-%25E2%2580%2598Life-in-a-Different-Resolution-at-Nxt-Museum-The-Netherlands_-Photographer_Maarten-Nauw_01-scaled.jpg",
       "blurb": "Warehouse-scale new-media museum in Noord: room-sized audiovisual installations rewired each season by artists and coders.",
       "link": "https://nxtmuseum.com",
+      "price": "€€",
+      "tier": "bespoke",
+      "approved": true
+    },
+    {
+      "id": "ams-ev2-le-petit-bouillon",
+      "title": "Le Petit Bouillon d'Amsterdam",
+      "venue": "Stadionweg 320",
+      "area": "Amsterdam-Zuid",
+      "when": "Daily · lunch & dinner",
+      "category": "eat",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fdynamic-media-cdn.tripadvisor.com%2Fmedia%2Fphoto-o%2F33%2F15%2F35%2Fab%2Fcaption.jpg%3Fw%3D1200%26h%3D1200%26s%3D1&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fdynamic-media-cdn.tripadvisor.com%2Fmedia%2Fphoto-o%2F33%2F15%2F35%2Fab%2Fcaption.jpg%3Fw%3D1200%26h%3D1200%26s%3D1",
+      "blurb": "The little Zuid sibling of the Paris-style bouillon: classic French bistro plates and small bites on a sunny terrace, still absurdly affordable.",
+      "link": "https://www.bouillondamsterdam.nl/petit/home",
+      "price": "€",
+      "tier": "bespoke",
+      "approved": true
+    },
+    {
+      "id": "ams-ev2-fyka",
+      "title": "Fyka",
+      "venue": "Fyka (by team FYR)",
+      "area": "Singel, Centrum",
+      "when": "Daily · from breakfast",
+      "category": "eat",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fs3-media0.fl.yelpcdn.com%2Fbphoto%2FBeV-pNdrnsGi31HyyWhmcA%2Fo.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fs3-media0.fl.yelpcdn.com%2Fbphoto%2FBeV-pNdrnsGi31HyyWhmcA%2Fo.jpg",
+      "blurb": "The FYR team's bakery-café on the Singel: proper sourdough, patisserie and viennoiserie people already cycle across town for.",
+      "link": "https://www.restaurantfyr.nl/fyka",
       "price": "€€",
       "tier": "bespoke",
       "approved": true

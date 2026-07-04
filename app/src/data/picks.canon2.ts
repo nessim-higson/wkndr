@@ -109,6 +109,15 @@ const ROWS: Row[] = [
     img: 'https://admin.nxtmuseum.com/content/uploads/2024/05/Life-In-Our-Minds_-Motherflock-_-III-2023-by-Random-International-%E2%80%93-exhibited-in-%E2%80%98Life-in-a-Different-Resolution-at-Nxt-Museum-The-Netherlands_-Photographer_Maarten-Nauw_01-scaled.jpg',
     blurb: 'Warehouse-scale new-media museum in Noord: room-sized audiovisual installations rewired each season by artists and coders.', why: 'Room-scale digital art in Noord',
     link: 'https://nxtmuseum.com' },
+  // ——— R3 board +CANON approvals (issue #3, 2026-07-04) ———
+  { slug: 'le-petit-bouillon', title: "Le Petit Bouillon d'Amsterdam", venue: 'Stadionweg 320', area: 'Amsterdam-Zuid', category: 'eat', tier: 'bespoke', stars: 4, price: '€', when: 'Daily · lunch & dinner', outdoor: false,
+    img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/33/15/35/ab/caption.jpg?w=1200&h=1200&s=1',
+    blurb: 'The little Zuid sibling of the Paris-style bouillon: classic French bistro plates and small bites on a sunny terrace, still absurdly affordable.', why: 'Paris bouillon culture, neighbourhood scale',
+    link: 'https://www.bouillondamsterdam.nl/petit/home' },
+  { slug: 'fyka', title: 'Fyka', venue: 'Fyka (by team FYR)', area: 'Singel, Centrum', category: 'eat', tier: 'bespoke', stars: 5, price: '€€', when: 'Daily · from breakfast', outdoor: false,
+    img: 'https://s3-media0.fl.yelpcdn.com/bphoto/BeV-pNdrnsGi31HyyWhmcA/o.jpg',
+    blurb: "The FYR team's bakery-café on the Singel: proper sourdough, patisserie and viennoiserie people already cycle across town for.", why: 'The bakery-café worth the detour',
+    link: 'https://www.restaurantfyr.nl/fyka' },
 ]
 
 export const CANON2_AMSTERDAM: Pick[] = ROWS.map((r) => ({

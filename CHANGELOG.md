@@ -14,6 +14,18 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.8.5] — 2026-07-04 — "First round compiled from a GitHub issue"
+_Ness filed curation rounds via the Submit → GitHub button (issue #3, the compact one-click format).
+Net-new decisions beyond R3, compiled:_
+- **4 👑 TOP escalations** → `corpus.topPicks`: Milkshake + Dekmantel (future festivals — armed for
+  their late-Jul weekends), 't Lemmeke (current), and ARTIS (routed to the canon **ARTIS Royal Zoo**
+  entry — Ness starred the weak bench "ARTIS-Aquarium" card; same visit, real link, guaranteed).
+- **2 +CANON approvals** → `picks.canon2.ts`: Le Petit Bouillon d'Amsterdam (★4) + Fyka (★5, graduated
+  out of `scouted.json`). Both images floor-verified.
+- **2 more RESTED** (★4+KILL fatigue): Pure Markt (+ image swapped to his replacement for its return)
+  and TREK Foodfestival (the variant the "festival trek" match missed).
+- **VriendenLoterij Summer Concerts** ★4 → starredKeep.
+
 ## [V.8.4] — 2026-07-04 — "Submit → GitHub is truly one-click"
 - **Compact ASCII payload for the prefill URL** — the pretty payload (★, 👑▲▼, ·—"") ballooned once
   URL-encoded (each ★ = 9 chars), so any real 80+ verdict round overflowed GitHub's ~8KB URL cap and
