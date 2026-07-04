@@ -18,7 +18,7 @@ type Row = {
 
 const ROWS: Row[] = [
   { slug: 'strand-van-oost', title: 'Strand van Oost', venue: 'Rooftop of Orchid House', area: 'Linnaeusstraat, Oost', category: 'out', tier: 'bespoke', stars: 4, price: '€€', when: 'Summer · evenings', outdoor: true,
-    img: 'https://www.bartsboekje.com/wp-content/uploads/2026/06/SnapInsta.to_657553581_17860290618673607_1528539394225661251_n.jpg',
+    img: 'https://strandvanoost.nl/wp-content/uploads/2026/05/DSC3884-scaled.jpg',
     blurb: 'A beach on a roof in Oost: sand-and-sunset bar on top of Orchid House that makes the city briefly disappear.', why: 'Beach feeling without leaving Oost',
     link: 'https://www.strandvanoost.nl/' },
   { slug: 'wils-at-the-farm', title: 'Wils at the Farm', venue: 'Restaurant Wils × Boerderij Lindenhoff', area: 'Baambrugge (25 min from Amsterdam)', category: 'daytrip', tier: 'bespoke', stars: 4, price: '€€€€', when: 'Until Sat 25 Jul · Thu–Sat dinners', outdoor: true,
@@ -70,7 +70,7 @@ const ROWS: Row[] = [
     blurb: 'Kiwi-Brazilian brunch institution: banana bread, proper flat whites and benedicts that still set the city\'s weekend standard.', why: 'The brunch that started it',
     link: 'https://www.bakersandroasters.com' },
   { slug: 'de-kas', title: 'De Kas', venue: 'De Kas', area: 'Park Frankendael, Oost', category: 'eat', tier: 'classic', stars: 4, price: '€€€€', when: 'Tue–Sat · lunch & dinner', outdoor: false,
-    img: 'https://framerusercontent.com/images/trAhNBsemvq6RLebmYYQmHVH7E.jpeg?width=2250&height=1502',
+    img: 'https://images.squarespace-cdn.com/content/v1/5cde8b273da6ea0001fcc7e8/1563017721970-FCK0UYFQS0QJSUJYGI2Q/DeKas-gevel-nacht.jpg?format=2500w',
     blurb: 'Chefs cook what the on-site nursery grew that morning, served inside a 1926 municipal greenhouse. Amsterdam\'s greenest dinner ritual.', why: 'Dinner inside a working greenhouse',
     link: 'https://restaurantdekas.com' },
   { slug: 'brouwerij-t-ij', title: 'Brouwerij \'t IJ', venue: 'Brouwerij \'t IJ', area: 'Funenkade, Oost', category: 'drink', tier: 'classic', stars: 4, price: '€', when: 'Daily · 14:00–20:00', outdoor: false,
@@ -94,7 +94,7 @@ const ROWS: Row[] = [
     blurb: 'A self-described candy store for book aficionados: black-walled cabinet of photography, design and fashion monographs.', why: 'Coffee-table-book candy store',
     link: 'https://mendo.nl' },
   { slug: 'red-light-records', title: 'Red Light Records', venue: 'Red Light Records', area: 'Oudekerksplein, De Wallen', category: 'shop', tier: 'bespoke', stars: 5, price: '€€', when: 'Mon–Sat · 12:00–18:00', outdoor: false,
-    img: 'https://www.volkshotel.nl/content/uploads/2016/09/Red-Light-Radio-1020x575.jpg',
+    img: 'https://www.testpressing.org/wp-content/uploads/2016/09/14247826_1755778551345318_607204769_o.jpg',
     blurb: 'Crate den in a former red-light window: staff-picked obscurities, listening decks, zero algorithm. Ring the bell.', why: 'Vinyl in a former window brothel',
     link: 'https://redlightrecordsamsterdam.com' },
   { slug: 'museum-van-loon', title: 'Museum Van Loon', venue: 'Museum Van Loon', area: 'Keizersgracht', category: 'art', tier: 'classic', stars: 4, price: '€€', when: 'Wed–Mon · 10:00–17:00', outdoor: false,
@@ -106,7 +106,7 @@ const ROWS: Row[] = [
     blurb: 'A hand-planted 1930s forest three times Central Park\'s size: canoes, an open-air theatre and hidden meadows, twenty minutes from De Pijp.', why: 'The city\'s own forest',
     link: 'https://www.amsterdamsebos.nl' },
   { slug: 'nxt-museum', title: 'Nxt Museum', venue: 'Nxt Museum', area: 'Asterweg, Noord', category: 'art', tier: 'bespoke', stars: 4, price: '€€', when: 'Wed–Sun (daily in summer)', outdoor: false,
-    img: 'https://admin.nxtmuseum.com/content/uploads/2023/07/Living-Room-by-Random-International-Picture-by-Riccardo-de-Vecci_01-scaled.jpg',
+    img: 'https://admin.nxtmuseum.com/content/uploads/2024/05/Life-In-Our-Minds_-Motherflock-_-III-2023-by-Random-International-%E2%80%93-exhibited-in-%E2%80%98Life-in-a-Different-Resolution-at-Nxt-Museum-The-Netherlands_-Photographer_Maarten-Nauw_01-scaled.jpg',
     blurb: 'Warehouse-scale new-media museum in Noord: room-sized audiovisual installations rewired each season by artists and coders.', why: 'Room-scale digital art in Noord',
     link: 'https://nxtmuseum.com' },
 ]

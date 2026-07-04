@@ -1,6 +1,6 @@
 {
-  "round": 2,
-  "date": "2026-07-03",
+  "round": 3,
+  "date": "2026-07-04",
   "byTitle": {
     "hortus botanicus": {
       "stars": 5,
@@ -104,7 +104,8 @@
     },
     "milkshake festival": {
       "stars": 3,
-      "img": "bad"
+      "img": "bad",
+      "note": "campaign graphic swapped for a crowd photo (R3 scout)"
     },
     "latin wednesday": {
       "stars": 1,
@@ -211,7 +212,10 @@
     },
     "museum market": {
       "stars": 4,
-      "img": "good"
+      "kill": true,
+      "img": "good",
+      "rested": true,
+      "note": "fatigue kill → rested until 25 Jul"
     },
     "albert cuypmarkt": {
       "stars": 4
@@ -253,13 +257,14 @@
     },
     "wynand fockink — jenever tasting": {
       "stars": 1,
+      "img": "bad",
       "kill": true,
-      "img": "bad"
+      "note": "static row deleted at source (R3)"
     },
     "bret club night: ciel, jesse maas, julian anthony, caro": {
       "stars": 4,
       "img": "bad",
-      "note": "wrong image"
+      "note": "wrong image (again) — venue photo pinned"
     },
     "bruno mars – the romantic tour": {
       "stars": 3,
@@ -467,21 +472,17 @@
     },
     "strand van oost": {
       "stars": 4,
-      "canon": true,
       "img": "bad",
-      "better": "https://www.bartsboekje.com/wp-content/uploads/2026/06/SnapInsta.to_657553581_17860290618673607_1528539394225661251_n.jpg"
+      "note": "image replaced (R3 scout)"
     },
     "wils at the farm": {
-      "stars": 4,
-      "canon": true
+      "stars": 4
     },
     "mr. watson": {
-      "stars": 3,
-      "canon": true
+      "stars": 3
     },
     "kama handroll bar": {
       "stars": 4,
-      "canon": true,
       "img": "good"
     },
     "bouillon d'amsterdam — zuid": {
@@ -491,17 +492,14 @@
     },
     "bar staal": {
       "stars": 4,
-      "canon": true,
       "img": "good"
     },
     "rotate": {
       "stars": 4,
-      "canon": true,
       "img": "good"
     },
     "de baanderij": {
       "stars": 5,
-      "canon": true,
       "img": "good"
     },
     "rem is back": {
@@ -511,74 +509,94 @@
     },
     "tacite": {
       "stars": 5,
-      "canon": true,
       "img": "good"
     },
     "tête": {
       "stars": 4,
-      "canon": true,
       "img": "good"
     },
     "warung spang makandra": {
       "stars": 4,
-      "canon": true,
       "img": "good"
     },
     "bakers & roasters": {
       "stars": 4,
-      "canon": true,
       "img": "good"
     },
     "de kas": {
       "stars": 4,
-      "canon": true,
       "img": "bad",
-      "better": "https://framerusercontent.com/images/trAhNBsemvq6RLebmYYQmHVH7E.jpeg?width=2250&height=1502"
+      "note": "image replaced (R3 scout)"
     },
     "brouwerij 't ij": {
       "stars": 4,
-      "canon": true,
       "img": "good"
     },
     "glou glou": {
       "stars": 4,
-      "canon": true,
       "img": "good"
     },
     "droog": {
       "stars": 5,
-      "canon": true,
       "img": "good"
     },
     "rush hour records": {
       "stars": 5,
-      "canon": true,
       "img": "good"
     },
     "mendo": {
       "stars": 5,
-      "canon": true,
       "img": "good"
     },
     "red light records": {
       "stars": 5,
-      "canon": true,
       "img": "bad",
-      "better": "https://www.volkshotel.nl/content/uploads/2016/09/Red-Light-Radio-1020x575.jpg"
+      "note": "image replaced (R3 scout)"
     },
     "museum van loon": {
-      "stars": 4,
-      "canon": true
+      "stars": 4
     },
     "amsterdamse bos": {
-      "stars": 4,
-      "canon": true
+      "stars": 4
     },
     "nxt museum": {
       "stars": 4,
-      "canon": true,
       "img": "bad",
-      "better": "https://admin.nxtmuseum.com/content/uploads/2023/07/Living-Room-by-Random-International-Picture-by-Riccardo-de-Vecci_01-scaled.jpg"
+      "note": "image replaced (R3 scout)"
+    },
+    "festival trek amsterdam": {
+      "stars": 4,
+      "kill": true,
+      "img": "good",
+      "rested": true,
+      "note": "fatigue kill → rested until 25 Jul"
+    },
+    "land art weekend (flevoland)": {
+      "stars": 4,
+      "kill": true,
+      "img": "good",
+      "rested": true,
+      "note": "fatigue kill → rested until 25 Jul"
+    },
+    "julidans festival": {
+      "stars": 4,
+      "img": "good"
+    },
+    "garlic festival at restaurant vrr": {
+      "stars": 4,
+      "img": "good"
+    },
+    "lunchtime organ concerts at waterlooplein": {
+      "stars": 4,
+      "note": "R1 organ-concert veto REVERSED"
+    },
+    "vbx summer weekend": {
+      "stars": 4,
+      "img": "good"
+    },
+    "prncptl does amsterdam - day & night": {
+      "stars": 4,
+      "img": "good"
     }
   }
 }

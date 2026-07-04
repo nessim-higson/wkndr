@@ -577,6 +577,20 @@ async function buildCity(city: City) {
     if (floored || carried) console.log(`  starred:  ${floored} score-floored (his ★) · ${carried} carried forward from the prior feed`)
   }
 
+  // RESTED — the ★4+KILL class from the board: events Ness LIKES but is tired of seeing. Not a veto:
+  // dropped only until each entry's `until` date, then they may surface fresh again. Taste stays intact
+  // (anchors + keeps remain). Runs AFTER the starredKeeps pass so carry-forward can't resurrect them.
+  {
+    const today = new Date().toISOString().slice(0, 10)
+    const active = ((corpus as { rested?: { match: string; until: string }[] }).rested ?? []).filter((r) => r.until > today)
+    if (active.length) {
+      const rx = active.map((r) => rxOf(r.match))
+      const before = picks.length
+      picks = picks.filter((p) => !rx.some((x) => x.test(p.title)))
+      if (before !== picks.length) console.log(`  rested:   ${before - picks.length} fatigue-benched (back after ${active.map((r) => r.until).sort().at(-1)})`)
+    }
+  }
+
   // TOP PICKS — Ness's 👑 escalations (the tier above starredKeeps): stamped `top` + editorScore 10.
   // A topped pick is GUARANTEED into the feed — if the balance stages cut it (or it's a canon place the
   // selection skipped), it's pulled back from the pre-publish pool / bundled canon. The match list also
@@ -692,6 +706,13 @@ async function buildCity(city: City) {
         if (tk && (pubToks.has(tk) || benchToks.has(tk))) return false
         if (tk) benchToks.add(tk)
         if (isVetoed(p.title)) return false
+        // rested (★4+KILL fatigue) events stay off the BENCH too — the point is Ness stops seeing them
+        {
+          const today = new Date().toISOString().slice(0, 10)
+          const rested = ((corpus as { rested?: { match: string; until: string }[] }).rested ?? [])
+            .filter((r) => r.until > today)
+          if (rested.some((r) => rxOf(r.match).test(p.title))) return false
+        }
         return true
       })
       .slice(0, 120)

@@ -66,6 +66,8 @@ export const CURATED_IMAGES: { match: RegExp; image: string; note: string }[] = 
   { match: /stoornis of my life/i, image: 'https://www.kunstmin.nl/assets/uploads/2025/12/MarkEngelen_StoornisOfMyLife_Groep_compleet_KimJoey-scaled-e1774620693437.jpg', note: 'Ness pick — cast photo' },
   { match: /little big things/i, image: 'https://d3s3zh7icgjwgd.cloudfront.net/AcuCustom/Sitename/DAM/345/Cast-of-The-Little-Big-Things.-Photo--Pamela-Raith-1_LargeLandscape.jpg', note: 'Ness pick — cast photo' },
   { match: /land art weekend/i, image: 'https://storage.pubble.nl/39aff116/content/2025/4/ee4bcf1f-8214-44a4-add3-afcf1d8b332a_thumb1920.jpg', note: 'Ness pick' },
+  // ——— R3 (2026-07-04): BRET's RA flyers were the wrong image TWICE — pin the venue itself. ———
+  { match: /\bbret\b/i, image: 'https://static.wixstatic.com/media/069fa4_6bbeb7f6ab7b4ee8902dfaa98ad5f541~mv2.jpg/v1/fill/w_2500,h_1666,al_c/069fa4_6bbeb7f6ab7b4ee8902dfaa98ad5f541~mv2.jpg', note: 'The red container building, official bret.bar hero, 2500×1666 — every BRET club night wears the venue' },
 ]
 
 /** The curated image URL for a pick title, or undefined. First match wins. */

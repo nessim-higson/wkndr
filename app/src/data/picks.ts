@@ -321,15 +321,9 @@ export const PICKS: Pick[] = [
     source: 'The Infatuation', link: 'https://www.theinfatuation.com/amsterdam',
     weatherFit: ['COOL', 'COLD_WET', 'VOLATILE'],
   },
-  {
-    id: 'wynand-fockink', title: 'Wynand Fockink — jenever tasting', venue: 'Wynand Fockink', area: 'Centrum', when: 'Daily · 14:00–21:00',
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Wynand_Focking_Amsterdam_2014_%284%29.jpg/1280px-Wynand_Focking_Amsterdam_2014_%284%29.jpg",
-    category: 'drink', freshness: 'always', outdoor: false, kid: false, price: 'per pour',
-    blurb: 'A 1679 tasting room behind Dam Square pouring its own jenevers and liqueurs — you bend to the brimful glass.',
-    why: 'Historic · indoor · made for a downpour',
-    source: 'Your Little Black Book', link: 'https://www.wyn-fockink.nl/en/',
-    weatherFit: ['COOL', 'COLD_WET', 'VOLATILE'],
-  },
+  // Wynand Fockink REMOVED (R3, 2026-07-04): Ness rated it ★1 in TWO rounds — the R2 veto killed it
+  // from the live feed but couldn't touch this static row, so it kept surfacing via the canon library
+  // and the bundled fallback. Deleted at the source; the corpus veto remains as the backstop.
   {
     id: 'cafe-chris', title: 'Café Chris — oldest brown café', venue: 'Café Chris', area: 'Jordaan', when: 'Daily · afternoon–late',
     image: "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2a/ea/21/79/caption.jpg?w=1200&h=-1&s=1",

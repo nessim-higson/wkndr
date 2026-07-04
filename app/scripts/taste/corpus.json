@@ -1,5 +1,5 @@
 {
-  "_": "WKNDR TASTE CORPUS — Ness's judgments, injected into every judge (editor + vision). Grows with each curation round. v1 = Board round 1, 2026-07-02, 86 verdicts. v2 = Board round 2, 2026-07-03, 115 verdicts (20 generic club nights killed; 22 canon approvals → src/data/picks.canon2.ts).",
+  "_": "WKNDR TASTE CORPUS — Ness's judgments, injected into every judge (editor + vision). Grows with each curation round. v1 = Board round 1, 2026-07-02, 86 verdicts. v2 = Board round 2, 2026-07-03, 115 verdicts (20 generic club nights killed; 22 canon approvals → src/data/picks.canon2.ts). v3 = Board round 3, 2026-07-04, 81 verdicts (★4+KILL fatigue class → `rested`; organ-concert veto reversed).",
   "northStar": "",
   "imageRules": [
     "Prefer atmosphere WITH people in the real place over empty rooms or generic scenery — a market mid-shop, a festival crowd at golden hour, a terrace in use.",
@@ -120,6 +120,11 @@
       "note": "judge scored it 1; Ness ★4 — community-authentic warmth again"
     },
     {
+      "title": "Lunchtime organ concerts at Waterlooplein",
+      "stars": 4,
+      "note": "R3 REVERSAL — the R1 organ-concert kill was about church self-promo listings, not the format; a genuinely local series rates well"
+    },
+    {
       "title": "De Roode Remise Singing Session",
       "stars": 4,
       "note": "the judge called this filler (1); Ness rates community-authentic warmth highly"
@@ -157,7 +162,6 @@
   "eventVeto": [
     "bops queer. pop. party",
     "love on the canals",
-    "lunchtime organ concert",
     "spinoza",
     "moco amsterdam",
     "kees verwey",
@@ -217,7 +221,25 @@
     "berkan v8",
     "doka summer studio"
   ],
-  "_vetoNote": "Taste kills from the board — dropped at publish, every run, any source; matched with WORD BOUNDARIES (refresh.ts) so short names like 'monne' can't hit 'Monnickendam'. Dupe-kills are deliberately NOT here: R1's Julidans/TREK/Vondelpark twins, and R2's 'The Netherlands – Japan: Connected Through Time' (EN twin of the ★4 Dutch-titled show) were dedup actions, not taste.",
+  "_vetoNote": "Taste kills from the board — dropped at publish, every run, any source; matched with WORD BOUNDARIES (refresh.ts) so short names like 'monne' can't hit 'Monnickendam'. Dupe-kills are deliberately NOT here: R1's Julidans/TREK/Vondelpark twins, and R2's 'The Netherlands – Japan: Connected Through Time' (EN twin of the ★4 Dutch-titled show) were dedup actions, not taste. R3 REVERSAL: 'lunchtime organ concert' removed — Ness ★4'd the Waterlooplein series (community-authentic wins); the Westerkerk lunchconcerten veto stands.",
+  "rested": [
+    {
+      "match": "festival trek",
+      "until": "2026-07-25",
+      "note": "★4 + KILL (R3) — likes it, seen it three weekends straight"
+    },
+    {
+      "match": "museum market",
+      "until": "2026-07-25",
+      "note": "★4 + KILL (R3) — fatigue, not taste"
+    },
+    {
+      "match": "land art weekend",
+      "until": "2026-07-25",
+      "note": "★4 + KILL (R3) — fatigue, not taste"
+    }
+  ],
+  "_restedNote": "The ★4+KILL class from the board: events Ness LIKES but is tired of seeing. NOT a veto — dropped from the feed AND the bench only until their `until` date (then they may return fresh). Their starAnchors and starredKeeps stay: the taste signal is intact, only the exposure rests. Dropped AFTER the starredKeeps pass so carry-forward can't resurrect them.",
   "starredKeeps": [
     {
       "match": "cinema culinair",
@@ -374,6 +396,10 @@
     {
       "match": "throwback",
       "stars": 3
+    },
+    {
+      "match": "lunchtime organ concerts",
+      "stars": 4
     }
   ],
   "_starredNote": "★4-5 live events from the board: (a) editorScore floor 8 when present, (b) CARRIED FORWARD from the prior feed when an adapter fails to re-surface them and they're still date-valid — Ness's investment must not evaporate between runs. Matched with word boundaries (so 'bak' ≠ 'bakkerij'). R2 removals: 'oatly x radio radio' (reversed to KILL — now vetoed).",

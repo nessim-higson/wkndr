@@ -14,6 +14,22 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.8.1] — 2026-07-04 — "Round 3: the REST tier + fatigue ≠ taste"
+_81 verdicts converted. R3's new signal: ★4+KILL = "good event, seen it enough" — a third kill class._
+- **`corpus.rested`** — fatigue-benched events (Festival TREK, Museum Market, Land Art Weekend, until
+  25 Jul): dropped from feed AND bench while active, then eligible again. Anchors/keeps stay — taste
+  intact, only exposure rests. Runs after starredKeeps so carry-forward can't resurrect.
+- **Taste reversal honored** — 'lunchtime organ concert' veto REMOVED (Ness ★4'd the Waterlooplein
+  series); Westerkerk lunchconcerten veto stands. Anchor records the nuance: the R1 kill was about
+  church self-promo listings, not the format.
+- **Wynand Fockink deleted at source** — ★1 twice; the R2 veto couldn't touch the static row (it kept
+  haunting the board library + bundled fallback). `export-canon` now applies the veto too — 6 more
+  R1-killed statics stopped haunting the library.
+- **6 images replaced via scout** (all verified, 3 native portrait): Strand van Oost (own-site
+  golden hour 1707×2560), De Kas (greenhouse at dusk 2500×3764), Nxt Museum (Motherflock installation
+  w/ visitors), Red Light Records (pink-neon shop interior 1536×2048), Milkshake (real crowd, not the
+  campaign graphic), BRET (venue pinned — its RA flyers were wrong twice).
+
 ## [V.8] — 2026-07-04 — "Low-res detection + dupe suppression, everywhere" (tag `v8.0`)
 _Ness: "detect resolution / flag low res — I still see bitmapped images. And I still see dupes." Both
 root-caused and closed at every layer._
