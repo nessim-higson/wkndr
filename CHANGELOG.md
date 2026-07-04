@@ -14,6 +14,16 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.8.2] — 2026-07-04 — "Submit → GitHub + the focus view"
+- **Submit → GitHub (board)** — one click files the verdict round as a labeled issue on the repo
+  (prefilled issue URL, no token, Ness is already signed in): durable, versioned, and the canonical
+  inbox Claude compiles from. Payloads past GitHub's ~8KB URL cap auto-fallback to
+  clipboard-+ -paste-ready issue. Formspree demoted to "Email" backup.
+- **FOCUS view (app)** — the card's detail sheet now carries a ⤢ button on the photo: full-screen
+  lightbox showing the ORIGINAL, uncropped image (unwraps the wsrv proxy's baked 800×1200 crop),
+  true dimensions captioned, tap to dismiss. The only place the whole photo is visible — the
+  curator's loupe, and the vibe-check before committing an evening.
+
 ## [V.8.1] — 2026-07-04 — "Round 3: the REST tier + fatigue ≠ taste"
 _81 verdicts converted. R3's new signal: ★4+KILL = "good event, seen it enough" — a third kill class._
 - **`corpus.rested`** — fatigue-benched events (Festival TREK, Museum Market, Land Art Weekend, until

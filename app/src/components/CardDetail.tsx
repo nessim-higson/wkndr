@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { AnimatePresence, motion, useDragControls } from 'framer-motion'
-import { X, Star, ArrowUpRight, Check } from 'lucide-react'
+import { X, Star, ArrowUpRight, Check, Maximize2 } from 'lucide-react'
 import type { Pick } from '../types'
 import { CATEGORY_LABEL, FRESHNESS_LABEL, STATUS_LABEL, weatherPill } from '../types'
 import { shortCode } from '../lib/share'
@@ -18,6 +18,20 @@ const itemV = {
 
 const MUSIC = new Set<Pick['category']>(['live'])
 
+// Every card image is a PRE-CROPPED 800×1200 wsrv render — the tall card's crop is baked into the
+// URL, so the sheet never shows the whole photo. The FOCUS view unwraps the proxy's `url=` param to
+// present the ORIGINAL, uncropped (falls back to the rendered crop if the raw host blocks hotlinking).
+function originalOf(src: string): string {
+  try {
+    const u = new URL(src)
+    if (u.hostname === 'images.weserv.nl') {
+      const raw = u.searchParams.get('url')
+      if (raw) return decodeURIComponent(raw)
+    }
+  } catch { /* not a URL we understand — use as-is */ }
+  return src
+}
+
 /** Full detail for a pick. Opens by EXPANDING OUT of the card that was tapped (App Store
  *  style) — `origin` is that card's on-screen rect; absent → a centred grow. Swipe the
  *  sheet down to dismiss. */
@@ -31,9 +45,20 @@ export function CardDetail({
   onToggleSave: (p: Pick) => void
 }) {
   const [copied, setCopied] = useState(false)
+  // FOCUS view — full-screen, uncropped look at the pick's photo (the curator's loupe)
+  const [focus, setFocus] = useState(false)
+  const [focusSrc, setFocusSrc] = useState<string | null>(null)
+  const [focusDims, setFocusDims] = useState<string | null>(null)
   // drag-to-dismiss (App Store style): the gesture only starts from the image / top zone
   // (via dragControls), so the body below still scrolls normally.
   const dragControls = useDragControls()
+
+  function openFocus() {
+    if (!pick?.image) return
+    setFocusDims(null)
+    setFocusSrc(originalOf(pick.image))
+    setFocus(true)
+  }
 
   // The expand transform: start scaled down + translated to the tapped card's centre, then
   // grow to the centred sheet. Uniform scale off the width ratio reads as a clean morph.
@@ -66,7 +91,7 @@ export function CardDetail({
   }
 
   return (
-    <AnimatePresence onExitComplete={() => setCopied(false)}>
+    <AnimatePresence onExitComplete={() => { setCopied(false); setFocus(false) }}>
       {pick && (
         <motion.div
           className="detail-backdrop"
@@ -110,6 +135,14 @@ export function CardDetail({
                 {pick.image && <div className="card-grade" aria-hidden />}
                 {pick.image && <div className="card-grain" aria-hidden />}
                 {!pick.image && <span className="poster-mark">{CATEGORY_LABEL[pick.category]}</span>}
+                {pick.image && (
+                  <button
+                    className="detail-zoom"
+                    onClick={openFocus}
+                    onPointerDown={(e) => e.stopPropagation()}
+                    aria-label="View the full photo"
+                  ><Maximize2 size={16} strokeWidth={2.4} /></button>
+                )}
                 <div className="detail-tags">
                   {pick.status && <span className={`chip chip-status chip-status--${pick.status}`}>{STATUS_LABEL[pick.status]}</span>}
                   <span className={`chip chip-fresh chip-fresh--${pick.freshness}`}>{FRESHNESS_LABEL[pick.freshness]}</span>
@@ -166,6 +199,31 @@ export function CardDetail({
               </motion.div>
             </motion.article>
           </motion.div>
+
+          {/* FOCUS — the photo, whole, on black: pinch the vibe before you commit the evening.
+              Loads the ORIGINAL behind the card's crop; tap anywhere to come back. */}
+          <AnimatePresence>
+            {focus && focusSrc && (
+              <motion.div
+                className="focus-veil"
+                onClick={(e) => { e.stopPropagation(); setFocus(false) }}
+                initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                transition={{ duration: 0.22 }}
+              >
+                <motion.img
+                  src={focusSrc}
+                  alt={pick.title}
+                  initial={{ scale: 0.94 }} animate={{ scale: 1 }}
+                  transition={{ type: 'spring', stiffness: 320, damping: 30 }}
+                  onLoad={(e) => { const im = e.currentTarget; if (im.naturalWidth) setFocusDims(`${im.naturalWidth}×${im.naturalHeight}`) }}
+                  onError={() => { if (pick.image && focusSrc !== pick.image) setFocusSrc(pick.image) }}
+                />
+                <span className="focus-caption">
+                  {pick.title}{focusDims ? ` · original ${focusDims}` : ''}
+                </span>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </motion.div>
       )}
     </AnimatePresence>

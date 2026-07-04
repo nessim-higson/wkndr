@@ -71,7 +71,7 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 <header>
 <p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD · ROUND 3</p>
 <h1>In rotation vs. new finds<span class="dot">.</span></h1>
-<p><strong>IN ROTATION</strong> opens with <strong>THE WEEKEND PILE</strong> — the projected opening cards, numbered. Control it per weekend: <strong>▲ LEAD</strong> puts a card in the pile <em>this weekend only</em>, <strong>▼ LATER</strong> drops it to the back without killing it — both auto-expire when the weekend rolls. <strong>👑 TOP</strong> is the permanent escalation above both (leads always + "Top pick" pill). Then the full feed and the approved canon library (green = yours — kill to retire). <strong>NEW FINDS</strong> = trending, bench, canon candidates — star to promote, <strong>+CANON</strong> for the permanent library. Titles link to the real page — flag dumb links. Progress saves in this browser.</p>
+<p><strong>IN ROTATION</strong> opens with <strong>THE WEEKEND PILE</strong> — the projected opening cards, numbered. Control it per weekend: <strong>▲ LEAD</strong> puts a card in the pile <em>this weekend only</em>, <strong>▼ LATER</strong> drops it to the back without killing it — both auto-expire when the weekend rolls. <strong>👑 TOP</strong> is the permanent escalation above both (leads always + "Top pick" pill). Then the full feed and the approved canon library (green = yours — kill to retire). <strong>NEW FINDS</strong> = trending, bench, canon candidates — star to promote, <strong>+CANON</strong> for the permanent library. Titles link to the real page — flag dumb links. Progress saves in this browser. When you're done: <strong>Submit → GitHub</strong> files the round as an issue on the repo — the one-click path into the engine.</p>
 </header>
 <div class="tabs" id="tabs" hidden>
 <button class="tab on" data-tab="rot">IN ROTATION <span class="n" id="nrot"></span></button>
@@ -82,7 +82,8 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 <div class="bar"><div class="barin">
 <span class="count" id="count">—</span>
 <button class="copybtn" id="copy">Copy</button>
-<button class="send" id="send">Send verdicts</button>
+<button class="copybtn" id="send">Email</button>
+<button class="send" id="ghfile">Submit → GitHub</button>
 </div></div>
 <script>
 const FORM='https://formspree.io/f/xykqpwkw';
@@ -269,13 +270,31 @@ document.getElementById('copy').addEventListener('click',async()=>{
   try{await navigator.clipboard.writeText(payload())}catch(e){}
   const b=document.getElementById('copy');b.textContent='Copied';setTimeout(()=>b.textContent='Copy',2000);
 });
+// SUBMIT → GITHUB: files the verdicts as an issue on the wkndr repo — durable, versioned, and the
+// canonical inbox Claude compiles from (gh issue list). No token needed: a prefilled issue URL,
+// Ness is already signed in. Long payloads exceed GitHub's ~8KB URL cap → auto-fallback: payload
+// goes to the clipboard and the issue opens ready to paste.
+document.getElementById('ghfile').addEventListener('click',async()=>{
+  const b=document.getElementById('ghfile');
+  const p=payload();
+  const base='https://github.com/nessim-higson/wkndr/issues/new';
+  const title='WKNDR curation '+new Date().toISOString().slice(0,10);
+  const full=base+'?labels=curation&title='+encodeURIComponent(title)+'&body='+encodeURIComponent(p);
+  if(full.length<7500){window.open(full,'_blank');b.textContent='Filed ✓'}
+  else{
+    try{await navigator.clipboard.writeText(p)}catch(e){}
+    window.open(base+'?labels=curation&title='+encodeURIComponent(title)+'&body='+encodeURIComponent('(long round — verdicts are on your clipboard, paste here)'),'_blank');
+    b.textContent='Copied — paste in issue';
+  }
+  setTimeout(()=>{b.textContent='Submit → GitHub'},3500);
+});
 document.getElementById('send').addEventListener('click',async()=>{
   const b=document.getElementById('send');b.textContent='Sending…';
   try{
     const r=await fetch(FORM,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({subject:'WKNDR curation R3',verdicts:payload()})});
     if(r.ok){b.textContent='Sent ✓';b.classList.add('done')}else throw 0;
   }catch(e){b.textContent='Send failed — use Copy';}
-  setTimeout(()=>{b.textContent='Send verdicts',b.classList.remove('done')},3000);
+  setTimeout(()=>{b.textContent='Email',b.classList.remove('done')},3000);
 });
 </script>
 </body>
