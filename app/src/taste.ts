@@ -18,11 +18,30 @@ export function tokensFor(p: Pick): string[] {
   return t
 }
 
+const deltaFor = (dir: SwipeDir): number =>
+  dir === 'save' ? 1.5 : dir === 'like' ? 1 : dir === 'nope' ? -1 : 0
+
 export function applySwipe(taste: Taste, p: Pick, dir: SwipeDir): Taste {
-  const delta = dir === 'save' ? 1.5 : dir === 'like' ? 1 : dir === 'nope' ? -1 : 0
+  const delta = deltaFor(dir)
   if (!delta) return taste
   const next = { ...taste }
   for (const tok of tokensFor(p)) next[tok] = (next[tok] || 0) + delta
+  return next
+}
+
+/** Exact inverse of applySwipe — Undo calls this so a mis-swipe doesn't bias the
+ *  model forever. Tokens that land back on 0 are dropped, so undoing your only
+ *  swipe leaves the profile genuinely empty (hasTaste stays honest). All deltas
+ *  are multiples of 0.5 (exact in floats), so the ===0 check is safe. */
+export function revertSwipe(taste: Taste, p: Pick, dir: SwipeDir): Taste {
+  const delta = deltaFor(dir)
+  if (!delta) return taste
+  const next = { ...taste }
+  for (const tok of tokensFor(p)) {
+    const v = (next[tok] || 0) - delta
+    if (v === 0) delete next[tok]
+    else next[tok] = v
+  }
   return next
 }
 

@@ -94,7 +94,13 @@ export function CardDetail({
     if (!pick) return
     const url = `${location.origin}${location.pathname}?w=${shortCode(pick)}`
     const data = { title: pick.title, text: `${pick.title} — ${pick.venue}, ${pick.area}`, url }
-    try { if (navigator.share) { await navigator.share(data); return } } catch { /* fall through to copy */ }
+    if (navigator.share) {
+      // cancelling the native sheet rejects with AbortError — that's a decision, not a
+      // failure. Only a real failure falls through to the clipboard; a cancel must not
+      // overwrite what's on it (or flash "copied" for something they didn't ask for).
+      try { await navigator.share(data); return }
+      catch (e) { if ((e as DOMException)?.name === 'AbortError') return }
+    }
     try {
       await navigator.clipboard?.writeText(url)
       setCopied(true); setTimeout(() => setCopied(false), 1800)
