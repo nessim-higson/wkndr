@@ -14,6 +14,27 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.8.6] — 2026-07-08 — "Review hardening: one date brain + CI that can't fake green"
+_The 2026-07-07 full-build review (both halves graded B+) produced four fix PRs; all landed (#4 #5 #7,
+then #6 rebased over #7 — they rewrote the same `datesIn` lines):_
+- **CI can't fake green** (#4): the weekly refresh's push-retry loop now fails RED when all 3 attempts
+  are exhausted (it used to fall through and exit 0 — feed built, never published, run green), and the
+  healthchecks.io "ok" ping moved from refresh.ts to the workflow's LAST step, so it vouches for
+  pipeline → commit/push → deploy-trigger, not just the pipeline. `isLive` lists every live id prefix
+  (llm/web/**rss/sk**) so a future source can't skip the image pass + imageless gate.
+- **Undo un-teaches** (#5): `revertSwipe` = exact inverse of `applySwipe` (zeroed tokens dropped, so
+  `hasTaste` stays honest) — a mis-swipe no longer biases ranking forever. And a share-sheet cancel
+  (`AbortError`) is a decision, not a failure: it no longer overwrites the clipboard + flashes "copied".
+- **One date brain** (#7): `weekend.ts`/Itinerary/.ics and the pipeline's stale-filter all parse `when`
+  through `src/lib/when.ts` now — kills the split-brain where "Fri–Sun 5–7 Jun" grouped under Friday in
+  the saves dock, "Anytime" in the Itinerary, and vanished from the exported .ics. The >45-day
+  next-year rollover is now gated to open-run phrasings ("Until 15 Jan") or near year-wrap, so a
+  stale feed's events die as past instead of resurrecting as next year's. Bonus: all-day .ics DTEND
+  rolls month boundaries (31 Jul + 1 = 1 Aug, not 32 Jul).
+- **Expanded ranges date on their START day** (#6): "Sat 25 – Sun 26 Jul" (the live Milkshake card's
+  phrasing) only matched its second day — the weekday after the dash broke the range pattern, dating
+  the whole weekend by its END day. An optional dash+weekday hop in `datesIn` fixes it. Tests 32 → 54.
+
 ## [V.8.5] — 2026-07-04 — "First round compiled from a GitHub issue"
 _Ness filed curation rounds via the Submit → GitHub button (issue #3, the compact one-click format).
 Net-new decisions beyond R3, compiled:_
