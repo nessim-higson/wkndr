@@ -133,7 +133,9 @@ async function buildCity(city: City) {
 
   // DEDUPE (sets buzz = distinct sources) — roster first so live picks win the merge over canon.
   let picks = dedupe([...fromRoster, ...canon])
-  const isLive = (p: Pick) => p.id.startsWith('llm-') || p.id.startsWith('web-')
+  // EVERY live-adapter id prefix must be listed (llm/web + rss/songkick): a missed prefix means those
+  // picks skip the image pass AND the gate's imageless check the day the source is switched on.
+  const isLive = (p: Pick) => ['llm-', 'web-', 'rss-', 'sk-'].some((pre) => p.id.startsWith(pre))
 
   // DROP STALE — past-dated picks (hardcoded canon dates that have rolled by, or LLM picks that
   // scraped an already-finished event). Evergreen "Daily"/"Always" whens are kept.
@@ -729,8 +731,8 @@ const targets = CITIES.filter((c) => (ONLY_CITY ? c.key === ONLY_CITY : !PAUSED.
 console.log(`WKNDR refresh · ${targets.length} cit${targets.length === 1 ? 'y' : 'ies'}` +
   `${LLM_ON ? ' · LLM on' : ' · LLM off'}${SK_KEY ? ' · Songkick' : ''}${SKIP_IMAGES ? ' · no images' : ''}`)
 for (const c of targets) await buildCity(c)
-// DEAD-MAN'S SWITCH — ping healthchecks.io on a clean run (gate-passed, feed written). If this ping doesn't
-// arrive on the cron's schedule, healthchecks.io pages Ness — catching a SILENT non-run (the failure mode a
-// status-in-the-repo can't). Dormant until HEALTHCHECK_URL is set; pages only on regression / no-run.
-if (process.env.HEALTHCHECK_URL) { try { await fetch(process.env.HEALTHCHECK_URL, { method: 'POST', body: 'ok' }) } catch { /* ignore */ } }
+// DEAD-MAN'S SWITCH — the healthchecks.io "ok" ping lives in the WORKFLOW's final step (refresh.yml), NOT
+// here: pinging from this script declared the run healthy before the commit/push/deploy steps had run, so a
+// failed publish still looked green. The /fail ping on a gate regression (in buildCity, above) stays here —
+// it must fire the moment the gate abstains.
 console.log('\n✓ done')
