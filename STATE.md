@@ -30,7 +30,7 @@ React + TS, run with `bun`); deployed to GitHub Pages._
 - **`?dev=1`** reveals the full exploration surface (all views, ambient-look switcher, city picker).
 - **Frozen reference builds:** `/wkndr/versions/v6-2/` (tag `v6.2`) and `/wkndr/versions/v4-10/` (tag `v4.10`).
 - **Ship loop:** `cd app && bun run bump` → `bun run build` → commit → push (auto-deploys) → reply with
-  the `?v=` link. **Tests:** `bun run test` (32 logic tests; CI runs them before every content refresh).
+  the `?v=` link. **Tests:** `bun run test` (45 logic tests; CI runs them before every content refresh).
   **Pages deploy flakes** intermittently ("try again later") — re-dispatch `deploy.yml` (there's an
   auto-retry pattern in the ship watchers).
 
@@ -85,7 +85,9 @@ collapses word-order/punctuation twins (token-set key `tokKey`); the board hides
 **Self-sufficiency:** the run **grades itself** — a publish gate hard-fails only truly-broken states
 (empty/past-dated/http images/imageless live/missing hero) and **abstains** (last-good keeps serving);
 thin weekends warn but ship. Health line lands in `$GITHUB_STEP_SUMMARY` (the Actions email); optional
-`HEALTHCHECK_URL` dead-man ping catches silent non-runs. **32 logic tests gate the cron** (`app/tests/`).
+`HEALTHCHECK_URL` dead-man ping catches silent non-runs. **45 logic tests gate the cron** (`app/tests/`).
+**The date brain is unified in `src/lib/when.ts`** — build (pipeline), runtime (dock/deck), and the
+itinerary/.ics export all parse `when` strings through that one module.
 
 ## Pipeline ops
 - Cron **Thu 13:00 UTC** + on-demand (`gh workflow run refresh.yml`). ~$1–2/run. Dispatch race caveat

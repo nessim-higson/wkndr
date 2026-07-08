@@ -2,7 +2,8 @@
 // the image URL screens, and the weekend window. These are the pure functions the whole content
 // pipeline leans on; each rule here encodes a bug we actually hit during the pipeline era.
 import { describe, it, expect } from 'bun:test'
-import { dedupe, titleKey, urlLooksNonPhoto, toPortrait, upcomingWeekend, whenIsPast } from '../scripts/lib/pipeline'
+import { dedupe, titleKey, urlLooksNonPhoto, toPortrait, upcomingWeekend, whenBeforeWeekend } from '../scripts/lib/pipeline'
+import { whenIsPast } from '../src/lib/when'
 import type { Pick } from '../src/types'
 
 const P = (o: Partial<Pick> & { id: string; title: string }): Pick => ({
@@ -100,8 +101,13 @@ describe('weekend window', () => {
     const wk = upcomingWeekend(NOW)
     expect([wk.sat.getDate(), wk.sun.getDate(), wk.cutoff.getDate()]).toEqual([4, 5, 3])
   })
-  it('build-time whenIsPast drops finished events, keeps evergreen', () => {
+  it('build-time whenIsPast (the unified src/lib/when brain) drops finished events, keeps evergreen', () => {
     expect(whenIsPast('Sun 28 Jun', NOW)).toBe(true)
     expect(whenIsPast('Daily · dinner', NOW)).toBe(false)
+  })
+  it('whenBeforeWeekend screens dated weekday one-offs, keeps weekend + evergreen', () => {
+    expect(whenBeforeWeekend('Thu 2 Jul', NOW)).toBe(true)    // ends before the Fri cutoff
+    expect(whenBeforeWeekend('Sat 4 Jul', NOW)).toBe(false)
+    expect(whenBeforeWeekend('Daily · dinner', NOW)).toBe(false)
   })
 })

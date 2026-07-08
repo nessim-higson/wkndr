@@ -1,7 +1,9 @@
 // Shared pipeline spine — the part every adapter reuses. Adapters do FETCH + NORMALIZE
 // (source → Pick[]); this does the rest: DEDUPE → DERIVE → ENRICH(og:image) → PUBLISH.
-// Plain Bun TypeScript, no app/React imports beyond the Pick type.
+// Plain Bun TypeScript, no app/React imports beyond the Pick type and the shared date
+// brain (src/lib/when.ts — the ONE place `when` strings are parsed, build- and runtime).
 import type { Mode, Pick } from '../../src/types'
+import { latestDateOf } from '../../src/lib/when'
 import corpus from '../taste/corpus.json'
 
 const ALL_MODES: Mode[] = ['HOT', 'WARM', 'COOL', 'COLD_WET', 'VOLATILE']
@@ -254,39 +256,6 @@ export async function imageBroken(url: string, timeoutMs = 9000): Promise<boolea
   } catch {
     return false                                                  // network / timeout → keep (don't nuke over a hiccup)
   }
-}
-
-// ─── STALE-DATE FILTER ───────────────────────────────────────────────────────
-// A pick's human `when` ("Sat 6 Jun", "Fri–Sun 5–7 Jun", "Until 21 Jun", "Opens 5 Jun ·
-// until 25 Oct", "Daily · dinner") → is its LATEST date already in the past? Undated /
-// evergreen whens are never stale. Catches both stale canon and LLM picks that scraped
-// already-finished events off a source page.
-const MONTHS: Record<string, number> = { jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5, jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11 }
-const MONTH_RE = 'jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec'
-
-/** The LATEST concrete date a `when` refers to, or null if it's evergreen/undated. */
-function latestDateOf(when: string, now: Date): Date | null {
-  const s = (when || '').toLowerCase()
-  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
-  let latest: Date | null = null
-  const consider = (mon: number, day: number) => {
-    if (mon < 0 || day < 1 || day > 31) return
-    let dt = new Date(now.getFullYear(), mon, day)
-    // if that lands well in the past (>45d), it's almost certainly next year's occurrence
-    if (dt < today && today.getTime() - dt.getTime() > 45 * 864e5) dt = new Date(now.getFullYear() + 1, mon, day)
-    if (!latest || dt > latest) latest = dt
-  }
-  for (const m of s.matchAll(new RegExp(`(\\d{1,2})\\s*[–-]?\\s*(\\d{1,2})?\\s*(${MONTH_RE})`, 'g')))
-    consider(MONTHS[m[3]], Math.max(+m[1], m[2] ? +m[2] : 0))
-  for (const m of s.matchAll(new RegExp(`(${MONTH_RE})\\s*(\\d{1,2})`, 'g')))
-    consider(MONTHS[m[1]], +m[2])
-  return latest
-}
-
-export function whenIsPast(when: string, now: Date = new Date()): boolean {
-  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
-  const latest = latestDateOf(when, now)
-  return latest ? latest < today : false   // no parseable date → evergreen → keep
 }
 
 // ─── WEEKEND FOCUS ───────────────────────────────────────────────────────────

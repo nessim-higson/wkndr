@@ -16,24 +16,33 @@ const MONS = 'jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec'
 // precise weekday tokens (avoids matching a stray word like "satay") — 3-letter stems + full forms
 const WDAY = 'mon(?:day)?|tue(?:s(?:day)?)?|wed(?:nesday)?|thu(?:r(?:s(?:day)?)?)?|fri(?:day)?|sat(?:urday)?|sun(?:day)?'
 
-// Resolve a bare day+month to the nearest sensible year: this year, unless that date is
-// already well in the past (>45d) — then it's next year's. Mirrors the pipeline heuristic.
-function resolveDate(day: number, mon: number, now: Date): Date {
+// Open-run phrasings ("Until 15 Jan", "runs through Mar") legitimately point months ahead
+// across a year boundary, so their dates roll forward generously.
+const OPEN_RUN = /\b(until|through|thru|till|t\/m|ongoing|runs?|opens?)\b/i
+
+// Resolve a bare day+month to the right year. This year, unless the date is already well past
+// (>45d) — then it MAY be next year's, but only when the phrasing is an open run (an exhibition
+// "Until 15 Jan" seen in July) or the wrap lands near (a late-Dec feed saying "Sat 2 Jan").
+// A merely-stale feed's events therefore stay in THIS year and get filtered as past, instead
+// of resurrecting as next year's (the >45-day-lag failure mode).
+function resolveDate(day: number, mon: number, now: Date, openRun = false): Date {
   const y = now.getFullYear()
-  let d = new Date(y, mon, day, 12, 0, 0)
-  if (d.getTime() < now.getTime() - 45 * 864e5) d = new Date(y + 1, mon, day, 12, 0, 0)
-  return d
+  const d = new Date(y, mon, day, 12, 0, 0)
+  if (d.getTime() >= now.getTime() - 45 * 864e5) return d
+  const next = new Date(y + 1, mon, day, 12, 0, 0)
+  return openRun || next.getTime() - now.getTime() < 60 * 864e5 ? next : d
 }
 
 /** Correct the weekday(s) in a freeform `when` string to match the actual date. Idempotent. */
 export function fixWhen(when: string, now: Date = new Date()): string {
   if (!when) return when
+  const openRun = OPEN_RUN.test(when)
   // range first: "Sat–Sun 13–14 Jun" → recompute both ends from the two day numbers
   let s = when.replace(
     new RegExp(`\\b(?:${WDAY})\\s*[–—-]\\s*(?:${WDAY})\\s+(\\d{1,2})\\s*[–—-]\\s*(\\d{1,2})\\s+(${MONS})(\\w*)`, 'gi'),
     (_full, d1: string, d2: string, mon: string, tail: string) => {
       const mi = MON[mon.toLowerCase()]
-      const a = resolveDate(+d1, mi, now), b = resolveDate(+d2, mi, now)
+      const a = resolveDate(+d1, mi, now, openRun), b = resolveDate(+d2, mi, now, openRun)
       return `${WD[a.getDay()]}–${WD[b.getDay()]} ${d1}–${d2} ${mon}${tail}`
     },
   )
@@ -41,7 +50,7 @@ export function fixWhen(when: string, now: Date = new Date()): string {
   s = s.replace(
     new RegExp(`\\b(?:${WDAY})\\.?\\s+(\\d{1,2})\\s+(${MONS})(\\w*)`, 'gi'),
     (_full, d: string, mon: string, tail: string) => {
-      const dt = resolveDate(+d, MON[mon.toLowerCase()], now)
+      const dt = resolveDate(+d, MON[mon.toLowerCase()], now, openRun)
       return `${WD[dt.getDay()]} ${d} ${mon}${tail}`
     },
   )
@@ -51,7 +60,7 @@ export function fixWhen(when: string, now: Date = new Date()): string {
 // ── grouping helpers (the saves dock sorts/groups by day + time) ───────────────
 
 /** Minutes-into-the-day for intra-day ordering — explicit HH:MM, else a part-of-day word. */
-function timeMinutes(when: string): number {
+export function whenMinutes(when: string): number {
   const t = when.match(/(\d{1,2}):(\d{2})/)
   if (t) return +t[1] * 60 + +t[2]
   if (/\bmorning\b/i.test(when)) return 9 * 60
@@ -65,13 +74,14 @@ function timeMinutes(when: string): number {
 /** Every concrete date mentioned in a `when`, sorted ascending. */
 function datesIn(s: string, now: Date): Date[] {
   const out: Date[] = []
+  const openRun = OPEN_RUN.test(s)
   for (const m of s.matchAll(new RegExp(`(\\d{1,2})\\s*[–—-]?\\s*(\\d{1,2})?\\s*(${MONS})`, 'gi'))) {
     const mi = MON[m[3].slice(0, 3).toLowerCase()]
-    out.push(resolveDate(+m[1], mi, now))
-    if (m[2]) out.push(resolveDate(+m[2], mi, now))
+    out.push(resolveDate(+m[1], mi, now, openRun))
+    if (m[2]) out.push(resolveDate(+m[2], mi, now, openRun))
   }
   for (const m of s.matchAll(new RegExp(`(${MONS})\\s*(\\d{1,2})`, 'gi')))
-    out.push(resolveDate(+m[2], MON[m[1].slice(0, 3).toLowerCase()], now))
+    out.push(resolveDate(+m[2], MON[m[1].slice(0, 3).toLowerCase()], now, openRun))
   return out.sort((a, b) => a.getTime() - b.getTime())
 }
 
@@ -92,7 +102,15 @@ function classifyWhen(when: string, now: Date): { anytime: boolean; start: Date 
 export function whenSortKey(when: string, now: Date = new Date()): number {
   const { anytime, start } = classifyWhen(when, now)
   if (anytime || !start) return Number.MAX_SAFE_INTEGER
-  return start.getTime() + timeMinutes(when) * 60000
+  return start.getTime() + whenMinutes(when) * 60000
+}
+
+/** The START date of a dated pick (its first concrete date), or null for anytime / open-ended
+ *  runs. The one answer to "which day does this belong to" — the saves dock, the Itinerary,
+ *  and the .ics export all key off this, so they can never disagree about a pick's day. */
+export function whenStartDate(when: string, now: Date = new Date()): Date | null {
+  const { anytime, start } = classifyWhen(when, now)
+  return anytime ? null : start
 }
 
 /** The day bucket a pick belongs to, for the saves breakdown. Ongoing/long-running → "Anytime". */
