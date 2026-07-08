@@ -20,6 +20,16 @@ describe('parseWhen — agrees with the saves dock', () => {
     expect(info.groupKey).toBe('2026-07-03')                  // same bucket the dock uses
     expect(info.date).toEqual({ y: 2026, m: 7, d: 3 })        // → makes it into the .ics
   })
+  it('dates an EXPANDED range on its start day ("Sat 25 – Sun 26 Jul" — the Milkshake phrasing)', () => {
+    const info = parseWhen('Sat 25 – Sun 26 Jul', NOW)
+    expect(info.groupKey).toBe('2026-07-25')                  // was dated by its END day pre-fix
+    expect(info.date).toEqual({ y: 2026, m: 7, d: 25 })
+  })
+  it('dates a cross-month expanded range on its start day ("Thu 30 Jul – Sun 2 Aug" — Dekmantel)', () => {
+    const info = parseWhen('Thu 30 Jul – Sun 2 Aug', NOW)
+    expect(info.groupKey).toBe('2026-07-30')
+    expect(info.date).toEqual({ y: 2026, m: 7, d: 30 })
+  })
   it('dates a single day, with its explicit time', () => {
     const info = parseWhen('Sat 4 Jul · doors 20:00', NOW)
     expect(info.groupKey).toBe('2026-07-04')
