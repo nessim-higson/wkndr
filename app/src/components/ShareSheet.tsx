@@ -41,7 +41,13 @@ export function ShareSheet({
   async function share() {
     const who = name.trim() ? `${name.trim()} shared` : `My`
     const data = { title: 'WKNDR weekend', text: `${who} ${picks.length} ${city} picks`, url: link }
-    try { if (navigator.share) { await navigator.share(data); return } } catch { /* fall through */ }
+    if (navigator.share) {
+      // cancelling the native sheet rejects with AbortError — that's a decision, not a
+      // failure. Only a real failure falls through to copy(); a cancel must not
+      // overwrite the clipboard (or flash "copied" for something they didn't ask for).
+      try { await navigator.share(data); return }
+      catch (e) { if ((e as DOMException)?.name === 'AbortError') return }
+    }
     copy()
   }
 

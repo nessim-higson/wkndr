@@ -64,7 +64,7 @@ import { CATEGORY_LABEL, type Category } from './types'
 import { fixWhen, whenDayGroup, whenSortKey, whenTime, whenIsPast } from './lib/when'
 import { inShared } from './lib/share'
 import {
-  type Taste, applySwipe, hasTaste, loadSaved, loadTaste, persistSaved, persistTaste,
+  type Taste, applySwipe, revertSwipe, hasTaste, loadSaved, loadTaste, persistSaved, persistTaste,
 } from './taste'
 import './App.css'
 
@@ -459,6 +459,7 @@ export default function App() {
     if ((dir === 'like' || dir === 'save') && !wasSaved) {
       setSaved((s) => { const n = new Set(s); n.delete(pick.id); return n })
     }
+    setTaste((t) => revertSwipe(t, pick, dir))  // un-teach too — a mis-swipe must not bias ranking forever
     setUndoable(null)
     setUndoShown(false)
     if (undoTimer.current) clearTimeout(undoTimer.current)
