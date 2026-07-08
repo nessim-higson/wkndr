@@ -2,7 +2,7 @@
 // user is shown (weekday correction) and what is HIDDEN (the past-event filter), and they broke subtly
 // twice during the pipeline era. All tests pin `now` to Wed 1 Jul 2026 (weekend = Sat 4 / Sun 5 Jul).
 import { describe, it, expect } from 'bun:test'
-import { fixWhen, whenIsPast, latestDateOf, whenSortKey } from '../src/lib/when'
+import { fixWhen, whenIsPast, latestDateOf, whenSortKey, whenDayGroup } from '../src/lib/when'
 
 const NOW = new Date(2026, 6, 1, 12, 0, 0)   // Wed 1 Jul 2026
 
@@ -63,8 +63,40 @@ describe('latestDateOf', () => {
     expect(d?.getMonth()).toBe(6)
     expect(d?.getDate()).toBe(5)
   })
+  it('parses both sides of a cross-month expanded range', () => {
+    const d = latestDateOf('Thu 30 Jul – Sun 2 Aug', NOW)   // Dekmantel phrasing
+    expect(d?.getMonth()).toBe(7)
+    expect(d?.getDate()).toBe(2)
+  })
   it('returns null for undated whens', () => {
     expect(latestDateOf('Daily · dinner', NOW)).toBeNull()
+  })
+})
+
+describe('whenDayGroup — a range is dated on its START day', () => {
+  it('dates a compact weekend range on its start day', () => {
+    const g = whenDayGroup('Fri–Sun 3–5 Jul', NOW)
+    expect(g.key).toBe('2026-07-03')
+    expect(g.label).toContain('Friday')
+  })
+  it('dates an expanded range (weekday after the dash) on its start day', () => {
+    const g = whenDayGroup('Sat 25 – Sun 26 Jul', NOW)      // Milkshake phrasing — used to land on Sun 26
+    expect(g.key).toBe('2026-07-25')
+    expect(g.label).toContain('Saturday')
+  })
+  it('dates an expanded weekend range on its Friday', () => {
+    const g = whenDayGroup('Fri 3 – Sun 5 Jul', NOW)
+    expect(g.key).toBe('2026-07-03')
+    expect(g.label).toContain('Friday')
+  })
+  it('dates a cross-month expanded range on its first day', () => {
+    const g = whenDayGroup('Thu 30 Jul – Sun 2 Aug', NOW)   // Thu–Sun = 3-day span, still a dated plan
+    expect(g.key).toBe('2026-07-30')
+    expect(g.label).toContain('Thursday')
+  })
+  it('still sinks long runs and evergreens into Anytime', () => {
+    expect(whenDayGroup('Until Sun 27 Sep', NOW).key).toBe('anytime')
+    expect(whenDayGroup('Daily · shop hours', NOW).key).toBe('anytime')
   })
 })
 
@@ -75,5 +107,8 @@ describe('whenSortKey — itinerary ordering', () => {
     const daily = whenSortKey('Daily · shop hours', NOW)
     expect(sat).toBeLessThan(sun)
     expect(sun).toBeLessThan(daily)
+  })
+  it('sorts an expanded range by its start day, ahead of a pick on its end day', () => {
+    expect(whenSortKey('Sat 25 – Sun 26 Jul', NOW)).toBeLessThan(whenSortKey('Sun 26 Jul · 12:00', NOW))
   })
 })

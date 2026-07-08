@@ -71,11 +71,15 @@ export function whenMinutes(when: string): number {
   return 12 * 60
 }
 
-/** Every concrete date mentioned in a `when`, sorted ascending. */
+/** Every concrete date mentioned in a `when`, sorted ascending. Ranges parse in both the
+ *  compact form ("Fri–Sun 3–5 Jul") and the expanded form where a weekday sits after the
+ *  dash ("Sat 25 – Sun 26 Jul") — without the optional dash+weekday hop the expanded form
+ *  only matched its SECOND day, so a range was dated by its END day. Cross-month ranges
+ *  ("Thu 30 Jul – Sun 2 Aug") need nothing special: each side carries its own month. */
 function datesIn(s: string, now: Date): Date[] {
   const out: Date[] = []
   const openRun = OPEN_RUN.test(s)
-  for (const m of s.matchAll(new RegExp(`(\\d{1,2})\\s*[–—-]?\\s*(\\d{1,2})?\\s*(${MONS})`, 'gi'))) {
+  for (const m of s.matchAll(new RegExp(`(\\d{1,2})\\s*(?:[–—-]\\s*(?:${WDAY})\\.?)?\\s*[–—-]?\\s*(\\d{1,2})?\\s*(${MONS})`, 'gi'))) {
     const mi = MON[m[3].slice(0, 3).toLowerCase()]
     out.push(resolveDate(+m[1], mi, now, openRun))
     if (m[2]) out.push(resolveDate(+m[2], mi, now, openRun))
