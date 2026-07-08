@@ -174,7 +174,8 @@ export function CardDetail({
                 </motion.div>
                 <motion.h2 className="detail-title" variants={itemV}>{pick.title}</motion.h2>
                 <motion.div className="detail-venue" variants={itemV}>
-                  {[pick.venue, pick.area, pick.price].filter(Boolean).join(' · ')}
+                  {/* venue repeats the title for venue-IS-the-pick rows (restaurants, shops) — skip it */}
+                  {[pick.venue !== pick.title ? pick.venue : null, pick.area, pick.price].filter(Boolean).join(' · ')}
                 </motion.div>
                 {pick.blurb && <motion.p className="detail-blurb" variants={itemV}>{pick.blurb}</motion.p>}
 
@@ -206,8 +207,10 @@ export function CardDetail({
                   <button className="detail-icon-btn" onClick={share} aria-label="Share this pick">
                     {copied ? <Check size={19} strokeWidth={2.4} /> : <ArrowUpRight size={19} strokeWidth={2.2} />}
                   </button>
+                  {/* label the ACTION, not the source ("Open at Fresh find" read broken to cold
+                      users) — provenance already lives in the trace line below */}
                   <a className="detail-link" href={pick.link} target="_blank" rel="noreferrer">
-                    Open at {pick.source} <ArrowUpRight size={15} strokeWidth={2.2} style={{ verticalAlign: '-2px' }} />
+                    Open the page <ArrowUpRight size={15} strokeWidth={2.2} style={{ verticalAlign: '-2px' }} />
                   </a>
                 </motion.div>
                 <motion.div className="detail-trace" variants={itemV}>

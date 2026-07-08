@@ -5,6 +5,7 @@ import type { Pick, SwipeDir, Mode } from '../types'
 import { CATEGORY_LABEL } from '../types'
 import { SwipeStack } from './SwipeStack'
 import { shareLink } from '../lib/share'
+import { track } from '../lib/metrics'
 import './MatchGame.css'
 
 // PROTOTYPE — the swipe-to-match slice. Reuses the real SwipeStack physics; the "partner" is
@@ -75,6 +76,7 @@ export function MatchGame({
     const yes = dir === 'like' || dir === 'save'
     if (yes && partnerYes.has(p.id)) {
       haptic([14, 50, 22])
+      track('match-slam')
       setMatched((m) => [...m, p])
       setSlam(p)
     }
@@ -111,7 +113,7 @@ export function MatchGame({
             onSave={() => { onComplete?.(matched); requestClose() }} onClose={requestClose}
           />
         ) : (
-          <SwipeStack picks={queue} temp={temp} mode={mode} onSwipe={onSwipe} onOpen={onOpen} />
+          <SwipeStack picks={queue} temp={temp} mode={mode} onSwipe={onSwipe} onOpen={onOpen} nudge />
         )}
       </div>
 
@@ -228,6 +230,7 @@ function MatchPlan({
   // close the loop: send your matches BACK as the same kind of link, so they land on the plan you
   // both agreed on (from your name, stored when you last shared).
   function shareBack() {
+    track('plan-sent')   // the boomerang leaves — 'return-leg' on the sender's side completes it
     const me = (localStorage.getItem('wkndr.name') || '').trim()
     // `&m=1` = the confirmation breadcrumb: tells the original sender's app this is the RETURN leg
     // (you both matched), so it greets them with "it's a match" instead of a fresh invite.

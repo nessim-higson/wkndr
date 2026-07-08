@@ -14,6 +14,28 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.8.8] — 2026-07-08 — "Batch-share readiness: the unfurl, the funnel, the first 45 seconds"
+_Prep for the first larger share round (the weekend batch). The app is the stimulus; this ship
+makes the experiment produce data:_
+- **The unfurl** — og:title/description/image + twitter card + favicon + apple-touch-icon
+  (`public/og.png`, generated in the brand language: cream, Helvetica, dot + wordmark, temp pill).
+  A WKNDR link in WhatsApp/iMessage now lands as a designed card, not a naked URL.
+- **Funnel metrics, dormant** — `lib/metrics.ts`: GoatCounter beacon (cookieless, no banner) with
+  the validation-log's exact columns as events: `link-open` → `first-swipe` → `save` →
+  `match-slam` → `plan-sent` → `return-leg` (+ `intent-yes/no`). **No-op until the site code is
+  set in metrics.ts** — create the goatcounter.com site, paste the code, ship.
+- **The intent prompt** — the mom-test question, in-flow: after 10 stack swipes, once ever per
+  device, the under-header bar asks "Would you actually do any of these?" 👍/👎 → same Formspree
+  inbox as the feedback widget (`prompt: weekend-intent`). Yields to the undo pill + share nudge.
+- **First-run swipe nudge** — 0.9s after the deal-in settles, the top card leans 34px and springs
+  back (rides the real drag MotionValue, so tilt/wash react true). Once per device, on whichever
+  deck a user meets first (browse stack or match game). Aborts if they're already dragging.
+- **The moat, said out loud** — once the live forecast lands, the intro sub reads
+  "29° this weekend — these picks are ranked for it." instead of generic swipe copy.
+- **Cold-eye copy** — detail sheet: "Open at Fresh find" → "Open the page" (provenance stays in
+  the trace line); venue line no longer repeats the title for venue-is-the-pick rows.
+- (Tier-3 items — deal-in stagger, match haptics — turned out to already exist. Good sign.)
+
 ## [V.8.7] — 2026-07-08 — "TOPs wait their turn + the feed boundary hardens"
 _The rest of the review's recommendations, done in one pass:_
 - **👑 TOP weekend gate**: a TOP keeps its permanent status + "Top pick" pill, but only OPENS the

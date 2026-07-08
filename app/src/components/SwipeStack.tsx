@@ -30,6 +30,7 @@ const DIR: Record<SwipeDir, { x: number; y: number }> = {
 interface CardHandle {
   fling: (dir: SwipeDir, info?: PanInfo) => void
   autoFling: () => void
+  nudge: () => void
 }
 
 interface SwipeCardProps {
@@ -189,7 +190,19 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
     const lean = -0.5 + Math.random()                       // slight up/down lean for variety
     exit(Math.cos(ang), Math.sin(ang) * 0.7 + lean * 0.3, 650, () => onCycle?.(pick))
   }
-  useImperativeHandle(ref, () => ({ fling, autoFling }), [pick])
+
+  // First-run affordance: the top card leans right and settles — the universal "I swipe"
+  // signal, shown with motion instead of an instruction. Rides the same x MotionValue as a
+  // real drag (so the tilt/wash respond exactly as they would to a finger); aborts if the
+  // user has already started dragging.
+  function nudge() {
+    if (dragged.current) return
+    animate(x, 34, {
+      duration: 0.32, ease: [0.22, 1, 0.36, 1],
+      onComplete: () => animate(x, 0, { type: 'spring', stiffness: 240, damping: 14 }),
+    })
+  }
+  useImperativeHandle(ref, () => ({ fling, autoFling, nudge }), [pick])
 
   // live: as the top card drags, publish how far (0→1) so the stack advances with it
   function onDrag(_e: unknown, info: PanInfo) {
@@ -254,7 +267,7 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
 })
 
 export function SwipeStack({
-  picks, temp, mode, onSwipe, onOpen, onRefresh, filterLabel, onClearFilter, onSeeList,
+  picks, temp, mode, onSwipe, onOpen, onRefresh, filterLabel, onClearFilter, onSeeList, nudge,
 }: {
   picks: Pick[]
   temp?: number
@@ -265,11 +278,25 @@ export function SwipeStack({
   filterLabel?: string | null
   onClearFilter?: () => void
   onSeeList?: () => void
+  nudge?: boolean   // arm the one-time first-run swipe hint (fires once per device, ever)
 }) {
   const topRef = useRef<CardHandle>(null)
   const progress = useMotionValue(0)   // top card's drag (0→1), drives the cards behind
   const firstDeal = useRef(true)       // only the initial set flies in; later arrivals fade
   useEffect(() => { firstDeal.current = false }, [])
+
+  // the first-run hint: after the deal-in settles (~0.9s), lean the top card once. localStorage
+  // gate = once per device across BOTH decks (browse stack + match game) — whichever shows first.
+  useEffect(() => {
+    if (!nudge || !picks.length) return
+    if (localStorage.getItem('wkndr.nudged')) return
+    const id = window.setTimeout(() => {
+      topRef.current?.nudge()
+      localStorage.setItem('wkndr.nudged', '1')
+    }, 900)
+    return () => clearTimeout(id)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [nudge])
 
   // The deck never moves on its own — no idle auto-flip. Cards only leave when YOU swipe
   // (or hit the action buttons). Stable DOM order; stacking is each slot's z-index.

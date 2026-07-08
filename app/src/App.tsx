@@ -36,6 +36,11 @@ const SHARED_FROM = (() => {
 // matches BACK. Same ?w=codes shape, but we greet it as a confirmation ("you're matched") and
 // skip relaunching the swipe game (you'd just be re-swiping your own picks). The breadcrumb.
 const SHARED_CONFIRM = new URLSearchParams(window.location.search).get('m') === '1'
+// FUNNEL — module scope so each fires exactly once per page load. 'return-leg' is the metric
+// that matters (a completed boomerang); 'link-open' is its top-of-funnel.
+initMetrics()
+if (SHARED_CONFIRM) track('return-leg')
+else if (SHARED_IDS) track('link-open')
 // MVP surface gate (V.5): the trimmed product is the default — one view (Stack), one
 // ambient look, Amsterdam only. `?dev=1` reveals the full exploration surface (all views,
 // the ambient-look switcher, the city picker) for working sessions. Full version frozen
@@ -55,6 +60,8 @@ import { CATEGORY_LABEL, type Category } from './types'
 import { fixWhen, whenDayGroup, whenSortKey, whenTime, whenIsPast } from './lib/when'
 import { inShared } from './lib/share'
 import { sanePicks } from './lib/feed'
+import { initMetrics, track } from './lib/metrics'
+import { FEEDBACK_FORM } from './components/Feedback'
 import {
   type Taste, applySwipe, revertSwipe, hasTaste, loadSaved, loadTaste, persistSaved, persistTaste,
 } from './taste'
@@ -168,6 +175,25 @@ export default function App() {
   const [shareOpen, setShareOpen] = useState(false)        // "My Weekend" share sheet
   const [shareNudgeOff, setShareNudgeOff] = useState(() => localStorage.getItem('wkndr.sharenudge') === 'off')
   const dismissShareNudge = () => { setShareNudgeOff(true); localStorage.setItem('wkndr.sharenudge', 'off') }
+  // THE INTENT PROMPT — the mom-test question, asked in-flow after 10 swipes, once ever per
+  // device: "would you actually do any of these?" Sentiment lands in the same Formspree inbox
+  // as the feedback widget (field `prompt: weekend-intent`) + a funnel event. 'done' persists.
+  const swipeCount = useRef(0)
+  const [intent, setIntent] = useState<'idle' | 'ask' | 'thanks' | 'done'>(
+    () => (localStorage.getItem('wkndr.intent') ? 'done' : 'idle'),
+  )
+  const answerIntent = (a: 'yes' | 'no') => {
+    localStorage.setItem('wkndr.intent', a)
+    track(a === 'yes' ? 'intent-yes' : 'intent-no')
+    fetch(FEEDBACK_FORM, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', accept: 'application/json' },
+      body: JSON.stringify({ prompt: 'weekend-intent', answer: a, version: APP_VERSION, city: city.key, ua: navigator.userAgent }),
+    }).catch(() => { /* fire-and-forget */ })
+    setIntent('thanks')
+    window.setTimeout(() => setIntent('done'), 1600)
+  }
+  const dismissIntent = () => { localStorage.setItem('wkndr.intent', 'dismissed'); setIntent('done') }
   // toggle helpers for the multi-select sheets ('all'/'any' clears the set)
   const toggleCat = (k: CatKey | 'all') => setCats((p) => k === 'all' ? [] : p.includes(k) ? p.filter((x) => x !== k) : [...p, k])
   const toggleWhen = (k: WhenKey) => setWhens((p) => k === 'all' ? [] : p.includes(k) ? p.filter((x) => x !== k) : [...p, k])
@@ -436,7 +462,13 @@ export default function App() {
     setSwiped((s) => new Set(s).add(p.id))
     if (dir === 'like' || dir === 'save') {
       setSaved((s) => new Set(s).add(p.id))   // the header counter turns orange + bumps — that's the confirmation
+      track('save')
     }
+    // funnel + the one in-flow question. First swipe = "they got it" (the activation event);
+    // ten swipes = invested enough to be asked the mom-test question ONCE, at the moment of
+    // maximum honesty — not on open, not via the passive feedback button.
+    if (++swipeCount.current === 1) track('first-swipe')
+    if (swipeCount.current === 10 && intent === 'idle') setIntent('ask')
     setTaste((t) => applySwipe(t, p, dir))   // every swipe teaches it
     setUndoable({ pick: p, dir, wasSaved })  // offer a brief take-back…
     // …but defer showing it: each swipe resets a settle timer, so the pill only appears once
@@ -568,7 +600,12 @@ export default function App() {
       <AnimatePresence>
         {intro && <Intro
           lead={SHARED_CONFIRM ? `It’s a match with ${SHARED_FROM || 'your friend'}.` : SHARED_FROM ? `${SHARED_FROM} sent you some picks.` : undefined}
-          sub={SHARED_CONFIRM ? 'The plans you both want — here’s your weekend.' : SHARED_FROM ? 'Match to find out what you should do →' : 'Swipe what’s on — match with friends to plan the weekend together.'}
+          sub={SHARED_CONFIRM ? 'The plans you both want — here’s your weekend.'
+            : SHARED_FROM ? 'Match to find out what you should do →'
+            /* the moat, said out loud: once the real forecast is in, the intro names it — the
+               deck isn't a listing, it's ranked for THIS weekend's actual weather */
+            : live ? `${Math.round(wx.temp)}° this weekend — these picks are ranked for it. Swipe, save, match with a friend.`
+            : 'Swipe what’s on — match with friends to plan the weekend together.'}
           showHint={visits <= 3}
           onDone={() => setIntro(false)}
         />}
@@ -857,6 +894,23 @@ export default function App() {
             <button className="ctx-x" onClick={dismissShareNudge} aria-label="Dismiss"><X size={15} strokeWidth={2.5} /></button>
           </div>
         )}
+        {/* The intent prompt — same under-header slot, yields to the undo pill AND the share
+            nudge (rarer of the two; it can wait a render). One question, once ever. */}
+        {(intent === 'ask' || intent === 'thanks') && !intro && !(undoable && undoShown) &&
+          (shareNudgeOff || saved.size < 3 || !!SHARED_IDS) && (
+          <div className="ctx-bar nudge">
+            {intent === 'thanks' ? (
+              <span>🙏 Noted — enjoy the weekend.</span>
+            ) : (
+              <>
+                <span>Would you actually do any of these?</span>
+                <button className="ctx-match" onClick={() => answerIntent('yes')} aria-label="Yes">👍</button>
+                <button className="ctx-match" onClick={() => answerIntent('no')} aria-label="No">👎</button>
+                <button className="ctx-x" onClick={dismissIntent} aria-label="Dismiss"><X size={15} strokeWidth={2.5} /></button>
+              </>
+            )}
+          </div>
+        )}
 
         <main className={`main main-${view}`}>
           {view === 'stack' ? (
@@ -874,6 +928,7 @@ export default function App() {
                 temp={wx.temp}
                 mode={mode}
                 onSwipe={handleStackSwipe}
+                nudge={!intro}
                 onOpen={openDetail}
                 onRefresh={refresh}
                 filterLabel={filterActive ? 'this filter' : null}
