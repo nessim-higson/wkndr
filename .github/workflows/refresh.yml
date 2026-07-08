@@ -53,11 +53,18 @@ jobs:
             git commit -m "chore(content): weekly refresh $(date -u +%Y-%m-%d)"
             # rebase onto any commits that landed on main while the (long) pipeline ran, so the
             # push can't be rejected non-fast-forward (the feed touches only app/public/data, so a
-            # rebase applies cleanly). Retry once. This was the cause of the failed runs.
+            # rebase applies cleanly). Retry up to 3×; if every attempt fails, the step MUST go red —
+            # a fallen-through loop here once exited 0 with changed=true and made a broken deploy look green.
+            pushed=false
             for i in 1 2 3; do
-              git pull --rebase --autostash origin main && git push && break
+              if git pull --rebase --autostash origin main && git push; then pushed=true; break; fi
+              git rebase --abort >/dev/null 2>&1 || true   # clear any half-applied rebase so the retry starts clean
               echo "push attempt $i failed — retrying"; sleep 3
             done
+            if [ "$pushed" != "true" ]; then
+              echo "::error::push failed after 3 attempts — refresh NOT published"
+              exit 1
+            fi
             echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
       - name: Trigger deploy
@@ -65,3 +72,15 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: gh workflow run deploy.yml
+      - name: Healthcheck OK ping
+        # DEAD-MAN'S SWITCH — the healthchecks.io "ok" only fires here, as the LAST step, so it vouches for
+        # the WHOLE loop: pipeline → commit/push → deploy trigger. (It used to fire inside refresh.ts, which
+        # called the run healthy before the publish steps had happened.) Default `if: success()` also covers
+        # the no-change week — deploy skipped still counts as a clean run. The /fail ping on a gate
+        # regression stays in refresh.ts and fires the moment the gate abstains.
+        env:
+          HEALTHCHECK_URL: ${{ secrets.HEALTHCHECK_URL }}
+        run: |
+          if [ -n "$HEALTHCHECK_URL" ]; then
+            curl -fsS -m 10 --retry 3 -X POST -d 'ok' "$HEALTHCHECK_URL" || echo "healthcheck ping failed (non-fatal)"
+          fi
