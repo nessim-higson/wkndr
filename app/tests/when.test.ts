@@ -41,6 +41,22 @@ describe('whenIsPast — the runtime past-event filter', () => {
   })
 })
 
+describe('year rollover — the resolveDate heuristic', () => {
+  it('rolls an open run across the year boundary ("Until 15 Jan" in July = NEXT January)', () => {
+    expect(whenIsPast('Until 15 Jan', NOW)).toBe(false)
+    expect(latestDateOf('Until 15 Jan', NOW)?.getFullYear()).toBe(2027)
+  })
+  it('wraps a bare date near the boundary (a late-Dec feed saying "Sat 2 Jan")', () => {
+    const DEC = new Date(2026, 11, 28, 12)                     // Mon 28 Dec 2026
+    expect(whenIsPast('Sat 2 Jan', DEC)).toBe(false)
+    expect(fixWhen('Fri 2 Jan', DEC)).toBe('Sat 2 Jan')        // 2 Jan 2027 is a Saturday
+  })
+  it('does NOT resurrect a stale feed\'s bare dates as next year\'s (the >45-day-lag bug)', () => {
+    expect(whenIsPast('Sat 25 Apr', NOW)).toBe(true)           // 67 days past → past, not next April
+    expect(whenIsPast('Sat–Sun 25–26 Apr', NOW)).toBe(true)
+  })
+})
+
 describe('latestDateOf', () => {
   it('finds the latest date of a range', () => {
     const d = latestDateOf('Fri 3 – Sun 5 Jul', NOW)

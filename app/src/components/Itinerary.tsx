@@ -16,10 +16,10 @@ export function Itinerary({
   onSwipe: (p: Pick, dir: SwipeDir) => void   // 'skip' removes from saved
   sharedName?: string | null
 }) {
-  const year = useMemo(() => new Date().getFullYear(), [])
+  const now = useMemo(() => new Date(), [])
 
   const { groups, datedCount } = useMemo(() => {
-    const items = picks.map((p) => ({ pick: p, info: parseWhen(p.when, year) }))
+    const items = picks.map((p) => ({ pick: p, info: parseWhen(p.when, now) }))
     const map = new Map<string, { label: string; sortDay: number; rows: typeof items }>()
     for (const it of items) {
       const g = map.get(it.info.groupKey) ?? { label: it.info.groupLabel, sortDay: it.info.sortDay, rows: [] }
@@ -29,10 +29,10 @@ export function Itinerary({
     const arr = [...map.values()].sort((a, b) => a.sortDay - b.sortDay)
     arr.forEach((g) => g.rows.sort((a, b) => a.info.minutes - b.info.minutes))
     return { groups: arr, datedCount: items.filter((x) => x.info.date).length }
-  }, [picks, year])
+  }, [picks, now])
 
   function addAllToCalendar() {
-    const items = picks.map((p) => ({ pick: p, info: parseWhen(p.when, year) })).filter((x) => x.info.date)
+    const items = picks.map((p) => ({ pick: p, info: parseWhen(p.when, now) })).filter((x) => x.info.date)
     if (!items.length) return
     downloadICS('my-wknd.ics', buildICS(items))
   }
