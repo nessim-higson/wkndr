@@ -14,6 +14,24 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.8.7] — 2026-07-08 — "TOPs wait their turn + the feed boundary hardens"
+_The rest of the review's recommendations, done in one pass:_
+- **👑 TOP weekend gate**: a TOP keeps its permanent status + "Top pick" pill, but only OPENS the
+  deck once its event is active by the end of the weekend being served (`whenActiveBy` +
+  `upcomingWeekendEnd` in the date brain; `orderServed` moved to `weather/modes.ts` and gated).
+  Milkshake (25–26 Jul) and Dekmantel (30 Jul–2 Aug) no longer lead the 11–12 Jul deck — they ride
+  the ranked middle until their own weekends. "Opens 8 Jul" / "Daily" / "Until …" TOPs still lead.
+  Closes STATE open item 8b.
+- **Feed boundary hardened** (the V.7.11 class, closed at the blast radius this time):
+  `sanePicks` (`lib/feed.ts`) drops rows missing id/title at ingestion instead of letting them
+  corrupt React keys + the save/swipe Sets; a FAILED feed fetch no longer memoizes as fetched (one
+  boot-time network blip used to pin the whole session to the stale bundled snapshot); and a
+  branded ErrorBoundary turns any remaining render crash into "reload — your saves are safe"
+  instead of a white screen.
+- **README truth pass**: root README + root package.json described the pre-V5 experiments era;
+  both now describe the shipped app (STATE.md first, bun workflow, repo map as it actually is).
+- Tests 54 → 69 (orderServed gate, whenActiveBy, upcomingWeekendEnd, sanePicks).
+
 ## [V.8.6] — 2026-07-08 — "Review hardening: one date brain + CI that can't fake green"
 _The 2026-07-07 full-build review (both halves graded B+) produced four fix PRs; all landed (#4 #5 #7,
 then #6 rebased over #7 — they rewrote the same `datesIn` lines):_

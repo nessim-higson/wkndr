@@ -112,3 +112,41 @@ describe('whenSortKey — itinerary ordering', () => {
     expect(whenSortKey('Sat 25 – Sun 26 Jul', NOW)).toBeLessThan(whenSortKey('Sun 26 Jul · 12:00', NOW))
   })
 })
+
+// V.8.7 — whenActiveBy, the TOP deck-lead gate's date question: "has this begun by the end of
+// the weekend we're serving?"
+import { whenActiveBy, upcomingWeekendEnd } from '../src/lib/when'
+
+describe('whenActiveBy — the TOP weekend gate', () => {
+  const NOW = new Date(2026, 6, 8, 12, 0, 0)            // Wed 8 Jul 2026
+  const END = new Date(2026, 6, 12, 23, 59, 59)         // Sun 12 Jul — end of served weekend
+
+  it('a place already open ("Opens 8 Jul") is active this weekend', () => {
+    expect(whenActiveBy('Opens 8 Jul', END, NOW)).toBe(true)
+  })
+  it('a place opening AFTER the weekend is not ("Opens 20 Jul")', () => {
+    expect(whenActiveBy('Opens 20 Jul', END, NOW)).toBe(false)
+  })
+  it('a future festival is not active until its own weekend', () => {
+    expect(whenActiveBy('Sat 25 – Sun 26 Jul', END, NOW)).toBe(false)
+    expect(whenActiveBy('Sat 25 – Sun 26 Jul', new Date(2026, 6, 26, 23, 59, 59), NOW)).toBe(true)
+  })
+  it('undated / recurring picks are always active', () => {
+    expect(whenActiveBy('Daily · 9:00–18:00', END, NOW)).toBe(true)
+    expect(whenActiveBy('', END, NOW)).toBe(true)
+  })
+  it('end-anchored open runs ("Until …") are already underway', () => {
+    expect(whenActiveBy('Until Sun 27 Sep', END, NOW)).toBe(true)
+  })
+})
+
+describe('upcomingWeekendEnd', () => {
+  it('a weekday serves the coming Sunday', () => {
+    const end = upcomingWeekendEnd(new Date(2026, 6, 8))        // Wed 8 Jul
+    expect([end.getFullYear(), end.getMonth(), end.getDate()]).toEqual([2026, 6, 12])
+  })
+  it('a Saturday serves its own Sat–Sun; a Sunday serves itself', () => {
+    expect(upcomingWeekendEnd(new Date(2026, 6, 11)).getDate()).toBe(12)
+    expect(upcomingWeekendEnd(new Date(2026, 6, 12)).getDate()).toBe(12)
+  })
+})

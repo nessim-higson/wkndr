@@ -5,7 +5,7 @@ import { Shuffle, Clock, ChevronDown, LayoutGrid, Star, ArrowUpRight, LocateFixe
 // subtle haptic on commit/save (Android/Chrome; iOS Safari ignores navigator.vibrate)
 const haptic = (ms = 10) => { try { navigator.vibrate?.(ms) } catch { /* unsupported */ } }
 import type { Mode, Pick, SwipeDir } from './types'
-import { MODES, MODE_META, classify, applyMode, rankPicks, diversify } from './weather/modes'
+import { MODES, MODE_META, classify, applyMode, rankPicks, diversify, orderServed } from './weather/modes'
 import { CITIES, DEFAULT_CITY, cityByKey, cityByName, nearestCity, type City } from './data/cities'
 import { AmbientField } from './weather/AmbientField'
 import type { Look } from './weather/ambientEngine'
@@ -46,15 +46,6 @@ const DEVUI = new URLSearchParams(window.location.search).has('dev')
 // it, the same dozen always led and the feed felt identical week over week.
 const WEEK = Math.floor(Date.now() / 6.048e8)
 
-// THE PILE ORDER — Ness's curation tiers decide who opens the deck, everything else keeps its
-// diversified order: 👑 TOP (permanent escalation) → ▲ LEAD (this weekend's slate) → the ranked
-// middle → ▼ LATER (this weekend's "not now" — published, but at the back). Stable partition.
-const orderServed = (arr: Pick[]): Pick[] => [
-  ...arr.filter((p) => p.top),
-  ...arr.filter((p) => !p.top && p.lead),
-  ...arr.filter((p) => !p.top && !p.lead && !p.later),
-  ...arr.filter((p) => !p.top && !p.lead && p.later),
-]
 // the header degrees take on the live weather's hue — a cool day reads cool, a hot day warm —
 // so the number itself signals the mood (muted tints, readable on the cream pill)
 const TEMP_TINT: Record<Mode, string> = {
@@ -63,6 +54,7 @@ const TEMP_TINT: Record<Mode, string> = {
 import { CATEGORY_LABEL, type Category } from './types'
 import { fixWhen, whenDayGroup, whenSortKey, whenTime, whenIsPast } from './lib/when'
 import { inShared } from './lib/share'
+import { sanePicks } from './lib/feed'
 import {
   type Taste, applySwipe, revertSwipe, hasTaste, loadSaved, loadTaste, persistSaved, persistTaste,
 } from './taste'
@@ -269,14 +261,18 @@ export default function App() {
   useEffect(() => {
     const key = city.key
     if (fetchedFeeds.current.has(key)) return
-    fetchedFeeds.current.add(key)
+    fetchedFeeds.current.add(key)   // single-flight guard while the fetch is out…
     fetch(`${import.meta.env.BASE_URL}data/picks.${key}.json`)
       .then((r) => (r.ok ? r.json() : null))
       .then((j) => {
-        if (!j || !Array.isArray(j.picks) || !j.picks.length) return
-        setFeeds((prev) => ({ ...prev, [key]: { picks: j.picks as Pick[], generatedAt: j.generatedAt, topMatches: Array.isArray(j.topMatches) ? j.topMatches : [] } }))
+        const picks = j && Array.isArray(j.picks) ? sanePicks(j.picks) : []
+        // …but ONLY a successful ingest keeps the key marked: a transient error used to memoize
+        // the ATTEMPT and pin the whole session to the stale bundled snapshot (bad on the flaky
+        // mobile data a share-link recipient opens on). Failure → unmark, so a later pass retries.
+        if (!picks.length) { fetchedFeeds.current.delete(key); return }
+        setFeeds((prev) => ({ ...prev, [key]: { picks, generatedAt: j.generatedAt, topMatches: Array.isArray(j.topMatches) ? j.topMatches : [] } }))
       })
-      .catch(() => { /* keep bundled */ })
+      .catch(() => { fetchedFeeds.current.delete(key) /* keep bundled; retry on a later pass */ })
   }, [city.key])
   useEffect(() => { persistSaved(saved) }, [saved])   // your list survives reloads
   useEffect(() => { persistTaste(taste) }, [taste])   // your taste accumulates over time

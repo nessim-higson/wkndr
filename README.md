@@ -1,41 +1,47 @@
 # WKNDR
 
-A **weather-aware, swipe-trained discovery engine for Amsterdam.** Learns your taste
-through a Tinder-style swipe and surfaces what's alive in the city right now — events,
-food, galleries, day-trips — re-ranked by the weather and by what it's learned about you.
-(It began as a curated weekend *brief*; that's now one view within the engine.)
+A **weather-aware weekend deck for Amsterdam** — live at
+**https://nessim-higson.github.io/wkndr/**. Every week a content pipeline crawls the city's
+event sources, dedupes and image-verifies them, ranks them against the coming weekend's
+actual forecast, and runs them through a hand-trained taste engine. You swipe; saves become
+a shareable link; the link IS the match invite (a partner swipes your picks, overlap slams,
+a plan comes back) — all in the URL, no backend, no login.
 
-**Start here:** read `docs/discovery-direction.md` (the locked product direction), then
-`CLAUDE.md` (working memory / design lineage) and `index.html` (browse the experiments).
+**Start here:** `STATE.md` — the kept-current snapshot (live version, pipeline state, open
+decisions). Then `docs/backlog.md` for strategy and `CHANGELOG.md` for history.
 
 ```
 wkndr/
-├── CLAUDE.md            ← read first. project memory for Claude Code sessions.
-├── index.html           ← design navigator / contact sheet
-├── experiments/         ← every prototype, in chronological chapters
-│   ├── 01-foundations/
-│   ├── 02-v5-family/    ← v5 is the working base; v5-kids is the current favourite
-│   ├── 03-visual-languages/
-│   ├── 04-header-directions/
-│   └── 05-cover-hara/   ← most recent thread
-├── engine/
-│   └── weather-engine.ts   ← 5-mode classifier + ranker + LLM narration
-└── docs/
-    ├── SETUP.md         ← run locally · deploy · the Figma handoff loop
-    └── sources.md       ← real Amsterdam venue + data-source URLs
+├── STATE.md             ← read first. "catch me up" snapshot, kept current.
+├── CLAUDE.md            ← session onboarding for Claude Code.
+├── CHANGELOG.md         ← version history (V.<major>.<sub>, tags per whole version).
+├── app/                 ← the product. Vite + React + TS, run with bun.
+│   ├── src/             ← deck, matching, taste model, ambient weather field
+│   ├── scripts/         ← the weekly content pipeline + taste engine (bun, GitHub Actions cron)
+│   ├── tests/           ← logic tests (bun test) — they gate every content refresh
+│   └── public/curate/   ← the Curation Board (verdicts → GitHub issue → compiled into the engine)
+├── docs/                ← strategy, pipeline architecture, validation instruments
+├── versions/            ← frozen reference builds (v4-10, v6-2)
+└── experiments/         ← the 2026-05 design-exploration archive that seeded all of this
 ```
 
 ## Run
 
 ```bash
-python3 -m http.server 8000   # → http://localhost:8000
+cd app
+bun install
+bun run dev        # → http://localhost:5173
+bun run test       # logic suite (also runs in CI before every content refresh)
 ```
+
+## Ship
+
+`cd app && bun run bump` → `bun run build` → commit → push. Pushing to `main` auto-deploys
+to GitHub Pages; the weekly feed refreshes via `.github/workflows/refresh.yml` (Thu 13:00 UTC,
+publish-gated — a broken run abstains and last-good keeps serving).
 
 ## Status
 
-**Concept locked (discovery engine), entering Phase 1 — validate.** Next build is the
-weekend-only swipe stack: CSS gradient weather background, basic DOM swipe, list/stack
-toggle stubbed, weather-ranked picks for the coming weekend. Goal: do Ness + partner
-actually open it for ~8 weekends? Visual exploration in `/experiments` (v5 base; Hara,
-cover-helvetica, and the 06-hybrid live weather header are the latest threads) feeds the
-card + weather-field design. See `docs/discovery-direction.md` §9 for the full build order.
+Build-for-self validation phase. The product loop is shipped (deck → save → share → match →
+plan); the open question is behavioral — do share links round-trip and do plans get lived.
+`docs/validation-log.md` is the scoreboard.

@@ -1,5 +1,6 @@
 import type { Mode, Pick } from '../types'
 import { tasteScore, type Taste } from '../taste'
+import { upcomingWeekendEnd, whenActiveBy } from '../lib/when'
 
 export const MODES: Mode[] = ['HOT', 'WARM', 'COOL', 'COLD_WET', 'VOLATILE']
 
@@ -152,4 +153,23 @@ export function diversify(ranked: Pick[]): Pick[] {
     out.push(pool.splice(i, 1)[0])
   }
   return out
+}
+
+/**
+ * THE PILE ORDER — Ness's curation tiers decide who opens the deck, everything else keeps its
+ * diversified order: 👑 TOP (permanent escalation) → ▲ LEAD (this weekend's slate) → the ranked
+ * middle → ▼ LATER (this weekend's "not now" — published, but at the back). Stable partition.
+ *
+ * The 👑 tier is TIME-GATED: a TOP only opens the deck once its event is active by the end of
+ * the weekend being served ("Opens 8 Jul" / "Daily" lead now; a festival TOPped weeks ahead rides
+ * the ranked middle — pill intact — until its own weekend). The deck must lead with THIS weekend.
+ */
+export function orderServed(arr: Pick[], end: Date = upcomingWeekendEnd()): Pick[] {
+  const opens = (p: Pick) => !!p.top && whenActiveBy(p.when, end)
+  return [
+    ...arr.filter(opens),
+    ...arr.filter((p) => !opens(p) && p.lead),
+    ...arr.filter((p) => !opens(p) && !p.lead && !p.later),
+    ...arr.filter((p) => !opens(p) && !p.lead && p.later),
+  ]
 }

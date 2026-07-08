@@ -71,3 +71,46 @@ describe('diversify — anti-clustering', () => {
     expect(new Set(out.map((p) => p.id)).size).toBe(input.length)
   })
 })
+
+// V.8.7 — orderServed's time-gated 👑 tier: a TOP only OPENS the deck once its event is active
+// by the end of the weekend being served. Pins the live 2026-07-08 defect: Milkshake (25–26 Jul)
+// and Dekmantel (30 Jul–2 Aug) led the 11–12 Jul deck.
+import { orderServed } from '../src/weather/modes'
+
+describe('orderServed — the pile order, with the TOP weekend gate', () => {
+  const END = new Date(2026, 6, 12, 23, 59, 59)   // Sun 12 Jul 2026 — end of the served weekend
+
+  it('a TOP active this weekend opens the deck', () => {
+    const top = P({ id: 'lemmeke', when: 'Opens 8 Jul', top: true })
+    const mid = P({ id: 'mid' })
+    expect(orderServed([mid, top], END)[0].id).toBe('lemmeke')
+  })
+
+  it('an undated / recurring TOP always opens the deck (ARTIS "Daily")', () => {
+    const top = P({ id: 'artis', when: 'Daily · 9:00–18:00', top: true })
+    const mid = P({ id: 'mid' })
+    expect(orderServed([mid, top], END)[0].id).toBe('artis')
+  })
+
+  it('a future-dated TOP waits for its own weekend — ranked middle, not the lead', () => {
+    const milkshake = P({ id: 'milkshake', when: 'Sat 25 – Sun 26 Jul', top: true })
+    const lead = P({ id: 'lead', lead: true })
+    const mid = P({ id: 'mid' })
+    const later = P({ id: 'later', later: true })
+    const out = orderServed([milkshake, later, mid, lead], END)
+    expect(out[0].id).toBe('lead')                          // LEAD takes over the open
+    expect(out.map((p) => p.id)).toEqual(['lead', 'milkshake', 'mid', 'later'])
+    expect(out.find((p) => p.id === 'milkshake')?.top).toBe(true)   // pill/status intact
+  })
+
+  it('…and DOES lead once the served weekend reaches it', () => {
+    const milkshake = P({ id: 'milkshake', when: 'Sat 25 – Sun 26 Jul', top: true })
+    const ownWeekend = new Date(2026, 6, 26, 23, 59, 59)    // Sun 26 Jul
+    expect(orderServed([P({ id: 'mid' }), milkshake], ownWeekend)[0].id).toBe('milkshake')
+  })
+
+  it('an already-running "Until …" TOP leads (end-anchored = underway)', () => {
+    const expo = P({ id: 'expo', when: 'Until Sun 27 Sep', top: true })
+    expect(orderServed([P({ id: 'mid' }), expo], END)[0].id).toBe('expo')
+  })
+})

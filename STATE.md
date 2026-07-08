@@ -3,7 +3,7 @@
 _Living "where are we right now" doc — a **snapshot, not a history**. **Updated 2026-07-04.** Read this
 FIRST in a new chat. For strategy + backlog see `docs/backlog.md`; for the pipeline architecture see
 `docs/pipeline-architecture.md` + `docs/source-map.md`; for full **version history** see `CHANGELOG.md`
-(current to V.8.5) and the **git log / tags**. Onboarding: `CLAUDE.md`. App lives in `/app` (Vite +
+(current to V.8.7) and the **git log / tags**. Onboarding: `CLAUDE.md`. App lives in `/app` (Vite +
 React + TS, run with `bun`); deployed to GitHub Pages._
 
 > **START-OF-SESSION for WKNDR:** check `gh issue list --label curation` — the Curation Board's
@@ -11,7 +11,9 @@ React + TS, run with `bun`); deployed to GitHub Pages._
 > read the open ones, compile into the taste engine (below), ship, then close the issue.
 
 ## Live right now
-- **App: V.8.5** — https://nessim-higson.github.io/wkndr/ (cache-bust `?v=V.8.5`) · **Curation
+- **App: V.8.7** — https://nessim-higson.github.io/wkndr/ (cache-bust `?v=V.8.7`; V.8.6 = the
+  review-hardening ship — one date brain, CI can't fake green; V.8.7 = 👑 TOP weekend gate + feed-
+  boundary guard/error boundary + README truth pass) · **Curation
   Board:** https://nessim-higson.github.io/wkndr/curate/ — tabbed: `IN ROTATION` (opens with **THE
   WEEKEND PILE** — the ~10 projected opening cards in serve order — then the feed + ~141-pick canon
   library w/ ✓ APPROVED badges) vs `NEW FINDS` (TRENDING inbox → bench → canon candidates). Card

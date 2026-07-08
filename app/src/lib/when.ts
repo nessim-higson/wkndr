@@ -131,6 +131,28 @@ export function latestDateOf(when: string, now: Date = new Date()): Date | null 
   return dates.length ? dates[dates.length - 1] : null
 }
 
+/** End of the weekend currently being served: the coming Sunday, end of day (a Saturday serves
+ *  Sat–Sun; a Sunday serves itself). Mirrors App's weekendWindow / the pipeline's upcomingWeekend. */
+export function upcomingWeekendEnd(now: Date = new Date()): Date {
+  const d = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999)
+  d.setDate(d.getDate() + ((7 - d.getDay()) % 7))
+  return d
+}
+
+/** Has this pick already begun by `by` (the end of the window being served)? Undated / recurring
+ *  picks ("Daily", a market's hours) are always active; end-anchored open runs ("Until 21 Sep")
+ *  are already underway by definition (a finished one is caught by whenIsPast, not here); anything
+ *  else — single days, ranges, "Opens 8 Jul" — is active once its FIRST concrete date is on or
+ *  before `by`. Drives the 👑 TOP deck-lead gate: a future festival keeps its pill + guaranteed
+ *  slot but only OPENS the deck on its own weekend. */
+export function whenActiveBy(when: string, by: Date, now: Date = new Date()): boolean {
+  const s = when || ''
+  if (/\b(until|through|thru|till|t\/m)\b/i.test(s)) return true
+  const dates = datesIn(s, now)
+  if (!dates.length) return true
+  return dates[0].getTime() <= by.getTime()
+}
+
 /** Has this `when` already finished? (Its latest date is before today.) Undated / open-ended / recurring
  *  picks — "Daily", "Until <future>", a market's "Mon–Sat", evergreen canon — have no concrete latest date
  *  and return false (kept). This is the RUNTIME guard: the feed is rebuilt weekly for the coming weekend,
