@@ -14,6 +14,13 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.8.9] — 2026-07-09 — "The horizon: the whole deck front is THIS weekend"
+- V.8.7's TOP gate generalized: ANY pick not active by the served weekend — TOPped or not — now
+  sinks to the **horizon** at the back of the endless deck (was: only TOPs were kept from
+  *leading*; WorldPride/Milkshake/Dekmantel still surfaced at positions 3–5). Still in the deck
+  and the list for ticket-buyers; future TOPs head the horizon so they resurface first as their
+  weekend arrives. `orderServed` tiers: 👑active → ▲LEAD → middle → ▼LATER → horizon (TOPs first).
+
 ## [V.8.8] — 2026-07-08 — "Batch-share readiness: the unfurl, the funnel, the first 45 seconds"
 _Prep for the first larger share round (the weekend batch). The app is the stimulus; this ship
 makes the experiment produce data:_

@@ -92,15 +92,24 @@ describe('orderServed — the pile order, with the TOP weekend gate', () => {
     expect(orderServed([mid, top], END)[0].id).toBe('artis')
   })
 
-  it('a future-dated TOP waits for its own weekend — ranked middle, not the lead', () => {
+  it('a future-dated TOP waits for its own weekend — heads the horizon at the back', () => {
     const milkshake = P({ id: 'milkshake', when: 'Sat 25 – Sun 26 Jul', top: true })
     const lead = P({ id: 'lead', lead: true })
     const mid = P({ id: 'mid' })
     const later = P({ id: 'later', later: true })
     const out = orderServed([milkshake, later, mid, lead], END)
     expect(out[0].id).toBe('lead')                          // LEAD takes over the open
-    expect(out.map((p) => p.id)).toEqual(['lead', 'milkshake', 'mid', 'later'])
+    expect(out.map((p) => p.id)).toEqual(['lead', 'mid', 'later', 'milkshake'])
     expect(out.find((p) => p.id === 'milkshake')?.top).toBe(true)   // pill/status intact
+  })
+
+  it('ANY not-yet-active pick sinks to the horizon — TOPs head it (the WorldPride case)', () => {
+    const pride = P({ id: 'pride', when: 'Sat 25 Jul – Sat 8 Aug' })            // future, no crown
+    const dekmantel = P({ id: 'dekmantel', when: 'Thu 30 Jul – Sun 2 Aug', top: true })
+    const mid = P({ id: 'mid' })
+    const later = P({ id: 'later', later: true })
+    const out = orderServed([pride, later, dekmantel, mid], END)
+    expect(out.map((p) => p.id)).toEqual(['mid', 'later', 'dekmantel', 'pride'])
   })
 
   it('…and DOES lead once the served weekend reaches it', () => {

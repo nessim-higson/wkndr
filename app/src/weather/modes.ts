@@ -158,18 +158,25 @@ export function diversify(ranked: Pick[]): Pick[] {
 /**
  * THE PILE ORDER — Ness's curation tiers decide who opens the deck, everything else keeps its
  * diversified order: 👑 TOP (permanent escalation) → ▲ LEAD (this weekend's slate) → the ranked
- * middle → ▼ LATER (this weekend's "not now" — published, but at the back). Stable partition.
+ * middle → ▼ LATER (this weekend's "not now") → the HORIZON (not active until after this
+ * weekend). Stable partition — the diversified order is preserved within each tier.
  *
- * The 👑 tier is TIME-GATED: a TOP only opens the deck once its event is active by the end of
- * the weekend being served ("Opens 8 Jul" / "Daily" lead now; a festival TOPped weeks ahead rides
- * the ranked middle — pill intact — until its own weekend). The deck must lead with THIS weekend.
+ * TIME rules both ends of the pile: a 👑 TOP only OPENS the deck once its event is active by
+ * the end of the weekend being served ("Opens 8 Jul" / "Daily" lead now) — and ANY pick that
+ * hasn't started by then (a festival weeks out, TOPped or not) sinks to the very back: still in
+ * the endless deck and the list for the ticket-buyers, but the front is all THIS weekend.
+ * Future TOPs head the horizon, so they surface first as their weekend approaches.
  */
 export function orderServed(arr: Pick[], end: Date = upcomingWeekendEnd()): Pick[] {
-  const opens = (p: Pick) => !!p.top && whenActiveBy(p.when, end)
+  const active = (p: Pick) => whenActiveBy(p.when, end)
+  const opens = (p: Pick) => !!p.top && active(p)
+  const mid = (p: Pick) => !opens(p) && active(p)
   return [
     ...arr.filter(opens),
-    ...arr.filter((p) => !opens(p) && p.lead),
-    ...arr.filter((p) => !opens(p) && !p.lead && !p.later),
-    ...arr.filter((p) => !opens(p) && !p.lead && p.later),
+    ...arr.filter((p) => mid(p) && p.lead),
+    ...arr.filter((p) => mid(p) && !p.lead && !p.later),
+    ...arr.filter((p) => mid(p) && !p.lead && p.later),
+    ...arr.filter((p) => !active(p) && p.top),
+    ...arr.filter((p) => !active(p) && !p.top),
   ]
 }
