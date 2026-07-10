@@ -606,7 +606,12 @@ export default function App() {
             /* the moat, said out loud: once the real forecast is in, the intro names it — the
                deck isn't a listing, it's ranked for THIS weekend's actual weather. Two lines,
                temp line BOLD on its own (Ness, 2026-07-10): the weather claim is the headline. */
-            : live ? <><b>{Math.round(wx.temp)}° this weekend — these picks are ranked for it.</b><br />Swipe, save, match with a friend.</>
+            /* block + margin = a REAL return (a bare <br> read as mashed); 1pt smaller than the
+               .intro-sub base per Ness */
+            : live ? <span style={{ fontSize: 'calc(1em - 1pt)', display: 'block' }}>
+                <b style={{ display: 'block', marginBottom: '0.65em' }}>{Math.round(wx.temp)}° this weekend — these picks are ranked for it.</b>
+                Swipe, save, match with a friend.
+              </span>
             : 'Swipe what’s on — match with friends to plan the weekend together.'}
           showHint={visits <= 3}
           onDone={() => setIntro(false)}
