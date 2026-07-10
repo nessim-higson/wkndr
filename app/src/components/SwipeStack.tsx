@@ -147,7 +147,10 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
   // Fly the card off-screen along (dx, dy), carrying `speed` of momentum. The exit glides
   // at a fairly steady pace (a hard toss is only a little quicker) and is clamped so cards
   // leave the frame where you can see them. `onDone` fires once it's gone.
-  function exit(dx: number, dy: number, speed: number, onDone: () => void) {
+  // `gentle` = a BUTTON press (no throw momentum): the full 110–180° tumble from standstill goes
+  // edge-on in ~300ms and reads as the card "popping" away — so buttons get a legible slide-out
+  // (accelerate from rest, mild tilt, no backface) while real throws keep the acrobatics.
+  function exit(dx: number, dy: number, speed: number, onDone: () => void, gentle = false) {
     const W = window.innerWidth, H = window.innerHeight
     const mag = Math.hypot(dx, dy) || 1
     const reach = Math.max(W, H) * 1.25 + 200
@@ -163,11 +166,12 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
     // dimension on exit: a big, VARIED tumble — turns hard on Y, tumbles a little on X, and
     // lunges toward camera. Random per throw so no two exits look alike.
     const r = Math.random()
-    animate(flipY, Math.sign(dx || 1) * (110 + r * 70), { duration: dur, ease })   // 110–180°
-    animate(flipX, (Math.random() * 2 - 1) * 85, { duration: dur, ease })           // ±85°
-    animate(pop, 1.28 + r * 0.32, { duration: dur * 0.6, ease })                    // 1.28–1.6 toward camera
-    animate(x, targetX, { duration: dur, ease })
-    animate(y, targetY, { duration: dur, ease, onComplete: onDone })
+    const slideEase = [0.45, 0.05, 0.25, 1] as const   // from rest: visible wind-up, then away
+    animate(flipY, Math.sign(dx || 1) * (gentle ? 22 : 110 + r * 70), { duration: dur, ease: gentle ? slideEase : ease })
+    animate(flipX, gentle ? 0 : (Math.random() * 2 - 1) * 85, { duration: dur, ease })
+    animate(pop, gentle ? 1.1 : 1.28 + r * 0.32, { duration: dur * 0.6, ease })
+    animate(x, targetX, { duration: dur, ease: gentle ? slideEase : ease })
+    animate(y, targetY, { duration: dur, ease: gentle ? slideEase : ease, onComplete: onDone })
   }
 
   // Committed swipe: exit ALONG the throw (velocity flick → offset drag → cardinal fallback).
@@ -179,7 +183,7 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
       if (speed > 400) { dx = info.velocity.x; dy = info.velocity.y }
       else { dx = info.offset.x || DIR[dir].x; dy = info.offset.y || DIR[dir].y }
     }
-    exit(dx, dy, speed, () => onSwipe(pick, dir))
+    exit(dx, dy, speed, () => onSwipe(pick, dir), !info)   // no PanInfo = a button press → gentle slide-out
   }
 
   // Idle demo: the top card slides off in a varying direction, then rotates to the back of
