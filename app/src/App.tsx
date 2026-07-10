@@ -604,8 +604,9 @@ export default function App() {
           sub={SHARED_CONFIRM ? 'The plans you both want — here’s your weekend.'
             : SHARED_FROM ? 'Match to find out what you should do →'
             /* the moat, said out loud: once the real forecast is in, the intro names it — the
-               deck isn't a listing, it's ranked for THIS weekend's actual weather */
-            : live ? `${Math.round(wx.temp)}° this weekend — these picks are ranked for it. Swipe, save, match with a friend.`
+               deck isn't a listing, it's ranked for THIS weekend's actual weather. Two lines,
+               temp line BOLD on its own (Ness, 2026-07-10): the weather claim is the headline. */
+            : live ? <><b>{Math.round(wx.temp)}° this weekend — these picks are ranked for it.</b><br />Swipe, save, match with a friend.</>
             : 'Swipe what’s on — match with friends to plan the weekend together.'}
           showHint={visits <= 3}
           onDone={() => setIntro(false)}

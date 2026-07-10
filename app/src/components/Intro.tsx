@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { motion } from 'framer-motion'
 import './Intro.css'
 
@@ -7,7 +7,7 @@ const FOLLOW = ''
 /** Full-screen intro over the live field: the line, then it lifts away as the app
  *  rises in. Plays every load; tap to skip. `lead` is overridable so a shared visit
  *  can be greeted personally ("Ness shared some picks."). */
-export function Intro({ onDone, lead = 'Tinder your events.', sub, showHint = true }: { onDone: () => void; lead?: string; sub?: string; showHint?: boolean }) {
+export function Intro({ onDone, lead = 'Tinder your events.', sub, showHint = true }: { onDone: () => void; lead?: string; sub?: React.ReactNode; showHint?: boolean }) {
   const LEAD = lead
   useEffect(() => {
     const id = setTimeout(onDone, 2600)
