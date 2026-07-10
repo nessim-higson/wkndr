@@ -118,6 +118,16 @@ const ROWS: Row[] = [
     img: 'https://s3-media0.fl.yelpcdn.com/bphoto/BeV-pNdrnsGi31HyyWhmcA/o.jpg',
     blurb: "The FYR team's bakery-café on the Singel: proper sourdough, patisserie and viennoiserie people already cycle across town for.", why: 'The bakery-café worth the detour',
     link: 'https://www.restaurantfyr.nl/fyka' },
+  // ——— R4 board +CANON approvals (issue #10, 2026-07-10) — the aquarium finally gets its own card
+  //     (R3 routed Ness's star to the Royal Zoo entry; this round he +CANONed the aquarium itself) ———
+  { slug: 'artis-aquarium', title: 'ARTIS-Aquarium', venue: 'ARTIS', area: 'Plantage, Centrum', category: 'out', tier: 'classic', stars: 5, price: '€€', when: 'Daily · 10:00–17:00', outdoor: false,
+    img: 'https://www.rosaceus.be/wp-content/uploads/2025/05/artis.jpg',
+    blurb: 'The 1882 aquarium building, newly restored: glowing tanks, coral rooms and an underwater Amsterdam canal — the rainy-day ace of the Plantage.', why: 'Back after years of renovation',
+    link: 'https://www.artis.nl/en/artis-aquarium' },
+  { slug: 'wild-swimming-amstelland', title: 'Wild swimming: Gaasperplas & co', venue: 'Gaasperplas · Ouderkerkerplas · Hoge Dijk', area: 'Amstelland, 20 min by bike', category: 'out', tier: 'bespoke', stars: 5, price: 'free', when: 'Summer · warm days', outdoor: true,
+    img: 'https://www.waternet.nl/globalassets/fotos/recreatie/zwemmen/gaasperplas-zwemmen.jpg?w=900&h=0&mode=crop&scale=both',
+    blurb: 'Three real swimming lakes within cycling distance — grass banks, clean water, zero entrance fee. Where the city actually cools off.', why: 'Free wild swimming, 20 minutes away',
+    link: 'https://www.google.com/maps/search/?api=1&query=Gaasperplas%20zwemmen' },
 ]
 
 export const CANON2_AMSTERDAM: Pick[] = ROWS.map((r) => ({

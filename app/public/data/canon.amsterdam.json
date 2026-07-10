@@ -1,6 +1,6 @@
 {
   "generatedAt": "build-time",
-  "count": 143,
+  "count": 145,
   "canon": [
     {
       "id": "fka-twigs",
@@ -1966,6 +1966,34 @@
       "blurb": "The FYR team's bakery-café on the Singel: proper sourdough, patisserie and viennoiserie people already cycle across town for.",
       "link": "https://www.restaurantfyr.nl/fyka",
       "price": "€€",
+      "tier": "bespoke",
+      "approved": true
+    },
+    {
+      "id": "ams-ev2-artis-aquarium",
+      "title": "ARTIS-Aquarium",
+      "venue": "ARTIS",
+      "area": "Plantage, Centrum",
+      "when": "Daily · 10:00–17:00",
+      "category": "out",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.rosaceus.be%2Fwp-content%2Fuploads%2F2025%2F05%2Fartis.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fwww.rosaceus.be%2Fwp-content%2Fuploads%2F2025%2F05%2Fartis.jpg",
+      "blurb": "The 1882 aquarium building, newly restored: glowing tanks, coral rooms and an underwater Amsterdam canal — the rainy-day ace of the Plantage.",
+      "link": "https://www.artis.nl/en/artis-aquarium",
+      "price": "€€",
+      "tier": "classic",
+      "approved": true
+    },
+    {
+      "id": "ams-ev2-wild-swimming-amstelland",
+      "title": "Wild swimming: Gaasperplas & co",
+      "venue": "Gaasperplas · Ouderkerkerplas · Hoge Dijk",
+      "area": "Amstelland, 20 min by bike",
+      "when": "Summer · warm days",
+      "category": "out",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.waternet.nl%2Fglobalassets%2Ffotos%2Frecreatie%2Fzwemmen%2Fgaasperplas-zwemmen.jpg%3Fw%3D900%26h%3D0%26mode%3Dcrop%26scale%3Dboth&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fwww.waternet.nl%2Fglobalassets%2Ffotos%2Frecreatie%2Fzwemmen%2Fgaasperplas-zwemmen.jpg%3Fw%3D900%26h%3D0%26mode%3Dcrop%26scale%3Dboth",
+      "blurb": "Three real swimming lakes within cycling distance — grass banks, clean water, zero entrance fee. Where the city actually cools off.",
+      "link": "https://www.google.com/maps/search/?api=1&query=Gaasperplas%20zwemmen",
+      "price": "free",
       "tier": "bespoke",
       "approved": true
     }

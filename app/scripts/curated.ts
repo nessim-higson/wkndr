@@ -34,6 +34,11 @@ export const CURATED_IMAGES: { match: RegExp; image: string; note: string }[] = 
     image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Melkweg_en_Rabozaal.jpg/1280px-Melkweg_en_Rabozaal.jpg',
     note: 'Recurring Melkweg jungle/dnb night — organiser uploads its panther LOGO (slips the vision screen as a "flyer"); pin the lit Melkweg instead',
   },
+  {
+    match: /\bkwaku\b/i,
+    image: 'https://www.iamsterdam.com/_next/image?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F62b40a855d1a2c5d5eab528a%2FKwaku_01.webp&w=1920&q=75',
+    note: 'R4 (issue #10): Ness supplied this exact URL on the board (img-url verdict) — the festival-crowd shot from I amsterdam’s own asset CDN; recurring multi-weekend event, pin pays off',
+  },
   // ——— Ness's 2026-07-02 review: five long-running shows pinned to venue-verified images (each found via
   //     the venue-aware query — "title + venue" — and chosen by eye; runs of weeks/months, so pins pay off) ———
   {

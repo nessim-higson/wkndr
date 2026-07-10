@@ -45,6 +45,11 @@
       "event": "Bloemenmarkt",
       "verdict": "upgraded",
       "why": "chose the floating market seen from the water — the thing that makes it singular"
+    },
+    {
+      "event": "BRET: Rooléh / Mau P",
+      "verdict": "bad",
+      "why": "R4: wrong image two rounds running — the flyer shown is not this night’s; prefer the RA flyer for the EXACT event id, else the venue’s own photo"
     }
   ],
   "eventRules": [
@@ -157,6 +162,21 @@
       "title": "Wynand Fockink jenever tasting",
       "stars": 1,
       "note": "killed in R2"
+    },
+    {
+      "title": "ARTIS-Aquarium (the place)",
+      "stars": 5,
+      "note": "R4: +CANON with its own card — R3 had routed the star to ARTIS Royal Zoo; Ness wants the aquarium itself"
+    },
+    {
+      "title": "Wild swimming — Gaasperplas / Ouderkerkerplas / Hoge Dijk",
+      "stars": 5,
+      "note": "R4: +CANON — free, outdoor, hot-weather ace"
+    },
+    {
+      "title": "Milkshake Festival",
+      "stars": 3,
+      "note": "R4: ★3 — the 👑 crown (R3) stays, but rate-wise it sits at 3; the campaign-graphic image was the drag, replaced by scout"
     }
   ],
   "eventVeto": [
@@ -219,7 +239,9 @@
     "leidse amsterdam",
     "stones taro",
     "berkan v8",
-    "doka summer studio"
+    "doka summer studio",
+    "pink dance",
+    "mengelmoes"
   ],
   "_vetoNote": "Taste kills from the board — dropped at publish, every run, any source; matched with WORD BOUNDARIES (refresh.ts) so short names like 'monne' can't hit 'Monnickendam'. Dupe-kills are deliberately NOT here: R1's Julidans/TREK/Vondelpark twins, and R2's 'The Netherlands – Japan: Connected Through Time' (EN twin of the ★4 Dutch-titled show) were dedup actions, not taste. R3 REVERSAL: 'lunchtime organ concert' removed — Ness ★4'd the Waterlooplein series (community-authentic wins); the Westerkerk lunchconcerten veto stands.",
   "rested": [
@@ -414,10 +436,23 @@
     {
       "match": "vriendenloterij",
       "stars": 4
+    },
+    {
+      "match": "nxt museum",
+      "stars": 4
+    },
+    {
+      "match": "museum van loon",
+      "stars": 4
     }
   ],
   "_starredNote": "★4-5 live events from the board: (a) editorScore floor 8 when present, (b) CARRIED FORWARD from the prior feed when an adapter fails to re-surface them and they're still date-valid — Ness's investment must not evaporate between runs. Matched with word boundaries (so 'bak' ≠ 'bakkerij'). R2 removals: 'oatly x radio radio' (reversed to KILL — now vetoed).",
-  "topPicks": ["milkshake festival", "dekmantel", "'t lemmeke", "artis royal zoo"],
+  "topPicks": [
+    "milkshake festival",
+    "dekmantel",
+    "'t lemmeke",
+    "artis royal zoo"
+  ],
   "_topPicksNote": "R3 issue #3 👑 escalations. Milkshake + Dekmantel are future festivals (late Jul) — TOP is armed and activates when they enter the feed. 't Lemmeke = current restaurant. ARTIS: Ness starred the bench 'ARTIS-Aquarium' card (weak kidsproof.nl link); routed to the canon 'ARTIS Royal Zoo' entry (same visit, real artis.nl link, guaranteed availability) so TOP actually sticks.",
   "_topNote": "Ness's 👑 TOP escalations from the board — the tier ABOVE starredKeeps. Matched picks (word-boundary, any source incl. canon via feed.topMatches) get editorScore 10, lead the served deck ahead of everything, and carry the 'Top pick' pill. Keep this list SHORT (≤6) — if everything is top, nothing is."
 }

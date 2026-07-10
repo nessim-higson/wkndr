@@ -14,6 +14,22 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.8.13] — 2026-07-10 — "R4 compiled: the first dragged pile order goes live"
+_Round 4 = issue #10 (78 verdicts, filed 24 min after the V.8.12 fresh-mix feed — his first round
+on the new deck, and the first with a hand-dragged PILE-ORDER). Compiled per his "most recent
+round only" call; #8/#9 left open (superseded — most of their verdicts recur in #10):_
+- **PILE-ORDER → weekly.json `pile`** (weekend 2026-07-11): World Press Photo opens, Kwaku #2,
+  ARTIS hand-demoted to #9 — stamped as `pilePos` next run; the deck deals it verbatim.
+- **2 vetoes**: Pink Dance's dance, Mengelmoes Amsterdam.
+- **2 ★5 +CANON** → picks.canon2.ts: **ARTIS-Aquarium gets its own card** (closes STATE flag 8a —
+  R3 had routed the star to the Royal Zoo entry) + **Wild swimming: Gaasperplas & co** (free,
+  outdoor, the hot-weather ace). Both authored from their live feed cards' verified images.
+- **Milkshake resolved**: the KILL from #8/#9 is GONE in this round — compiled as ★3, crown kept,
+  image already scout-replaced. Anchor records the 3★-on-a-crowned-pick signal.
+- **Kwaku image pinned** to the exact URL Ness supplied on the board (first img-url verdict
+  through the new one-click path) · **BRET flyer mismatch** taught to the vision pass ·
+  new keeps: Nxt Museum ★4, Museum Van Loon ★4 · ~70 other stars confirmed carry-forward.
+
 ## [V.8.12] — 2026-07-10 — "Freshness: the weekend is never capped out"
 _Diagnosis: the crawl was never stale (30 RA nights + 31 LBB agenda items on 2026-07-09) — the
 funnel compressed it to 45 live and the app diluted with 43 evergreen (61%). Three levers:_
