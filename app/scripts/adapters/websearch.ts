@@ -47,26 +47,26 @@ const GEO: Record<string, { city: string; region?: string; country: string; time
 }
 
 // FACET SET — one paced web_search "agent" per facet. MORE facets = deeper, less-stale coverage
-// (each facet surfaces a different slice the others miss). The extra facets target the gaps Ness
-// flagged: open-air cinema/screenings, rooftop/terrace season, late-night programming, and
-// neighbourhood/community happenings. This assumes the RAISED Anthropic tier (set WEBSEARCH_RPM=3+
-// in the workflow) — on the lowest tier this many facets at speed trips rate limits. To drop back
-// down a tier, trim this array.
-// SOURCE-LED facets first (Ness's ranked trusted sources), then topical breadth to fill gaps the
-// four miss. The source-scoped searches pull each publication's actual weekend agenda; ranking in
-// refresh.ts then orders picks by that same source priority.
+// PHASE 2 (2026-07-10) — web_search demoted from spine to SERENDIPITY EDGE, per the pipeline
+// roadmap: YLBB, I amsterdam and RA now have deterministic adapters crawling their agendas
+// directly (2026-07-09 run: 31 LBB + full iams + 30 RA), so their facets here were spending
+// LLM-search budget re-finding what the crawlers already had. What remains: the one trusted
+// source WITHOUT an adapter (Volkskrant) + the two thinnest slices (new eat/drink openings —
+// the backlog's known gap — and big outdoor one-offs). The retired facets stay below, commented,
+// for one-line re-enable if a deterministic adapter breaks.
 const FACETS = [
-  "Your Little Black Book (yourlittleblackbook.me) — its Amsterdam weekend agenda / weekend tips for this weekend",
-  "I amsterdam (iamsterdam.com/whats-on) — festivals, exhibitions and events on this weekend",
-  "Resident Advisor (ra.co) — club nights, DJ sets and electronic events in Amsterdam this weekend",
   "de Volkskrant (volkskrant.nl) — this weekend's cultural agenda: concerts, theatre, art, film",
-  'festivals, street fairs, markets and big free or outdoor events',
-  'art & museum exhibitions opening or closing soon, plus theatre and dance',
-  'open-air cinema and outdoor film screenings',
   'notable new restaurant & bar openings, food festivals and tastings',
-  'rooftop bars, terraces, canal/boat events and summer pop-ups',
-  'workshops, classes, run clubs and active daytime things',
+  'festivals, street fairs, markets and big free or outdoor events',
 ]
+// retired 2026-07-10 (deterministic coverage / low unique yield):
+//   "Your Little Black Book (yourlittleblackbook.me) — its Amsterdam weekend agenda / weekend tips for this weekend",
+//   "I amsterdam (iamsterdam.com/whats-on) — festivals, exhibitions and events on this weekend",
+//   "Resident Advisor (ra.co) — club nights, DJ sets and electronic events in Amsterdam this weekend",
+//   'art & museum exhibitions opening or closing soon, plus theatre and dance',
+//   'open-air cinema and outdoor film screenings',
+//   'rooftop bars, terraces, canal/boat events and summer pop-ups',
+//   'workshops, classes, run clubs and active daytime things',
 
 function systemPrompt(cityName: string): string {
   return `You are WKNDR's culture scout for ${cityName}. TODAY IS ${TODAY}. Your job is to find the

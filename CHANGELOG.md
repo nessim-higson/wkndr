@@ -14,6 +14,22 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.8.12] — 2026-07-10 — "Freshness: the weekend is never capped out"
+_Diagnosis: the crawl was never stale (30 RA nights + 31 LBB agenda items on 2026-07-09) — the
+funnel compressed it to 45 live and the app diluted with 43 evergreen (61%). Three levers:_
+- **Dated-this-weekend = cap-exempt** (pipeline): a pick whose dates overlap Fri→Sun bypasses the
+  per-source cap AND the category balancer — caps exist to stop source floods, not to throttle the
+  weekend. Keyless dry-run: 218 crawled → 93 live kept (was 45), 80 weekend-dated exempt.
+- **Phase 2 shipped** (roadmap item): web_search demoted from spine to serendipity edge — 10 → 3
+  facets (Volkskrant, the one trusted source without an adapter + new eat/drink openings + big
+  outdoor one-offs). The YLBB/iams/RA facets were re-finding what their deterministic adapters
+  already crawl; retired facets stay commented for one-line re-enable.
+- **Serve-time evergreen trim** (app): canon backfill floor 8 → 5 on rich weeks, and the timely-vs-
+  evergreen freshness gap widened (weekend 1 → 1.5, new 1.5 → 2, ending 1.2 → 1.6, floor 0.6 → 0.5)
+  so starred canon can no longer outrank dated events on editorScore alone.
+- Dry-run bonus: the publish gate correctly ABSTAINED on the local no-images run — the V.8.6
+  safety tail observed working.
+
 ## [V.8.11] — 2026-07-10 — "Drag the pile"
 - **The WEEKEND PILE is draggable** — grab the ⠿ grip on any pile card and hand-set the opening
   order. Badges renumber live (crowns ride along), the order persists per round (localStorage,

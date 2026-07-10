@@ -117,10 +117,13 @@ function jitter(id: string, seed: number): number {
 const EDITOR_W = 0.5
 // The evergreen FLOOR: how strongly an always-good canon pick competes with timely events. Was an inline
 // 0.6 in freshBoost; named here as the single legible knob (raise → classics surface more on quiet weeks).
-const EVERGREEN_FLOOR = 0.6
+// 2026-07-10: gap widened (was new 1.5 / ending 1.2 / weekend 1 / floor 0.6 — a 0.4 timely-vs-
+// evergreen spread that editorScore floors drowned out, so starred canon outranked dated events
+// and the deck read stale). Evergreen stays respectable; timely now clearly leads its tier.
+const EVERGREEN_FLOOR = 0.5
 export function rankPicks(picks: Pick[], mode: Mode, taste?: Taste, seed = 0): Pick[] {
   const freshBoost = (p: Pick) =>
-    p.freshness === 'new' ? 1.5 : p.freshness === 'ending' ? 1.2 : p.freshness === 'weekend' ? 1 : EVERGREEN_FLOOR
+    p.freshness === 'new' ? 2 : p.freshness === 'ending' ? 1.6 : p.freshness === 'weekend' ? 1.5 : EVERGREEN_FLOOR
   // cross-source corroboration — an event INDEPENDENTLY surfaced by 2+ sources (I amsterdam AND web-search
   // AND an editorial guide…) is the "most talked about" signal; weight it steeply so those lead their tier:
   // 2 sources → +1.5, 3 → +3, 4+ → +4 (capped). Single-source picks are unaffected.

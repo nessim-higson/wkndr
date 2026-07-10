@@ -396,9 +396,10 @@ export default function App() {
       const fresh = filtered.filter(isLiveP)
       const ever = filtered.filter((p) => !isLiveP(p))
       // ADAPTIVE backfill: when the live feed is thin, widen the canon slice so a quiet weekend still
-      // fills the deck; when it's rich, narrow toward a floor of 8 so timely picks dominate (was a fixed
-      // 14). Bounded by how much canon there actually is.
-      const RESERVE = Math.min(ever.length, Math.max(8, 22 - fresh.length))
+      // fills the deck; when it's rich, narrow toward a floor of 5 so timely picks dominate (was 8 —
+      // with a healthy 40+ live pool the extra canon read as "the eternal Amsterdam", not this
+      // weekend). Bounded by how much canon there actually is.
+      const RESERVE = Math.min(ever.length, Math.max(5, 22 - fresh.length))
       const start = ever.length ? ((WEEK + seed) * RESERVE) % ever.length : 0
       const sample = ever.length ? [...ever, ...ever].slice(start, start + RESERVE) : []
       // a TOP canon pick doesn't wait for the rotation to reach it — escalations are always dealt in

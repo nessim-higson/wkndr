@@ -20,7 +20,7 @@
 import { CITIES, type City } from '../src/data/cities'
 import type { Pick } from '../src/types'
 import { dedupe, balanceByCategory, isGoodImage, isPortraitImage, imageBroken, urlLooksNonPhoto, imageIsCardworthy, fetchEventImage, toPortrait, wikiImage, webImageCandidates, verifyImageForEvent, pexelsImage, whenBeforeWeekend, upcomingWeekend, linkOk, mapLimit, titleKey, tokKey } from './lib/pipeline'
-import { fixWhen, latestDateOf, whenIsPast } from '../src/lib/when'
+import { fixWhen, latestDateOf, whenActiveBy, whenIsPast } from '../src/lib/when'
 import { songkickAdapter } from './adapters/songkick'
 import { llmExtract } from './adapters/llm'
 import { websearchExtract } from './adapters/websearch'
@@ -472,6 +472,17 @@ async function buildCity(city: City) {
   // when Ness kills a card, the next candidate of that category deals in.
   const prePool = picks.filter(isLive)
 
+  // THIS-WEEKEND EXEMPTION — a pick explicitly dated the coming weekend (Fri run-up → Sun) never
+  // loses a slot to an undated one. The caps below exist to stop source FLOODS, not to throttle the
+  // actual weekend: the 2026-07-09 run crawled 30 RA nights + 31 LBB agenda items and shipped a feed
+  // that was 61% evergreen — dated-event density is the whole freshness feel. Shared date brain.
+  const { sun: wkSun, cutoff: wkFri } = upcomingWeekend()
+  const wkEnd = new Date(wkSun.getFullYear(), wkSun.getMonth(), wkSun.getDate(), 23, 59, 59)
+  const datedThisWeekend = (p: Pick) => {
+    const latest = latestDateOf(p.when)
+    return !!latest && latest.getTime() >= wkFri.getTime() && whenActiveBy(p.when, wkEnd)
+  }
+
   // SOURCE DIVERSITY — no single source may flood a category. Applies to EVERY high-volume source family
   // (I amsterdam flooded first; then LBB's 29 picks made the deck read "the LBB app"). Cap each at 4 per
   // category (of the 8 balanceByCategory keeps) so the mix stays a MIX: iams + LBB + RA + web-search
@@ -484,6 +495,7 @@ async function buildCity(city: City) {
     picks = picks.filter((p) => {
       if ((p.buzz ?? 1) >= 2) return true   // corroborated ("talked about") events are cap-EXEMPT — the caps
                                             // once ate BOTH language-twins of the H'ART Canal Parade show
+      if (datedThisWeekend(p)) return true  // dated THIS weekend = cap-exempt (see above)
       const fam = FAMILIES.find((f) => p.id.startsWith(f))
       if (!fam) return true
       const k = fam + p.category
@@ -501,10 +513,14 @@ async function buildCity(city: City) {
     // srcRank (2) sits below I amsterdam (3) and LBB (4), so its picks kept losing every `live` slot and the
     // feed shipped with ZERO club nights. Reserve the top 2 RA nights (already popularity-led) cap-exempt.
     const raLane = picks.filter((p) => p.id.startsWith('web-ra-')).slice(0, 2)
-    const exempt = new Set([...heroesInPool, ...raLane].map((p) => p.id))
+    // dated-this-weekend picks bypass the category balance too — the weekend itself is never
+    // "over-represented"; the balancer's job is taming undated/evergreen floods
+    const laneIds = new Set([...heroesInPool, ...raLane].map((p) => p.id))
+    const wkndExempt = picks.filter((p) => isLive(p) && datedThisWeekend(p) && !laneIds.has(p.id))
+    const exempt = new Set([...heroesInPool, ...raLane, ...wkndExempt].map((p) => p.id))
     const balanced = balanceByCategory(picks.filter((p) => !exempt.has(p.id)), 8)
-    const out = [...heroesInPool, ...raLane, ...balanced]
-    console.log(`  ranked:   ${picks.length} → ${out.length} after per-category cap (${heroesInPool.length} hero-exempt · ${raLane.length} RA lane) · ${novelCount} new this week`)
+    const out = [...heroesInPool, ...raLane, ...wkndExempt, ...balanced]
+    console.log(`  ranked:   ${picks.length} → ${out.length} after per-category cap (${heroesInPool.length} hero-exempt · ${raLane.length} RA lane · ${wkndExempt.length} dated-this-weekend exempt) · ${novelCount} new this week`)
     picks = out
   } else {
     console.log(`  ranked:   ${picks.length} (canon floor) · ${novelCount} new this week`)
