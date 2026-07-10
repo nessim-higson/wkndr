@@ -147,9 +147,10 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
   // Fly the card off-screen along (dx, dy), carrying `speed` of momentum. The exit glides
   // at a fairly steady pace (a hard toss is only a little quicker) and is clamped so cards
   // leave the frame where you can see them. `onDone` fires once it's gone.
-  // `gentle` = a BUTTON press (no throw momentum): the full 110–180° tumble from standstill goes
-  // edge-on in ~300ms and reads as the card "popping" away — so buttons get a legible slide-out
-  // (accelerate from rest, mild tilt, no backface) while real throws keep the acrobatics.
+  // `gentle` = an optional soft slide-out (mild tilt, no backface) — currently unused: buttons
+  // synthesize a medium throw in fling() instead, so they exit EXACTLY like a real drag (Ness's
+  // call after trying the gentle variant). Kept as the one-flag option if a softer exit is ever
+  // wanted for a new surface.
   function exit(dx: number, dy: number, speed: number, onDone: () => void, gentle = false) {
     const W = window.innerWidth, H = window.innerHeight
     const mag = Math.hypot(dx, dy) || 1
@@ -177,13 +178,15 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
   // Committed swipe: exit ALONG the throw (velocity flick → offset drag → cardinal fallback).
   function fling(dir: SwipeDir, info?: PanInfo) {
     try { navigator.vibrate?.(11) } catch { /* unsupported (iOS) */ }   // tactile commit
-    let dx = DIR[dir].x, dy = DIR[dir].y, speed = 0
+    let dx = DIR[dir].x, dy = DIR[dir].y, speed = 950   // button press = a synthesized MEDIUM THROW:
+    // same momentum-scaled exit as a real drag (spin, tumble, pace) — with speed 0 the card left
+    // from a standstill and read as a lifeless pop; with a fake velocity it flies like you threw it.
     if (info) {
       speed = Math.hypot(info.velocity.x, info.velocity.y)
       if (speed > 400) { dx = info.velocity.x; dy = info.velocity.y }
       else { dx = info.offset.x || DIR[dir].x; dy = info.offset.y || DIR[dir].y }
     }
-    exit(dx, dy, speed, () => onSwipe(pick, dir), !info)   // no PanInfo = a button press → gentle slide-out
+    exit(dx, dy, speed, () => onSwipe(pick, dir))
   }
 
   // Idle demo: the top card slides off in a varying direction, then rotates to the back of
