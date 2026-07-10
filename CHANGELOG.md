@@ -14,6 +14,14 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.8.10] — 2026-07-10 — "The board's pile projects what the app actually serves"
+- The Curation Board's WEEKEND PILE had its own ungated copy of the serve order (TOPs always
+  first, live-crawled picks only) — so after V.8.7–V.8.9 it disagreed with the deck: the app led
+  with ARTIS while the board still crowned Milkshake #1 and could never show canon TOPs at all.
+  The pile now mirrors `orderServed` (inline `activeBy` mirror of the date brain — keep in step)
+  and pools live + TOP-stamped canon. Board explainer copy updated ("leads always" → "leads on
+  its own weekend").
+
 ## [V.8.9] — 2026-07-09 — "The horizon: the whole deck front is THIS weekend"
 - V.8.7's TOP gate generalized: ANY pick not active by the served weekend — TOPped or not — now
   sinks to the **horizon** at the back of the endless deck (was: only TOPs were kept from

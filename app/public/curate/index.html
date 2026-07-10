@@ -76,7 +76,7 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 <header>
 <p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD · ROUND 3</p>
 <h1>In rotation vs. new finds<span class="dot">.</span></h1>
-<p><strong>IN ROTATION</strong> opens with <strong>THE WEEKEND PILE</strong> — the projected opening cards, numbered. Control it per weekend: <strong>▲ LEAD</strong> puts a card in the pile <em>this weekend only</em>, <strong>▼ LATER</strong> drops it to the back without killing it — both auto-expire when the weekend rolls. <strong>👑 TOP</strong> is the permanent escalation above both (leads always + "Top pick" pill). Then the full feed and the approved canon library (green = yours — kill to retire). <strong>NEW FINDS</strong> = trending, bench, canon candidates — star to promote, <strong>+CANON</strong> for the permanent library. Titles link to the real page — flag dumb links. Progress saves in this browser. When you're done: <strong>Submit → GitHub</strong> files the round as an issue on the repo — the one-click path into the engine.</p>
+<p><strong>IN ROTATION</strong> opens with <strong>THE WEEKEND PILE</strong> — the projected opening cards, numbered. Control it per weekend: <strong>▲ LEAD</strong> puts a card in the pile <em>this weekend only</em>, <strong>▼ LATER</strong> drops it to the back without killing it — both auto-expire when the weekend rolls. <strong>👑 TOP</strong> is the permanent escalation above both (leads <em>on its own weekend</em> + "Top pick" pill — a future-dated TOP rides the back of the deck until its weekend arrives). Then the full feed and the approved canon library (green = yours — kill to retire). <strong>NEW FINDS</strong> = trending, bench, canon candidates — star to promote, <strong>+CANON</strong> for the permanent library. Titles link to the real page — flag dumb links. Progress saves in this browser. When you're done: <strong>Submit → GitHub</strong> files the round as an issue on the repo — the one-click path into the engine.</p>
 </header>
 <div class="tabs" id="tabs" hidden>
 <button class="tab on" data-tab="rot">IN ROTATION <span class="n" id="nrot"></span></button>
@@ -151,9 +151,22 @@ Promise.all([
   const nw=document.createElement('div');nw.id='tab-new';nw.style.display='none';board.appendChild(nw);
 
   // ——— IN ROTATION: THE WEEKEND PILE — the projected opening cards, in order ———
+  // Mirrors the APP's serve order (src/weather/modes.ts orderServed, V.8.7–V.8.9): TOPs are
+  // TIME-GATED (only lead once active by the served weekend's end) and ANY not-yet-active pick
+  // sinks to the horizon. Pool = live picks + TOP-stamped canon (ARTIS-class picks lead the real
+  // deck, so the projection must include them). activeBy is an inline mirror of lib/when.ts
+  // whenActiveBy — the board is dependency-free static JS; keep the two in step.
+  const WKEND=(()=>{const t=new Date();t.setHours(23,59,59,999);t.setDate(t.getDate()+((7-t.getDay())%7));return t.getTime()})();
+  const MONi={jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11};
+  const activeBy=w=>{const s=w||'';if(/\b(until|through|thru|till|t\/m)\b/i.test(s))return true;
+    const ms=[...s.matchAll(/(\d{1,2})\s*(?:[–—-]\s*(?:mon|tue|wed|thu|fri|sat|sun)[a-z]*\.?)?\s*[–—-]?\s*(\d{1,2})?\s*(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)/gi)];
+    if(!ms.length)return true;const now=new Date();
+    const first=Math.min(...ms.map(m=>{const mi=MONi[m[3].slice(0,3).toLowerCase()];let dt=new Date(now.getFullYear(),mi,+m[1],12);if(dt.getTime()<now.getTime()-45*864e5)dt=new Date(now.getFullYear()+1,mi,+m[1],12);return dt.getTime()}));
+    return first<=WKEND};
   const isLiveP=p=>p.id&&(p.id.startsWith('web-')||p.id.startsWith('llm-'));
-  const pile=(d.picks||[]).filter(isLiveP)
-    .sort((a,b)=>(b.top?1:0)-(a.top?1:0)||(b.lead?1:0)-(a.lead?1:0)||((b.editorScore??0)-(a.editorScore??0))||((b.buzz??0)-(a.buzz??0)))
+  const tier=p=>{const a=activeBy(p.when);if(a&&p.top)return 0;if(a&&p.lead)return 1;if(a&&!p.later)return 2;if(a)return 3;return p.top?4:5};
+  const pile=(d.picks||[]).filter(p=>isLiveP(p)||p.top)
+    .sort((a,b)=>tier(a)-tier(b)||((b.editorScore??0)-(a.editorScore??0))||((b.buzz??0)-(a.buzz??0)))
     .slice(0,10);
   if(pile.length){
     const ph=document.createElement('div');ph.className='cathead hot';ph.textContent='THE WEEKEND PILE — THE '+pile.length+' OPENING CARDS, IN ORDER (▲ lead = put it here this weekend · ▼ later = not this week · applies next run)';rot.appendChild(ph);
