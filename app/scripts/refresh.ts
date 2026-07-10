@@ -19,7 +19,7 @@
  */
 import { CITIES, type City } from '../src/data/cities'
 import type { Pick } from '../src/types'
-import { dedupe, balanceByCategory, isGoodImage, isPortraitImage, imageBroken, urlLooksNonPhoto, imageIsCardworthy, fetchEventImage, toPortrait, wikiImage, webImageCandidates, verifyImageForEvent, pexelsImage, whenBeforeWeekend, upcomingWeekend, linkOk, mapLimit, titleKey, titleLooseMatch, tokKey } from './lib/pipeline'
+import { dedupe, balanceByCategory, isGoodImage, isPortraitImage, imageBroken, urlLooksNonPhoto, imageIsCardworthy, fetchEventImage, toPortrait, wikiImage, webImageCandidates, verifyImageForEvent, pexelsImage, whenBeforeWeekend, upcomingWeekend, linkOk, mapLimit, rxOf, titleKey, titleLooseMatch, tokKey } from './lib/pipeline'
 import { fixWhen, latestDateOf, whenActiveBy, whenIsPast } from '../src/lib/when'
 import { songkickAdapter } from './adapters/songkick'
 import { llmExtract } from './adapters/llm'
@@ -40,12 +40,7 @@ import { ROSTERS } from './roster'
 // R2 added short venue names ("Monne", "BAK") that a substring test would find inside unrelated words
 // ("Monnickendam", "bakkerij"). A \b is only asserted when the entry's edge char is ASCII-alphanumeric —
 // JS \b is \w-based, so a trailing \b after "ekō"/"jøase" would silently never match.
-const rxOf = (s: string) => {
-  const esc = s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-  const lead = /^[a-z0-9]/i.test(s) ? '\\b' : ''
-  const tail = /[a-z0-9]$/i.test(s) ? '\\b' : ''
-  return new RegExp(lead + esc + tail, 'i')
-}
+// rxOf moved to lib/pipeline.ts (shared with scripts/restamp.ts — the taste fast-path)
 const VETO_RX = (corpus.eventVeto as string[]).map(rxOf)
 const isVetoed = (title: string) => VETO_RX.some((rx) => rx.test(title))
 

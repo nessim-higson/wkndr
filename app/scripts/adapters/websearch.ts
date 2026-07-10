@@ -123,6 +123,29 @@ function parseArray(text: string): Record<string, unknown>[] {
   try { const v = JSON.parse(text.slice(a, b + 1)); return Array.isArray(v) ? v : [] } catch { return [] }
 }
 
+// WEATHER-AWARE FACETS (R4 feedback, 2026-07-10): "warm sunny weekend and the feed had ONE
+// open-air cinema while YLBB's front page led with 8 of them." The static facet trim (Phase 2)
+// cut the seasonal searches entirely — wrong lesson. Instead: check the weekend forecast
+// (open-meteo, keyless) and arm the 2 facets that match it. Fails soft → no extra facets.
+async function weatherFacets(): Promise<string[]> {
+  try {
+    const r = await fetch('https://api.open-meteo.com/v1/forecast?latitude=52.37&longitude=4.9&daily=temperature_2m_max,precipitation_probability_max&timezone=Europe%2FAmsterdam&forecast_days=7')
+    const j = await r.json() as { daily: { time: string[]; temperature_2m_max: number[]; precipitation_probability_max: number[] } }
+    const satIso = `${WK.sat.getFullYear()}-${String(WK.sat.getMonth() + 1).padStart(2, '0')}-${String(WK.sat.getDate()).padStart(2, '0')}`
+    const i = j.daily.time.indexOf(satIso)
+    if (i < 0) return []
+    const hi = Math.max(j.daily.temperature_2m_max[i], j.daily.temperature_2m_max[i + 1] ?? 0)
+    const wet = Math.max(j.daily.precipitation_probability_max[i], j.daily.precipitation_probability_max[i + 1] ?? 0)
+    console.log(`    · web-search weather lens: weekend hi ${hi}° · rain ${wet}%`)
+    if (wet >= 55) return ['cosy indoor: museum nights, food halls, galleries, listening bars and rainy-day one-offs']
+    if (hi >= 22) return [
+      'open-air cinema and outdoor film screenings',
+      'swimming spots, urban beaches, terraces on the water and outdoor summer one-offs',
+    ]
+    return ['open-air and outdoor events suited to mild weather: parks, markets, walks']
+  } catch { return [] }
+}
+
 /** Run all facet searches for a city → Pick[]. Never throws. */
 export async function websearchExtract(cityKey: string, cityName: string): Promise<Pick[]> {
   if (!KEY) return []
@@ -131,7 +154,7 @@ export async function websearchExtract(cityKey: string, cityName: string): Promi
   const out: Pick[] = []
   const sys = [{ type: 'text', text: systemPrompt(cityName), cache_control: { type: 'ephemeral' } }]
 
-  for (const facet of FACETS) {
+  for (const facet of [...FACETS, ...(await weatherFacets())]) {
     try {
       const body = JSON.stringify({
         model: MODEL,

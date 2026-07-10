@@ -14,6 +14,20 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.8.15] — 2026-07-10 — "The weather lens + the 90-second restamp"
+- **Weather-aware facets**: the pipeline now checks the weekend forecast (open-meteo, keyless)
+  before searching — ≥22° & dry arms 'open-air cinema' + 'swimming/urban beaches/terraces on the
+  water'; wet weekends arm the cosy-indoor pack. Fixes the R4 complaint receipt: a 29° weekend
+  with ONE open-air cinema in the feed while YLBB's front page led with 8 (the Phase 2 trim had
+  cut the seasonal facet — wrong lesson; season it, don't kill it). Fails soft.
+- **restamp.yml — the taste fast-path**: re-applies corpus + weekly slate (kills, stars, tops,
+  dragged pile) to the LAST published feed and republishes in ~90s — no crawl/LLM/images. Compile
+  → live drops from ~15 min to ~2. `generatedAt` preserved (a restamp is not a new board round);
+  abstains if the result would be broken-thin. rxOf moved to lib/pipeline (shared).
+- Known gap, backlogged: the LBB adapter reads the 4 agenda articles only — editorial shortlists
+  ("8 X openlucht bioscopen") never enter deterministically; the weather facet now catches their
+  content via search.
+
 ## [V.8.14] — 2026-07-10 — "Pile order survives retitles"
 - R4's dragged order stamped only 7/10: exact title matching lost Kwaku ("- Weekend 1" →
   "Opening Weekend" on re-crawl), Nara Nara and Jollof (descriptive suffixes trimmed). New

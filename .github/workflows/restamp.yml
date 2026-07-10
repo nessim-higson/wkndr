@@ -1,0 +1,46 @@
+name: Restamp taste
+
+# THE TASTE FAST-PATH — re-applies the corpus + weekly slate (kills, stars, tops, dragged pile
+# order) to the LAST PUBLISHED feed and republishes in ~90 seconds. No crawl, no LLM, no image
+# pass: use after a compile-only change. The full weekly crawl remains refresh.yml.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: refresh   # shares the refresh group so a restamp can never race a full run's commit
+  cancel-in-progress: false
+
+jobs:
+  restamp:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: cd app && bun install
+      - run: cd app && bun run test
+      - run: cd app && bun run scripts/restamp.ts --city=amsterdam
+      - name: Commit + push
+        run: |
+          git config user.name "wkndr-bot"
+          git config user.email "actions@github.com"
+          if git diff --quiet app/public/data; then echo "restamp was a no-op — nothing to publish"; exit 0; fi
+          git add app/public/data
+          git commit -m "chore(taste): restamp $(date -u +%Y-%m-%d %H:%M)"
+          pushed=false
+          for i in 1 2 3; do
+            if git pull --rebase --autostash origin main && git push; then pushed=true; break; fi
+            git rebase --abort >/dev/null 2>&1 || true
+            echo "push attempt $i failed — retrying"; sleep 3
+          done
+          if [ "$pushed" != "true" ]; then
+            echo "::error::push failed after 3 attempts — restamp NOT published"
+            exit 1
+          fi
+      - name: Trigger deploy
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh workflow run deploy.yml

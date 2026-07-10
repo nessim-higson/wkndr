@@ -40,6 +40,15 @@ export const tokKey = (s: string): string => {
   return toks.length >= 2 ? [...new Set(toks)].sort().join(' ') : ''
 }
 
+// Word-boundary matcher for corpus entries (veto / keeps / tops) — boundaries only where the
+// entry starts/ends alphanumeric, so "bak" can't hit "Bakers". Shared by refresh.ts + restamp.ts.
+export const rxOf = (s: string): RegExp => {
+  const esc = s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  const lead = /^[a-z0-9]/i.test(s) ? '\\b' : ''
+  const tail = /[a-z0-9]$/i.test(s) ? '\\b' : ''
+  return new RegExp(lead + esc + tail, 'i')
+}
+
 // LOOSE title match for the board's PILE-ORDER (and other title-anchored verdicts): the board
 // stores card titles VERBATIM at drag time, but next week's crawl may retitle the same event
 // ("Kwaku Summer Festival - Weekend 1" → "… Opening Weekend") or drop a descriptive suffix
