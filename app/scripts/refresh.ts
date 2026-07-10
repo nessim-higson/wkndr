@@ -19,7 +19,7 @@
  */
 import { CITIES, type City } from '../src/data/cities'
 import type { Pick } from '../src/types'
-import { dedupe, balanceByCategory, isGoodImage, isPortraitImage, imageBroken, urlLooksNonPhoto, imageIsCardworthy, fetchEventImage, toPortrait, wikiImage, webImageCandidates, verifyImageForEvent, pexelsImage, whenBeforeWeekend, upcomingWeekend, linkOk, mapLimit, titleKey, tokKey } from './lib/pipeline'
+import { dedupe, balanceByCategory, isGoodImage, isPortraitImage, imageBroken, urlLooksNonPhoto, imageIsCardworthy, fetchEventImage, toPortrait, wikiImage, webImageCandidates, verifyImageForEvent, pexelsImage, whenBeforeWeekend, upcomingWeekend, linkOk, mapLimit, titleKey, titleLooseMatch, tokKey } from './lib/pipeline'
 import { fixWhen, latestDateOf, whenActiveBy, whenIsPast } from '../src/lib/when'
 import { songkickAdapter } from './adapters/songkick'
 import { llmExtract } from './adapters/llm'
@@ -652,13 +652,15 @@ async function buildCity(city: City) {
       }
       // PILE-ORDER — the hand-dragged opening sequence from the board. Stamped 1-based; the app
       // deals pilePos picks first, in exactly this order (orderServed). Same expiry as lead/later.
+      // LOOSE matching (not rxOf): the board stores titles verbatim at drag time, and this week's
+      // crawl may have retitled the event — R4 lost 3/10 positions to exact matching.
       let po = 0
+      const missed: string[] = []
       pileList.forEach((t, i) => {
-        const rx = rxOf(t)
-        const hit = picks.find((p) => rx.test(p.title))
-        if (hit) { hit.pilePos = i + 1; po++ }
+        const hit = picks.find((p) => titleLooseMatch(p.title, t))
+        if (hit) { hit.pilePos = i + 1; po++ } else missed.push(t)
       })
-      if (l || d || po) console.log(`  slate:    ${l} ▲ lead this weekend · ${d} ▼ pushed later${po ? ` · pile order hand-set (${po}/${pileList.length})` : ''}`)
+      if (l || d || po) console.log(`  slate:    ${l} ▲ lead this weekend · ${d} ▼ pushed later${po ? ` · pile order hand-set (${po}/${pileList.length})` : ''}${missed.length ? ` · pile UNMATCHED: ${missed.join(' | ')}` : ''}`)
     } else if (leadList.length || laterList.length || pileList.length) {
       console.log(`  slate:    stale (${weekly.weekend} ≠ ${satKey}) — ignored`)
     }

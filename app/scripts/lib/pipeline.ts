@@ -40,6 +40,24 @@ export const tokKey = (s: string): string => {
   return toks.length >= 2 ? [...new Set(toks)].sort().join(' ') : ''
 }
 
+// LOOSE title match for the board's PILE-ORDER (and other title-anchored verdicts): the board
+// stores card titles VERBATIM at drag time, but next week's crawl may retitle the same event
+// ("Kwaku Summer Festival - Weekend 1" → "… Opening Weekend") or drop a descriptive suffix
+// ("Nara Nara Egyptian restaurant" → "Nara Nara") — exact word-boundary matching then silently
+// loses positions (R4 stamped 7/10). Two stages: normalized containment either way, else a
+// token-overlap vote (≥75% of the smaller token set shared, min 2 tokens — tokKey's stoplist).
+export function titleLooseMatch(feedTitle: string, entry: string): boolean {
+  const norm = (s: string) => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
+    .replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim()
+  const a = norm(feedTitle), b = norm(entry)
+  if (!a || !b) return false
+  if (a.includes(b) || b.includes(a)) return true
+  const toks = (s: string) => new Set(s.split(' ').filter((x) => x && !TOK_STOP.has(x)))
+  const ta = toks(a), tb = toks(b)
+  const shared = [...ta].filter((x) => tb.has(x)).length
+  return shared >= 2 && shared >= Math.min(ta.size, tb.size) * 0.75
+}
+
 // Merge the same event arriving from multiple adapters. Key = title+venue. The richest
 // record wins; we union the source credits (the cross-source "buzz" signal lives here).
 export function dedupe(picks: Pick[]): Pick[] {

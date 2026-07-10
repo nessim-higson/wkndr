@@ -14,6 +14,13 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.8.14] — 2026-07-10 — "Pile order survives retitles"
+- R4's dragged order stamped only 7/10: exact title matching lost Kwaku ("- Weekend 1" →
+  "Opening Weekend" on re-crawl), Nara Nara and Jollof (descriptive suffixes trimmed). New
+  `titleLooseMatch` in the pipeline (normalized containment, else ≥75% token overlap on the
+  tokKey stoplist) replaces rxOf for PILE-ORDER; unmatched pile entries are now named in the
+  slate log line instead of vanishing. Tests pin all three real losses. Tests 71 → 75.
+
 ## [V.8.13] — 2026-07-10 — "R4 compiled: the first dragged pile order goes live"
 _Round 4 = issue #10 (78 verdicts, filed 24 min after the V.8.12 fresh-mix feed — his first round
 on the new deck, and the first with a hand-dragged PILE-ORDER). Compiled per his "most recent

@@ -111,3 +111,26 @@ describe('weekend window', () => {
     expect(whenBeforeWeekend('Daily · dinner', NOW)).toBe(false)
   })
 })
+
+// V.8.14 — titleLooseMatch: the PILE-ORDER matcher. Pins R4's three real losses (7/10 stamped):
+// the board stores drag-time titles verbatim; the next crawl retitles or trims them.
+import { titleLooseMatch } from '../scripts/lib/pipeline'
+
+describe('titleLooseMatch — board titles vs re-crawled feed titles', () => {
+  it('survives a descriptive suffix being dropped (Nara Nara / Jollof)', () => {
+    expect(titleLooseMatch('Nara Nara', 'Nara Nara Egyptian restaurant')).toBe(true)
+    expect(titleLooseMatch('The Jollof Club', 'The Jollof Club West-African restaurant')).toBe(true)
+  })
+  it('survives a retitle with shared core tokens (Kwaku weekend naming)', () => {
+    expect(titleLooseMatch('Kwaku Summer Festival Opening Weekend', 'Kwaku Summer Festival - Weekend 1')).toBe(true)
+  })
+  it('still matches identical and diacritic-shifted titles', () => {
+    expect(titleLooseMatch('World Press Photo', 'World Press Photo')).toBe(true)
+    expect(titleLooseMatch('Ekō – Japan in twee beeldverhalen', 'Eko - Japan in twee beeldverhalen')).toBe(true)
+  })
+  it('does NOT over-match unrelated events', () => {
+    expect(titleLooseMatch('Summer Festival Amsterdam', 'Kwaku Summer Festival - Weekend 1')).toBe(false)
+    expect(titleLooseMatch('Jazz at H\'ART Museum', 'Jazz op het IJ')).toBe(false)
+    expect(titleLooseMatch('Nara Nara', 'Nora')).toBe(false)
+  })
+})
