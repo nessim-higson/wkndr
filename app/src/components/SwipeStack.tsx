@@ -5,7 +5,7 @@ import {
   motion, useMotionValue, useTransform, animate,
   type MotionValue, type PanInfo,
 } from 'framer-motion'
-import { X, Star, Check } from 'lucide-react'
+import { X, Check } from 'lucide-react'
 import type { Pick, SwipeDir, Mode } from '../types'
 import { Card } from './Card'
 import './SwipeStack.css'
@@ -23,7 +23,7 @@ const STEP_Y = 12   // depth offset per card — tightened (was 18) so the stack
 const DIR: Record<SwipeDir, { x: number; y: number }> = {
   like: { x: 1, y: 0 },
   nope: { x: -1, y: 0 },
-  save: { x: 0, y: -1 },
+  save: { x: 1, y: 0 },   // the ✓ button mirrors a right-swipe (was up — read as neither yes nor no)
   skip: { x: 0, y: 1 },
 }
 
@@ -348,7 +348,7 @@ export function SwipeStack({
 
       <div className="stack-actions">
         <button className="act act-nope" onClick={() => topRef.current?.fling('nope')} aria-label="Not for me"><X size={22} strokeWidth={2.5} /></button>
-        <button className="act act-save" onClick={() => topRef.current?.fling('save')} aria-label="Save"><Star size={21} strokeWidth={2.4} /></button>
+        <button className="act act-save" onClick={() => topRef.current?.fling('save')} aria-label="Save"><Check size={22} strokeWidth={2.6} /></button>
       </div>
 
       {onRefresh && (
