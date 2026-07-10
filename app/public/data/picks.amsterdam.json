@@ -1,9 +1,9 @@
 {
   "city": "amsterdam",
   "label": "Amsterdam",
-  "generatedAt": "2026-07-10T09:59:13.035Z",
+  "generatedAt": "2026-07-10T10:12:57.698Z",
   "live": true,
-  "count": 149,
+  "count": 141,
   "topMatches": [
     "milkshake festival",
     "dekmantel",
@@ -12,20 +12,21 @@
   ],
   "picks": [
     {
-      "id": "web-your-little-black-book-games-exhibition-opens",
-      "title": "Games Exhibition Opens",
-      "venue": "NEMO",
-      "area": "Amsterdam",
-      "when": "Sat 11 Jul",
-      "category": "art",
-      "freshness": "new",
+      "id": "web-ra-2444848",
+      "title": "The Garden pres. Yotto (Extended Set) & Henri Bergmann",
+      "venue": "Melkweg",
+      "area": "",
+      "when": "Fri 10 Jul · 23:59",
+      "category": "live",
+      "freshness": "weekend",
       "outdoor": false,
-      "kid": true,
-      "price": "ticketed",
-      "blurb": "Interactive exhibition exploring video games' influence on play, learning, meeting and self-expression.",
-      "why": "Brand new opening this weekend",
-      "source": "Your Little Black Book",
-      "link": "https://www.yourlittleblackbook.me/en/museumagenda-tentoonstellingen-amsterdam-2026/",
+      "kid": false,
+      "price": "",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fimages.ra.co%2F0ab8b8cd1103df7e80dba68cd38340a6e3dbb489.png&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fimages.ra.co%2F0ab8b8cd1103df7e80dba68cd38340a6e3dbb489.png",
+      "blurb": "Yotto, Henri Bergmann at Melkweg.",
+      "why": "48 going on RA",
+      "source": "Resident Advisor · I amsterdam",
+      "link": "https://ra.co/events/2444848",
       "weatherFit": [
         "HOT",
         "WARM",
@@ -33,254 +34,49 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "verify": true,
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fadmin.nxtmuseum.com%2Fcontent%2Fuploads%2F2024%2F05%2FLife-In-Our-Minds_-Motherflock-_-III-2023-by-Random-International-%25E2%2580%2593-exhibited-in-%25E2%2580%2598Life-in-a-Different-Resolution-at-Nxt-Museum-The-Netherlands_-Photographer_Maarten-Nauw_01-scaled.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fadmin.nxtmuseum.com%2Fcontent%2Fuploads%2F2024%2F05%2FLife-In-Our-Minds_-Motherflock-_-III-2023-by-Random-International-%25E2%2580%2593-exhibited-in-%25E2%2580%2598Life-in-a-Different-Resolution-at-Nxt-Museum-The-Netherlands_-Photographer_Maarten-Nauw_01-scaled.jpg",
+      "popularity": 48,
       "editorScore": 5,
-      "buzz": 1
+      "buzz": 2
     },
     {
-      "id": "web-lbb-bar-how",
-      "title": "Bar How",
-      "venue": "Bar How",
-      "area": "Amsterdam-Noord",
-      "when": "Sat 11 Jul · From 16:00",
-      "category": "drink",
-      "freshness": "weekend",
-      "outdoor": true,
-      "kid": false,
+      "id": "web-lbb-fiep-westendorp",
+      "title": "Fiep Westendorp",
+      "venue": "Rijksmuseum",
+      "area": "Museumplein",
+      "when": "Until Sun 25 Oct",
+      "category": "art",
+      "freshness": "always",
+      "outdoor": false,
+      "kid": true,
       "price": "",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.yourlittleblackbook.me%2Fwp-content%2Fuploads%2F2026%2F03%2FAmsterdam-Weekend-Guide-tips-overzicht-2026.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fwww.yourlittleblackbook.me%2Fwp-content%2Fuploads%2F2026%2F03%2FAmsterdam-Weekend-Guide-tips-overzicht-2026.jpg",
-      "blurb": "Natural wine bar at waterside with vinyl records, quality snacks, and long summer evenings by the IJ.",
-      "why": "Natural wine and late-night waterside vibes",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fcdn.amsterdamnow.com%2Fapp%2Fuploads%2Ffiep-westendorp-tentoonstelling-rijksmuseum-amsterdam_4.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fcdn.amsterdamnow.com%2Fapp%2Fuploads%2Ffiep-westendorp-tentoonstelling-rijksmuseum-amsterdam_4.jpg",
+      "blurb": "Retrospective of beloved Dutch illustrator and children's author Fiep Westendorp's creative work and legacy.",
+      "why": "Dutch children's illustrator career retrospective",
       "source": "Your Little Black Book",
-      "link": "https://www.yourlittleblackbook.me/weekendtips-amsterdam/",
+      "link": "https://www.yourlittleblackbook.me/Museumagenda%20AMS%20Rijksmuseum",
       "weatherFit": [
         "HOT",
         "WARM",
-        "COOL"
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
       ],
       "verify": false,
       "editorScore": 6
-    },
-    {
-      "id": "web-lbb-the-invite",
-      "title": "The Invite",
-      "venue": "Pathé Bioscopen, Kriterion, Studio-K, LAB111, Rialto, FC Hye",
-      "area": "Amsterdam",
-      "when": "Sun 12 Jul onwards",
-      "category": "stage",
-      "freshness": "weekend",
-      "outdoor": false,
-      "kid": false,
-      "price": "",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fmedia.pathe.nl%2Fcinema%2F189%2Fbackdrop%2F223765%2Fpathetuschinski-zaal1a.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fmedia.pathe.nl%2Fcinema%2F189%2Fbackdrop%2F223765%2Fpathetuschinski-zaal1a.jpg",
-      "blurb": "A dinner party spirals into chaos revealing hidden desires and secrets. Darkly funny and disturbingly relatable.",
-      "why": "Darkly comedic dinner party thriller",
-      "source": "Your Little Black Book",
-      "link": "https://www.yourlittleblackbook.me/bioscoop-filmagenda-amsterdam-2026/",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "verify": false,
-      "editorScore": 2
-    },
-    {
-      "id": "web-lbb-moana-viana-live-action",
-      "title": "Moana/Viana (live action)",
-      "venue": "Pathé Bioscopen, Vué",
-      "area": "Amsterdam",
-      "when": "Until Sun 12 Jul",
-      "category": "stage",
-      "freshness": "weekend",
-      "outdoor": false,
-      "kid": true,
-      "price": "",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fmovie.thegioicho.com%2Fwp-content%2Fuploads%2F2025%2F11%2F590647881_697409320104812_3261465984214207002_n.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fmovie.thegioicho.com%2Fwp-content%2Fuploads%2F2025%2F11%2F590647881_697409320104812_3261465984214207002_n.jpg",
-      "blurb": "Live-action adaptation of Moana with stunning visuals and beloved songs. Vaiana sails beyond the reef with Maui.",
-      "why": "Live-action remake of animated classic",
-      "source": "Your Little Black Book",
-      "link": "https://www.yourlittleblackbook.me/bioscoop-filmagenda-amsterdam-2026/",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "verify": false,
-      "editorScore": 1
-    },
-    {
-      "id": "web-lbb-the-odyssey",
-      "title": "The Odyssey",
-      "venue": "Pathé Bioscopen, Kriterion, Studio-K, LAB111, Rialto, FC Hye",
-      "area": "Amsterdam",
-      "when": "Sun 12 Jul onwards",
-      "category": "stage",
-      "freshness": "weekend",
-      "outdoor": false,
-      "kid": false,
-      "price": "",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fe%2Fea%2FFragment_Odyssee_2245_2.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fe%2Fea%2FFragment_Odyssee_2245_2.jpg",
-      "blurb": "Epic Homer adaptation. Odysseus battles mythical creatures and sirens on his perilous journey home after Troy. IMAX spectacle.",
-      "why": "Grand mythological epic on big screen",
-      "source": "Your Little Black Book",
-      "link": "https://www.yourlittleblackbook.me/bioscoop-filmagenda-amsterdam-2026/",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "verify": false,
-      "editorScore": 2
-    },
-    {
-      "id": "web-lbb-finding-emily",
-      "title": "Finding Emily",
-      "venue": "Pathé Bioscopen, The Movies",
-      "area": "Amsterdam",
-      "when": "Until Sun 12 Jul",
-      "category": "stage",
-      "freshness": "weekend",
-      "outdoor": false,
-      "kid": false,
-      "price": "",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fimages.plex.tv%2Fphoto%3Fsize%3Dlarge-720%26scale%3D2%26url%3Dhttps%3A%252F%252Fmetadata-static.plex.tv%252Fb%252Fgracenote%252Fb39bcbe67d8aabaab6d0dd36250d58f3.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fimages.plex.tv%2Fphoto%3Fsize%3Dlarge-720%26scale%3D2%26url%3Dhttps%3A%252F%252Fmetadata-static.plex.tv%252Fb%252Fgracenote%252Fb39bcbe67d8aabaab6d0dd36250d58f3.jpg",
-      "blurb": "Lovesick musician and psychology student search for mystery girl after wrong number. Campus chaos and unexpected feelings ensue.",
-      "why": "Romantic comedy about wrong number quest",
-      "source": "Your Little Black Book",
-      "link": "https://www.yourlittleblackbook.me/bioscoop-filmagenda-amsterdam-2026/",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "verify": false,
-      "editorScore": 1
-    },
-    {
-      "id": "web-lbb-la-petite-derni-re",
-      "title": "La Petite Dernière",
-      "venue": "Pathé Bioscopen, Studio-K, FC Hyena, Ketelhuis, The Movies, ",
-      "area": "Amsterdam",
-      "when": "Sun 12 Jul onwards",
-      "category": "stage",
-      "freshness": "weekend",
-      "outdoor": false,
-      "kid": false,
-      "price": "",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fimages.pexels.com%2Fphotos%2F37984976%2Fpexels-photo-37984976.jpeg%3Fauto%3Dcompress%26cs%3Dtinysrgb%26fit%3Dcrop%26h%3D1200%26w%3D800&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fimages.pexels.com%2Fphotos%2F37984976%2Fpexels-photo-37984976.jpeg%3Fauto%3Dcompress%26cs%3Dtinysrgb%26fit%3Dcrop%26h%3D1200%26w%3D800",
-      "blurb": "17-year-old Fatima moves to Paris, discovers freedom and herself while navigating faith, family, and first love.",
-      "why": "Coming-of-age drama exploring identity",
-      "source": "Your Little Black Book",
-      "link": "https://www.yourlittleblackbook.me/bioscoop-filmagenda-amsterdam-2026/",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "verify": false,
-      "editorScore": 3
-    },
-    {
-      "id": "web-lbb-omoka-african-pop-up",
-      "title": "Omoka African pop-up",
-      "venue": "Woodies at Berlin (NDSM-werf)",
-      "area": "Amsterdam-Noord",
-      "when": "Fri–Sat 10–11 Jul",
-      "category": "eat",
-      "freshness": "weekend",
-      "outdoor": true,
-      "kid": false,
-      "price": "",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fimages.pexels.com%2Fphotos%2F28490812%2Fpexels-photo-28490812.jpeg%3Fauto%3Dcompress%26cs%3Dtinysrgb%26fit%3Dcrop%26h%3D1200%26w%3D800&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fimages.pexels.com%2Fphotos%2F28490812%2Fpexels-photo-28490812.jpeg%3Fauto%3Dcompress%26cs%3Dtinysrgb%26fit%3Dcrop%26h%3D1200%26w%3D800",
-      "blurb": "Authentic African cuisine, cocktails, and live music on a boat at NDSM with IJ River views.",
-      "why": "African food and drinks on a ship",
-      "source": "Your Little Black Book",
-      "link": "https://www.yourlittleblackbook.me/weekendtips-amsterdam/",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL"
-      ],
-      "verify": false,
-      "editorScore": 7
-    },
-    {
-      "id": "web-lbb-kattenkwaad-in-egypte",
-      "title": "Kattenkwaad in Egypte",
-      "venue": "Pathé Bioscopen, Ketelhuis",
-      "area": "Amsterdam",
-      "when": "Sun 12 Jul onwards",
-      "category": "stage",
-      "freshness": "weekend",
-      "outdoor": false,
-      "kid": true,
-      "price": "",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fimages.pathe-thuis.nl%2F35374_1920x1080.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fimages.pathe-thuis.nl%2F35374_1920x1080.jpg",
-      "blurb": "Vincent the cat and Maurice explore Egyptian pyramids seeking a magical wish-granting spirit. Adventure with Cleopatra.",
-      "why": "Family-friendly Egyptian adventure sequel",
-      "source": "Your Little Black Book",
-      "link": "https://www.yourlittleblackbook.me/bioscoop-filmagenda-amsterdam-2026/",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "verify": false,
-      "editorScore": 1
-    },
-    {
-      "id": "web-lbb-viral-japanese-bakery-pop-up",
-      "title": "Viral Japanese Bakery pop-up",
-      "venue": "PAINDEMIE",
-      "area": "Amsterdam",
-      "when": "Sat 11 Jul · 11:00–16:30",
-      "category": "eat",
-      "freshness": "weekend",
-      "outdoor": false,
-      "kid": true,
-      "price": "",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fthumb%2F0%2F01%2FTony%2527s_Chocolonely_shop_Amsterdam.jpg%2F1280px-Tony%2527s_Chocolonely_shop_Amsterdam.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fthumb%2F0%2F01%2FTony%2527s_Chocolonely_shop_Amsterdam.jpg%2F1280px-Tony%2527s_Chocolonely_shop_Amsterdam.jpg",
-      "blurb": "TikTok-famous Japanese bakery with matcha treats, honey butter toast, shokupan sandwiches, and colorful Sakura sodas.",
-      "why": "Viral Japanese bakes worth the queue",
-      "source": "Your Little Black Book",
-      "link": "https://www.yourlittleblackbook.me/weekendtips-amsterdam/",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "verify": false,
-      "editorScore": 7
     },
     {
       "id": "llm-i-amsterdam-world-press-photo",
       "title": "World Press Photo",
       "venue": "De Nieuwe Kerk Amsterdam",
       "area": "City Centre",
-      "when": "Until 27 Sep · 10:00–17:00",
+      "when": "until 27 Sep · 10:00–17:00",
       "category": "art",
       "freshness": "always",
       "outdoor": false,
       "kid": false,
       "price": "ticketed",
-      "blurb": "Prestigious exhibition of world-class photojournalism; see powerful stories from around the globe curated by the industry's top eye.",
-      "why": "Critically acclaimed, career-defining work",
+      "blurb": "Award-winning photojournalism exhibition showcasing powerful stories from around the world through iconic imagery.",
+      "why": "Prestigious annual showcase, runs through summer",
       "source": "I amsterdam · Your Little Black Book",
       "link": "https://www.iamsterdam.com/en/whats-on",
       "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.nieuwekerk.nl%2Fwp-content%2Fuploads%2F2026%2F02%2F2026-04-23_De-Nieuwe-Kerk_World-Press-Photo-2026__Tomek-Dersu-Aaron_1967.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fwww.nieuwekerk.nl%2Fwp-content%2Fuploads%2F2026%2F02%2F2026-04-23_De-Nieuwe-Kerk_World-Press-Photo-2026__Tomek-Dersu-Aaron_1967.jpg",
@@ -297,21 +93,21 @@
       "pilePos": 1
     },
     {
-      "id": "web-lbb-cinema-culinair",
-      "title": "Cinema Culinair",
-      "venue": "Amsterdam",
+      "id": "web-lbb-the-invite",
+      "title": "The Invite",
+      "venue": "Pathé Bioscopen, Kriterion, Studio-K, LAB111, Rialto, FC Hye",
       "area": "Amsterdam",
-      "when": "Until Sun 12 Jul",
-      "category": "eat",
+      "when": "From Sat 11 Jul",
+      "category": "stage",
       "freshness": "weekend",
       "outdoor": false,
       "kid": false,
       "price": "",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fcinemaculinair.nl%2Fwp-content%2Fuploads%2Fabove-view-cinema-culinair-voorstellingen.webp&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fcinemaculinair.nl%2Fwp-content%2Fuploads%2Fabove-view-cinema-culinair-voorstellingen.webp",
-      "blurb": "Watch culinary films like Chef while eating synchronized courses. Brunch or seven-course dinners timed to screen action.",
-      "why": "Synchronized dining-cinema fusion experience",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fmedia.pathe.nl%2FmasterTemplateContent%2Fdesktop%2F162825%2Flg%2F1%2Ftus-exterioir.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fmedia.pathe.nl%2FmasterTemplateContent%2Fdesktop%2F162825%2Flg%2F1%2Ftus-exterioir.jpg",
+      "blurb": "Dinner party with neighbors spirals into awkward revelations of hidden desires and secrets.",
+      "why": "Dark comedy, relatable social tension",
       "source": "Your Little Black Book",
-      "link": "https://cinemaculinair.nl",
+      "link": "https://www.yourlittleblackbook.me/bioscoop-filmagenda-amsterdam-2026/",
       "weatherFit": [
         "HOT",
         "WARM",
@@ -320,22 +116,48 @@
         "VOLATILE"
       ],
       "verify": false,
-      "editorScore": 8
+      "editorScore": 2
+    },
+    {
+      "id": "web-lbb-la-petite-derni-re",
+      "title": "La Petite Dernière",
+      "venue": "Pathé Bioscopen, Studio-K, FC Hyena, Ketelhuis, The Movies, ",
+      "area": "Amsterdam",
+      "when": "From Sat 11 Jul",
+      "category": "stage",
+      "freshness": "weekend",
+      "outdoor": false,
+      "kid": false,
+      "price": "",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Ffr.web.img4.acsta.net%2Fimg%2Fa8%2Fac%2Fa8ac62466d0cbbbc64418e4f32e65b4b.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Ffr.web.img4.acsta.net%2Fimg%2Fa8%2Fac%2Fa8ac62466d0cbbbc64418e4f32e65b4b.jpg",
+      "blurb": "Coming-of-age drama of a 17-year-old exploring freedom, identity, and first love in Paris.",
+      "why": "French drama, young adult coming-of-age",
+      "source": "Your Little Black Book",
+      "link": "https://www.yourlittleblackbook.me/bioscoop-filmagenda-amsterdam-2026/",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "verify": false,
+      "editorScore": 3
     },
     {
       "id": "web-lbb-stoornis-of-my-life",
       "title": "Stoornis of my life",
       "venue": "Koninklijk Theater Carré",
       "area": "Amsterdam",
-      "when": "Until Sat 25 Jul",
+      "when": "Sat–Sun 11–12 Jul (ongoing until 25 Jul)",
       "category": "stage",
       "freshness": "weekend",
       "outdoor": false,
       "kid": false,
       "price": "",
       "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.kunstmin.nl%2Fassets%2Fuploads%2F2025%2F12%2FMarkEngelen_StoornisOfMyLife_Groep_compleet_KimJoey-scaled-e1774620693437.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fwww.kunstmin.nl%2Fassets%2Fuploads%2F2025%2F12%2FMarkEngelen_StoornisOfMyLife_Groep_compleet_KimJoey-scaled-e1774620693437.jpg",
-      "blurb": "Musical with heart about autism, loss, and resilience featuring Alex Klaasen and live music.",
-      "why": "Hilarious, moving, deeply relatable",
+      "blurb": "Alex Klaasen stars in this hilarious, touching musical about autism, family, and life's unexpected turns with live music.",
+      "why": "Heartfelt comedy-musical with live band",
       "source": "Your Little Black Book",
       "link": "https://delamar.nl/voorstellingen/stoornis-of-my-life/",
       "weatherFit": [
@@ -350,19 +172,43 @@
       "pilePos": 7
     },
     {
+      "id": "web-lbb-omoka-african-pop-up",
+      "title": "Omoka African pop-up",
+      "venue": "Woodies at Berlin (Ms. van Riemsdijkweg 306)",
+      "area": "Amsterdam-North",
+      "when": "Sat–Sun 11–12 Jul",
+      "category": "eat",
+      "freshness": "weekend",
+      "outdoor": true,
+      "kid": false,
+      "price": "",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.yourlittleblackbook.me%2Fwp-content%2Fuploads%2F2026%2F03%2FAmsterdam-Weekend-Guide-tips-overzicht-2026.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fwww.yourlittleblackbook.me%2Fwp-content%2Fuploads%2F2026%2F03%2FAmsterdam-Weekend-Guide-tips-overzicht-2026.jpg",
+      "blurb": "African cuisine pop-up on a boat at NDSM with authentic dishes, cocktails and waterfront views.",
+      "why": "Unique African dining on the IJ",
+      "source": "Your Little Black Book",
+      "link": "https://www.yourlittleblackbook.me/weekendtips-amsterdam/",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL"
+      ],
+      "verify": false,
+      "editorScore": 7
+    },
+    {
       "id": "web-lbb-ek-japan-in-twee-beeldverhalen",
       "title": "Ekō – Japan in twee beeldverhalen",
       "venue": "Scheepvaartmuseum",
-      "area": "Oost",
+      "area": "Kattenburg",
       "when": "Until Sun 30 Aug",
       "category": "art",
       "freshness": "always",
       "outdoor": false,
       "kid": false,
       "price": "",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fassets.tours-tickets.com%2Fupsells%2Fscheep-2_ml0daq4k.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fassets.tours-tickets.com%2Fupsells%2Fscheep-2_ml0daq4k.jpg",
-      "blurb": "Japanese visual narratives and maritime heritage displayed at Amsterdam's renowned shipping museum.",
-      "why": "Japan through maritime and visual lens",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fcdn.amsterdamnow.com%2Fapp%2Fuploads%2Feko-japan-scheepvaartmuseum-tentoonstelling-amsterdam_3.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fcdn.amsterdamnow.com%2Fapp%2Fuploads%2Feko-japan-scheepvaartmuseum-tentoonstelling-amsterdam_3.jpg",
+      "blurb": "Japanese visual narratives and maritime history exploration through this innovative museum exhibition.",
+      "why": "Japan-themed maritime museum exhibition",
       "source": "Your Little Black Book",
       "link": "https://www.yourlittleblackbook.me/Museum%20Agenda%20Amsterdam%20-%20Scheepvaart",
       "weatherFit": [
@@ -388,8 +234,8 @@
       "kid": false,
       "price": "",
       "image": "https://images.weserv.nl/?url=https%3A%2F%2Fcms.koninklijkeverzamelingen.nl%2Fapi%2Fimages%2Frendition%2F100027%2Ffill-3840x5120%2F&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fcms.koninklijkeverzamelingen.nl%2Fapi%2Fimages%2Frendition%2F100027%2Ffill-3840x5120%2F",
-      "blurb": "Japanese art treasures and cultural exchange between Netherlands and Japan through centuries of shared history.",
-      "why": "Rare Japanese artefacts on display",
+      "blurb": "Explore centuries of Dutch-Japanese cultural exchange through rare objects, screens, ceramics, and historical treasures.",
+      "why": "Unique Japan exhibition at iconic palace",
       "source": "Your Little Black Book",
       "link": "https://www.yourlittleblackbook.me/Museumagenda-ams-paleis-dam",
       "weatherFit": [
@@ -407,7 +253,7 @@
       "id": "web-lbb-martine-gutierrez-wunderkind",
       "title": "Martine Gutierrez – Wunderkind",
       "venue": "Huis Marseille",
-      "area": "Centrum",
+      "area": "Jordaan",
       "when": "Until Sun 18 Oct",
       "category": "art",
       "freshness": "always",
@@ -415,8 +261,8 @@
       "kid": false,
       "price": "",
       "image": "https://images.weserv.nl/?url=https%3A%2F%2Fhuismarseille.nl%2Fapp%2Fuploads%2F2026%2F02%2FStill_Life_Moms_Refrigerator.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fhuismarseille.nl%2Fapp%2Fuploads%2F2026%2F02%2FStill_Life_Moms_Refrigerator.jpg",
-      "blurb": "Artist explores personal identity and self-discovery through intimate photographs, self-portraits and childhood objects.",
-      "why": "Intimate exploration of identity and creativity",
+      "blurb": "Explore identity and self-expression through artist's photos, self-portraits, and personal objects examining childhood creativity.",
+      "why": "Intimate exhibition on identity and self-discovery",
       "source": "Your Little Black Book",
       "link": "https://huismarseille.nl/en/exhibitions/martine-gutierrez/",
       "weatherFit": [
@@ -433,7 +279,7 @@
       "id": "web-lbb-liefde-op-de-grachten-30-jaar-canal-parade",
       "title": "Liefde op de Grachten – 30 Jaar Canal Parade",
       "venue": "Grachtenmuseum",
-      "area": "Centrum",
+      "area": "Herengracht",
       "when": "Until Sun 27 Sep",
       "category": "art",
       "freshness": "always",
@@ -441,8 +287,8 @@
       "kid": false,
       "price": "",
       "image": "https://images.weserv.nl/?url=https%3A%2F%2Fartdaily.cc%2Fimagenes%2F2026%2F02%2F14%2Fdanh-2.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fartdaily.cc%2Fimagenes%2F2026%2F02%2F14%2Fdanh-2.jpg",
-      "blurb": "Celebrating Canal Parade's 30th anniversary through photos, art and personal stories of Amsterdam's iconic Pride event.",
-      "why": "Pride history and LGBTQ+ celebration",
+      "blurb": "Celebrate 30 years of Canal Parade with photos, art, and stories about Pride's visibility, freedom, and connection.",
+      "why": "Pride history exhibition celebrating three decades",
       "source": "Your Little Black Book",
       "link": "https://www.yourlittleblackbook.me/Museumagenda-ams-grachtenmuseum",
       "weatherFit": [
@@ -456,96 +302,20 @@
       "editorScore": 6
     },
     {
-      "id": "web-lbb-the-little-big-things",
-      "title": "The Little Big Things",
-      "venue": "Koninklijk Theater Carré",
-      "area": "Amsterdam",
-      "when": "Until Sun 16 Aug",
-      "category": "stage",
-      "freshness": "always",
-      "outdoor": false,
-      "kid": false,
-      "price": "",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fd3s3zh7icgjwgd.cloudfront.net%2FAcuCustom%2FSitename%2FDAM%2F345%2FCast-of-The-Little-Big-Things.-Photo--Pamela-Raith-1_LargeLandscape.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fd3s3zh7icgjwgd.cloudfront.net%2FAcuCustom%2FSitename%2FDAM%2F345%2FCast-of-The-Little-Big-Things.-Photo--Pamela-Raith-1_LargeLandscape.jpg",
-      "blurb": "West End musical based on true story about resilience and hope after life-changing moment.",
-      "why": "Emotional West End hit with live music",
-      "source": "Your Little Black Book",
-      "link": "https://carre.nl/voorstelling/the-little-big-things#speeldata",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "verify": false,
-      "editorScore": 8
-    },
-    {
-      "id": "web-i-amsterdam-artis-summer-evenings",
-      "title": "ARTIS Summer Evenings",
-      "venue": "ARTIS Zoo",
-      "area": "Amsterdam East",
-      "when": "Sat 11 Jul · 16:00–21:00",
+      "id": "web-i-amsterdam-suzan-peeters-accordion-reimagined",
+      "title": "Suzan Peeters – Accordion Reimagined",
+      "venue": "Royal Concertgebouw",
+      "area": "Concertgebouw",
+      "when": "Sun 12 Jul",
       "category": "live",
       "freshness": "weekend",
-      "outdoor": true,
-      "kid": true,
-      "price": "from €18",
-      "blurb": "Emerging musical talent performs in the zoo's bandstand amid gardens and animals at golden hour.",
-      "why": "Unique open-air concert setting",
-      "source": "I amsterdam",
-      "link": "https://www.iamsterdam.com/en/whats-on/calendar/festivals/events/artis-summer-nights",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL"
-      ],
-      "verify": true,
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fimage.wmsm.co%2F6853326264b98%2Fartis-summer-nights-artis-royal-zoo.webp%3Fquality%3D80%26width%3D1024&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fimage.wmsm.co%2F6853326264b98%2Fartis-summer-nights-artis-royal-zoo.webp%3Fquality%3D80%26width%3D1024",
-      "editorScore": 5
-    },
-    {
-      "id": "web-i-amsterdam-kwaku-summer-festival-opening-weekend",
-      "title": "Kwaku Summer Festival – Opening Weekend",
-      "venue": "Nelson Mandelapark",
-      "area": "Amsterdam Zuidoost",
-      "when": "Sat 11 Jul · 14:00 – Sun 12 Jul · 23:00",
-      "category": "market",
-      "freshness": "weekend",
-      "outdoor": true,
-      "kid": true,
-      "price": "ticketed",
-      "blurb": "Multicultural festival with live music, food vendors, sports & cultural performances celebrating Afro-Caribbean culture.",
-      "why": "Opening weekend of major summer festival",
-      "source": "I amsterdam",
-      "link": "https://www.iamsterdam.com/en/whats-on/calendar/festivals/events/kwaku-summer-festival",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL"
-      ],
-      "verify": true,
-      "buzz": 1,
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.iamsterdam.com%2F_next%2Fimage%3Furl%3Dhttps%253A%252F%252Fapp.thefeedfactory.nl%252Fapi%252Fassets%252F62b40a855d1a2c5d5eab528a%252FKwaku_01.webp%26w%3D1920%26q%3D75&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fwww.iamsterdam.com%2F_next%2Fimage%3Furl%3Dhttps%253A%252F%252Fapp.thefeedfactory.nl%252Fapi%252Fassets%252F62b40a855d1a2c5d5eab528a%252FKwaku_01.webp%26w%3D1920%26q%3D75",
-      "editorScore": 8
-    },
-    {
-      "id": "web-iams-the-garden-presents-yotto-extended-set-and-henri-bergmann",
-      "title": "The Garden presents Yotto (Extended Set) & Henri Bergmann",
-      "venue": "Melkweg",
-      "area": "Lijnbaansgracht 234A",
-      "when": "Fri 10 – Sat 11 Jul",
-      "category": "drink",
-      "freshness": "weekend",
       "outdoor": false,
       "kid": false,
-      "price": "from €23",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a274bbc85e5c44c2d922bb3%2FYotto_Banner.webp&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a274bbc85e5c44c2d922bb3%2FYotto_Banner.webp",
-      "blurb": "About YOTTO\n YOTTO has become one of the leading names in melodic electronic music. His tracks have amassed hundreds of millions of streams, while his remix cre",
-      "why": "On I amsterdam",
-      "source": "I amsterdam · Resident Advisor",
-      "link": "https://www.iamsterdam.com/en/whats-on/calendar/nightlife/clubbing/the-garden-presents-yotto-extended-set-and-henri-bergmann",
+      "price": "ticketed",
+      "blurb": "Brussels accordionist brings experimental sounds to contemporary percussion.",
+      "why": "Basement Sessions emerging talent series",
+      "source": "I amsterdam",
+      "link": "https://www.iamsterdam.com/en/whats-on/weekend-guide",
       "weatherFit": [
         "HOT",
         "WARM",
@@ -553,27 +323,26 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "verify": false,
-      "editorScore": 5,
-      "buzz": 2,
-      "popularity": 48
+      "verify": true,
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fsuzanpeeters.com%2Fwp-content%2Fuploads%2F2024%2F02%2FMG_9678-Enhanced-NR-scaled.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fsuzanpeeters.com%2Fwp-content%2Fuploads%2F2024%2F02%2FMG_9678-Enhanced-NR-scaled.jpg",
+      "editorScore": 6
     },
     {
-      "id": "web-iams-melyn-chow-frascati-producties-becoming-god-in-frascati",
-      "title": "Melyn Chow / Frascati Producties - Becoming God - in Frascati",
+      "id": "web-iams-becoming-god",
+      "title": "Becoming God",
       "venue": "Frascati",
       "area": "Nes 63",
-      "when": "Until Fri 4 Sep",
+      "when": "Wed 8 – Fri 10 Jul",
       "category": "stage",
-      "freshness": "always",
+      "freshness": "weekend",
       "outdoor": false,
       "kid": false,
-      "price": "from €13",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a023db45ebafd251afe1a34%2FaHR0cHM6Ly93d3cuZnJhc2NhdGl0aGVhdGVyLm5sLy9jbXNfZmlsZXMvc3lzdGVtL2ltYWdlcy9pbWcyMjYxOV9vcmlnLmpwZWc.webp&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a023db45ebafd251afe1a34%2FaHR0cHM6Ly93d3cuZnJhc2NhdGl0aGVhdGVyLm5sLy9jbXNfZmlsZXMvc3lzdGVtL2ltYWdlcy9pbWcyMjYxOV9vcmlnLmpwZWc.webp",
-      "blurb": "Discover the divine within yourself\n Melyn Chow grew up in Singapore in a Christian family. Her father's temple in Malaysia was 'forbidden territory'. She learn",
+      "price": "ticketed",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a29ef306ad96e1a9de13a31%2FHorizontal-banner-_C2_A9-Lila-Rodrigues.webp&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a29ef306ad96e1a9de13a31%2FHorizontal-banner-_C2_A9-Lila-Rodrigues.webp",
+      "blurb": "A sensory and personal quest for the divine\n For a long time, Melyn Chow was not allowed to enter her father's family's Taoist temple in Malaysia. For those who",
       "why": "On I amsterdam",
       "source": "I amsterdam",
-      "link": "https://www.iamsterdam.com/en/whats-on/calendar/theatre-and-stage/stage/melyn-chow-frascati-producties-becoming-god-in-frascati",
+      "link": "https://www.iamsterdam.com/en/whats-on/calendar/theatre-and-stage/stage/becoming-god",
       "weatherFit": [
         "HOT",
         "WARM",
@@ -582,8 +351,32 @@
         "VOLATILE"
       ],
       "verify": false,
-      "editorScore": 5,
+      "editorScore": 4,
       "buzz": 1
+    },
+    {
+      "id": "web-iams-kaboom-x-melkweg-cinema",
+      "title": "Kaboom X Melkweg Cinema",
+      "venue": "Melkweg",
+      "area": "Lijnbaansgracht 234A",
+      "when": "Until Sat 12 Dec",
+      "category": "out",
+      "freshness": "always",
+      "outdoor": true,
+      "kid": false,
+      "price": "from €12",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F68399174987d4050163719d9%2FKaboom_2025.webp&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F68399174987d4050163719d9%2FKaboom_2025.webp",
+      "blurb": "Anime in the Milky Way\n Kaboom regularly organizes an anime night at the Melkweg Cinema, so you can once again enjoy the best anime on the big screen! Keep an e",
+      "why": "On I amsterdam",
+      "source": "I amsterdam",
+      "link": "https://www.iamsterdam.com/en/whats-on/calendar/festivals/events/kaboom-x-melkweg-cinema",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL"
+      ],
+      "verify": false,
+      "editorScore": 4
     },
     {
       "id": "web-iams-american-identities",
@@ -637,7 +430,33 @@
         "VOLATILE"
       ],
       "verify": false,
-      "editorScore": 3
+      "editorScore": 5
+    },
+    {
+      "id": "web-i-amsterdam-kwaku-summer-festival",
+      "title": "Kwaku Summer Festival",
+      "venue": "Nelson Mandela Park",
+      "area": "Zuidoost",
+      "when": "Sat 11 Jul · 14:00–23:00, Sun 12 Jul · 17:00–23:00",
+      "category": "eat",
+      "freshness": "weekend",
+      "outdoor": true,
+      "kid": true,
+      "price": "free",
+      "blurb": "Multicultural festival with exotic street food: Surinamese spareribs, Korean tacos, Caribbean and Asian dishes. Music, dance, and football.",
+      "why": "Opening weekend of major annual festival",
+      "source": "I amsterdam",
+      "link": "https://www.iamsterdam.com/en/whats-on/calendar/festivals/events/kwaku-summer-festival",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL"
+      ],
+      "verify": true,
+      "buzz": 1,
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.iamsterdam.com%2F_next%2Fimage%3Furl%3Dhttps%253A%252F%252Fapp.thefeedfactory.nl%252Fapi%252Fassets%252F62b40a855d1a2c5d5eab528a%252FKwaku_01.webp%26w%3D1920%26q%3D75&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fwww.iamsterdam.com%2F_next%2Fimage%3Furl%3Dhttps%253A%252F%252Fapp.thefeedfactory.nl%252Fapi%252Fassets%252F62b40a855d1a2c5d5eab528a%252FKwaku_01.webp%26w%3D1920%26q%3D75",
+      "editorScore": 8,
+      "pilePos": 2
     },
     {
       "id": "web-iams-pride-comedy",
@@ -663,7 +482,7 @@
         "VOLATILE"
       ],
       "verify": false,
-      "editorScore": 5
+      "editorScore": 4
     },
     {
       "id": "web-iams-miss-melera-vero",
@@ -1072,7 +891,7 @@
         "VOLATILE"
       ],
       "verify": false,
-      "editorScore": 1
+      "editorScore": 2
     },
     {
       "id": "web-iams-de-roode-remise-singing-session",
@@ -1150,7 +969,7 @@
         "VOLATILE"
       ],
       "verify": false,
-      "editorScore": 3
+      "editorScore": 2
     },
     {
       "id": "web-iams-vriendenloterij-summer-concerts",
@@ -1252,7 +1071,7 @@
         "VOLATILE"
       ],
       "verify": false,
-      "editorScore": 2
+      "editorScore": 1
     },
     {
       "id": "web-iams-r-and-b-hip-hop-latin-and-caribbean-vibes",
@@ -1281,33 +1100,6 @@
       "editorScore": 1
     },
     {
-      "id": "web-iams-summer-lunchconcerts-on-the-duyschot-organ",
-      "title": "Summer lunchconcerts on the Duyschot organ",
-      "venue": "Westerkerk",
-      "area": "Prinsengracht 281",
-      "when": "Until Sat 29 Aug",
-      "category": "live",
-      "freshness": "always",
-      "outdoor": false,
-      "kid": false,
-      "price": "free",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F69eb77ad2d99ad6c83fb0fec%2FHannoDeVries-20250716-SfeerWesterkerk-web-12.webp&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F69eb77ad2d99ad6c83fb0fec%2FHannoDeVries-20250716-SfeerWesterkerk-web-12.webp",
-      "blurb": "A musical lunch break\n Admission is free, as are the seats; the Westerkerk would be very grateful for your contribution to the collection afterwards.\n Evan Boge",
-      "why": "On I amsterdam",
-      "source": "I amsterdam",
-      "link": "https://www.iamsterdam.com/en/whats-on/calendar/concerts-and-music/concerts/summer-lunchconcerts-on-the-duyschot-organ",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "verify": false,
-      "editorScore": 4,
-      "buzz": 1
-    },
-    {
       "id": "web-iams-kampvuur-karaoke-summer-2026-at-camping-zeeburg",
       "title": "Kampvuur Karaoke – summer 2026 at Camping Zeeburg",
       "venue": "Camping Zeeburg Amsterdam",
@@ -1331,7 +1123,7 @@
         "VOLATILE"
       ],
       "verify": false,
-      "editorScore": 5
+      "editorScore": 4
     },
     {
       "id": "web-iams-ligconcert-presents-lying-down-concert-at-the-maritime-museum",
@@ -1409,7 +1201,7 @@
         "VOLATILE"
       ],
       "popularity": 33,
-      "editorScore": 4
+      "editorScore": 3
     },
     {
       "id": "web-ra-2444057",
@@ -1540,7 +1332,7 @@
         "VOLATILE"
       ],
       "popularity": 329,
-      "editorScore": 6
+      "editorScore": 5
     },
     {
       "id": "web-ra-2450349",
@@ -1566,7 +1358,7 @@
         "VOLATILE"
       ],
       "popularity": 6,
-      "editorScore": 2
+      "editorScore": 3
     },
     {
       "id": "web-ra-2453224",
@@ -1644,7 +1436,7 @@
         "VOLATILE"
       ],
       "popularity": 10,
-      "editorScore": 4
+      "editorScore": 3
     },
     {
       "id": "web-ra-2469906",
@@ -1748,7 +1540,7 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "editorScore": 2
+      "editorScore": 1
     },
     {
       "id": "web-ra-2473426",
@@ -1826,7 +1618,7 @@
         "VOLATILE"
       ],
       "popularity": 252,
-      "editorScore": 6
+      "editorScore": 5
     },
     {
       "id": "web-ra-2478208",
@@ -1852,7 +1644,7 @@
         "VOLATILE"
       ],
       "popularity": 244,
-      "editorScore": 4
+      "editorScore": 3
     },
     {
       "id": "web-ra-2479159",
@@ -2045,8 +1837,8 @@
       "outdoor": false,
       "kid": false,
       "price": "ticketed",
-      "blurb": "Eleven artists respond to Eye's colonial-era film collection with ten new works exploring Indonesia and Suriname.",
-      "why": "Provocative, timely reframing of film history",
+      "blurb": "Eleven contemporary artists respond to Eye's colonial-era Indonesian and Surinamese films with ten new commissioned works.",
+      "why": "Timely, challenging exhibition on film and colonial history",
       "source": "Eye Filmmuseum",
       "link": "https://www.eyefilm.nl/en/whats-on",
       "image": "https://images.weserv.nl/?url=https%3A%2F%2Fadmin.nxtmuseum.com%2Fcontent%2Fuploads%2F2024%2F05%2FLife-In-Our-Minds_-Motherflock-_-III-2023-by-Random-International-%25E2%2580%2593-exhibited-in-%25E2%2580%2598Life-in-a-Different-Resolution-at-Nxt-Museum-The-Netherlands_-Photographer_Maarten-Nauw_01-scaled.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fadmin.nxtmuseum.com%2Fcontent%2Fuploads%2F2024%2F05%2FLife-In-Our-Minds_-Motherflock-_-III-2023-by-Random-International-%25E2%2580%2593-exhibited-in-%25E2%2580%2598Life-in-a-Different-Resolution-at-Nxt-Museum-The-Netherlands_-Photographer_Maarten-Nauw_01-scaled.jpg",
@@ -2059,7 +1851,7 @@
       ],
       "verify": true,
       "buzz": 1,
-      "editorScore": 7
+      "editorScore": 6
     },
     {
       "id": "llm-eye-filmmuseum-queer-power",
@@ -2072,11 +1864,11 @@
       "outdoor": false,
       "kid": false,
       "price": "ticketed",
-      "blurb": "World Pride celebration: films, talks and events honouring queer creators worldwide at Eye.",
-      "why": "Pride season essential, diverse global perspectives",
+      "blurb": "Eye's World Pride celebration: films, talks and events showcasing queer artists and makers globally, all weekend.",
+      "why": "World Pride in Amsterdam; diverse, inclusive programming",
       "source": "Eye Filmmuseum",
       "link": "https://www.eyefilm.nl/en/whats-on",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fimages.pexels.com%2Fphotos%2F37067590%2Fpexels-photo-37067590.jpeg%3Fauto%3Dcompress%26cs%3Dtinysrgb%26fit%3Dcrop%26h%3D1200%26w%3D800&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fimages.pexels.com%2Fphotos%2F37067590%2Fpexels-photo-37067590.jpeg%3Fauto%3Dcompress%26cs%3Dtinysrgb%26fit%3Dcrop%26h%3D1200%26w%3D800",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.greatervenues.com%2Fwp-content%2Fuploads%2F2023%2F10%2FEye-Filmmuseum-WB-Fotografie-scaled.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fwww.greatervenues.com%2Fwp-content%2Fuploads%2F2023%2F10%2FEye-Filmmuseum-WB-Fotografie-scaled.jpg",
       "weatherFit": [
         "HOT",
         "WARM",
@@ -2085,108 +1877,53 @@
         "VOLATILE"
       ],
       "verify": true,
-      "editorScore": 7
+      "editorScore": 6
     },
     {
-      "id": "llm-kidsproof-inloopworkshops-in-het-muizenhuis",
-      "title": "Inloopworkshops in Het Muizenhuis",
-      "venue": "Het Muizenhuis",
-      "area": "Amsterdam",
-      "when": "Weekends (including Sat 11 & Sun 12 July)",
-      "category": "out",
-      "freshness": "always",
-      "outdoor": false,
-      "kid": true,
-      "price": "free or low-cost",
-      "blurb": "Drop-in craft workshops where children can create crafts among the museum's beloved mouse displays. No booking needed; fun for all ages.",
-      "why": "Charming, accessible, no booking required",
-      "source": "Kidsproof",
-      "link": "https://www.kidsproof.nl/amsterdam",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.amsterdamnow.com%2Fapp%2Fuploads%2FMuseumHetMuizenhuis.jpeg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fwww.amsterdamnow.com%2Fapp%2Fuploads%2FMuseumHetMuizenhuis.jpeg",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "verify": true,
-      "editorScore": 4
-    },
-    {
-      "id": "web-lbb-nara-nara",
-      "title": "Nara Nara",
-      "venue": "Nara Nara",
-      "area": "Amsterdam-Oost",
-      "when": "This weekend",
-      "category": "eat",
+      "id": "web-lbb-caf-publiek",
+      "title": "Café Publiek",
+      "venue": "Café Publiek",
+      "area": "Amsterdam-East",
+      "when": "Fri–Sun (open weekends)",
+      "category": "drink",
       "freshness": "weekend",
-      "outdoor": false,
+      "outdoor": true,
       "kid": true,
       "price": "",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.genussguide-hamburg.com%2Fwp-content%2Fuploads%2F2025%2F03%2Fjapanische-gourmetkueche-restaurant-nara-hotel-bea-1500x937.jpeg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fwww.genussguide-hamburg.com%2Fwp-content%2Fuploads%2F2025%2F03%2Fjapanische-gourmetkueche-restaurant-nara-hotel-bea-1500x937.jpeg",
-      "blurb": "Chef Said's Egyptian restaurant on Dapperplein serving Cairo flavors and Mediterranean dishes meant for sharing.",
-      "why": "Authentic Egyptian cuisine perfect for families",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Famsterdamshots.nl%2Fwp-content%2Fuploads%2F2020%2F03%2Fimage1.jpeg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Famsterdamshots.nl%2Fwp-content%2Fuploads%2F2020%2F03%2Fimage1.jpeg",
+      "blurb": "New neighbourhood café at Dapperplein with all-day dining, large terrace and warm vintage interior.",
+      "why": "Fresh neighbourhood vibe on Dapperplein",
       "source": "Your Little Black Book",
       "link": "https://www.yourlittleblackbook.me/weekendtips-amsterdam/",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "verify": false,
-      "editorScore": 8
-    },
-    {
-      "id": "web-lbb-the-jollof-club",
-      "title": "The Jollof Club",
-      "venue": "The Jollof Club",
-      "area": "Amsterdam-Centrum",
-      "when": "This weekend",
-      "category": "eat",
-      "freshness": "weekend",
-      "outdoor": false,
-      "kid": false,
-      "price": "",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.kookboekhandel.com%2Fcdn%2Fshop%2Ffiles%2FNicolas-1.jpg%3Fv%3D1760095844%26width%3D1445&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fwww.kookboekhandel.com%2Fcdn%2Fshop%2Ffiles%2FNicolas-1.jpg%3Fv%3D1760095844%26width%3D1445",
-      "blurb": "West African hotspot by chef Nicolas Aquaa with modern takes on Ghana, Nigeria, Senegal flavors plus cocktails.",
-      "why": "Modern West African cuisine worth trying",
-      "source": "Your Little Black Book",
-      "link": "https://thejollofclub.com/",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "verify": false,
-      "editorScore": 8
-    },
-    {
-      "id": "ams-ev2-strand-van-oost",
-      "title": "Strand van Oost",
-      "venue": "Rooftop of Orchid House",
-      "area": "Linnaeusstraat, Oost",
-      "when": "Summer · evenings",
-      "category": "out",
-      "freshness": "always",
-      "outdoor": true,
-      "kid": false,
-      "price": "€€",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fstrandvanoost.nl%2Fwp-content%2Fuploads%2F2026%2F05%2FDSC3884-scaled.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fstrandvanoost.nl%2Fwp-content%2Fuploads%2F2026%2F05%2FDSC3884-scaled.jpg",
-      "blurb": "A beach on a roof in Oost: sand-and-sunset bar on top of Orchid House that makes the city briefly disappear.",
-      "why": "Beach feeling without leaving Oost",
-      "source": "Your Little Black Book · Ness canon",
-      "link": "https://www.strandvanoost.nl/",
       "weatherFit": [
         "HOT",
         "WARM",
         "COOL"
       ],
       "verify": false,
+      "editorScore": 5
+    },
+    {
+      "id": "ams-ev2-strand-van-oost",
+      "title": "Strand van Oost",
+      "venue": "Rooftop of Orchid House",
+      "area": "Linnaeusstraat, Oost",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fstrandvanoost.nl%2Fwp-content%2Fuploads%2F2026%2F05%2FDSC3884-scaled.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fstrandvanoost.nl%2Fwp-content%2Fuploads%2F2026%2F05%2FDSC3884-scaled.jpg",
+      "category": "out",
+      "freshness": "always",
+      "outdoor": true,
+      "kid": false,
+      "price": "€€",
+      "blurb": "A beach on a roof in Oost: sand-and-sunset bar on top of Orchid House that makes the city briefly disappear.",
+      "why": "Beach feeling without leaving Oost",
+      "source": "Ness canon · Your Little Black Book",
+      "link": "https://www.strandvanoost.nl/",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL"
+      ],
+      "when": "Summer · evenings",
       "tier": "bespoke",
       "buzz": 2
     },
@@ -2218,9 +1955,36 @@
       "buzz": 2
     },
     {
+      "id": "web-lbb-nara-nara",
+      "title": "Nara Nara",
+      "venue": "Nara Nara",
+      "area": "Amsterdam-East",
+      "when": "This weekend",
+      "category": "eat",
+      "freshness": "weekend",
+      "outdoor": false,
+      "kid": true,
+      "price": "",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.genussguide-hamburg.com%2Fwp-content%2Fuploads%2F2025%2F03%2Fjapanische-gourmetkueche-restaurant-nara-hotel-bea-1500x937.jpeg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fwww.genussguide-hamburg.com%2Fwp-content%2Fuploads%2F2025%2F03%2Fjapanische-gourmetkueche-restaurant-nara-hotel-bea-1500x937.jpeg",
+      "blurb": "New Egyptian restaurant by chef Said on Dapperplein with shareable dishes inspired by Cairo.",
+      "why": "Fresh Egyptian cuisine worth discovering",
+      "source": "Your Little Black Book",
+      "link": "https://www.yourlittleblackbook.me/weekendtips-amsterdam/",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "verify": false,
+      "editorScore": 8,
+      "pilePos": 5
+    },
+    {
       "id": "web-lbb-cinair-europe",
       "title": "Cinair Europe",
-      "venue": "Various outdoor locations",
+      "venue": "Various locations",
       "area": "Amsterdam",
       "when": "This weekend",
       "category": "stage",
@@ -2229,8 +1993,8 @@
       "kid": false,
       "price": "",
       "image": "https://images.weserv.nl/?url=https%3A%2F%2Fcdn.amsterdamnow.com%2Fapp%2Fuploads%2Fcinair-ndsm-1536x864.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fcdn.amsterdamnow.com%2Fapp%2Fuploads%2Fcinair-ndsm-1536x864.jpg",
-      "blurb": "Open-air cinema at unique outdoor venues: historic buildings, gardens, hidden spots. Silent cinema style with headphones.",
-      "why": "Next-level open-air movie experience",
+      "blurb": "Open-air cinema at unique outdoor venues with silent cinema headphones and drinks.",
+      "why": "Outdoor films at hidden locations",
       "source": "Your Little Black Book",
       "link": "https://www.cinair.eu/en",
       "weatherFit": [
@@ -2240,6 +2004,59 @@
       ],
       "verify": false,
       "editorScore": 7
+    },
+    {
+      "id": "web-lbb-the-jollof-club",
+      "title": "The Jollof Club",
+      "venue": "The Jollof Club",
+      "area": "Amsterdam-Center",
+      "when": "This weekend",
+      "category": "eat",
+      "freshness": "weekend",
+      "outdoor": false,
+      "kid": false,
+      "price": "",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.kookboekhandel.com%2Fcdn%2Fshop%2Ffiles%2FNicolas-1.jpg%3Fv%3D1760095844%26width%3D1445&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fwww.kookboekhandel.com%2Fcdn%2Fshop%2Ffiles%2FNicolas-1.jpg%3Fv%3D1760095844%26width%3D1445",
+      "blurb": "West African restaurant by chef Nicolas Aquaa with modern cuisine from Ghana, Nigeria and Senegal.",
+      "why": "Innovative West African cuisine",
+      "source": "Your Little Black Book",
+      "link": "https://thejollofclub.com/",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "verify": false,
+      "editorScore": 8,
+      "pilePos": 6
+    },
+    {
+      "id": "web-lbb-cinema-culinair",
+      "title": "Cinema Culinair",
+      "venue": "Amsterdam",
+      "area": "Amsterdam",
+      "when": "This weekend",
+      "category": "eat",
+      "freshness": "weekend",
+      "outdoor": false,
+      "kid": false,
+      "price": "",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fcinemaculinair.nl%2Fwp-content%2Fuploads%2Fabove-view-cinema-culinair-voorstellingen.webp&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fcinemaculinair.nl%2Fwp-content%2Fuploads%2Fabove-view-cinema-culinair-voorstellingen.webp",
+      "blurb": "Watch films like Chef or Ratatouille while eating precisely timed dishes matching each scene.",
+      "why": "Unique film-dining experience",
+      "source": "Your Little Black Book",
+      "link": "https://cinemaculinair.nl",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "verify": false,
+      "editorScore": 8
     },
     {
       "id": "pllek-indoor",
@@ -2386,45 +2203,45 @@
       "tier": "classic"
     },
     {
-      "id": "llm-kidsproof-strandjes-in-groengebied-amstelland",
-      "title": "Strandjes in Groengebied Amstelland",
-      "venue": "Ouderkerkerplas, Gaasperplas, Hoge Dijk",
-      "area": "Amstelland (south of Amsterdam)",
-      "when": "Open all summer (including this weekend)",
+      "id": "web-scout-worldpride-amsterdam",
+      "title": "WorldPride Amsterdam",
+      "venue": "Citywide · Canal Parade Sat 1 Aug",
+      "area": "Citywide",
+      "when": "Sat 25 Jul – Sat 8 Aug",
       "category": "out",
       "freshness": "always",
       "outdoor": true,
-      "kid": true,
+      "kid": false,
       "price": "free",
-      "blurb": "Three natural swimming spots just outside the city. Bike out with kids to paddle, play, and cool off on warm summer days in wetland ponds.",
-      "why": "Free, outdoor, close to city; perfect for hot weekend",
-      "source": "Kidsproof",
-      "link": "https://www.kidsproof.nl/amsterdam",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fstorage.pubble.nl%2Fd59bcb5e%2Fcontent%2F2024%2F5%2F39209f6f-cf9c-4f64-ae16-26fbceaf007f_thumb1920.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fstorage.pubble.nl%2Fd59bcb5e%2Fcontent%2F2024%2F5%2F39209f6f-cf9c-4f64-ae16-26fbceaf007f_thumb1920.jpg",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fstrandvanoost.nl%2Fwp-content%2Fuploads%2F2026%2F05%2FDSC3884-scaled.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fstrandvanoost.nl%2Fwp-content%2Fuploads%2F2026%2F05%2FDSC3884-scaled.jpg",
+      "blurb": "Amsterdam hosts WorldPride 2026: two weeks of citywide street parties and culture, crowned by the world-famous Canal Parade through the grachten.",
+      "why": "WorldPride comes to Amsterdam",
+      "source": "Fresh find",
+      "link": "https://pride.amsterdam/",
       "weatherFit": [
         "HOT",
         "WARM",
         "COOL"
       ],
-      "verify": true,
+      "verify": false,
       "editorScore": 8
     },
     {
-      "id": "llm-kidsproof-artis-aquarium",
-      "title": "ARTIS-Aquarium",
-      "venue": "ARTIS Amsterdam Royal Zoo",
+      "id": "llm-kidsproof-oba-summer-programme",
+      "title": "OBA Summer Programme",
+      "venue": "OBA (Public Library)",
       "area": "Amsterdam",
-      "when": "Daily (open this weekend)",
+      "when": "Daily (summer holiday)",
       "category": "out",
-      "freshness": "new",
+      "freshness": "always",
       "outdoor": false,
       "kid": true,
-      "price": "ticketed",
-      "blurb": "Newly reopened underwater world with interactive exhibits on water's importance to all life. Kids explore fish and aquatic creatures in playful, hands-on settin",
-      "why": "New major reopening after restoration; interactive & immersi",
-      "source": "Kidsproof · Ness canon",
+      "price": "free",
+      "blurb": "Free activities, workshops and games organized throughout summer holidays at Amsterdam's main library.",
+      "why": "Entirely free; diverse daily programming",
+      "source": "Kidsproof",
       "link": "https://www.kidsproof.nl/amsterdam",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fscots2travel.com%2Fwp-content%2Fuploads%2F2019%2F08%2FReef-aquarium.-Photo-ARTIS-Amsterdam-Royal-Zoo-Ronald-van-Weeren-1024x845.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fscots2travel.com%2Fwp-content%2Fuploads%2F2019%2F08%2FReef-aquarium.-Photo-ARTIS-Amsterdam-Royal-Zoo-Ronald-van-Weeren-1024x845.jpg",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.mecanoo.nl%2FPortals%2F_default%2FMecanoo%2FPRProjects%2F274%2F20210125-113012.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fwww.mecanoo.nl%2FPortals%2F_default%2FMecanoo%2FPRProjects%2F274%2F20210125-113012.jpg",
       "weatherFit": [
         "HOT",
         "WARM",
@@ -2433,8 +2250,7 @@
         "VOLATILE"
       ],
       "verify": true,
-      "buzz": 2,
-      "editorScore": 8
+      "editorScore": 2
     },
     {
       "id": "the-movies",
@@ -2460,6 +2276,33 @@
       "buzz": 2
     },
     {
+      "id": "ams-ev2-artis-aquarium",
+      "title": "ARTIS-Aquarium",
+      "venue": "ARTIS",
+      "area": "Plantage, Centrum",
+      "when": "Daily · 10:00–17:00",
+      "category": "out",
+      "freshness": "always",
+      "outdoor": false,
+      "kid": false,
+      "price": "€€",
+      "blurb": "The 1882 aquarium building, newly restored: glowing tanks, coral rooms and an underwater Amsterdam canal — the rainy-day ace of the Plantage.",
+      "why": "Back after years of renovation",
+      "source": "Kidsproof · Ness canon",
+      "link": "https://www.artis.nl/en/artis-aquarium",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.rosaceus.be%2Fwp-content%2Fuploads%2F2025%2F05%2Fartis.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fwww.rosaceus.be%2Fwp-content%2Fuploads%2F2025%2F05%2Fartis.jpg",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "verify": true,
+      "tier": "classic",
+      "buzz": 2
+    },
+    {
       "id": "web-scout-vermut",
       "title": "Vermut",
       "venue": "Vermut",
@@ -2470,7 +2313,7 @@
       "outdoor": false,
       "kid": false,
       "price": "€",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.hola.com%2Fhorizon%2Fportrait%2Fdf693e5a5a26-aaaa.jpg%3Fim%3DResize%3D(960)&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fwww.hola.com%2Fhorizon%2Fportrait%2Fdf693e5a5a26-aaaa.jpg%3Fim%3DResize%3D(960)",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fi.pinimg.com%2Foriginals%2F9a%2F2d%2F5f%2F9a2d5feb7e483c5ee5300c9863ea59d4.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fi.pinimg.com%2Foriginals%2F9a%2F2d%2F5f%2F9a2d5feb7e483c5ee5300c9863ea59d4.jpg",
       "blurb": "A dedicated vermouth-and-aperitivo bar on the JP Heijestraat — Spanish-style early evenings, no reservations culture required.",
       "why": "Aperitivo hour finally gets a home",
       "source": "Fresh find",
@@ -2708,83 +2551,6 @@
       ],
       "verify": false,
       "editorScore": 7
-    },
-    {
-      "id": "web-scout-de-blauwe-parade",
-      "title": "De Blauwe Parade",
-      "venue": "De Blauwe Parade (est. 1887)",
-      "area": "Nieuwezijds Voorburgwal, Centrum",
-      "when": "Now open · evenings",
-      "category": "drink",
-      "freshness": "new",
-      "outdoor": false,
-      "kid": false,
-      "price": "€€ · cocktails",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fdynamic-media-cdn.tripadvisor.com%2Fmedia%2Fphoto-o%2F2c%2F0d%2F6b%2Fc3%2Fcaption.jpg%3Fw%3D1200%26h%3D1200%26s%3D1&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fdynamic-media-cdn.tripadvisor.com%2Fmedia%2Fphoto-o%2F2c%2F0d%2F6b%2Fc3%2Fcaption.jpg%3Fw%3D1200%26h%3D1200%26s%3D1",
-      "blurb": "The 1887 Delft-blue bar is back as a cocktail kroeg under top bartender Milos Stanisic — local spirits, ossenworst, weekly-changing list.",
-      "why": "Historic bar, serious new bartender",
-      "source": "Fresh find",
-      "link": "https://www.deblauweparade.com/",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "verify": false,
-      "editorScore": 6
-    },
-    {
-      "id": "ams-eat-as",
-      "tier": "classic",
-      "title": "As",
-      "venue": "As",
-      "area": "Zuid",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fi.pinimg.com%2Foriginals%2F36%2F82%2F36%2F368236ea82d5590a90fb06082d9d1aff.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fi.pinimg.com%2Foriginals%2F36%2F82%2F36%2F368236ea82d5590a90fb06082d9d1aff.jpg",
-      "category": "eat",
-      "freshness": "always",
-      "outdoor": false,
-      "kid": false,
-      "price": "€€€",
-      "blurb": "Wood-fired, ingredient-led cooking and natural wine in a striking round garden pavilion.",
-      "why": "Long lunches · natural wine",
-      "source": "Maps",
-      "link": "https://www.google.com/maps/search/?api=1&query=As%20Amsterdam%20restaurant",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "when": "Lunch & dinner · book ahead"
-    },
-    {
-      "id": "ams-eat-bak",
-      "tier": "classic",
-      "title": "BAK",
-      "venue": "BAK",
-      "area": "Houthavens",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.amsterdamnow.com%2Fapp%2Fuploads%2Fbak-restaurant-vegan-amsterdam_3.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fwww.amsterdamnow.com%2Fapp%2Fuploads%2Fbak-restaurant-vegan-amsterdam_3.jpg",
-      "category": "eat",
-      "freshness": "always",
-      "outdoor": false,
-      "kid": false,
-      "price": "€€€",
-      "blurb": "A light-filled warehouse with an open kitchen and an art-covered wall; a set seasonal menu of produce-driven dishes.",
-      "why": "Set seasonal menu · book ahead",
-      "source": "Maps",
-      "link": "https://www.google.com/maps/search/?api=1&query=BAK%20Amsterdam%20restaurant",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "when": "Dinner · book ahead",
-      "editorScore": 8
     },
     {
       "id": "ams-b2-foam",
@@ -3258,31 +3024,6 @@
       "tier": "bespoke"
     },
     {
-      "id": "ams-b2-tonton",
-      "title": "TonTon Club",
-      "venue": "TonTon Club",
-      "area": "Centrum",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F5ff8abbade7e8633a4aba02a%2Fd0a01e0e-b8b0-4ad6-ae51-efeb22a23c85.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F5ff8abbade7e8633a4aba02a%2Fd0a01e0e-b8b0-4ad6-ae51-efeb22a23c85.jpg",
-      "category": "out",
-      "freshness": "always",
-      "outdoor": false,
-      "kid": false,
-      "price": "€",
-      "blurb": "An arcade bar where you pay to play — pinball, classic cabinets and Japanese games, with beer and gyoza on tap.",
-      "why": "Arcade bar · pinball + gyoza",
-      "source": "Maps",
-      "link": "https://www.google.com/maps/search/?api=1&query=TonTon%20Club%20Amsterdam",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "when": "Eve · late",
-      "tier": "bespoke"
-    },
-    {
       "id": "ams-ev-dappermarkt",
       "title": "Dappermarkt",
       "venue": "Dappermarkt",
@@ -3316,11 +3057,11 @@
       "outdoor": false,
       "kid": false,
       "price": "ticketed",
-      "blurb": "Film history on the big screen, 35mm when possible. Eye's curated classics programme.",
-      "why": "Canonical cinema, theatrical presentation",
+      "blurb": "Film history on the big screen, screened in 35mm whenever possible. Rotating selection of canonical works.",
+      "why": "Pure cinema experience; 35mm presentations are rare",
       "source": "Eye Filmmuseum",
       "link": "https://www.eyefilm.nl/en/whats-on",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F5ff89832de7e8633a4ab3ae8%2F7de55fa9-f2b2-4663-978c-964fe563eb18.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F5ff89832de7e8633a4ab3ae8%2F7de55fa9-f2b2-4663-978c-964fe563eb18.jpg",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Funiquevenuesofamsterdam.com%2Fwp-content%2Fuploads%2F2016%2F01%2FCinema-1-back-2048x1365.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Funiquevenuesofamsterdam.com%2Fwp-content%2Fuploads%2F2016%2F01%2FCinema-1-back-2048x1365.jpg",
       "weatherFit": [
         "HOT",
         "WARM",
@@ -3329,7 +3070,7 @@
         "VOLATILE"
       ],
       "verify": true,
-      "editorScore": 2
+      "editorScore": 3
     },
     {
       "id": "ams-lostin-garage-noord",
@@ -3748,19 +3489,45 @@
       "verify": false
     },
     {
-      "id": "web-lbb-de-hortus-botanicus-summer-evenings",
-      "title": "De Hortus Botanicus summer evenings",
+      "id": "web-lbb-the-little-big-things",
+      "title": "The Little Big Things",
+      "venue": "Koninklijk Theater Carré",
+      "area": "Amsterdam",
+      "when": "Until Sun 16 Aug",
+      "category": "stage",
+      "freshness": "always",
+      "outdoor": false,
+      "kid": false,
+      "price": "",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fd3s3zh7icgjwgd.cloudfront.net%2FAcuCustom%2FSitename%2FDAM%2F345%2FCast-of-The-Little-Big-Things.-Photo--Pamela-Raith-1_LargeLandscape.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fd3s3zh7icgjwgd.cloudfront.net%2FAcuCustom%2FSitename%2FDAM%2F345%2FCast-of-The-Little-Big-Things.-Photo--Pamela-Raith-1_LargeLandscape.jpg",
+      "blurb": "West End musical based on true story about resilience and hope after life-changing moment.",
+      "why": "Emotional West End hit with live music",
+      "source": "Your Little Black Book",
+      "link": "https://carre.nl/voorstelling/the-little-big-things#speeldata",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "verify": false,
+      "editorScore": 8
+    },
+    {
+      "id": "web-lbb-de-hortus-botanicus-zomeravonden",
+      "title": "De Hortus Botanicus zomeravonden",
       "venue": "De Hortus Botanicus Amsterdam",
-      "area": "Amsterdam Centrum",
-      "when": "Sun 12 Jul · until 20:00",
+      "area": "Amsterdam-Centrum",
+      "when": "Sun 12 Jul · Until 20:00",
       "category": "out",
       "freshness": "weekend",
       "outdoor": true,
       "kid": true,
       "price": "",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.iamsterdam.com%2F_next%2Fimage%3Furl%3Dhttps%3A%252F%252Fapp.thefeedfactory.nl%252Fapi%252Fassets%252F5ff87fffde7e8633a4aa5b86%252F5add4747-ce11-4a5b-aee3-72f819a3da08.jpg%26w%3D2048%26q%3D75&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fwww.iamsterdam.com%2F_next%2Fimage%3Furl%3Dhttps%3A%252F%252Fapp.thefeedfactory.nl%252Fapi%252Fassets%252F5ff87fffde7e8633a4aa5b86%252F5add4747-ce11-4a5b-aee3-72f819a3da08.jpg%26w%3D2048%26q%3D75",
-      "blurb": "Stroll blooming gardens during golden hour with live music, tours and drinks on sunny terrace.",
-      "why": "Beautiful botanical garden open late",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fimage.parool.nl%2F244475640%2Fwidth%2F2480%2Fhortus-botanicus-amsterdam&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fimage.parool.nl%2F244475640%2Fwidth%2F2480%2Fhortus-botanicus-amsterdam",
+      "blurb": "Botanical gardens open late with blooming borders, tropical greenhouses, live music and sunny terrace.",
+      "why": "Sunday evening in Amsterdam's most beautiful garden",
       "source": "Your Little Black Book",
       "link": "https://www.yourlittleblackbook.me/weekendtips-amsterdam/",
       "weatherFit": [
@@ -3769,7 +3536,33 @@
         "COOL"
       ],
       "verify": false,
-      "editorScore": 6
+      "editorScore": 3
+    },
+    {
+      "id": "ams-eat-bak",
+      "tier": "classic",
+      "title": "BAK",
+      "venue": "BAK",
+      "area": "Houthavens",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.amsterdamnow.com%2Fapp%2Fuploads%2Fbak-restaurant-vegan-amsterdam_3.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fwww.amsterdamnow.com%2Fapp%2Fuploads%2Fbak-restaurant-vegan-amsterdam_3.jpg",
+      "category": "eat",
+      "freshness": "always",
+      "outdoor": false,
+      "kid": false,
+      "price": "€€€",
+      "blurb": "A light-filled warehouse with an open kitchen and an art-covered wall; a set seasonal menu of produce-driven dishes.",
+      "why": "Set seasonal menu · book ahead",
+      "source": "Maps",
+      "link": "https://www.google.com/maps/search/?api=1&query=BAK%20Amsterdam%20restaurant",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "when": "Dinner · book ahead",
+      "editorScore": 8
     },
     {
       "id": "ams-artis-zoo",
