@@ -171,8 +171,13 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
     animate(flipY, Math.sign(dx || 1) * (gentle ? 22 : 110 + r * 70), { duration: dur, ease: gentle ? slideEase : ease })
     animate(flipX, gentle ? 0 : (Math.random() * 2 - 1) * 85, { duration: dur, ease })
     animate(pop, gentle ? 1.1 : 1.28 + r * 0.32, { duration: dur * 0.6, ease })
-    animate(x, targetX, { duration: dur, ease: gentle ? slideEase : ease })
-    animate(y, targetY, { duration: dur, ease: gentle ? slideEase : ease, onComplete: onDone })
+    // onDone rides the DOMINANT axis: it used to sit on y unconditionally, so a purely horizontal
+    // exit (both buttons since V.8.19) had y animating 0 → 0 — framer completes a zero-distance
+    // tween INSTANTLY, onDone fired on the spot, and the card unmounted before its first frame
+    // ("the pop"). The axis that actually travels is the one that reports arrival.
+    const xTravels = Math.abs(targetX - x.get()) >= Math.abs(targetY - y.get())
+    animate(x, targetX, { duration: dur, ease: gentle ? slideEase : ease, onComplete: xTravels ? onDone : undefined })
+    animate(y, targetY, { duration: dur, ease: gentle ? slideEase : ease, onComplete: xTravels ? undefined : onDone })
   }
 
   // Committed swipe: exit ALONG the throw (velocity flick → offset drag → cardinal fallback).
