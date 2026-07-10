@@ -1,41 +1,18 @@
 {
-  "generatedAt": "2026-07-10T09:15:06.067Z",
-  "count": 3,
+  "generatedAt": "2026-07-10T09:59:13.035Z",
+  "count": 5,
   "candidates": [
     {
-      "id": "web-i-amsterdam-jazz-in-het-h-art-museum-marietta-arushanian-qua",
-      "title": "Jazz in het H'ART Museum – Marietta Arushanian Quartet",
+      "id": "web-i-amsterdam-jazz-at-the-h-art-museum-suzan-peeters",
+      "title": "Jazz at the H'ART Museum: Suzan Peeters",
       "venue": "H'ART Museum",
-      "area": "Amsterdam-Centrum",
-      "when": "Sun 12 Jul · afternoon",
+      "area": "Amsterdam",
+      "when": "Sun 12 Jul · 15:00",
       "category": "live",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fdutchreview.com%2Fwp-content%2Fuploads%2FAmsterdam-5-scaled-e1649411586356.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fdutchreview.com%2Fwp-content%2Fuploads%2FAmsterdam-5-scaled-e1649411586356.jpg",
-      "blurb": "Armenian jazz quartet performs final summer session under chestnut trees in museum courtyard.",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fcdn.celluloidjunkie.com%2Fwp-content%2Fuploads%2F2018%2F09%2F08175008%2FFC-Hyena-Amsterdam-Netherlands-Entrance-Patrick-von-Sychowski.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fcdn.celluloidjunkie.com%2Fwp-content%2Fuploads%2F2018%2F09%2F08175008%2FFC-Hyena-Amsterdam-Netherlands-Entrance-Patrick-von-Sychowski.jpg",
+      "blurb": "Brussels accordionist reinvents her instrument with experimental sounds in Concertgebouw Basement Sessions.",
       "source": "I amsterdam",
-      "link": "https://www.iamsterdam.com/uit/weekend-guide",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL"
-      ],
-      "freshness": "ending",
-      "outdoor": true,
-      "kid": false,
-      "price": "ticketed",
-      "why": "Final performance of season",
-      "editorScore": 6
-    },
-    {
-      "id": "web-iams-the-garden-presents-yotto-extended-set-and-henri-bergmann",
-      "title": "The Garden presents Yotto (Extended Set) & Henri Bergmann",
-      "venue": "Melkweg",
-      "area": "Lijnbaansgracht 234A",
-      "when": "Fri 10 – Sat 11 Jul",
-      "category": "drink",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a274bbc85e5c44c2d922bb3%2FYotto_Banner.webp&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a274bbc85e5c44c2d922bb3%2FYotto_Banner.webp",
-      "blurb": "About YOTTO\n YOTTO has become one of the leading names in melodic electronic music. His tracks have amassed hundreds of millions of streams, while his remix cre",
-      "source": "I amsterdam",
-      "link": "https://www.iamsterdam.com/en/whats-on/calendar/nightlife/clubbing/the-garden-presents-yotto-extended-set-and-henri-bergmann",
+      "link": "https://www.iamsterdam.com/en/whats-on/weekend-guide",
       "weatherFit": [
         "HOT",
         "WARM",
@@ -46,21 +23,44 @@
       "freshness": "weekend",
       "outdoor": false,
       "kid": false,
-      "price": "from €23",
-      "why": "On I amsterdam",
-      "editorScore": 3
+      "price": "ticketed",
+      "why": "Emerging talent, innovative approach",
+      "editorScore": 6
     },
     {
-      "id": "web-iams-melyn-chow-frascati-producties-becoming-god-in-frascati",
-      "title": "Melyn Chow / Frascati Producties - Becoming God - in Frascati",
+      "id": "web-i-amsterdam-kwaku-festival-opening-weekend",
+      "title": "Kwaku Festival Opening Weekend",
+      "venue": "Nelson Mandela Park",
+      "area": "Amsterdam",
+      "when": "Sat 11 Jul",
+      "category": "out",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.landezine.com%2Fwp-content%2Fuploads%2F2010%2F12%2Fvondelpark-playground-amsterdam-by-carve-landscape-architecture-09.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fwww.landezine.com%2Fwp-content%2Fuploads%2F2010%2F12%2Fvondelpark-playground-amsterdam-by-carve-landscape-architecture-09.jpg",
+      "blurb": "Opening weekend of multi-weekend festival with art, music, football tournament and food at Nelson Mandela Park.",
+      "source": "I amsterdam",
+      "link": "https://www.iamsterdam.com/en/whats-on/weekend-guide",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL"
+      ],
+      "freshness": "weekend",
+      "outdoor": true,
+      "kid": true,
+      "price": "free",
+      "why": "Opening weekend of summer festival",
+      "editorScore": 8
+    },
+    {
+      "id": "web-iams-becoming-god",
+      "title": "Becoming God",
       "venue": "Frascati",
       "area": "Nes 63",
-      "when": "Until Fri 4 Sep",
+      "when": "Wed 8 – Fri 10 Jul",
       "category": "stage",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a023db45ebafd251afe1a34%2FaHR0cHM6Ly93d3cuZnJhc2NhdGl0aGVhdGVyLm5sLy9jbXNfZmlsZXMvc3lzdGVtL2ltYWdlcy9pbWcyMjYxOV9vcmlnLmpwZWc.webp&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a023db45ebafd251afe1a34%2FaHR0cHM6Ly93d3cuZnJhc2NhdGl0aGVhdGVyLm5sLy9jbXNfZmlsZXMvc3lzdGVtL2ltYWdlcy9pbWcyMjYxOV9vcmlnLmpwZWc.webp",
-      "blurb": "Discover the divine within yourself\n Melyn Chow grew up in Singapore in a Christian family. Her father's temple in Malaysia was 'forbidden territory'. She learn",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a29ef306ad96e1a9de13a31%2FHorizontal-banner-_C2_A9-Lila-Rodrigues.webp&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a29ef306ad96e1a9de13a31%2FHorizontal-banner-_C2_A9-Lila-Rodrigues.webp",
+      "blurb": "A sensory and personal quest for the divine\n For a long time, Melyn Chow was not allowed to enter her father's family's Taoist temple in Malaysia. For those who",
       "source": "I amsterdam",
-      "link": "https://www.iamsterdam.com/en/whats-on/calendar/theatre-and-stage/stage/melyn-chow-frascati-producties-becoming-god-in-frascati",
+      "link": "https://www.iamsterdam.com/en/whats-on/calendar/theatre-and-stage/stage/becoming-god",
       "weatherFit": [
         "HOT",
         "WARM",
@@ -68,12 +68,59 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "freshness": "always",
+      "freshness": "weekend",
       "outdoor": false,
       "kid": false,
-      "price": "from €13",
+      "price": "ticketed",
       "why": "On I amsterdam",
-      "editorScore": 3
+      "editorScore": 5
+    },
+    {
+      "id": "web-ra-2444848",
+      "title": "The Garden pres. Yotto (Extended Set) & Henri Bergmann",
+      "venue": "Melkweg",
+      "area": "",
+      "when": "Fri 10 Jul · 23:59",
+      "category": "live",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fimages.ra.co%2F0ab8b8cd1103df7e80dba68cd38340a6e3dbb489.png&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fimages.ra.co%2F0ab8b8cd1103df7e80dba68cd38340a6e3dbb489.png",
+      "blurb": "Yotto, Henri Bergmann at Melkweg.",
+      "source": "Resident Advisor",
+      "link": "https://ra.co/events/2444848",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "freshness": "weekend",
+      "outdoor": false,
+      "kid": false,
+      "price": "",
+      "why": "48 going on RA",
+      "editorScore": 5
+    },
+    {
+      "id": "web-scout-worldpride-amsterdam",
+      "title": "WorldPride Amsterdam",
+      "venue": "Citywide · Canal Parade Sat 1 Aug",
+      "area": "Citywide",
+      "when": "Sat 25 Jul – Sat 8 Aug",
+      "category": "out",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fstrandvanoost.nl%2Fwp-content%2Fuploads%2F2026%2F05%2FDSC3884-scaled.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fstrandvanoost.nl%2Fwp-content%2Fuploads%2F2026%2F05%2FDSC3884-scaled.jpg",
+      "blurb": "Amsterdam hosts WorldPride 2026: two weeks of citywide street parties and culture, crowned by the world-famous Canal Parade through the grachten.",
+      "source": "Fresh find",
+      "link": "https://pride.amsterdam/",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL"
+      ],
+      "freshness": "always",
+      "outdoor": true,
+      "kid": false,
+      "price": "free",
+      "why": "WorldPride comes to Amsterdam"
     }
   ]
 }
