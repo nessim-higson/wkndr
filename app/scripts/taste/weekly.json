@@ -1,6 +1,7 @@
 {
-  "_": "WEEKLY SLATE — Ness's ephemeral this-weekend-only controls from the Curation Board (▲ LEAD / ▼ LATER). Applies ONLY while `weekend` matches the pipeline's upcoming Saturday (YYYY-MM-DD): a stale file is silently ignored, so weekend calls can never drag into the next week. LEAD = guaranteed into the feed + opens the deck (just under 👑 TOPs) + editorScore floor 9. LATER = stays in the feed but sinks to the back of the pile (NOT a kill). Permanent taste lives in corpus.json; this file is the week's front page.",
+  "_": "WEEKLY SLATE — Ness's ephemeral this-weekend-only controls from the Curation Board (▲ LEAD / ▼ LATER / dragged PILE-ORDER). Applies ONLY while `weekend` matches the pipeline's upcoming Saturday (YYYY-MM-DD): a stale file is silently ignored, so weekend calls can never drag into the next week. LEAD = guaranteed into the feed + opens the deck (just under 👑 TOPs) + editorScore floor 9. LATER = stays in the feed but sinks to the back of the pile (NOT a kill). PILE = the hand-dragged opening order from the board (ordered titles) — stamped as pilePos; the app deals those cards first, in exactly this order, above every other tier. Permanent taste lives in corpus.json; this file is the week's front page.",
   "weekend": "2026-07-04",
   "lead": [],
-  "later": []
+  "later": [],
+  "pile": []
 }

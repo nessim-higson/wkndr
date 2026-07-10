@@ -122,4 +122,13 @@ describe('orderServed — the pile order, with the TOP weekend gate', () => {
     const expo = P({ id: 'expo', when: 'Until Sun 27 Sep', top: true })
     expect(orderServed([P({ id: 'mid' }), expo], END)[0].id).toBe('expo')
   })
+
+  it('a hand-dragged pile order (pilePos) deals first, in exact order, above every tier', () => {
+    const first = P({ id: 'first', pilePos: 1 })
+    const second = P({ id: 'second', when: 'Sat 25 – Sun 26 Jul', pilePos: 2 })  // even a future pick — human override
+    const top = P({ id: 'top', when: 'Daily', top: true })
+    const lead = P({ id: 'lead', lead: true })
+    const out = orderServed([lead, top, second, first], END)
+    expect(out.map((p) => p.id)).toEqual(['first', 'second', 'top', 'lead'])
+  })
 })

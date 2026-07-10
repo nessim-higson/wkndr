@@ -14,6 +14,15 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.8.11] — 2026-07-10 — "Drag the pile"
+- **The WEEKEND PILE is draggable** — grab the ⠿ grip on any pile card and hand-set the opening
+  order. Badges renumber live (crowns ride along), the order persists per round (localStorage,
+  same feedKey as verdicts), and it rides Submit → GitHub as a `PILE-ORDER |` line. The full loop:
+  drag → submit → compile writes `taste/weekly.json.pile` → refresh stamps `pilePos` → the app's
+  `orderServed` deals those cards FIRST, in exactly that order, above every tier (the human
+  override — time gates don't apply to a hand-placed card). Expires weekly with the slate, like
+  LEAD/LATER. Native DnD from the grip only, so card inputs/links stay usable (desktop-first).
+
 ## [V.8.10] — 2026-07-10 — "The board's pile projects what the app actually serves"
 - The Curation Board's WEEKEND PILE had its own ungated copy of the serve order (TOPs always
   first, live-crawled picks only) — so after V.8.7–V.8.9 it disagreed with the deck: the app led

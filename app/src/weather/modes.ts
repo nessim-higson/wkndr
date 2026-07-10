@@ -168,15 +168,21 @@ export function diversify(ranked: Pick[]): Pick[] {
  * Future TOPs head the horizon, so they surface first as their weekend approaches.
  */
 export function orderServed(arr: Pick[], end: Date = upcomingWeekendEnd()): Pick[] {
+  // THE HUMAN OVERRIDE — a hand-dragged pile order (board ⠿ → weekly `pile` → pilePos) deals
+  // first, in exactly that order, above every tier. Time gates don't apply to it: if Ness put a
+  // card there on purpose, it opens the deck. Expires weekly with the slate.
+  const hand = arr.filter((p) => p.pilePos != null).sort((a, b) => a.pilePos! - b.pilePos!)
+  const rest = arr.filter((p) => p.pilePos == null)
   const active = (p: Pick) => whenActiveBy(p.when, end)
   const opens = (p: Pick) => !!p.top && active(p)
   const mid = (p: Pick) => !opens(p) && active(p)
   return [
-    ...arr.filter(opens),
-    ...arr.filter((p) => mid(p) && p.lead),
-    ...arr.filter((p) => mid(p) && !p.lead && !p.later),
-    ...arr.filter((p) => mid(p) && !p.lead && p.later),
-    ...arr.filter((p) => !active(p) && p.top),
-    ...arr.filter((p) => !active(p) && !p.top),
+    ...hand,
+    ...rest.filter(opens),
+    ...rest.filter((p) => mid(p) && p.lead),
+    ...rest.filter((p) => mid(p) && !p.lead && !p.later),
+    ...rest.filter((p) => mid(p) && !p.lead && p.later),
+    ...rest.filter((p) => !active(p) && p.top),
+    ...rest.filter((p) => !active(p) && !p.top),
   ]
 }

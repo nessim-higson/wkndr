@@ -619,6 +619,7 @@ async function buildCity(city: City) {
     const { sat } = upcomingWeekend()
     const satKey = `${sat.getFullYear()}-${String(sat.getMonth() + 1).padStart(2, '0')}-${String(sat.getDate()).padStart(2, '0')}`
     const leadList = weekly.lead as string[], laterList = weekly.later as string[]
+    const pileList = ((weekly as { pile?: string[] }).pile ?? []) as string[]
     if ((weekly.weekend as string) === satKey) {
       const leads = leadList.map(rxOf), laters = laterList.map(rxOf)
       let l = 0, d = 0
@@ -633,8 +634,16 @@ async function buildCity(city: City) {
         extra.lead = true; extra.editorScore = Math.max(extra.editorScore ?? 0, 9)
         picks.push(extra); l++
       }
-      if (l || d) console.log(`  slate:    ${l} ▲ lead this weekend · ${d} ▼ pushed later`)
-    } else if (leadList.length || laterList.length) {
+      // PILE-ORDER — the hand-dragged opening sequence from the board. Stamped 1-based; the app
+      // deals pilePos picks first, in exactly this order (orderServed). Same expiry as lead/later.
+      let po = 0
+      pileList.forEach((t, i) => {
+        const rx = rxOf(t)
+        const hit = picks.find((p) => rx.test(p.title))
+        if (hit) { hit.pilePos = i + 1; po++ }
+      })
+      if (l || d || po) console.log(`  slate:    ${l} ▲ lead this weekend · ${d} ▼ pushed later${po ? ` · pile order hand-set (${po}/${pileList.length})` : ''}`)
+    } else if (leadList.length || laterList.length || pileList.length) {
       console.log(`  slate:    stale (${weekly.weekend} ≠ ${satKey}) — ignored`)
     }
   }

@@ -54,6 +54,9 @@ export interface Pick {
                        // deck just under the TOPs; guaranteed into the feed. Auto-expires weekly.
   later?: boolean      // WEEKEND SLATE ▼ (this weekend only): stays in the feed but sinks to the back
                        // of the pile — a "not this week", NOT a kill. Auto-expires weekly.
+  pilePos?: number     // WEEKEND SLATE, hand-dragged pile order (board ⠿ → weekly.json `pile`, THIS
+                       // weekend only): 1-based; the deck deals these first, in exactly this order,
+                       // above every other tier — the human override. Auto-expires weekly.
 }
 
 export const CATEGORY_LABEL: Record<Category, string> = {

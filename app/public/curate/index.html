@@ -39,6 +39,9 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 #veil img{max-width:100%;max-height:calc(100dvh - 80px);object-fit:contain;border-radius:6px;box-shadow:0 18px 60px rgba(0,0,0,.6);cursor:zoom-out}
 #veilcap{position:absolute;bottom:16px;left:20px;right:20px;text-align:center;font-family:ui-monospace,monospace;font-size:11px;letter-spacing:.06em;color:rgba(255,255,255,.75);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .kill{position:absolute;top:10px;right:10px;width:34px;height:34px;border-radius:999px;border:0;background:rgba(27,26,23,.75);color:#fff;font-size:16px;line-height:1;cursor:pointer;backdrop-filter:blur(4px)}
+.grip{position:absolute;top:10px;right:52px;height:34px;padding:0 10px;display:flex;align-items:center;border-radius:999px;background:rgba(27,26,23,.75);color:#fff;font-size:13px;letter-spacing:1px;cursor:grab;user-select:none;backdrop-filter:blur(4px);z-index:2}
+.grip:active{cursor:grabbing}
+.card.dragging{opacity:.45;transform:rotate(1.5deg) scale(.98)}
 .kill:hover{background:#c33}
 .meta{padding:10px 11px 12px;display:flex;flex-direction:column;gap:8px;flex:1}
 .meta h3{font-size:14px;line-height:1.25;letter-spacing:-.01em;margin:0}
@@ -76,7 +79,7 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 <header>
 <p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD · ROUND 3</p>
 <h1>In rotation vs. new finds<span class="dot">.</span></h1>
-<p><strong>IN ROTATION</strong> opens with <strong>THE WEEKEND PILE</strong> — the projected opening cards, numbered. Control it per weekend: <strong>▲ LEAD</strong> puts a card in the pile <em>this weekend only</em>, <strong>▼ LATER</strong> drops it to the back without killing it — both auto-expire when the weekend rolls. <strong>👑 TOP</strong> is the permanent escalation above both (leads <em>on its own weekend</em> + "Top pick" pill — a future-dated TOP rides the back of the deck until its weekend arrives). Then the full feed and the approved canon library (green = yours — kill to retire). <strong>NEW FINDS</strong> = trending, bench, canon candidates — star to promote, <strong>+CANON</strong> for the permanent library. Titles link to the real page — flag dumb links. Progress saves in this browser. When you're done: <strong>Submit → GitHub</strong> files the round as an issue on the repo — the one-click path into the engine.</p>
+<p><strong>IN ROTATION</strong> opens with <strong>THE WEEKEND PILE</strong> — the projected opening cards, numbered. Control it per weekend: <strong>▲ LEAD</strong> puts a card in the pile <em>this weekend only</em>, <strong>▼ LATER</strong> drops it to the back without killing it — both auto-expire when the weekend rolls. <strong>👑 TOP</strong> is the permanent escalation above both (leads <em>on its own weekend</em> + "Top pick" pill — a future-dated TOP rides the back of the deck until its weekend arrives). <strong>Drag the ⠿ grip</strong> to hand-set the pile order — your order rides Submit and becomes the next run's opening sequence. Then the full feed and the approved canon library (green = yours — kill to retire). <strong>NEW FINDS</strong> = trending, bench, canon candidates — star to promote, <strong>+CANON</strong> for the permanent library. Titles link to the real page — flag dumb links. Progress saves in this browser. When you're done: <strong>Submit → GitHub</strong> files the round as an issue on the repo — the one-click path into the engine.</p>
 </header>
 <div class="tabs" id="tabs" hidden>
 <button class="tab on" data-tab="rot">IN ROTATION <span class="n" id="nrot"></span></button>
@@ -93,9 +96,9 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 <script>
 const FORM='https://formspree.io/f/xykqpwkw';
 const CAT={out:'Out & about',eat:'Eat',drink:'Drink',art:'Art & galleries',live:'Live & gigs',stage:'Stage & screen',daytrip:'Day-trips',market:'Markets & one-offs',shop:'Shops',kid:'Kids'};
-let V={},baked={},feedKey='';
-function store(){try{localStorage.setItem(feedKey,JSON.stringify({V}))}catch(e){}}
-function restore(){try{const s=JSON.parse(localStorage.getItem(feedKey)||'{}');V=s.V||{}}catch(e){}}
+let V={},baked={},feedKey='',PILE=null;   // PILE = hand-dragged pile order (titles) — null until a drag
+function store(){try{localStorage.setItem(feedKey,JSON.stringify({V,PILE}))}catch(e){}}
+function restore(){try{const s=JSON.parse(localStorage.getItem(feedKey)||'{}');V=s.V||{};PILE=s.PILE||null}catch(e){}}
 // longest matching key wins ("bakers & roasters" beats "bak")
 function bakedFor(title){const t=title.toLowerCase();let best=null,len=-1;for(const k in baked){if(t.includes(k)&&k.length>len){best=baked[k];len=k.length}}return best}
 // word-order-blind identity key (mirror of the pipeline's tokKey) — powers cross-section dupe suppression
@@ -168,10 +171,13 @@ Promise.all([
   const pile=(d.picks||[]).filter(p=>isLiveP(p)||p.top)
     .sort((a,b)=>tier(a)-tier(b)||((b.editorScore??0)-(a.editorScore??0))||((b.buzz??0)-(a.buzz??0)))
     .slice(0,10);
+  // a hand-dragged order (this round, this browser) overrides the projection; new arrivals append
+  if(PILE&&PILE.length){const pos=t=>{const i=PILE.indexOf(t);return i<0?999:i};pile.sort((a,b)=>pos(a.title)-pos(b.title))}
   if(pile.length){
-    const ph=document.createElement('div');ph.className='cathead hot';ph.textContent='THE WEEKEND PILE — THE '+pile.length+' OPENING CARDS, IN ORDER (▲ lead = put it here this weekend · ▼ later = not this week · applies next run)';rot.appendChild(ph);
+    const ph=document.createElement('div');ph.className='cathead hot';ph.textContent='THE WEEKEND PILE — THE '+pile.length+' OPENING CARDS, IN ORDER (drag ⠿ to hand-set the order · ▲ lead = put it here this weekend · ▼ later = not this week · applies next run)';rot.appendChild(ph);
     const pg=document.createElement('div');pg.className='grid';rot.appendChild(pg);
     pile.forEach((p,i)=>addCard(p,pg,'pile',i+1,true));
+    enableDrag(pg);
   }
   // ——— IN ROTATION: this weekend's feed (canonical — seeds the cross-section dupe suppressor) ———
   const byCat={};
@@ -226,9 +232,10 @@ Promise.all([
 
 function addCard(p,g,tag,pos,probe){
   const el=document.createElement('div');el.className='card';el.dataset.id=p.id+(tag==='pile'?'::pile':'');
+  if(tag==='pile'){el.dataset.title=p.title;el.dataset.sfx=(p.top?' · 👑':p.lead?' · ▲':'')}   // for drag reorder + renumber
   if(probe&&p.image)probeRes(el,p.image);
   const bk=bakedFor(p.title);
-  const badge=tag==='pile'?'<span class="badge pile">#'+pos+(p.top?' · 👑':p.lead?' · ▲':'')+'</span>'
+  const badge=tag==='pile'?'<span class="badge pile">#'+pos+(p.top?' · 👑':p.lead?' · ▲':'')+'</span><span class="grip" title="Drag to reorder the pile">⠿</span>'
     :tag==='appr'?'<span class="badge appr">✓'+(bk&&bk.stars?' ★'+bk.stars:'')+' APPROVED</span>'
     :bk?'<span class="badge saved">★'+(bk.stars||'·')+' SAVED</span>'
     :tag==='new'?'<span class="badge new">NEW</span>':'';
@@ -276,11 +283,42 @@ function addCard(p,g,tag,pos,probe){
     if(v.killed){el.remove();return}}
   g.appendChild(el);
 }
+// ——— PILE DRAG — hand-set the opening order. Native DnD, armed only from the ⠿ grip so the
+// card's inputs/links stay usable. On drop: renumber badges, snapshot titles into PILE (rides
+// store() + the Submit payload as PILE-ORDER, compiled into taste/weekly.json's `pile`). ———
+function enableDrag(pg){
+  let dragEl=null;
+  [...pg.children].forEach(el=>{
+    const grip=el.querySelector('.grip');if(!grip)return;
+    grip.addEventListener('mousedown',()=>{el.draggable=true});
+    el.addEventListener('dragstart',e=>{dragEl=el;el.classList.add('dragging');e.dataTransfer.effectAllowed='move';try{e.dataTransfer.setData('text/plain',el.dataset.title||'')}catch(_){/* IE */}});
+    el.addEventListener('dragend',()=>{el.draggable=false;el.classList.remove('dragging');dragEl=null;
+      PILE=[...pg.children].map(c=>c.dataset.title);renumber(pg);update()});
+  });
+  pg.addEventListener('dragover',e=>{
+    if(!dragEl)return;e.preventDefault();e.dataTransfer.dropEffect='move';
+    const sib=[...pg.children].filter(c=>c!==dragEl).find(c=>{
+      const r=c.getBoundingClientRect();
+      return e.clientY<r.top+r.height/2||(e.clientY<r.bottom&&e.clientX<r.left+r.width/2);
+    });
+    if(sib)pg.insertBefore(dragEl,sib);else pg.appendChild(dragEl);
+  });
+  pg.addEventListener('drop',e=>e.preventDefault());
+}
+function renumber(pg){[...pg.children].forEach((el,i)=>{
+  const b=el.querySelector('.badge.pile');if(b)b.textContent='#'+(i+1)+(el.dataset.sfx||'');
+})}
 function verdicts(){return Object.values(V).filter(v=>v.stars||v.killed||v.img||v.note||v.betterImage||v.canon||v.top||v.lead||v.later)}
 function update(){
   const vs=Object.values(V);
   document.getElementById('count').textContent=vs.filter(v=>v.top).length+' top · '+vs.filter(v=>v.lead).length+' lead · '+vs.filter(v=>v.later).length+' later · '+vs.filter(v=>v.stars).length+' starred · '+vs.filter(v=>v.killed).length+' killed · '+vs.filter(v=>v.canon).length+' canon';
   store();
+}
+// the hand-dragged pile order, as a payload line (empty until a drag happens this round)
+function pileLine(compact){
+  if(!PILE||!PILE.length)return '';
+  return compact?'\n- PILE-ORDER | '+PILE.join(' > ')
+    :'\n· PILE ORDER (hand-set) — '+PILE.map((t,i)=>(i+1)+'. '+t).join(' · ');
 }
 // pretty, human-readable — for Copy + Email (no size limit there)
 function payload(){
@@ -297,7 +335,7 @@ function payload(){
     if(v.note)bits.push('“'+v.note+'”');
     if(v.betterImage)bits.push('better: '+v.betterImage);
     return '· '+v.t+' — '+bits.join(' · ');
-  }).join('\n');
+  }).join('\n')+pileLine(false);
 }
 // COMPACT ASCII — for the GitHub prefill URL only. Multi-byte glyphs (★ → %E2%98%85 = 9 chars each,
 // 👑 ▲ ▼ · — “ ”) blow the ~8KB URL cap fast; plain ASCII (4* etc.) keeps even an 80-verdict round
@@ -316,7 +354,7 @@ function payloadCompact(){
     if(v.note)bits.push('note:'+v.note);
     if(v.betterImage)bits.push('img-url:'+v.betterImage);
     return '- '+v.t+' | '+bits.join(' ');
-  }).join('\n');
+  }).join('\n')+pileLine(true);
 }
 document.getElementById('copy').addEventListener('click',async()=>{
   try{await navigator.clipboard.writeText(payload())}catch(e){}
