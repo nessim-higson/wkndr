@@ -79,7 +79,7 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 <header>
 <p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD · ROUND 3</p>
 <h1>In rotation vs. new finds<span class="dot">.</span></h1>
-<p><strong>IN ROTATION</strong> opens with <strong>THE WEEKEND PILE</strong> — the projected opening cards, numbered. Control it per weekend: <strong>▲ LEAD</strong> puts a card in the pile <em>this weekend only</em>, <strong>▼ LATER</strong> drops it to the back without killing it — both auto-expire when the weekend rolls. <strong>👑 TOP</strong> is the permanent escalation above both (leads <em>on its own weekend</em> + "Top pick" pill — a future-dated TOP rides the back of the deck until its weekend arrives). <strong>Drag the ⠿ grip</strong> to hand-set the pile order — your order rides Submit and becomes the next run's opening sequence. Then the full feed and the approved canon library (green = yours — kill to retire). <strong>NEW FINDS</strong> = trending, bench, canon candidates — star to promote, <strong>+CANON</strong> for the permanent library. Titles link to the real page — flag dumb links. Progress saves in this browser. When you're done: <strong>Submit → GitHub</strong> files the round as an issue on the repo — the one-click path into the engine.</p>
+<p><strong>IN ROTATION</strong> opens with <strong>THE WEEKEND PILE</strong> — the projected opening cards, numbered. Control it per weekend: <strong>▲ LEAD</strong> puts a card in the pile <em>this weekend only</em>, <strong>▼ LATER</strong> drops it to the back without killing it — both auto-expire when the weekend rolls. <strong>👑 TOP</strong> is the permanent escalation above both (leads <em>on its own weekend</em> + "Top pick" pill — a future-dated TOP rides the back of the deck until its weekend arrives). <strong>Drag the ⠿ grip</strong> to hand-set the pile order — your order rides Submit and becomes the next run's opening sequence. Then the full feed and the approved canon library (green = yours — kill to retire). <strong>NEW FINDS</strong> opens with <strong>THE AIRLOCK</strong> — the run's unapproved live finds, weekend-topical first; nothing ships until you wave it in (★/👑) or kill it — then trending, bench, canon candidates — star to promote, <strong>+CANON</strong> for the permanent library. Titles link to the real page — flag dumb links. Progress saves in this browser. When you're done: <strong>Submit → GitHub</strong> files the round as an issue on the repo — the one-click path into the engine.</p>
 </header>
 <div class="tabs" id="tabs" hidden>
 <button class="tab on" data-tab="rot">IN ROTATION <span class="n" id="nrot"></span></button>
@@ -142,12 +142,13 @@ Promise.all([
  jf('../data/verdicts.amsterdam.json',{byTitle:{}}),
  jf('../data/canon-candidates.amsterdam.json',{candidates:[]}),
  jf('../data/canon.amsterdam.json',{canon:[]}),
- jf('../data/trending.amsterdam.json',{trending:[]})
-]).then(([d,c,v,cc,lib,tr])=>{
+ jf('../data/trending.amsterdam.json',{trending:[]}),
+ jf('../data/pending.amsterdam.json',{pending:[]})
+]).then(([d,c,v,cc,lib,tr,pd])=>{
   baked=v.byTitle||{};
   feedKey='wkndr.curate.'+(d.generatedAt||'x');
   restore();
-  const bench=(c.candidates||[]),canonC=(cc.candidates||[]),canon=(lib.canon||[]),trending=(tr.trending||[]);
+  const bench=(c.candidates||[]),canonC=(cc.candidates||[]),canon=(lib.canon||[]),trending=(tr.trending||[]),pending=(pd.pending||[]);
   document.getElementById('eyebrow').textContent='WKNDR · CURATION BOARD · FEED '+(d.generatedAt||'').slice(0,16).replace('T',' · ');
   const board=document.getElementById('board');board.innerHTML='';
   const rot=document.createElement('div');rot.id='tab-rot';board.appendChild(rot);
@@ -199,7 +200,17 @@ Promise.all([
       byC[k].sort((a,b)=>(b.approved?1:0)-(a.approved?1:0)).forEach(p=>addCard(p,g,p.approved?'appr':null));
     });
   }
-  // ——— NEW FINDS: trending → bench → canon candidates (each hides twins shown in ANY earlier section) ———
+  // ——— NEW FINDS: THE AIRLOCK leads — this run's unapproved live finds, in the pipeline's
+  // topical order (dated-this-weekend → fits the weekend forecast → judge → buzz). Full verdict
+  // controls: a ★ / 👑 / kill here rides Submit like any card; on compile, approved picks
+  // PROMOTE into the live deck via restamp (image + judge score intact). ———
+  const air=fresh(pending);
+  if(air.keep.length){
+    const h=document.createElement('div');h.className='cathead hot';h.textContent='THE AIRLOCK — '+air.keep.length+' NEW FINDS, WEEKEND-TOPICAL FIRST (★ or 👑 waves one into the live deck · ✕ kills it — nothing ships unapproved)';nw.appendChild(h);
+    const g=document.createElement('div');g.className='grid';nw.appendChild(g);
+    air.keep.forEach(p=>addCard(p,g,'new',0,true));
+  }
+  // ——— then trending → bench → canon candidates (each hides twins shown in ANY earlier section) ———
   const tr2=fresh(trending);
   if(tr2.keep.length){
     const h=document.createElement('div');h.className='cathead hot';h.textContent='TRENDING THIS WEEK — '+tr2.keep.length+' FRESH FINDS (star to flow in · ✕ to pass)';nw.appendChild(h);
@@ -219,7 +230,7 @@ Promise.all([
     cc2.keep.forEach(p=>addCard({...p,id:'canon-cand-'+p.title.toLowerCase().replace(/[^a-z0-9]+/g,'-')},g,'new',0,true));
   }
   document.getElementById('nrot').textContent='('+((d.picks||[]).length+canon.length)+')';
-  document.getElementById('nnew').textContent='('+(trending.length+bench.length+canonC.length)+')';
+  document.getElementById('nnew').textContent='('+(pending.length+trending.length+bench.length+canonC.length)+')';
   const tabs=document.getElementById('tabs');tabs.hidden=false;
   tabs.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
     tabs.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===t));

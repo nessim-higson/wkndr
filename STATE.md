@@ -1,6 +1,6 @@
 # WKNDR — STATE (catch-me-up snapshot)
 
-_Living "where are we right now" doc — a **snapshot, not a history**. **Updated 2026-07-04.** Read this
+_Living "where are we right now" doc — a **snapshot, not a history**. **Updated 2026-07-10.** Read this
 FIRST in a new chat. For strategy + backlog see `docs/backlog.md`; for the pipeline architecture see
 `docs/pipeline-architecture.md` + `docs/source-map.md`; for full **version history** see `CHANGELOG.md`
 (current to V.8.7) and the **git log / tags**. Onboarding: `CLAUDE.md`. App lives in `/app` (Vite +
@@ -11,12 +11,16 @@ React + TS, run with `bun`); deployed to GitHub Pages._
 > read the open ones, compile into the taste engine (below), ship, then close the issue.
 
 ## Live right now
-- **App: V.8.7** — https://nessim-higson.github.io/wkndr/ (cache-bust `?v=V.8.7`; V.8.6 = the
-  review-hardening ship — one date brain, CI can't fake green; V.8.7 = 👑 TOP weekend gate + feed-
-  boundary guard/error boundary + README truth pass) · **Curation
+- **App: V.8.16** — https://nessim-higson.github.io/wkndr/ (cache-bust `?v=V.8.16`; V.8.16 = **THE
+  AIRLOCK** — Ness's 2026-07-10 call made law: the live deck is 1:1 with his board approvals. A live
+  pick ships only on an approval match (starredKeeps/tops/★3+ anchors/slate/hero/buzz≥3 — one shared
+  `approvalCheck` in lib/pipeline); everything else waits imaged+scored in `pending.<city>.json`,
+  weekend-topical first (dated-this-weekend → forecast-mode fit → judge). Board verdicts promote via
+  restamp; invariant test `tests/airlock.test.ts` guards it — **80 tests**) · **Curation
   Board:** https://nessim-higson.github.io/wkndr/curate/ — tabbed: `IN ROTATION` (opens with **THE
   WEEKEND PILE** — the ~10 projected opening cards in serve order — then the feed + ~141-pick canon
-  library w/ ✓ APPROVED badges) vs `NEW FINDS` (TRENDING inbox → bench → canon candidates). Card
+  library w/ ✓ APPROVED badges) vs `NEW FINDS` (**THE AIRLOCK** — the run's unapproved live finds,
+  ~71 pending — then TRENDING inbox → bench → canon candidates). Card
   titles link OUT to the real venue/event page; **click any card photo → the loupe** (uncropped
   original + true dims + a "LOW RES for the card" verdict). **Submit → GitHub** files the round as an
   issue (compact ASCII payload → fits an 80+ verdict round in one click, no paste; "Email"/Formspree
@@ -32,7 +36,7 @@ React + TS, run with `bun`); deployed to GitHub Pages._
 - **`?dev=1`** reveals the full exploration surface (all views, ambient-look switcher, city picker).
 - **Frozen reference builds:** `/wkndr/versions/v6-2/` (tag `v6.2`) and `/wkndr/versions/v4-10/` (tag `v4.10`).
 - **Ship loop:** `cd app && bun run bump` → `bun run build` → commit → push (auto-deploys) → reply with
-  the `?v=` link. **Tests:** `bun run test` (45 logic tests; CI runs them before every content refresh).
+  the `?v=` link. **Tests:** `bun run test` (80 logic tests; CI runs them before every content refresh).
   **Pages deploy flakes** intermittently ("try again later") — re-dispatch `deploy.yml` (there's an
   auto-retry pattern in the ship watchers).
 

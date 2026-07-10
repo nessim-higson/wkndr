@@ -3,7 +3,7 @@
  "label": "Amsterdam",
  "generatedAt": "2026-07-10T11:51:22.399Z",
  "live": true,
- "count": 75,
+ "count": 74,
  "topMatches": [
   "milkshake festival",
   "dekmantel",
@@ -1732,7 +1732,8 @@
     "COLD_WET",
     "VOLATILE"
    ],
-   "verify": false
+   "verify": false,
+   "editorScore": 8
   },
   {
    "id": "web-resident-advisor-bret-rool-h-sat-mau-p-jo-lla-jackson-sun",
@@ -1783,7 +1784,8 @@
     "COLD_WET",
     "VOLATILE"
    ],
-   "verify": false
+   "verify": false,
+   "editorScore": 8
   },
   {
    "id": "web-lbb-stoornis-of-my-life",
@@ -1811,30 +1813,6 @@
    "verify": false,
    "editorScore": 8,
    "pilePos": 7
-  },
-  {
-   "id": "web-lbb-de-hortus-botanicus-summer-evenings",
-   "title": "De Hortus Botanicus summer evenings",
-   "venue": "De Hortus Botanicus Amsterdam",
-   "area": "Amsterdam Centre",
-   "when": "Every Sun in Jul · Until 20:00",
-   "category": "out",
-   "freshness": "weekend",
-   "outdoor": true,
-   "kid": true,
-   "price": "",
-   "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.iamsterdam.com%2F_next%2Fimage%3Furl%3Dhttps%253A%252F%252Fapp.thefeedfactory.nl%252Fapi%252Fassets%252F5ff87ff8de7e8633a4aa5b51%252Ff703afca-5101-4a12-a37c-b88acc6427ae.jpg%26w%3D1920%26q%3D75&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fwww.iamsterdam.com%2F_next%2Fimage%3Furl%3Dhttps%253A%252F%252Fapp.thefeedfactory.nl%252Fapi%252Fassets%252F5ff87ff8de7e8633a4aa5b51%252Ff703afca-5101-4a12-a37c-b88acc6427ae.jpg%26w%3D1920%26q%3D75",
-   "blurb": "Botanical garden open late with live music, golden hour strolls and sunny terrace drinks until August.",
-   "why": "Perfect summer evening in blooming gardens",
-   "source": "Your Little Black Book",
-   "link": "https://www.yourlittleblackbook.me/weekendtips-amsterdam/",
-   "weatherFit": [
-    "HOT",
-    "WARM",
-    "COOL"
-   ],
-   "verify": false,
-   "editorScore": 4
   },
   {
    "id": "ams-eat-bak",
@@ -1889,5 +1867,5 @@
    "pilePos": 9
   }
  ],
- "restampedAt": "stopgap-approved-only"
+ "restampedAt": "2026-07-10T13:30:10.884Z"
 }

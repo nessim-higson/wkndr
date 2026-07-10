@@ -67,6 +67,54 @@ export function titleLooseMatch(feedTitle: string, entry: string): boolean {
   return shared >= 2 && shared >= Math.min(ta.size, tb.size) * 0.75
 }
 
+// ─── THE AIRLOCK — approval matching ─────────────────────────────────────────
+// Ness's decision (2026-07-10): the live deck is 1:1 with his Curation Board approvals. This
+// builds the ONE predicate that refresh.ts (the publish split), restamp.ts (promote/demote)
+// and the invariant test (tests/airlock.test.ts) all share — three implementations would drift.
+// A live pick is APPROVED when it matches any of:
+//   · corpus.starredKeeps / corpus.topPicks (word-boundary rxOf — the board's ★4-5 and 👑 tiers)
+//   · corpus.starAnchors at ★3+ (anchor titles carry annotations — "Hortus Botanicus (the
+//     place)", "Vlieger / Moise / Mobilia" — so each is split into its name fragments first)
+//   · this weekend's slate — pile (loose title match: the board stores titles verbatim at drag
+//     time and the crawl may retitle) + lead/later (explicit board calls on specific cards;
+//     ▼ LATER means "stays published, sinks" — an approval, not a kill). Gated to the upcoming
+//     Saturday exactly like refresh's slate block: a stale slate approves nothing.
+//   · a hero (scripts/heroes.ts — hand-confirmed must-sees, matched by titleKey)
+//   · buzz ≥ 3 (independently corroborated by 3+ sources — the "everyone's talking about it"
+//     class ships on merit; the board can still kill it into the veto afterwards)
+export type TasteCorpus = {
+  starredKeeps: { match: string; stars: number }[]
+  topPicks: string[]
+  starAnchors?: { title: string; stars: number }[]
+}
+export type WeeklySlate = { weekend: string; lead: string[]; later: string[]; pile?: string[] }
+// "Ligconcert — lying-down concert, Maritime Museum" → ["Ligconcert"]; "Vlieger / Moise /
+// Mobilia (design shops)" → ["Vlieger","Moise","Mobilia"] — the name parts, not the annotation.
+const anchorFrags = (title: string): string[] =>
+  title.split(/\s*\/\s*/)
+    .map((x) => x.split(/\s*[(—–,]\s*/)[0].trim())
+    .filter((x) => x.length >= 3)
+export function approvalCheck(
+  corpus: TasteCorpus, weekly: WeeklySlate, heroTitles: string[], now: Date = new Date(),
+): (p: { title: string; buzz?: number }) => boolean {
+  const rx: RegExp[] = [
+    ...corpus.starredKeeps.map((k) => rxOf(k.match)),
+    ...corpus.topPicks.map(rxOf),
+    ...(corpus.starAnchors ?? []).filter((a) => a.stars >= 3).flatMap((a) => anchorFrags(a.title)).map(rxOf),
+  ]
+  const { sat } = upcomingWeekend(now)
+  const satKey = `${sat.getFullYear()}-${String(sat.getMonth() + 1).padStart(2, '0')}-${String(sat.getDate()).padStart(2, '0')}`
+  const slate = weekly.weekend === satKey
+    ? [...(weekly.pile ?? []), ...(weekly.lead ?? []), ...(weekly.later ?? [])]
+    : []
+  const heroKeys = new Set(heroTitles.map(titleKey))
+  return (p) =>
+    (p.buzz ?? 1) >= 3 ||
+    heroKeys.has(titleKey(p.title)) ||
+    rx.some((r) => r.test(p.title)) ||
+    slate.some((t) => titleLooseMatch(p.title, t))
+}
+
 // Merge the same event arriving from multiple adapters. Key = title+venue. The richest
 // record wins; we union the source credits (the cross-source "buzz" signal lives here).
 export function dedupe(picks: Pick[]): Pick[] {

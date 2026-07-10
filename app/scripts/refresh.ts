@@ -19,8 +19,10 @@
  */
 import { CITIES, type City } from '../src/data/cities'
 import type { Pick } from '../src/types'
-import { dedupe, balanceByCategory, isGoodImage, isPortraitImage, imageBroken, urlLooksNonPhoto, imageIsCardworthy, fetchEventImage, toPortrait, wikiImage, webImageCandidates, verifyImageForEvent, pexelsImage, whenBeforeWeekend, upcomingWeekend, linkOk, mapLimit, rxOf, titleKey, titleLooseMatch, tokKey } from './lib/pipeline'
+import { dedupe, balanceByCategory, isGoodImage, isPortraitImage, imageBroken, urlLooksNonPhoto, imageIsCardworthy, fetchEventImage, toPortrait, wikiImage, webImageCandidates, verifyImageForEvent, pexelsImage, whenBeforeWeekend, upcomingWeekend, linkOk, mapLimit, rxOf, titleKey, titleLooseMatch, tokKey, approvalCheck, type TasteCorpus, type WeeklySlate } from './lib/pipeline'
 import { fixWhen, latestDateOf, whenActiveBy, whenIsPast } from '../src/lib/when'
+import { classify } from '../src/weather/modes'
+import type { Mode } from '../src/types'
 import { songkickAdapter } from './adapters/songkick'
 import { llmExtract } from './adapters/llm'
 import { websearchExtract } from './adapters/websearch'
@@ -52,6 +54,26 @@ const LLM_ON = !!process.env.ANTHROPIC_API_KEY
 const OUT_DIR = `${import.meta.dir}/../public/data`
 
 const FRESH_RANK: Record<string, number> = { new: 3, ending: 3, weekend: 2, always: 1 }
+
+// WEEKEND FORECAST MODE — the same open-meteo lens websearch.ts's weatherFacets uses, run through
+// the app's OWN classifier (src/weather/modes.ts classify) so the airlock's "weather-topical"
+// ordering agrees with the deck's runtime ranking. Sat+Sun of the upcoming weekend: hottest high,
+// wettest rain chance, biggest day-swing → one Mode. Fails soft → null (order falls to the judge).
+async function weekendMode(): Promise<Mode | null> {
+  try {
+    const r = await fetch('https://api.open-meteo.com/v1/forecast?latitude=52.37&longitude=4.9&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Europe%2FAmsterdam&forecast_days=7')
+    const j = await r.json() as { daily: { time: string[]; temperature_2m_max: number[]; temperature_2m_min: number[]; precipitation_probability_max: number[] } }
+    const { sat } = upcomingWeekend()
+    const satIso = `${sat.getFullYear()}-${String(sat.getMonth() + 1).padStart(2, '0')}-${String(sat.getDate()).padStart(2, '0')}`
+    const i = j.daily.time.indexOf(satIso)
+    if (i < 0) return null
+    const days = [i, i + 1].filter((k) => k < j.daily.time.length)
+    const hi = Math.max(...days.map((k) => j.daily.temperature_2m_max[k]))
+    const wet = Math.max(...days.map((k) => j.daily.precipitation_probability_max[k]))
+    const swing = Math.max(...days.map((k) => j.daily.temperature_2m_max[k] - j.daily.temperature_2m_min[k]))
+    return classify(hi, wet, swing)
+  } catch { return null }
+}
 
 async function buildCity(city: City) {
   console.log(`\n● ${city.label}`)
@@ -661,6 +683,32 @@ async function buildCity(city: City) {
     }
   }
 
+  // THE AIRLOCK — the live deck is 1:1 with Ness's Curation Board approvals (his call, 2026-07-10;
+  // the stopgap that hand-filtered the feed becomes pipeline law here). AFTER the whole funnel
+  // (balance, slate, tops — so pending cards are exactly what WOULD have shipped), live picks
+  // split: APPROVED (a starredKeeps/topPicks/starAnchors★3+ match, this weekend's slate, a hero,
+  // or buzz≥3 — the shared approvalCheck) publish with canon/evergreen as before; everything else
+  // — full cards, already imaged + judge-scored — waits in pending.<city>.json for the board's
+  // NEW FINDS tab. A star/👑/pile there promotes it into the feed via restamp's fast-path.
+  // Queue order is Ness's explicit requirement — topical first, weather-related if possible:
+  // (a) dated THIS weekend, (b) fits the weekend-forecast mode, (c) judge score, (d) buzz.
+  let pendingOut: Pick[] = []
+  {
+    const isApproved = approvalCheck(corpus as TasteCorpus, weekly as WeeklySlate, heroPicks(city.key).map((h) => h.title))
+    const unapproved = (p: Pick) => isLive(p) && !isApproved(p)
+    pendingOut = picks.filter(unapproved)
+    picks = picks.filter((p) => !unapproved(p))
+    const mode = await weekendMode()
+    const topical = (p: Pick) => (datedThisWeekend(p) ? 1 : 0)
+    const wx = (p: Pick) => (mode && Array.isArray(p.weatherFit) && p.weatherFit.includes(mode) ? 1 : 0)
+    pendingOut.sort((a, b) =>
+      topical(b) - topical(a) ||
+      wx(b) - wx(a) ||
+      (b.editorScore ?? 0) - (a.editorScore ?? 0) ||
+      (b.buzz ?? 1) - (a.buzz ?? 1))
+    console.log(`  airlock:  ${picks.filter(isLive).length} live approved → feed · ${pendingOut.length} → pending${mode ? ` (weekend mode ${mode})` : ''}`)
+  }
+
   // PUBLISH GATE — refuse to ship a BROKEN feed. A quiet/thin weekend is NOT broken (it just warns); only the
   // things that would actually embarrass us hard-fail. On failure we ABSTAIN — exit(1) WITHOUT writing — so the
   // last-good feed keeps serving and the failed Actions run emails Ness. A one-line HEALTH summary always lands
@@ -705,13 +753,21 @@ async function buildCity(city: City) {
   await Bun.write(`${OUT_DIR}/picks.${city.key}.json`, JSON.stringify(feed, null, 2))
   console.log(`  → wrote picks.${city.key}.json (${picks.length} picks)`)
 
+  // PENDING — the airlock queue, same generatedAt as the feed (the board keys verdict rounds to
+  // it; the queue belongs to this round). Written AFTER the gate on purpose: an abstaining run
+  // must not touch the pending pool either.
+  await Bun.write(`${OUT_DIR}/pending.${city.key}.json`, JSON.stringify({ generatedAt: feed.generatedAt, count: pendingOut.length, pending: pendingOut }, null, 2))
+  console.log(`  → wrote pending.${city.key}.json (${pendingOut.length} picks in the airlock)`)
+
   // CANDIDATES — the imaged, date-valid live events that lost a slot to the caps (never junk: they passed
   // every screen). The Curation Board deals these in as replacements when Ness KILLS a card. Excluded:
-  // anything published, and title-twins of published picks (the semantic-dedup class).
+  // anything published OR in the airlock (a pending card must not double-show on the bench), and
+  // title-twins of published picks (the semantic-dedup class).
   {
-    const pubIds = new Set(picks.map((p) => p.id))
-    const pubKeys = new Set(picks.map((p) => titleKey(p.title)))
-    const pubToks = new Set(picks.map((p) => tokKey(p.title)).filter(Boolean))
+    const shown = [...picks, ...pendingOut]
+    const pubIds = new Set(shown.map((p) => p.id))
+    const pubKeys = new Set(shown.map((p) => titleKey(p.title)))
+    const pubToks = new Set(shown.map((p) => tokKey(p.title)).filter(Boolean))
     const benchToks = new Set<string>()   // no word-order twins WITHIN the bench either
     const cands = prePool
       .filter((p) => {

@@ -7,37 +7,80 @@
  * PUBLISHED feed and republishes: ~90 seconds from compile to live deck.
  *
  * What it re-applies (mirrors refresh.ts's taste blocks, same matchers):
- *   1. corpus.eventVeto  → matching picks DROPPED
- *   2. corpus.rested     → matching picks DROPPED while `until` is in the future
- *   3. corpus.topPicks   → p.top stamped + feed.topMatches refreshed (canon stamping at ingestion)
- *   4. corpus.starredKeeps (★4-5) → editorScore floor 8
- *   5. weekly lead/later/pile (if `weekend` matches the upcoming Saturday) → p.lead / p.later /
+ *   1. corpus.eventVeto  → matching picks DROPPED (feed AND airlock)
+ *   2. corpus.rested     → matching picks DROPPED while `until` is in the future (feed AND airlock)
+ *   3. THE AIRLOCK, both directions (the 1:1 rule, Ness 2026-07-10): pending picks that NOW match
+ *      an approval (this compile's star/👑/pile) PROMOTE into the feed with image + judge score
+ *      intact (deduped by tokKey); live feed picks whose approval lapsed (an expired weekly slate)
+ *      DEMOTE back to pending. Same approvalCheck refresh.ts publishes through.
+ *   4. corpus.topPicks   → p.top stamped + feed.topMatches refreshed (canon stamping at ingestion)
+ *   5. corpus.starredKeeps (★4-5) → editorScore floor 8
+ *   6. weekly lead/later/pile (if `weekend` matches the upcoming Saturday) → p.lead / p.later /
  *      p.pilePos (pile via titleLooseMatch — survives retitles)
- *   6. whenIsPast guard  → past picks dropped
+ *   7. whenIsPast guard  → past picks dropped
  *
- * generatedAt is PRESERVED (the board keys verdict rounds to it — a restamp is not a new round);
- * `restampedAt` records the pass. Abstains (exit 1, no write) if the result would be broken-thin.
+ * generatedAt is PRESERVED on BOTH files (the board keys verdict rounds to it — a restamp is not
+ * a new round); `restampedAt` records the pass. Abstains (exit 1, no write) if the result would
+ * be broken-thin.
  */
 import corpus from './taste/corpus.json'
 import weekly from './taste/weekly.json'
-import { rxOf, titleLooseMatch, upcomingWeekend } from './lib/pipeline'
+import { rxOf, titleLooseMatch, tokKey, upcomingWeekend, approvalCheck, type TasteCorpus, type WeeklySlate } from './lib/pipeline'
+import { heroPicks } from './heroes'
 import { whenIsPast } from '../src/lib/when'
 import type { Pick } from '../src/types'
 
 const CITY = process.argv.find((a) => a.startsWith('--city='))?.split('=')[1] ?? 'amsterdam'
 const path = `${import.meta.dir}/../public/data/picks.${CITY}.json`
+const pendPath = `${import.meta.dir}/../public/data/pending.${CITY}.json`
 const feed = JSON.parse(await Bun.file(path).text()) as { generatedAt: string; restampedAt?: string; topMatches?: string[]; count?: number; picks: Pick[] }
+let pendingFile: { generatedAt: string; count?: number; pending: Pick[] } | null = null
+try { pendingFile = JSON.parse(await Bun.file(pendPath).text()) } catch { /* no airlock file yet — refresh writes it */ }
 
 const before = feed.picks.length
 const today = new Date().toISOString().slice(0, 10)
 const vetoRx = (corpus.eventVeto as string[]).map(rxOf)
 const restedRx = (corpus.rested as { match: string; until: string }[])
   .filter((r) => r.until >= today).map((r) => rxOf(r.match))
+const tasteOk = (p: Pick) =>
+  !vetoRx.some((rx) => rx.test(p.title)) && !restedRx.some((rx) => rx.test(p.title)) && !whenIsPast(p.when)
 
-let picks = feed.picks
-  .filter((p) => !vetoRx.some((rx) => rx.test(p.title)))
-  .filter((p) => !restedRx.some((rx) => rx.test(p.title)))
-  .filter((p) => !whenIsPast(p.when))
+let picks = feed.picks.filter(tasteOk)
+
+// THE AIRLOCK, both directions — kills/stars from the round Ness JUST submitted take effect here.
+const isApproved = approvalCheck(corpus as TasteCorpus, weekly as WeeklySlate, heroPicks(CITY).map((h) => h.title))
+const isLive = (p: Pick) => ['web-', 'llm-', 'rss-', 'sk-'].some((pre) => p.id.startsWith(pre))
+let promoted = 0, demoted = 0
+const pendingKeep: Pick[] = []
+if (pendingFile) {
+  // DEMOTE first: a live pick whose approval lapsed (weekly slate rolled, nothing else holds it)
+  // returns to the airlock rather than shipping unapproved — the invariant survives between runs.
+  const back = picks.filter((p) => isLive(p) && !isApproved(p))
+    .map((p) => ({ ...p, top: undefined, lead: undefined, later: undefined, pilePos: undefined }))
+  picks = picks.filter((p) => !(isLive(p) && !isApproved(p)))
+  demoted = back.length
+  // PROMOTE: approved pending picks join the feed, image + judge score intact; tokKey dedupe so a
+  // retitled twin of something already published can't double-card. Approved-but-duplicate picks
+  // leave the airlock either way (their event is already in the deck).
+  const inFeedIds = new Set(picks.map((p) => p.id))
+  const inFeedToks = new Set(picks.map((p) => tokKey(p.title)).filter(Boolean))
+  for (const p of (pendingFile.pending ?? []).filter(tasteOk)) {
+    if (!isApproved(p)) { pendingKeep.push(p); continue }
+    const tk = tokKey(p.title)
+    if (inFeedIds.has(p.id) || (tk && inFeedToks.has(tk))) continue
+    picks.push(p); promoted++
+    if (tk) inFeedToks.add(tk)
+  }
+  // demoted picks rejoin the queue at the back (the refresh-authored topical order stays intact)
+  const keepToks = new Set(pendingKeep.map((p) => tokKey(p.title)).filter(Boolean))
+  const keepIds = new Set(pendingKeep.map((p) => p.id))
+  for (const p of back) {
+    const tk = tokKey(p.title)
+    if (keepIds.has(p.id) || (tk && keepToks.has(tk))) continue
+    pendingKeep.push(p)
+    if (tk) keepToks.add(tk)
+  }
+}
 
 // clear the ephemeral stamps, then re-apply from the CURRENT corpus + weekly
 picks = picks.map((p) => ({ ...p, top: undefined, lead: undefined, later: undefined, pilePos: undefined }))
@@ -67,7 +110,8 @@ if ((weekly.weekend as string) === satKey) {
   console.log(`  slate stale (${weekly.weekend} ≠ ${satKey}) — lead/later/pile skipped`)
 }
 
-// ABSTAIN if the result is broken-thin — a bad corpus edit must not hollow the live feed
+// ABSTAIN if the result is broken-thin — a bad corpus edit must not hollow the live feed.
+// Nothing is written on abstain — the pending file included, so promote/demote can't half-apply.
 if (picks.length < 20) { console.error(`✖ restamp abstained: only ${picks.length} picks would remain`); process.exit(1) }
 
 feed.picks = picks
@@ -75,4 +119,9 @@ feed.count = picks.length
 feed.topMatches = corpus.topPicks as string[]
 feed.restampedAt = new Date().toISOString()
 await Bun.write(path, JSON.stringify(feed, null, 1))
-console.log(`✓ restamped ${CITY}: ${before} → ${picks.length} picks · tops ${picks.filter((p) => p.top).length} · pile ${picks.filter((p) => p.pilePos).length} · generatedAt preserved (${feed.generatedAt})`)
+if (pendingFile) {
+  // generatedAt preserved — the airlock belongs to the round it was crawled in
+  await Bun.write(pendPath, JSON.stringify({ generatedAt: pendingFile.generatedAt, count: pendingKeep.length, pending: pendingKeep }, null, 2))
+}
+console.log(`✓ restamped ${CITY}: ${before} → ${picks.length} picks · tops ${picks.filter((p) => p.top).length} · pile ${picks.filter((p) => p.pilePos).length}` +
+  `${pendingFile ? ` · airlock: +${promoted} promoted · ${demoted} demoted · ${pendingKeep.length} pending` : ''} · generatedAt preserved (${feed.generatedAt})`)

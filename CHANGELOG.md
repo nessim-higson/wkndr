@@ -14,6 +14,32 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.8.16] — 2026-07-10 — "The airlock: nothing ships unapproved"
+_Ness's call (2026-07-10): the live deck is 1:1 with his Curation Board approvals. The morning's
+stopgap (hand-filtering the feed to approved-only) becomes pipeline law:_
+- **The split**: after the FULL funnel (balance, slate, tops — pending cards are exactly what
+  would have shipped), refresh divides live picks by one shared `approvalCheck` (lib/pipeline —
+  refresh, restamp and the test all use the same predicate, so it can't drift): starredKeeps /
+  topPicks / ★3+ anchors / this weekend's slate (pile loose-match + lead/later) / a hero / buzz≥3
+  publish with canon as before; everything else waits in `pending.<city>.json` — full cards,
+  already imaged + judge-scored, nothing wasted.
+- **The queue is topical first (his explicit ask)**: dated-this-weekend → fits the weekend
+  forecast mode (open-meteo run through the app's OWN `classify`, so "weather-related" agrees
+  with the deck's ranking) → judge score → buzz. Backfilled from the 2026-07-10 crawl: **71
+  pending**, HOT weekend → Île de Bisous / Queer Market XXL lead.
+- **Board: NEW FINDS opens with THE AIRLOCK** — pending cards render with the full verdict flow
+  (★/👑/kill/note ride Submit like any card); bench/trending hide airlock twins.
+- **Restamp promotes — and demotes**: a compile's new star/👑/pile moves matching pending picks
+  into the feed with image + judge score intact (tokKey-deduped); a lapsed approval (an expired
+  weekly slate, nothing else holding the pick) returns it to the queue, so the invariant holds
+  BETWEEN refreshes too. `generatedAt` preserved on both files (board rounds don't reset); an
+  abstain writes neither.
+- **Invariant test** (`tests/airlock.test.ts`): no live-id pick in a published feed without an
+  approval match — audited at the feed's own timestamps, so a mid-week weekend roll can't
+  false-red the cron gate. Tests 75 → 80.
+- Bycatch: the restamp pass enforced a veto the stopgap had let through (Hortus summer evenings —
+  vetoed AND anchor-approved; the kill wins over the star): live feed 75 → 74 picks.
+
 ## [V.8.15] — 2026-07-10 — "The weather lens + the 90-second restamp"
 - **Weather-aware facets**: the pipeline now checks the weekend forecast (open-meteo, keyless)
   before searching — ≥22° & dry arms 'open-air cinema' + 'swimming/urban beaches/terraces on the
