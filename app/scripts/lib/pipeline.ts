@@ -1,9 +1,11 @@
 // Shared pipeline spine — the part every adapter reuses. Adapters do FETCH + NORMALIZE
 // (source → Pick[]); this does the rest: DEDUPE → DERIVE → ENRICH(og:image) → PUBLISH.
-// Plain Bun TypeScript, no app/React imports beyond the Pick type and the shared date
-// brain (src/lib/when.ts — the ONE place `when` strings are parsed, build- and runtime).
+// Plain Bun TypeScript, no app/React imports beyond the Pick type, the shared date brain
+// (src/lib/when.ts) and the shared serve pipeline (src/weather/modes.ts — classify +
+// rankPicks/diversify/orderServed, so build-time projections use the app's OWN code).
 import type { Mode, Pick } from '../../src/types'
 import { latestDateOf } from '../../src/lib/when'
+import { classify, rankPicks, diversify, orderServed } from '../../src/weather/modes'
 import corpus from '../taste/corpus.json'
 
 const ALL_MODES: Mode[] = ['HOT', 'WARM', 'COOL', 'COLD_WET', 'VOLATILE']
@@ -356,6 +358,41 @@ export function upcomingWeekend(now: Date = new Date()): { sat: Date; sun: Date;
 export function whenBeforeWeekend(when: string, now: Date = new Date()): boolean {
   const latest = latestDateOf(when, now)
   return latest ? latest < upcomingWeekend(now).cutoff : false
+}
+
+// ─── WEEKEND FORECAST MODE + THE PROJECTED SERVE ORDER ──────────────────────
+
+/** The same open-meteo lens websearch.ts's weatherFacets uses, run through the app's OWN
+ *  classifier (src/weather/modes.ts classify) so every build-time "weather-topical" judgment
+ *  agrees with the deck's runtime ranking. Sat+Sun of the upcoming weekend: hottest high,
+ *  wettest rain chance, biggest day-swing → one Mode. Fails soft → null. (Lived in refresh.ts;
+ *  moved here so restamp.ts can stamp the serve order through the same lens.) */
+export async function weekendMode(): Promise<Mode | null> {
+  try {
+    const r = await fetch('https://api.open-meteo.com/v1/forecast?latitude=52.37&longitude=4.9&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Europe%2FAmsterdam&forecast_days=7')
+    const j = await r.json() as { daily: { time: string[]; temperature_2m_max: number[]; temperature_2m_min: number[]; precipitation_probability_max: number[] } }
+    const { sat } = upcomingWeekend()
+    const satIso = `${sat.getFullYear()}-${String(sat.getMonth() + 1).padStart(2, '0')}-${String(sat.getDate()).padStart(2, '0')}`
+    const i = j.daily.time.indexOf(satIso)
+    if (i < 0) return null
+    const days = [i, i + 1].filter((k) => k < j.daily.time.length)
+    const hi = Math.max(...days.map((k) => j.daily.temperature_2m_max[k]))
+    const wet = Math.max(...days.map((k) => j.daily.precipitation_probability_max[k]))
+    const swing = Math.max(...days.map((k) => j.daily.temperature_2m_max[k] - j.daily.temperature_2m_min[k]))
+    return classify(hi, wet, swing)
+  } catch { return null }
+}
+
+/** Stamp `servePos` on the final published picks by running the APP'S OWN serve pipeline
+ *  (orderServed ∘ diversify ∘ rankPicks — forecast weekend mode, seed 0, no taste). The
+ *  Curation Board's WEEKEND PILE renders this stamp instead of re-deriving an approximation:
+ *  the V.8.10-era board mirror ignored pilePos (Ness's own dragged order!) and its tier sort
+ *  knew nothing of weather fit, the sun bonus or diversify — so board and deck drifted. One
+ *  code path, one truth. Forecast down → stamp under WARM (neutral) rather than not at all. */
+export function stampServeOrder(picks: Pick[], mode: Mode | null): Pick[] {
+  const proj = orderServed(diversify(rankPicks(picks, mode ?? 'WARM')))
+  const pos = new Map(proj.map((p, i) => [p.id, i + 1]))
+  return picks.map((p) => ({ ...p, servePos: pos.get(p.id) }))
 }
 
 /** Is a URL definitively DEAD (a 404/410)? Catches LLM-fabricated slug links so a pick's "open

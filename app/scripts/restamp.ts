@@ -25,7 +25,7 @@
  */
 import corpus from './taste/corpus.json'
 import weekly from './taste/weekly.json'
-import { rxOf, titleLooseMatch, tokKey, upcomingWeekend, approvalCheck, type TasteCorpus, type WeeklySlate } from './lib/pipeline'
+import { rxOf, titleLooseMatch, tokKey, upcomingWeekend, weekendMode, stampServeOrder, approvalCheck, type TasteCorpus, type WeeklySlate } from './lib/pipeline'
 import { heroPicks } from './heroes'
 import { whenIsPast } from '../src/lib/when'
 import type { Pick } from '../src/types'
@@ -113,6 +113,9 @@ if ((weekly.weekend as string) === satKey) {
 // ABSTAIN if the result is broken-thin — a bad corpus edit must not hollow the live feed.
 // Nothing is written on abstain — the pending file included, so promote/demote can't half-apply.
 if (picks.length < 20) { console.error(`✖ restamp abstained: only ${picks.length} picks would remain`); process.exit(1) }
+
+// re-stamp the projected serve order — verdicts just moved cards, the board must see the real front
+picks = stampServeOrder(picks, await weekendMode())
 
 feed.picks = picks
 feed.count = picks.length

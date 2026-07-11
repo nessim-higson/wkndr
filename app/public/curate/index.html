@@ -177,16 +177,22 @@ Promise.all([
     const ts=datesOf(w);return !ts.length||ts[0]<=WKEND};
   const dateInWknd=w=>datesOf(w).some(t=>t>=WKFRI&&t<=WKEND);
 
-  // ——— the pile projection, computed FIRST (the LENS badges its overlap with it) ———
-  // Mirrors the APP's serve order (src/weather/modes.ts orderServed, V.8.7–V.8.9): TOPs are
-  // TIME-GATED (only lead once active by the served weekend's end) and ANY not-yet-active pick
-  // sinks to the horizon. Pool = live picks + TOP-stamped canon (ARTIS-class picks lead the real
-  // deck, so the projection must include them).
+  // ——— the pile, computed FIRST (the LENS badges its overlap with it) ———
+  // The pipeline now STAMPS the projected serve order onto every published pick (`servePos` —
+  // the app's own rankPicks → diversify → orderServed under the forecast weekend mode, run at
+  // build/restamp time). The board just reads the stamp, so the pile IS the deck's actual
+  // front: the old inline tier-mirror ignored `pilePos` (Ness's own dragged order ruled the app
+  // while the board showed a phantom pile) and knew nothing of weather fit or the sun bonus.
+  // Runtime can still nudge the phone — live weather ≠ forecast, on-device taste, Shuffle — by
+  // design. Fallback for a pre-stamp feed: the old tier projection.
   const isLiveP=p=>p.id&&(p.id.startsWith('web-')||p.id.startsWith('llm-'));
   const tier=p=>{const a=activeBy(p.when);if(a&&p.top)return 0;if(a&&p.lead)return 1;if(a&&!p.later)return 2;if(a)return 3;return p.top?4:5};
-  const pile=(d.picks||[]).filter(p=>isLiveP(p)||p.top)
-    .sort((a,b)=>tier(a)-tier(b)||((b.editorScore??0)-(a.editorScore??0))||((b.buzz??0)-(a.buzz??0)))
-    .slice(0,10);
+  const stamped=(d.picks||[]).some(p=>p.servePos!=null);
+  const pile=stamped
+    ?(d.picks||[]).filter(p=>p.servePos!=null).sort((a,b)=>a.servePos-b.servePos).slice(0,10)
+    :(d.picks||[]).filter(p=>isLiveP(p)||p.top)
+      .sort((a,b)=>tier(a)-tier(b)||((b.editorScore??0)-(a.editorScore??0))||((b.buzz??0)-(a.buzz??0)))
+      .slice(0,10);
   // a hand-dragged order (this round, this browser) overrides the projection; new arrivals append
   if(PILE&&PILE.length){const pos=t=>{const i=PILE.indexOf(t);return i<0?999:i};pile.sort((a,b)=>pos(a.title)-pos(b.title))}
   const pilePos=new Map(pile.map((p,i)=>[p.id,i+1]));
@@ -225,7 +231,7 @@ Promise.all([
     lens.forEach(p=>addCard(p,lg,'lens',pilePos.get(p.id)||0,true));
   }
   if(pile.length){
-    const ph=document.createElement('div');ph.className='cathead hot';ph.textContent='THE WEEKEND PILE — THE '+pile.length+' OPENING CARDS, IN ORDER (drag ⠿ to hand-set the order · ▲ lead = put it here this weekend · ▼ later = not this week · applies next run)';rot.appendChild(ph);
+    const ph=document.createElement('div');ph.className='cathead hot';ph.textContent='THE WEEKEND PILE — THE '+pile.length+' OPENING CARDS'+(stamped?', THE APP’S OWN SERVE ORDER (stamped by the pipeline — your compiled ⠿ drag included)':', IN ORDER')+' (drag ⠿ to hand-set a new order · ▲ lead = put it here this weekend · ▼ later = not this week · applies next run)';rot.appendChild(ph);
     const pg=document.createElement('div');pg.className='grid';rot.appendChild(pg);
     pile.forEach((p,i)=>addCard(p,pg,'pile',i+1,true));
     enableDrag(pg);

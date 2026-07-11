@@ -14,6 +14,22 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.9.9] — 2026-07-12 — "The board reads the deck, not a mirror"
+_Ness: "why is my curation board STILL different from the app" — root cause found and killed:_
+- **The bug:** the board's WEEKEND PILE was an inline tier-mirror (tier → judge → buzz) that
+  **ignored `pilePos`** — Ness's own compiled ⠿ drag (weekly.json, R4) ruled the actual app deck
+  (World Press #1 → NL–Japan #10) while the board projected a phantom order. It also knew
+  nothing of weather fit, the sun bonus, freshness weights or `diversify`.
+- **The fix (structural, kills the drift class):** the pipeline now **stamps `servePos`** on
+  every published pick by running the app's OWN serve pipeline (`orderServed ∘ diversify ∘
+  rankPicks` — forecast weekend mode, seed 0, no taste) at build/restamp time
+  (`stampServeOrder` in lib/pipeline; `weekendMode` moved there so refresh + restamp share the
+  lens). The board just reads the stamp — one code path, one truth. Fallback to the old
+  projection for pre-stamp feeds. The app ignores the field.
+- **Still divergent on purpose (runtime realities):** live weather at open ≠ forecast, the
+  on-device taste profile, the Shuffle seed, and the past-midnight `whenIsPast` runtime guard.
+- Tests 98 → **101** (stamp completeness · pilePos rules the stamp · null-mode fallback).
+
 ## [V.9.8] — 2026-07-12 — "Compile R5 + the lost verdicts of #8/#9"
 - **R5 (issue #11, 73 verdicts, all ★3–5 — the confirmation sweep, no kills):** most ★4–5 were
   already carried in canon2/corpus (the pool has converged); the gaps got ~15 new `starredKeeps`

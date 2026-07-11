@@ -134,3 +134,28 @@ describe('titleLooseMatch — board titles vs re-crawled feed titles', () => {
     expect(titleLooseMatch('Nara Nara', 'Nora')).toBe(false)
   })
 })
+
+// V.9.9 — the board-drift fix: the pipeline stamps the PROJECTED SERVE ORDER (the app's own
+// rankPicks → diversify → orderServed) onto published picks; the Curation Board reads the stamp.
+// Pins the live 2026-07-12 defect: the board's inline pile-mirror ignored pilePos, so Ness's own
+// dragged order ruled the app while the board showed a phantom pile.
+import { stampServeOrder } from '../scripts/lib/pipeline'
+
+describe('stampServeOrder — the board reads the deck, not a mirror', () => {
+  it('stamps every pick, 1-based and unique', () => {
+    const out = stampServeOrder([P({ id: 'a', title: 'A' }), P({ id: 'b', title: 'B' }), P({ id: 'c', title: 'C' })], 'WARM')
+    const pos = out.map((p) => p.servePos).sort()
+    expect(pos).toEqual([1, 2, 3])
+  })
+  it('a hand-dragged pilePos rules the stamp — above even an active 👑 TOP', () => {
+    const dragged = P({ id: 'dragged', title: 'Dragged', pilePos: 1 })
+    const top = P({ id: 'top', title: 'Crowned', top: true, when: 'Daily' })
+    const out = stampServeOrder([top, dragged], 'WARM')
+    expect(out.find((p) => p.id === 'dragged')?.servePos).toBe(1)
+    expect(out.find((p) => p.id === 'top')?.servePos).toBe(2)
+  })
+  it('null mode (forecast down) still stamps — neutral WARM, never an unstamped feed', () => {
+    const out = stampServeOrder([P({ id: 'x', title: 'X' })], null)
+    expect(out[0].servePos).toBe(1)
+  })
+})

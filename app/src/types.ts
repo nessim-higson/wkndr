@@ -57,6 +57,13 @@ export interface Pick {
   pilePos?: number     // WEEKEND SLATE, hand-dragged pile order (board ⠿ → weekly.json `pile`, THIS
                        // weekend only): 1-based; the deck deals these first, in exactly this order,
                        // above every other tier — the human override. Auto-expires weekly.
+  servePos?: number    // THE PROJECTED SERVE ORDER, stamped at build/restamp time by running the
+                       // app's OWN pipeline (orderServed ∘ diversify ∘ rankPicks — forecast weekend
+                       // mode, seed 0, no taste) over the published feed. The Curation Board's
+                       // WEEKEND PILE reads this instead of re-deriving an approximation, so board
+                       // and deck can't drift (the old mirror ignored pilePos — Ness's own dragged
+                       // order). Runtime still nudges the phone: live weather ≠ forecast, on-device
+                       // taste, Shuffle seed. The app itself IGNORES this field.
 }
 
 export const CATEGORY_LABEL: Record<Category, string> = {

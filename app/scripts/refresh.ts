@@ -19,10 +19,8 @@
  */
 import { CITIES, type City } from '../src/data/cities'
 import type { Pick } from '../src/types'
-import { dedupe, balanceByCategory, isGoodImage, isPortraitImage, imageBroken, urlLooksNonPhoto, imageIsCardworthy, fetchEventImage, toPortrait, wikiImage, webImageCandidates, verifyImageForEvent, pexelsImage, whenBeforeWeekend, upcomingWeekend, linkOk, mapLimit, rxOf, titleKey, titleLooseMatch, tokKey, approvalCheck, type TasteCorpus, type WeeklySlate } from './lib/pipeline'
+import { dedupe, balanceByCategory, isGoodImage, isPortraitImage, imageBroken, urlLooksNonPhoto, imageIsCardworthy, fetchEventImage, toPortrait, wikiImage, webImageCandidates, verifyImageForEvent, pexelsImage, whenBeforeWeekend, upcomingWeekend, weekendMode, stampServeOrder, linkOk, mapLimit, rxOf, titleKey, titleLooseMatch, tokKey, approvalCheck, type TasteCorpus, type WeeklySlate } from './lib/pipeline'
 import { fixWhen, latestDateOf, whenActiveBy, whenIsPast } from '../src/lib/when'
-import { classify } from '../src/weather/modes'
-import type { Mode } from '../src/types'
 import { songkickAdapter } from './adapters/songkick'
 import { llmExtract } from './adapters/llm'
 import { websearchExtract } from './adapters/websearch'
@@ -55,25 +53,8 @@ const OUT_DIR = `${import.meta.dir}/../public/data`
 
 const FRESH_RANK: Record<string, number> = { new: 3, ending: 3, weekend: 2, always: 1 }
 
-// WEEKEND FORECAST MODE — the same open-meteo lens websearch.ts's weatherFacets uses, run through
-// the app's OWN classifier (src/weather/modes.ts classify) so the airlock's "weather-topical"
-// ordering agrees with the deck's runtime ranking. Sat+Sun of the upcoming weekend: hottest high,
-// wettest rain chance, biggest day-swing → one Mode. Fails soft → null (order falls to the judge).
-async function weekendMode(): Promise<Mode | null> {
-  try {
-    const r = await fetch('https://api.open-meteo.com/v1/forecast?latitude=52.37&longitude=4.9&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Europe%2FAmsterdam&forecast_days=7')
-    const j = await r.json() as { daily: { time: string[]; temperature_2m_max: number[]; temperature_2m_min: number[]; precipitation_probability_max: number[] } }
-    const { sat } = upcomingWeekend()
-    const satIso = `${sat.getFullYear()}-${String(sat.getMonth() + 1).padStart(2, '0')}-${String(sat.getDate()).padStart(2, '0')}`
-    const i = j.daily.time.indexOf(satIso)
-    if (i < 0) return null
-    const days = [i, i + 1].filter((k) => k < j.daily.time.length)
-    const hi = Math.max(...days.map((k) => j.daily.temperature_2m_max[k]))
-    const wet = Math.max(...days.map((k) => j.daily.precipitation_probability_max[k]))
-    const swing = Math.max(...days.map((k) => j.daily.temperature_2m_max[k] - j.daily.temperature_2m_min[k]))
-    return classify(hi, wet, swing)
-  } catch { return null }
-}
+// WEEKEND FORECAST MODE — now shared: scripts/lib/pipeline.ts weekendMode() (restamp.ts stamps
+// the serve order through the same lens, so the two publishers can't disagree on the weekend).
 
 async function buildCity(city: City) {
   console.log(`\n● ${city.label}`)
@@ -707,6 +688,9 @@ async function buildCity(city: City) {
       (b.editorScore ?? 0) - (a.editorScore ?? 0) ||
       (b.buzz ?? 1) - (a.buzz ?? 1))
     console.log(`  airlock:  ${picks.filter(isLive).length} live approved → feed · ${pendingOut.length} → pending${mode ? ` (weekend mode ${mode})` : ''}`)
+    // THE PROJECTED SERVE ORDER — stamped with the app's own pipeline (same mode read), so the
+    // board's WEEKEND PILE shows the deck's actual front, not a re-derived approximation.
+    picks = stampServeOrder(picks, mode)
   }
 
   // PUBLISH GATE — refuse to ship a BROKEN feed. A quiet/thin weekend is NOT broken (it just warns); only the

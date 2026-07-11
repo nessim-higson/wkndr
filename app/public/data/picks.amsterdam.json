@@ -36,7 +36,8 @@
    "buzz": 2,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.iamsterdam.com%2F_next%2Fimage%3Furl%3Dhttps%253A%252F%252Fapp.thefeedfactory.nl%252Fapi%252Fassets%252F62b40a855d1a2c5d5eab528a%252FKwaku_01.webp%26w%3D1920%26q%3D75&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fwww.iamsterdam.com%2F_next%2Fimage%3Furl%3Dhttps%253A%252F%252Fapp.thefeedfactory.nl%252Fapi%252Fassets%252F62b40a855d1a2c5d5eab528a%252FKwaku_01.webp%26w%3D1920%26q%3D75",
    "editorScore": 8,
-   "pilePos": 2
+   "pilePos": 2,
+   "servePos": 2
   },
   {
    "id": "llm-i-amsterdam-world-press-photo",
@@ -64,7 +65,8 @@
    "verify": true,
    "buzz": 2,
    "editorScore": 8,
-   "pilePos": 1
+   "pilePos": 1,
+   "servePos": 1
   },
   {
    "id": "web-lbb-stoornis-of-my-life",
@@ -91,7 +93,8 @@
    ],
    "verify": false,
    "editorScore": 8,
-   "pilePos": 7
+   "pilePos": 7,
+   "servePos": 7
   },
   {
    "id": "web-lbb-ek-japan-in-twee-beeldverhalen",
@@ -118,7 +121,8 @@
    ],
    "verify": false,
    "editorScore": 8,
-   "pilePos": 8
+   "pilePos": 8,
+   "servePos": 8
   },
   {
    "id": "web-lbb-nederland-japan-door-de-tijd-verbonden",
@@ -145,7 +149,8 @@
    ],
    "verify": false,
    "editorScore": 8,
-   "pilePos": 10
+   "pilePos": 10,
+   "servePos": 10
   },
   {
    "id": "web-lbb-martine-gutierrez-wunderkind",
@@ -171,7 +176,8 @@
     "VOLATILE"
    ],
    "verify": false,
-   "editorScore": 9
+   "editorScore": 9,
+   "servePos": 20
   },
   {
    "id": "web-lbb-the-little-big-things",
@@ -197,7 +203,8 @@
     "VOLATILE"
    ],
    "verify": false,
-   "editorScore": 8
+   "editorScore": 8,
+   "servePos": 21
   },
   {
    "id": "web-iams-american-identities",
@@ -225,7 +232,8 @@
    "verify": false,
    "buzz": 3,
    "editorScore": 8,
-   "pilePos": 3
+   "pilePos": 3,
+   "servePos": 3
   },
   {
    "id": "web-iams-open-podium-noord",
@@ -249,7 +257,8 @@
     "COOL"
    ],
    "verify": false,
-   "editorScore": 8
+   "editorScore": 8,
+   "servePos": 11
   },
   {
    "id": "web-iams-jazz-at-hart-museum",
@@ -273,7 +282,8 @@
     "COOL"
    ],
    "verify": false,
-   "editorScore": 8
+   "editorScore": 8,
+   "servePos": 12
   },
   {
    "id": "web-iams-julidans-moving-mornings",
@@ -300,7 +310,8 @@
    ],
    "verify": false,
    "editorScore": 8,
-   "pilePos": 4
+   "pilePos": 4,
+   "servePos": 4
   },
   {
    "id": "web-iams-julidans-language-of-the-birds-reza-mirabi-ir-de",
@@ -327,7 +338,8 @@
    ],
    "verify": false,
    "buzz": 1,
-   "editorScore": 8
+   "editorScore": 8,
+   "servePos": 18
   },
   {
    "id": "web-iams-straat-collectie",
@@ -353,7 +365,8 @@
     "VOLATILE"
    ],
    "verify": false,
-   "editorScore": 8
+   "editorScore": 8,
+   "servePos": 24
   },
   {
    "id": "web-iams-the-maker-market",
@@ -379,7 +392,8 @@
     "VOLATILE"
    ],
    "verify": false,
-   "editorScore": 8
+   "editorScore": 8,
+   "servePos": 22
   },
   {
    "id": "web-iams-bottomless-brunch",
@@ -403,7 +417,8 @@
     "COOL"
    ],
    "verify": false,
-   "editorScore": 8
+   "editorScore": 8,
+   "servePos": 13
   },
   {
    "id": "web-iams-de-roode-remise-singing-session",
@@ -429,7 +444,8 @@
     "VOLATILE"
    ],
    "verify": false,
-   "editorScore": 8
+   "editorScore": 8,
+   "servePos": 23
   },
   {
    "id": "web-iams-nicolas-van-poucke-pianorecital",
@@ -455,7 +471,8 @@
     "VOLATILE"
    ],
    "verify": false,
-   "editorScore": 8
+   "editorScore": 8,
+   "servePos": 25
   },
   {
    "id": "web-iams-vriendenloterij-summer-concerts",
@@ -479,7 +496,8 @@
     "COOL"
    ],
    "verify": false,
-   "editorScore": 8
+   "editorScore": 8,
+   "servePos": 14
   },
   {
    "id": "web-iams-exhibition-worn-in-the-rijksmuseum",
@@ -505,7 +523,8 @@
     "VOLATILE"
    ],
    "verify": false,
-   "editorScore": 8
+   "editorScore": 8,
+   "servePos": 26
   },
   {
    "id": "web-iams-lunchtime-organ-concerts-at-waterlooplein",
@@ -531,7 +550,8 @@
     "VOLATILE"
    ],
    "verify": false,
-   "editorScore": 8
+   "editorScore": 8,
+   "servePos": 27
   },
   {
    "id": "web-iams-ligconcert-presents-lying-down-concert-at-the-maritime-museum",
@@ -557,7 +577,8 @@
     "VOLATILE"
    ],
    "verify": false,
-   "editorScore": 8
+   "editorScore": 8,
+   "servePos": 29
   },
   {
    "id": "ams-ev2-strand-van-oost",
@@ -581,7 +602,8 @@
    ],
    "when": "Summer · evenings",
    "tier": "bespoke",
-   "buzz": 2
+   "buzz": 2,
+   "servePos": 48
   },
   {
    "id": "ams-hortus",
@@ -607,7 +629,8 @@
    "when": "Daily · 10:00–17:00",
    "tier": "classic",
    "buzz": 2,
-   "editorScore": 8
+   "editorScore": 8,
+   "servePos": 16
   },
   {
    "id": "ams-ev2-le-petit-bouillon",
@@ -634,7 +657,8 @@
    ],
    "verify": false,
    "tier": "bespoke",
-   "buzz": 2
+   "buzz": 2,
+   "servePos": 49
   },
   {
    "id": "pllek-indoor",
@@ -660,7 +684,8 @@
    ],
    "verify": false,
    "buzz": 1,
-   "editorScore": 8
+   "editorScore": 8,
+   "servePos": 28
   },
   {
    "id": "cafe-chris",
@@ -683,7 +708,8 @@
     "COLD_WET",
     "VOLATILE"
    ],
-   "editorScore": 8
+   "editorScore": 8,
+   "servePos": 70
   },
   {
    "id": "foodhallen",
@@ -708,7 +734,8 @@
     "COLD_WET",
     "VOLATILE"
    ],
-   "editorScore": 8
+   "editorScore": 8,
+   "servePos": 30
   },
   {
    "id": "web-scout-milkshake-festival",
@@ -736,7 +763,8 @@
    "verify": false,
    "buzz": 2,
    "editorScore": 10,
-   "top": true
+   "top": true,
+   "servePos": 73
   },
   {
    "id": "sauna-deco",
@@ -758,7 +786,8 @@
     "COOL",
     "COLD_WET",
     "VOLATILE"
-   ]
+   ],
+   "servePos": 72
   },
   {
    "id": "ams-vondelpark-play",
@@ -782,7 +811,8 @@
     "COOL"
    ],
    "when": "Daily · dawn–dusk",
-   "tier": "classic"
+   "tier": "classic",
+   "servePos": 50
   },
   {
    "id": "the-movies",
@@ -805,7 +835,8 @@
     "COLD_WET",
     "VOLATILE"
    ],
-   "buzz": 2
+   "buzz": 2,
+   "servePos": 71
   },
   {
    "id": "web-scout-two-story",
@@ -831,7 +862,8 @@
     "VOLATILE"
    ],
    "verify": false,
-   "editorScore": 8
+   "editorScore": 8,
+   "servePos": 15
   },
   {
    "id": "ams-b2-foam",
@@ -856,7 +888,8 @@
     "VOLATILE"
    ],
    "when": "Daily · 10:00–18:00",
-   "tier": "bespoke"
+   "tier": "bespoke",
+   "servePos": 51
   },
   {
    "id": "ams-ev2-droog",
@@ -881,7 +914,8 @@
     "VOLATILE"
    ],
    "when": "Tue–Sun",
-   "tier": "classic"
+   "tier": "classic",
+   "servePos": 52
   },
   {
    "id": "ams-ev2-mendo",
@@ -906,7 +940,8 @@
     "VOLATILE"
    ],
    "when": "Daily",
-   "tier": "bespoke"
+   "tier": "bespoke",
+   "servePos": 54
   },
   {
    "id": "ams-b2-moise",
@@ -931,7 +966,8 @@
     "VOLATILE"
    ],
    "when": "Daily exc. Sun–Mon",
-   "tier": "bespoke"
+   "tier": "bespoke",
+   "servePos": 56
   },
   {
    "id": "ams-b2-patta",
@@ -957,7 +993,8 @@
    ],
    "when": "Daily · shop hours",
    "tier": "bespoke",
-   "editorScore": 8
+   "editorScore": 8,
+   "servePos": 31
   },
   {
    "id": "ams-b2-x-bank",
@@ -983,7 +1020,8 @@
    ],
    "when": "Daily · shop hours",
    "tier": "bespoke",
-   "editorScore": 8
+   "editorScore": 8,
+   "servePos": 33
   },
   {
    "id": "ams-ev-melkweg",
@@ -1008,7 +1046,8 @@
     "VOLATILE"
    ],
    "when": "Eve · gigs + club",
-   "tier": "classic"
+   "tier": "classic",
+   "servePos": 53
   },
   {
    "id": "ams-b2-mobilia",
@@ -1033,7 +1072,8 @@
     "VOLATILE"
    ],
    "when": "Daily · shop hours",
-   "tier": "classic"
+   "tier": "classic",
+   "servePos": 58
   },
   {
    "id": "ams-ev-utrecht",
@@ -1058,7 +1098,8 @@
     "VOLATILE"
    ],
    "when": "Daily · ~25 min by train",
-   "tier": "classic"
+   "tier": "classic",
+   "servePos": 55
   },
   {
    "id": "ams-b2-vlieger",
@@ -1083,7 +1124,8 @@
     "VOLATILE"
    ],
    "when": "Daily · shop hours",
-   "tier": "bespoke"
+   "tier": "bespoke",
+   "servePos": 60
   },
   {
    "id": "ams-efteling",
@@ -1107,7 +1149,8 @@
    ],
    "when": "Daily · ~1h15 by car",
    "tier": "classic",
-   "editorScore": 8
+   "editorScore": 8,
+   "servePos": 32
   },
   {
    "id": "ams-ev-ij-hallen",
@@ -1133,7 +1176,8 @@
    ],
    "when": "Monthly · one weekend",
    "tier": "bespoke",
-   "editorScore": 8
+   "editorScore": 8,
+   "servePos": 34
   },
   {
    "id": "ams-micropia",
@@ -1158,7 +1202,8 @@
     "VOLATILE"
    ],
    "when": "Daily · 10:00–17:00",
-   "tier": "bespoke"
+   "tier": "bespoke",
+   "servePos": 57
   },
   {
    "id": "ams-ev-paradiso",
@@ -1183,7 +1228,8 @@
     "VOLATILE"
    ],
    "when": "Eve · gig nights",
-   "tier": "classic"
+   "tier": "classic",
+   "servePos": 59
   },
   {
    "id": "ams-lostin-kriterion",
@@ -1208,7 +1254,8 @@
     "VOLATILE"
    ],
    "when": "Daily · check listings",
-   "tier": "bespoke"
+   "tier": "bespoke",
+   "servePos": 61
   },
   {
    "id": "ams-madurodam",
@@ -1232,7 +1279,8 @@
    ],
    "when": "Daily · ~50 min by train",
    "tier": "classic",
-   "editorScore": 8
+   "editorScore": 8,
+   "servePos": 35
   },
   {
    "id": "ams-ev2-nxt-museum",
@@ -1258,7 +1306,8 @@
    ],
    "when": "Wed–Sun (daily in summer)",
    "tier": "bespoke",
-   "editorScore": 8
+   "editorScore": 8,
+   "servePos": 36
   },
   {
    "id": "ams-ev-muiderslot",
@@ -1283,7 +1332,8 @@
     "VOLATILE"
    ],
    "when": "Tue–Sun · ~30 min out",
-   "tier": "bespoke"
+   "tier": "bespoke",
+   "servePos": 62
   },
   {
    "id": "ams-ev-dappermarkt",
@@ -1306,7 +1356,8 @@
     "COOL"
    ],
    "when": "Mon–Sat · 09:00–17:00",
-   "tier": "bespoke"
+   "tier": "bespoke",
+   "servePos": 63
   },
   {
    "id": "ams-lostin-garage-noord",
@@ -1331,7 +1382,8 @@
     "VOLATILE"
    ],
    "when": "Eve · check programme",
-   "tier": "bespoke"
+   "tier": "bespoke",
+   "servePos": 64
   },
   {
    "id": "ams-b2-rijksmuseum",
@@ -1356,7 +1408,8 @@
     "VOLATILE"
    ],
    "when": "Daily · 09:00–17:00",
-   "tier": "classic"
+   "tier": "classic",
+   "servePos": 65
   },
   {
    "id": "ams-ev-bloemenmarkt",
@@ -1380,7 +1433,8 @@
    ],
    "when": "Mon–Sat · 09:00–17:30",
    "tier": "classic",
-   "editorScore": 8
+   "editorScore": 8,
+   "servePos": 37
   },
   {
    "id": "ams-lostin-de-filmhallen",
@@ -1405,7 +1459,8 @@
     "VOLATILE"
    ],
    "when": "Daily · check listings",
-   "tier": "bespoke"
+   "tier": "bespoke",
+   "servePos": 66
   },
   {
    "id": "eye-screening",
@@ -1429,7 +1484,8 @@
     "COOL",
     "COLD_WET",
     "VOLATILE"
-   ]
+   ],
+   "servePos": 68
   },
   {
    "id": "ams-lostin-sexyland",
@@ -1454,7 +1510,8 @@
     "VOLATILE"
    ],
    "when": "Eve · check programme",
-   "tier": "bespoke"
+   "tier": "bespoke",
+   "servePos": 67
   },
   {
    "id": "ams-ev2-wils-at-the-farm",
@@ -1477,7 +1534,8 @@
     "COOL"
    ],
    "when": "Until Sat 25 Jul · Thu–Sat dinners",
-   "tier": "bespoke"
+   "tier": "bespoke",
+   "servePos": 47
   },
   {
    "id": "ams-ev-marken-volendam",
@@ -1501,7 +1559,8 @@
    ],
    "when": "Daily · bus ~30 min",
    "tier": "bespoke",
-   "editorScore": 8
+   "editorScore": 8,
+   "servePos": 38
   },
   {
    "id": "ams-ev-zandvoort",
@@ -1525,7 +1584,8 @@
    ],
    "when": "Daily · ~30 min by train",
    "tier": "bespoke",
-   "editorScore": 8
+   "editorScore": 8,
+   "servePos": 40
   },
   {
    "id": "ams-ev-albert-cuyp",
@@ -1549,7 +1609,8 @@
    ],
    "when": "Mon–Sat · 09:00–17:00",
    "tier": "classic",
-   "editorScore": 8
+   "editorScore": 8,
+   "servePos": 39
   },
   {
    "id": "web-scout-dekmantel-festival",
@@ -1576,7 +1637,8 @@
    ],
    "verify": false,
    "editorScore": 10,
-   "top": true
+   "top": true,
+   "servePos": 74
   },
   {
    "id": "ams-ev-concertgebouw",
@@ -1601,7 +1663,8 @@
     "VOLATILE"
    ],
    "when": "Eve · concerts · free Wed lunch",
-   "tier": "classic"
+   "tier": "classic",
+   "servePos": 69
   },
   {
    "id": "ams-ev-waterlooplein",
@@ -1625,7 +1688,8 @@
    ],
    "when": "Mon–Sat · 09:30–18:00",
    "tier": "classic",
-   "editorScore": 8
+   "editorScore": 8,
+   "servePos": 41
   },
   {
    "id": "web-lbb-cinema-culinair",
@@ -1651,7 +1715,8 @@
     "VOLATILE"
    ],
    "verify": false,
-   "editorScore": 8
+   "editorScore": 8,
+   "servePos": 17
   },
   {
    "id": "web-lbb-the-jollof-club-west-african-restaurant",
@@ -1678,7 +1743,8 @@
    ],
    "verify": false,
    "pilePos": 6,
-   "editorScore": 8
+   "editorScore": 8,
+   "servePos": 6
   },
   {
    "id": "web-resident-advisor-bret-rool-h-sat-mau-p-jo-lla-jackson-sun",
@@ -1704,7 +1770,8 @@
    ],
    "verify": true,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fstatic.wixstatic.com%2Fmedia%2F069fa4_6bbeb7f6ab7b4ee8902dfaa98ad5f541~mv2.jpg%2Fv1%2Ffill%2Fw_2500%2Ch_1666%2Cal_c%2F069fa4_6bbeb7f6ab7b4ee8902dfaa98ad5f541~mv2.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fstatic.wixstatic.com%2Fmedia%2F069fa4_6bbeb7f6ab7b4ee8902dfaa98ad5f541~mv2.jpg%2Fv1%2Ffill%2Fw_2500%2Ch_1666%2Cal_c%2F069fa4_6bbeb7f6ab7b4ee8902dfaa98ad5f541~mv2.jpg",
-   "editorScore": 8
+   "editorScore": 8,
+   "servePos": 19
   },
   {
    "id": "web-lbb-american-myth-memory-david-levinthal-photographs",
@@ -1730,7 +1797,8 @@
     "VOLATILE"
    ],
    "verify": false,
-   "editorScore": 8
+   "editorScore": 8,
+   "servePos": 42
   },
   {
    "id": "web-lbb-nara-nara-egyptian-restaurant",
@@ -1757,7 +1825,8 @@
    ],
    "verify": false,
    "pilePos": 5,
-   "editorScore": 8
+   "editorScore": 8,
+   "servePos": 5
   },
   {
    "id": "ams-eat-bak",
@@ -1783,7 +1852,8 @@
     "VOLATILE"
    ],
    "when": "Dinner · book ahead",
-   "editorScore": 8
+   "editorScore": 8,
+   "servePos": 43
   },
   {
    "id": "ams-ev2-museum-van-loon",
@@ -1809,7 +1879,8 @@
    ],
    "when": "Wed–Mon · 10:00–17:00",
    "tier": "classic",
-   "editorScore": 8
+   "editorScore": 8,
+   "servePos": 44
   },
   {
    "id": "ams-artis-zoo",
@@ -1835,7 +1906,8 @@
    "tier": "classic",
    "top": true,
    "editorScore": 10,
-   "pilePos": 9
+   "pilePos": 9,
+   "servePos": 9
   },
   {
    "id": "web-iams-chefs-evening",
@@ -1859,7 +1931,8 @@
     "COOL"
    ],
    "verify": false,
-   "editorScore": 2
+   "editorScore": 2,
+   "servePos": 45
   },
   {
    "id": "web-i-amsterdam-pllek-urban-beach-cinema",
@@ -1883,8 +1956,9 @@
    ],
    "verify": true,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fcdn.amsterdamnow.com%2Fapp%2Fuploads%2Fpllek-amsterdam7.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fcdn.amsterdamnow.com%2Fapp%2Fuploads%2Fpllek-amsterdam7.jpg",
-   "editorScore": 8
+   "editorScore": 8,
+   "servePos": 46
   }
  ],
- "restampedAt": "2026-07-11T22:32:12.922Z"
+ "restampedAt": "2026-07-11T23:05:19.165Z"
 }
