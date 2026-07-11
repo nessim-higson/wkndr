@@ -124,6 +124,7 @@ export function MatchGame({
         {done ? (
           <MatchPlan
             matched={matched} total={total} partnerName={partnerName} real={real} onOpen={onOpen}
+            slamOpen={!!slam}
             onSave={() => { onComplete?.(matched); requestClose() }} onClose={requestClose}
           />
         ) : (
@@ -217,13 +218,45 @@ function MatchSlam({
 
 // THE PAYOFF — the shared plan once the round is done.
 function MatchPlan({
-  matched, total, partnerName, real, onOpen, onSave, onClose,
+  matched, total, partnerName, real, slamOpen, onOpen, onSave, onClose,
 }: {
-  matched: Pick[]; total: number; partnerName: string; real: boolean
+  matched: Pick[]; total: number; partnerName: string; real: boolean; slamOpen?: boolean
   onOpen?: (p: Pick, origin?: DOMRect) => void; onSave: () => void; onClose: () => void
 }) {
   const n = matched.length
   const [sent, setSent] = useState(false)
+  // THE RETURN GATE — a real round that found matches must not end in silence. The sender
+  // can't see ANY of this until the link comes back, and "send it back" buried as one of
+  // three equal buttons got missed in the field (2026-07-11). So the return leg is a captive
+  // final step above the plan; skippable, but only on purpose. Waits for the slam to clear.
+  const [gate, setGate] = useState(real && n > 0)
+  const showGate = gate && !slamOpen
+  const canShare = !!navigator.share
+
+  // the return link — same boomerang the plan actions send
+  function returnPayload() {
+    const me = (localStorage.getItem('wkndr.name') || '').trim()
+    // `&m=1` = the confirmation breadcrumb: tells the original sender's app this is the RETURN leg
+    // (you both matched), so it greets them with "it's a match" instead of a fresh invite.
+    const url = shareLink(matched, me) + '&m=1'
+    return { title: 'WKNDR — it’s a match', text: `${n} we both want to do this weekend`, url }
+  }
+
+  // auto-offer the sheet a beat after the gate composes — the ritual presents itself instead
+  // of waiting to be found. Cancelling is a decision (AbortError, V.8.6): the gate stays up
+  // with the explicit button, and the clipboard is never touched on the auto path.
+  useEffect(() => {
+    if (!showGate || !navigator.share) return
+    const id = window.setTimeout(async () => {
+      try {
+        await navigator.share(returnPayload())
+        track('plan-sent')   // only a COMPLETED auto-share counts — an auto-opened-then-cancelled sheet doesn't
+        setGate(false)
+      } catch { /* AbortError (or a blocked non-gesture call) — the giant button is right there */ }
+    }, 800)
+    return () => window.clearTimeout(id)
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- matched is frozen once the round is done
+  }, [showGate])
   // a shared link can outlive the feed (it refreshes weekly; ids rotate) — when NONE of its
   // picks resolve, say so honestly instead of "you ran through all 0".
   if (total === 0) {
@@ -243,15 +276,16 @@ function MatchPlan({
   }
   // close the loop: send your matches BACK as the same kind of link, so they land on the plan you
   // both agreed on (from your name, stored when you last shared).
-  function shareBack() {
+  async function shareBack() {
     track('plan-sent')   // the boomerang leaves — 'return-leg' on the sender's side completes it
-    const me = (localStorage.getItem('wkndr.name') || '').trim()
-    // `&m=1` = the confirmation breadcrumb: tells the original sender's app this is the RETURN leg
-    // (you both matched), so it greets them with "it's a match" instead of a fresh invite.
-    const url = shareLink(matched, me) + '&m=1'
-    const data = { title: 'WKNDR — it’s a match', text: `${n} we both want to do this weekend`, url }
-    if (navigator.share) { navigator.share(data).catch(() => {}); return }
-    navigator.clipboard?.writeText(url).then(() => { setSent(true); setTimeout(() => setSent(false), 1800) })
+    if (navigator.share) {
+      // cancelling the sheet is AbortError — a decision, not a failure (V.8.6): stay put,
+      // never fall through to the clipboard. A completed share has done the job: gate down.
+      try { await navigator.share(returnPayload()); setGate(false) } catch { /* stay */ }
+      return
+    }
+    navigator.clipboard?.writeText(returnPayload().url)
+      .then(() => { setSent(true); setTimeout(() => setSent(false), 1800) })
   }
   return (
     <div className="mg-plan">
@@ -287,6 +321,63 @@ function MatchPlan({
         {n > 0 && <button className={`mg-btn${real ? '' : ' primary'}`} onClick={onSave}>Add {n} to my list</button>}
         <button className="mg-btn" onClick={onClose}>See what else is on →</button>
       </div>
+
+      <AnimatePresence>
+        {showGate && (
+          <ReturnGate
+            partnerName={partnerName} n={n} sent={sent} canShare={canShare}
+            onSend={shareBack}
+            onSkip={() => { track('return-skipped'); setGate(false) }}
+          />
+        )}
+      </AnimatePresence>
     </div>
+  )
+}
+
+// THE CAPTIVE RETURN LEG — full-screen moment over the plan (the list stays readable behind
+// the veil). One giant send, one quiet skip; no backdrop dismiss — leaving is a choice.
+function ReturnGate({
+  partnerName, n, sent, canShare, onSend, onSkip,
+}: {
+  partnerName: string; n: number; sent: boolean; canShare: boolean
+  onSend: () => void; onSkip: () => void
+}) {
+  // same arm-delay as the slam: a queued tap from the last swipe of the round can land the
+  // instant this composes and silently skip (or fire) the whole ritual — ignore taps until
+  // the moment has visibly arrived.
+  const [armed, setArmed] = useState(false)
+  useEffect(() => { const id = setTimeout(() => setArmed(true), 700); return () => clearTimeout(id) }, [])
+  return (
+    <motion.div
+      className="mg-gate"
+      initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+      transition={{ duration: 0.24 }}
+    >
+      <motion.div
+        className="mg-gate-inner"
+        initial={{ scale: 0.94, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.97, opacity: 0 }}
+        transition={{ type: 'spring', stiffness: 300, damping: 26 }}
+      >
+        <span className="mg-gate-count">
+          <Heart size={12} strokeWidth={2.8} fill="currentColor" /> {n} match{n > 1 ? 'es' : ''}
+        </span>
+        {/* "only way he finds out" is literally true while the relay (lib/relay) is dormant —
+            once RELAY_URL goes live the matches may already have posted, so soften this copy then */}
+        <h2 className="mg-gate-title">{partnerName} can’t see your swipes</h2>
+        <p className="mg-gate-sub">
+          This link is the only way {partnerName} finds out what you both said yes to.
+          {canShare ? ' Send it back to finish the match.' : ' Copy it and send it back to finish the match.'}
+        </p>
+        <motion.button
+          className="mg-gate-send" onClick={() => armed && onSend()}
+          initial={{ opacity: 0 }} animate={{ opacity: armed ? 1 : 0.55 }} transition={{ delay: 0.2 }}
+        >
+          {sent ? `✓ Copied — paste it to ${partnerName}`
+            : canShare ? `Send ${partnerName} your matches` : `Copy the link for ${partnerName}`}
+        </motion.button>
+        <button className="mg-gate-skip" onClick={() => armed && onSkip()}>Skip for now</button>
+      </motion.div>
+    </motion.div>
   )
 }

@@ -194,3 +194,74 @@
 .mg-btn:active { transform: scale(0.98); }
 .mg-btn.primary { color: #fff; background: var(--accent); }
 .mg-btn.primary:hover { filter: brightness(1.05); }
+
+/* ——— THE RETURN GATE (real round, matches > 0) ——— */
+/* The field failure this answers (2026-07-11): she finished the round and never knew the
+   matches had to be SENT back. The return leg gets its own captive moment above the plan —
+   the list stays readable behind a light veil; one giant send, one quiet skip. */
+.mg-gate {
+  position: fixed;
+  inset: 0;
+  z-index: 390;   /* above the plan, below the slam (400) — they never coexist, but keep the order honest */
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(26, 26, 26, 0.5);
+  backdrop-filter: blur(7px) saturate(1.1);
+  -webkit-backdrop-filter: blur(7px) saturate(1.1);
+}
+.mg-gate-inner {
+  width: 100%;
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.mg-gate-count {
+  display: inline-flex; align-items: center; gap: 5px;
+  height: 28px; padding: 0 12px;
+  border-radius: 999px;
+  font-size: 12px; font-weight: 700; letter-spacing: 0.04em;
+  color: #fff;
+  background: var(--accent);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+  margin-bottom: 16px;
+}
+.mg-gate-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 32px;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  color: #fff;
+  margin-bottom: 12px;
+}
+.mg-gate-sub {
+  font-size: 15px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.82);
+  max-width: 32ch;
+  margin-bottom: 26px;
+}
+.mg-gate-send {
+  width: 100%;
+  min-height: 58px;
+  padding: 0 24px;
+  border-radius: 999px;
+  font-size: 16px; font-weight: 700;
+  color: #fff;
+  background: var(--accent);
+  box-shadow: 0 14px 34px rgba(255, 77, 31, 0.38);
+  transition: transform 0.14s, filter 0.14s;
+}
+.mg-gate-send:hover { filter: brightness(1.05); }
+.mg-gate-send:active { transform: scale(0.97); }
+.mg-gate-skip {
+  margin-top: 14px;
+  height: 40px; padding: 0 18px;
+  font-size: 13px; font-weight: 600;
+  color: rgba(255, 255, 255, 0.6);
+  transition: color 0.14s;
+}
+.mg-gate-skip:hover { color: rgba(255, 255, 255, 0.85); }

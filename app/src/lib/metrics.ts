@@ -22,10 +22,11 @@ export function initMetrics() {
 }
 
 /** Fire a named funnel event ('link-open', 'first-swipe', 'save', 'match-slam', 'plan-sent',
- *  'return-leg', 'relay-return', 'intent-yes'/'intent-no'). 'relay-return' = the relay delivered
- *  the return leg (lib/relay) — it precedes the 'return-leg' the confirm page then fires, so the
- *  two together split automatic round-trips from manual pastes. Fire-and-forget; one retry if
- *  count.js is still loading. */
+ *  'return-skipped', 'return-leg', 'relay-return', 'intent-yes'/'intent-no'). 'relay-return' =
+ *  the relay delivered the return leg (lib/relay) — it precedes the 'return-leg' the confirm
+ *  page then fires, so the two together split automatic round-trips from manual pastes.
+ *  'return-skipped' = the return gate was dismissed without sending (the measurable drop-off).
+ *  Fire-and-forget; one retry if count.js is still loading. */
 export function track(event: string) {
   if (!SITE) return
   const send = () => window.goatcounter?.count({ path: event, event: true })
