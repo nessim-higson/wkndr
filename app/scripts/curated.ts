@@ -39,6 +39,11 @@ export const CURATED_IMAGES: { match: RegExp; image: string; note: string }[] = 
     image: 'https://www.iamsterdam.com/_next/image?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F62b40a855d1a2c5d5eab528a%2FKwaku_01.webp&w=1920&q=75',
     note: 'R4 (issue #10): Ness supplied this exact URL on the board (img-url verdict) — the festival-crowd shot from I amsterdam’s own asset CDN; recurring multi-weekend event, pin pays off',
   },
+  {
+    match: /\bbret\b/i,
+    image: 'https://app.thefeedfactory.nl/api/assets/63cfdda587ca114344bf775b/1xyhdofhh6g1-bret.webp',
+    note: 'R5 (issue #11): third round of wrong BRET images — the venue og:image the pipeline kept landing on is a sunny garden-café shot, the wrong story for a club night. This is I amsterdam’s in-the-booth night shot (DJ, crowd, the hanging plants — 1800×1020), checked by eye; matches every weekly "BRET: <lineup>" title.',
+  },
   // ——— Ness's 2026-07-02 review: five long-running shows pinned to venue-verified images (each found via
   //     the venue-aware query — "title + venue" — and chosen by eye; runs of weeks/months, so pins pay off) ———
   {

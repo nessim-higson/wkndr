@@ -14,6 +14,24 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.9.8] — 2026-07-12 — "Compile R5 + the lost verdicts of #8/#9"
+- **R5 (issue #11, 73 verdicts, all ★3–5 — the confirmation sweep, no kills):** most ★4–5 were
+  already carried in canon2/corpus (the pool has converged); the gaps got ~15 new `starredKeeps`
+  (the un-starred evergreen floor: markets, day-trips, Pllek, Café Chris, Patta, X Bank,
+  Brouwerij 't IJ…) and 5 ★3 `starAnchors` (Muiderslot, Dappermarkt, Mr. Watson, Chef's Evening,
+  Cinair Europe).
+- **The lost verdicts:** issues #8/#9 (filed 7/09–7/10) were never read; #10's compile superseded
+  all but FOUR — **Île de Bisous KILL** (filed twice, yet it was *leading the airlock*; now vetoed,
+  with an ascii twin), **Hortus Summer Tour KILL** (title-scoped — the Hortus itself stays ★5),
+  **Martin Parr: Very Modern and Rather Ugly +CANON** (Foam, `Until 12 Aug` — canon2's one dated
+  entry, auto-retires via whenIsPast), and **Queer Amsterdam: The Pink City 👑 TOP ★5** (the
+  WorldPride flagship at the Nieuwe Kerk — crown armed; the 7/11 crawl dropped the card, it
+  activates when an adapter re-surfaces it).
+- **BRET image, third strike:** the "venue's own photo" fallback resolved to bret.bar's og:image —
+  a sunny garden-café shot, the wrong story for a club night. BRET is now PINNED in `curated.ts`
+  to I amsterdam's in-the-booth night shot (DJ, crowd, hanging plants — checked by eye);
+  the imageExemplar records the escalation.
+
 ## [V.9.5] — 2026-07-11 — "The lens: this weekend × this weather"
 _Ness's board-IA call (2026-07-11): the Curation Board's first section is the tight slice._
 - **THE LENS leads IN ROTATION** (before THE WEEKEND PILE): only picks with a concrete date

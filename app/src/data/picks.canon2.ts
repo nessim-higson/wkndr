@@ -128,6 +128,13 @@ const ROWS: Row[] = [
     img: 'https://www.waternet.nl/globalassets/fotos/recreatie/zwemmen/gaasperplas-zwemmen.jpg?w=900&h=0&mode=crop&scale=both',
     blurb: 'Three real swimming lakes within cycling distance — grass banks, clean water, zero entrance fee. Where the city actually cools off.', why: 'Free wild swimming, 20 minutes away',
     link: 'https://www.google.com/maps/search/?api=1&query=Gaasperplas%20zwemmen' },
+  // ——— R5 +CANON (issues #8/#9, late-compiled 2026-07-12) — the ONE dated entry in this file: an
+  //     exhibition, not a place. Honest end date; whenIsPast retires it from serving after 12 Aug
+  //     (cleanup candidate then). Image: the New Brighton 'Last Resort' photograph, checked by eye. ———
+  { slug: 'martin-parr-foam', title: 'Martin Parr: Very Modern and Rather Ugly', venue: 'Foam Photography Museum', area: 'Keizersgracht, Centrum', category: 'art', tier: 'bespoke', stars: 4, price: '€€', when: 'Until 12 Aug', outdoor: false,
+    img: 'https://loeildelaphotographie.com/wp-content/uploads/2026/04/new-brighton-england-great-britain-1985-c-martin-parr.jpg',
+    blurb: 'Retrospective of the British photographer’s satirical, affectionate eye on modern life and consumer culture — chip queues, deck chairs and all.', why: 'Closes 12 Aug; celebrated photographer',
+    link: 'https://www.foam.org/exhibitions' },
 ]
 
 export const CANON2_AMSTERDAM: Pick[] = ROWS.map((r) => ({

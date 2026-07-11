@@ -1,9 +1,9 @@
 # WKNDR — STATE (catch-me-up snapshot)
 
-_Living "where are we right now" doc — a **snapshot, not a history**. **Updated 2026-07-11.** Read this
+_Living "where are we right now" doc — a **snapshot, not a history**. **Updated 2026-07-12.** Read this
 FIRST in a new chat. For strategy + backlog see `docs/backlog.md`; for the pipeline architecture see
 `docs/pipeline-architecture.md` + `docs/source-map.md`; for full **version history** see `CHANGELOG.md`
-(current to V.9.5) and the **git log / tags**. Onboarding: `CLAUDE.md`. App lives in `/app` (Vite +
+(current to V.9.8) and the **git log / tags**. Onboarding: `CLAUDE.md`. App lives in `/app` (Vite +
 React + TS, run with `bun`); deployed to GitHub Pages._
 
 > **START-OF-SESSION for WKNDR:** check `gh issue list --label curation` — the Curation Board's
@@ -11,14 +11,16 @@ React + TS, run with `bun`); deployed to GitHub Pages._
 > read the open ones, compile into the taste engine (below), ship, then close the issue.
 
 ## Live right now
-- **App: V.9.5** — https://nessim-higson.github.io/wkndr/ (cache-bust `?v=V.9.5`; V.8.16 = **THE
+- **App: V.9.8** — https://nessim-higson.github.io/wkndr/ (cache-bust `?v=V.9.8`; V.8.16 = **THE
   AIRLOCK** — Ness's 2026-07-10 call made law: the live deck is 1:1 with his board approvals. A live
   pick ships only on an approval match (starredKeeps/tops/★3+ anchors/slate/hero/buzz≥3 — one shared
   `approvalCheck` in lib/pipeline); everything else waits imaged+scored in `pending.<city>.json`,
   weekend-topical first (dated-this-weekend → forecast-mode fit → judge). Board verdicts promote via
   restamp; invariant test `tests/airlock.test.ts` guards it — **98 tests**. V.9–V.9.2 = button-fling
   exit polish; V.9.3 = weather tint on card faces; V.9.4 = the relay (below); V.9.5 = **THE LENS** +
-  the seasonal-venue websearch fix + the deck's sun bonus) ·
+  the seasonal-venue websearch fix + the deck's sun bonus; V.9.6 = boomerang return gate; V.9.7 =
+  the relay LIVE; V.9.8 = **compile R5 + the lost #8/#9 verdicts** — Île de Bisous veto, Queer
+  Amsterdam 👑, Martin Parr canon, BRET image pinned) ·
   **Curation Board:** https://nessim-higson.github.io/wkndr/curate/ — tabbed: `IN ROTATION` (opens
   with **THE LENS — THIS WEEKEND × THIS WEATHER**, the tight dated + forecast-fit slice, outdoor
   first when hot, forecast via the board's own open-meteo read; then **THE WEEKEND PILE** — the ~10
@@ -129,8 +131,10 @@ can't drift from code or show killed rows. Canon = the imaged floor + search sur
 Curation Board (`/curate/`) → **Submit → GitHub issue** → Claude compiles → ship → close. Verdicts land
 in `scripts/taste/corpus.json` (rules + anchors + veto + starredKeeps + **rested** + **topPicks**) +
 `taste/weekly.json` (LEAD/LATER slate) + `taste/scouted.json` (fresh finds) + `picks.canon2.ts` (canon)
-→ injected into the Sonnet editor judge + vision prompts every run. **Three rounds compiled (86 + 115 +
-81/84 verdicts).** Veto/keeps/rested/top all match with WORD BOUNDARIES (refresh.ts `rxOf`). Signals
+→ injected into the Sonnet editor judge + vision prompts every run. **Five rounds compiled** (R1–R3:
+86 + 115 + 81/84 verdicts · R4 = issue #10 · R5 = issue #11's 73-verdict all-stars confirmation sweep,
+plus the four LOST #8/#9 verdicts late-compiled in V.9.8 — the lesson: close issues on compile, an
+open one means unread). Veto/keeps/rested/top all match with WORD BOUNDARIES (refresh.ts `rxOf`). Signals
 that shaped the corpus: R2 — 20 generic club nights killed while BRET/POISED passed → "curatorial
 identity" rule. R3 — **★4+KILL = fatigue, not hate** → the `rested` tier (bench, then return); the
 organ-concert veto REVERSED (community-authentic wins). The pipeline stamps `top`/`lead`/`rested` and

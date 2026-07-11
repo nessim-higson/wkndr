@@ -49,7 +49,7 @@
     {
       "event": "BRET: Rooléh / Mau P",
       "verdict": "bad",
-      "why": "R4: wrong image two rounds running — the flyer shown is not this night’s; prefer the RA flyer for the EXACT event id, else the venue’s own photo"
+      "why": "R4: wrong image two rounds running — the flyer shown is not this night’s; prefer the RA flyer for the EXACT event id, else the venue’s own photo. R5 (issue #11): STILL wrong — the venue og:image is a sunny garden-café shot, not a club night; BRET is now PINNED in curated.ts to I amsterdam’s in-the-booth night shot"
     }
   ],
   "eventRules": [
@@ -177,6 +177,36 @@
       "title": "Milkshake Festival",
       "stars": 3,
       "note": "R4: ★3 — the 👑 crown (R3) stays, but rate-wise it sits at 3; the campaign-graphic image was the drag, replaced by scout"
+    },
+    {
+      "title": "Muiderslot",
+      "stars": 3,
+      "note": "R5 (issue #11): ★3 in the all-stars confirmation sweep — fine day-trip, not a favourite"
+    },
+    {
+      "title": "Dappermarkt",
+      "stars": 3,
+      "note": "R5 (issue #11): ★3"
+    },
+    {
+      "title": "Mr. Watson",
+      "stars": 3,
+      "note": "R5 (issue #11): ★3"
+    },
+    {
+      "title": "Chef's Evening",
+      "stars": 3,
+      "note": "R5 (issue #11): ★3"
+    },
+    {
+      "title": "Cinair Europe",
+      "stars": 3,
+      "note": "R5 (issue #11): ★3"
+    },
+    {
+      "title": "Queer Amsterdam: The Pink City",
+      "stars": 5,
+      "note": "R5 late-compile from issues #8/#9 (filed 7/09–7/10, never read): 👑 TOP ★5 — the WorldPride 2026 flagship exhibition at the Nieuwe Kerk"
     }
   ],
   "eventVeto": [
@@ -241,9 +271,12 @@
     "berkan v8",
     "doka summer studio",
     "pink dance",
-    "mengelmoes"
+    "mengelmoes",
+    "île de bisous",
+    "ile de bisous",
+    "hortus summer tour"
   ],
-  "_vetoNote": "Taste kills from the board — dropped at publish, every run, any source; matched with WORD BOUNDARIES (refresh.ts) so short names like 'monne' can't hit 'Monnickendam'. Dupe-kills are deliberately NOT here: R1's Julidans/TREK/Vondelpark twins, and R2's 'The Netherlands – Japan: Connected Through Time' (EN twin of the ★4 Dutch-titled show) were dedup actions, not taste. R3 REVERSAL: 'lunchtime organ concert' removed — Ness ★4'd the Waterlooplein series (community-authentic wins); the Westerkerk lunchconcerten veto stands.",
+  "_vetoNote": "Taste kills from the board — dropped at publish, every run, any source; matched with WORD BOUNDARIES (refresh.ts) so short names like 'monne' can't hit 'Monnickendam'. R5 late-compiles from issues #8/#9 (filed but never read): 'île de bisous' (killed TWICE — it was leading the airlock; ascii twin covers retitles) and 'hortus summer tour' (title-scoped — Hortus Botanicus itself stays ★5). Dupe-kills are deliberately NOT here: R1's Julidans/TREK/Vondelpark twins, and R2's 'The Netherlands – Japan: Connected Through Time' (EN twin of the ★4 Dutch-titled show) were dedup actions, not taste. R3 REVERSAL: 'lunchtime organ concert' removed — Ness ★4'd the Waterlooplein series (community-authentic wins); the Westerkerk lunchconcerten veto stands.",
   "rested": [
     {
       "match": "festival trek",
@@ -444,6 +477,66 @@
     {
       "match": "museum van loon",
       "stars": 4
+    },
+    {
+      "match": "marken",
+      "stars": 4
+    },
+    {
+      "match": "zandvoort",
+      "stars": 4
+    },
+    {
+      "match": "ij-hallen",
+      "stars": 4
+    },
+    {
+      "match": "bloemenmarkt",
+      "stars": 4
+    },
+    {
+      "match": "albert cuypmarkt",
+      "stars": 4
+    },
+    {
+      "match": "waterlooplein flea",
+      "stars": 4
+    },
+    {
+      "match": "kinderdijk",
+      "stars": 4
+    },
+    {
+      "match": "pllek",
+      "stars": 4
+    },
+    {
+      "match": "café chris",
+      "stars": 4
+    },
+    {
+      "match": "efteling",
+      "stars": 4
+    },
+    {
+      "match": "madurodam",
+      "stars": 4
+    },
+    {
+      "match": "patta",
+      "stars": 4
+    },
+    {
+      "match": "x bank",
+      "stars": 4
+    },
+    {
+      "match": "brouwerij 't ij",
+      "stars": 4
+    },
+    {
+      "match": "queer amsterdam",
+      "stars": 5
     }
   ],
   "_starredNote": "★4-5 live events from the board: (a) editorScore floor 8 when present, (b) CARRIED FORWARD from the prior feed when an adapter fails to re-surface them and they're still date-valid — Ness's investment must not evaporate between runs. Matched with word boundaries (so 'bak' ≠ 'bakkerij'). R2 removals: 'oatly x radio radio' (reversed to KILL — now vetoed).",
@@ -451,8 +544,9 @@
     "milkshake festival",
     "dekmantel",
     "'t lemmeke",
-    "artis royal zoo"
+    "artis royal zoo",
+    "queer amsterdam"
   ],
-  "_topPicksNote": "R3 issue #3 👑 escalations. Milkshake + Dekmantel are future festivals (late Jul) — TOP is armed and activates when they enter the feed. 't Lemmeke = current restaurant. ARTIS: Ness starred the bench 'ARTIS-Aquarium' card (weak kidsproof.nl link); routed to the canon 'ARTIS Royal Zoo' entry (same visit, real artis.nl link, guaranteed availability) so TOP actually sticks.",
+  "_topPicksNote": "R3 issue #3 👑 escalations. Milkshake + Dekmantel are future festivals (late Jul) — TOP is armed and activates when they enter the feed. 't Lemmeke = current restaurant. ARTIS: Ness starred the bench 'ARTIS-Aquarium' card (weak kidsproof.nl link); routed to the canon 'ARTIS Royal Zoo' entry (same visit, real artis.nl link, guaranteed availability) so TOP actually sticks. 'queer amsterdam' = R5 late-compile from issues #8/#9: the Nieuwe Kerk WorldPride flagship ('Queer Amsterdam: The Pink City', opened 9 Jul) — TOP armed; the crawl dropped it from the 7/11 feed, activates when an adapter re-surfaces it.",
   "_topNote": "Ness's 👑 TOP escalations from the board — the tier ABOVE starredKeeps. Matched picks (word-boundary, any source incl. canon via feed.topMatches) get editorScore 10, lead the served deck ahead of everything, and carry the 'Top pick' pill. Keep this list SHORT (≤6) — if everything is top, nothing is."
 }
