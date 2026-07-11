@@ -45,6 +45,30 @@ export function revertSwipe(taste: Taste, p: Pick, dir: SwipeDir): Taste {
   return next
 }
 
+// "MORE LIKE THIS" (V.9.3) — the detail sheet's explicit ask, the strongest positive
+// signal the app can receive: 2× a save, per token. Kept a multiple of 0.5 so the
+// revert's ===0 drop stays float-exact (same contract as revertSwipe).
+const MORE_LIKE_DELTA = 3
+
+export function applyMoreLikeThis(taste: Taste, p: Pick): Taste {
+  const next = { ...taste }
+  for (const tok of tokensFor(p)) next[tok] = (next[tok] || 0) + MORE_LIKE_DELTA
+  return next
+}
+
+/** Exact inverse of applyMoreLikeThis — the same undo-symmetry contract as revertSwipe:
+ *  tokens that land back on 0 are dropped, so reverting against a fresh profile leaves it
+ *  genuinely empty (hasTaste stays honest). */
+export function revertMoreLikeThis(taste: Taste, p: Pick): Taste {
+  const next = { ...taste }
+  for (const tok of tokensFor(p)) {
+    const v = (next[tok] || 0) - MORE_LIKE_DELTA
+    if (v === 0) delete next[tok]
+    else next[tok] = v
+  }
+  return next
+}
+
 /** Summed tag-weight for a pick, clamped so taste reorders within — but rarely
  *  overpowers — the weather term (10). */
 export function tasteScore(p: Pick, taste: Taste): number {

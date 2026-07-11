@@ -160,6 +160,27 @@
 }
 .detail-link:hover { background: var(--accent-deep); }
 
+/* "More like this" (V.9.3) — the sheet's second ask: close and re-deal the deck bent
+   around this pick. A quiet full-width secondary under the action row; "Open the page"
+   keeps the primary ink. */
+.detail-morelike {
+  margin-top: 10px;
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 12px 18px;
+  border-radius: 999px;
+  background: var(--paper-2);
+  color: var(--ink);
+  transition: background 0.12s, transform 0.12s var(--ease-out);
+}
+.detail-morelike:hover { background: var(--paper-3); transform: translateY(-1px); }
+.detail-morelike:active { transform: scale(0.98); }
+
 .detail-trace {
   margin-top: 16px;
   font-size: 11px;

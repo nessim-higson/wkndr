@@ -498,6 +498,9 @@
 .ctx-bar button.ctx-match { background: var(--accent); color: #fff; }
 .ctx-bar button.ctx-x { background: transparent; color: var(--ink-4); padding: 7px; display: inline-grid; place-items: center; }
 .ctx-bar button.ctx-x:hover { color: var(--ink); filter: none; }
+/* more-like mode (V.9.3) — the deck is bent around one pick; the ✕ is the way back */
+.ctx-bar.morelike { border-color: rgba(255, 120, 70, 0.5); box-shadow: 0 12px 32px rgba(255, 77, 31, 0.14), 0 0 0 1px rgba(255, 120, 70, 0.22); }
+.ctx-bar.morelike > span b { font-weight: 700; }
 .ft-caret { opacity: 0.6; font-size: 11px; }
 
 /* ===== main ===== */

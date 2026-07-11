@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { AnimatePresence, motion, useDragControls } from 'framer-motion'
-import { X, Star, ArrowUpRight, Check, Maximize2 } from 'lucide-react'
+import { X, Star, ArrowUpRight, Check, Maximize2, Sparkles } from 'lucide-react'
 import type { Pick } from '../types'
 import { CATEGORY_LABEL, FRESHNESS_LABEL, STATUS_LABEL, weatherPill } from '../types'
 import { shortCode } from '../lib/share'
@@ -47,13 +47,14 @@ function headerImageOf(src: string): string {
  *  style) — `origin` is that card's on-screen rect; absent → a centred grow. Swipe the
  *  sheet down to dismiss. */
 export function CardDetail({
-  pick, saved, origin, onClose, onToggleSave,
+  pick, saved, origin, onClose, onToggleSave, onMoreLike,
 }: {
   pick: Pick | null
   saved: boolean
   origin?: DOMRect | null
   onClose: () => void
   onToggleSave: (p: Pick) => void
+  onMoreLike?: (p: Pick) => void
 }) {
   const [copied, setCopied] = useState(false)
   // FOCUS view — full-screen, uncropped look at the pick's photo (the curator's loupe)
@@ -214,6 +215,15 @@ export function CardDetail({
                     Open the page <ArrowUpRight size={15} strokeWidth={2.2} style={{ verticalAlign: '-2px' }} />
                   </a>
                 </motion.div>
+                {onMoreLike && (
+                  <motion.button
+                    className="detail-morelike"
+                    variants={itemV}
+                    onClick={() => onMoreLike(pick)}
+                  >
+                    <Sparkles size={15} strokeWidth={2.2} /> More like this
+                  </motion.button>
+                )}
                 <motion.div className="detail-trace" variants={itemV}>
                   ↳ surfaced from <b>{pick.source}</b> · ranked for this weekend’s weather
                 </motion.div>

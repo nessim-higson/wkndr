@@ -5,7 +5,7 @@ import { Shuffle, Clock, ChevronDown, LayoutGrid, Star, ArrowUpRight, LocateFixe
 // subtle haptic on commit/save (Android/Chrome; iOS Safari ignores navigator.vibrate)
 const haptic = (ms = 10) => { try { navigator.vibrate?.(ms) } catch { /* unsupported */ } }
 import type { Mode, Pick, SwipeDir } from './types'
-import { MODES, MODE_META, classify, applyMode, rankPicks, diversify, orderServed } from './weather/modes'
+import { MODES, MODE_META, classify, applyMode, rankPicks, diversify, orderServed, moreLikeOrder } from './weather/modes'
 import { CITIES, DEFAULT_CITY, cityByKey, cityByName, nearestCity, type City } from './data/cities'
 import { AmbientField } from './weather/AmbientField'
 import type { Look } from './weather/ambientEngine'
@@ -80,7 +80,7 @@ import { sanePicks } from './lib/feed'
 import { initMetrics, track } from './lib/metrics'
 import { FEEDBACK_FORM } from './components/Feedback'
 import {
-  type Taste, applySwipe, revertSwipe, hasTaste, loadSaved, loadTaste, persistSaved, persistTaste,
+  type Taste, applySwipe, revertSwipe, applyMoreLikeThis, hasTaste, loadSaved, loadTaste, persistSaved, persistTaste,
 } from './taste'
 import './App.css'
 
@@ -186,6 +186,8 @@ export default function App() {
   // null → fall back to a centred grow. Cleared on close.
   const [detailOrigin, setDetailOrigin] = useState<DOMRect | null>(null)
   const openDetail = (p: Pick, origin?: DOMRect) => { setDetailOrigin(origin ?? null); setDetail(p) }
+  // "MORE LIKE THIS" (V.9.3): the deck is bent around this pick while set — see moreLikeThis()
+  const [moreLike, setMoreLike] = useState<Pick | null>(null)
   const [inputsOpen, setInputsOpen] = useState(false)      // "what's feeding this" sheet
   const [filter, setFilter] = useState<Filter>(SHARED_IDS ? 'shared' : 'all')  // mode: browse / saved / shared
   const [cats, setCats] = useState<CatKey[]>([])           // What: multi-select categories (empty = all)
@@ -454,6 +456,12 @@ export default function App() {
         const whenOk = whens.length === 0 || whens.some((w) => matchesWhen(p, w))
         return whatOk && whenOk
       })
+      // "MORE LIKE THIS" (V.9.3): the whole pool — live and canon alike (canon especially:
+      // "more like 't Lemmeke" sweeps the full library for its kin, not just the week's
+      // rotation slice) — stable-reordered around the reference. Weather still dominant;
+      // deliberately NOT diversified (the cluster IS the ask) and no canon RESERVE.
+      // Reorders, never truncates: the endless deck stays endless.
+      if (moreLike) return moreLikeOrder(filtered, moreLike, mode)
       if (filter !== 'all' || cats.length > 0 || whens.length > 0) return diversify(filtered)
       // ENDLESS browse (per Ness — this functioned better than fixed sets): the weekend's LIVE picks
       // lead, then a ROTATING slice of the deep canon library. The slice advances every WEEK and on
@@ -480,7 +488,7 @@ export default function App() {
       // is preserved within each tier (no re-clustering).
       return orderServed([...diversify(fresh), ...diversify(sample)])
     },
-    [rankedAll, filter, cats, whens, saved, seed, sharedPickIds],
+    [rankedAll, filter, cats, whens, saved, seed, sharedPickIds, moreLike, mode],
   )
   const filterActive = filter !== 'all' || cats.length > 0 || whens.length > 0
   const deck = useMemo(() => shown.filter((p) => !swiped.has(p.id)), [shown, swiped])
@@ -510,10 +518,10 @@ export default function App() {
     if (view !== 'stack' || filterActive || deck.length > 0 || shown.length === 0) return
     const t = setTimeout(() => {
       setSwiped(new Set()); setSeed((s) => s + 1); setDealKey((k) => k + 1)
-      flash('More for you')
+      flash(moreLike ? `More like ${moreLike.title}` : 'More for you')
     }, 380)
     return () => clearTimeout(t)
-  }, [view, filterActive, deck.length, shown.length])
+  }, [view, filterActive, deck.length, shown.length, moreLike])
 
   // "Show me more" / Shuffle: bump the seed so the ranking JITTERS — different picks lead,
   // not the same high-scorers. Keep what you've already seen hidden so "more" really is more;
@@ -584,6 +592,26 @@ export default function App() {
     else flash('Removed')
   }
 
+  // "MORE LIKE THIS" (V.9.3) — the detail sheet's strongest signal: silently log a
+  // super-weighted taste update (2× a save), close the sheet, and re-deal the deck bent
+  // around this pick (moreLikeOrder in `shown`). Works on canon and live cards alike.
+  // The persistent ✨ bar under the header is the way back to the normal deck.
+  function moreLikeThis(p: Pick) {
+    setDetail(null)
+    setTaste((t) => applyMoreLikeThis(t, p))
+    setMoreLike(p)
+    setFilter('all'); setCats([]); setWhens([])   // the re-deal is over the full pool
+    setView('stack')
+    setDealKey((k) => k + 1)
+    track('more-like-this')
+    haptic(12)
+  }
+  function exitMoreLike() {
+    setMoreLike(null)
+    setDealKey((k) => k + 1)
+    flash('Back to the full deck')
+  }
+
   // hard reset — wipe saved list + learned taste (for testing the cold-start state)
   function resetData() {
     localStorage.removeItem('wkndr.saved.v1')
@@ -594,6 +622,7 @@ export default function App() {
     setSeed(0)
     setDealKey((k) => k + 1)
     setFilter('all'); setCats([]); setWhens([])
+    setMoreLike(null)
     setBarOpen(false)
     flash('Reset · saved list + taste cleared')
   }
@@ -609,6 +638,7 @@ export default function App() {
     if (c.key === city.key) return
     setCity(c)
     setFilter('all'); setCats([]); setWhens([])
+    setMoreLike(null)   // the reference pick belongs to the old city's pool
     setSwiped(new Set()); setSeed(0); setDealKey((k) => k + 1)
     if (!autoSwitch) { setView('stack'); setBarOpen(false); goLive(c.lat, c.lon) }
   }
@@ -979,10 +1009,21 @@ export default function App() {
             )}
           </div>
         )}
+        {/* MORE-LIKE bar (V.9.3) — the mode indicator AND the way back: persistent while the
+            deck is bent around a pick, ✕ returns to the normal deck. Yields to the undo pill
+            (they share the under-header slot); the share nudge + intent prompt yield to IT. */}
+        {moreLike && !intro && !(undoable && undoShown) && (
+          <div className="ctx-bar morelike">
+            <span>✨ More like <b>{moreLike.title}</b></span>
+            <button className="ctx-x" onClick={exitMoreLike} aria-label="Back to the full deck">
+              <X size={15} strokeWidth={2.5} />
+            </button>
+          </div>
+        )}
         {/* Share nudge — appears once you've saved enough to be worth planning together (and not
             already in a saved/shared context). Dismissible; it's the growth lever for matching.
             Yields while the undo pill is up — they share the under-header slot. */}
-        {!shareNudgeOff && saved.size >= 3 && !SHARED_IDS && filter === 'all' && !intro && !(undoable && undoShown) && (
+        {!shareNudgeOff && saved.size >= 3 && !SHARED_IDS && filter === 'all' && !intro && !moreLike && !(undoable && undoShown) && (
           <div className="ctx-bar nudge">
             <span>💛 Plan these together</span>
             <button className="ctx-match" onClick={() => { setShareOpen(true) }}><Heart size={13} strokeWidth={2.6} fill="currentColor" /> Match</button>
@@ -991,7 +1032,7 @@ export default function App() {
         )}
         {/* The intent prompt — same under-header slot, yields to the undo pill AND the share
             nudge (rarer of the two; it can wait a render). One question, once ever. */}
-        {(intent === 'ask' || intent === 'thanks') && !intro && !(undoable && undoShown) &&
+        {(intent === 'ask' || intent === 'thanks') && !intro && !moreLike && !(undoable && undoShown) &&
           (shareNudgeOff || saved.size < 3 || !!SHARED_IDS) && (
           <div className="ctx-bar nudge">
             {intent === 'thanks' ? (
@@ -1110,6 +1151,7 @@ export default function App() {
         origin={detailOrigin}
         onClose={() => setDetail(null)}
         onToggleSave={toggleSave}
+        onMoreLike={moreLikeThis}
       />
       <InputsSheet
         open={inputsOpen}

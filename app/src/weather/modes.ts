@@ -1,5 +1,5 @@
 import type { Mode, Pick } from '../types'
-import { tasteScore, type Taste } from '../taste'
+import { tasteScore, tokensFor, type Taste } from '../taste'
 import { latestDateOf, upcomingWeekendEnd, whenActiveBy } from '../lib/when'
 
 export const MODES: Mode[] = ['HOT', 'WARM', 'COOL', 'COLD_WET', 'VOLATILE']
@@ -185,6 +185,32 @@ export function diversify(ranked: Pick[]): Pick[] {
     out.push(pool.splice(i, 1)[0])
   }
   return out
+}
+
+/**
+ * "MORE LIKE THIS" (V.9.3) — re-deal the deck bent around a reference pick. A STABLE reorder
+ * of an already-ranked list: token overlap (tokensFor) with the reference decides the order
+ * WITHIN the weather tiers — same category first, then same area, then the finer shared
+ * tokens (outdoor / kids / weather-affinity / source) as a capped tiebreak. Weather stays
+ * dominant: likeness maxes at 7, under the 8-point weather tier, so a weather-fit stranger
+ * still beats a rain-day twin. The reference itself is dropped (its sheet was just read);
+ * nothing else is — the endless deck keeps its full pool. Deliberately NOT diversified and
+ * NOT pile-ordered: the user asked for the cluster, so likeness outranks the week's slate
+ * while the mode is on.
+ */
+export function moreLikeOrder(ranked: Pick[], ref: Pick, mode: Mode): Pick[] {
+  const refToks = new Set(tokensFor(ref))
+  const fine = (p: Pick) => Math.min(1,
+    0.25 * tokensFor(p).filter((t) => !t.startsWith('cat:') && !t.startsWith('area:') && refToks.has(t)).length)
+  const likeness = (p: Pick) =>
+    (p.weatherFit.includes(mode) ? 8 : 0)
+    + (p.category === ref.category ? 4 : 0)
+    + (p.area === ref.area ? 2 : 0)
+    + fine(p)
+  return ranked.filter((p) => p.id !== ref.id)
+    .map((p, i) => ({ p, k: likeness(p), i }))
+    .sort((a, b) => b.k - a.k || a.i - b.i)   // explicit index tiebreak — stability guaranteed
+    .map((x) => x.p)
 }
 
 /**

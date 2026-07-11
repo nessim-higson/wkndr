@@ -1,3 +1,4 @@
+import './devRafPump'   // FIRST: dev-only hidden-tab rAF pump (see the module's comment)
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App'
