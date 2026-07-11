@@ -1,8 +1,9 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import type { Mode, Pick } from '../types'
 import { MODE_META } from '../weather/modes'
 import { shareLink } from '../lib/share'
+import { newRoundId, relayOn, rememberSentRound } from '../lib/relay'
 import './ShareSheet.css'
 
 function cover(mode: Mode): string {
@@ -29,12 +30,20 @@ export function ShareSheet({
     setName(clean)
     localStorage.setItem('wkndr.name', clean)
   }
+  // each OPEN mints a fresh relay round id (`&r=` on the link) — the key the recipient's
+  // matches will POST back under. It only becomes a pending round (polled for its return)
+  // once the link actually LEAVES: copy or share resolved, not merely the sheet opened.
+  // With the relay off (lib/relay RELAY_URL empty) the link is byte-identical to before.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const round = useMemo(() => (relayOn() ? newRoundId() : ''), [open])
+  const armRound = () => { if (round) rememberSentRound(round) }
   // …?w=codes&from=Name → the recipient lands greeted "<name> shared some picks".
   // Short stable codes (lib/share.ts), not raw ids — ~90 chars for 10 picks, not 400+.
-  const link = shareLink(picks, name)
+  const link = shareLink(picks, name, round || undefined)
 
   function copy() {
     navigator.clipboard?.writeText(link).then(() => {
+      armRound()
       setCopied(true); setTimeout(() => setCopied(false), 1800)
     })
   }
@@ -45,7 +54,7 @@ export function ShareSheet({
       // cancelling the native sheet rejects with AbortError — that's a decision, not a
       // failure. Only a real failure falls through to copy(); a cancel must not
       // overwrite the clipboard (or flash "copied" for something they didn't ask for).
-      try { await navigator.share(data); return }
+      try { await navigator.share(data); armRound(); return }
       catch (e) { if ((e as DOMException)?.name === 'AbortError') return }
     }
     copy()

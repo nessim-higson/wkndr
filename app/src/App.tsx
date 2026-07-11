@@ -36,6 +36,13 @@ const SHARED_FROM = (() => {
 // matches BACK. Same ?w=codes shape, but we greet it as a confirmation ("you're matched") and
 // skip relaunching the swipe game (you'd just be re-swiping your own picks). The breadcrumb.
 const SHARED_CONFIRM = new URLSearchParams(window.location.search).get('m') === '1'
+// `&r=` = the relay round id riding an invite: the recipient's matches POST back to the relay
+// under this id (lib/relay), so the SENDER's app can pull the return leg without the manual
+// link-back. Shape-checked here so a mangled param can never reach the worker.
+const SHARED_ROUND = (() => {
+  const r = new URLSearchParams(window.location.search).get('r')
+  return r && /^[a-z0-9]{6,24}$/.test(r) ? r : null
+})()
 // FUNNEL — module scope so each fires exactly once per page load. 'return-leg' is the metric
 // that matters (a completed boomerang); 'link-open' is its top-of-funnel.
 initMetrics()
@@ -67,7 +74,8 @@ const TINT_PRESETS = [
 ]
 import { CATEGORY_LABEL, type Category } from './types'
 import { fixWhen, whenDayGroup, whenSortKey, whenTime, whenIsPast } from './lib/when'
-import { inShared } from './lib/share'
+import { confirmLink, inShared } from './lib/share'
+import { fetchRound, relayOn, resolveSentRound, roundReady, sentRounds } from './lib/relay'
 import { sanePicks } from './lib/feed'
 import { initMetrics, track } from './lib/metrics'
 import { FEEDBACK_FORM } from './components/Feedback'
@@ -172,6 +180,7 @@ export default function App() {
   const [dealKey, setDealKey] = useState(0)      // bump → stack re-deals (refresh signal)
   const [matching, setMatching] = useState(false)   // match-mode overlay
   const matchLaunched = useRef(false)
+  const matchingRef = useRef(false)                 // read by the relay poll (its effect mounts once)
   const [detail, setDetail] = useState<Pick | null>(null)  // open card detail
   // where the detail should expand FROM (the tapped card's on-screen rect) — App Store style.
   // null → fall back to a centred grow. Cleared on close.
@@ -362,6 +371,38 @@ export default function App() {
     // re-swipe their own picks — just show the confirmed plan.
     if (matchPartner && !intro && !matchLaunched.current && !SHARED_CONFIRM) { matchLaunched.current = true; setMatching(true) }
   }, [intro, matchPartner])
+  useEffect(() => { matchingRef.current = matching }, [matching])
+
+  // THE RELAY RETURN — the sender's half of the boomerang backend. While any sent round is
+  // pending (lib/relay, localStorage `wkndr.rounds`), poll the relay on boot / every 45s / on
+  // tab-return; when the partner's matches land, jump to the exact `?w=…&m=1` confirm URL the
+  // manual link-back produces — ONE greeting path, relay or paste. A fresh page load is the
+  // point (not a bug): the intro re-runs as "It's a match with <name>". Deliberately held
+  // while a match round is open here (don't yank the deck mid-swipe); the next tick catches it.
+  // No-op until lib/relay's RELAY_URL is set.
+  useEffect(() => {
+    if (!relayOn()) return
+    let gone = false
+    const check = async () => {
+      for (const s of sentRounds()) {
+        const res = await fetchRound(s.r)
+        if (gone || matchingRef.current) return
+        if (!res) continue
+        if (roundReady(res, Date.now())) {
+          resolveSentRound(s.r)   // BEFORE navigating — the confirm page must not re-fire this
+          track('relay-return')
+          window.location.replace(confirmLink(res.codes, res.name))
+          return
+        }
+        if (res.done) resolveSentRound(s.r)   // finished with zero matches — stop polling, no fanfare
+      }
+    }
+    check()
+    const id = window.setInterval(check, 45_000)
+    const onVis = () => { if (document.visibilityState === 'visible') check() }
+    document.addEventListener('visibilitychange', onVis)
+    return () => { gone = true; window.clearInterval(id); document.removeEventListener('visibilitychange', onVis) }
+  }, [])
 
   // pulse the persistent saves counter whenever a new save lands in it (the toast's
   // sibling moment — the saved item visibly "arrives" in the dock)
@@ -1026,6 +1067,7 @@ export default function App() {
           mode={mode}
           partnerName={matchPartner?.name ?? 'Robin'}
           partnerIds={matchPartner?.ids}
+          roundId={SHARED_ROUND ?? undefined}
           onOpen={openDetail}
           onClose={() => { setMatching(false); setFilter('all') }}   /* land on the full feed — recipients can keep discovering, never boxed into the shared set */
           onComplete={(m) => { setSaved((s) => new Set([...s, ...m.map((p) => p.id)])); flash(`${m.length} added to your list`, true) }}

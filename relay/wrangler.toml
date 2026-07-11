@@ -1,0 +1,17 @@
+# WKNDR relay — Cloudflare Worker + KV. See README.md for the 3-command deploy.
+name = "wkndr-relay"
+main = "src/index.ts"
+compatibility_date = "2026-07-01"
+
+# The round store. Create it once with:
+#   npx wrangler kv namespace create ROUNDS
+# then paste the id it prints over REPLACE_WITH_KV_ID below.
+[[kv_namespaces]]
+binding = "ROUNDS"
+id = "REPLACE_WITH_KV_ID"
+
+[vars]
+# Optional email ping when a round completes — forwards one line to the same Formspree
+# endpoint the in-app feedback widget uses (app/src/components/Feedback.tsx, public by
+# design). Set to "" to disable.
+FORWARD_URL = "https://formspree.io/f/xykqpwkw"

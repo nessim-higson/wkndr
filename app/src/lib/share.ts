@@ -17,10 +17,20 @@ export function shortCode(p: Pick): string {
   return fnv(key).toString(36).padStart(7, '0')
 }
 
-/** the canonical share URL: ?w=<codes>&from=<name> */
-export function shareLink(picks: Pick[], from?: string): string {
+/** the canonical share URL: ?w=<codes>&from=<name>[&r=<round>] — `r` is the relay round id
+ *  (lib/relay): the key the recipient's matches POST back under. Only the OUTBOUND invite
+ *  carries it; the return leg is the answer, not another question. */
+export function shareLink(picks: Pick[], from?: string, round?: string): string {
   return `${location.origin}${location.pathname}?w=${picks.map(shortCode).join(',')}`
     + (from?.trim() ? `&from=${encodeURIComponent(from.trim())}` : '')
+    + (round ? `&r=${round}` : '')
+}
+
+/** the return-leg URL built from raw codes (what the relay hands back) — identical shape to
+ *  the manual "send matches back" link, so the sender's confirm greeting has ONE code path */
+export function confirmLink(codes: string[], from?: string): string {
+  return `${location.origin}${location.pathname}?w=${codes.join(',')}`
+    + (from?.trim() ? `&from=${encodeURIComponent(from.trim())}` : '') + '&m=1'
 }
 
 /** does this pick belong to a shared set? (new short codes OR legacy full ids) */

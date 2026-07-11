@@ -1,6 +1,6 @@
 # WKNDR — STATE (catch-me-up snapshot)
 
-_Living "where are we right now" doc — a **snapshot, not a history**. **Updated 2026-07-10.** Read this
+_Living "where are we right now" doc — a **snapshot, not a history**. **Updated 2026-07-11.** Read this
 FIRST in a new chat. For strategy + backlog see `docs/backlog.md`; for the pipeline architecture see
 `docs/pipeline-architecture.md` + `docs/source-map.md`; for full **version history** see `CHANGELOG.md`
 (current to V.8.7) and the **git log / tags**. Onboarding: `CLAUDE.md`. App lives in `/app` (Vite +
@@ -44,6 +44,13 @@ React + TS, run with `bun`); deployed to GitHub Pages._
 One view (**Stack**), one ambient look (**Auras**), **Amsterdam only**; taste engine runs silently.
 Endless deck (batching was tried + REVERTED) · full-bleed `cover` cards (blur-fill tried + REVERTED) ·
 boomerang share→match→confirm all in the URL (`?w=`, `&m=1`) — see git history/CHANGELOG for details.
+**V.9.4 adds WKNDR's first backend — the relay** (`/relay`: a tiny Cloudflare Worker + KV) so the
+return leg no longer needs a manual link-back (field failure 2026-07-11: partner finished her round,
+never sent it back). Invite links carry a round id (`&r=`); the recipient's matches POST to the relay;
+the sender's app polls and jumps to the same `&m=1` confirm. Privacy-light (short pick-codes + first
+name, 14-day TTL, no accounts); optional Formspree email ping on round completion. **DORMANT until
+Ness deploys the worker** (3 commands in `relay/README.md`) **and pastes its URL into `RELAY_URL` in
+`app/src/lib/relay.ts`** — empty = exactly the old behavior. Funnel event: `relay-return`.
 
 ## The content pipeline (V.6.4 → V.7 pipeline era → V.8 taste-engine era)
 The weekly feed is now **deterministic-varied, self-checking, and largely set-and-forget**. Architecture

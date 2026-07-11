@@ -4,7 +4,8 @@ import { X, Sparkles, Heart } from 'lucide-react'
 import type { Pick, SwipeDir, Mode } from '../types'
 import { CATEGORY_LABEL } from '../types'
 import { SwipeStack } from './SwipeStack'
-import { shareLink } from '../lib/share'
+import { shareLink, shortCode } from '../lib/share'
+import { postRound } from '../lib/relay'
 import { track } from '../lib/metrics'
 import './MatchGame.css'
 
@@ -24,13 +25,14 @@ function rand(s: string): number {
 function haptic(p: number | number[]) { try { navigator.vibrate?.(p) } catch { /* iOS */ } }
 
 export function MatchGame({
-  picks, temp, mode, partnerName = 'Robin', partnerIds, onOpen, onClose, onComplete,
+  picks, temp, mode, partnerName = 'Robin', partnerIds, roundId, onOpen, onClose, onComplete,
 }: {
   picks: Pick[]
   temp?: number
   mode?: Mode
   partnerName?: string
   partnerIds?: string[]   // REAL partner's yes-set, decoded from the share link. Absent → demo (simulated).
+  roundId?: string        // relay round id from the invite (`&r=`) — matches POST back under it (lib/relay)
   onOpen?: (p: Pick, origin?: DOMRect) => void
   onClose: () => void
   onComplete?: (matched: Pick[]) => void
@@ -84,6 +86,18 @@ export function MatchGame({
 
   const done = queue.length === 0
   const seen = total - queue.length
+
+  // THE RELAY LEG — each match posts the running code-set under the invite's round id, and
+  // completion posts done:true (that's what flips the sender's app to "it's a match" without
+  // the manual link-back, and fires the email ping). Fire-and-forget: the "Send your matches"
+  // button in MatchPlan stays as the fallback when the relay is off or unreachable. total===0
+  // guards the dead-link case (done at mount with nothing swiped — not a completed round).
+  useEffect(() => {
+    if (!real || !roundId || total === 0) return
+    if (!matched.length && !done) return
+    postRound(roundId, matched.map(shortCode), (localStorage.getItem('wkndr.name') || '').trim(), done)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [matched.length, done])
 
   return (
     <motion.div
