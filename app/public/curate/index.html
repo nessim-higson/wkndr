@@ -78,7 +78,7 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 <body>
 <div class="wrap">
 <header>
-<p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD · ROUND 3</p>
+<p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD V.9.10</p>
 <h1>In rotation vs. new finds<span class="dot">.</span></h1>
 <p><strong>IN ROTATION</strong> opens with <strong>THE LENS — THIS WEEKEND × THIS WEATHER</strong>: only what's explicitly dated the coming weekend <em>and</em> fits the forecast (outdoor leads when it's hot) — the weekend at a glance. The same cards ride the pile and feed below; a verdict here counts everywhere. Then <strong>THE WEEKEND PILE</strong> — the projected opening cards, numbered. Control it per weekend: <strong>▲ LEAD</strong> puts a card in the pile <em>this weekend only</em>, <strong>▼ LATER</strong> drops it to the back without killing it — both auto-expire when the weekend rolls. <strong>👑 TOP</strong> is the permanent escalation above both (leads <em>on its own weekend</em> + "Top pick" pill — a future-dated TOP rides the back of the deck until its weekend arrives). <strong>Drag the ⠿ grip</strong> to hand-set the pile order — your order rides Submit and becomes the next run's opening sequence. Then the full feed and the approved canon library (green = yours — kill to retire). <strong>NEW FINDS</strong> opens with <strong>THE AIRLOCK</strong> — the run's unapproved live finds, weekend-topical first; nothing ships until you wave it in (★/👑) or kill it — then trending, bench, canon candidates — star to promote, <strong>+CANON</strong> for the permanent library. Titles link to the real page — flag dumb links. Progress saves in this browser. When you're done: <strong>Submit → GitHub</strong> files the round as an issue on the repo — the one-click path into the engine.</p>
 </header>
@@ -153,7 +153,12 @@ Promise.all([
   feedKey='wkndr.curate.'+(d.generatedAt||'x');
   restore();
   const bench=(c.candidates||[]),canonC=(cc.candidates||[]),canon=(lib.canon||[]),trending=(tr.trending||[]),pending=(pd.pending||[]);
-  document.getElementById('eyebrow').textContent='WKNDR · CURATION BOARD · FEED '+(d.generatedAt||'').slice(0,16).replace('T',' · ');
+  // BOARD_V is hardcoded — bump it whenever this file changes. GitHub Pages caches this HTML for
+  // 10 min (max-age=600), so a just-shipped board fix can lag in an open tab; the eyebrow makes
+  // stale-board-vs-fresh-data visible at a glance (2026-07-12: an old tab's tier-mirror pile read
+  // as "the board is wrong" when it was just cached).
+  const BOARD_V='V.9.10';
+  document.getElementById('eyebrow').textContent='WKNDR · CURATION BOARD '+BOARD_V+' · FEED '+(d.generatedAt||'').slice(0,16).replace('T',' · ');
   const board=document.getElementById('board');board.innerHTML='';
   const rot=document.createElement('div');rot.id='tab-rot';board.appendChild(rot);
   const nw=document.createElement('div');nw.id='tab-new';nw.style.display='none';board.appendChild(nw);
