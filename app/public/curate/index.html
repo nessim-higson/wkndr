@@ -32,6 +32,7 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 .badge.new{background:var(--ink)}
 .badge.appr{background:var(--green)}
 .badge.pile{background:var(--accent)}
+.badge.lens{background:#2b6cb0}
 .lowres{position:absolute;bottom:10px;left:10px;background:#c33;color:#fff;font-family:ui-monospace,monospace;font-size:9px;font-weight:700;letter-spacing:.06em;padding:3px 8px;border-radius:999px}
 .card img{cursor:zoom-in}
 #veil{position:fixed;inset:0;z-index:60;display:none;place-items:center;background:rgba(6,5,4,.94);backdrop-filter:blur(8px);cursor:zoom-out;padding:20px}
@@ -79,7 +80,7 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 <header>
 <p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD · ROUND 3</p>
 <h1>In rotation vs. new finds<span class="dot">.</span></h1>
-<p><strong>IN ROTATION</strong> opens with <strong>THE WEEKEND PILE</strong> — the projected opening cards, numbered. Control it per weekend: <strong>▲ LEAD</strong> puts a card in the pile <em>this weekend only</em>, <strong>▼ LATER</strong> drops it to the back without killing it — both auto-expire when the weekend rolls. <strong>👑 TOP</strong> is the permanent escalation above both (leads <em>on its own weekend</em> + "Top pick" pill — a future-dated TOP rides the back of the deck until its weekend arrives). <strong>Drag the ⠿ grip</strong> to hand-set the pile order — your order rides Submit and becomes the next run's opening sequence. Then the full feed and the approved canon library (green = yours — kill to retire). <strong>NEW FINDS</strong> opens with <strong>THE AIRLOCK</strong> — the run's unapproved live finds, weekend-topical first; nothing ships until you wave it in (★/👑) or kill it — then trending, bench, canon candidates — star to promote, <strong>+CANON</strong> for the permanent library. Titles link to the real page — flag dumb links. Progress saves in this browser. When you're done: <strong>Submit → GitHub</strong> files the round as an issue on the repo — the one-click path into the engine.</p>
+<p><strong>IN ROTATION</strong> opens with <strong>THE LENS — THIS WEEKEND × THIS WEATHER</strong>: only what's explicitly dated the coming weekend <em>and</em> fits the forecast (outdoor leads when it's hot) — the weekend at a glance. The same cards ride the pile and feed below; a verdict here counts everywhere. Then <strong>THE WEEKEND PILE</strong> — the projected opening cards, numbered. Control it per weekend: <strong>▲ LEAD</strong> puts a card in the pile <em>this weekend only</em>, <strong>▼ LATER</strong> drops it to the back without killing it — both auto-expire when the weekend rolls. <strong>👑 TOP</strong> is the permanent escalation above both (leads <em>on its own weekend</em> + "Top pick" pill — a future-dated TOP rides the back of the deck until its weekend arrives). <strong>Drag the ⠿ grip</strong> to hand-set the pile order — your order rides Submit and becomes the next run's opening sequence. Then the full feed and the approved canon library (green = yours — kill to retire). <strong>NEW FINDS</strong> opens with <strong>THE AIRLOCK</strong> — the run's unapproved live finds, weekend-topical first; nothing ships until you wave it in (★/👑) or kill it — then trending, bench, canon candidates — star to promote, <strong>+CANON</strong> for the permanent library. Titles link to the real page — flag dumb links. Progress saves in this browser. When you're done: <strong>Submit → GitHub</strong> files the round as an issue on the repo — the one-click path into the engine.</p>
 </header>
 <div class="tabs" id="tabs" hidden>
 <button class="tab on" data-tab="rot">IN ROTATION <span class="n" id="nrot"></span></button>
@@ -143,8 +144,11 @@ Promise.all([
  jf('../data/canon-candidates.amsterdam.json',{candidates:[]}),
  jf('../data/canon.amsterdam.json',{canon:[]}),
  jf('../data/trending.amsterdam.json',{trending:[]}),
- jf('../data/pending.amsterdam.json',{pending:[]})
-]).then(([d,c,v,cc,lib,tr,pd])=>{
+ jf('../data/pending.amsterdam.json',{pending:[]}),
+ // THE LENS forecast — the same keyless open-meteo call the pipeline's weekendMode() makes (raw
+ // fetch: jf would append a second "?"). Fails soft → null → the lens goes dated-only.
+ fetch('https://api.open-meteo.com/v1/forecast?latitude=52.37&longitude=4.9&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Europe%2FAmsterdam&forecast_days=7').then(r=>r.ok?r.json():null).catch(()=>null)
+]).then(([d,c,v,cc,lib,tr,pd,om])=>{
   baked=v.byTitle||{};
   feedKey='wkndr.curate.'+(d.generatedAt||'x');
   restore();
@@ -154,19 +158,30 @@ Promise.all([
   const rot=document.createElement('div');rot.id='tab-rot';board.appendChild(rot);
   const nw=document.createElement('div');nw.id='tab-new';nw.style.display='none';board.appendChild(nw);
 
-  // ——— IN ROTATION: THE WEEKEND PILE — the projected opening cards, in order ———
+  // ——— shared date mirrors — inline lib/when.ts + refresh.ts, the board is dependency-free
+  // static JS; keep in step. datesOf mirrors when.ts datesIn (every concrete date, sorted);
+  // activeBy mirrors whenActiveBy. dateInWknd is the LENS predicate — deliberately TIGHTER than
+  // the pipeline's datedThisWeekend (which also admits any "until <far future>" ongoing run —
+  // 16 of 23 on the 2026-07-10 feed, no lens at all): a concrete date must fall INSIDE the
+  // weekend window, i.e. the pick happens, opens, or CLOSES this weekend. Strictly a subset of
+  // pipeline-topical, so the lens never shows what the airlock wouldn't call weekend-topical. ———
+  const WKEND=(()=>{const t=new Date();t.setHours(23,59,59,999);t.setDate(t.getDate()+((7-t.getDay())%7));return t.getTime()})();
+  const WKFRI=(()=>{const t=new Date(WKEND);t.setHours(0,0,0,0);t.setDate(t.getDate()-2);return t.getTime()})();
+  const MONi={jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11};
+  const datesOf=w=>{const now=new Date(),ts=[];
+    for(const m of (w||'').matchAll(/(\d{1,2})\s*(?:[–—-]\s*(?:mon|tue|wed|thu|fri|sat|sun)[a-z]*\.?)?\s*[–—-]?\s*(\d{1,2})?\s*(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)/gi)){
+      const mi=MONi[m[3].slice(0,3).toLowerCase()];
+      for(const d of[m[1],m[2]]){if(!d)continue;let dt=new Date(now.getFullYear(),mi,+d,12);if(dt.getTime()<now.getTime()-45*864e5)dt=new Date(now.getFullYear()+1,mi,+d,12);ts.push(dt.getTime())}}
+    return ts.sort((a,b)=>a-b)};
+  const activeBy=w=>{if(/\b(until|through|thru|till|t\/m)\b/i.test(w||''))return true;
+    const ts=datesOf(w);return !ts.length||ts[0]<=WKEND};
+  const dateInWknd=w=>datesOf(w).some(t=>t>=WKFRI&&t<=WKEND);
+
+  // ——— the pile projection, computed FIRST (the LENS badges its overlap with it) ———
   // Mirrors the APP's serve order (src/weather/modes.ts orderServed, V.8.7–V.8.9): TOPs are
   // TIME-GATED (only lead once active by the served weekend's end) and ANY not-yet-active pick
   // sinks to the horizon. Pool = live picks + TOP-stamped canon (ARTIS-class picks lead the real
-  // deck, so the projection must include them). activeBy is an inline mirror of lib/when.ts
-  // whenActiveBy — the board is dependency-free static JS; keep the two in step.
-  const WKEND=(()=>{const t=new Date();t.setHours(23,59,59,999);t.setDate(t.getDate()+((7-t.getDay())%7));return t.getTime()})();
-  const MONi={jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11};
-  const activeBy=w=>{const s=w||'';if(/\b(until|through|thru|till|t\/m)\b/i.test(s))return true;
-    const ms=[...s.matchAll(/(\d{1,2})\s*(?:[–—-]\s*(?:mon|tue|wed|thu|fri|sat|sun)[a-z]*\.?)?\s*[–—-]?\s*(\d{1,2})?\s*(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)/gi)];
-    if(!ms.length)return true;const now=new Date();
-    const first=Math.min(...ms.map(m=>{const mi=MONi[m[3].slice(0,3).toLowerCase()];let dt=new Date(now.getFullYear(),mi,+m[1],12);if(dt.getTime()<now.getTime()-45*864e5)dt=new Date(now.getFullYear()+1,mi,+m[1],12);return dt.getTime()}));
-    return first<=WKEND};
+  // deck, so the projection must include them).
   const isLiveP=p=>p.id&&(p.id.startsWith('web-')||p.id.startsWith('llm-'));
   const tier=p=>{const a=activeBy(p.when);if(a&&p.top)return 0;if(a&&p.lead)return 1;if(a&&!p.later)return 2;if(a)return 3;return p.top?4:5};
   const pile=(d.picks||[]).filter(p=>isLiveP(p)||p.top)
@@ -174,6 +189,41 @@ Promise.all([
     .slice(0,10);
   // a hand-dragged order (this round, this browser) overrides the projection; new arrivals append
   if(PILE&&PILE.length){const pos=t=>{const i=PILE.indexOf(t);return i<0?999:i};pile.sort((a,b)=>pos(a.title)-pos(b.title))}
+  const pilePos=new Map(pile.map((p,i)=>[p.id,i+1]));
+
+  // ——— IN ROTATION opens with THE LENS — THIS WEEKEND × THIS WEATHER (board-IA call 2026-07-11):
+  // the tight slice — only picks explicitly dated the coming weekend (dateInWknd above) that
+  // ALSO fit the forecast mode. The mode comes from the same open-meteo weekend read the
+  // pipeline's weekendMode() takes, through an inline mirror of src/weather/modes.ts classify —
+  // so lens, airlock order and deck ranking all agree on what the weekend IS. On a HOT/WARM
+  // weekend the outdoor picks lead (the deck's sun bonus, mirrored). Cards here also live in the
+  // pile/feed below — the badge marks the overlap; verdicts share V[p.id], a ★ here counts
+  // everywhere. Forecast fetch fails soft → dated-only lens, weather filter off. ———
+  let WX=null;
+  if(om&&om.daily&&Array.isArray(om.daily.time)){
+    const iso=t=>{const x=new Date(t);return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0')};
+    const sunD=new Date(WKEND),satD=new Date(sunD.getFullYear(),sunD.getMonth(),sunD.getDate()-1);
+    let i=om.daily.time.indexOf(iso(satD));               // the weekend's Saturday…
+    if(i<0)i=om.daily.time.indexOf(iso(sunD));            // …or, on a Sunday board, what's left of it
+    if(i>=0){const ks=[i,i+1].filter(k=>k<om.daily.time.length);
+      const hi=Math.max(...ks.map(k=>om.daily.temperature_2m_max[k])),
+            wet=Math.max(...ks.map(k=>om.daily.precipitation_probability_max[k])),
+            swing=Math.max(...ks.map(k=>om.daily.temperature_2m_max[k]-om.daily.temperature_2m_min[k]));
+      if(isFinite(hi)&&isFinite(wet)&&isFinite(swing))
+        WX={hi:Math.round(hi),mode:hi<10?'COLD_WET':wet>65?(hi<16?'COLD_WET':'VOLATILE'):hi>=24?'HOT':swing>=9?'VOLATILE':hi>=16?'WARM':hi>=10?'COOL':'WARM'};}}
+  const sunny=!!WX&&(WX.mode==='HOT'||WX.mode==='WARM');
+  const lens=(d.picks||[]).filter(p=>dateInWknd(p.when)&&(!WX||(Array.isArray(p.weatherFit)&&p.weatherFit.includes(WX.mode))))
+    .sort((a,b)=>(sunny?(b.outdoor?1:0)-(a.outdoor?1:0):0)||((b.editorScore??0)-(a.editorScore??0))||((b.buzz??0)-(a.buzz??0)));
+  {
+    const sunD=new Date(WKEND),satD=new Date(sunD.getFullYear(),sunD.getMonth(),sunD.getDate()-1);
+    const M=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+    const wkLabel=(satD.getMonth()===sunD.getMonth()?satD.getDate():satD.getDate()+' '+M[satD.getMonth()])+'–'+sunD.getDate()+' '+M[sunD.getMonth()];
+    const lh=document.createElement('div');lh.className='cathead hot';
+    lh.textContent='THE LENS: THIS WEEKEND ('+wkLabel+')'+(WX?' · '+WX.hi+'° '+WX.mode.replace('_',' & '):'')+' — THE DATED, WEATHER-RIGHT SLICE · '+lens.length+(sunny?' · OUTDOOR FIRST':'')+(WX?'':' · FORECAST UNAVAILABLE — WEATHER FILTER OFF')+' (same cards ride the pile & feed below — a verdict here counts everywhere)';
+    rot.appendChild(lh);
+    const lg=document.createElement('div');lg.className='grid';rot.appendChild(lg);
+    lens.forEach(p=>addCard(p,lg,'lens',pilePos.get(p.id)||0,true));
+  }
   if(pile.length){
     const ph=document.createElement('div');ph.className='cathead hot';ph.textContent='THE WEEKEND PILE — THE '+pile.length+' OPENING CARDS, IN ORDER (drag ⠿ to hand-set the order · ▲ lead = put it here this weekend · ▼ later = not this week · applies next run)';rot.appendChild(ph);
     const pg=document.createElement('div');pg.className='grid';rot.appendChild(pg);
@@ -242,11 +292,12 @@ Promise.all([
 }).catch(e=>{document.getElementById('board').textContent='Could not load the feed: '+e});
 
 function addCard(p,g,tag,pos,probe){
-  const el=document.createElement('div');el.className='card';el.dataset.id=p.id+(tag==='pile'?'::pile':'');
+  const el=document.createElement('div');el.className='card';el.dataset.id=p.id+(tag==='pile'?'::pile':tag==='lens'?'::lens':'');
   if(tag==='pile'){el.dataset.title=p.title;el.dataset.sfx=(p.top?' · 👑':p.lead?' · ▲':'')}   // for drag reorder + renumber
   if(probe&&p.image)probeRes(el,p.image);
   const bk=bakedFor(p.title);
   const badge=tag==='pile'?'<span class="badge pile">#'+pos+(p.top?' · 👑':p.lead?' · ▲':'')+'</span><span class="grip" title="Drag to reorder the pile">⠿</span>'
+    :tag==='lens'?'<span class="badge lens">'+(pos?'LENS · PILE #'+pos:'LENS')+'</span>'
     :tag==='appr'?'<span class="badge appr">✓'+(bk&&bk.stars?' ★'+bk.stars:'')+' APPROVED</span>'
     :bk?'<span class="badge saved">★'+(bk.stars||'·')+' SAVED</span>'
     :tag==='new'?'<span class="badge new">NEW</span>':'';

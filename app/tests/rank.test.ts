@@ -47,6 +47,31 @@ describe('rankPicks — score invariants', () => {
   })
 })
 
+// V.9.3 — THE SUN BONUS: on a HOT/WARM weekend, an OUTDOOR pick dated THIS weekend leads its
+// tier (the deck front matches the board's THIS WEEKEND × THIS WEATHER lens). Dates are built
+// from the real upcoming weekend so the invariant holds whenever the suite runs.
+import { upcomingWeekendEnd } from '../src/lib/when'
+
+describe('rankPicks — the sun bonus', () => {
+  const MONS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+  const end = upcomingWeekendEnd()
+  const sat = new Date(end.getFullYear(), end.getMonth(), end.getDate() - 1)
+  const satStr = `Sat ${sat.getDate()} ${MONS[sat.getMonth()]}`   // the coming weekend's Saturday
+
+  it('outdoor + dated this weekend beats an indoor twin on a HOT day — and not on a COOL one', () => {
+    const openair = P({ id: 'openair', outdoor: true, when: satStr, weatherFit: ['HOT', 'WARM', 'COOL'] })
+    const indoor = P({ id: 'indoor', outdoor: false, when: satStr, editorScore: 2 })
+    expect(rankPicks([indoor, openair], 'HOT')[0].id).toBe('openair')
+    expect(rankPicks([indoor, openair], 'COOL')[0].id).toBe('indoor')   // bonus is HOT/WARM only
+  })
+
+  it('a seasonal "All summer" venue takes no bonus — a concrete this-weekend date is required', () => {
+    const seasonal = P({ id: 'seasonal', outdoor: true, when: 'All summer · evenings', freshness: 'always', weatherFit: ['HOT', 'WARM', 'COOL'] })
+    const indoor = P({ id: 'indoor', outdoor: false, when: satStr, editorScore: 2 })
+    expect(rankPicks([seasonal, indoor], 'HOT')[0].id).toBe('indoor')
+  })
+})
+
 describe('diversify — anti-clustering', () => {
   it('breaks up category runs when an alternative exists', () => {
     const input = [

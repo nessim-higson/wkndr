@@ -14,6 +14,29 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.9.5] — 2026-07-11 — "The lens: this weekend × this weather"
+_Ness's board-IA call (2026-07-11): the Curation Board's first section is the tight slice._
+- **THE LENS leads IN ROTATION** (before THE WEEKEND PILE): only picks with a concrete date
+  INSIDE the coming weekend window (happens, opens, or closes Fri–Sun — deliberately tighter
+  than the pipeline's `datedThisWeekend`, which also admits any "until <far future>" run; 16 of
+  23 on the 2026-07-10 feed were long-run exhibitions) AND fitting the forecast mode — the same
+  open-meteo weekend read as `weekendMode()`, through an inline mirror of `classify`, so lens,
+  airlock order and deck ranking agree on what the weekend IS. Header names it ("THIS WEEKEND
+  (11–12 JUL) · 27° HOT — the dated, weather-right slice"); on HOT/WARM the outdoor picks lead.
+  Full verdict controls; cards also ride the pile/feed below — the badge marks the pile overlap
+  (`LENS · PILE #n`), verdicts share `V[p.id]` so a ★ here counts everywhere. Forecast fetch
+  fails soft → dated-only lens.
+- **Seasonal-venue carve-out in web-search** (the open-air-cinema zero): the systemPrompt's
+  exact-date rule was discarding venue-class seasonal finds — the armed open-air facet returned
+  0 picks. New rule: a confirmed-running seasonal venue ships with an honest `when` like
+  "All summer · evenings" (freshness `always`), never an invented date.
+- **The sun bonus in `rankPicks`**: on a HOT/WARM weekend an OUTDOOR pick dated THIS weekend
+  (mirrors the pipeline's `datedThisWeekend`) gets +3 inside its weather tier, so the deck front
+  matches the lens. Seasonal "All summer" venues stay evergreen — no bonus without a concrete
+  date. Scores now computed once per pick (decorate-sort), not per comparison.
+- Tests +2 (sun-bonus invariants: HOT-only lift, no bonus without a date) — suite at **98**
+  alongside V.9.4's relay tests.
+
 ## [V.8.16] — 2026-07-10 — "The airlock: nothing ships unapproved"
 _Ness's call (2026-07-10): the live deck is 1:1 with his Curation Board approvals. The morning's
 stopgap (hand-filtering the feed to approved-only) becomes pipeline law:_

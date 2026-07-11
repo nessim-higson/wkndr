@@ -1,6 +1,6 @@
 import type { Mode, Pick } from '../types'
 import { tasteScore, type Taste } from '../taste'
-import { upcomingWeekendEnd, whenActiveBy } from '../lib/when'
+import { latestDateOf, upcomingWeekendEnd, whenActiveBy } from '../lib/when'
 
 export const MODES: Mode[] = ['HOT', 'WARM', 'COOL', 'COLD_WET', 'VOLATILE']
 
@@ -134,7 +134,22 @@ const EDITOR_W = 0.5
 // evergreen spread that editorScore floors drowned out, so starred canon outranked dated events
 // and the deck read stale). Evergreen stays respectable; timely now clearly leads its tier.
 const EVERGREEN_FLOOR = 0.5
+// THE SUN BONUS: on a HOT/WARM weekend an OUTDOOR pick dated THIS weekend is exactly what the
+// forecast is for — lift it within the weather-fit tier so the deck front matches the board's
+// THIS WEEKEND × THIS WEATHER lens. "Dated this weekend" mirrors the pipeline's datedThisWeekend
+// (refresh.ts): a concrete latest date on/after the weekend's Friday AND started by Sunday's end —
+// a seasonal "All summer" venue stays evergreen, no bonus. Sized with the other sub-terms (buzz
+// caps 4, editor 5): decisive inside the tier, never enough to cross the +10 weather boundary.
+const SUN_BONUS = 3
 export function rankPicks(picks: Pick[], mode: Mode, taste?: Taste, seed = 0): Pick[] {
+  const end = upcomingWeekendEnd()
+  const fri = new Date(end.getFullYear(), end.getMonth(), end.getDate() - 2)   // the weekend's Friday, 00:00
+  const sunny = mode === 'HOT' || mode === 'WARM'
+  const sunBonus = (p: Pick) => {
+    if (!sunny || !p.outdoor) return 0
+    const latest = latestDateOf(p.when)
+    return latest && latest.getTime() >= fri.getTime() && whenActiveBy(p.when, end) ? SUN_BONUS : 0
+  }
   const freshBoost = (p: Pick) =>
     p.freshness === 'new' ? 2 : p.freshness === 'ending' ? 1.6 : p.freshness === 'weekend' ? 1.5 : EVERGREEN_FLOOR
   // cross-source corroboration — an event INDEPENDENTLY surfaced by 2+ sources (I amsterdam AND web-search
@@ -145,13 +160,14 @@ export function rankPicks(picks: Pick[], mode: Mode, taste?: Taste, seed = 0): P
   // away — a within-tier sub-term capped ~2.5, like buzz. Only picks that carry popularity get the bump.
   const popBoost = (p: Pick) => (p.popularity ? Math.min(2.5, Math.log10(p.popularity + 1)) : 0)
   const score = (p: Pick) =>
-    (p.weatherFit.includes(mode) ? 10 : 0) + freshBoost(p) + buzzBoost(p) + popBoost(p)
+    (p.weatherFit.includes(mode) ? 10 : 0) + freshBoost(p) + buzzBoost(p) + popBoost(p) + sunBonus(p)
     + (p.editorScore ?? 0) * EDITOR_W
     + (taste ? tasteScore(p, taste) : 0) + (seed ? jitter(p.id, seed) * 3.5 : 0)
   // Pure score order. De-clustering used to run HERE (diversify), but App.tsx re-segments the deck into
   // [live, canonSlice] afterward, which discarded it (→ category "waves"). diversify is now exported and
-  // applied to the ACTUAL served sequence in App.tsx instead.
-  return [...picks].sort((a, b) => score(b) - score(a))
+  // applied to the ACTUAL served sequence in App.tsx instead. Scores are computed ONCE per pick
+  // (sunBonus parses `when` — too heavy to re-run per comparison), then sorted on the decoration.
+  return picks.map((p) => [score(p), p] as const).sort((a, b) => b[0] - a[0]).map(([, p]) => p)
 }
 
 /**

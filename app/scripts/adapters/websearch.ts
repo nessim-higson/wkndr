@@ -87,6 +87,11 @@ RULES:
 - DATES MUST BE REAL AND EXACT, read off the specific event page. Never guess or shift a date to make
   something fall on the weekend. If you can't CONFIRM it's on or spanning ${WEEKEND}, OMIT it. A wrong
   date is far worse than a missing event. (Watch end-dates: an exhibition that closed last week is OUT.)
+- THE ONE EXCEPTION — SEASONAL VENUES: a venue-class find that runs all season (an open-air cinema,
+  an urban beach or swim spot, a rooftop / on-the-water terrace programme) has no per-day event date —
+  do NOT invent one, and do NOT omit it for lacking one. If its own page confirms the season is
+  running across ${WEEKEND} (opened, not yet closed), include it with an honest seasonal "when"
+  like "All summer · evenings" or "Daily until late Sep", and freshness "always".
 - For club / DJ / electronic nights, use RESIDENT ADVISOR — do NOT surface a commercial club's own
   self-promotion (e.g. big touristy clubs advertising their weekly night). Quality over hype.
 - Do NOT include mid-week one-offs that finish before that weekend, or anything already past.
@@ -100,7 +105,7 @@ Return ONLY a JSON array (no prose), each item:
   "title": string,
   "venue": string,
   "area": string,
-  "when": string,                 // human, e.g. "Sat 21 Jun · 20:00" or "Fri–Sun 20–22 Jun"
+  "when": string,                 // human: "Sat 21 Jun · 20:00", "Fri–Sun 20–22 Jun" — or, seasonal venue: "All summer · evenings"
   "category": one of ${JSON.stringify(CATEGORIES)},   // films/theatre = "stage"
   "freshness": "new" | "weekend" | "ending" | "always",
   "outdoor": boolean,
@@ -127,6 +132,9 @@ function parseArray(text: string): Record<string, unknown>[] {
 // open-air cinema while YLBB's front page led with 8 of them." The static facet trim (Phase 2)
 // cut the seasonal searches entirely — wrong lesson. Instead: check the weekend forecast
 // (open-meteo, keyless) and arm the 2 facets that match it. Fails soft → no extra facets.
+// (2026-07-11: the open-air facet ARMED but returned 0 — the systemPrompt's exact-date rule was
+// discarding venue-class seasonal finds; it now carves out SEASONAL VENUES with an honest
+// "All summer · evenings" style `when`.)
 async function weatherFacets(): Promise<string[]> {
   try {
     const r = await fetch('https://api.open-meteo.com/v1/forecast?latitude=52.37&longitude=4.9&daily=temperature_2m_max,precipitation_probability_max&timezone=Europe%2FAmsterdam&forecast_days=7')
