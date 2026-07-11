@@ -150,6 +150,7 @@ export function CardDetail({
               >
                 <span className="detail-grip" aria-hidden />
                 {pick.image && <div className="card-grade" aria-hidden />}
+                {pick.image && <div className="card-tint" aria-hidden />}
                 {pick.image && <div className="card-grain" aria-hidden />}
                 {!pick.image && <span className="poster-mark">{CATEGORY_LABEL[pick.category]}</span>}
                 {pick.image && (

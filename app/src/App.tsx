@@ -56,6 +56,15 @@ const WEEK = Math.floor(Date.now() / 6.048e8)
 const TEMP_TINT: Record<Mode, string> = {
   HOT: '#c2310e', WARM: '#b5791f', COOL: '#3f7d74', COLD_WET: '#4a6491', VOLATILE: '#7a5a7a',
 }
+// the card GRADE's weather-tint strength (--tint-x): multiplies the per-mode colour wash
+// on every card face + the when stamp. Ships at Subtle (1 — the subtlest that still reads);
+// 0 is exactly the pre-tint look. The ?dev=1 slider sweeps the range so Ness picks by eye.
+const TINT_PRESETS = [
+  { label: 'Off', x: 0 },
+  { label: 'Subtle', x: 1 },
+  { label: 'Medium', x: 1.6 },
+  { label: 'Strong', x: 2.4 },
+]
 import { CATEGORY_LABEL, type Category } from './types'
 import { fixWhen, whenDayGroup, whenSortKey, whenTime, whenIsPast } from './lib/when'
 import { inShared } from './lib/share'
@@ -209,6 +218,13 @@ export default function App() {
     return FIELD_OPTS.some((o) => o.key === s) ? s : 'auras'
   })
   const [fieldReroll, setFieldReroll] = useState(0)   // bump → reroll the seeded field's composition
+  const [tintX, setTintX] = useState(() => {          // card-grade weather-tint strength
+    // like `look`: only honour a stored value inside ?dev=1 — a strength picked while
+    // exploring must never leak into the live app. Non-dev always ships the default.
+    if (!DEVUI) return 1
+    const v = Number(localStorage.getItem('wkndr.tintx') ?? NaN)
+    return Number.isFinite(v) ? Math.min(2.5, Math.max(0, v)) : 1
+  })
   const [barOpen, setBarOpen] = useState(false)            // command bar expanded?
   const [savesOpen, setSavesOpen] = useState(false)        // the persistent saves dock peek
   const [dockPop, setDockPop] = useState(false)            // brief pulse when a save lands in the counter
@@ -303,6 +319,10 @@ export default function App() {
   useEffect(() => { persistSaved(saved) }, [saved])   // your list survives reloads
   useEffect(() => { persistTaste(taste) }, [taste])   // your taste accumulates over time
   useEffect(() => { localStorage.setItem('wkndr.field', look) }, [look])   // your ambient-field choice sticks
+  useEffect(() => {   // the grade-strength knob lands on <html> beside the mode palette vars
+    document.documentElement.style.setProperty('--tint-x', String(tintX))
+    if (DEVUI) localStorage.setItem('wkndr.tintx', String(tintX))
+  }, [tintX])
   useEffect(() => { localStorage.setItem('wkndr.liststyle', listStyle) }, [listStyle])   // list style sticks
 
   // Warm the image cache for the active city (during the intro) so a card's photo is
@@ -790,6 +810,26 @@ export default function App() {
                           <Shuffle size={14} strokeWidth={2.2} /> Randomize
                         </button>
                       )}
+                    </div>
+                    )}
+
+                    {DEVUI && (
+                    <div className="bar-group">
+                      <span className="bar-label">Card grade · weather tint</span>
+                      <div className="mode-pills">
+                        {TINT_PRESETS.map((p) => (
+                          <button key={p.label} className={Math.abs(tintX - p.x) < 0.025 ? 'on' : ''} onClick={() => setTintX(p.x)}>
+                            {p.label}
+                          </button>
+                        ))}
+                      </div>
+                      <input
+                        className="bar-slider"
+                        type="range" min={0} max={2.5} step={0.05} value={tintX}
+                        onChange={(e) => setTintX(Number(e.target.value))}
+                        aria-label="Card weather-tint strength"
+                      />
+                      <span className="bar-sublabel">{Math.round(tintX * 100)}% · washes photo + stamp toward the mode hue</span>
                     </div>
                     )}
 

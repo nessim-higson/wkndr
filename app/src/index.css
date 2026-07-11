@@ -55,6 +55,11 @@
   --field-2: #c2310e;
   --field-3: #5a1606;
   --field-glow: #ffd166;
+  /* card-grade weather tint (HOT defaults — per-mode via applyMode). --tint-x is the
+     global strength knob: ships at 1 (the subtlest); the ?dev=1 slider sweeps 0→2.5. */
+  --card-tint: #ff9a3d;
+  --card-tint-a: 0.14;
+  --tint-x: 1;
   color-scheme: light;
 }
 

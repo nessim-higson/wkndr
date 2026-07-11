@@ -12,6 +12,11 @@ export interface ModeMeta {
   phrase: string
   /** weather-field palette */
   field: { text: string; c1: string; c2: string; c3: string; glow: string }
+  /** card-face colour GRADE — the house treatment's weather wash. `tint` is the hue the
+   *  photo's temperature pulls toward (mix-blend-mode: color — luminance untouched, the
+   *  photograph stays the hero); `a` is the per-mode strength at the shipped default.
+   *  Global multiplier: --tint-x (the ?dev=1 "Card grade" slider; ships at the subtlest). */
+  grade: { tint: string; a: number }
 }
 
 // Palettes carried over from experiments/06-hybrid/02-weather-header-live.html
@@ -21,30 +26,35 @@ export const MODE_META: Record<Mode, ModeMeta> = {
     cond: 'HOT · DRY · keep water close',
     phrase: 'It turns properly hot by two. Chase the shade, and keep water close.',
     field: { text: '#fbf7ef', c1: '#ff9a3d', c2: '#c2310e', c3: '#5a1606', glow: '#ffd166' },
+    grade: { tint: '#ff9a3d', a: 0.14 },   // warm amber — late-afternoon heat
   },
   WARM: {
     label: 'Warm',
     cond: 'WARM · DRY · gentle breeze',
     phrase: 'A soft, generous day — the kind that lets you choose your own adventure.',
     field: { text: '#fffdf6', c1: '#d8e08a', c2: '#6fa24a', c3: '#2c4a26', glow: '#fff0b0' },
+    grade: { tint: '#dcc36e', a: 0.09 },   // honeyed, nearly neutral — a good day needs no filter
   },
   COOL: {
     label: 'Cool',
     cond: 'COOL · CLEAR · crisp air',
     phrase: 'Crisp and clear. Layer up and the whole city is walkable.',
     field: { text: '#f4f8f7', c1: '#9fc0b8', c2: '#4a716b', c3: '#1e3433', glow: '#cfe6df' },
+    grade: { tint: '#5f9d92', a: 0.12 },   // crisp teal
   },
   COLD_WET: {
     label: 'Cold & wet',
     cond: 'COLD · WET · an indoor day',
     phrase: 'Grey and wet through the afternoon. Today is an indoor day, well spent.',
     field: { text: '#eef2f7', c1: '#6c7e9c', c2: '#313f5e', c3: '#121a2e', glow: '#9fb2cc' },
+    grade: { tint: '#66799a', a: 0.16 },   // blue-grey — the grey-day cast, strongest of the five
   },
   VOLATILE: {
     label: 'Volatile',
     cond: 'VOLATILE · sun then storms',
     phrase: "It can't decide. Keep a backup plan and a rain layer in the bag.",
     field: { text: '#f6f1ee', c1: '#e08a4a', c2: '#7a5a7a', c3: '#2a3358', glow: '#ffcf8a' },
+    grade: { tint: '#8f6f96', a: 0.11 },   // bruised mauve — storm-light
   },
 }
 
@@ -69,6 +79,7 @@ export function classify(high: number, precipProb: number, swing: number): Mode 
 /** Push the mode palette into CSS custom properties on <html>. */
 export function applyMode(mode: Mode) {
   const m = MODE_META[mode].field
+  const g = MODE_META[mode].grade
   const r = document.documentElement
   r.setAttribute('data-mode', mode)
   r.style.setProperty('--field-text', m.text)
@@ -76,6 +87,8 @@ export function applyMode(mode: Mode) {
   r.style.setProperty('--field-2', m.c2)
   r.style.setProperty('--field-3', m.c3)
   r.style.setProperty('--field-glow', m.glow)
+  r.style.setProperty('--card-tint', g.tint)
+  r.style.setProperty('--card-tint-a', String(g.a))
 }
 
 /** Seeded shuffle (mulberry32) — deterministic per seed, for the Refresh action. */

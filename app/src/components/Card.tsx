@@ -16,6 +16,7 @@ export function Card({ pick, temp, mode }: { pick: Pick; temp?: number; mode?: M
     >
       {!pick.image && <span className="poster-mark">{CATEGORY_LABEL[pick.category]}</span>}
       {pick.image && <div className="card-grade" aria-hidden />}
+      {pick.image && <div className="card-tint" aria-hidden />}
       {pick.image && <div className="card-grain" aria-hidden />}
       <div className="card-scrim" aria-hidden />
 

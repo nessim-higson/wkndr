@@ -27,6 +27,20 @@
   opacity: var(--card-grade, 0.42);
   transition: opacity 0.6s ease, background 0.8s ease;
 }
+/* The weather TINT — the grade's per-mode colour wash (HOT amber, COOL teal, COLD_WET
+   blue-grey…) that pulls the photo's temperature toward the live mode. mix-blend-mode:
+   color leaves luminance untouched, so the photograph stays the hero — only its cast
+   shifts. Strength = per-mode base (--card-tint-a, modes.ts) × the global --tint-x
+   knob (?dev=1 "Card grade" slider; ships at the subtlest, 1). */
+.card-tint {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: var(--card-tint, #ff9a3d);
+  mix-blend-mode: color;
+  opacity: calc(var(--card-tint-a, 0.14) * var(--tint-x, 1));
+  transition: opacity 0.6s ease, background-color 0.8s ease;
+}
 .card-grain {
   position: absolute;
   inset: 0;
@@ -116,6 +130,10 @@
   padding: 6px 11px;
   border-radius: 999px;
   background: rgba(20, 20, 22, 0.5);
+  /* the stamp breathes with the weather too — a hint of the mode hue in the frost,
+     scaled by the same per-mode strength × --tint-x as the face wash (the plain dark
+     stamp above is the fallback where color-mix is unsupported) */
+  background: color-mix(in srgb, var(--card-tint, #ff9a3d) calc(var(--card-tint-a, 0.14) * 130% * var(--tint-x, 1)), rgba(20, 20, 22, 0.55));
   border: 1px solid rgba(255, 255, 255, 0.16);
   backdrop-filter: blur(8px);
   color: #fff;
