@@ -48,13 +48,15 @@ React + TS, run with `bun`); deployed to GitHub Pages._
 One view (**Stack**), one ambient look (**Auras**), **Amsterdam only**; taste engine runs silently.
 Endless deck (batching was tried + REVERTED) · full-bleed `cover` cards (blur-fill tried + REVERTED) ·
 boomerang share→match→confirm all in the URL (`?w=`, `&m=1`) — see git history/CHANGELOG for details.
-**V.9.4 adds WKNDR's first backend — the relay** (`/relay`: a tiny Cloudflare Worker + KV) so the
+**V.9.4 added WKNDR's first backend — the relay** (`/relay`: a tiny Cloudflare Worker + KV) so the
 return leg no longer needs a manual link-back (field failure 2026-07-11: partner finished her round,
 never sent it back). Invite links carry a round id (`&r=`); the recipient's matches POST to the relay;
 the sender's app polls and jumps to the same `&m=1` confirm. Privacy-light (short pick-codes + first
-name, 14-day TTL, no accounts); optional Formspree email ping on round completion. **DORMANT until
-Ness deploys the worker** (3 commands in `relay/README.md`) **and pastes its URL into `RELAY_URL` in
-`app/src/lib/relay.ts`** — empty = exactly the old behavior. Funnel event: `relay-return`.
+name, 14-day TTL, no accounts); optional Formspree email ping on round completion. **LIVE since
+V.9.7** — worker at `https://wkndr-relay.nessimhigson.workers.dev` (Ness's CF account, deployed
+2026-07-12), `RELAY_URL` set in `app/src/lib/relay.ts` (empty = relay off, old behavior). It stacks
+with V.9.6's ReturnGate: the gate pushes the manual send, the relay delivers even if the recipient
+bails; on a confirm page the poll only absorbs (never reloads). Funnel: `relay-return`.
 
 ## The content pipeline (V.6.4 → V.7 pipeline era → V.8 taste-engine era)
 The weekly feed is now **deterministic-varied, self-checking, and largely set-and-forget**. Architecture

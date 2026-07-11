@@ -379,7 +379,10 @@ export default function App() {
   // manual link-back produces — ONE greeting path, relay or paste. A fresh page load is the
   // point (not a bug): the intro re-runs as "It's a match with <name>". Deliberately held
   // while a match round is open here (don't yank the deck mid-swipe); the next tick catches it.
-  // No-op until lib/relay's RELAY_URL is set.
+  // On a confirm page it NEVER navigates (don't reload the plan someone is reading): a manual
+  // return (V.9.6's gate) and the relay carry the same answer, so when this confirm's codes
+  // cover a done round it's absorbed silently — otherwise (a different friend's round) it
+  // simply waits for the next plain boot. No-op until lib/relay's RELAY_URL is set.
   useEffect(() => {
     if (!relayOn()) return
     let gone = false
@@ -389,6 +392,10 @@ export default function App() {
         if (gone || matchingRef.current) return
         if (!res) continue
         if (roundReady(res, Date.now())) {
+          if (SHARED_CONFIRM) {
+            if (SHARED_IDS && res.codes.every((c) => SHARED_IDS.has(c))) resolveSentRound(s.r)
+            continue
+          }
           resolveSentRound(s.r)   // BEFORE navigating — the confirm page must not re-fire this
           track('relay-return')
           window.location.replace(confirmLink(res.codes, res.name))

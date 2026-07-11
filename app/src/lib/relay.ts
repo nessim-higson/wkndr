@@ -6,9 +6,9 @@
 // jumps to the exact `?w=…&m=1` confirm the manual link-back produces. One greeting path.
 // Privacy-light: the relay stores ONLY short pick-codes + a first name, under an unguessable
 // id, for 14 days. The manual "Send your matches" button stays as the fallback throughout.
-// DORMANT until RELAY_URL is set (deploy /relay, paste the printed workers.dev URL here) —
-// while it's empty every function below is a no-op, so this ships safely ahead of the worker.
-const RELAY_URL = ''   // e.g. 'https://wkndr-relay.<account>.workers.dev'
+// LIVE since V.9.7 (worker deployed 2026-07-12) — set to '' to turn the whole relay path off
+// (links drop `&r=`, nothing posts or polls; the manual boomerang is all that remains).
+const RELAY_URL: string = 'https://wkndr-relay.nessimhigson.workers.dev'
 
 export const relayOn = () => RELAY_URL !== ''
 
