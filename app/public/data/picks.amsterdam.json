@@ -72,8 +72,8 @@
    "verify": true,
    "buzz": 2,
    "editorScore": 8,
-   "pilePos": 5,
-   "servePos": 5
+   "pilePos": 8,
+   "servePos": 8
   },
   {
    "id": "web-lbb-ek-japan-in-twee-beeldverhalen",
@@ -100,8 +100,8 @@
    ],
    "verify": false,
    "editorScore": 8,
-   "pilePos": 9,
-   "servePos": 9
+   "pilePos": 12,
+   "servePos": 12
   },
   {
    "id": "web-lbb-nederland-japan-door-de-tijd-verbonden",
@@ -128,8 +128,8 @@
    ],
    "verify": false,
    "editorScore": 8,
-   "pilePos": 12,
-   "servePos": 12
+   "pilePos": 14,
+   "servePos": 14
   },
   {
    "id": "web-lbb-martine-gutierrez-wunderkind",
@@ -156,8 +156,8 @@
    ],
    "verify": false,
    "editorScore": 9,
-   "servePos": 23,
-   "pilePos": 23
+   "servePos": 24,
+   "pilePos": 24
   },
   {
    "id": "web-lbb-the-little-big-things",
@@ -212,8 +212,8 @@
    "verify": false,
    "buzz": 3,
    "editorScore": 8,
-   "pilePos": 6,
-   "servePos": 6
+   "pilePos": 9,
+   "servePos": 9
   },
   {
    "id": "web-iams-open-podium-noord",
@@ -238,8 +238,8 @@
    ],
    "verify": false,
    "editorScore": 8,
-   "servePos": 16,
-   "pilePos": 16
+   "servePos": 17,
+   "pilePos": 17
   },
   {
    "id": "web-iams-jazz-at-hart-museum",
@@ -293,8 +293,8 @@
    ],
    "verify": false,
    "editorScore": 8,
-   "pilePos": 7,
-   "servePos": 7
+   "pilePos": 10,
+   "servePos": 10
   },
   {
    "id": "web-iams-julidans-language-of-the-birds-reza-mirabi-ir-de",
@@ -322,8 +322,8 @@
    "verify": false,
    "buzz": 1,
    "editorScore": 8,
-   "servePos": 21,
-   "pilePos": 21
+   "servePos": 22,
+   "pilePos": 22
   },
   {
    "id": "web-iams-straat-collectie",
@@ -402,8 +402,8 @@
    ],
    "verify": false,
    "editorScore": 8,
-   "servePos": 18,
-   "pilePos": 18
+   "servePos": 19,
+   "pilePos": 19
   },
   {
    "id": "web-iams-de-roode-remise-singing-session",
@@ -482,8 +482,8 @@
    ],
    "verify": false,
    "editorScore": 8,
-   "servePos": 19,
-   "pilePos": 19
+   "servePos": 20,
+   "pilePos": 20
   },
   {
    "id": "web-iams-exhibition-worn-in-the-rijksmuseum",
@@ -1703,8 +1703,8 @@
    ],
    "verify": false,
    "editorScore": 8,
-   "servePos": 20,
-   "pilePos": 20
+   "servePos": 21,
+   "pilePos": 21
   },
   {
    "id": "web-lbb-the-jollof-club-west-african-restaurant",
@@ -1730,9 +1730,9 @@
     "VOLATILE"
    ],
    "verify": false,
-   "pilePos": 8,
+   "pilePos": 11,
    "editorScore": 8,
-   "servePos": 8
+   "servePos": 11
   },
   {
    "id": "web-resident-advisor-bret-rool-h-sat-mau-p-jo-lla-jackson-sun",
@@ -1759,8 +1759,8 @@
    "verify": true,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F63cfdda587ca114344bf775b%2F1xyhdofhh6g1-bret.webp&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F63cfdda587ca114344bf775b%2F1xyhdofhh6g1-bret.webp",
    "editorScore": 8,
-   "servePos": 22,
-   "pilePos": 22
+   "servePos": 23,
+   "pilePos": 23
   },
   {
    "id": "web-lbb-american-myth-memory-david-levinthal-photographs",
@@ -1813,9 +1813,9 @@
     "VOLATILE"
    ],
    "verify": false,
-   "pilePos": 17,
+   "pilePos": 18,
    "editorScore": 8,
-   "servePos": 17
+   "servePos": 18
   },
   {
    "id": "ams-eat-bak",
@@ -1895,8 +1895,8 @@
    "tier": "classic",
    "top": true,
    "editorScore": 10,
-   "pilePos": 11,
-   "servePos": 11
+   "pilePos": 13,
+   "servePos": 13
   },
   {
    "id": "web-iams-chefs-evening",
@@ -1946,8 +1946,9 @@
    "verify": true,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fcdn.amsterdamnow.com%2Fapp%2Fuploads%2Fpllek-amsterdam7.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fcdn.amsterdamnow.com%2Fapp%2Fuploads%2Fpllek-amsterdam7.jpg",
    "editorScore": 8,
-   "servePos": 24,
-   "top": true
+   "servePos": 16,
+   "top": true,
+   "pilePos": 16
   },
   {
    "id": "web-i-amsterdam-pluk-de-nacht-film-festival",
@@ -1973,8 +1974,8 @@
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fimage.parool.nl%2F220058609%2Fwidth%2F2480%2Fpluk-de-nacht-bij-het-stenen-hoofd-in-west&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fimage.parool.nl%2F220058609%2Fwidth%2F2480%2Fpluk-de-nacht-bij-het-stenen-hoofd-in-west",
    "editorScore": 8,
    "top": true,
-   "servePos": 14,
-   "pilePos": 14
+   "servePos": 6,
+   "pilePos": 6
   },
   {
    "id": "web-lbb-kaap-amsterdam",
@@ -2027,8 +2028,8 @@
    "verify": false,
    "editorScore": 8,
    "top": true,
-   "servePos": 13,
-   "pilePos": 13
+   "servePos": 7,
+   "pilePos": 7
   },
   {
    "id": "web-lbb-hannekes-boom",
@@ -2079,9 +2080,9 @@
    "why": "Classic summer activity on the water",
    "lead": true,
    "editorScore": 9,
-   "servePos": 10,
-   "pilePos": 10
+   "servePos": 5,
+   "pilePos": 5
   }
  ],
- "restampedAt": "2026-07-12T10:54:57.620Z"
+ "restampedAt": "2026-07-12T11:07:06.061Z"
 }
