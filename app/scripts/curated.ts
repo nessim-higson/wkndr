@@ -40,6 +40,11 @@ export const CURATED_IMAGES: { match: RegExp; image: string; note: string }[] = 
     note: 'R4 (issue #10): Ness supplied this exact URL on the board (img-url verdict) — the festival-crowd shot from I amsterdam’s own asset CDN; recurring multi-weekend event, pin pays off',
   },
   {
+    match: /hannekes boom/i,
+    image: 'https://hannekesboom.nl/wp-content/uploads/23_EmiroSmolders-HannekesBoom_DSC00763-1-e1769691113265.jpg',
+    note: 'R6 (issue #12): Ness supplied this exact URL on the board (img-url verdict) — the venue’s own waterfront shot; beloved recurring terrace, pin pays off',
+  },
+  {
     match: /\bbret\b/i,
     image: 'https://app.thefeedfactory.nl/api/assets/63cfdda587ca114344bf775b/1xyhdofhh6g1-bret.webp',
     note: 'R5 (issue #11): third round of wrong BRET images — the venue og:image the pipeline kept landing on is a sunny garden-café shot, the wrong story for a club night. This is I amsterdam’s in-the-booth night shot (DJ, crowd, the hanging plants — 1800×1020), checked by eye; matches every weekly "BRET: <lineup>" title.',
@@ -77,7 +82,8 @@ export const CURATED_IMAGES: { match: RegExp; image: string; note: string }[] = 
   { match: /little big things/i, image: 'https://d3s3zh7icgjwgd.cloudfront.net/AcuCustom/Sitename/DAM/345/Cast-of-The-Little-Big-Things.-Photo--Pamela-Raith-1_LargeLandscape.jpg', note: 'Ness pick — cast photo' },
   { match: /land art weekend/i, image: 'https://storage.pubble.nl/39aff116/content/2025/4/ee4bcf1f-8214-44a4-add3-afcf1d8b332a_thumb1920.jpg', note: 'Ness pick' },
   // ——— R3 (2026-07-04): BRET's RA flyers were the wrong image TWICE — pin the venue itself. ———
-  { match: /\bbret\b/i, image: 'https://static.wixstatic.com/media/069fa4_6bbeb7f6ab7b4ee8902dfaa98ad5f541~mv2.jpg/v1/fill/w_2500,h_1666,al_c/069fa4_6bbeb7f6ab7b4ee8902dfaa98ad5f541~mv2.jpg', note: 'The red container building, official bret.bar hero, 2500×1666 — every BRET club night wears the venue' },
+  // (a second /\bbret\b/i pin — the bret.bar og:image garden shot — was REMOVED 2026-07-12: that is
+  // the exact image Ness rejected three rounds running; the in-the-booth night-shot pin above wins.)
 ]
 
 /** The curated image URL for a pick title, or undefined. First match wins. */

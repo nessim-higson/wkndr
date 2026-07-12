@@ -3,13 +3,16 @@
  "label": "Amsterdam",
  "generatedAt": "2026-07-11T21:51:08.144Z",
  "live": true,
- "count": 74,
+ "count": 79,
  "topMatches": [
   "milkshake festival",
   "dekmantel",
   "'t lemmeke",
   "artis royal zoo",
-  "queer amsterdam"
+  "queer amsterdam",
+  "pluk de nacht",
+  "kaap amsterdam",
+  "strand zuid"
  ],
  "picks": [
   {
@@ -177,7 +180,7 @@
    ],
    "verify": false,
    "editorScore": 9,
-   "servePos": 20
+   "servePos": 24
   },
   {
    "id": "web-lbb-the-little-big-things",
@@ -204,7 +207,7 @@
    ],
    "verify": false,
    "editorScore": 8,
-   "servePos": 21
+   "servePos": 26
   },
   {
    "id": "web-iams-american-identities",
@@ -258,7 +261,7 @@
    ],
    "verify": false,
    "editorScore": 8,
-   "servePos": 11
+   "servePos": 15
   },
   {
    "id": "web-iams-jazz-at-hart-museum",
@@ -283,7 +286,7 @@
    ],
    "verify": false,
    "editorScore": 8,
-   "servePos": 12
+   "servePos": 16
   },
   {
    "id": "web-iams-julidans-moving-mornings",
@@ -339,7 +342,7 @@
    "verify": false,
    "buzz": 1,
    "editorScore": 8,
-   "servePos": 18
+   "servePos": 22
   },
   {
    "id": "web-iams-straat-collectie",
@@ -366,7 +369,7 @@
    ],
    "verify": false,
    "editorScore": 8,
-   "servePos": 24
+   "servePos": 28
   },
   {
    "id": "web-iams-the-maker-market",
@@ -393,7 +396,7 @@
    ],
    "verify": false,
    "editorScore": 8,
-   "servePos": 22
+   "servePos": 27
   },
   {
    "id": "web-iams-bottomless-brunch",
@@ -418,7 +421,7 @@
    ],
    "verify": false,
    "editorScore": 8,
-   "servePos": 13
+   "servePos": 17
   },
   {
    "id": "web-iams-de-roode-remise-singing-session",
@@ -445,7 +448,7 @@
    ],
    "verify": false,
    "editorScore": 8,
-   "servePos": 23
+   "servePos": 29
   },
   {
    "id": "web-iams-nicolas-van-poucke-pianorecital",
@@ -472,7 +475,7 @@
    ],
    "verify": false,
    "editorScore": 8,
-   "servePos": 25
+   "servePos": 31
   },
   {
    "id": "web-iams-vriendenloterij-summer-concerts",
@@ -497,7 +500,7 @@
    ],
    "verify": false,
    "editorScore": 8,
-   "servePos": 14
+   "servePos": 18
   },
   {
    "id": "web-iams-exhibition-worn-in-the-rijksmuseum",
@@ -524,7 +527,7 @@
    ],
    "verify": false,
    "editorScore": 8,
-   "servePos": 26
+   "servePos": 30
   },
   {
    "id": "web-iams-lunchtime-organ-concerts-at-waterlooplein",
@@ -551,7 +554,7 @@
    ],
    "verify": false,
    "editorScore": 8,
-   "servePos": 27
+   "servePos": 33
   },
   {
    "id": "web-iams-ligconcert-presents-lying-down-concert-at-the-maritime-museum",
@@ -578,7 +581,7 @@
    ],
    "verify": false,
    "editorScore": 8,
-   "servePos": 29
+   "servePos": 35
   },
   {
    "id": "ams-ev2-strand-van-oost",
@@ -603,7 +606,7 @@
    "when": "Summer · evenings",
    "tier": "bespoke",
    "buzz": 2,
-   "servePos": 48
+   "servePos": 53
   },
   {
    "id": "ams-hortus",
@@ -630,7 +633,7 @@
    "tier": "classic",
    "buzz": 2,
    "editorScore": 8,
-   "servePos": 16
+   "servePos": 20
   },
   {
    "id": "ams-ev2-le-petit-bouillon",
@@ -658,7 +661,7 @@
    "verify": false,
    "tier": "bespoke",
    "buzz": 2,
-   "servePos": 49
+   "servePos": 54
   },
   {
    "id": "pllek-indoor",
@@ -685,7 +688,7 @@
    "verify": false,
    "buzz": 1,
    "editorScore": 8,
-   "servePos": 28
+   "servePos": 32
   },
   {
    "id": "cafe-chris",
@@ -709,7 +712,7 @@
     "VOLATILE"
    ],
    "editorScore": 8,
-   "servePos": 70
+   "servePos": 75
   },
   {
    "id": "foodhallen",
@@ -735,7 +738,7 @@
     "VOLATILE"
    ],
    "editorScore": 8,
-   "servePos": 30
+   "servePos": 34
   },
   {
    "id": "web-scout-milkshake-festival",
@@ -764,7 +767,7 @@
    "buzz": 2,
    "editorScore": 10,
    "top": true,
-   "servePos": 73
+   "servePos": 78
   },
   {
    "id": "sauna-deco",
@@ -787,7 +790,7 @@
     "COLD_WET",
     "VOLATILE"
    ],
-   "servePos": 72
+   "servePos": 77
   },
   {
    "id": "ams-vondelpark-play",
@@ -812,7 +815,7 @@
    ],
    "when": "Daily · dawn–dusk",
    "tier": "classic",
-   "servePos": 50
+   "servePos": 55
   },
   {
    "id": "the-movies",
@@ -836,7 +839,7 @@
     "VOLATILE"
    ],
    "buzz": 2,
-   "servePos": 71
+   "servePos": 76
   },
   {
    "id": "web-scout-two-story",
@@ -863,7 +866,7 @@
    ],
    "verify": false,
    "editorScore": 8,
-   "servePos": 15
+   "servePos": 19
   },
   {
    "id": "ams-b2-foam",
@@ -889,7 +892,7 @@
    ],
    "when": "Daily · 10:00–18:00",
    "tier": "bespoke",
-   "servePos": 51
+   "servePos": 56
   },
   {
    "id": "ams-ev2-droog",
@@ -915,7 +918,7 @@
    ],
    "when": "Tue–Sun",
    "tier": "classic",
-   "servePos": 52
+   "servePos": 57
   },
   {
    "id": "ams-ev2-mendo",
@@ -941,7 +944,7 @@
    ],
    "when": "Daily",
    "tier": "bespoke",
-   "servePos": 54
+   "servePos": 59
   },
   {
    "id": "ams-b2-moise",
@@ -967,7 +970,7 @@
    ],
    "when": "Daily exc. Sun–Mon",
    "tier": "bespoke",
-   "servePos": 56
+   "servePos": 61
   },
   {
    "id": "ams-b2-patta",
@@ -994,7 +997,7 @@
    "when": "Daily · shop hours",
    "tier": "bespoke",
    "editorScore": 8,
-   "servePos": 31
+   "servePos": 36
   },
   {
    "id": "ams-b2-x-bank",
@@ -1021,7 +1024,7 @@
    "when": "Daily · shop hours",
    "tier": "bespoke",
    "editorScore": 8,
-   "servePos": 33
+   "servePos": 38
   },
   {
    "id": "ams-ev-melkweg",
@@ -1047,7 +1050,7 @@
    ],
    "when": "Eve · gigs + club",
    "tier": "classic",
-   "servePos": 53
+   "servePos": 58
   },
   {
    "id": "ams-b2-mobilia",
@@ -1073,7 +1076,7 @@
    ],
    "when": "Daily · shop hours",
    "tier": "classic",
-   "servePos": 58
+   "servePos": 63
   },
   {
    "id": "ams-ev-utrecht",
@@ -1099,7 +1102,7 @@
    ],
    "when": "Daily · ~25 min by train",
    "tier": "classic",
-   "servePos": 55
+   "servePos": 60
   },
   {
    "id": "ams-b2-vlieger",
@@ -1125,7 +1128,7 @@
    ],
    "when": "Daily · shop hours",
    "tier": "bespoke",
-   "servePos": 60
+   "servePos": 65
   },
   {
    "id": "ams-efteling",
@@ -1150,7 +1153,7 @@
    "when": "Daily · ~1h15 by car",
    "tier": "classic",
    "editorScore": 8,
-   "servePos": 32
+   "servePos": 37
   },
   {
    "id": "ams-ev-ij-hallen",
@@ -1177,7 +1180,7 @@
    "when": "Monthly · one weekend",
    "tier": "bespoke",
    "editorScore": 8,
-   "servePos": 34
+   "servePos": 39
   },
   {
    "id": "ams-micropia",
@@ -1203,7 +1206,7 @@
    ],
    "when": "Daily · 10:00–17:00",
    "tier": "bespoke",
-   "servePos": 57
+   "servePos": 62
   },
   {
    "id": "ams-ev-paradiso",
@@ -1229,7 +1232,7 @@
    ],
    "when": "Eve · gig nights",
    "tier": "classic",
-   "servePos": 59
+   "servePos": 64
   },
   {
    "id": "ams-lostin-kriterion",
@@ -1255,7 +1258,7 @@
    ],
    "when": "Daily · check listings",
    "tier": "bespoke",
-   "servePos": 61
+   "servePos": 66
   },
   {
    "id": "ams-madurodam",
@@ -1280,7 +1283,7 @@
    "when": "Daily · ~50 min by train",
    "tier": "classic",
    "editorScore": 8,
-   "servePos": 35
+   "servePos": 40
   },
   {
    "id": "ams-ev2-nxt-museum",
@@ -1307,7 +1310,7 @@
    "when": "Wed–Sun (daily in summer)",
    "tier": "bespoke",
    "editorScore": 8,
-   "servePos": 36
+   "servePos": 41
   },
   {
    "id": "ams-ev-muiderslot",
@@ -1333,7 +1336,7 @@
    ],
    "when": "Tue–Sun · ~30 min out",
    "tier": "bespoke",
-   "servePos": 62
+   "servePos": 67
   },
   {
    "id": "ams-ev-dappermarkt",
@@ -1357,7 +1360,7 @@
    ],
    "when": "Mon–Sat · 09:00–17:00",
    "tier": "bespoke",
-   "servePos": 63
+   "servePos": 68
   },
   {
    "id": "ams-lostin-garage-noord",
@@ -1383,7 +1386,7 @@
    ],
    "when": "Eve · check programme",
    "tier": "bespoke",
-   "servePos": 64
+   "servePos": 69
   },
   {
    "id": "ams-b2-rijksmuseum",
@@ -1409,7 +1412,7 @@
    ],
    "when": "Daily · 09:00–17:00",
    "tier": "classic",
-   "servePos": 65
+   "servePos": 70
   },
   {
    "id": "ams-ev-bloemenmarkt",
@@ -1434,7 +1437,7 @@
    "when": "Mon–Sat · 09:00–17:30",
    "tier": "classic",
    "editorScore": 8,
-   "servePos": 37
+   "servePos": 42
   },
   {
    "id": "ams-lostin-de-filmhallen",
@@ -1460,7 +1463,7 @@
    ],
    "when": "Daily · check listings",
    "tier": "bespoke",
-   "servePos": 66
+   "servePos": 71
   },
   {
    "id": "eye-screening",
@@ -1485,7 +1488,7 @@
     "COLD_WET",
     "VOLATILE"
    ],
-   "servePos": 68
+   "servePos": 73
   },
   {
    "id": "ams-lostin-sexyland",
@@ -1511,7 +1514,7 @@
    ],
    "when": "Eve · check programme",
    "tier": "bespoke",
-   "servePos": 67
+   "servePos": 72
   },
   {
    "id": "ams-ev2-wils-at-the-farm",
@@ -1535,7 +1538,7 @@
    ],
    "when": "Until Sat 25 Jul · Thu–Sat dinners",
    "tier": "bespoke",
-   "servePos": 47
+   "servePos": 52
   },
   {
    "id": "ams-ev-marken-volendam",
@@ -1560,7 +1563,7 @@
    "when": "Daily · bus ~30 min",
    "tier": "bespoke",
    "editorScore": 8,
-   "servePos": 38
+   "servePos": 43
   },
   {
    "id": "ams-ev-zandvoort",
@@ -1585,7 +1588,7 @@
    "when": "Daily · ~30 min by train",
    "tier": "bespoke",
    "editorScore": 8,
-   "servePos": 40
+   "servePos": 45
   },
   {
    "id": "ams-ev-albert-cuyp",
@@ -1610,7 +1613,7 @@
    "when": "Mon–Sat · 09:00–17:00",
    "tier": "classic",
    "editorScore": 8,
-   "servePos": 39
+   "servePos": 44
   },
   {
    "id": "web-scout-dekmantel-festival",
@@ -1638,7 +1641,7 @@
    "verify": false,
    "editorScore": 10,
    "top": true,
-   "servePos": 74
+   "servePos": 79
   },
   {
    "id": "ams-ev-concertgebouw",
@@ -1664,7 +1667,7 @@
    ],
    "when": "Eve · concerts · free Wed lunch",
    "tier": "classic",
-   "servePos": 69
+   "servePos": 74
   },
   {
    "id": "ams-ev-waterlooplein",
@@ -1689,7 +1692,7 @@
    "when": "Mon–Sat · 09:30–18:00",
    "tier": "classic",
    "editorScore": 8,
-   "servePos": 41
+   "servePos": 46
   },
   {
    "id": "web-lbb-cinema-culinair",
@@ -1716,7 +1719,7 @@
    ],
    "verify": false,
    "editorScore": 8,
-   "servePos": 17
+   "servePos": 21
   },
   {
    "id": "web-lbb-the-jollof-club-west-african-restaurant",
@@ -1769,9 +1772,9 @@
     "VOLATILE"
    ],
    "verify": true,
-   "image": "https://images.weserv.nl/?url=https%3A%2F%2Fstatic.wixstatic.com%2Fmedia%2F069fa4_6bbeb7f6ab7b4ee8902dfaa98ad5f541~mv2.jpg%2Fv1%2Ffill%2Fw_2500%2Ch_1666%2Cal_c%2F069fa4_6bbeb7f6ab7b4ee8902dfaa98ad5f541~mv2.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fstatic.wixstatic.com%2Fmedia%2F069fa4_6bbeb7f6ab7b4ee8902dfaa98ad5f541~mv2.jpg%2Fv1%2Ffill%2Fw_2500%2Ch_1666%2Cal_c%2F069fa4_6bbeb7f6ab7b4ee8902dfaa98ad5f541~mv2.jpg",
+   "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F63cfdda587ca114344bf775b%2F1xyhdofhh6g1-bret.webp&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F63cfdda587ca114344bf775b%2F1xyhdofhh6g1-bret.webp",
    "editorScore": 8,
-   "servePos": 19
+   "servePos": 23
   },
   {
    "id": "web-lbb-american-myth-memory-david-levinthal-photographs",
@@ -1798,7 +1801,7 @@
    ],
    "verify": false,
    "editorScore": 8,
-   "servePos": 42
+   "servePos": 47
   },
   {
    "id": "web-lbb-nara-nara-egyptian-restaurant",
@@ -1853,7 +1856,7 @@
    ],
    "when": "Dinner · book ahead",
    "editorScore": 8,
-   "servePos": 43
+   "servePos": 48
   },
   {
    "id": "ams-ev2-museum-van-loon",
@@ -1880,7 +1883,7 @@
    "when": "Wed–Mon · 10:00–17:00",
    "tier": "classic",
    "editorScore": 8,
-   "servePos": 44
+   "servePos": 49
   },
   {
    "id": "ams-artis-zoo",
@@ -1932,7 +1935,7 @@
    ],
    "verify": false,
    "editorScore": 2,
-   "servePos": 45
+   "servePos": 50
   },
   {
    "id": "web-i-amsterdam-pllek-urban-beach-cinema",
@@ -1957,8 +1960,136 @@
    "verify": true,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fcdn.amsterdamnow.com%2Fapp%2Fuploads%2Fpllek-amsterdam7.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fcdn.amsterdamnow.com%2Fapp%2Fuploads%2Fpllek-amsterdam7.jpg",
    "editorScore": 8,
-   "servePos": 46
+   "servePos": 51
+  },
+  {
+   "id": "web-i-amsterdam-pluk-de-nacht-film-festival",
+   "title": "Pluk de Nacht Film Festival",
+   "venue": "Stenen Hoofd (Het Stenen Hoofd)",
+   "area": "Amsterdam West",
+   "when": "All summer · evenings",
+   "category": "stage",
+   "freshness": "always",
+   "outdoor": true,
+   "kid": false,
+   "price": "€11",
+   "blurb": "20+ year tradition: rare unreleased films on big screen, beach chairs, blankets, campfire, cocktails by the IJ.",
+   "why": "Curated cinema festival with unique films; iconic summer exp",
+   "source": "I amsterdam",
+   "link": "https://www.iamsterdam.com/en/whats-on/calendar/festivals/events/pluk-de-nacht-film-festival",
+   "weatherFit": [
+    "HOT",
+    "WARM",
+    "COOL"
+   ],
+   "verify": true,
+   "image": "https://images.weserv.nl/?url=https%3A%2F%2Fimage.parool.nl%2F220058609%2Fwidth%2F2480%2Fpluk-de-nacht-bij-het-stenen-hoofd-in-west&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fimage.parool.nl%2F220058609%2Fwidth%2F2480%2Fpluk-de-nacht-bij-het-stenen-hoofd-in-west",
+   "editorScore": 8,
+   "top": true,
+   "servePos": 13
+  },
+  {
+   "id": "web-lbb-kaap-amsterdam",
+   "title": "Kaap Amsterdam",
+   "venue": "Kaap Amsterdam",
+   "area": "Zeeburgereiland",
+   "when": "This weekend",
+   "category": "eat",
+   "freshness": "weekend",
+   "outdoor": true,
+   "kid": true,
+   "price": "",
+   "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.iamsterdam.com%2F_next%2Fimage%3Furl%3Dhttps%3A%252F%252Fmedia.iamsterdam.com%252Fw_1800%252Ch_1020%252F7kkmkyiv2xv4-kaap-amsterdam-1.jpg%26w%3D3840%26q%3D75&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fwww.iamsterdam.com%2F_next%2Fimage%3Furl%3Dhttps%3A%252F%252Fmedia.iamsterdam.com%252Fw_1800%252Ch_1020%252F7kkmkyiv2xv4-kaap-amsterdam-1.jpg%26w%3D3840%26q%3D75",
+   "blurb": "Urban beach with free water views, safe swimming, Woodstock vibes, specialty sandwiches, and relaxed setting.",
+   "why": "Safe swimming spot with high vacation feel",
+   "source": "Your Little Black Book",
+   "link": "https://kaapamsterdam.nl",
+   "weatherFit": [
+    "HOT",
+    "WARM",
+    "COOL"
+   ],
+   "verify": false,
+   "editorScore": 8,
+   "top": true,
+   "servePos": 11
+  },
+  {
+   "id": "web-lbb-strand-zuid",
+   "title": "Strand Zuid",
+   "venue": "Strand Zuid",
+   "area": "Amsterdam-Zuid",
+   "when": "This weekend",
+   "category": "eat",
+   "freshness": "weekend",
+   "outdoor": true,
+   "kid": true,
+   "price": "",
+   "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.amsterdamnow.com%2Fapp%2Fuploads%2F2019%2F05%2Fstrandzuid-restaurant.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fwww.amsterdamnow.com%2Fapp%2Fuploads%2F2019%2F05%2Fstrandzuid-restaurant.jpg",
+   "blurb": "One of Amsterdam's first beach clubs with sand, sun loungers, cold drinks, and boat access.",
+   "why": "Original beach club with proper sand experience",
+   "source": "Your Little Black Book",
+   "link": "https://strand-zuid.nl",
+   "weatherFit": [
+    "HOT",
+    "WARM",
+    "COOL"
+   ],
+   "verify": false,
+   "editorScore": 8,
+   "top": true,
+   "servePos": 12
+  },
+  {
+   "id": "web-lbb-hannekes-boom",
+   "title": "Hannekes Boom",
+   "venue": "Hannekes Boom",
+   "area": "Amsterdam",
+   "when": "This weekend",
+   "category": "eat",
+   "freshness": "weekend",
+   "outdoor": true,
+   "kid": true,
+   "price": "",
+   "image": "https://images.weserv.nl/?url=https%3A%2F%2Fhannekesboom.nl%2Fwp-content%2Fuploads%2F23_EmiroSmolders-HannekesBoom_DSC00763-1-e1769691113265.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fhannekesboom.nl%2Fwp-content%2Fuploads%2F23_EmiroSmolders-HannekesBoom_DSC00763-1-e1769691113265.jpg",
+   "blurb": "Boat-accessible beach club with swimming, colorful interior, and relaxed waterfront atmosphere.",
+   "why": "Scenic waterside escape with boating access",
+   "source": "Your Little Black Book",
+   "link": "https://hannekesboom.nl/en/",
+   "weatherFit": [
+    "HOT",
+    "WARM",
+    "COOL"
+   ],
+   "verify": false,
+   "editorScore": 8,
+   "servePos": 25
+  },
+  {
+   "id": "llm-kidsproof-mokumboot-sloepje-huren",
+   "title": "Mokumboot: sloepje huren",
+   "venue": "Mokumboot",
+   "area": "Amsterdam",
+   "when": "Ongoing",
+   "category": "out",
+   "image": "https://images.weserv.nl/?url=https%3A%2F%2Fmokumboot.nl%2Fapp%2Fuploads%2F2024%2F11%2FMokumboot-sloep-met-overkapping-en-ervaren-schipper-1920x1280.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fmokumboot.nl%2Fapp%2Fuploads%2F2024%2F11%2FMokumboot-sloep-met-overkapping-en-ervaren-schipper-1920x1280.jpg",
+   "blurb": "Rent a small boat and explore Amsterdam's canals at your own pace—perfect for family water adventures.",
+   "source": "Kidsproof",
+   "link": "https://www.kidsproof.nl/amsterdam",
+   "weatherFit": [
+    "HOT",
+    "WARM",
+    "COOL"
+   ],
+   "freshness": "always",
+   "outdoor": true,
+   "kid": true,
+   "price": "ticketed",
+   "why": "Classic summer activity on the water",
+   "lead": true,
+   "editorScore": 9,
+   "servePos": 14
   }
  ],
- "restampedAt": "2026-07-11T23:05:19.165Z"
+ "restampedAt": "2026-07-12T09:07:00.873Z"
 }

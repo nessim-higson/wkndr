@@ -25,7 +25,8 @@
  */
 import corpus from './taste/corpus.json'
 import weekly from './taste/weekly.json'
-import { rxOf, titleLooseMatch, tokKey, upcomingWeekend, weekendMode, stampServeOrder, approvalCheck, type TasteCorpus, type WeeklySlate } from './lib/pipeline'
+import { rxOf, titleLooseMatch, tokKey, upcomingWeekend, weekendMode, stampServeOrder, toPortrait, approvalCheck, type TasteCorpus, type WeeklySlate } from './lib/pipeline'
+import { curatedImage } from './curated'
 import { heroPicks } from './heroes'
 import { whenIsPast } from '../src/lib/when'
 import type { Pick } from '../src/types'
@@ -82,6 +83,30 @@ if (pendingFile) {
   }
 }
 
+// THE BENCH, promote-only — a board ★/👑/▲ can land on a candidates card too (R6: Mokumboot
+// ▲LEAD ★5 sat on the bench, unreachable — restamp only knew the airlock). Approved bench cards
+// join the feed exactly like pending ones (image + judge score intact, tokKey dedupe) and LEAVE
+// the bench file so they can't double-serve. Unapproved bench cards stay put — the bench is the
+// board's replacement pool, not a queue; nothing here demotes.
+const candPath = `${import.meta.dir}/../public/data/candidates.${CITY}.json`
+let benchPromoted = 0
+try {
+  const candFile = JSON.parse(await Bun.file(candPath).text()) as { candidates: Pick[]; [k: string]: unknown }
+  const inFeedIds = new Set(picks.map((p) => p.id))
+  const inFeedToks = new Set(picks.map((p) => tokKey(p.title)).filter(Boolean))
+  const stay: Pick[] = []
+  for (const p of candFile.candidates ?? []) {
+    const tk = tokKey(p.title)
+    const dupe = inFeedIds.has(p.id) || (!!tk && inFeedToks.has(tk))
+    if (isApproved(p) && tasteOk(p) && !dupe) {
+      picks.push(p); benchPromoted++
+      if (tk) inFeedToks.add(tk)
+    } else if (!dupe) stay.push(p)   // a bench twin of a feed card drops either way (published = off the bench)
+  }
+  if (stay.length !== (candFile.candidates ?? []).length)
+    await Bun.write(candPath, JSON.stringify({ ...candFile, count: stay.length, candidates: stay }, null, 2))
+} catch { /* no bench file yet — fine */ }
+
 // clear the ephemeral stamps, then re-apply from the CURRENT corpus + weekly
 picks = picks.map((p) => ({ ...p, top: undefined, lead: undefined, later: undefined, pilePos: undefined }))
 const topRx = (corpus.topPicks as string[]).map(rxOf)
@@ -114,6 +139,10 @@ if ((weekly.weekend as string) === satKey) {
 // Nothing is written on abstain — the pending file included, so promote/demote can't half-apply.
 if (picks.length < 20) { console.error(`✖ restamp abstained: only ${picks.length} picks would remain`); process.exit(1) }
 
+// curated image pins apply on the fast-path too — an img-url verdict (board → curated.ts) lands
+// in ~90s instead of waiting for Thursday's image pass. Wrapped like every card image.
+for (const p of picks) { const c = curatedImage(p.title); if (c) p.image = toPortrait(c) }
+
 // re-stamp the projected serve order — verdicts just moved cards, the board must see the real front
 picks = stampServeOrder(picks, await weekendMode())
 
@@ -127,4 +156,5 @@ if (pendingFile) {
   await Bun.write(pendPath, JSON.stringify({ generatedAt: pendingFile.generatedAt, count: pendingKeep.length, pending: pendingKeep }, null, 2))
 }
 console.log(`✓ restamped ${CITY}: ${before} → ${picks.length} picks · tops ${picks.filter((p) => p.top).length} · pile ${picks.filter((p) => p.pilePos).length}` +
-  `${pendingFile ? ` · airlock: +${promoted} promoted · ${demoted} demoted · ${pendingKeep.length} pending` : ''} · generatedAt preserved (${feed.generatedAt})`)
+  `${pendingFile ? ` · airlock: +${promoted} promoted · ${demoted} demoted · ${pendingKeep.length} pending` : ''}` +
+  `${benchPromoted ? ` · bench: +${benchPromoted} promoted` : ''} · generatedAt preserved (${feed.generatedAt})`)

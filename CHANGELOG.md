@@ -14,6 +14,22 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.9.13] — 2026-07-12 — "Compile R6: the hot-weekend slate goes live"
+_Issue #12 (79 verdicts) — Ness's selects on the summer supply, compiled + restamped same-hour:_
+- **3 new 👑 TOPs from the airlock**: Pluk de Nacht Film Festival (open-air cinema),
+  Kaap Amsterdam, Strand Zuid — promoted into the feed with keeps ★5; topPicks now 8
+  (the ≤6 guidance is breached on Ness's own call — prune when the summer TOPs expire).
+- **Hannekes Boom ★4** promoted, wearing the exact image URL Ness supplied (curated pin).
+- **Mokumboot ▲ LEAD ★5 — from the BENCH**: restamp gains a promote-only bench path
+  (approved candidates join the feed like pending ones and leave the bench file; nothing
+  demotes). It sat unreachable — restamp only knew the airlock.
+- **Curated pins now apply on the 90-second fast-path** (restamp wraps + overrides), so an
+  img-url verdict lands immediately: BRET's night shot + Hannekes are live now, not Thursday.
+- **Removed a stale second BRET pin** (a parallel ship had pinned the bret.bar garden og:image —
+  the exact photo rejected three rounds running; first-match-wins had masked it).
+- **Waterkant**: img:bad, left unstarred — stays in the airlock; exemplar records why.
+- Feed 74 → 79 · deck: dragged pile #1–10 → Kaap/Strand Zuid/Pluk de Nacht 👑 #11–13 → Mokumboot ▲ #14.
+
 ## [V.9.12] — 2026-07-12 — "Summer runs in the lens + the big-screen facet"
 _Ness: "Where are the outdoor cinema picks and world cup watching picks?? The lens is serving
 mainly indoor activities." Two real content gaps:_

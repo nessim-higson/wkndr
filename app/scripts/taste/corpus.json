@@ -47,6 +47,11 @@
       "why": "chose the floating market seen from the water — the thing that makes it singular"
     },
     {
+      "event": "Waterkant",
+      "verdict": "bad",
+      "why": "R6 (issue #12): wrong image — Ness left it UNSTARRED over the card alone; it waits in the airlock until the image is right (a real photo of the Surinamese waterfront terrace, not whatever the scrape grabbed)"
+    },
+    {
       "event": "BRET: Rooléh / Mau P",
       "verdict": "bad",
       "why": "R4: wrong image two rounds running — the flyer shown is not this night’s; prefer the RA flyer for the EXACT event id, else the venue’s own photo. R5 (issue #11): STILL wrong — the venue og:image is a sunny garden-café shot, not a club night; BRET is now PINNED in curated.ts to I amsterdam’s in-the-booth night shot"
@@ -537,6 +542,26 @@
     {
       "match": "queer amsterdam",
       "stars": 5
+    },
+    {
+      "match": "pluk de nacht",
+      "stars": 5
+    },
+    {
+      "match": "kaap amsterdam",
+      "stars": 5
+    },
+    {
+      "match": "strand zuid",
+      "stars": 5
+    },
+    {
+      "match": "hannekes boom",
+      "stars": 4
+    },
+    {
+      "match": "mokumboot",
+      "stars": 5
     }
   ],
   "_starredNote": "★4-5 live events from the board: (a) editorScore floor 8 when present, (b) CARRIED FORWARD from the prior feed when an adapter fails to re-surface them and they're still date-valid — Ness's investment must not evaporate between runs. Matched with word boundaries (so 'bak' ≠ 'bakkerij'). R2 removals: 'oatly x radio radio' (reversed to KILL — now vetoed).",
@@ -545,8 +570,11 @@
     "dekmantel",
     "'t lemmeke",
     "artis royal zoo",
-    "queer amsterdam"
+    "queer amsterdam",
+    "pluk de nacht",
+    "kaap amsterdam",
+    "strand zuid"
   ],
-  "_topPicksNote": "R3 issue #3 👑 escalations. Milkshake + Dekmantel are future festivals (late Jul) — TOP is armed and activates when they enter the feed. 't Lemmeke = current restaurant. ARTIS: Ness starred the bench 'ARTIS-Aquarium' card (weak kidsproof.nl link); routed to the canon 'ARTIS Royal Zoo' entry (same visit, real artis.nl link, guaranteed availability) so TOP actually sticks. 'queer amsterdam' = R5 late-compile from issues #8/#9: the Nieuwe Kerk WorldPride flagship ('Queer Amsterdam: The Pink City', opened 9 Jul) — TOP armed; the crawl dropped it from the 7/11 feed, activates when an adapter re-surfaces it.",
+  "_topPicksNote": "R3 issue #3 👑 escalations. Milkshake + Dekmantel are future festivals (late Jul) — TOP is armed and activates when they enter the feed. 't Lemmeke = current restaurant. ARTIS: Ness starred the bench 'ARTIS-Aquarium' card (weak kidsproof.nl link); routed to the canon 'ARTIS Royal Zoo' entry (same visit, real artis.nl link, guaranteed availability) so TOP actually sticks. 'queer amsterdam' = R5 late-compile from issues #8/#9: the Nieuwe Kerk WorldPride flagship ('Queer Amsterdam: The Pink City', opened 9 Jul) — TOP armed; the crawl dropped it from the 7/11 feed, activates when an adapter re-surfaces it. R6 (issue #12) 👑s — the hot-weekend outdoor slate: 'pluk de nacht' (open-air film festival), 'kaap amsterdam', 'strand zuid'. Now 8 entries — the ≤6 guidance is breached on Ness's own call; flag for a prune round when summer TOPs expire.",
   "_topNote": "Ness's 👑 TOP escalations from the board — the tier ABOVE starredKeeps. Matched picks (word-boundary, any source incl. canon via feed.topMatches) get editorScore 10, lead the served deck ahead of everything, and carry the 'Top pick' pill. Keep this list SHORT (≤6) — if everything is top, nothing is."
 }
