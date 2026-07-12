@@ -78,7 +78,7 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 <body>
 <div class="wrap">
 <header>
-<p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD V.9.12</p>
+<p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD V.9.14</p>
 <h1>In rotation vs. new finds<span class="dot">.</span></h1>
 <p><strong>IN ROTATION</strong> opens with <strong>THE LENS — THIS WEEKEND × THIS WEATHER</strong>: what's explicitly dated the coming weekend <em>and</em> fits the forecast (outdoor leads when it's hot), plus — on a hot weekend — the <strong>SUMMER RUNS</strong>: in-season outdoor venues (open-air cinema, urban beaches, terrace programmes) that have no per-day date but are exactly what the weather is for. The same cards ride the pile and feed below; a verdict here counts everywhere. Then <strong>THE WEEKEND PILE</strong> — the projected opening cards, numbered. Control it per weekend: <strong>▲ LEAD</strong> puts a card in the pile <em>this weekend only</em>, <strong>▼ LATER</strong> drops it to the back without killing it — both auto-expire when the weekend rolls. <strong>👑 TOP</strong> is the permanent escalation above both (leads <em>on its own weekend</em> + "Top pick" pill — a future-dated TOP rides the back of the deck until its weekend arrives). <strong>Drag the ⠿ grip</strong> to hand-set the pile order — your order rides Submit and becomes the next run's opening sequence. Then the full feed and the approved canon library (green = yours — kill to retire). <strong>NEW FINDS</strong> opens with <strong>THE AIRLOCK</strong> — the run's unapproved live finds, weekend-topical first; nothing ships until you wave it in (★/👑) or kill it — then trending, bench, canon candidates — star to promote, <strong>+CANON</strong> for the permanent library. Titles link to the real page — flag dumb links. Progress saves in this browser. When you're done: <strong>Submit → GitHub</strong> files the round as an issue on the repo — the one-click path into the engine.</p>
 </header>
@@ -157,7 +157,7 @@ Promise.all([
   // 10 min (max-age=600), so a just-shipped board fix can lag in an open tab; the eyebrow makes
   // stale-board-vs-fresh-data visible at a glance (2026-07-12: an old tab's tier-mirror pile read
   // as "the board is wrong" when it was just cached).
-  const BOARD_V='V.9.12';
+  const BOARD_V='V.9.14';
   document.getElementById('eyebrow').textContent='WKNDR · CURATION BOARD '+BOARD_V+' · FEED '+(d.generatedAt||'').slice(0,16).replace('T',' · ');
   const board=document.getElementById('board');board.innerHTML='';
   const rot=document.createElement('div');rot.id='tab-rot';board.appendChild(rot);
@@ -193,8 +193,13 @@ Promise.all([
   const isLiveP=p=>p.id&&(p.id.startsWith('web-')||p.id.startsWith('llm-'));
   const tier=p=>{const a=activeBy(p.when);if(a&&p.top)return 0;if(a&&p.lead)return 1;if(a&&!p.later)return 2;if(a)return 3;return p.top?4:5};
   const stamped=(d.picks||[]).some(p=>p.servePos!=null);
+  // THE PILE POOL (Ness, 2026-07-12: "can we add more fresh elements I have liked so I can
+  // reorder"): not just the 10 projected openers — every LIVE pick in the feed is by definition
+  // one he waved in (the airlock law), so they ALL join the draggable pile, in serve order,
+  // capped at 24. His ⠿ drag over this wider pool becomes the next opening sequence.
   const pile=stamped
-    ?(d.picks||[]).filter(p=>p.servePos!=null).sort((a,b)=>a.servePos-b.servePos).slice(0,10)
+    ?(d.picks||[]).filter(p=>p.servePos!=null).sort((a,b)=>a.servePos-b.servePos)
+      .filter((p,i)=>i<10||isLiveP(p)||p.top||p.lead).slice(0,24)
     :(d.picks||[]).filter(p=>isLiveP(p)||p.top)
       .sort((a,b)=>tier(a)-tier(b)||((b.editorScore??0)-(a.editorScore??0))||((b.buzz??0)-(a.buzz??0)))
       .slice(0,10);
@@ -249,7 +254,7 @@ Promise.all([
     summer.forEach(p=>addCard({...p,_summer:true},lg,'lens',pilePos.get(p.id)||0,true));
   }
   if(pile.length){
-    const ph=document.createElement('div');ph.className='cathead hot';ph.textContent='THE WEEKEND PILE — THE '+pile.length+' OPENING CARDS'+(stamped?', THE APP’S OWN SERVE ORDER (stamped by the pipeline — your compiled ⠿ drag included)':', IN ORDER')+' (drag ⠿ to hand-set a new order · ▲ lead = put it here this weekend · ▼ later = not this week · applies next run)';rot.appendChild(ph);
+    const ph=document.createElement('div');ph.className='cathead hot';ph.textContent='THE WEEKEND PILE — '+pile.length+' CARDS'+(stamped?': THE 10 PROJECTED OPENERS + EVERYTHING LIVE YOU’VE WAVED IN, IN THE APP’S OWN SERVE ORDER':', IN ORDER')+' (drag ⠿ to compose the opening sequence — your order rides Submit and deals first · ▲ lead = up this weekend · ▼ later = not this week)';rot.appendChild(ph);
     const pg=document.createElement('div');pg.className='grid';rot.appendChild(pg);
     pile.forEach((p,i)=>addCard(p,pg,'pile',i+1,true));
     enableDrag(pg);

@@ -14,6 +14,12 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.9.14] — 2026-07-12 — "The pile pool widens"
+- Ness: "can we add more fresh elements I have liked so I can reorder." The WEEKEND PILE grows
+  from the 10 projected openers to **24 draggable cards**: the openers + everything LIVE in the
+  feed (all of it his by definition — the airlock law), in serve order. His ⠿ drag over the
+  wider pool becomes the next opening sequence, exactly as before.
+
 ## [V.9.13] — 2026-07-12 — "Compile R6: the hot-weekend slate goes live"
 _Issue #12 (79 verdicts) — Ness's selects on the summer supply, compiled + restamped same-hour:_
 - **3 new 👑 TOPs from the airlock**: Pluk de Nacht Film Festival (open-air cinema),

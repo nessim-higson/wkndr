@@ -3,7 +3,7 @@
 _Living "where are we right now" doc — a **snapshot, not a history**. **Updated 2026-07-12.** Read this
 FIRST in a new chat. For strategy + backlog see `docs/backlog.md`; for the pipeline architecture see
 `docs/pipeline-architecture.md` + `docs/source-map.md`; for full **version history** see `CHANGELOG.md`
-(current to V.9.13) and the **git log / tags**. Onboarding: `CLAUDE.md`. App lives in `/app` (Vite +
+(current to V.9.14) and the **git log / tags**. Onboarding: `CLAUDE.md`. App lives in `/app` (Vite +
 React + TS, run with `bun`); deployed to GitHub Pages._
 
 > **START-OF-SESSION for WKNDR:** check `gh issue list --label curation` — the Curation Board's
@@ -11,7 +11,7 @@ React + TS, run with `bun`); deployed to GitHub Pages._
 > read the open ones, compile into the taste engine (below), ship, then close the issue.
 
 ## Live right now
-- **App: V.9.13** — https://nessim-higson.github.io/wkndr/ (cache-bust `?v=V.9.13`; V.8.16 = **THE
+- **App: V.9.14** — https://nessim-higson.github.io/wkndr/ (cache-bust `?v=V.9.14`; V.8.16 = **THE
   AIRLOCK** — Ness's 2026-07-10 call made law: the live deck is 1:1 with his board approvals. A live
   pick ships only on an approval match (starredKeeps/tops/★3+ anchors/slate/hero/buzz≥3 — one shared
   `approvalCheck` in lib/pipeline); everything else waits imaged+scored in `pending.<city>.json`,
