@@ -17,7 +17,7 @@ export function scoutedExtract(cityKey: string): Pick[] {
   return (scouted as Record<string, string | null>[]).flatMap((f): Pick[] => {
     if (!f || typeof f.title !== 'string') return []
     const category = (f.category ?? 'out') as Category
-    const outdoor = category === 'out' || /rooftop|beach|terras|strand/i.test(String(f.title) + String(f.blurb ?? ''))
+    const outdoor = category === 'out' || /rooftop|beach|terras|strand|open.?air|openlucht/i.test(String(f.title) + String(f.blurb ?? ''))
     return [{
       id: `web-scout-${slug(f.title)}`,
       title: String(f.title).slice(0, 90),
