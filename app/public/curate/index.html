@@ -78,9 +78,9 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 <body>
 <div class="wrap">
 <header>
-<p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD V.9.10</p>
+<p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD V.9.12</p>
 <h1>In rotation vs. new finds<span class="dot">.</span></h1>
-<p><strong>IN ROTATION</strong> opens with <strong>THE LENS — THIS WEEKEND × THIS WEATHER</strong>: only what's explicitly dated the coming weekend <em>and</em> fits the forecast (outdoor leads when it's hot) — the weekend at a glance. The same cards ride the pile and feed below; a verdict here counts everywhere. Then <strong>THE WEEKEND PILE</strong> — the projected opening cards, numbered. Control it per weekend: <strong>▲ LEAD</strong> puts a card in the pile <em>this weekend only</em>, <strong>▼ LATER</strong> drops it to the back without killing it — both auto-expire when the weekend rolls. <strong>👑 TOP</strong> is the permanent escalation above both (leads <em>on its own weekend</em> + "Top pick" pill — a future-dated TOP rides the back of the deck until its weekend arrives). <strong>Drag the ⠿ grip</strong> to hand-set the pile order — your order rides Submit and becomes the next run's opening sequence. Then the full feed and the approved canon library (green = yours — kill to retire). <strong>NEW FINDS</strong> opens with <strong>THE AIRLOCK</strong> — the run's unapproved live finds, weekend-topical first; nothing ships until you wave it in (★/👑) or kill it — then trending, bench, canon candidates — star to promote, <strong>+CANON</strong> for the permanent library. Titles link to the real page — flag dumb links. Progress saves in this browser. When you're done: <strong>Submit → GitHub</strong> files the round as an issue on the repo — the one-click path into the engine.</p>
+<p><strong>IN ROTATION</strong> opens with <strong>THE LENS — THIS WEEKEND × THIS WEATHER</strong>: what's explicitly dated the coming weekend <em>and</em> fits the forecast (outdoor leads when it's hot), plus — on a hot weekend — the <strong>SUMMER RUNS</strong>: in-season outdoor venues (open-air cinema, urban beaches, terrace programmes) that have no per-day date but are exactly what the weather is for. The same cards ride the pile and feed below; a verdict here counts everywhere. Then <strong>THE WEEKEND PILE</strong> — the projected opening cards, numbered. Control it per weekend: <strong>▲ LEAD</strong> puts a card in the pile <em>this weekend only</em>, <strong>▼ LATER</strong> drops it to the back without killing it — both auto-expire when the weekend rolls. <strong>👑 TOP</strong> is the permanent escalation above both (leads <em>on its own weekend</em> + "Top pick" pill — a future-dated TOP rides the back of the deck until its weekend arrives). <strong>Drag the ⠿ grip</strong> to hand-set the pile order — your order rides Submit and becomes the next run's opening sequence. Then the full feed and the approved canon library (green = yours — kill to retire). <strong>NEW FINDS</strong> opens with <strong>THE AIRLOCK</strong> — the run's unapproved live finds, weekend-topical first; nothing ships until you wave it in (★/👑) or kill it — then trending, bench, canon candidates — star to promote, <strong>+CANON</strong> for the permanent library. Titles link to the real page — flag dumb links. Progress saves in this browser. When you're done: <strong>Submit → GitHub</strong> files the round as an issue on the repo — the one-click path into the engine.</p>
 </header>
 <div class="tabs" id="tabs" hidden>
 <button class="tab on" data-tab="rot">IN ROTATION <span class="n" id="nrot"></span></button>
@@ -157,7 +157,7 @@ Promise.all([
   // 10 min (max-age=600), so a just-shipped board fix can lag in an open tab; the eyebrow makes
   // stale-board-vs-fresh-data visible at a glance (2026-07-12: an old tab's tier-mirror pile read
   // as "the board is wrong" when it was just cached).
-  const BOARD_V='V.9.10';
+  const BOARD_V='V.9.12';
   document.getElementById('eyebrow').textContent='WKNDR · CURATION BOARD '+BOARD_V+' · FEED '+(d.generatedAt||'').slice(0,16).replace('T',' · ');
   const board=document.getElementById('board');board.innerHTML='';
   const rot=document.createElement('div');rot.id='tab-rot';board.appendChild(rot);
@@ -223,17 +223,30 @@ Promise.all([
       if(isFinite(hi)&&isFinite(wet)&&isFinite(swing))
         WX={hi:Math.round(hi),mode:hi<10?'COLD_WET':wet>65?(hi<16?'COLD_WET':'VOLATILE'):hi>=24?'HOT':swing>=9?'VOLATILE':hi>=16?'WARM':hi>=10?'COOL':'WARM'};}}
   const sunny=!!WX&&(WX.mode==='HOT'||WX.mode==='WARM');
-  const lens=(d.picks||[]).filter(p=>dateInWknd(p.when)&&(!WX||(Array.isArray(p.weatherFit)&&p.weatherFit.includes(WX.mode))))
+  const dated=(d.picks||[]).filter(p=>dateInWknd(p.when)&&(!WX||(Array.isArray(p.weatherFit)&&p.weatherFit.includes(WX.mode))))
     .sort((a,b)=>(sunny?(b.outdoor?1:0)-(a.outdoor?1:0):0)||((b.editorScore??0)-(a.editorScore??0))||((b.buzz??0)-(a.buzz??0)));
+  // SUMMER RUNS (Ness, 2026-07-12: "the lens is serving mainly indoor activities — where are the
+  // outdoor cinema picks?"): on a HOT/WARM weekend the weather-right slice must also carry the
+  // OUTDOOR SEASONAL supply — open-air cinema, urban beaches, terrace/summer programmes — which is
+  // never dated-to-a-weekend ("All summer · evenings", "Until 30 Aug"). Admit: outdoor + active +
+  // a seasonal when (a 'summer' token or an until/through run). Year-round outdoor staples
+  // (markets "Mon–Sat", Efteling "Daily") stay out — they're the pile/feed's job, the lens stays
+  // tight. Dated slice first, summer runs after, judge order within.
+  const dIds=new Set(dated.map(p=>p.id));
+  const summer=sunny?(d.picks||[]).filter(p=>p.outdoor&&!dIds.has(p.id)&&activeBy(p.when)
+      &&(/\bsummer\b/i.test(p.when)||/\b(until|through|thru|till|t\/m)\b/i.test(p.when)))
+    .sort((a,b)=>((b.editorScore??0)-(a.editorScore??0))||((b.buzz??0)-(a.buzz??0))):[];
+  const lens=[...dated,...summer];
   {
     const sunD=new Date(WKEND),satD=new Date(sunD.getFullYear(),sunD.getMonth(),sunD.getDate()-1);
     const M=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
     const wkLabel=(satD.getMonth()===sunD.getMonth()?satD.getDate():satD.getDate()+' '+M[satD.getMonth()])+'–'+sunD.getDate()+' '+M[sunD.getMonth()];
     const lh=document.createElement('div');lh.className='cathead hot';
-    lh.textContent='THE LENS: THIS WEEKEND ('+wkLabel+')'+(WX?' · '+WX.hi+'° '+WX.mode.replace('_',' & '):'')+' — THE DATED, WEATHER-RIGHT SLICE · '+lens.length+(sunny?' · OUTDOOR FIRST':'')+(WX?'':' · FORECAST UNAVAILABLE — WEATHER FILTER OFF')+' (same cards ride the pile & feed below — a verdict here counts everywhere)';
+    lh.textContent='THE LENS: THIS WEEKEND ('+wkLabel+')'+(WX?' · '+WX.hi+'° '+WX.mode.replace('_',' & '):'')+' — THE WEATHER-RIGHT SLICE · '+dated.length+' DATED'+(summer.length?' + '+summer.length+' SUMMER RUNS (open-air cinema, beaches, terraces — in season now)':'')+(sunny?' · OUTDOOR FIRST':'')+(WX?'':' · FORECAST UNAVAILABLE — WEATHER FILTER OFF')+' (same cards ride the pile & feed below — a verdict here counts everywhere)';
     rot.appendChild(lh);
     const lg=document.createElement('div');lg.className='grid';rot.appendChild(lg);
-    lens.forEach(p=>addCard(p,lg,'lens',pilePos.get(p.id)||0,true));
+    dated.forEach(p=>addCard(p,lg,'lens',pilePos.get(p.id)||0,true));
+    summer.forEach(p=>addCard({...p,_summer:true},lg,'lens',pilePos.get(p.id)||0,true));
   }
   if(pile.length){
     const ph=document.createElement('div');ph.className='cathead hot';ph.textContent='THE WEEKEND PILE — THE '+pile.length+' OPENING CARDS'+(stamped?', THE APP’S OWN SERVE ORDER (stamped by the pipeline — your compiled ⠿ drag included)':', IN ORDER')+' (drag ⠿ to hand-set a new order · ▲ lead = put it here this weekend · ▼ later = not this week · applies next run)';rot.appendChild(ph);
@@ -308,7 +321,7 @@ function addCard(p,g,tag,pos,probe){
   if(probe&&p.image)probeRes(el,p.image);
   const bk=bakedFor(p.title);
   const badge=tag==='pile'?'<span class="badge pile">#'+pos+(p.top?' · 👑':p.lead?' · ▲':'')+'</span><span class="grip" title="Drag to reorder the pile">⠿</span>'
-    :tag==='lens'?'<span class="badge lens">'+(pos?'LENS · PILE #'+pos:'LENS')+'</span>'
+    :tag==='lens'?'<span class="badge lens">LENS'+(p._summer?' · SUMMER RUN':'')+(pos?' · PILE #'+pos:'')+'</span>'
     :tag==='appr'?'<span class="badge appr">✓'+(bk&&bk.stars?' ★'+bk.stars:'')+' APPROVED</span>'
     :bk?'<span class="badge saved">★'+(bk.stars||'·')+' SAVED</span>'
     :tag==='new'?'<span class="badge new">NEW</span>':'';

@@ -14,6 +14,23 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.9.12] — 2026-07-12 — "Summer runs in the lens + the big-screen facet"
+_Ness: "Where are the outdoor cinema picks and world cup watching picks?? The lens is serving
+mainly indoor activities." Two real content gaps:_
+- **SUMMER RUNS join the lens**: the dated-only rule was excluding the entire outdoor seasonal
+  supply (20 outdoor picks in the feed, nearly all "All summer"/"Until 30 Aug"/"Daily" — on a
+  28° HOT weekend the weather-right slice was screening out the weather-right cards). On
+  HOT/WARM the lens now adds a second tier after the dated slice: outdoor + active + seasonal
+  `when` (a "summer" token or an until/through run) — open-air cinema, urban beaches, terrace
+  programmes, badged `LENS · SUMMER RUN`. Year-round outdoor staples (markets "Mon–Sat",
+  Efteling "Daily") stay out; the lens stays tight. Live result: 7 dated + 7 summer runs.
+- **The big-screen facet (websearch)**: the 2026 World Cup final is Sun 19 Jul and the pipeline
+  had NOTHING for it — no facet hunts screenings. New static facet: World Cup public viewing /
+  watch parties / fan zones + major sport screenings (evergreen phrasing — outlives the Cup).
+  Lands cards in the airlock with Thursday's cron, which builds exactly the final's weekend.
+- Board eyebrow now carries its own version (V.9.10) — GitHub Pages caches the board HTML for
+  10 min, and a stale open tab reads as "the board is wrong"; the eyebrow makes it visible.
+
 ## [V.9.9] — 2026-07-12 — "The board reads the deck, not a mirror"
 _Ness: "why is my curation board STILL different from the app" — root cause found and killed:_
 - **The bug:** the board's WEEKEND PILE was an inline tier-mirror (tier → judge → buzz) that

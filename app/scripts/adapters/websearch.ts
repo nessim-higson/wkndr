@@ -58,6 +58,11 @@ const FACETS = [
   "de Volkskrant (volkskrant.nl) — this weekend's cultural agenda: concerts, theatre, art, film",
   'notable new restaurant & bar openings, food festivals and tastings',
   'festivals, street fairs, markets and big free or outdoor events',
+  // THE BIG-SCREEN facet (Ness, 2026-07-12: "where are the world cup watching picks??" — the
+  // 2026 World Cup final is Sun 19 Jul and the pipeline had NOTHING): public viewings, watch
+  // parties, fan zones + big-screen sport generally. Evergreen phrasing — after the Cup it keeps
+  // catching finals-class sport (F1, Euros, tennis) and big outdoor screening one-offs.
+  'big-screen sport: World Cup 2026 public viewing, watch parties and fan zones (bars, breweries, outdoor screens), plus other major sport screenings',
 ]
 // retired 2026-07-10 (deterministic coverage / low unique yield):
 //   "Your Little Black Book (yourlittleblackbook.me) — its Amsterdam weekend agenda / weekend tips for this weekend",

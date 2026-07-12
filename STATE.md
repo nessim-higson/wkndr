@@ -3,7 +3,7 @@
 _Living "where are we right now" doc — a **snapshot, not a history**. **Updated 2026-07-12.** Read this
 FIRST in a new chat. For strategy + backlog see `docs/backlog.md`; for the pipeline architecture see
 `docs/pipeline-architecture.md` + `docs/source-map.md`; for full **version history** see `CHANGELOG.md`
-(current to V.9.9) and the **git log / tags**. Onboarding: `CLAUDE.md`. App lives in `/app` (Vite +
+(current to V.9.12) and the **git log / tags**. Onboarding: `CLAUDE.md`. App lives in `/app` (Vite +
 React + TS, run with `bun`); deployed to GitHub Pages._
 
 > **START-OF-SESSION for WKNDR:** check `gh issue list --label curation` — the Curation Board's
@@ -11,18 +11,18 @@ React + TS, run with `bun`); deployed to GitHub Pages._
 > read the open ones, compile into the taste engine (below), ship, then close the issue.
 
 ## Live right now
-- **App: V.9.9** — https://nessim-higson.github.io/wkndr/ (cache-bust `?v=V.9.9`; V.8.16 = **THE
+- **App: V.9.12** — https://nessim-higson.github.io/wkndr/ (cache-bust `?v=V.9.12`; V.8.16 = **THE
   AIRLOCK** — Ness's 2026-07-10 call made law: the live deck is 1:1 with his board approvals. A live
   pick ships only on an approval match (starredKeeps/tops/★3+ anchors/slate/hero/buzz≥3 — one shared
   `approvalCheck` in lib/pipeline); everything else waits imaged+scored in `pending.<city>.json`,
   weekend-topical first (dated-this-weekend → forecast-mode fit → judge). Board verdicts promote via
-  restamp; invariant test `tests/airlock.test.ts` guards it — **101 tests**. V.9–V.9.2 = button-fling
+  restamp; invariant test `tests/airlock.test.ts` guards it — **112 tests**. V.9–V.9.2 = button-fling
   exit polish; V.9.3 = weather tint on card faces; V.9.4 = the relay (below); V.9.5 = **THE LENS** +
   the seasonal-venue websearch fix + the deck's sun bonus; V.9.6 = boomerang return gate; V.9.7 =
   the relay LIVE; V.9.8 = **compile R5 + the lost #8/#9 verdicts** — Île de Bisous veto, Queer
   Amsterdam 👑, Martin Parr canon, BRET image pinned; V.9.9 = **the board reads the deck** — the
   pipeline stamps `servePos` (the app's own serve order, dragged pile included) and the WEEKEND
-  PILE renders the stamp instead of the old drifting tier-mirror) ·
+  PILE renders the stamp instead of the old drifting tier-mirror; V.9.10–V.9.12 = board version in the eyebrow (Pages caches 10 min), SUMMER RUNS join the lens on hot weekends + the big-screen / World Cup websearch facet) ·
   **Curation Board:** https://nessim-higson.github.io/wkndr/curate/ — tabbed: `IN ROTATION` (opens
   with **THE LENS — THIS WEEKEND × THIS WEATHER**, the tight dated + forecast-fit slice, outdoor
   first when hot, forecast via the board's own open-meteo read; then **THE WEEKEND PILE** — the ~10
@@ -44,7 +44,7 @@ React + TS, run with `bun`); deployed to GitHub Pages._
 - **`?dev=1`** reveals the full exploration surface (all views, ambient-look switcher, city picker).
 - **Frozen reference builds:** `/wkndr/versions/v6-2/` (tag `v6.2`) and `/wkndr/versions/v4-10/` (tag `v4.10`).
 - **Ship loop:** `cd app && bun run bump` → `bun run build` → commit → push (auto-deploys) → reply with
-  the `?v=` link. **Tests:** `bun run test` (101 logic tests; CI runs them before every content refresh).
+  the `?v=` link. **Tests:** `bun run test` (112 logic tests; CI runs them before every content refresh).
   **Pages deploy flakes** intermittently ("try again later") — re-dispatch `deploy.yml` (there's an
   auto-retry pattern in the ship watchers).
 
