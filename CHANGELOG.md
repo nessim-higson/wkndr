@@ -14,6 +14,16 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.9.15] — 2026-07-12 — "Compile R7: his 23-card deal"
+_Issue #13 — the first drag over the widened pile, compiled + restamped same-hour:_
+- **PILE-ORDER, 23 titles**: Kwaku opens (was World Press), then Kaap, Jazz @ H'ART, Hannekes…
+  all matched (0 unmatched), stamped 1–23; Pllek Urban Beach & Cinema 👑 deals #24 right after.
+- **3 new 👑s**: Kwaku (★4), Jazz @ H'ART (★5), Pllek Urban Beach & Cinema (★4 — the cinema
+  card; the canon waterfront-hang stays a keep). topPicks now ELEVEN vs the ≤6 guidance — all
+  his explicit calls; prune round due when the summer crowns expire.
+- **Stoornis of my life: ★4 + KILL = RESTED** (fatigue ≠ taste, the R3 law) until 26 Jul —
+  past the show's close, so the run ends before it returns. Feed 79 → 78.
+
 ## [V.9.14] — 2026-07-12 — "The pile pool widens"
 - Ness: "can we add more fresh elements I have liked so I can reorder." The WEEKEND PILE grows
   from the 10 projected openers to **24 draggable cards**: the openers + everything LIVE in the
