@@ -15,18 +15,19 @@ export function Feedback({ getContext }: { getContext: () => Record<string, stri
   const [open, setOpen] = useState(false)
   const [sentiment, setSentiment] = useState<'up' | 'down' | null>(null)
   const [note, setNote] = useState('')
+  const [feature, setFeature] = useState('')
   const [name, setName] = useState('')
   const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle')
 
-  const reset = () => { setOpen(false); setStatus('idle'); setNote(''); setSentiment(null) }
-  const canSend = !!note.trim() || !!sentiment
+  const reset = () => { setOpen(false); setStatus('idle'); setNote(''); setFeature(''); setSentiment(null) }
+  const canSend = !!note.trim() || !!feature.trim() || !!sentiment
 
   const submit = async () => {
     if (!canSend) return
     setStatus('sending')
     const ctx = getContext()
     const payload: Record<string, string> = {
-      sentiment: sentiment ?? '', note: note.trim(), from: name.trim() || 'anon', ...ctx, ua: navigator.userAgent,
+      sentiment: sentiment ?? '', note: note.trim(), feature: feature.trim(), from: name.trim() || 'anon', ...ctx, ua: navigator.userAgent,
     }
     try {
       if (FORM_READY) {
@@ -39,7 +40,8 @@ export function Feedback({ getContext }: { getContext: () => Record<string, stri
       } else {
         // fallback while the Formspree endpoint isn't wired yet
         const body = encodeURIComponent(
-          `${sentiment ? `[${sentiment}] ` : ''}${note.trim()}\n\n— ${payload.from}\n\n` +
+          `${sentiment ? `[${sentiment}] ` : ''}${note.trim()}` +
+          `${feature.trim() ? `\n\nFeature I’d love: ${feature.trim()}` : ''}\n\n— ${payload.from}\n\n` +
           `context: ${Object.entries(ctx).map(([k, v]) => `${k}=${v}`).join(' · ')}`)
         window.location.href = `mailto:${MAILTO}?subject=${encodeURIComponent('WKNDR feedback')}&body=${body}`
       }
@@ -74,6 +76,9 @@ export function Feedback({ getContext }: { getContext: () => Record<string, stri
                 <textarea
                   className="fb-note" rows={4} value={note} onChange={(e) => setNote(e.target.value)}
                   placeholder="What’s working? What’s confusing, missing, or broken?" />
+                <input
+                  className="fb-name" value={feature} onChange={(e) => setFeature(e.target.value)}
+                  placeholder="A feature I’d love to see" />
                 <input
                   className="fb-name" value={name} onChange={(e) => setName(e.target.value)}
                   placeholder="Your name (optional)" />
