@@ -4,7 +4,7 @@
 // round-trip landed? → 'return-leg'. Pageviews come free from count.js; the events below are the
 // funnel. DORMANT until SITE is set (create the site at goatcounter.com, paste its code here) —
 // with it empty every call is a no-op, so this ships safely ahead of the account.
-const SITE = ''   // e.g. 'wkndr' → counts to https://wkndr.goatcounter.com
+const SITE = 'wkndr'   // → counts to https://wkndr.goatcounter.com (live 2026-07-11)
 
 declare global {
   interface Window {
