@@ -3,7 +3,7 @@ import { AnimatePresence, motion, useDragControls } from 'framer-motion'
 import { X, Star, ArrowUpRight, Check, Maximize2, Sparkles } from 'lucide-react'
 import type { Pick } from '../types'
 import { CATEGORY_LABEL, FRESHNESS_LABEL, STATUS_LABEL, weatherPill } from '../types'
-import { shortCode } from '../lib/share'
+import { shortCode, shareBase } from '../lib/share'
 import './CardDetail.css'
 
 // the detail body fades/rises in just after the sheet lands — staggered children
@@ -93,7 +93,7 @@ export function CardDetail({
   // share THIS pick — a link that opens straight to it (no backend)
   async function share() {
     if (!pick) return
-    const url = `${location.origin}${location.pathname}?w=${shortCode(pick)}`
+    const url = `${shareBase()}?w=${shortCode(pick)}`
     const data = { title: pick.title, text: `${pick.title} — ${pick.venue}, ${pick.area}`, url }
     if (navigator.share) {
       // cancelling the native sheet rejects with AbortError — that's a decision, not a

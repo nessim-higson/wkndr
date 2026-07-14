@@ -17,11 +17,23 @@ export function shortCode(p: Pick): string {
   return fnv(key).toString(36).padStart(7, '0')
 }
 
+// The canonical origin every link is built on. In the app.wkndr.xyz build this is stamped to
+// https://app.wkndr.xyz so links point at the one real home; on the GitHub Pages build (and in
+// dev) it's empty, and we fall back to the live location — so links already in the wild that
+// were minted on github.io keep resolving, and localhost dev links stay on localhost.
+const SHARE_ORIGIN = import.meta.env.VITE_APP_ORIGIN || ''
+
+/** origin + path that share/confirm links hang off — canonical domain when built for it,
+ *  otherwise wherever the app is currently served from (GH Pages under /wkndr/, or dev). */
+export function shareBase(): string {
+  return SHARE_ORIGIN ? `${SHARE_ORIGIN}/` : `${location.origin}${location.pathname}`
+}
+
 /** the canonical share URL: ?w=<codes>&from=<name>[&r=<round>] — `r` is the relay round id
  *  (lib/relay): the key the recipient's matches POST back under. Only the OUTBOUND invite
  *  carries it; the return leg is the answer, not another question. */
 export function shareLink(picks: Pick[], from?: string, round?: string): string {
-  return `${location.origin}${location.pathname}?w=${picks.map(shortCode).join(',')}`
+  return `${shareBase()}?w=${picks.map(shortCode).join(',')}`
     + (from?.trim() ? `&from=${encodeURIComponent(from.trim())}` : '')
     + (round ? `&r=${round}` : '')
 }
@@ -29,7 +41,7 @@ export function shareLink(picks: Pick[], from?: string, round?: string): string 
 /** the return-leg URL built from raw codes (what the relay hands back) — identical shape to
  *  the manual "send matches back" link, so the sender's confirm greeting has ONE code path */
 export function confirmLink(codes: string[], from?: string): string {
-  return `${location.origin}${location.pathname}?w=${codes.join(',')}`
+  return `${shareBase()}?w=${codes.join(',')}`
     + (from?.trim() ? `&from=${encodeURIComponent(from.trim())}` : '') + '&m=1'
 }
 

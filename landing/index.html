@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>WKNDR — your weekend, ranked by the weather</title>
+<meta name="description" content="Your weekend, ranked by the weather. Swipe what's on in Amsterdam, match with someone you'd actually go with, make a plan." />
+<meta name="theme-color" content="#faf8f3" />
+
+<!-- THE UNFURL — mirror the app's link preview so wkndr.xyz shares clean. -->
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="WKNDR" />
+<meta property="og:title" content="WKNDR — your weekend, ranked by the weather" />
+<meta property="og:description" content="Swipe what's on in Amsterdam · match with someone · make a plan." />
+<meta property="og:url" content="https://wkndr.xyz/" />
+<meta property="og:image" content="https://wkndr.xyz/og.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="WKNDR — your weekend, ranked by the weather" />
+<meta name="twitter:description" content="Swipe what's on in Amsterdam · match with someone · make a plan." />
+<meta name="twitter:image" content="https://wkndr.xyz/og.png" />
+
+<link rel="icon" type="image/png" href="/favicon.png" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin />
+<link rel="preconnect" href="https://cdn.fontshare.com" crossorigin />
+<!-- Clash Display — the WKNDR display voice (same as the app) -->
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=clash-display@600,700&display=swap" />
+<style>
+  :root{
+    --paper:#faf8f3; --stage:#eceae3; --ink:#1a1a1a; --ink-2:#4a4942; --ink-3:#8b8a82;
+    --line:#e2ddd0; --accent:#ff4d1f; --accent-deep:#8a2818;
+    --display:'Clash Display','Helvetica Neue',system-ui,sans-serif;
+    --body:system-ui,-apple-system,'Segoe UI',sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;}
+  body{
+    background:var(--stage);color:var(--ink);
+    font-family:var(--body);line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 clamp(20px,5vw,48px);}
+
+  /* ---------- top bar ---------- */
+  header{position:sticky;top:0;z-index:50;background:rgba(236,234,227,.82);backdrop-filter:blur(10px);
+    border-bottom:0.5px solid var(--line);}
+  .bar{display:flex;align-items:center;justify-content:space-between;height:60px;}
+  .mark{font-family:var(--display);font-weight:700;font-size:20px;letter-spacing:-0.01em;
+    display:inline-flex;align-items:center;gap:8px;text-decoration:none;}
+  .mark .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);}
+  .cta{font-family:var(--body);font-weight:600;font-size:14px;text-decoration:none;
+    background:var(--ink);color:var(--paper);padding:9px 18px;border-radius:999px;
+    transition:transform .15s ease, background .2s ease;white-space:nowrap;}
+  .cta:hover{background:var(--accent);transform:translateY(-1px);}
+  .cta.big{font-size:16px;padding:15px 30px;}
+
+  /* ---------- hero ---------- */
+  .hero{padding:clamp(56px,11vh,120px) 0 clamp(40px,7vh,72px);text-align:center;}
+  .chip{display:inline-flex;align-items:center;gap:9px;background:var(--paper);border:1px solid var(--line);
+    border-radius:100px;padding:6px 6px 6px 14px;font-size:12.5px;font-weight:600;color:var(--ink-2);
+    box-shadow:0 6px 18px -12px rgba(0,0,0,.3);margin-bottom:clamp(24px,4vh,40px);}
+  .chip .cd{width:9px;height:9px;border-radius:50%;background:var(--accent);}
+  .chip .mode{font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#4a2a10;
+    padding:4px 11px;border-radius:100px;background:linear-gradient(120deg,#ff9a3d,#ffd166);}
+  h1{font-family:var(--display);font-weight:600;letter-spacing:-0.035em;line-height:0.98;
+    font-size:clamp(44px,9.5vw,104px);}
+  h1 .em{color:var(--accent);}
+  .lede{max-width:38ch;margin:clamp(20px,3.5vh,32px) auto 0;font-size:clamp(16px,2vw,21px);
+    color:var(--ink-2);line-height:1.45;}
+  .hero .cta{margin-top:clamp(28px,4.5vh,44px);display:inline-block;}
+  .hero .subnote{margin-top:16px;font-size:13px;color:var(--ink-3);}
+
+  /* ---------- steps ---------- */
+  .steps{padding:clamp(28px,6vh,60px) 0 clamp(48px,9vh,96px);}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(16px,2.4vw,26px);}
+  @media (max-width:760px){.grid{grid-template-columns:1fr;}}
+  .card{background:var(--paper);border:1px solid var(--line);border-radius:20px;
+    padding:clamp(24px,3vw,34px);box-shadow:0 1px 2px rgba(40,30,20,.04),0 22px 44px -30px rgba(40,30,20,.28);}
+  .card .n{font-family:var(--display);font-weight:600;font-size:15px;color:var(--accent);
+    letter-spacing:.02em;margin-bottom:16px;}
+  .card h3{font-family:var(--display);font-weight:600;font-size:clamp(21px,2.4vw,26px);
+    letter-spacing:-0.02em;line-height:1.05;margin-bottom:10px;}
+  .card p{font-size:15px;color:var(--ink-2);line-height:1.5;}
+
+  /* ---------- band ---------- */
+  .band{background:var(--ink);color:var(--paper);border-radius:26px;
+    padding:clamp(40px,7vw,76px) clamp(28px,5vw,64px);text-align:center;margin:0 0 clamp(48px,9vh,90px);
+    position:relative;overflow:hidden;}
+  .band::before{content:"";position:absolute;inset:0;pointer-events:none;
+    background:radial-gradient(120% 90% at 20% 0%,rgba(255,154,61,.28),transparent 55%);}
+  .band h2{position:relative;font-family:var(--display);font-weight:600;letter-spacing:-0.03em;
+    font-size:clamp(30px,5.2vw,58px);line-height:1.0;max-width:16ch;margin:0 auto;}
+  .band p{position:relative;margin:22px auto 0;max-width:44ch;color:rgba(250,248,243,.72);
+    font-size:clamp(15px,1.8vw,19px);}
+  .band .cta{position:relative;margin-top:clamp(28px,4vw,40px);background:var(--accent);color:#fff;}
+  .band .cta:hover{background:#fff;color:var(--ink);}
+
+  /* ---------- footer ---------- */
+  footer{border-top:0.5px solid var(--line);padding:34px 0 48px;color:var(--ink-3);font-size:13.5px;}
+  .foot{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;}
+  .foot .fmark{font-family:var(--display);font-weight:700;font-size:15px;color:var(--ink-2);
+    display:inline-flex;align-items:center;gap:7px;}
+  .foot .fmark .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);}
+  .foot nav a{color:var(--ink-3);text-decoration:none;margin-left:20px;transition:color .2s ease;}
+  .foot nav a:hover{color:var(--ink);}
+</style>
+</head>
+<body>
+  <header>
+    <div class="wrap bar">
+      <a class="mark" href="/"><span class="dot"></span>WKNDR</a>
+      <a class="cta" href="https://app.wkndr.xyz/">Open WKNDR</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero wrap">
+      <span class="chip"><span class="cd"></span>This weekend in Amsterdam <span class="mode">26° · Hot</span></span>
+      <h1>Your weekend,<br>ranked by the <span class="em">weather</span>.</h1>
+      <p class="lede">Swipe what's actually on in Amsterdam, match with someone you'd really go with, and land on a plan. No accounts. No feed to scroll forever.</p>
+      <a class="cta big" href="https://app.wkndr.xyz/">Open WKNDR</a>
+      <div class="subnote">Free · works in your browser · Amsterdam</div>
+    </section>
+
+    <section class="steps wrap">
+      <div class="grid">
+        <div class="card">
+          <div class="n">01</div>
+          <h3>Ranked by the forecast</h3>
+          <p>Every week we crawl the city's events, image-check them, and sort them against the coming weekend's real weather. Sun on Saturday pushes the rooftop up the deck.</p>
+        </div>
+        <div class="card">
+          <div class="n">02</div>
+          <h3>Swipe, don't scroll</h3>
+          <p>A deck, not a feed. Keep the ones you'd go to, skip the rest. Your taste stays in your browser — the more you swipe, the sharper it reads you.</p>
+        </div>
+        <div class="card">
+          <div class="n">03</div>
+          <h3>Match, then make a plan</h3>
+          <p>Send your picks to a friend. They swipe the same set, the overlap snaps, and the plan comes back — the whole match lives in a single link.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="wrap">
+      <div class="band">
+        <h2>The weekend's already picked. Go find out with who.</h2>
+        <p>Open the deck, swipe your Saturday, and send it to the one person you'd actually spend it with.</p>
+        <a class="cta big" href="https://app.wkndr.xyz/">Open WKNDR</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap foot">
+      <span class="fmark"><span class="dot"></span>WKNDR · Amsterdam</span>
+      <nav>
+        <a href="https://app.wkndr.xyz/">Open the app</a>
+        <a href="/privacy">Privacy</a>
+      </nav>
+    </div>
+  </footer>
+</body>
+</html>

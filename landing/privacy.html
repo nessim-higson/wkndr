@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Privacy — WKNDR</title>
+<meta name="description" content="How WKNDR handles your data: no accounts, no cookies, your taste lives in your browser." />
+<meta name="theme-color" content="#faf8f3" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="WKNDR" />
+<meta property="og:title" content="Privacy — WKNDR" />
+<meta property="og:description" content="No accounts. No cookies. Your taste lives in your browser." />
+<meta property="og:url" content="https://wkndr.xyz/privacy" />
+<meta property="og:image" content="https://wkndr.xyz/og.png" />
+<link rel="icon" type="image/png" href="/favicon.png" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin />
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=clash-display@600,700&display=swap" />
+<style>
+  :root{
+    --paper:#faf8f3; --stage:#eceae3; --ink:#1a1a1a; --ink-2:#4a4942; --ink-3:#8b8a82;
+    --line:#e2ddd0; --accent:#ff4d1f;
+    --display:'Clash Display','Helvetica Neue',system-ui,sans-serif;
+    --body:system-ui,-apple-system,'Segoe UI',sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{-webkit-text-size-adjust:100%;}
+  body{background:var(--stage);color:var(--ink);font-family:var(--body);line-height:1.6;
+    -webkit-font-smoothing:antialiased;}
+  a{color:var(--accent);}
+  .wrap{max-width:680px;margin:0 auto;padding:0 clamp(20px,5vw,40px);}
+
+  header{position:sticky;top:0;z-index:50;background:rgba(236,234,227,.82);backdrop-filter:blur(10px);
+    border-bottom:0.5px solid var(--line);}
+  .bar{display:flex;align-items:center;justify-content:space-between;height:60px;max-width:680px;margin:0 auto;
+    padding:0 clamp(20px,5vw,40px);}
+  .mark{font-family:var(--display);font-weight:700;font-size:20px;letter-spacing:-0.01em;
+    display:inline-flex;align-items:center;gap:8px;text-decoration:none;color:var(--ink);}
+  .mark .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);}
+  .cta{font-family:var(--body);font-weight:600;font-size:14px;text-decoration:none;
+    background:var(--ink);color:var(--paper);padding:9px 18px;border-radius:999px;transition:background .2s ease;}
+  .cta:hover{background:var(--accent);}
+
+  main{padding:clamp(40px,8vh,80px) 0 clamp(56px,10vh,110px);}
+  .eyebrow{font-family:var(--display);font-weight:600;font-size:14px;letter-spacing:.06em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:14px;}
+  h1{font-family:var(--display);font-weight:600;letter-spacing:-0.03em;line-height:1.0;
+    font-size:clamp(34px,7vw,58px);margin-bottom:18px;}
+  .sub{font-size:clamp(16px,2vw,19px);color:var(--ink-2);margin-bottom:clamp(32px,6vh,52px);}
+  h2{font-family:var(--display);font-weight:600;font-size:clamp(20px,3vw,25px);letter-spacing:-0.02em;
+    margin:clamp(30px,5vh,44px) 0 12px;}
+  p{color:var(--ink-2);margin-bottom:14px;font-size:16.5px;}
+  p strong{color:var(--ink);font-weight:600;}
+  .updated{margin-top:clamp(40px,7vh,64px);padding-top:22px;border-top:0.5px solid var(--line);
+    color:var(--ink-3);font-size:14px;}
+  .back{display:inline-block;margin-top:10px;font-family:var(--display);font-weight:600;
+    text-decoration:none;color:var(--ink);}
+  .back:hover{color:var(--accent);}
+</style>
+</head>
+<body>
+  <header>
+    <div class="bar">
+      <a class="mark" href="/"><span class="dot"></span>WKNDR</a>
+      <a class="cta" href="https://app.wkndr.xyz/">Open WKNDR</a>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="eyebrow">Privacy</div>
+    <h1>The short, honest version.</h1>
+    <p class="sub">WKNDR is built to need almost nothing from you. Here's exactly what that means, in plain language.</p>
+
+    <h2>No accounts, ever</h2>
+    <p>There's no sign-up, no login, no password. You just open the deck and start swiping. We never ask for your email to use the app.</p>
+
+    <h2>No cookies, no tracking pixels</h2>
+    <p>WKNDR doesn't set advertising or tracking cookies, and there are no third-party trackers following you around after you leave.</p>
+
+    <h2>Your taste lives in your browser</h2>
+    <p>Every swipe — what you keep, what you skip, the taste the app learns about you — is saved <strong>on your device</strong>, in your browser's own storage (localStorage). It never leaves your phone or laptop, and it isn't tied to a name or an account. Clear your browser data and it's gone.</p>
+
+    <h2>Feedback you choose to send</h2>
+    <p>If you tap the feedback button and write us a note, that message is sent through <strong>Formspree</strong> so we can read it. That's the only time your words reach us — because you decided to hit send.</p>
+
+    <h2>Counting visits, not people</h2>
+    <p>When it's turned on, we use <strong>GoatCounter</strong> — a cookieless, privacy-first analytics tool — to see roughly how many people opened the site. It doesn't set cookies, doesn't build a profile of you, and doesn't collect anything that identifies you personally.</p>
+
+    <h2>Matching with a friend</h2>
+    <p>When you share your picks so a friend can match, the hand-off runs through a small relay. It stores only <strong>short pick-codes and a first name</strong> — enough to bounce your matches back to you — under an unguessable link, and it auto-deletes after about <strong>14 days</strong>. No events, no messages, no accounts, no location.</p>
+
+    <h2>A few words on the listings</h2>
+    <p>WKNDR pulls events from public sources and ranks them for you, but we don't run the venues or sell the tickets. Listings are shown <strong>as-is</strong> and details change — always check with the venue or organiser before you head out. WKNDR is a way to find your weekend, not a booking or ticketing guarantee.</p>
+
+    <div class="updated">
+      <div>Questions? Reach us through the feedback button in the app.</div>
+      <a class="back" href="/">← Back to WKNDR</a>
+    </div>
+  </main>
+</body>
+</html>

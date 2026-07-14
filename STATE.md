@@ -11,6 +11,16 @@ React + TS, run with `bun`); deployed to GitHub Pages._
 > read the open ones, compile into the taste engine (below), ship, then close the issue.
 
 ## Live right now
+- **Web presence (wkndr.xyz):** Ness registered **wkndr.xyz** through Cloudflare (domain + DNS in
+  his CF account). Two surfaces ship from this repo to **Cloudflare Pages**: the **landing** at
+  `wkndr.xyz` (self-contained static site in `landing/` — hero + 3 steps + one "Open WKNDR" CTA +
+  `/privacy`, WKNDR paper/orange voice) and the **app** at `app.wkndr.xyz`. The app gained a second
+  build target — `bun run build:domain` (`WKNDR_DEPLOY=domain`) serves at base `/` and bakes the
+  canonical origin `https://app.wkndr.xyz` into the unfurl (`app/index.html` `%OG_ORIGIN%`) + share
+  links (`lib/share.ts` `shareBase()`); the default `bun run build` is UNCHANGED (base `/wkndr/`,
+  GH Pages origin) so **old share links in the wild keep resolving**. The GitHub Pages deploy stays
+  live. Custom-domain attach + DNS are Ness-only CF-dashboard steps (checklist handed off). Pages
+  projects: `wkndr-landing` + `wkndr-app`.
 - **App: V.9.17** — https://nessim-higson.github.io/wkndr/ (cache-bust `?v=V.9.17`; V.8.16 = **THE
   AIRLOCK** — Ness's 2026-07-10 call made law: the live deck is 1:1 with his board approvals. A live
   pick ships only on an approval match (starredKeeps/tops/★3+ anchors/slate/hero/buzz≥3 — one shared

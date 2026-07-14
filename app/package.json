@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "bun run scripts/export-canon.ts && tsc -b && vite build",
+    "build:domain": "WKNDR_DEPLOY=domain bun run build",
     "preview": "vite preview",
     "refresh": "bun run scripts/refresh.ts",
     "test": "bun test tests",
