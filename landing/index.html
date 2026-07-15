@@ -47,12 +47,16 @@
   }
 
   /* fixed brand mark (real Clash Display logo) */
+  /* the persistent way in: brandmark doubles as the CTA pill (matches #early's treatment) */
   #brandmark{
     position:fixed;top:clamp(18px,3vh,30px);left:clamp(20px,3vw,42px);z-index:9990;
-    display:flex;align-items:center;gap:8px;
+    display:inline-flex;align-items:center;gap:8px;
     font-family:var(--display);font-weight:700;font-size:19px;
-    letter-spacing:-0.01em;color:var(--ink);opacity:0;pointer-events:none;
+    letter-spacing:-0.01em;color:var(--ink);opacity:0;pointer-events:none;text-decoration:none;
+    border:0.5px solid rgba(0,0,0,0.25);border-radius:999px;padding:7px 15px;
+    background:rgba(255,255,255,0.5);backdrop-filter:blur(6px);transition:background .2s ease;
   }
+  #brandmark:hover{background:rgba(255,255,255,0.85);}
   #brandmark .wk-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);}
   #early{
     position:fixed;top:clamp(16px,3vh,28px);right:clamp(20px,3vw,42px);z-index:9990;
@@ -665,7 +669,7 @@
 <body>
 <div id="stage">
 
-  <div id="brandmark"><span class="wk-dot"></span>WKNDR</div>
+  <a id="brandmark" href="https://app.wkndr.xyz/"><span class="wk-dot"></span>Open WKNDR</a>
   <a id="early" href="https://app.wkndr.xyz/">Get early access</a>
 
   <div id="headline-wrap">
@@ -680,6 +684,8 @@
         <p class="closing-text">
           <span class="mclane-link" id="mclane-link">WKNDR</span> ranks your weekend by the forecast — and matches it with the people you'd actually go with.
         </p>
+        <!-- the way in, once the cards are gone: opening the app is primary, the list below is optional -->
+        <a class="get-in-touch wl-submit" id="closing-open" href="https://app.wkndr.xyz/" style="text-decoration:none;margin-bottom:16px">Open WKNDR<span class="git-arrow"><span class="git-arrow-out">→</span><span class="git-arrow-in">→</span></span></a>
         <form id="wl-form" class="wl" novalidate>
           <input id="wl-email" type="email" inputmode="email" autocomplete="email" required placeholder="you@email.com" aria-label="Email" />
           <div class="wl-two">
@@ -1192,6 +1198,7 @@ function frame(ts){
     const x=lerp(1,0,invlerp(f,(TOTAL-2)*L,(TOTAL-1)*L));
     headlineWrap.style.opacity=dMaster*x;
     brandmark.style.opacity=dMaster*0.85;
+    brandmark.style.pointerEvents=dMaster>0.5?'auto':'none';   // it's a CTA now, not decoration
     earlyLink.style.opacity=dMaster*0.85;
     earlyLink.style.pointerEvents=dMaster>0.5?'auto':'none';
     for(let e=0;e<TOTAL;e++){
