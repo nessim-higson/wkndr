@@ -68,7 +68,12 @@
     font-family:'TWKLausannePan',sans-serif;font-weight:300;font-size:38px;color:var(--ink);
     text-align:center;max-width:clamp(440px,24vw + 320px,680px);
     letter-spacing:-0.02em;padding:0 20px;line-height:1.12;pointer-events:auto;
+    text-wrap:balance;   /* kills the orphaned "weather." on its own line */
   }
+  /* the claim leads; the mechanic supports it — two sizes, not two equals */
+  .hl-lead{display:block;font-weight:800;letter-spacing:-0.03em;}
+  .hl-sub{display:block;margin-top:0.44em;font-size:max(15px,0.56em);font-weight:300;font-style:italic;
+    color:var(--ink-3);letter-spacing:-0.005em;line-height:1.3;}   /* floor keeps it legible at 390px */
 
   /* deck */
   #deck{
@@ -457,18 +462,10 @@
   .closing-logo{display:flex;align-items:center;gap:8px;margin-bottom:28px;
     font-family:var(--display);font-weight:700;font-size:18px;letter-spacing:-0.01em;color:var(--ink);}
   .closing-logo .wk-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);}
-  #icon-row{position:relative;margin-bottom:24px;}
-  #icon-row .icons{display:flex;gap:8px;}
-  .icon-wiggle{width:40px;height:40px;border-radius:11px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.08);}
-  .label{position:absolute;bottom:100%;left:0;right:0;display:flex;justify-content:center;margin-bottom:20px;pointer-events:none;}
-  .label .lab-inner{position:relative;opacity:0;transform:translateY(3px);
-    transition:opacity .3s ease,transform .3s ease;text-align:center;white-space:nowrap;}
-  .label .lab-inner span{display:block;font-family:'TWKLausannePan',sans-serif;font-weight:300;font-size:15px;color:var(--ink);line-height:1.3;}
-  .label .lab-inner span.yr{opacity:.5;}
   .closing-text{font-family:'TWKLausannePan',sans-serif;font-weight:300;font-size:18px;color:var(--ink);
-    text-align:center;line-height:1.45;max-width:560px;}
-  .mclane-link{text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:0.5px;
-    text-decoration-color:rgba(0,0,0,0.6);cursor:default;pointer-events:auto;color:inherit;position:relative;font-weight:600;}
+    text-align:center;line-height:1.45;max-width:560px;text-wrap:balance;margin-bottom:30px;}
+  /* was an underlined pseudo-link (social hover, now gone) — emphasis only, no link affordance */
+  .mclane-link{color:inherit;font-weight:600;}
   .get-in-touch{background:var(--accent);color:#fff;border:none;border-radius:999px;padding:11px 22px;
     font-family:'TWKLausannePan',sans-serif;font-weight:300;font-size:16px;letter-spacing:.01em;
     cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation;
@@ -487,7 +484,6 @@
     white-space:nowrap;opacity:0;transform:translateY(6px) rotate(-3deg);
     transition:opacity .4s cubic-bezier(.16,1,.3,1),transform .4s cubic-bezier(.16,1,.3,1);pointer-events:none;box-shadow:0 4px 14px rgba(0,0,0,0.12);}
   @keyframes wiggle{0%{transform:rotate(-2deg);}50%{transform:rotate(2deg);}to{transform:rotate(-2deg);}}
-  .icon-wiggle:hover,.icon-wiggle.wiggling{animation:.3s ease-in-out infinite wiggle;}
 
 
   /* ================= MOTION — how the app behaves ================= */
@@ -555,8 +551,7 @@
     /* closing capture: tighten so the form fits the shorter mobile card */
     #closing{padding:24px;}
     .closing-logo{margin-bottom:14px;}
-    #icon-row{margin-bottom:14px;}
-    .closing-text{font-size:15px;line-height:1.35;margin-bottom:6px;}
+    .closing-text{font-size:15px;line-height:1.35;margin-bottom:22px;}
     /* deck becomes a tall portrait panel that fills the phone */
     #deck{width:92vw;max-width:92vw;height:min(66vh,560px);aspect-ratio:auto;}
     /* device cards: short headline stacked above a LARGE phone */
@@ -632,14 +627,13 @@
   <a id="brandmark" href="https://app.wkndr.xyz/"><span class="wk-dot"></span>Open WKNDR</a>
 
   <div id="headline-wrap">
-    <h1 id="headline"><span style="font-weight:800">Your weekend, ranked by the weather.</span><br><span style="font-weight:400;font-style:italic">Match events with people you would actually go with.</span></h1>
+    <h1 id="headline"><span class="hl-lead">Your weekend, ranked by the weather.</span><span class="hl-sub">Match events with people you would actually go with.</span></h1>
   </div>
 
   <div id="deck">
     <div id="closing">
       <div class="inner">
         <div class="closing-logo"><span class="wk-dot"></span>WKNDR</div>
-        <div id="icon-row"><!-- weather chips injected by JS --></div>
         <p class="closing-text">
           <span class="mclane-link" id="mclane-link">WKNDR</span> ranks your weekend by the forecast — and matches it with the people you'd actually go with.
         </p>
@@ -752,12 +746,6 @@ const projects=[
   {kind:'device', bg:'#1f3a36', text:'#eafaf6', k:'The payoff', h:"Your weekend's set.", p:"Two matches, a live forecast, and a plan you'll both actually keep.", screen:'ready'},
 ];
 
-const timeline=[
-  {color:'#c8d27a', name:'Warm',     role:'Dry · gentle breeze', years:'choose your adventure'},
-  {color:'#9fc0b8', name:'Cool',     role:'Clear · crisp air',   years:'the city is walkable'},
-  {color:'#6c7e9c', name:'Cold & wet', role:'An indoor day',     years:'well spent inside'},
-  {color:'#e08a4a', name:'Hot',      role:'Dry · keep water close', years:'chase the shade'},
-];
 
 const isMobile=window.innerWidth<768;
 const L=isMobile?300:800, HFAC=isMobile?1.8:0.8, TOTAL=projects.length;
@@ -1025,21 +1013,6 @@ projects.forEach((c)=>{
 });
 inits.forEach(fn=>fn());
 
-// weather chips + hover labels
-const iconRow=document.getElementById('icon-row');
-const labelEls=[];
-timeline.forEach((t)=>{const label=document.createElement('div');label.className='label';
-  label.innerHTML=`<div class="lab-inner"><span>${t.name}</span><span>${t.role}</span><span class="yr">${t.years}</span></div>`;
-  iconRow.appendChild(label);labelEls.push(label.querySelector('.lab-inner'));});
-const iconsWrap=document.createElement('div');iconsWrap.className='icons';
-const iconImgs=[];
-timeline.forEach((t,i)=>{const chip=document.createElement('div');chip.className='icon-wiggle';chip.style.backgroundColor=t.color;
-  chip.addEventListener('mouseenter',()=>setHovered(i));chip.addEventListener('mouseleave',()=>setHovered(null));
-  iconsWrap.appendChild(chip);iconImgs.push(chip);});
-iconRow.appendChild(iconsWrap);
-function setHovered(idx){labelEls.forEach((el,i)=>{const on=i===idx;
-  if(on&&iconImgs[i]){const off=iconImgs[i].offsetLeft+22-(iconsWrap.offsetWidth/2);el.style.left=off+'px';}
-  el.style.opacity=on?1:0;el.style.transform=on?'translateY(0)':'translateY(3px)';});}
 
 const headlineWrap=document.getElementById('headline-wrap');
 const stage=document.getElementById('stage');
@@ -1050,7 +1023,7 @@ window.addEventListener('wheel',(e)=>{e.preventDefault();p=clamp(p+1.5*e.deltaY,
 // mobile = snap pagination: each swipe deals exactly ONE card (no flinging the whole stack off)
 let tStartY=0,tBaseIdx=0,tBaseP=0,tMoved=0,tBlocked=false;
 stage.addEventListener('touchstart',(e)=>{const tgt=e.target;
-  tBlocked=!!(tgt.closest('.get-in-touch')||tgt.closest('.icon-wiggle')||tgt.closest('button')||tgt.closest('a')||tgt.closest('input'));
+  tBlocked=!!(tgt.closest('.get-in-touch')||tgt.closest('button')||tgt.closest('a')||tgt.closest('input'));
   tStartY=e.touches[0].clientY;tBaseIdx=Math.round(p/L);tBaseP=tBaseIdx*L;tMoved=0;},{passive:true});
 stage.addEventListener('touchmove',(e)=>{if(tBlocked)return;e.preventDefault();
   tMoved=tStartY-e.touches[0].clientY;             // finger px (up = positive)
