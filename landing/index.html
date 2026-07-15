@@ -47,7 +47,7 @@
   }
 
   /* fixed brand mark (real Clash Display logo) */
-  /* the persistent way in: brandmark doubles as the CTA pill (matches #early's treatment) */
+  /* the persistent way in: the brandmark doubles as the CTA pill (fades in with the scroll) */
   #brandmark{
     position:fixed;top:clamp(18px,3vh,30px);left:clamp(20px,3vw,42px);z-index:9990;
     display:inline-flex;align-items:center;gap:8px;
@@ -58,14 +58,6 @@
   }
   #brandmark:hover{background:rgba(255,255,255,0.85);}
   #brandmark .wk-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);}
-  #early{
-    position:fixed;top:clamp(16px,3vh,28px);right:clamp(20px,3vw,42px);z-index:9990;
-    font-family:'TWKLausannePan',sans-serif;font-weight:300;font-size:13px;letter-spacing:.02em;
-    color:var(--ink);text-decoration:none;opacity:0;
-    border:0.5px solid rgba(0,0,0,0.25);border-radius:999px;padding:8px 16px;
-    background:rgba(255,255,255,0.5);backdrop-filter:blur(6px);transition:background .2s ease;
-  }
-  #early:hover{background:#fff;}
 
   /* background headline */
   #headline-wrap{
@@ -596,7 +588,6 @@
     .closing-text{font-size:15px;line-height:1.35;margin-bottom:6px;}
     .wl{gap:8px;width:86vw;}
     .wl input{padding:10px 13px;font-size:14px;border-radius:11px;}
-    #early{display:none;}
     /* deck becomes a tall portrait panel that fills the phone */
     #deck{width:92vw;max-width:92vw;height:min(66vh,560px);aspect-ratio:auto;}
     /* device cards: short headline stacked above a LARGE phone */
@@ -670,7 +661,6 @@
 <div id="stage">
 
   <a id="brandmark" href="https://app.wkndr.xyz/"><span class="wk-dot"></span>Open WKNDR</a>
-  <a id="early" href="https://app.wkndr.xyz/">Get early access</a>
 
   <div id="headline-wrap">
     <h1 id="headline"><span style="font-weight:800">Your weekend, ranked by the weather.</span><br><span style="font-weight:400;font-style:italic">Match events with people you would actually go with.</span></h1>
@@ -700,6 +690,8 @@
           <span class="wl-done-h">You're on the list <span class="spark">✦</span></span>
           <span class="wl-done-s">We'll send your first weekend, ranked by the forecast. Pull in a friend you'd actually go with.</span>
         </div>
+        <!-- the policy has to be reachable from the site, not just by URL -->
+        <a href="/privacy" style="display:inline-block;margin-top:26px;font-family:'TWKLausannePan',sans-serif;font-weight:300;font-size:12px;letter-spacing:.03em;color:inherit;opacity:.5;text-decoration:none;border-bottom:0.5px solid currentColor;padding-bottom:1px">Privacy</a>
       </div>
     </div>
     <!-- cards injected by JS -->
@@ -1112,7 +1104,6 @@ const wlForm=document.getElementById('wl-form');
 const wlDone=document.getElementById('wl-done');
 const wlEmail=document.getElementById('wl-email');
 const brandmark=document.getElementById('brandmark');
-const earlyLink=document.getElementById('early');
 
 window.addEventListener('wheel',(e)=>{e.preventDefault();p=clamp(p+1.5*e.deltaY,0,UMAX);},{passive:false});
 // mobile = snap pagination: each swipe deals exactly ONE card (no flinging the whole stack off)
@@ -1166,7 +1157,6 @@ wlForm.addEventListener('submit',(e)=>{e.preventDefault();if(wlSent)return;
   }
 });
 // top-right link → deal to the end and focus the form
-earlyLink.addEventListener('click',(e)=>{e.preventDefault();window.location.href='https://app.wkndr.xyz/';});
 
 function cubicBezier(p1x,p1y,p2x,p2y){function bz(t,a,b){return 3*(1-t)*(1-t)*t*a+3*(1-t)*t*t*b+t*t*t;}
   return function(x){let lo=0,hi=1,t=x;for(let i=0;i<18;i++){t=(lo+hi)/2;const xx=bz(t,p1x,p2x);if(xx<x)lo=t;else hi=t;}return bz(t,p1y,p2y);};}
@@ -1199,8 +1189,6 @@ function frame(ts){
     headlineWrap.style.opacity=dMaster*x;
     brandmark.style.opacity=dMaster*0.85;
     brandmark.style.pointerEvents=dMaster>0.5?'auto':'none';   // it's a CTA now, not decoration
-    earlyLink.style.opacity=dMaster*0.85;
-    earlyLink.style.pointerEvents=dMaster>0.5?'auto':'none';
     for(let e=0;e<TOTAL;e++){
       const h=(e*L-f)/L+1;
       const y=h<1?-(1-h)*RISE:(h-1)*18;
