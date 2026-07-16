@@ -39,6 +39,10 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 - `stars: 3` on a right-swipe is load-bearing, not arbitrary: `approvalCheck` only honours star
   anchors at `>= 3`, so a lower value would compile to nothing and a tram "yes" would silently not
   be one. **Triage still can't ship anything** — verdict → issue → *human compile* → restamp → deck.
+- **The door** (`app.wkndr.xyz/?curate2026!`): one memorable URL that opens the right instrument for
+  the screen — ≥720px → the board grid (`/curate/`), <720px → Triage on the phone (intro skipped).
+  Width, not user-agent: the question is "room to compare?". `curateDoor.ts`, fired before render so
+  the app never flashes. Separate from `?dev=1` (the design surface). A shortcut, not a lock.
 - **Docs**: new `docs/curation-surfaces.md` (who may write to the deck vs a personal profile; the
   mobile finding; method-public/verdicts-private; guest curators parked). STATE.md header corrected
   — it still claimed "deployed to GitHub Pages" alone. 119 tests green.

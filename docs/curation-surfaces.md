@@ -65,6 +65,21 @@ mobile** — reordering a weekend pile on a phone is a fantasy, and the grid is 
 Build: wire the existing SwipeStack to the airlock queue (`pending.<city>.json`), emit the same
 verdict shape the board already emits. Reuse, don't rebuild.
 
+### The door: one URL, the right instrument for the screen
+
+`app.wkndr.xyz/?curate2026!` picks the surface by **screen width**, not device — because the
+question ("grid or deck?") is really "is there room to compare?", and that's about pixels:
+
+- **≥ 720px** (laptop) → redirects to the board (`/curate/`), the studio grid.
+- **< 720px** (phone) → boots the app and opens Triage on mount, skipping the weather intro.
+
+Implemented in `app/src/curateDoor.ts`, called from `main.tsx` **before** `ReactDOM.render` (a
+post-mount redirect would flash the app for a frame). `?dev=1` is kept as a **separate** door for the
+*design* surface (looks switcher, tint sliders, fps) — the ⚖️ Triage menu button still lives there for
+driving the deck at a desk. `?curate2026!` is a memorable shortcut, **not** auth: the bundle ships to
+everyone and `/curate/` answers anyone who types it (§4). It's a nicer front door than `?dev=1`, which
+is merely the first thing a curious person would try.
+
 ## 4. Exposure: the tool is not the moat — but the verdicts are sensitive
 
 Consistent with `moat.md` (_"the taste loop is **a** moat, not **the** moat"_; the operational
