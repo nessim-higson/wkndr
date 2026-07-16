@@ -20,7 +20,7 @@
 import { CITIES, type City } from '../src/data/cities'
 import type { Pick } from '../src/types'
 import { dedupe, balanceByCategory, isGoodImage, isPortraitImage, imageBroken, urlLooksNonPhoto, imageIsCardworthy, fetchEventImage, toPortrait, wikiImage, webImageCandidates, verifyImageForEvent, pexelsImage, whenBeforeWeekend, upcomingWeekend, weekendMode, stampServeOrder, linkOk, mapLimit, rxOf, titleKey, titleLooseMatch, tokKey, approvalCheck, type TasteCorpus, type WeeklySlate } from './lib/pipeline'
-import { fixWhen, latestDateOf, whenActiveBy, whenIsPast } from '../src/lib/when'
+import { fixWhen, latestDateOf, whenActiveBy, whenIsPast, whenLooksBroken } from '../src/lib/when'
 import { songkickAdapter } from './adapters/songkick'
 import { llmExtract } from './adapters/llm'
 import { websearchExtract } from './adapters/websearch'
@@ -141,6 +141,15 @@ async function buildCity(city: City) {
     const before = picks.length
     picks = picks.filter((p) => !whenIsPast(p.when))
     if (before !== picks.length) console.log(`  stale:    dropped ${before - picks.length} past-dated picks`)
+  }
+
+  // DROP BROKEN RANGES — a `when` whose range runs backwards ("Sun 28 – Sun 12 Jul") lost its
+  // first month somewhere upstream. We can't reconstruct what the source meant; omit it rather
+  // than publish a claim that may be wrong.
+  {
+    const before = picks.length
+    picks = picks.filter((p) => !whenLooksBroken(p.when))
+    if (before !== picks.length) console.log(`  broken:   dropped ${before - picks.length} malformed date ranges`)
   }
 
   // WEEKEND FOCUS — this is a weekend app. Drop dated weekday one-offs that finish before the

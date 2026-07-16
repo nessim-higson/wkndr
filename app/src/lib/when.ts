@@ -165,6 +165,37 @@ export function whenIsPast(when: string, now: Date = new Date()): boolean {
   return latest < today
 }
 
+/** A `when` that names a range the app can't trust. Two failure shapes:
+ *  1. A day–day pair sharing ONE month token that runs BACKWARDS ("Sun 28 – Sun 12 Jul") —
+ *     within a single month days must ascend, so the source dropped the first day's month
+ *     and the range is incomplete. We can't know which month was meant.
+ *  2. An explicit start–end pair (each side with its own month) whose end lands before its
+ *     start ("Sat 12 Jul – Sun 28 Jun") — unless it reads as a plausible year wrap
+ *     ("20 Dec – 4 Jan"), it's a data error.
+ *  Callers DROP these rather than display a claim that may be wrong. Time ranges
+ *  ("14:00–23:00") never match: a time's digits are glued to a colon, not a month. */
+export function whenLooksBroken(when: string, now: Date = new Date()): boolean {
+  const s = when || ''
+  if (!s) return false
+  const openRun = OPEN_RUN.test(s)
+  // shape 1: "28–12 Jul" / "Sun 28 – Sun 12 Jul" — one month token, descending days
+  for (const m of s.matchAll(new RegExp(`(\\d{1,2})\\s*[–—-]\\s*(?:(?:${WDAY})\\.?\\s+)?(\\d{1,2})\\s+(${MONS})`, 'gi'))) {
+    if (+m[1] > +m[2]) return true
+  }
+  // shape 2: "12 Jul – 28 Jun" — both months explicit, end before start (year wraps allowed)
+  for (const m of s.matchAll(new RegExp(`(\\d{1,2})\\s+(${MONS})[a-z]*\\s*[–—-]\\s*(?:(?:${WDAY})\\.?\\s+)?(\\d{1,2})\\s+(${MONS})`, 'gi'))) {
+    const a = resolveDate(+m[1], MON[m[2].slice(0, 3).toLowerCase()], now, openRun)
+    const b = resolveDate(+m[3], MON[m[4].slice(0, 3).toLowerCase()], now, openRun)
+    if (b.getTime() < a.getTime()) {
+      // a Dec→Jan style wrap is fine when next year's end sits a sane distance past the start
+      const bNext = new Date(b.getFullYear() + 1, b.getMonth(), b.getDate(), 12, 0, 0)
+      const spanDays = (bNext.getTime() - a.getTime()) / 864e5
+      if (!(spanDays > 0 && spanDays < 90)) return true
+    }
+  }
+  return false
+}
+
 /** Just the time / part-of-day slice of a `when`, for the row's time chip ("" if none). */
 export function whenTime(when: string): string {
   const t = when.match(/\b\d{1,2}:\d{2}\b/)

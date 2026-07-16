@@ -6,11 +6,22 @@
 @media (min-width: 600px) { .share-backdrop { align-items: center; padding: 24px; } }
 
 .share {
+  position: relative;
   width: 100%; max-width: 460px; max-height: 92vh; overflow-y: auto;
   background: var(--paper); color: var(--ink);
-  border-radius: 22px 22px 0 0; padding: 12px 20px 26px;
+  border-radius: 22px 22px 0 0;
+  /* the bottom actions must clear the home indicator / mobile browser chrome */
+  padding: 12px 20px calc(26px + env(safe-area-inset-bottom));
   box-shadow: 0 -10px 50px rgba(0, 0, 0, 0.35);
 }
+.share-close {
+  position: absolute; top: 12px; right: 12px;
+  width: 34px; height: 34px; border-radius: 50%;
+  display: grid; place-items: center;
+  color: var(--ink-3); background: var(--paper-2);
+}
+.share-close:hover { color: var(--ink); }
+.share-close:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 @media (min-width: 600px) { .share { border-radius: 22px; } }
 .share-handle { width: 40px; height: 4px; border-radius: 999px; background: var(--rule); margin: 0 auto 16px; }
 
@@ -44,7 +55,10 @@
 .share-primary { flex: 1; font-size: 14px; font-weight: 600; padding: 14px; border-radius: 999px; background: var(--ink); color: var(--paper); }
 .share-primary:hover { background: var(--accent-deep); }
 .share-copy { flex-shrink: 0; font-size: 14px; font-weight: 600; padding: 14px 18px; border-radius: 999px; background: var(--paper-2); color: var(--ink); }
-.share-note { margin-top: 12px; font-size: 12px; line-height: 1.45; color: var(--ink-4); text-align: center; }
+.share-note { margin-top: 12px; font-size: 12px; line-height: 1.45; color: var(--ink-3); text-align: center; }
+/* what leaves the device + when it expires — the plain-language promise, linked to the policy */
+.share-privacy { margin-top: 7px; font-size: 11px; line-height: 1.5; color: var(--ink-4); text-align: center; }
+.share-privacy a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
 
 .share-empty { text-align: center; padding: 8px 8px 4px; }
 .share-empty h3 { font-family: var(--font-display); font-size: 21px; font-weight: 700; letter-spacing: -0.018em; }

@@ -2,7 +2,7 @@
 // user is shown (weekday correction) and what is HIDDEN (the past-event filter), and they broke subtly
 // twice during the pipeline era. All tests pin `now` to Wed 1 Jul 2026 (weekend = Sat 4 / Sun 5 Jul).
 import { describe, it, expect } from 'bun:test'
-import { fixWhen, whenIsPast, latestDateOf, whenSortKey, whenDayGroup } from '../src/lib/when'
+import { fixWhen, whenIsPast, latestDateOf, whenSortKey, whenDayGroup, whenLooksBroken } from '../src/lib/when'
 
 const NOW = new Date(2026, 6, 1, 12, 0, 0)   // Wed 1 Jul 2026
 
@@ -38,6 +38,31 @@ describe('whenIsPast — the runtime past-event filter', () => {
     expect(whenIsPast('Daily · 10:00–18:00', NOW)).toBe(false)
     expect(whenIsPast('Mon–Sat · 09:00–17:00', NOW)).toBe(false)
     expect(whenIsPast('', NOW)).toBe(false)
+  })
+})
+
+describe('whenLooksBroken — malformed ranges are dropped, not displayed', () => {
+  it('flags a descending day pair with one month token (the missing-first-month range)', () => {
+    expect(whenLooksBroken('Sun 28 – Sun 12 Jul', NOW)).toBe(true)
+    expect(whenLooksBroken('28–12 Jul', NOW)).toBe(true)
+  })
+  it('flags an explicit start–end pair that runs backwards', () => {
+    expect(whenLooksBroken('Sat 12 Jul – Sun 28 Jun', NOW)).toBe(true)
+  })
+  it('keeps valid compact and expanded ranges', () => {
+    expect(whenLooksBroken('Fri–Sun 19–21 Jun', NOW)).toBe(false)
+    expect(whenLooksBroken('Fri 3 – Sun 5 Jul', NOW)).toBe(false)
+    expect(whenLooksBroken('Sat–Sun 4–5 Jul · 12:00–22:00', NOW)).toBe(false)
+  })
+  it('keeps cross-month and year-wrap ranges (each side has its own month)', () => {
+    expect(whenLooksBroken('Thu 30 Jul – Sun 2 Aug', NOW)).toBe(false)
+    expect(whenLooksBroken('Sat 20 Dec – Sun 4 Jan', new Date(2026, 10, 20, 12))).toBe(false)
+  })
+  it('never trips on time ranges or undated picks', () => {
+    expect(whenLooksBroken('Sat 11 Jul · 14:00–23:00, Sun 12 Jul · 17:00–23:00', NOW)).toBe(false)
+    expect(whenLooksBroken('Daily · 10:00–18:00', NOW)).toBe(false)
+    expect(whenLooksBroken('Until 27 Sep · 10:00–17:00', NOW)).toBe(false)
+    expect(whenLooksBroken('', NOW)).toBe(false)
   })
 })
 

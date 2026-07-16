@@ -1,9 +1,11 @@
 import { useMemo, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
+import { X } from 'lucide-react'
 import type { Mode, Pick } from '../types'
 import { MODE_META } from '../weather/modes'
 import { shareLink } from '../lib/share'
 import { newRoundId, relayOn, rememberSentRound } from '../lib/relay'
+import { useDialogA11y } from '../lib/useDialogA11y'
 import './ShareSheet.css'
 
 function cover(mode: Mode): string {
@@ -24,6 +26,7 @@ export function ShareSheet({
   city: string
 }) {
   const [copied, setCopied] = useState(false)
+  const dialogRef = useDialogA11y<HTMLDivElement>(open, onClose)
   const [name, setName] = useState(() => localStorage.getItem('wkndr.name') || '')
   function setNamePersist(v: string) {
     const clean = v.slice(0, 24)
@@ -66,9 +69,11 @@ export function ShareSheet({
         <motion.div className="share-backdrop" onClick={onClose}
           initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}>
           <motion.div className="share" onClick={(e) => e.stopPropagation()}
+            ref={dialogRef} role="dialog" aria-modal="true" aria-label="Share your picks" tabIndex={-1}
             initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }}
             transition={{ type: 'spring', stiffness: 320, damping: 34 }}>
             <div className="share-handle" />
+            <button className="share-close" onClick={onClose} aria-label="Close"><X size={18} strokeWidth={2.5} /></button>
 
             {picks.length === 0 ? (
               <div className="share-empty">
@@ -112,7 +117,12 @@ export function ShareSheet({
                   <button className="share-copy" onClick={copy}>{copied ? '✓ Link copied' : 'Copy link'}</button>
                 </div>
                 <p className="share-note">
-                  They’ll swipe through these to find the ones you <b>both</b> want — your matches{name.trim() ? `, from “${name.trim()}”` : ''}. No app or account needed.
+                  They’ll swipe through these to find the plans you <b>both</b> saved{name.trim() ? ` — from “${name.trim()}”` : ''}. No app or account needed.
+                </p>
+                <p className="share-privacy">
+                  Your link contains only your picks{name.trim() ? ' and first name' : ''}.
+                  {relayOn() ? ' Matching data expires after about 14 days.' : ''}{' '}
+                  <a href="https://wkndr.xyz/privacy" target="_blank" rel="noreferrer">Privacy</a>
                 </p>
               </>
             )}

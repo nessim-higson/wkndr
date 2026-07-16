@@ -567,8 +567,9 @@
 .mode-pills { display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-start; }
 .field-pills button.on { background: var(--accent); color: #fff; opacity: 1; }
 .mode-pills button {
-  font-size: 11px;
-  padding: 6px 11px;
+  font-size: 11.5px;
+  padding: 10px 14px;   /* was 6px 11px — a ~27px chip is a miss on touch; this lands ~40px */
+  min-height: 40px;
   border-radius: 999px;
   color: var(--field-text);
   opacity: 0.6;

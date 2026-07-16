@@ -14,6 +14,40 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.10.1] — 2026-07-16 — "The finish pass" (dates · keyboard · trust)
+_The dependable-product optimisation sweep — correctness + access first, discovery + trust second:_
+- **whenLooksBroken** (`lib/when.ts`): malformed date ranges are DROPPED, never displayed — a
+  descending day-pair with one month token ("Sun 28 – Sun 12 Jul", the real Jazz @ H'ART offender)
+  or an explicit start–end running backwards (year-wraps still pass). Filtered at runtime
+  (App ingestion), in the pipeline drop-stale pass, and in restamp; +5 tests (117).
+- **Freshness surfaced**: the detail's trace line adds "listing checked N hours/days ago" on live
+  picks (feed `restampedAt ?? generatedAt`); the menu's "Built from N sources" now DERIVES N from
+  the live feed instead of the hand-set roster count.
+- **Keyboard + SR deck**: the top card is a real focusable button (Enter/Space opens details,
+  full aria-label, focus ring); ←/→ skip/save app-wide when nothing overlays the deck; an
+  aria-live line announces each new top card. Save is a ★ everywhere now (button + drag stamp;
+  the ✓/+ ambiguity is gone — the card's corner glyph is an expand icon, not a plus).
+- **Dialog discipline** (`lib/useDialogA11y`): CardDetail, ShareSheet, both FilterSheets, the
+  Inputs sheet and Feedback trap focus, close on Escape, and return focus to their opener;
+  the closed header menu is `inert` (out of tab order + a11y tree); ShareSheet gained a ✕.
+- **Reduced motion**: MotionConfig `reducedMotion="user"` app-wide; the deck's deal-in/exit
+  tumble/nudge collapse to steps under `prefers-reduced-motion` (the ambient field already froze).
+- **Matching in the main journey**: the share nudge fires from the FIRST save ("Plan together?" →
+  "Share N picks"), not the third; ShareSheet states the privacy promise in-flow ("your link
+  contains only your picks · matching data expires after ~14 days") linked to /privacy.
+- **Actionable detail**: the organiser CTA is specific ("View event details" / "Check opening
+  hours" by datedness); the `verify` flag reads "check with organiser"; Skip/Save labels sit
+  under the deck buttons on desktop; forecast chips grew to ~40px targets; Feedback goes
+  icon-only ≤480px so it can't crowd "Shuffle for more".
+- **Landing (wkndr.xyz)**: hero → "Your weekend, one swipe away." (Tinder framing gone from
+  copy + title/OG); section copy per the weather→discover→save→share→match story; closing canvas
+  → "Your weekend starts here." + trust line (no account · saves in your browser · links expire);
+  LOOK switcher dev-gated (`?dev=1`); stage progress dots (clickable/focusable); full keyboard
+  paging (arrows/PageUp/Down/Home/End); reduced-motion = stable stages, no spring flight, frozen
+  field (taps still switch forecasts); canonical + JSON-LD.
+- **App shell**: canonical link, aligned OG copy, and a web-app manifest (installable; crisp
+  redrawn 192/512 icons).
+
 ## [V.9.15] — 2026-07-12 — "Compile R7: his 23-card deal"
 _Issue #13 — the first drag over the widened pile, compiled + restamped same-hour:_
 - **PILE-ORDER, 23 titles**: Kwaku opens (was World Press), then Kaap, Jazz @ H'ART, Hannekes…

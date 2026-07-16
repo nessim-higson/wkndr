@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { Check } from 'lucide-react'
+import { useDialogA11y } from '../lib/useDialogA11y'
 import './FilterSheet.css'
 
 export interface FilterOption<K extends string> { key: K; label: string; count?: number }
@@ -20,6 +21,7 @@ export function FilterSheet<K extends string>({
 }) {
   // mobile = a bottom sheet that slides up (native, effortless); desktop = a centred modal that
   // fades + scales in (sliding up from the bottom edge felt foreign on a big screen).
+  const dialogRef = useDialogA11y<HTMLDivElement>(open, onClose)
   const isDesktop = typeof window !== 'undefined' && window.innerWidth >= 600
   const m = isDesktop
     ? { initial: { opacity: 0, scale: 0.95, y: 6 }, animate: { opacity: 1, scale: 1, y: 0 }, exit: { opacity: 0, scale: 0.97, y: 6 }, transition: { type: 'spring' as const, stiffness: 440, damping: 34 } }
@@ -36,6 +38,7 @@ export function FilterSheet<K extends string>({
         >
           <motion.div
             className="fs"
+            ref={dialogRef} role="dialog" aria-modal="true" aria-label={title} tabIndex={-1}
             onClick={(e) => e.stopPropagation()}
             initial={m.initial} animate={m.animate} exit={m.exit}
             transition={m.transition}

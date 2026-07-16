@@ -28,7 +28,7 @@ import weekly from './taste/weekly.json'
 import { rxOf, titleLooseMatch, tokKey, upcomingWeekend, weekendMode, stampServeOrder, toPortrait, approvalCheck, type TasteCorpus, type WeeklySlate } from './lib/pipeline'
 import { curatedImage } from './curated'
 import { heroPicks } from './heroes'
-import { whenIsPast } from '../src/lib/when'
+import { whenIsPast, whenLooksBroken } from '../src/lib/when'
 import type { Pick } from '../src/types'
 
 const CITY = process.argv.find((a) => a.startsWith('--city='))?.split('=')[1] ?? 'amsterdam'
@@ -44,7 +44,7 @@ const vetoRx = (corpus.eventVeto as string[]).map(rxOf)
 const restedRx = (corpus.rested as { match: string; until: string }[])
   .filter((r) => r.until >= today).map((r) => rxOf(r.match))
 const tasteOk = (p: Pick) =>
-  !vetoRx.some((rx) => rx.test(p.title)) && !restedRx.some((rx) => rx.test(p.title)) && !whenIsPast(p.when)
+  !vetoRx.some((rx) => rx.test(p.title)) && !restedRx.some((rx) => rx.test(p.title)) && !whenIsPast(p.when) && !whenLooksBroken(p.when)
 
 let picks = feed.picks.filter(tasteOk)
 

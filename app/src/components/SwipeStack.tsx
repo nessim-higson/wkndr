@@ -5,10 +5,13 @@ import {
   motion, useMotionValue, useTransform, animate,
   type MotionValue, type PanInfo,
 } from 'framer-motion'
-import { X, Check } from 'lucide-react'
+import { X, Star } from 'lucide-react'
 import type { Pick, SwipeDir, Mode } from '../types'
 import { Card } from './Card'
 import './SwipeStack.css'
+
+// reduced motion: no entrance choreography, no exit tumble — cards land/leave in a step
+const PRM = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
 const THRESHOLD = 105
 const VELOCITY = 550
@@ -31,6 +34,7 @@ interface CardHandle {
   fling: (dir: SwipeDir, info?: PanInfo) => void
   autoFling: () => void
   nudge: () => void
+  open: () => void
 }
 
 interface SwipeCardProps {
@@ -68,11 +72,11 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
   const flipY = useMotionValue(0)              // 3D turn as the card flies off
   const flipX = useMotionValue(0)              // 3D tumble on exit (varies per throw)
   const pop = useMotionValue(1)                // grows toward camera on exit
-  const enterY = useMotionValue(dealIn ? 680 : 0)               // build-in: fly up from below
-  const enterRotExtra = useMotionValue(dealIn ? (depth % 2 ? 7 : -7) : 0)  // entrance tilt → 0
+  const enterY = useMotionValue(dealIn && !PRM ? 680 : 0)       // build-in: fly up from below
+  const enterRotExtra = useMotionValue(dealIn && !PRM ? (depth % 2 ? 7 : -7) : 0)  // entrance tilt → 0
   // dealt cards fade in (fly-in). A card that CYCLES in at the back starts fully opaque and
   // is hidden purely by depth-occlusion (below) — no mount-fade, so no "blip" at the back.
-  const enterOp = useMotionValue(dealIn ? 0 : 1)
+  const enterOp = useMotionValue(dealIn && !PRM ? 0 : 1)
   const grabLever = useRef(0)                  // where you grabbed: -1 top … +1 bottom
   const cardRef = useRef<HTMLDivElement>(null)
   const dragged = useRef(false)  // true once a real drag begins → suppresses the tap-to-open
@@ -81,7 +85,7 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
   // cards fly up onto it, back-to-front. A card that merely cycles in at the back later
   // just fades — no fly-in. Runs once on mount.
   useEffect(() => {
-    if (dealIn) {
+    if (dealIn && !PRM) {
       const delay = (RENDER - 1 - depth) * 0.07
       animate(enterOp, 1, { duration: 0.5, delay, ease: [0.22, 1, 0.36, 1] })
       // a soft drop that settles to rest (gentler than before — less bounce, no snap)
@@ -152,6 +156,13 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
   // call after trying the gentle variant). Kept as the one-flag option if a softer exit is ever
   // wanted for a new surface.
   function exit(dx: number, dy: number, speed: number, onDone: () => void, gentle = false) {
+    // reduced motion: no flight, no tumble — the card steps out with a short fade while the
+    // stack advances, landing directly on the next stable state.
+    if (PRM) {
+      animate(progress, 1, { duration: 0.12, ease: 'easeOut' })
+      animate(enterOp, 0, { duration: 0.16, ease: 'easeOut', onComplete: onDone })
+      return
+    }
     const W = window.innerWidth, H = window.innerHeight
     const mag = Math.hypot(dx, dy) || 1
     const reach = Math.max(W, H) * 1.25 + 200
@@ -208,13 +219,14 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
   // real drag (so the tilt/wash respond exactly as they would to a finger); aborts if the
   // user has already started dragging.
   function nudge() {
-    if (dragged.current) return
+    if (dragged.current || PRM) return
     animate(x, 34, {
       duration: 0.32, ease: [0.22, 1, 0.36, 1],
       onComplete: () => animate(x, 0, { type: 'spring', stiffness: 240, damping: 14 }),
     })
   }
-  useImperativeHandle(ref, () => ({ fling, autoFling, nudge }), [pick])
+  function open() { onOpen?.(pick, cardRef.current?.getBoundingClientRect()) }
+  useImperativeHandle(ref, () => ({ fling, autoFling, nudge, open }), [pick])
 
   // live: as the top card drags, publish how far (0→1) so the stack advances with it
   function onDrag(_e: unknown, info: PanInfo) {
@@ -257,6 +269,14 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
         onDragEnd={interactive ? onDragEnd : undefined}
         onTap={interactive ? () => { if (!dragged.current) onOpen?.(pick, cardRef.current?.getBoundingClientRect()) } : undefined}
         whileTap={interactive ? { cursor: 'grabbing' } : undefined}
+        /* keyboard/SR surface — swipe is never the only way in: the top card is a real button
+           (Enter/Space opens details; ←/→ skip/save ride the global handler below) */
+        role={interactive ? 'button' : undefined}
+        tabIndex={interactive ? 0 : -1}
+        aria-label={interactive ? `${pick.title} — ${pick.venue}, ${pick.when}. Enter opens details; arrow keys skip or save.` : undefined}
+        onKeyDown={interactive ? (e: { key: string; preventDefault: () => void }) => {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onOpen?.(pick, cardRef.current?.getBoundingClientRect()) }
+        } : undefined}
       >
         {interactive && (
           <>
@@ -265,7 +285,7 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
             {/* the commit STAMPS — a large glass ✓ / ✕ that settles into the card's centre
                 as the drag commits. White-on-glass; the tint beneath supplies the colour. */}
             <motion.div className="stamp" style={{ opacity: greenOp, scale: likeScale, rotate: 6 }} aria-hidden>
-              <Check size={46} strokeWidth={2.4} />
+              <Star size={44} strokeWidth={2.2} fill="currentColor" />
             </motion.div>
             <motion.div className="stamp" style={{ opacity: redOp, scale: nopeScale, rotate: -6 }} aria-hidden>
               <X size={46} strokeWidth={2.4} />
@@ -279,7 +299,7 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
 })
 
 export function SwipeStack({
-  picks, temp, mode, onSwipe, onOpen, onRefresh, filterLabel, onClearFilter, onSeeList, nudge,
+  picks, temp, mode, onSwipe, onOpen, onRefresh, filterLabel, onClearFilter, onSeeList, nudge, keysActive,
 }: {
   picks: Pick[]
   temp?: number
@@ -291,11 +311,33 @@ export function SwipeStack({
   onClearFilter?: () => void
   onSeeList?: () => void
   nudge?: boolean   // arm the one-time first-run swipe hint (fires once per device, ever)
+  keysActive?: boolean  // App says when the deck owns the keyboard (no overlay/menu open)
 }) {
   const topRef = useRef<CardHandle>(null)
   const progress = useMotionValue(0)   // top card's drag (0→1), drives the cards behind
   const firstDeal = useRef(true)       // only the initial set flies in; later arrivals fade
   useEffect(() => { firstDeal.current = false }, [])
+
+  // keyboard swipes — ← skips, → saves (matching the drag directions), Enter opens the top
+  // card's details — wherever focus sits, as long as no sheet/menu is above the deck and
+  // you're not typing in a field. (The top card is ALSO a focusable button with its own
+  // Enter/Space — this window-level path covers focus-on-body.)
+  useEffect(() => {
+    if (!keysActive) return
+    function onKey(e: KeyboardEvent) {
+      const t = e.target as HTMLElement | null
+      const tag = t?.tagName
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return
+      if (e.metaKey || e.ctrlKey || e.altKey) return
+      if (e.key === 'ArrowLeft') { e.preventDefault(); topRef.current?.fling('nope') }
+      else if (e.key === 'ArrowRight') { e.preventDefault(); topRef.current?.fling('save') }
+      else if (e.key === 'Enter' && tag !== 'BUTTON' && tag !== 'A' && !t?.closest('.swipe-card')) {
+        e.preventDefault(); topRef.current?.open()
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [keysActive])
 
   // the first-run hint: after the deal-in settles (~0.9s), lean the top card once. localStorage
   // gate = once per device across BOTH decks (browse stack + match game) — whichever shows first.
@@ -358,9 +400,20 @@ export function SwipeStack({
         ))}
       </div>
 
+      {/* the top card announced for screen readers as the deck advances */}
+      <div className="sr-only" aria-live="polite">
+        {visible[0] ? `${visible[0].title} — ${visible[0].venue}, ${visible[0].when}` : ''}
+      </div>
+
       <div className="stack-actions">
-        <button className="act act-nope" onClick={() => topRef.current?.fling('nope')} aria-label="Not for me"><X size={22} strokeWidth={2.5} /></button>
-        <button className="act act-save" onClick={() => topRef.current?.fling('save')} aria-label="Save"><Check size={22} strokeWidth={2.6} /></button>
+        <button className="act act-nope" onClick={() => topRef.current?.fling('nope')} aria-label="Skip">
+          <X size={22} strokeWidth={2.5} />
+          <span className="act-label" aria-hidden>Skip</span>
+        </button>
+        <button className="act act-save" onClick={() => topRef.current?.fling('save')} aria-label="Save">
+          <Star size={21} strokeWidth={2.2} />
+          <span className="act-label" aria-hidden>Save</span>
+        </button>
       </div>
 
       {onRefresh && (

@@ -3,6 +3,7 @@ import type { Mode } from '../types'
 import type { Source } from '../data/sources'
 import { MODE_META } from '../weather/modes'
 import { APP_VERSION } from '../version'
+import { useDialogA11y } from '../lib/useDialogA11y'
 import './InputsSheet.css'
 
 /** Exposes every input feeding the recommendations — the credibility / source-trace.
@@ -24,6 +25,7 @@ export function InputsSheet({
   seed?: boolean
   feedAt?: string | null
 }) {
+  const dialogRef = useDialogA11y<HTMLDivElement>(open, onClose)
   return (
     <AnimatePresence>
       {open && (
@@ -35,6 +37,7 @@ export function InputsSheet({
         >
           <motion.div
             className="sheet"
+            ref={dialogRef} role="dialog" aria-modal="true" aria-label="What’s feeding this brief" tabIndex={-1}
             onClick={(e) => e.stopPropagation()}
             initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }}
             transition={{ type: 'spring', stiffness: 320, damping: 34 }}

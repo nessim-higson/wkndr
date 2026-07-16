@@ -1,4 +1,4 @@
-import { Plus, Clock } from 'lucide-react'
+import { Maximize2, Clock } from 'lucide-react'
 import type { Pick, Mode } from '../types'
 import { CATEGORY_LABEL, cardSignal } from '../types'
 import './Card.css'
@@ -30,7 +30,8 @@ export function Card({ pick, temp, mode }: { pick: Pick; temp?: number; mode?: M
         {sig && <span className={`card-signal card-signal--${sig.tone}${sig.glow ? ' card-signal--glow' : ''}`}>{sig.text}</span>}
       </div>
 
-      <span className="card-expand" aria-hidden><Plus size={15} strokeWidth={2.8} /></span>
+      {/* expand affordance — Maximize2, not a + (a plus read as “add/save” next to the real save) */}
+      <span className="card-expand" aria-hidden><Maximize2 size={14} strokeWidth={2.6} /></span>
 
       <div className="card-body">
         <h2 className="card-title">{pick.title}</h2>

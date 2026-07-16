@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useDialogA11y } from '../lib/useDialogA11y'
 import './Feedback.css'
 
 // FEEDBACK WIDGET (for friend/family test rounds). A small floating button → a sheet with a quick
@@ -20,6 +21,7 @@ export function Feedback({ getContext }: { getContext: () => Record<string, stri
   const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle')
 
   const reset = () => { setOpen(false); setStatus('idle'); setNote(''); setFeature(''); setSentiment(null) }
+  const dialogRef = useDialogA11y<HTMLDivElement>(open, reset)
   const canSend = !!note.trim() || !!feature.trim() || !!sentiment
 
   const submit = async () => {
@@ -55,12 +57,12 @@ export function Feedback({ getContext }: { getContext: () => Record<string, stri
   return (
     <>
       <button className="fb-fab" onClick={() => setOpen(true)} aria-label="Send feedback">
-        <span aria-hidden>✦</span> Feedback
+        <span aria-hidden>✦</span><span className="fb-fab-label"> Feedback</span>
       </button>
 
       {open && (
         <div className="fb-scrim" onClick={reset}>
-          <div className="fb-sheet" onClick={(e) => e.stopPropagation()} role="dialog" aria-label="Send feedback">
+          <div className="fb-sheet" onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true" aria-label="Send feedback" tabIndex={-1} ref={dialogRef}>
             {status === 'sent' ? (
               <div className="fb-done">Thanks 🙏<span>Got it — keep ’em coming.</span></div>
             ) : (

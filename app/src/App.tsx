@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence, MotionConfig, motion } from 'framer-motion'
 import { Shuffle, Clock, ChevronDown, LayoutGrid, Star, ArrowUpRight, LocateFixed, Info, RotateCw, RotateCcw, X, Heart } from 'lucide-react'
 
 // subtle haptic on commit/save (Android/Chrome; iOS Safari ignores navigator.vibrate)
@@ -73,7 +73,7 @@ const TINT_PRESETS = [
   { label: 'Strong', x: 2.4 },
 ]
 import { CATEGORY_LABEL, type Category } from './types'
-import { fixWhen, whenDayGroup, whenSortKey, whenTime, whenIsPast } from './lib/when'
+import { fixWhen, whenDayGroup, whenSortKey, whenTime, whenIsPast, whenLooksBroken } from './lib/when'
 import { confirmLink, inShared } from './lib/share'
 import { fetchRound, relayOn, resolveSentRound, roundReady, sentRounds } from './lib/relay'
 import { sanePicks } from './lib/feed'
@@ -246,7 +246,7 @@ export default function App() {
     return s === 'flux' ? 'flux' : 'wheel'
   })
   const [city, setCity] = useState<City>(INITIAL_CITY)   // which city's feed is active
-  const [feeds, setFeeds] = useState<Record<string, { picks: Pick[]; generatedAt: string; topMatches?: string[] }>>({})
+  const [feeds, setFeeds] = useState<Record<string, { picks: Pick[]; generatedAt: string; checkedAt?: string; topMatches?: string[] }>>({})
   const fetchedFeeds = useRef<Set<string>>(new Set())
 
   // THE LIVE SEAM: prefer the generated feed (scripts/refresh.ts → public/data/picks.<city>.json)
@@ -269,6 +269,8 @@ export default function App() {
         .map((p) => (p.top || topRx.some((rx) => rx.test(p.title)) ? { ...p, top: true } : p))
         .map((p) => (p.when ? { ...p, when: fixWhen(p.when) } : p))
         .filter((p) => !whenIsPast(p.when))
+        // a range the date brain can't trust ("Sun 28 – Sun 12 Jul") is dropped, not displayed wrong
+        .filter((p) => !whenLooksBroken(p.when))
     },
     [rawPicks, topMatches],
   )
@@ -284,6 +286,7 @@ export default function App() {
     [sharedPickIds],
   )
   const feedAt = feeds[city.key]?.generatedAt ?? null
+  const feedCheckedAt = feeds[city.key]?.checkedAt ?? feedAt
 
   // Everything that used to be derived from the single static PICKS set is now derived from
   // the ACTIVE city's pool — so switching city swaps the whole feed (filters, counts, deck).
@@ -323,7 +326,9 @@ export default function App() {
         // the ATTEMPT and pin the whole session to the stale bundled snapshot (bad on the flaky
         // mobile data a share-link recipient opens on). Failure → unmark, so a later pass retries.
         if (!picks.length) { fetchedFeeds.current.delete(key); return }
-        setFeeds((prev) => ({ ...prev, [key]: { picks, generatedAt: j.generatedAt, topMatches: Array.isArray(j.topMatches) ? j.topMatches : [] } }))
+        // checkedAt = the last time the pipeline actually LOOKED at these listings — a restamp
+        // (board verdicts re-applied over live data) counts; it feeds the detail's freshness line
+        setFeeds((prev) => ({ ...prev, [key]: { picks, generatedAt: j.generatedAt, checkedAt: j.restampedAt ?? j.generatedAt, topMatches: Array.isArray(j.topMatches) ? j.topMatches : [] } }))
       })
       .catch(() => { fetchedFeeds.current.delete(key) /* keep bundled; retry on a later pass */ })
   }, [city.key])
@@ -693,7 +698,9 @@ export default function App() {
   }
 
   return (
-    <>
+    // reducedMotion="user": every framer transform/layout animation (detail expand, sheet
+    // slides, ctx bars) collapses to a crossfade for prefers-reduced-motion users
+    <MotionConfig reducedMotion="user">
       <AmbientField mode={mode} look={look} onLookChange={setLook} rerollNonce={fieldReroll} />
 
       <AnimatePresence>
@@ -787,7 +794,13 @@ export default function App() {
               </div>
             </div>
 
-            <div className={`tb-panel${barOpen ? ' open' : ''}`} aria-hidden={!barOpen}>
+            <div
+              className={`tb-panel${barOpen ? ' open' : ''}`}
+              aria-hidden={!barOpen}
+              /* closed = fully out of the tab order + accessibility tree (the panel stays
+                 mounted for its clip animation, so aria-hidden alone left focusable controls) */
+              ref={(el) => { if (el) (el as HTMLElement & { inert: boolean }).inert = !barOpen }}
+            >
               <div className="tb-panel-clip">
                 <div className="tb-panel-inner">
                     {DEVUI && (
@@ -911,8 +924,9 @@ export default function App() {
                     </div>
                     )}
 
+                    {/* the count is DERIVED from the live feed (distinct credited sources), never hand-set */}
                     <button className="bar-foot" onClick={() => { setInputsOpen(true); setBarOpen(false) }}>
-                      <Info size={13} strokeWidth={2.2} /> Built from {city.sourceCount} sources · weather × freshness
+                      <Info size={13} strokeWidth={2.2} /> Built from {activeSources} sources · weather × freshness
                     </button>
                     <span className="bar-build">{APP_VERSION}</span>
                   </div>
@@ -1020,13 +1034,15 @@ export default function App() {
             </button>
           </div>
         )}
-        {/* Share nudge — appears once you've saved enough to be worth planning together (and not
-            already in a saved/shared context). Dismissible; it's the growth lever for matching.
-            Yields while the undo pill is up — they share the under-header slot. */}
-        {!shareNudgeOff && saved.size >= 3 && !SHARED_IDS && filter === 'all' && !intro && !moreLike && !(undoable && undoShown) && (
+        {/* Share nudge — matching enters the main journey at the FIRST save (was 3: matching
+            lived only in the menu until you'd saved a pile). One save asks the question; from
+            two the button carries the count. Dismissible; yields while the undo pill is up. */}
+        {!shareNudgeOff && saved.size >= 1 && !SHARED_IDS && filter === 'all' && !intro && !moreLike && !(undoable && undoShown) && (
           <div className="ctx-bar nudge">
-            <span>💛 Plan these together</span>
-            <button className="ctx-match" onClick={() => { setShareOpen(true) }}><Heart size={13} strokeWidth={2.6} fill="currentColor" /> Match</button>
+            <span>{saved.size === 1 ? 'Plan together?' : '💛 Plan together'}</span>
+            <button className="ctx-match" onClick={() => { setShareOpen(true) }}>
+              <Heart size={13} strokeWidth={2.6} fill="currentColor" /> {saved.size >= 2 ? `Share ${saved.size} picks` : 'Share picks'}
+            </button>
             <button className="ctx-x" onClick={dismissShareNudge} aria-label="Dismiss"><X size={15} strokeWidth={2.5} /></button>
           </div>
         )}
@@ -1070,6 +1086,8 @@ export default function App() {
                 filterLabel={filterActive ? 'this filter' : null}
                 onClearFilter={() => { setFilter('all'); setCats([]); setWhens([]) }}
                 onSeeList={() => setView('list')}
+                /* the deck owns ←/→ only while nothing sits above it */
+                keysActive={!intro && !detail && !shareOpen && !barOpen && !savesOpen && !matching && !inputsOpen && !filterOpen && !whenOpen}
               />
             </motion.div>
           ) : view === 'fan' ? (
@@ -1136,7 +1154,7 @@ export default function App() {
           >
             <button className="undo-bar" onClick={undoSwipe}>
               <span className="undo-what">
-                {undoable.dir === 'save' || undoable.dir === 'like' ? 'Saved' : undoable.dir === 'nope' ? 'Passed' : 'Skipped'}
+                {undoable.dir === 'save' || undoable.dir === 'like' ? 'Saved' : 'Skipped'}
                 <span className="undo-title"> · {undoable.pick.title}</span>
               </span>
               <span className="undo-action"><RotateCcw size={14} strokeWidth={2.5} /> Undo</span>
@@ -1149,6 +1167,7 @@ export default function App() {
         pick={detail}
         saved={detail ? saved.has(detail.id) : false}
         origin={detailOrigin}
+        checkedAt={feedCheckedAt}
         onClose={() => setDetail(null)}
         onToggleSave={toggleSave}
         onMoreLike={moreLikeThis}
@@ -1203,6 +1222,6 @@ export default function App() {
           card: (shown?.[0]?.title ?? '').slice(0, 60),
         })} />
       )}
-    </>
+    </MotionConfig>
   )
 }

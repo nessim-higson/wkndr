@@ -9,11 +9,11 @@
     <meta name="theme-color" content="#0a0a0a" />
     <!-- THE UNFURL — for a link-shared product, the WhatsApp/iMessage preview IS the first screen.
          Absolute URLs on purpose: scrapers don't resolve relative paths against a SPA. -->
-    <meta name="description" content="Your weekend, ranked by the weather. Swipe what’s on in Amsterdam, match with someone, make a plan." />
+    <meta name="description" content="Your weekend, one swipe away. Discover Amsterdam plans ranked for the weather — save your favourites, share one link, and see where you match." />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="WKNDR" />
-    <meta property="og:title" content="WKNDR — your weekend, ranked by the weather" />
-    <meta property="og:description" content="Swipe what’s on in Amsterdam · match with someone · make a plan." />
+    <meta property="og:title" content="WKNDR — your weekend, one swipe away" />
+    <meta property="og:description" content="Swipe what’s on in Amsterdam · save your favourites · share one link · see where you match." />
     <!-- %OG_ORIGIN% is stamped at build time by vite.config: the GitHub Pages URL for the
          default build, https://app.wkndr.xyz for the WKNDR_DEPLOY=domain build. -->
     <meta property="og:url" content="%OG_ORIGIN%/" />
@@ -21,8 +21,11 @@
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="%OG_ORIGIN%/" />
     <link rel="icon" type="image/png" href="%OG_ORIGIN%/favicon.png" />
     <link rel="apple-touch-icon" href="%OG_ORIGIN%/apple-touch-icon.png" />
+    <!-- installable: home-screen icon + standalone chrome (relative start_url works on both origins) -->
+    <link rel="manifest" href="%OG_ORIGIN%/manifest.webmanifest" />
     <link rel="preconnect" href="https://api.fontshare.com" crossorigin />
     <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin />
     <!-- Clash Display — the WKNDR display voice (wordmark, hero line, titles) -->

@@ -17,6 +17,14 @@
 }
 .fb-fab:hover { transform: translateY(-2px); background: #fff; }
 .fb-fab span { color: var(--accent, #ff5a36); }
+.fb-fab .fb-fab-label { color: inherit; }
+.fb-fab:focus-visible { outline: 2px solid var(--accent, #ff5a36); outline-offset: 2px; }
+/* very narrow screens: icon-only, so it can never crowd the centred deck controls
+   ("Shuffle for more" sits centre-bottom; the labelled pill reached into its lane) */
+@media (max-width: 480px) {
+  .fb-fab { width: 44px; height: 44px; justify-content: center; padding: 0; }
+  .fb-fab .fb-fab-label { display: none; }
+}
 
 .fb-scrim {
   position: fixed; inset: 0; z-index: 300;

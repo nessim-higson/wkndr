@@ -4,7 +4,23 @@ import { X, Star, ArrowUpRight, Check, Maximize2, Sparkles } from 'lucide-react'
 import type { Pick } from '../types'
 import { CATEGORY_LABEL, FRESHNESS_LABEL, STATUS_LABEL, weatherPill } from '../types'
 import { shortCode, shareBase } from '../lib/share'
+import { latestDateOf } from '../lib/when'
+import { useDialogA11y } from '../lib/useDialogA11y'
 import './CardDetail.css'
+
+// "checked 3 hours ago" — the feed's build/restamp time, phrased as freshness. Only live
+// (crawled) listings carry it; canon rows aren't a claim about this week's listing data.
+function checkedLabel(iso: string | null): string | null {
+  if (!iso) return null
+  const t = Date.parse(iso)
+  if (!Number.isFinite(t)) return null
+  const h = Math.max(0, (Date.now() - t) / 36e5)
+  if (h < 1.5) return 'checked in the last hour'
+  if (h < 24) return `checked ${Math.round(h)} hours ago`
+  const d = Math.round(h / 24)
+  return `checked ${d} ${d === 1 ? 'day' : 'days'} ago`
+}
+const LIVE_PREFIXES = ['llm-', 'web-', 'rss-', 'sk-']
 
 // the detail body fades/rises in just after the sheet lands — staggered children
 const bodyV = {
@@ -47,15 +63,17 @@ function headerImageOf(src: string): string {
  *  style) — `origin` is that card's on-screen rect; absent → a centred grow. Swipe the
  *  sheet down to dismiss. */
 export function CardDetail({
-  pick, saved, origin, onClose, onToggleSave, onMoreLike,
+  pick, saved, origin, checkedAt, onClose, onToggleSave, onMoreLike,
 }: {
   pick: Pick | null
   saved: boolean
   origin?: DOMRect | null
+  checkedAt?: string | null   // the live feed's build/restamp ISO time → "checked N hours ago"
   onClose: () => void
   onToggleSave: (p: Pick) => void
   onMoreLike?: (p: Pick) => void
 }) {
+  const dialogRef = useDialogA11y<HTMLElement>(!!pick, onClose)
   const [copied, setCopied] = useState(false)
   // FOCUS view — full-screen, uncropped look at the pick's photo (the curator's loupe)
   const [focus, setFocus] = useState(false)
@@ -127,7 +145,12 @@ export function CardDetail({
             transition={{ type: 'spring', stiffness: 300, damping: 32, mass: 0.9 }}
           >
             <motion.article
+              ref={dialogRef}
               className="detail"
+              role="dialog"
+              aria-modal="true"
+              aria-label={pick.title}
+              tabIndex={-1}
               drag="y"
               dragListener={false}
               dragControls={dragControls}
@@ -172,7 +195,7 @@ export function CardDetail({
               </motion.div>
               <motion.div className="detail-body" variants={bodyV} initial="hidden" animate="show">
                 <motion.div className="detail-when" variants={itemV}>
-                  {pick.when}{pick.verify && <span className="verify">verify</span>}
+                  {pick.when}{pick.verify && <span className="verify">check with organiser</span>}
                 </motion.div>
                 <motion.h2 className="detail-title" variants={itemV}>{pick.title}</motion.h2>
                 <motion.div className="detail-venue" variants={itemV}>
@@ -209,10 +232,10 @@ export function CardDetail({
                   <button className="detail-icon-btn" onClick={share} aria-label="Share this pick">
                     {copied ? <Check size={19} strokeWidth={2.4} /> : <ArrowUpRight size={19} strokeWidth={2.2} />}
                   </button>
-                  {/* label the ACTION, not the source ("Open at Fresh find" read broken to cold
-                      users) — provenance already lives in the trace line below */}
+                  {/* label the ACTION, not the source — and say WHICH action: a dated event links
+                      to its event page; an always-on venue's page is for hours/menu */}
                   <a className="detail-link" href={pick.link} target="_blank" rel="noreferrer">
-                    Open the page <ArrowUpRight size={15} strokeWidth={2.2} style={{ verticalAlign: '-2px' }} />
+                    {latestDateOf(pick.when) ? 'View event details' : 'Check opening hours'} <ArrowUpRight size={15} strokeWidth={2.2} style={{ verticalAlign: '-2px' }} />
                   </a>
                 </motion.div>
                 {onMoreLike && (
@@ -226,6 +249,9 @@ export function CardDetail({
                 )}
                 <motion.div className="detail-trace" variants={itemV}>
                   ↳ surfaced from <b>{pick.source}</b> · ranked for this weekend’s weather
+                  {LIVE_PREFIXES.some((pre) => pick.id.startsWith(pre)) && checkedLabel(checkedAt ?? null)
+                    ? <> · listing {checkedLabel(checkedAt ?? null)}</>
+                    : null}
                 </motion.div>
               </motion.div>
             </motion.article>
