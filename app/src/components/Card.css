@@ -169,7 +169,7 @@
 .chip-fresh--new     { background: var(--accent); }
 .chip-fresh--ending  { background: #d2402e; }
 .chip-fresh--weekend { background: rgba(26, 26, 26, 0.86); }
-.chip-fresh--always  { background: rgba(26, 26, 26, 0.55); }
+.chip-fresh--always  { background: rgba(26, 26, 26, 0.8); }   /* was 0.55 — washed out over bright photos */
 
 .chip-status { color: #fff; font-weight: 700; }
 .chip-status--final-week  { background: #d2402e; }
@@ -178,20 +178,22 @@
 .chip-status--free        { background: #2faa6a; }
 .chip-closing { background: #d2402e; color: #fff; font-weight: 700; }
 
+/* solid chips — the old translucent glass (0.16–0.28) disappeared over bright header
+   photos, especially on mobile where the backdrop blur is disabled for perf */
 .chip-cat {
-  background: rgba(255, 255, 255, 0.16);
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.32);
+  background: rgba(250, 248, 243, 0.92);
+  color: var(--ink);
+  border: 1px solid rgba(0, 0, 0, 0.08);
 }
 .chip-outdoor {
-  background: rgba(110, 200, 120, 0.22);
-  color: #eafff0;
-  border: 1px solid rgba(150, 230, 170, 0.5);
+  background: rgba(32, 118, 62, 0.9);
+  color: #f0fff5;
+  border: 1px solid rgba(255, 255, 255, 0.25);
 }
 .chip-kid {
-  background: rgba(120, 150, 210, 0.28);
-  color: #eef3ff;
-  border: 1px solid rgba(150, 175, 230, 0.55);
+  background: rgba(70, 100, 170, 0.9);
+  color: #f0f4ff;
+  border: 1px solid rgba(255, 255, 255, 0.25);
 }
 /* "Trending" — surfaced from buzz (how many independent sources flagged the pick) */
 .chip-buzz {

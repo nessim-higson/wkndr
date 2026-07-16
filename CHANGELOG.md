@@ -14,6 +14,13 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.10.2] — 2026-07-16 — OG refresh + solid detail chips
+- **og.png** (both surfaces) redrawn for the new proposition: "Your weekend, one swipe away." +
+  "Swipe what's on in Amsterdam · share one link · see where you match" — same paper/pill design.
+- **Detail-sheet chips solidified**: the translucent glass chips (cat 0.16 / outdoor 0.22 / kid
+  0.28 / always 0.55) washed out over bright header photos (mobile drops their backdrop blur for
+  perf). Now: paper chip w/ ink text (category), deep green (outdoor), blue (kids), 0.8 dark (always).
+
 ## [V.10.1] — 2026-07-16 — "The finish pass" (dates · keyboard · trust)
 _The dependable-product optimisation sweep — correctness + access first, discovery + trust second:_
 - **whenLooksBroken** (`lib/when.ts`): malformed date ranges are DROPPED, never displayed — a
