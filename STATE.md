@@ -21,7 +21,15 @@ React + TS, run with `bun`); deployed to GitHub Pages._
   GH Pages origin) so **old share links in the wild keep resolving**. The GitHub Pages deploy stays
   live. Custom-domain attach + DNS are Ness-only CF-dashboard steps (checklist handed off). Pages
   projects: `wkndr-landing` + `wkndr-app`.
-- **App: V.9.17** — https://nessim-higson.github.io/wkndr/ (cache-bust `?v=V.9.17`; V.8.16 = **THE
+- **App: V.10.1** — https://nessim-higson.github.io/wkndr/ (cache-bust `?v=V.10.1`). **V.10.1 =
+  "the finish pass"** (2026-07-16): `whenLooksBroken` drops malformed date ranges runtime+pipeline
+  (the "Sun 28 – Sun 12 Jul" class), detail shows "listing checked N hours ago", keyboard/SR deck
+  (top card = focusable button, ←/→ skip/save, ★ = save everywhere), dialog focus discipline
+  (`lib/useDialogA11y` + inert closed menu), reduced-motion support, match nudge from the FIRST
+  save, ShareSheet privacy/expiry line → /privacy, canonical + web-app manifest. Landing got the
+  same sweep: hero = "Your weekend, one swipe away." (Tinder framing retired), LOOK switcher
+  dev-gated, progress dots + keyboard paging + reduced-motion stable stages, closing trust canvas.
+  (V.9.17 notes: V.8.16 = **THE
   AIRLOCK** — Ness's 2026-07-10 call made law: the live deck is 1:1 with his board approvals. A live
   pick ships only on an approval match (starredKeeps/tops/★3+ anchors/slate/hero/buzz≥3 — one shared
   `approvalCheck` in lib/pipeline); everything else waits imaged+scored in `pending.<city>.json`,
