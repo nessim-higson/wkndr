@@ -1,10 +1,12 @@
 # WKNDR — STATE (catch-me-up snapshot)
 
-_Living "where are we right now" doc — a **snapshot, not a history**. **Updated 2026-07-12.** Read this
+_Living "where are we right now" doc — a **snapshot, not a history**. **Updated 2026-07-16.** Read this
 FIRST in a new chat. For strategy + backlog see `docs/backlog.md`; for the pipeline architecture see
-`docs/pipeline-architecture.md` + `docs/source-map.md`; for full **version history** see `CHANGELOG.md`
-(current to V.9.17) and the **git log / tags**. Onboarding: `CLAUDE.md`. App lives in `/app` (Vite +
-React + TS, run with `bun`); deployed to GitHub Pages._
+`docs/pipeline-architecture.md` + `docs/source-map.md`; for **who may write to the deck vs to a personal
+profile** (board / Tune / airlock — read before touching either) see `docs/curation-surfaces.md`; for full
+**version history** see `CHANGELOG.md` (current to V.9.17) and the **git log / tags**. Onboarding:
+`CLAUDE.md`. App lives in `/app` (Vite + React + TS, run with `bun`); ships to **Cloudflare Pages**
+(`wkndr.xyz` + `app.wkndr.xyz`) **and** GitHub Pages (legacy, keeps old share links alive)._
 
 > **START-OF-SESSION for WKNDR:** check `gh issue list --label curation` — the Curation Board's
 > **Submit → GitHub** button files Ness's verdict rounds as repo issues. That's the canonical inbox:

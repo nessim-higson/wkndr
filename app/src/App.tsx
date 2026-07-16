@@ -22,6 +22,8 @@ import { FilterSheet } from './components/FilterSheet'
 import { ShareSheet } from './components/ShareSheet'
 import { MatchGame } from './components/MatchGame'
 import { Calibrate } from './components/Calibrate'
+import { Triage } from './components/Triage'
+import { CURATE_DOOR } from './curateDoor'
 import type { Freshness } from './types'
 
 // a partner-shared weekend arrives as ?w=id,id,id&from=Name
@@ -181,6 +183,10 @@ export default function App() {
   const [dealKey, setDealKey] = useState(0)      // bump → stack re-deals (refresh signal)
   const [matching, setMatching] = useState(false)   // match-mode overlay
   const [calibrating, setCalibrating] = useState(false)   // "Tune WKNDR" micro-deck (dev prototype)
+  // Airlock triage deck — the board's notebook (dev prototype). Opens on mount when we
+  // came through ?curate2026! on a narrow screen: a wide screen would already have left
+  // for the board (curateDoor.ts), so reaching here with the flag set means "phone".
+  const [triaging, setTriaging] = useState(CURATE_DOOR)
   const matchLaunched = useRef(false)
   const matchingRef = useRef(false)                 // read by the relay poll (its effect mounts once)
   const [detail, setDetail] = useState<Pick | null>(null)  // open card detail
@@ -242,7 +248,10 @@ export default function App() {
   const [savesOpen, setSavesOpen] = useState(false)        // the persistent saves dock peek
   const [dockPop, setDockPop] = useState(false)            // brief pulse when a save lands in the counter
   const prevSavedCount = useRef(saved.size)
-  const [intro, setIntro] = useState(true)                 // weather-aware intro (every load)
+  // Weather-aware intro (every load) — but not when we came through ?curate2026!: that
+  // door means "I'm here to rule on the airlock", and Triage (z-340) would cover the
+  // intro (z-60) anyway, leaving its animation running blind behind the veil.
+  const [intro, setIntro] = useState(!CURATE_DOOR)
   const [listStyle, setListStyle] = useState<'wheel' | 'flux'>(() => {  // list motion language
     const s = localStorage.getItem('wkndr.liststyle')
     return s === 'flux' ? 'flux' : 'wheel'
@@ -846,6 +855,11 @@ export default function App() {
                         <button className="bar-pill" onClick={() => { setCalibrating(true); setBarOpen(false) }}>
                           ✨ Tune WKNDR
                         </button>
+                        {/* Same gesture as Tune, different sink: Tune writes YOUR profile,
+                            this writes the board's verdict store. docs/curation-surfaces.md §2 */}
+                        <button className="bar-pill" onClick={() => { setTriaging(true); setBarOpen(false) }}>
+                          ⚖️ Triage airlock
+                        </button>
                       </div>
                     </div>
                     )}
@@ -1100,7 +1114,7 @@ export default function App() {
                 onClearFilter={() => { setFilter('all'); setCats([]); setWhens([]) }}
                 onSeeList={() => setView('list')}
                 /* the deck owns ←/→ only while nothing sits above it */
-                keysActive={!intro && !detail && !shareOpen && !barOpen && !savesOpen && !matching && !inputsOpen && !filterOpen && !whenOpen && !calibrating}
+                keysActive={!intro && !detail && !shareOpen && !barOpen && !savesOpen && !matching && !inputsOpen && !filterOpen && !whenOpen && !calibrating && !triaging}
               />
             </motion.div>
           ) : view === 'fan' ? (
@@ -1157,6 +1171,10 @@ export default function App() {
           posters swiped in the app's own language; commit re-ranks the live deck instantly.
           tasteRef is synced IMPERATIVELY before the seed bump: rankedAll reads the ref during
           the very render the bump triggers, before the post-render effect would update it. */}
+      {triaging && (
+        <Triage cityKey={city.key} onClose={() => setTriaging(false)} />
+      )}
+
       {calibrating && (
         <Calibrate
           taste={taste}

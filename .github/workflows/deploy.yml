@@ -1,4 +1,10 @@
-name: Deploy to GitHub Pages
+name: Deploy
+
+# Two independent shop windows, one factory:
+#   · Cloudflare Pages — wkndr.xyz + app.wkndr.xyz (the real domain; what users see)
+#   · GitHub Pages     — nessim-higson.github.io/wkndr/ (legacy; keeps old share links alive)
+# They do NOT depend on each other: a GitHub Pages incident must never hold up the domain.
+# See docs/curation-surfaces.md §6.
 
 on:
   push:
@@ -51,3 +57,33 @@ jobs:
         with:
           timeout: 1800000   # 30 min queue patience — rides out GitHub Pages "degraded performance" incidents
           error_count: 15
+
+  # The domain. Runs in parallel with the GitHub Pages job — before this existed, every Thursday
+  # refresh.yml committed fresh picks.json, GitHub Pages updated itself, and wkndr.xyz served last
+  # week's events until someone remembered to run `wrangler pages deploy` by hand.
+  cloudflare:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: oven-sh/setup-bun@v2
+      - name: Install deps
+        run: cd app && bun install --frozen-lockfile
+
+      # base '/' + canonical origin https://app.wkndr.xyz baked into the unfurl + share links.
+      # NOT the same artifact as the GitHub Pages build above (base '/wkndr/'), so it gets its own job.
+      - name: Build app (domain target)
+        run: cd app && bun run build:domain
+
+      - name: Deploy app → app.wkndr.xyz
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy app/dist --project-name=wkndr-app --branch=main
+
+      - name: Deploy landing → wkndr.xyz
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy landing --project-name=wkndr-landing --branch=main

@@ -14,6 +14,39 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.10.5] — 2026-07-16 — Triage: the board's notebook (dev prototype, ?dev=1) + the domain deploys itself
+- **The stale-domain bug, fixed.** `refresh.yml` (Thu 13:00 UTC) committed a fresh feed and
+  auto-deployed to **GitHub Pages only** — both Cloudflare Pages projects are `Git Provider: No`,
+  i.e. manual `wrangler pages deploy`. So every Thursday the *real* domain served last week's
+  events until someone remembered. `deploy.yml` now has a **`cloudflare` job** (build:domain →
+  `wkndr-app` + `wkndr-landing`) running **parallel** to the Pages job, so a GitHub Pages incident
+  can't hold up wkndr.xyz. Needs repo secrets `CLOUDFLARE_API_TOKEN` (Pages:Edit) + `CLOUDFLARE_ACCOUNT_ID`.
+- **Triage** (menu → `Taste · dev` → ⚖️ Triage airlock): the airlock queue as a deck. The board
+  (`public/curate/`) is a *studio* grid built to COMPARE — pile order, tiers, canon library — and
+  on a phone it measures **203 screens of scroll** (620 card els, 329 items). That's not a CSS bug:
+  comparing-many and deciding-one are different jobs. Triage is the other job — `pending.<city>.json`
+  one card at a time, ★ waves it in / ✕ kills it, on the tram. The board stays the desk.
+- **One deck component, two sinks** (the law — `docs/curation-surfaces.md` §2): Triage reuses
+  SwipeStack exactly as `Calibrate` does, but Tune writes YOUR on-device profile (`taste.ts`) while
+  Triage writes the board's verdict store. Same gesture, different blast radius. A user may never
+  write to the airlock — that's the product ("Not another events feed").
+- **No payload code was written.** Rather than re-implement the board's `payloadCompact()` wire
+  format (two implementations = drift), Triage writes the board's OWN localStorage record
+  (`wkndr.curate.<generatedAt>` → `{V, PILE}`) and the board's own Submit reads it — `/curate/` is
+  same-origin with the app. Verified end-to-end: 2 swipes moved the board's tally
+  `67 starred · 0 killed` → `68 starred · 1 killed` and appeared in its payload as
+  `- Zomerlicht… | 3*` / `- Liefde op de Grachten… | KILL`. Same-device only (localStorage).
+- `stars: 3` on a right-swipe is load-bearing, not arbitrary: `approvalCheck` only honours star
+  anchors at `>= 3`, so a lower value would compile to nothing and a tram "yes" would silently not
+  be one. **Triage still can't ship anything** — verdict → issue → *human compile* → restamp → deck.
+- **The door** (`app.wkndr.xyz/?curate2026!`): one memorable URL that opens the right instrument for
+  the screen — ≥720px → the board grid (`/curate/`), <720px → Triage on the phone (intro skipped).
+  Width, not user-agent: the question is "room to compare?". `curateDoor.ts`, fired before render so
+  the app never flashes. Separate from `?dev=1` (the design surface). A shortcut, not a lock.
+- **Docs**: new `docs/curation-surfaces.md` (who may write to the deck vs a personal profile; the
+  mobile finding; method-public/verdicts-private; guest curators parked). STATE.md header corrected
+  — it still claimed "deployed to GitHub Pages" alone. 119 tests green.
+
 ## [V.10.4] — 2026-07-16 — Thursday pile hardened (the share-ready pass)
 - **Restamped the fresh cron feed** (76 → 75): Jazz @ H'ART shipped AGAIN with its reversed
   "Sun 28 – Sun 12 Jul" range — it re-entered through a post-drop stage (👑 TOP pull-back).
