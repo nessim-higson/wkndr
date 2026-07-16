@@ -21,6 +21,7 @@ import { InputsSheet } from './components/InputsSheet'
 import { FilterSheet } from './components/FilterSheet'
 import { ShareSheet } from './components/ShareSheet'
 import { MatchGame } from './components/MatchGame'
+import { Calibrate } from './components/Calibrate'
 import type { Freshness } from './types'
 
 // a partner-shared weekend arrives as ?w=id,id,id&from=Name
@@ -179,6 +180,7 @@ export default function App() {
   const [seed, setSeed] = useState(0)            // 0 = forecast order; bumped by Refresh
   const [dealKey, setDealKey] = useState(0)      // bump → stack re-deals (refresh signal)
   const [matching, setMatching] = useState(false)   // match-mode overlay
+  const [calibrating, setCalibrating] = useState(false)   // "Tune WKNDR" micro-deck (dev prototype)
   const matchLaunched = useRef(false)
   const matchingRef = useRef(false)                 // read by the relay poll (its effect mounts once)
   const [detail, setDetail] = useState<Pick | null>(null)  // open card detail
@@ -837,6 +839,17 @@ export default function App() {
                       </div>
                     </div>
 
+                    {DEVUI && (
+                    <div className="bar-group">
+                      <span className="bar-label">Taste · dev</span>
+                      <div className="bar-row">
+                        <button className="bar-pill" onClick={() => { setCalibrating(true); setBarOpen(false) }}>
+                          ✨ Tune WKNDR
+                        </button>
+                      </div>
+                    </div>
+                    )}
+
                     <div className="bar-group">
                       <span className="bar-label">Plan together</span>
                       <div className="bar-row">
@@ -1087,7 +1100,7 @@ export default function App() {
                 onClearFilter={() => { setFilter('all'); setCats([]); setWhens([]) }}
                 onSeeList={() => setView('list')}
                 /* the deck owns ←/→ only while nothing sits above it */
-                keysActive={!intro && !detail && !shareOpen && !barOpen && !savesOpen && !matching && !inputsOpen && !filterOpen && !whenOpen}
+                keysActive={!intro && !detail && !shareOpen && !barOpen && !savesOpen && !matching && !inputsOpen && !filterOpen && !whenOpen && !calibrating}
               />
             </motion.div>
           ) : view === 'fan' ? (
@@ -1137,6 +1150,27 @@ export default function App() {
           onOpen={openDetail}
           onClose={() => { setMatching(false); setFilter('all') }}   /* land on the full feed — recipients can keep discovering, never boxed into the shared set */
           onComplete={(m) => { setSaved((s) => new Set([...s, ...m.map((p) => p.id)])); flash(`${m.length} added to your list`, true) }}
+        />
+      )}
+
+      {/* TUNE WKNDR — the calibration micro-deck (dev prototype, ?dev=1). Eight archetype
+          posters swiped in the app's own language; commit re-ranks the live deck instantly.
+          tasteRef is synced IMPERATIVELY before the seed bump: rankedAll reads the ref during
+          the very render the bump triggers, before the post-render effect would update it. */}
+      {calibrating && (
+        <Calibrate
+          taste={taste}
+          onClose={() => setCalibrating(false)}
+          onDone={(next, likes) => {
+            tasteRef.current = next
+            setTaste(next)
+            setCalibrating(false)
+            setSwiped(new Set())
+            setSeed((s) => s + 1)
+            setDealKey((k) => k + 1)
+            track('calibrate')
+            flash(likes > 0 ? 'Tuned — re-dealt for you' : 'Noted — re-dealt', true)
+          }}
         />
       )}
 

@@ -80,6 +80,8 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
   const grabLever = useRef(0)                  // where you grabbed: -1 top … +1 bottom
   const cardRef = useRef<HTMLDivElement>(null)
   const dragged = useRef(false)  // true once a real drag begins → suppresses the tap-to-open
+  const flying = useRef(false)   // committed exit in flight — a re-fling (hammered arrow keys,
+                                 // double-tapped ✕) would fire onSwipe twice for the same card
 
   // Build-in: when the deck first deals (initial load, refresh, entering the stack) the
   // cards fly up onto it, back-to-front. A card that merely cycles in at the back later
@@ -193,6 +195,8 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
 
   // Committed swipe: exit ALONG the throw (velocity flick → offset drag → cardinal fallback).
   function fling(dir: SwipeDir, info?: PanInfo) {
+    if (flying.current) return
+    flying.current = true
     try { navigator.vibrate?.(11) } catch { /* unsupported (iOS) */ }   // tactile commit
     let dx = DIR[dir].x, dy = DIR[dir].y, speed = 950   // button press = a synthesized MEDIUM THROW:
     // same momentum-scaled exit as a real drag (spin, tumble, pace) — with speed 0 the card left
@@ -209,6 +213,8 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
   // the deck (non-destructive — the deck never empties). Direction varies each time so the
   // deck fans itself out every which way while you're not touching it.
   function autoFling() {
+    if (flying.current) return
+    flying.current = true
     const ang = Math.random() * Math.PI * 2                 // any direction
     const lean = -0.5 + Math.random()                       // slight up/down lean for variety
     exit(Math.cos(ang), Math.sin(ang) * 0.7 + lean * 0.3, 650, () => onCycle?.(pick))

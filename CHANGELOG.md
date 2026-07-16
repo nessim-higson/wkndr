@@ -14,6 +14,20 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.10.3] — 2026-07-16 — "Tune WKNDR" calibration micro-deck (dev prototype, ?dev=1)
+- **The prototype**: menu → `Taste · dev` → ✨ Tune WKNDR opens a paper veil with 8 archetype
+  weekends (typographic poster cards, one per category lever) swiped in the app's own deck:
+  ★ = "that's me" (+3/token, a more-like), ✕ = "not me" (−2). Done panel reads the model back
+  ("Leaning into being outdoors · eat · drink") → **Deal my deck** commits + re-deals, re-ranked
+  on-device, instantly. Discard/✕/Esc = nothing written. DEVUI-gated; invisible without ?dev=1.
+- Archetypes speak ONLY the taste model's vocabulary (category / outdoor / weatherFit); empty
+  area/src keep venue-neighbourhood + publication tokens inert. 👑 TOPs still lead the deck by
+  law — calibration bends everything beneath them.
+- **Double-fire guard** (real bug, all decks): a fling on a card already mid-exit (hammered
+  arrows, double-tapped ✕) fired onSwipe twice → double taste writes. `flying` ref in SwipeStack
+  now makes commit exits one-shot; Calibrate also dedupes by pick id.
+- `topTastes` no longer renders blank labels for empty tags; `track('calibrate')` funnel event.
+
 ## [V.10.2] — 2026-07-16 — OG refresh + solid detail chips
 - **og.png** (both surfaces) redrawn for the new proposition: "Your weekend, one swipe away." +
   "Swipe what's on in Amsterdam · share one link · see where you match" — same paper/pill design.

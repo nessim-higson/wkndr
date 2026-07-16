@@ -69,6 +69,17 @@ export function revertMoreLikeThis(taste: Taste, p: Pick): Taste {
   return next
 }
 
+// CALIBRATION (the "Tune WKNDR" dev prototype) — the micro-deck's per-card write.
+// Deliberately heavy: eight cards must visibly bend the deck. A yes counts like an
+// explicit "more like this" (+3/token); a no is 2× a nope (−2/token). Multiples of
+// 0.5, keeping the float-exact ===0 contract shared with the revert helpers.
+export function applyCalibration(taste: Taste, p: Pick, liked: boolean): Taste {
+  const delta = liked ? 3 : -2
+  const next = { ...taste }
+  for (const tok of tokensFor(p)) next[tok] = (next[tok] || 0) + delta
+  return next
+}
+
 /** Summed tag-weight for a pick, clamped so taste reorders within — but rarely
  *  overpowers — the weather term (10). */
 export function tasteScore(p: Pick, taste: Taste): number {
@@ -84,8 +95,10 @@ export function topTastes(taste: Taste, n = 3): string[] {
   return Object.entries(taste)
     .filter(([, v]) => v > 0)
     .sort((a, b) => b[1] - a[1])
+    .map(([k]) => k.replace(/^cat:|^area:|^src:|^wf:/, ''))
+    .filter((label) => label)   // inert empty tags (e.g. calibration's blank area/src) never render
     .slice(0, n)
-    .map(([k]) => k.replace(/^cat:|^area:|^src:|^wf:/, '').replace('outdoor', 'outdoor').replace('kid', 'kids'))
+    .map((l) => (l === 'kid' ? 'kids' : l))
 }
 
 // ── persistence (localStorage; device-local, no backend) ──
