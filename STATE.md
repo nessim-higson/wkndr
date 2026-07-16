@@ -61,8 +61,12 @@ React + TS, run with `bun`); deployed to GitHub Pages._
   (killed the crop-of-a-crop) + a full-screen ⤢ FOCUS lightbox.
 - **`?dev=1`** reveals the full exploration surface (all views, ambient-look switcher, city picker).
 - **Frozen reference builds:** `/wkndr/versions/v6-2/` (tag `v6.2`) and `/wkndr/versions/v4-10/` (tag `v4.10`).
-- **Ship loop:** `cd app && bun run bump` → `bun run build` → commit → push (auto-deploys) → reply with
-  the `?v=` link. **Tests:** `bun run test` (112 logic tests; CI runs them before every content refresh).
+- **Ship loop:** `cd app && bun run bump` → `bun run build` → commit → push (auto-deploys GH Pages) →
+  reply with the `?v=` link. **The two wkndr.xyz surfaces are MANUAL wrangler deploys** (no CF git
+  integration): `cd landing && npx wrangler pages deploy . --project-name=wkndr-landing` and
+  `cd app && bun run build:domain && npx wrangler pages deploy dist --project-name=wkndr-app`
+  (wrangler already authed on this machine; bare-URL curl checks may show stale edge cache — bust
+  with a query param). **Tests:** `bun run test` (112 logic tests; CI runs them before every content refresh).
   **Pages deploy flakes** intermittently ("try again later") — re-dispatch `deploy.yml` (there's an
   auto-retry pattern in the ship watchers).
 
