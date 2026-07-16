@@ -14,6 +14,16 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.10.4] — 2026-07-16 — Thursday pile hardened (the share-ready pass)
+- **Restamped the fresh cron feed** (76 → 75): Jazz @ H'ART shipped AGAIN with its reversed
+  "Sun 28 – Sun 12 Jul" range — it re-entered through a post-drop stage (👑 TOP pull-back).
+  The pipeline now re-runs the broken-range sweep at the choke point RIGHT BEFORE the publish
+  gate, so no late door (adapters, heroes, pull-backs) can ship one.
+- **fixWhen corrects BOTH ends of expanded ranges** ("Fri 15 – Fri 17 Jul" → "Wed 15 – Fri 17
+  Jul"; cross-month "Sat 30 Jul – Mon 2 Aug" → "Thu 30 Jul – Sun 2 Aug"): only the dash's right
+  side was being recomputed, so a source's wrong weekday on a range START shipped as written.
+  +2 tests (119).
+
 ## [V.10.3] — 2026-07-16 — "Tune WKNDR" calibration micro-deck (dev prototype, ?dev=1)
 - **The prototype**: menu → `Taste · dev` → ✨ Tune WKNDR opens a paper veil with 8 archetype
   weekends (typographic poster cards, one per category lever) swiped in the app's own deck:

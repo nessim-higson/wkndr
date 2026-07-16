@@ -702,6 +702,17 @@ async function buildCity(city: City) {
     picks = stampServeOrder(picks, mode)
   }
 
+  // FINAL BROKEN-RANGE SWEEP — picks join the pool at many stages AFTER the early drop
+  // (fresh adapter crawls, hero merges, TOP/slate pull-backs), so re-run the malformed-range
+  // filter at the choke point: a range the date brain can't trust ("Sun 28 – Sun 12 Jul")
+  // must never publish, whichever door it came in through. (2026-07-16: Jazz @ H'ART, a 👑
+  // TOP, re-entered exactly this way.)
+  {
+    const before = picks.length
+    picks = picks.filter((p) => !whenLooksBroken(p.when))
+    if (before !== picks.length) console.log(`  broken:   dropped ${before - picks.length} malformed date range(s) at the gate`)
+  }
+
   // PUBLISH GATE — refuse to ship a BROKEN feed. A quiet/thin weekend is NOT broken (it just warns); only the
   // things that would actually embarrass us hard-fail. On failure we ABSTAIN — exit(1) WITHOUT writing — so the
   // last-good feed keeps serving and the failed Actions run emails Ness. A one-line HEALTH summary always lands

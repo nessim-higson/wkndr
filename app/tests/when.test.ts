@@ -21,6 +21,13 @@ describe('fixWhen — weekday correction', () => {
   it('passes evergreen strings through untouched', () => {
     expect(fixWhen('Daily · shop hours', NOW)).toBe('Daily · shop hours')
   })
+  it('corrects BOTH ends of an expanded range (the "Fri 15 – Fri 17 Jul" leak)', () => {
+    expect(fixWhen('Fri 15 – Fri 17 Jul', NOW)).toBe('Wed 15 – Fri 17 Jul')   // 15 Jul 2026 = Wednesday
+    expect(fixWhen('Fri 3 – Sun 5 Jul', NOW)).toBe('Fri 3 – Sun 5 Jul')       // already right → untouched
+  })
+  it('corrects an expanded cross-month range (each side keeps its month)', () => {
+    expect(fixWhen('Sat 30 Jul – Mon 2 Aug', NOW)).toBe('Thu 30 Jul – Sun 2 Aug')
+  })
 })
 
 describe('whenIsPast — the runtime past-event filter', () => {

@@ -46,6 +46,19 @@ export function fixWhen(when: string, now: Date = new Date()): string {
       return `${WD[a.getDay()]}–${WD[b.getDay()]} ${d1}–${d2} ${mon}${tail}`
     },
   )
+  // expanded range: "Fri 15 – Fri 17 Jul" / "Thu 30 Jul – Sun 2 Aug" → recompute BOTH ends.
+  // A month-less first side borrows the second side's month (same rule datesIn parses by).
+  // Without this pass only the dash's RIGHT side got corrected (it reads as a single day
+  // below), so a source's wrong weekday on the START of a range shipped as written.
+  s = s.replace(
+    new RegExp(`\\b(?:${WDAY})\\.?\\s+(\\d{1,2})(?:\\s+(${MONS})(\\w*))?\\s*([–—-])\\s*(?:${WDAY})\\.?\\s+(\\d{1,2})\\s+(${MONS})(\\w*)`, 'gi'),
+    (_full, d1: string, mon1: string | undefined, tail1: string | undefined, dash: string, d2: string, mon2: string, tail2: string) => {
+      const mi2 = MON[mon2.toLowerCase()]
+      const mi1 = mon1 ? MON[mon1.toLowerCase()] : mi2
+      const a = resolveDate(+d1, mi1, now, openRun), b = resolveDate(+d2, mi2, now, openRun)
+      return `${WD[a.getDay()]} ${d1}${mon1 ? ` ${mon1}${tail1 ?? ''}` : ''} ${dash} ${WD[b.getDay()]} ${d2} ${mon2}${tail2}`
+    },
+  )
   // single: "Sun 8 Jun" → "Mon 8 Jun"
   s = s.replace(
     new RegExp(`\\b(?:${WDAY})\\.?\\s+(\\d{1,2})\\s+(${MONS})(\\w*)`, 'gi'),
