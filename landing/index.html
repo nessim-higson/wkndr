@@ -3,17 +3,32 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>WKNDR — Tinder your events</title>
-<meta name="description" content="WKNDR ranks your weekend by the weather and matches plans with the people you'd actually go with." />
+<title>WKNDR — Your weekend, one swipe away</title>
+<meta name="description" content="Discover Amsterdam plans ranked for the weekend's weather. Save your favourites, share one link, and see where you match." />
+<link rel="canonical" href="https://wkndr.xyz/" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="WKNDR" />
-<meta property="og:title" content="WKNDR — your weekend, ranked by the weather" />
-<meta property="og:description" content="WKNDR ranks your weekend by the weather and matches plans with the people you'd actually go with." />
+<meta property="og:title" content="WKNDR — Your weekend, one swipe away" />
+<meta property="og:description" content="Discover Amsterdam plans ranked for the weekend's weather. Save your favourites, share one link, and see where you match." />
 <meta property="og:url" content="https://wkndr.xyz/" />
 <meta property="og:image" content="https://wkndr.xyz/og.png" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
 <meta name="twitter:card" content="summary_large_image" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "WKNDR",
+  "url": "https://app.wkndr.xyz/",
+  "applicationCategory": "LifestyleApplication",
+  "operatingSystem": "Any",
+  "browserRequirements": "Requires a modern web browser",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
+  "description": "Discover Amsterdam plans ranked for the weekend's weather. Save your favourites, share one link, and see where you match.",
+  "areaServed": { "@type": "City", "name": "Amsterdam" }
+}
+</script>
 <link rel="icon" type="image/png" href="/favicon.png" />
 <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 <meta name="theme-color" content="#faf8f3" />
@@ -271,7 +286,8 @@
   .sf-av .you{background:#4a716b;margin-right:-14px;} .sf-av .them{background:#1a1a1a;margin-left:-14px;}
   .sf-av .spark{font-size:clamp(28px,3vw,46px);color:#ffe08a;z-index:2;text-shadow:0 0 24px rgba(255,224,138,.8);animation:twinkle 2.6s ease-in-out infinite;}
   .sf-eyebrow{font-family:'Helvetica Neue',Arial,sans-serif;font-size:clamp(11px,1vw,13px);font-weight:700;letter-spacing:.18em;text-transform:uppercase;opacity:.8;margin-bottom:14px;}
-  .sf-h{font-family:'TWKLausannePan',sans-serif;font-weight:300;font-size:clamp(44px,7.5vw,104px);letter-spacing:-0.035em;line-height:0.96;margin-bottom:clamp(20px,3vw,38px);animation:breathe 3.2s ease-in-out infinite;}
+  .sf-h{font-family:'TWKLausannePan',sans-serif;font-weight:300;font-size:clamp(44px,7.5vw,104px);letter-spacing:-0.035em;line-height:0.96;margin-bottom:clamp(10px,1.4vw,18px);animation:breathe 3.2s ease-in-out infinite;}
+  .sf-sub{font-family:'TWKLausannePan',sans-serif;font-weight:300;font-size:clamp(14px,1.4vw,20px);color:rgba(255,255,255,.92);margin-bottom:clamp(20px,3vw,38px);}
   .sf-card{background:#fff;color:#1a1a1a;border-radius:20px;padding:clamp(12px,1.4vw,18px);display:flex;align-items:center;gap:16px;width:100%;max-width:440px;box-shadow:0 30px 60px -24px rgba(0,0,0,.4);text-align:left;}
   .sf-card .thumb{width:clamp(56px,5vw,76px);height:clamp(56px,5vw,76px);border-radius:14px;overflow:hidden;position:relative;flex:0 0 auto;}
   .sf-card .thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
@@ -279,8 +295,6 @@
   .sf-cat{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-deep);}
   .sf-t{font-size:clamp(17px,1.7vw,24px);font-weight:700;line-height:1.05;margin-top:3px;}
   .sf-both{font-size:13px;color:var(--accent-deep);font-weight:600;margin-top:4px;}
-  .sf-cta{margin-top:clamp(18px,2.4vw,32px);background:#fff;color:var(--accent-deep);border:none;border-radius:100px;
-    padding:14px 30px;font-family:'Helvetica Neue',Arial,sans-serif;font-weight:700;font-size:clamp(14px,1.2vw,16px);box-shadow:0 14px 30px -10px rgba(0,0,0,.3);}
 
   /* ---- bento gallery card (real photos) ---- */
   .card-bento{position:absolute;inset:0;display:flex;flex-direction:column;background:var(--paper);}
@@ -462,10 +476,14 @@
   .closing-logo{display:flex;align-items:center;gap:8px;margin-bottom:28px;
     font-family:var(--display);font-weight:700;font-size:18px;letter-spacing:-0.01em;color:var(--ink);}
   .closing-logo .wk-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);}
-  .closing-text{font-family:'TWKLausannePan',sans-serif;font-weight:300;font-size:18px;color:var(--ink);
-    text-align:center;line-height:1.45;max-width:560px;text-wrap:balance;margin-bottom:30px;}
-  /* was an underlined pseudo-link (social hover, now gone) — emphasis only, no link affordance */
-  .mclane-link{color:inherit;font-weight:600;}
+  .closing-h{font-family:'TWKLausannePan',sans-serif;font-weight:300;font-size:clamp(28px,3.6vw,44px);color:var(--ink);
+    text-align:center;line-height:1.1;letter-spacing:-0.025em;max-width:560px;text-wrap:balance;margin-bottom:26px;}
+  .closing-micro{font-family:'TWKLausannePan',sans-serif;font-weight:300;font-size:13px;letter-spacing:.04em;
+    color:var(--ink-3);margin-top:14px;}
+  .closing-trust{list-style:none;display:flex;flex-wrap:wrap;justify-content:center;gap:6px 0;margin-top:22px;max-width:520px;
+    font-family:'TWKLausannePan',sans-serif;font-weight:300;font-size:12.5px;letter-spacing:.02em;color:var(--ink-3);text-align:center;}
+  .closing-trust li{display:inline;}
+  .closing-trust li+li::before{content:'·';margin:0 9px;opacity:.7;}
   .get-in-touch{background:var(--accent);color:#fff;border:none;border-radius:999px;padding:11px 22px;
     font-family:'TWKLausannePan',sans-serif;font-weight:300;font-size:16px;letter-spacing:.01em;
     cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation;
@@ -547,11 +565,12 @@
   /* ================= MOBILE — tall portrait, near-fullscreen ================= */
   @media(max-width:768px){
     #headline{font-size:25px;line-height:1.14;letter-spacing:-0.01em;max-width:90vw;}
-    .closing-text{max-width:90vw;}
+    .closing-h{max-width:90vw;}
     /* closing capture: tighten so the form fits the shorter mobile card */
     #closing{padding:24px;}
     .closing-logo{margin-bottom:14px;}
-    .closing-text{font-size:15px;line-height:1.35;margin-bottom:22px;}
+    .closing-h{font-size:26px;margin-bottom:20px;}
+    .closing-trust{font-size:12px;max-width:88vw;}
     /* deck becomes a tall portrait panel that fills the phone */
     #deck{width:92vw;max-width:92vw;height:min(66vh,560px);aspect-ratio:auto;}
     /* device cards: short headline stacked above a LARGE phone */
@@ -618,7 +637,23 @@
   }
   @media (prefers-reduced-motion: reduce){
     .scr-hot,.sh-canvas,.wk-card.auto,.wk-stamp,.frag-notif{animation:none !important;}
+    .sf-h,.scr-slam .slam-h,.scr-slam .spark,.sf-av .spark,.sh-hint .wk-dot{animation:none !important;}
+    .bc-card{transition:none !important;}
+    .get-in-touch:hover .git-arrow-out,.get-in-touch:hover .git-arrow-in{animation:none;}
   }
+
+  /* ---- stage progress (dots) ---- */
+  #progress{position:fixed;left:50%;bottom:calc(12px + env(safe-area-inset-bottom));transform:translateX(-50%);
+    z-index:9991;display:flex;gap:0;opacity:0;transition:opacity .5s ease;}
+  #progress.show{opacity:1;}
+  #progress button{appearance:none;background:none;border:none;padding:10px 7px;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent;}
+  /* contrast-safe on paper, orange and dark cards: white dot + soft dark rim */
+  #progress button::after{content:'';width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.85);
+    box-shadow:0 0 0 1px rgba(0,0,0,.28);opacity:.55;transition:opacity .25s ease,transform .25s ease,background .25s ease;}
+  #progress button:hover::after{opacity:.85;}
+  #progress button.on::after{background:var(--accent);box-shadow:0 0 0 2px rgba(255,255,255,.9);opacity:1;transform:scale(1.4);}
+  #progress button:focus-visible{outline:2px solid var(--accent);outline-offset:-4px;border-radius:99px;}
 </style>
 </head>
 <body>
@@ -627,24 +662,30 @@
   <a id="brandmark" href="https://app.wkndr.xyz/"><span class="wk-dot"></span>Open WKNDR</a>
 
   <div id="headline-wrap">
-    <h1 id="headline"><span class="hl-lead">Your weekend, ranked by the weather.</span><span class="hl-sub">Match events with people you would actually go with.</span></h1>
+    <h1 id="headline"><span class="hl-lead">Your weekend, one swipe away.</span><span class="hl-sub">Discover Amsterdam plans ranked for the weather. Save your favourites, share one link, and see where you match.</span></h1>
   </div>
 
   <div id="deck">
     <div id="closing">
       <div class="inner">
         <div class="closing-logo"><span class="wk-dot"></span>WKNDR</div>
-        <p class="closing-text">
-          <span class="mclane-link" id="mclane-link">WKNDR</span> ranks your weekend by the forecast — and matches it with the people you'd actually go with.
-        </p>
+        <h2 class="closing-h">Your weekend starts here.</h2>
         <!-- once the cards are gone, there is exactly one thing to do -->
         <a class="get-in-touch" id="closing-open" href="https://app.wkndr.xyz/" style="text-decoration:none">Open WKNDR<span class="git-arrow"><span class="git-arrow-out">→</span><span class="git-arrow-in">→</span></span></a>
+        <div class="closing-micro">Amsterdam · No account needed</div>
+        <ul class="closing-trust">
+          <li>No account required</li>
+          <li>Saves stay in your browser</li>
+          <li>Shared matching links expire automatically</li>
+        </ul>
         <!-- the policy has to be reachable from the site, not just by URL -->
-        <a href="/privacy" style="display:inline-block;margin-top:26px;font-family:'TWKLausannePan',sans-serif;font-weight:300;font-size:12px;letter-spacing:.03em;color:inherit;opacity:.5;text-decoration:none;border-bottom:0.5px solid currentColor;padding-bottom:1px">Privacy</a>
+        <a href="/privacy" style="display:inline-block;margin-top:20px;font-family:'TWKLausannePan',sans-serif;font-weight:300;font-size:12px;letter-spacing:.03em;color:inherit;opacity:.5;text-decoration:none;border-bottom:0.5px solid currentColor;padding-bottom:1px">Privacy</a>
       </div>
     </div>
     <!-- cards injected by JS -->
   </div>
+
+  <nav id="progress" aria-label="Page sections"></nav>
 
 </div>
 
@@ -738,16 +779,20 @@ const SCREENS={
 // the deck
 const projects=[
   {kind:'cover',  bg:'accent', text:'#ffffff'},
-  {kind:'shader', bg:'#1a1a1a', text:'#fff', start:'HOT', look:'forms', h:'Sorted by the weather.', p:'Tap a forecast — the field, the feed, and every plan shift with the sky.'},
-  {kind:'swipe',  bg:'#faf8f3', text:'#1a1a1a', k:'The feed', h:'Your weekend, one swipe away.', p:"Swipe through what's on — right to save, left to skip. The weather's always in the ranking.", picks:['guns','bite','beach','bacchus','celeste']},
+  {kind:'shader', bg:'#1a1a1a', text:'#fff', start:'HOT', look:'forms', h:'Sorted by the weather.', p:'Plans shift in priority as the forecast changes. Tap a forecast to see it.'},
+  {kind:'swipe',  bg:'#faf8f3', text:'#1a1a1a', k:'The feed', h:"Swipe what's on.", p:'Save the plans you like, skip the rest.', picks:['guns','bite','beach','bacchus','celeste']},
   {kind:'bento',  bg:'#faf8f3', text:'#1a1a1a'},
-  {kind:'shareart', bg:'#faf8f3', text:'#1a1a1a', side:'left', k:'Matching · 01', h:'Save a few. Share one link.', p:'They swipe your picks, you swipe theirs — no app, no sign-up. The overlap is the plan.'},
+  {kind:'shareart', bg:'#faf8f3', text:'#1a1a1a', side:'left', k:'Matching · 01', h:'Save a few. Share one link.', p:'Send it to whoever you have in mind — they need no account and no app.'},
   {kind:'slamfull',bg:'accent', text:'#fff', k:'Matching · 02'},
   {kind:'device', bg:'#1f3a36', text:'#eafaf6', k:'The payoff', h:"Your weekend's set.", p:"Two matches, a live forecast, and a plan you'll both actually keep.", screen:'ready'},
 ];
 
 
 const isMobile=window.innerWidth<768;
+// internal design-preview controls (the LOOK switcher) only mount with ?dev=1
+const DEV=/[?&]dev=1/.test(location.search);
+// reduced motion: no autonomous animation, no spring flight — each input lands on a stable state
+const PRM=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const L=isMobile?300:800, HFAC=isMobile?1.8:0.8, TOTAL=projects.length;
 const UMAX=L+(TOTAL-1)*L+L*HFAC, VISIBLE=isMobile?2:3;
 // how far a dismissing card actually RISES in px. On mobile the cards are tall (~deck height)
@@ -774,6 +819,7 @@ function _fade(canvas,fn){canvas.style.transition='opacity .32s ease';canvas.sty
 // perf: only run the weather field when its card is the active one (set by the deck loop) + on a low-res buffer on mobile
 const _MOB=window.innerWidth<768;
 let SHADER_VIS=false;
+let shaderWake=0; // reduced motion: timestamp until which the field may redraw (set on a manual forecast tap)
 const _2DPR=()=>Math.min(_MOB?0.6:1.1,window.devicePixelRatio||1);  // 2D looks: cheap upscaled buffer
 const _GLDPR=()=>Math.min(_MOB?1.0:1.5,window.devicePixelRatio||1);
 const _CAP=_MOB?52:32;
@@ -952,7 +998,7 @@ function mountSwipe(stackEl,ctrls,keys){
     top.style.transition='transform .42s cubic-bezier(.5,0,.2,1),opacity .42s';
     top.style.transform=`translate(${dir>0?128:-128}%,-7%) rotate(${dir>0?17:-17}deg)`;top.style.opacity='0';
     setTimeout(()=>{pos=(pos+1)%n;place();busy=false;},340);}
-  function loop(){timer=setTimeout(()=>{advance(1);loop();},5200);}
+  function loop(){if(PRM)return;timer=setTimeout(()=>{advance(1);loop();},5200);}
   function kick(){clearTimeout(timer);loop();}
   ctrls.querySelector('.nope').addEventListener('click',(e)=>{e.stopPropagation();kick();advance(-1);});
   ctrls.querySelector('.save').addEventListener('click',(e)=>{e.stopPropagation();kick();advance(1);});
@@ -970,27 +1016,33 @@ projects.forEach((c)=>{
   media.style.background=(c.bg==='accent')?'radial-gradient(120% 120% at 28% 0%, #ff7a3d 0%, #ff4d1f 40%, #a32d12 100%)':c.bg;
 
   if(c.kind==='cover'){
-    media.innerHTML=`<div class="card-cover"><div class="wk-logo"><span class="wk-dot"></span>WKNDR</div><div class="tag">Tinder your events.</div><div class="sub">Weather-ranked plans · match with friends</div></div>`;
+    media.innerHTML=`<div class="card-cover"><div class="wk-logo"><span class="wk-dot"></span>WKNDR</div><div class="tag">Your weekend, one swipe away.</div><div class="sub">Amsterdam · No account needed</div></div>`;
   } else if(c.kind==='shader'){
     media.innerHTML=`<div class="card-shader"><div class="sh-looks"></div><div class="sh-overlay"><h2>${c.h}</h2><div class="sh-sub">${c.p}</div><div class="sh-pills"></div></div></div>`;
     inits.push(()=>{
       const host=media.querySelector('.card-shader');
       const startLook=c.look||'silk';
       const field=mountField(host, startLook, c.start);
-      // look selector
-      const lwrap=media.querySelector('.sh-looks'); const lbtns=[];
-      LOOK_DEFS.forEach(ld=>{const b=document.createElement('button');b.className='sh-look'+(ld.key===startLook?' on':'');b.textContent=ld.label;
-        b.addEventListener('click',(e)=>{e.stopPropagation();field.setLook(ld.key);lbtns.forEach(x=>x.classList.remove('on'));b.classList.add('on');});
-        lwrap.appendChild(b);lbtns.push(b);});
+      // look selector — an internal design-preview control, hidden from the public page
+      const lwrap=media.querySelector('.sh-looks');
+      if(DEV){
+        const lbtns=[];
+        LOOK_DEFS.forEach(ld=>{const b=document.createElement('button');b.className='sh-look'+(ld.key===startLook?' on':'');b.textContent=ld.label;
+          b.addEventListener('click',(e)=>{e.stopPropagation();field.setLook(ld.key);lbtns.forEach(x=>x.classList.remove('on'));b.classList.add('on');});
+          lwrap.appendChild(b);lbtns.push(b);});
+      } else {
+        lwrap.remove(); // also removes the 'LOOK' ::before label
+      }
       // weather pills (auto-cycle through forecasts)
       const wrap=media.querySelector('.sh-pills'); const pills=[];
       SHADER_MODES.forEach((sm,idx)=>{const b=document.createElement('button');b.className='sh-pill'+(sm.key===c.start?' on':'');b.textContent=sm.label;
         b.addEventListener('click',(e)=>{e.stopPropagation();select(idx,true);});
         wrap.appendChild(b);pills.push(b);});
       let cur=Math.max(0,SHADER_MODES.findIndex(s=>s.key===c.start)), timer=0;
-      function select(idx,manual){cur=idx;field.setMode(SHADER_MODES[idx].key);pills.forEach((p,i)=>p.classList.toggle('on',i===idx));if(manual)restart();}
-      function restart(){clearInterval(timer);timer=setInterval(()=>select((cur+1)%SHADER_MODES.length,false),4000);}
-      restart(); // auto-plays through forecasts; a tap jumps + resets
+      function select(idx,manual){cur=idx;field.setMode(SHADER_MODES[idx].key);pills.forEach((p,i)=>p.classList.toggle('on',i===idx));
+        if(manual){shaderWake=performance.now()+900;restart();}} // reduced motion: wake the field long enough to crossfade, then freeze
+      function restart(){clearInterval(timer);if(PRM)return;timer=setInterval(()=>select((cur+1)%SHADER_MODES.length,false),4000);}
+      restart(); // auto-plays through forecasts (unless reduced motion); a tap jumps + resets
     });
   } else if(c.kind==='swipe'){
     media.innerHTML=`<div class="card-swipe${c.side==='left'?' rev':''}"><div class="copy"><div class="k"><span class="kdot"></span>${c.k}</div><h2>${c.h}</h2><p>${c.p}</p></div><div class="bc-wrap"><div class="bc-stack"></div><div class="bc-ctrls"><button class="bc-b nope">&#10005;</button><button class="bc-b save">&#9733;</button></div></div></div>`;
@@ -999,11 +1051,11 @@ projects.forEach((c)=>{
     const items=['guns','bite','beach','bacchus','celeste'].map(id=>{const pk=P[id];return `<li class="wc-item"><span class="wc-thumb">${photo(pk)}</span><span class="wc-text"><span class="wc-title">${pk.t}</span><span class="wc-when">${pk.when.split('·')[0].trim()}</span></span></li>`;}).join('');
     media.innerHTML=`<div class="card-shareart${c.side==='left'?' rev':''}"><div class="copy"><div class="k"><span class="kdot"></span>${c.k}</div><h2>${c.h}</h2><p>${c.p}</p></div><div class="wc-wrap"><div class="weekend-card"><div class="wc-grain"></div><div class="wc-head"><span class="wc-eyebrow">My weekend · Amsterdam</span><span class="wc-mode">Hot · 26°</span></div><ul class="wc-list">${items}</ul><div class="wc-foot">WKNDR · weather-ranked for the weekend</div></div></div></div>`;
   } else if(c.kind==='slamfull'){
-    media.innerHTML=`<div class="card-slamfull"><div class="sf-inner"><div class="sf-av"><span class="av you">You</span><span class="av spark">&#10022;</span><span class="av them">N</span></div><div class="sf-eyebrow">${c.k}</div><div class="sf-h">It's a match.</div><div class="sf-card"><span class="thumb">${photo(P.beach)}</span><div><div class="sf-cat">${P.beach.cat} · this weekend</div><div class="sf-t">${P.beach.t}</div><div class="sf-both">You both want to go here</div></div></div><button class="sf-cta">Keep swiping · 2 matched</button></div></div>`;
+    media.innerHTML=`<div class="card-slamfull"><div class="sf-inner"><div class="sf-av"><span class="av you">You</span><span class="av spark">&#10022;</span><span class="av them">N</span></div><div class="sf-eyebrow">${c.k}</div><div class="sf-h">See where you match.</div><div class="sf-sub">WKNDR finds the plans you both saved.</div><div class="sf-card"><span class="thumb">${photo(P.beach)}</span><div><div class="sf-cat">${P.beach.cat} · this weekend</div><div class="sf-t">${P.beach.t}</div><div class="sf-both">You both want to go here</div></div></div></div></div>`;
   } else if(c.kind==='bento'){
     const order=['guns','beach','bacchus','zee','yumna'];
     const cells=order.map((id,i)=>{const pk=P[id];return `<div class="bento-cell ${i===0?'feat':''}">${photo(pk)}<span class="fit">${fitPill(pk.fit)}</span><div class="lbl"><div class="t">${pk.t}</div><div class="m">${pk.v}</div></div></div>`;}).join('');
-    media.innerHTML=`<div class="card-bento"><div class="bento-head"><div class="htxt"><h3>This weekend, already sorted.</h3><p>59 picks across the city — re-ranked for warm, dry Saturday.</p></div><span class="chip"><span class="dot"></span>26°<span class="mode">Hot</span></span></div><div class="bento-grid">${cells}</div></div>`;
+    media.innerHTML=`<div class="card-bento"><div class="bento-head"><div class="htxt"><h3>This weekend, already sorted.</h3><p>The whole city's weekend — re-ranked for a warm, dry Saturday.</p></div><span class="chip"><span class="dot"></span>26°<span class="mode">Hot</span></span></div><div class="bento-grid">${cells}</div></div>`;
   } else {
     const screen=SCREENS[c.screen](c.pick?P[c.pick]:undefined,{anim:c.anim});
     const notif=c.notif?`<div class="frag-notif"><span class="ico">${c.notif.ico}</span><div class="tx"><b>${c.notif.b}</b><span>${c.notif.s}</span></div></div>`:'';
@@ -1019,7 +1071,47 @@ const stage=document.getElementById('stage');
 const closing=document.getElementById('closing');
 const brandmark=document.getElementById('brandmark');
 
-window.addEventListener('wheel',(e)=>{e.preventDefault();p=clamp(p+1.5*e.deltaY,0,UMAX);},{passive:false});
+// ---- stage targets shared by wheel/keys/dots: the deck has TOTAL cards + the closing canvas ----
+const stageTarget=(i)=>i>=TOTAL?UMAX:(i+1)*L;
+function curStage(){const f=p-L;if(f>(TOTAL-1)*L+0.45*L)return TOTAL;return clamp(Math.round(f/L),0,TOTAL-1);}
+function stepStage(dir){const cs=p<L*0.5?-1:curStage();p=stageTarget(clamp(cs+dir,0,TOTAL));}
+
+let _wheelAcc=0,_wheelLock=0;
+window.addEventListener('wheel',(e)=>{e.preventDefault();
+  if(PRM){ // reduced motion: one stable stage per gesture, no free flight
+    const now=performance.now();
+    if(now<_wheelLock)return;
+    _wheelAcc+=e.deltaY;
+    if(Math.abs(_wheelAcc)>40){stepStage(_wheelAcc>0?1:-1);_wheelAcc=0;_wheelLock=now+420;}
+    return;
+  }
+  p=clamp(p+1.5*e.deltaY,0,UMAX);},{passive:false});
+
+// keyboard: every section reachable without a wheel or touchscreen
+window.addEventListener('keydown',(e)=>{
+  if(e.defaultPrevented||e.metaKey||e.ctrlKey||e.altKey)return;
+  const t=e.target,tag=t&&t.tagName;
+  if(tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT')return;
+  const onControl=tag==='BUTTON'||tag==='A';
+  if(e.key==='ArrowDown'||e.key==='PageDown'||(e.key===' '&&!e.shiftKey&&!onControl)){e.preventDefault();stepStage(1);}
+  else if(e.key==='ArrowUp'||e.key==='PageUp'||(e.key===' '&&e.shiftKey&&!onControl)){e.preventDefault();stepStage(-1);}
+  else if(e.key==='Home'){e.preventDefault();p=0;}
+  else if(e.key==='End'){e.preventDefault();p=UMAX;}
+});
+
+// stage progress dots — visible count, clickable, focusable
+const STAGE_NAMES=['WKNDR','Sorted by the weather',"Swipe what's on",'This weekend','Share one link','See where you match','Your weekend is set','Open WKNDR'];
+const progressEl=document.getElementById('progress');
+const dots=[];
+for(let i=0;i<=TOTAL;i++){
+  const b=document.createElement('button');b.type='button';
+  b.setAttribute('aria-label',`Section ${i+1} of ${TOTAL+1}: ${STAGE_NAMES[i]||''}`);
+  b.addEventListener('click',()=>{p=stageTarget(i);});
+  progressEl.appendChild(b);dots.push(b);
+}
+let _dotIdx=-1;
+function paintDots(){const f=m-L;const idx=f>(TOTAL-1)*L+0.45*L?TOTAL:clamp(Math.round(f/L),0,TOTAL-1);
+  if(idx!==_dotIdx){_dotIdx=idx;dots.forEach((d,i)=>{d.classList.toggle('on',i===idx);d.setAttribute('aria-current',i===idx?'true':'false');});}}
 // mobile = snap pagination: each swipe deals exactly ONE card (no flinging the whole stack off)
 let tStartY=0,tBaseIdx=0,tBaseP=0,tMoved=0,tBlocked=false;
 stage.addEventListener('touchstart',(e)=>{const tgt=e.target;
@@ -1040,7 +1132,9 @@ function cubicBezier(p1x,p1y,p2x,p2y){function bz(t,a,b){return 3*(1-t)*(1-t)*t*
   return function(x){let lo=0,hi=1,t=x;for(let i=0;i<18;i++){t=(lo+hi)/2;const xx=bz(t,p1x,p2x);if(xx<x)lo=t;else hi=t;}return bz(t,p1y,p2y);};}
 const easeIntro=cubicBezier(.22,1,.36,1);
 let introStart=null;
-function springStep(dt){const steps=Math.max(1,Math.ceil(dt/0.004));const h=dt/steps;
+function springStep(dt){
+  if(PRM){m=p;mv=0;return;} // reduced motion: land instantly on the stable state
+  const steps=Math.max(1,Math.ceil(dt/0.004));const h=dt/steps;
   for(let i=0;i<steps;i++){const f=(-SPR.k*(m-p)-SPR.c*mv)/SPR.m;mv+=f*h;m+=mv*h;}
   if(Math.abs(m-p)<0.001&&Math.abs(mv)<0.01){m=p;mv=0;}}
 
@@ -1052,13 +1146,16 @@ function frame(ts){
   let dt=(ts-last)/1000;last=ts;dt=Math.min(dt,1/30);
   springStep(dt);
   const tSec=(ts-introStart)/1000;
-  const introActive=tSec<2.0;
+  const introActive=!PRM&&tSec<2.0;
   // only repaint the deck when something actually moved — idle frames are nearly free
   if(introActive||Math.abs(m-_lastM)>0.04||Math.abs(mv)>0.03){
     _lastM=m;
-    {const t=invlerp(tSec,0.3,0.3+1.4);cOff=lerp(cInit,0,easeIntro(t));}
-    {const t=invlerp(tSec,0.1,0.1+1.6);dMaster=lerp(0,1,easeIntro(t));}
-    if(!ready&&tSec>0.05)ready=true;
+    if(PRM){cOff=0;dMaster=1;ready=true;} // reduced motion: no entrance choreography — start settled
+    else{
+      {const t=invlerp(tSec,0.3,0.3+1.4);cOff=lerp(cInit,0,easeIntro(t));}
+      {const t=invlerp(tSec,0.1,0.1+1.6);dMaster=lerp(0,1,easeIntro(t));}
+      if(!ready&&tSec>0.05)ready=true;
+    }
     const f=Math.max(0,m-L);
     const introY=lerp(introYStart,0,invlerp(m,0,L));
     const rot=lerp(2,0,invlerp(m,0,L))*(isMobile?0:1);
@@ -1081,8 +1178,11 @@ function frame(ts){
       // fully-occluded cards (op 0) cost nothing to composite when hidden — big mobile win
       el.style.visibility=op>0?'visible':'hidden';
       el.style.pointerEvents=h<0.1?'none':'auto';
-      if(e===_shaderIdx)SHADER_VIS=(h>-0.7&&h<1.7);
+      // reduced motion: the field holds a still frame unless a forecast tap just woke it
+      if(e===_shaderIdx)SHADER_VIS=(h>-0.7&&h<1.7)&&(!PRM||performance.now()<shaderWake);
     }
+    progressEl.classList.toggle('show',dMaster>0.5);
+    paintDots();
     const b=(TOTAL-1)*L;
     // reveal (no fade): closing sits behind the last card at full opacity; the rising card uncovers it
     closing.style.opacity=(ready&&f>b-0.6*L)?1:0;
