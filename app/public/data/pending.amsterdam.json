@@ -1,31 +1,7 @@
 {
   "generatedAt": "2026-07-16T15:03:23.681Z",
-  "count": 70,
+  "count": 64,
   "pending": [
-    {
-      "id": "web-lbb-zomerlicht-restaurant-on-pampus-island",
-      "title": "Zomerlicht Restaurant on Pampus Island",
-      "venue": "Forteiland Pampus",
-      "area": "Amsterdam-IJburg",
-      "when": "Sat 18 Jul",
-      "category": "eat",
-      "freshness": "weekend",
-      "outdoor": true,
-      "kid": false,
-      "price": "Dinner pricing (exact cost not",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.pampus.nl%2Fwp-content%2Fuploads%2F2024%2F03%2Fsquare-zomerlicht-still-uit-video.webp&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fwww.pampus.nl%2Fwp-content%2Fuploads%2F2024%2F03%2Fsquare-zomerlicht-still-uit-video.webp",
-      "blurb": "Boat trip to historic island for multi-course dinner with sunset views over IJmeer lake.",
-      "why": "Unique culinary experience on island",
-      "source": "Your Little Black Book",
-      "link": "https://www.pampus.nl/agenda/zomerlicht",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL"
-      ],
-      "verify": false,
-      "editorScore": 8
-    },
     {
       "id": "web-lbb-liefde-op-de-grachten-30-jaar-canal-parade",
       "title": "Liefde op de Grachten – 30 Jaar Canal Parade",
@@ -181,30 +157,6 @@
       "editorScore": 6
     },
     {
-      "id": "web-amsterdam-pride-run-amsterdam-pride-run",
-      "title": "Amsterdam Pride Run",
-      "venue": "Amsterdam East (Flevopark & Amsterdam-Rhine Canal)",
-      "area": "Amsterdam East",
-      "when": "Sun 19 Jul · Afternoon",
-      "category": "out",
-      "freshness": "weekend",
-      "outdoor": true,
-      "kid": true,
-      "price": "ticketed",
-      "blurb": "Colorful Pride celebration run through Flevopark; 5km, 10km, 15km races plus walk option.",
-      "why": "WorldPride edition; final weekend",
-      "source": "Amsterdam Pride Run",
-      "link": "https://www.amsterdampriderun.nl/",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL"
-      ],
-      "verify": true,
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fimages.pexels.com%2Fphotos%2F8552214%2Fpexels-photo-8552214.jpeg%3Fauto%3Dcompress%26cs%3Dtinysrgb%26fit%3Dcrop%26h%3D1200%26w%3D800&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fimages.pexels.com%2Fphotos%2F8552214%2Fpexels-photo-8552214.jpeg%3Fauto%3Dcompress%26cs%3Dtinysrgb%26fit%3Dcrop%26h%3D1200%26w%3D800",
-      "editorScore": 6
-    },
-    {
       "id": "llm-eye-filmmuseum-eye-s-open-new-perspectives-on-colonial-film-her",
       "title": "Eye(s) Open: New Perspectives on Colonial Film Heritage",
       "venue": "Eye Filmmuseum",
@@ -257,59 +209,6 @@
       "buzz": 2
     },
     {
-      "id": "llm-kidsproof-het-scheepvaartmuseum-summer-programme",
-      "title": "Het Scheepvaartmuseum — Summer Programme",
-      "venue": "Het Scheepvaartmuseum",
-      "area": "Amsterdam Centre",
-      "when": "Sat–Sun 18–19 Jul · ongoing",
-      "category": "art",
-      "freshness": "always",
-      "outdoor": false,
-      "kid": true,
-      "price": "ticketed",
-      "blurb": "Water yoga, plastic fishing, ship tours, and stories. Kids under 5 enter free. A sea of summer activities.",
-      "why": "Free entry for under-5s; exceptional summer programme",
-      "source": "Kidsproof · Het Scheepvaartmuseum",
-      "link": "https://www.kidsproof.nl/amsterdam",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.iamsterdam.com%2F_next%2Fimage%3Furl%3Dhttps%3A%252F%252Fapp.thefeedfactory.nl%252Fapi%252Fassets%252F63ee50e72b50291e1f95abd5%252FHSM_Gebouw_incl_sticker.png%26w%3D1920%26q%3D75&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fwww.iamsterdam.com%2F_next%2Fimage%3Furl%3Dhttps%3A%252F%252Fapp.thefeedfactory.nl%252Fapi%252Fassets%252F63ee50e72b50291e1f95abd5%252FHSM_Gebouw_incl_sticker.png%26w%3D1920%26q%3D75",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "verify": true,
-      "buzz": 2,
-      "editorScore": 5
-    },
-    {
-      "id": "web-ra-2419546",
-      "title": "Phono Lake's Second Night At The Lake",
-      "venue": "Phono Lake",
-      "area": "",
-      "when": "Sat 18 Jul · 23:00",
-      "category": "live",
-      "freshness": "weekend",
-      "outdoor": false,
-      "kid": false,
-      "price": "",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fimages.ra.co%2F29b60eb7fcbe051b6f94befa4cde4d31de17193e.png&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fimages.ra.co%2F29b60eb7fcbe051b6f94befa4cde4d31de17193e.png",
-      "blurb": "I-F, Marsman, Jetti at Phono Lake.",
-      "why": "398 going on RA",
-      "source": "Resident Advisor",
-      "link": "https://ra.co/events/2419546",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "popularity": 398,
-      "editorScore": 5
-    },
-    {
       "id": "web-i-amsterdam-black-harmony-terrace-concert",
       "title": "Black Harmony Terrace Concert",
       "venue": "Muziekgebouw aan 't IJ",
@@ -356,30 +255,6 @@
         "COOL",
         "COLD_WET",
         "VOLATILE"
-      ],
-      "verify": false,
-      "editorScore": 5
-    },
-    {
-      "id": "web-iams-vondelpark-openluchttheater",
-      "title": "Vondelpark Openluchttheater",
-      "venue": "Vondelpark Open Air Theatre",
-      "area": "Vondelpark 5A",
-      "when": "Until Sun 13 Sep",
-      "category": "out",
-      "freshness": "always",
-      "outdoor": true,
-      "kid": false,
-      "price": "from €8.5",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6164490c8edbd7343124c537%2FIMG_6617.webp&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6164490c8edbd7343124c537%2FIMG_6617.webp",
-      "blurb": "In the heart of Amsterdam\n The first real Vondelpark festivals originated in the 1950s, and this continued to grow. Since 1974, the Vondelpark Open Air Theatre ",
-      "why": "On I amsterdam",
-      "source": "I amsterdam",
-      "link": "https://www.iamsterdam.com/en/whats-on/calendar/festivals/events/vondelpark-openluchttheater",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL"
       ],
       "verify": false,
       "editorScore": 5
@@ -1540,30 +1415,6 @@
         "COOL",
         "COLD_WET",
         "VOLATILE"
-      ],
-      "verify": false,
-      "editorScore": 7
-    },
-    {
-      "id": "web-scout-movies-at-h-art-open-air-cinema",
-      "title": "Movies at H'ART — open-air cinema",
-      "venue": "H'ART Museum courtyard",
-      "area": "Amstel, Centrum",
-      "when": "5–24 Aug · doors 20:00 · film at sunset",
-      "category": "stage",
-      "freshness": "always",
-      "outdoor": true,
-      "kid": false,
-      "price": "ticketed",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.iamsterdam.com%2F_next%2Fimage%3Furl%3Dhttps%3A%252F%252Fapp.thefeedfactory.nl%252Fapi%252Fassets%252F684183c768472a101c3c867e%252FBora-bora-productions-Movies-at-the-Hermitage-2.webp%26w%3D3840%26q%3D75&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fwww.iamsterdam.com%2F_next%2Fimage%3Furl%3Dhttps%3A%252F%252Fapp.thefeedfactory.nl%252Fapi%252Fassets%252F684183c768472a101c3c867e%252FBora-bora-productions-Movies-at-the-Hermitage-2.webp%26w%3D3840%26q%3D75",
-      "blurb": "The museum courtyard turns open-air cinema for three August weeks — Cinema Paradiso, Blade Runner, Barbie at sunset, rain or shine.",
-      "why": "Sunset films at the museum — sells out",
-      "source": "Fresh find",
-      "link": "https://www.moviesathartmuseum.nl/",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL"
       ],
       "verify": false,
       "editorScore": 7

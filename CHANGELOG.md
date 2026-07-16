@@ -14,6 +14,20 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.10.6] — 2026-07-17 — compile R8 (issue #16): six summer crowns, one via the tram
+- **Six 👑 TOP ★5 escalations, all promoted from the airlock** (75 → 81 picks): Zomerlicht
+  Restaurant on Pampus Island, Amsterdam Pride Run, Phono Lake's Second Night At The Lake,
+  Het Scheepvaartmuseum — Summer Programme, Vondelpark Openluchttheater, Movies at H'ART
+  (open-air cinema — word-boundary keeps it apart from the `jazz @ h'art` crown).
+- **Zomerlicht is the first pick to ride the full new loop**: triage deck (phone) → board →
+  Submit → compile → live. The V.10.5 machinery works end to end.
+- **The rest of the 73-verdict round was baked re-submission** (0 star changes vs corpus; the
+  img:bad notes were R3-scout work already done; the organ-veto reversal already compiled in R3).
+  R7's weekly slate correctly went stale (weekend rolled to 07-18) — lead/later/pile skipped.
+- **⚠️ topPicks is now 17 against the ≤6 guidance** — prune debt flagged at R6 and R7 is urgent;
+  most are dated summer runs, cut back when they expire. 13 of 17 currently match live cards.
+- First content ship through the **auto-deploy** pipeline — no manual wrangler step.
+
 ## [V.10.5] — 2026-07-16 — Triage: the board's notebook (dev prototype, ?dev=1) + the domain deploys itself
 - **The stale-domain bug, fixed.** `refresh.yml` (Thu 13:00 UTC) committed a fresh feed and
   auto-deployed to **GitHub Pages only** — both Cloudflare Pages projects are `Git Provider: No`,

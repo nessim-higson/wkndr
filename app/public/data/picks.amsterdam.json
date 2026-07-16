@@ -3,7 +3,7 @@
  "label": "Amsterdam",
  "generatedAt": "2026-07-16T15:03:23.681Z",
  "live": true,
- "count": 75,
+ "count": 81,
  "topMatches": [
   "milkshake festival",
   "dekmantel",
@@ -15,7 +15,13 @@
   "strand zuid",
   "kwaku",
   "jazz @ h'art",
-  "pllek urban beach"
+  "pllek urban beach",
+  "zomerlicht",
+  "pride run",
+  "phono lake",
+  "scheepvaartmuseum",
+  "vondelpark openluchttheater",
+  "movies at h'art"
  ],
  "picks": [
   {
@@ -44,7 +50,7 @@
    "verify": true,
    "buzz": 2,
    "editorScore": 8,
-   "servePos": 9
+   "servePos": 14
   },
   {
    "id": "web-lbb-ek-japan-in-twee-beeldverhalen",
@@ -71,7 +77,7 @@
    ],
    "verify": false,
    "editorScore": 8,
-   "servePos": 19
+   "servePos": 24
   },
   {
    "id": "web-lbb-nederland-japan-door-de-tijd-verbonden",
@@ -98,7 +104,7 @@
    ],
    "verify": false,
    "editorScore": 8,
-   "servePos": 21
+   "servePos": 26
   },
   {
    "id": "web-lbb-martine-gutierrez-wunderkind",
@@ -125,7 +131,7 @@
    ],
    "verify": false,
    "editorScore": 9,
-   "servePos": 16
+   "servePos": 21
   },
   {
    "id": "web-amsterdam-spotted-official-kwaku-websi-kwaku-summer-festival",
@@ -180,7 +186,7 @@
    "verify": false,
    "buzz": 2,
    "editorScore": 8,
-   "servePos": 10
+   "servePos": 16
   },
   {
    "id": "web-iams-open-podium-noord",
@@ -205,7 +211,7 @@
    ],
    "verify": false,
    "editorScore": 8,
-   "servePos": 6
+   "servePos": 11
   },
   {
    "id": "web-iams-chefs-evening",
@@ -230,7 +236,7 @@
    ],
    "verify": false,
    "editorScore": 3,
-   "servePos": 18
+   "servePos": 23
   },
   {
    "id": "web-iams-straat-collectie",
@@ -257,7 +263,7 @@
    ],
    "verify": false,
    "editorScore": 8,
-   "servePos": 23
+   "servePos": 28
   },
   {
    "id": "web-iams-the-maker-market",
@@ -284,7 +290,7 @@
    ],
    "verify": false,
    "editorScore": 8,
-   "servePos": 22
+   "servePos": 27
   },
   {
    "id": "web-iams-bottomless-brunch",
@@ -309,7 +315,7 @@
    ],
    "verify": false,
    "editorScore": 8,
-   "servePos": 7
+   "servePos": 12
   },
   {
    "id": "web-iams-de-roode-remise-singing-session",
@@ -336,7 +342,7 @@
    ],
    "verify": false,
    "editorScore": 8,
-   "servePos": 24
+   "servePos": 29
   },
   {
    "id": "web-iams-nicolas-van-poucke-pianorecital",
@@ -363,7 +369,7 @@
    ],
    "verify": false,
    "editorScore": 8,
-   "servePos": 26
+   "servePos": 31
   },
   {
    "id": "web-iams-vriendenloterij-summer-concerts",
@@ -388,7 +394,7 @@
    ],
    "verify": false,
    "editorScore": 8,
-   "servePos": 8
+   "servePos": 13
   },
   {
    "id": "web-iams-exhibition-worn-in-the-rijksmuseum",
@@ -415,7 +421,7 @@
    ],
    "verify": false,
    "editorScore": 8,
-   "servePos": 25
+   "servePos": 30
   },
   {
    "id": "web-iams-lunchtime-organ-concerts-at-waterlooplein",
@@ -442,7 +448,7 @@
    ],
    "verify": false,
    "editorScore": 8,
-   "servePos": 28
+   "servePos": 33
   },
   {
    "id": "web-iams-ligconcert-presents-lying-down-concert-at-the-maritime-museum",
@@ -469,7 +475,7 @@
    ],
    "verify": false,
    "editorScore": 8,
-   "servePos": 30
+   "servePos": 35
   },
   {
    "id": "ams-hortus",
@@ -496,7 +502,7 @@
    "tier": "classic",
    "buzz": 2,
    "editorScore": 8,
-   "servePos": 11
+   "servePos": 15
   },
   {
    "id": "web-lbb-cinema-culinair",
@@ -523,7 +529,7 @@
    ],
    "verify": false,
    "editorScore": 8,
-   "servePos": 13
+   "servePos": 18
   },
   {
    "id": "pllek-indoor",
@@ -548,7 +554,7 @@
     "VOLATILE"
    ],
    "editorScore": 8,
-   "servePos": 27
+   "servePos": 32
   },
   {
    "id": "cafe-chris",
@@ -572,7 +578,7 @@
     "VOLATILE"
    ],
    "editorScore": 8,
-   "servePos": 70
+   "servePos": 75
   },
   {
    "id": "foodhallen",
@@ -598,7 +604,7 @@
     "VOLATILE"
    ],
    "editorScore": 8,
-   "servePos": 29
+   "servePos": 34
   },
   {
    "id": "web-scout-milkshake-festival",
@@ -627,7 +633,7 @@
    "buzz": 2,
    "editorScore": 10,
    "top": true,
-   "servePos": 74
+   "servePos": 79
   },
   {
    "id": "sauna-deco",
@@ -650,7 +656,7 @@
     "COLD_WET",
     "VOLATILE"
    ],
-   "servePos": 73
+   "servePos": 78
   },
   {
    "id": "ams-vondelpark-play",
@@ -675,7 +681,7 @@
    ],
    "when": "Daily · dawn–dusk",
    "tier": "classic",
-   "servePos": 48
+   "servePos": 53
   },
   {
    "id": "the-movies",
@@ -699,7 +705,7 @@
     "VOLATILE"
    ],
    "buzz": 2,
-   "servePos": 72
+   "servePos": 77
   },
   {
    "id": "web-scout-two-story",
@@ -726,7 +732,7 @@
    ],
    "verify": false,
    "editorScore": 8,
-   "servePos": 12
+   "servePos": 17
   },
   {
    "id": "east-beach",
@@ -748,7 +754,7 @@
     "HOT",
     "WARM"
    ],
-   "servePos": 47
+   "servePos": 52
   },
   {
    "id": "de-pimpelmees",
@@ -772,7 +778,7 @@
     "COLD_WET",
     "VOLATILE"
    ],
-   "servePos": 49
+   "servePos": 54
   },
   {
    "id": "web-scout-dekmantel-festival",
@@ -800,7 +806,7 @@
    "verify": false,
    "editorScore": 10,
    "top": true,
-   "servePos": 75
+   "servePos": 80
   },
   {
    "id": "ams-eat-as",
@@ -826,7 +832,7 @@
     "VOLATILE"
    ],
    "when": "Lunch & dinner · book ahead",
-   "servePos": 50
+   "servePos": 55
   },
   {
    "id": "ams-b2-foam",
@@ -852,7 +858,7 @@
    ],
    "when": "Daily · 10:00–18:00",
    "tier": "bespoke",
-   "servePos": 51
+   "servePos": 56
   },
   {
    "id": "ams-ev2-droog",
@@ -878,7 +884,7 @@
    ],
    "when": "Tue–Sun",
    "tier": "classic",
-   "servePos": 52
+   "servePos": 57
   },
   {
    "id": "ams-ev2-mendo",
@@ -904,7 +910,7 @@
    ],
    "when": "Daily",
    "tier": "bespoke",
-   "servePos": 54
+   "servePos": 59
   },
   {
    "id": "ams-b2-moise",
@@ -930,7 +936,7 @@
    ],
    "when": "Daily exc. Sun–Mon",
    "tier": "bespoke",
-   "servePos": 56
+   "servePos": 61
   },
   {
    "id": "ams-b2-patta",
@@ -957,7 +963,7 @@
    "when": "Daily · shop hours",
    "tier": "bespoke",
    "editorScore": 8,
-   "servePos": 31
+   "servePos": 36
   },
   {
    "id": "ams-b2-x-bank",
@@ -984,7 +990,7 @@
    "when": "Daily · shop hours",
    "tier": "bespoke",
    "editorScore": 8,
-   "servePos": 33
+   "servePos": 38
   },
   {
    "id": "ams-ev-melkweg",
@@ -1010,7 +1016,7 @@
    ],
    "when": "Eve · gigs + club",
    "tier": "classic",
-   "servePos": 53
+   "servePos": 58
   },
   {
    "id": "ams-b2-mobilia",
@@ -1036,7 +1042,7 @@
    ],
    "when": "Daily · shop hours",
    "tier": "classic",
-   "servePos": 58
+   "servePos": 63
   },
   {
    "id": "ams-ev-utrecht",
@@ -1062,7 +1068,7 @@
    ],
    "when": "Daily · ~25 min by train",
    "tier": "classic",
-   "servePos": 55
+   "servePos": 60
   },
   {
    "id": "ams-b2-vlieger",
@@ -1088,7 +1094,7 @@
    ],
    "when": "Daily · shop hours",
    "tier": "bespoke",
-   "servePos": 60
+   "servePos": 65
   },
   {
    "id": "ams-efteling",
@@ -1113,7 +1119,7 @@
    "when": "Daily · ~1h15 by car",
    "tier": "classic",
    "editorScore": 8,
-   "servePos": 32
+   "servePos": 37
   },
   {
    "id": "ams-ev-ij-hallen",
@@ -1140,7 +1146,7 @@
    "when": "Monthly · one weekend",
    "tier": "bespoke",
    "editorScore": 8,
-   "servePos": 34
+   "servePos": 39
   },
   {
    "id": "ams-micropia",
@@ -1166,7 +1172,7 @@
    ],
    "when": "Daily · 10:00–17:00",
    "tier": "bespoke",
-   "servePos": 57
+   "servePos": 62
   },
   {
    "id": "ams-ev-paradiso",
@@ -1192,7 +1198,7 @@
    ],
    "when": "Eve · gig nights",
    "tier": "classic",
-   "servePos": 59
+   "servePos": 64
   },
   {
    "id": "ams-madurodam",
@@ -1217,7 +1223,7 @@
    "when": "Daily · ~50 min by train",
    "tier": "classic",
    "editorScore": 8,
-   "servePos": 35
+   "servePos": 40
   },
   {
    "id": "ams-ev2-nxt-museum",
@@ -1244,7 +1250,7 @@
    "when": "Wed–Sun (daily in summer)",
    "tier": "bespoke",
    "editorScore": 8,
-   "servePos": 36
+   "servePos": 41
   },
   {
    "id": "ams-ev2-martin-parr-foam",
@@ -1270,7 +1276,7 @@
    ],
    "when": "Until 12 Aug",
    "tier": "bespoke",
-   "servePos": 61
+   "servePos": 66
   },
   {
    "id": "ams-ev-muiderslot",
@@ -1296,7 +1302,7 @@
    ],
    "when": "Tue–Sun · ~30 min out",
    "tier": "bespoke",
-   "servePos": 62
+   "servePos": 67
   },
   {
    "id": "ams-b2-tonton",
@@ -1322,7 +1328,7 @@
    ],
    "when": "Eve · late",
    "tier": "bespoke",
-   "servePos": 63
+   "servePos": 68
   },
   {
    "id": "ams-ev-dappermarkt",
@@ -1346,7 +1352,7 @@
    ],
    "when": "Mon–Sat · 09:00–17:00",
    "tier": "bespoke",
-   "servePos": 64
+   "servePos": 69
   },
   {
    "id": "ams-lostin-garage-noord",
@@ -1372,7 +1378,7 @@
    ],
    "when": "Eve · check programme",
    "tier": "bespoke",
-   "servePos": 65
+   "servePos": 70
   },
   {
    "id": "ams-b2-rijksmuseum",
@@ -1398,7 +1404,7 @@
    ],
    "when": "Daily · 09:00–17:00",
    "tier": "classic",
-   "servePos": 66
+   "servePos": 71
   },
   {
    "id": "ams-ev-bloemenmarkt",
@@ -1423,7 +1429,7 @@
    "when": "Mon–Sat · 09:00–17:30",
    "tier": "classic",
    "editorScore": 8,
-   "servePos": 37
+   "servePos": 42
   },
   {
    "id": "ams-ev2-wild-swimming-amstelland",
@@ -1447,7 +1453,7 @@
    ],
    "when": "Summer · warm days",
    "tier": "bespoke",
-   "servePos": 67
+   "servePos": 72
   },
   {
    "id": "ams-b2-huis-marseille",
@@ -1473,7 +1479,7 @@
    ],
    "when": "Tue–Sun · 11:00–18:00",
    "tier": "bespoke",
-   "servePos": 68
+   "servePos": 73
   },
   {
    "id": "ams-lostin-sexyland",
@@ -1499,7 +1505,7 @@
    ],
    "when": "Eve · check programme",
    "tier": "bespoke",
-   "servePos": 69
+   "servePos": 74
   },
   {
    "id": "ams-ev2-wils-at-the-farm",
@@ -1523,7 +1529,7 @@
    ],
    "when": "Until Sat 25 Jul · Thu–Sat dinners",
    "tier": "bespoke",
-   "servePos": 46
+   "servePos": 51
   },
   {
    "id": "ams-ev-marken-volendam",
@@ -1548,7 +1554,7 @@
    "when": "Daily · bus ~30 min",
    "tier": "bespoke",
    "editorScore": 8,
-   "servePos": 38
+   "servePos": 43
   },
   {
    "id": "ams-ev-zandvoort",
@@ -1573,7 +1579,7 @@
    "when": "Daily · ~30 min by train",
    "tier": "bespoke",
    "editorScore": 8,
-   "servePos": 40
+   "servePos": 45
   },
   {
    "id": "ams-ev-albert-cuyp",
@@ -1598,7 +1604,7 @@
    "when": "Mon–Sat · 09:00–17:00",
    "tier": "classic",
    "editorScore": 8,
-   "servePos": 39
+   "servePos": 44
   },
   {
    "id": "ams-ev-concertgebouw",
@@ -1624,7 +1630,7 @@
    ],
    "when": "Eve · concerts · free Wed lunch",
    "tier": "classic",
-   "servePos": 71
+   "servePos": 76
   },
   {
    "id": "ams-ev-waterlooplein",
@@ -1649,7 +1655,7 @@
    "when": "Mon–Sat · 09:30–18:00",
    "tier": "classic",
    "editorScore": 8,
-   "servePos": 41
+   "servePos": 46
   },
   {
    "id": "web-lbb-the-jollof-club-west-african-restaurant",
@@ -1676,7 +1682,7 @@
    ],
    "verify": false,
    "editorScore": 8,
-   "servePos": 14
+   "servePos": 19
   },
   {
    "id": "web-lbb-american-myth-memory-david-levinthal-photographs",
@@ -1703,7 +1709,7 @@
    ],
    "verify": false,
    "editorScore": 8,
-   "servePos": 42
+   "servePos": 47
   },
   {
    "id": "web-lbb-the-little-big-things",
@@ -1730,7 +1736,7 @@
    ],
    "verify": false,
    "editorScore": 8,
-   "servePos": 43
+   "servePos": 48
   },
   {
    "id": "web-lbb-nara-nara-egyptian-restaurant",
@@ -1757,7 +1763,7 @@
    ],
    "verify": false,
    "editorScore": 8,
-   "servePos": 15
+   "servePos": 20
   },
   {
    "id": "ams-eat-bak",
@@ -1784,7 +1790,7 @@
    ],
    "when": "Dinner · book ahead",
    "editorScore": 8,
-   "servePos": 44
+   "servePos": 49
   },
   {
    "id": "ams-ev2-museum-van-loon",
@@ -1811,7 +1817,7 @@
    "when": "Wed–Mon · 10:00–17:00",
    "tier": "classic",
    "editorScore": 8,
-   "servePos": 45
+   "servePos": 50
   },
   {
    "id": "web-i-amsterdam-pluk-de-nacht-film-festival",
@@ -1837,7 +1843,7 @@
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fimage.parool.nl%2F220058609%2Fwidth%2F2480%2Fpluk-de-nacht-bij-het-stenen-hoofd-in-west&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fimage.parool.nl%2F220058609%2Fwidth%2F2480%2Fpluk-de-nacht-bij-het-stenen-hoofd-in-west",
    "editorScore": 10,
    "top": true,
-   "servePos": 4
+   "servePos": 8
   },
   {
    "id": "web-lbb-kaap-amsterdam",
@@ -1863,7 +1869,7 @@
    "verify": false,
    "editorScore": 10,
    "top": true,
-   "servePos": 2
+   "servePos": 3
   },
   {
    "id": "web-lbb-strand-zuid",
@@ -1889,7 +1895,7 @@
    "verify": false,
    "editorScore": 10,
    "top": true,
-   "servePos": 3
+   "servePos": 5
   },
   {
    "id": "web-lbb-hannekes-boom",
@@ -1914,7 +1920,7 @@
    ],
    "verify": false,
    "editorScore": 8,
-   "servePos": 17
+   "servePos": 22
   },
   {
    "id": "llm-kidsproof-mokumboot-sloepje-huren",
@@ -1938,7 +1944,7 @@
    "price": "ticketed",
    "why": "Classic summer activity on the water",
    "editorScore": 9,
-   "servePos": 20
+   "servePos": 25
   },
   {
    "id": "ams-artis-zoo",
@@ -1964,8 +1970,169 @@
    "tier": "classic",
    "top": true,
    "editorScore": 10,
-   "servePos": 5
+   "servePos": 9
+  },
+  {
+   "id": "web-lbb-zomerlicht-restaurant-on-pampus-island",
+   "title": "Zomerlicht Restaurant on Pampus Island",
+   "venue": "Forteiland Pampus",
+   "area": "Amsterdam-IJburg",
+   "when": "Sat 18 Jul",
+   "category": "eat",
+   "freshness": "weekend",
+   "outdoor": true,
+   "kid": false,
+   "price": "Dinner pricing (exact cost not",
+   "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.pampus.nl%2Fwp-content%2Fuploads%2F2024%2F03%2Fsquare-zomerlicht-still-uit-video.webp&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fwww.pampus.nl%2Fwp-content%2Fuploads%2F2024%2F03%2Fsquare-zomerlicht-still-uit-video.webp",
+   "blurb": "Boat trip to historic island for multi-course dinner with sunset views over IJmeer lake.",
+   "why": "Unique culinary experience on island",
+   "source": "Your Little Black Book",
+   "link": "https://www.pampus.nl/agenda/zomerlicht",
+   "weatherFit": [
+    "HOT",
+    "WARM",
+    "COOL"
+   ],
+   "verify": false,
+   "editorScore": 8,
+   "top": true,
+   "servePos": 2
+  },
+  {
+   "id": "web-amsterdam-pride-run-amsterdam-pride-run",
+   "title": "Amsterdam Pride Run",
+   "venue": "Amsterdam East (Flevopark & Amsterdam-Rhine Canal)",
+   "area": "Amsterdam East",
+   "when": "Sun 19 Jul · Afternoon",
+   "category": "out",
+   "freshness": "weekend",
+   "outdoor": true,
+   "kid": true,
+   "price": "ticketed",
+   "blurb": "Colorful Pride celebration run through Flevopark; 5km, 10km, 15km races plus walk option.",
+   "why": "WorldPride edition; final weekend",
+   "source": "Amsterdam Pride Run",
+   "link": "https://www.amsterdampriderun.nl/",
+   "weatherFit": [
+    "HOT",
+    "WARM",
+    "COOL"
+   ],
+   "verify": true,
+   "image": "https://images.weserv.nl/?url=https%3A%2F%2Fimages.pexels.com%2Fphotos%2F8552214%2Fpexels-photo-8552214.jpeg%3Fauto%3Dcompress%26cs%3Dtinysrgb%26fit%3Dcrop%26h%3D1200%26w%3D800&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fimages.pexels.com%2Fphotos%2F8552214%2Fpexels-photo-8552214.jpeg%3Fauto%3Dcompress%26cs%3Dtinysrgb%26fit%3Dcrop%26h%3D1200%26w%3D800",
+   "editorScore": 6,
+   "top": true,
+   "servePos": 4
+  },
+  {
+   "id": "llm-kidsproof-het-scheepvaartmuseum-summer-programme",
+   "title": "Het Scheepvaartmuseum — Summer Programme",
+   "venue": "Het Scheepvaartmuseum",
+   "area": "Amsterdam Centre",
+   "when": "Sat–Sun 18–19 Jul · ongoing",
+   "category": "art",
+   "freshness": "always",
+   "outdoor": false,
+   "kid": true,
+   "price": "ticketed",
+   "blurb": "Water yoga, plastic fishing, ship tours, and stories. Kids under 5 enter free. A sea of summer activities.",
+   "why": "Free entry for under-5s; exceptional summer programme",
+   "source": "Kidsproof · Het Scheepvaartmuseum",
+   "link": "https://www.kidsproof.nl/amsterdam",
+   "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.iamsterdam.com%2F_next%2Fimage%3Furl%3Dhttps%3A%252F%252Fapp.thefeedfactory.nl%252Fapi%252Fassets%252F63ee50e72b50291e1f95abd5%252FHSM_Gebouw_incl_sticker.png%26w%3D1920%26q%3D75&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fwww.iamsterdam.com%2F_next%2Fimage%3Furl%3Dhttps%3A%252F%252Fapp.thefeedfactory.nl%252Fapi%252Fassets%252F63ee50e72b50291e1f95abd5%252FHSM_Gebouw_incl_sticker.png%26w%3D1920%26q%3D75",
+   "weatherFit": [
+    "HOT",
+    "WARM",
+    "COOL",
+    "COLD_WET",
+    "VOLATILE"
+   ],
+   "verify": true,
+   "buzz": 2,
+   "editorScore": 5,
+   "top": true,
+   "servePos": 10
+  },
+  {
+   "id": "web-ra-2419546",
+   "title": "Phono Lake's Second Night At The Lake",
+   "venue": "Phono Lake",
+   "area": "",
+   "when": "Sat 18 Jul · 23:00",
+   "category": "live",
+   "freshness": "weekend",
+   "outdoor": false,
+   "kid": false,
+   "price": "",
+   "image": "https://images.weserv.nl/?url=https%3A%2F%2Fimages.ra.co%2F29b60eb7fcbe051b6f94befa4cde4d31de17193e.png&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fimages.ra.co%2F29b60eb7fcbe051b6f94befa4cde4d31de17193e.png",
+   "blurb": "I-F, Marsman, Jetti at Phono Lake.",
+   "why": "398 going on RA",
+   "source": "Resident Advisor",
+   "link": "https://ra.co/events/2419546",
+   "weatherFit": [
+    "HOT",
+    "WARM",
+    "COOL",
+    "COLD_WET",
+    "VOLATILE"
+   ],
+   "popularity": 398,
+   "editorScore": 5,
+   "top": true,
+   "servePos": 6
+  },
+  {
+   "id": "web-iams-vondelpark-openluchttheater",
+   "title": "Vondelpark Openluchttheater",
+   "venue": "Vondelpark Open Air Theatre",
+   "area": "Vondelpark 5A",
+   "when": "Until Sun 13 Sep",
+   "category": "out",
+   "freshness": "always",
+   "outdoor": true,
+   "kid": false,
+   "price": "from €8.5",
+   "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6164490c8edbd7343124c537%2FIMG_6617.webp&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6164490c8edbd7343124c537%2FIMG_6617.webp",
+   "blurb": "In the heart of Amsterdam\n The first real Vondelpark festivals originated in the 1950s, and this continued to grow. Since 1974, the Vondelpark Open Air Theatre ",
+   "why": "On I amsterdam",
+   "source": "I amsterdam",
+   "link": "https://www.iamsterdam.com/en/whats-on/calendar/festivals/events/vondelpark-openluchttheater",
+   "weatherFit": [
+    "HOT",
+    "WARM",
+    "COOL"
+   ],
+   "verify": false,
+   "editorScore": 5,
+   "top": true,
+   "servePos": 7
+  },
+  {
+   "id": "web-scout-movies-at-h-art-open-air-cinema",
+   "title": "Movies at H'ART — open-air cinema",
+   "venue": "H'ART Museum courtyard",
+   "area": "Amstel, Centrum",
+   "when": "5–24 Aug · doors 20:00 · film at sunset",
+   "category": "stage",
+   "freshness": "always",
+   "outdoor": true,
+   "kid": false,
+   "price": "ticketed",
+   "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.iamsterdam.com%2F_next%2Fimage%3Furl%3Dhttps%3A%252F%252Fapp.thefeedfactory.nl%252Fapi%252Fassets%252F684183c768472a101c3c867e%252FBora-bora-productions-Movies-at-the-Hermitage-2.webp%26w%3D3840%26q%3D75&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fwww.iamsterdam.com%2F_next%2Fimage%3Furl%3Dhttps%3A%252F%252Fapp.thefeedfactory.nl%252Fapi%252Fassets%252F684183c768472a101c3c867e%252FBora-bora-productions-Movies-at-the-Hermitage-2.webp%26w%3D3840%26q%3D75",
+   "blurb": "The museum courtyard turns open-air cinema for three August weeks — Cinema Paradiso, Blade Runner, Barbie at sunset, rain or shine.",
+   "why": "Sunset films at the museum — sells out",
+   "source": "Fresh find",
+   "link": "https://www.moviesathartmuseum.nl/",
+   "weatherFit": [
+    "HOT",
+    "WARM",
+    "COOL"
+   ],
+   "verify": false,
+   "editorScore": 7,
+   "top": true,
+   "servePos": 81
   }
  ],
- "restampedAt": "2026-07-16T15:14:30.422Z"
+ "restampedAt": "2026-07-16T22:17:41.990Z"
 }
