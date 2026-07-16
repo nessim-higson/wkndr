@@ -21,7 +21,12 @@ React + TS, run with `bun`); deployed to GitHub Pages._
   GH Pages origin) so **old share links in the wild keep resolving**. The GitHub Pages deploy stays
   live. Custom-domain attach + DNS are Ness-only CF-dashboard steps (checklist handed off). Pages
   projects: `wkndr-landing` + `wkndr-app`.
-- **App: V.10.1** — https://nessim-higson.github.io/wkndr/ (cache-bust `?v=V.10.1`). **V.10.1 =
+- **App: V.10.3** — https://nessim-higson.github.io/wkndr/ (cache-bust `?v=V.10.3`). **V.10.3 =
+  "Tune WKNDR"** — the calibration micro-deck DEV PROTOTYPE (`?dev=1` → menu → Taste · dev):
+  8 archetype poster cards swiped in the app's own deck seed the on-device taste profile heavy
+  (★ +3/token, ✕ −2) and re-deal instantly; 👑 TOPs still lead by law. Also: SwipeStack
+  flying-guard (mid-exit re-fling can't double-write taste). **V.10.2** = og.png redrawn to the
+  new headline (both surfaces) + solid detail chips. **V.10.1 =
   "the finish pass"** (2026-07-16): `whenLooksBroken` drops malformed date ranges runtime+pipeline
   (the "Sun 28 – Sun 12 Jul" class), detail shows "listing checked N hours ago", keyboard/SR deck
   (top card = focusable button, ←/→ skip/save, ★ = save everywhere), dialog focus discipline
