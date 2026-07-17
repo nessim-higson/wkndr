@@ -1,6 +1,6 @@
 # WKNDR — STATE (catch-me-up snapshot)
 
-_Living "where are we right now" doc — a **snapshot, not a history**. **Updated 2026-07-16.** Read this
+_Living "where are we right now" doc — a **snapshot, not a history**. **Updated 2026-07-17.** Read this
 FIRST in a new chat. For strategy + backlog see `docs/backlog.md`; for the pipeline architecture see
 `docs/pipeline-architecture.md` + `docs/source-map.md`; for **who may write to the deck vs to a personal
 profile** (board / Tune / airlock — read before touching either) see `docs/curation-surfaces.md`; for full
@@ -23,6 +23,14 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
   GH Pages origin) so **old share links in the wild keep resolving**. The GitHub Pages deploy stays
   live. Custom-domain attach + DNS are Ness-only CF-dashboard steps (checklist handed off). Pages
   projects: `wkndr-landing` + `wkndr-app`.
+- **The two surfaces now unfurl as different things (2026-07-17, landing-only, no app bump).** The
+  app card is **cover-orange** ("Swipe. Save. Match.", *Match* in black) at `app/public/og-app.png`
+  (new filename forces WhatsApp/iMessage re-scrape past the cached cream card; `og.png` also carries
+  the orange card for stale refetches); the **landing keeps the cream poster**. Landing scroll copy
+  got a **de-dupe pass** — one idea per beat, the "Your weekend, one swipe away." tagline lands once
+  (on the reveal), cover = "Weather permitting.", feed = "Right is a yes.", payoff = "Nothing left to
+  plan.", "The overlap is the plan." revived from Site 02; landing meta/JSON-LD now in the new voice
+  ("Amsterdam plans, rearranged by the sky"). See CHANGELOG `[landing] 2026-07-17`.
 - **App: V.10.3** — https://nessim-higson.github.io/wkndr/ (cache-bust `?v=V.10.3`). **V.10.3 =
   "Tune WKNDR"** — the calibration micro-deck DEV PROTOTYPE (`?dev=1` → menu → Taste · dev):
   8 archetype poster cards swiped in the app's own deck seed the on-device taste profile heavy

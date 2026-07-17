@@ -14,6 +14,26 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [landing] — 2026-07-17 — two surfaces, two cards: the unfurl split + a copy de-dupe pass
+_Landing + OG only — no app version bump (the app binary is unchanged; only its unfurl card/meta moved)._
+- **The two shared links now unfurl as different things.** Before, `wkndr.xyz` (marketing) and
+  `app.wkndr.xyz` (the app) served the **same** cream OG card — the only difference was the URL line.
+  Now the app gets its own **cover-orange** 1200×630 card ("**Swipe. Save. Match.**", *Match* in black,
+  white wordmark + 27° pill) at a **new filename `og-app.png`** — the rename forces WhatsApp/iMessage to
+  re-scrape past the cached cream card. `og.png` on the app also carries the orange card for stale
+  refetches. Landing keeps the cream poster. Card art rendered from `landing/fonts` via headless Chrome
+  at exactly 1200×630 so both read as one system, split by surface. App meta: title "WKNDR — the app",
+  description "Swipe. Save. Match. This weekend in Amsterdam — no account, right in the browser."
+- **Landing copy de-dupe — one idea per beat.** The scroll deck drew from one small word pool
+  ("weekend" ×5 headlines, "sorted/ranked" ×3, "save" ×4, three straight endings opening "Your
+  weekend…"). Each beat now owns one idea: cover → "**Weather permitting.**" (the hero tagline "Your
+  weekend, one swipe away." now lands **once**, on the reveal behind it); weather card → "Ranked by the
+  forecast." / terraces-climb-museums-rise; feed → "**Right is a yes.**"; bento → "Every kind of
+  Saturday."; matching → "**The overlap is the plan.**" (revived from the Site 02 prototype); payoff →
+  "**Nothing left to plan.**" (stops the third consecutive "Your weekend…"). Closing dropped the doubled
+  "No account required" bullet. Landing `<meta>` description + JSON-LD now speak the new voice
+  ("Amsterdam plans, rearranged by the sky…"). Mock app-UI strings left app-authentic.
+
 ## [V.10.7] — 2026-07-17 — the deck knows when you're done (interruption budget: ONE)
 - **The checkpoint**: the save that makes THREE fires a calm overlay — "★★★ That's a weekend." →
   Share with a friend / See my list / keep swiping. Fires 700ms after the fling (the card finishes
