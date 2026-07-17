@@ -10,7 +10,10 @@ const FOLLOW = ''
 // The default lead matches the landing's hero verbatim (V.10.1 retired the Tinder framing
 // there; the app intro finally gets the same memo) — accent on "one swipe", the app's own
 // gesture, exactly like the landing's <span class="swap">.
-const DEFAULT_LEAD = <>Your weekend, <em>one swipe</em> away.</>
+// EXPLICIT returns — Your / weekend, / one swipe / away. Locked with <br> so a size change can't
+// let text-wrap:balance reflow them (an override `lead`, e.g. a shared-visit greeting, still
+// balance-wraps freely — only the default's breaks are pinned).
+const DEFAULT_LEAD = <>Your<br />weekend,<br /><em>one swipe</em><br />away.</>
 export function Intro({ onDone, lead = DEFAULT_LEAD, sub, showHint = true }: { onDone: () => void; lead?: React.ReactNode; sub?: React.ReactNode; showHint?: boolean }) {
   const LEAD = lead
   useEffect(() => {
