@@ -662,7 +662,7 @@
   <a id="brandmark" href="https://app.wkndr.xyz/"><span class="wk-dot"></span>Open WKNDR</a>
 
   <div id="headline-wrap">
-    <h1 id="headline"><span class="hl-lead">Your weekend, one swipe away.</span><span class="hl-sub">Discover Amsterdam plans ranked for the weather. Save your favourites, share one link, and see where you match.</span></h1>
+    <h1 id="headline"><span class="hl-lead">Your weekend, one swipe away.</span><span class="hl-sub">Amsterdam plans, rearranged by the sky. Keep what you like, send one link, and see who's in.</span></h1>
   </div>
 
   <div id="deck">
@@ -674,7 +674,6 @@
         <a class="get-in-touch" id="closing-open" href="https://app.wkndr.xyz/" style="text-decoration:none">Open WKNDR<span class="git-arrow"><span class="git-arrow-out">→</span><span class="git-arrow-in">→</span></span></a>
         <div class="closing-micro">Amsterdam · No account needed</div>
         <ul class="closing-trust">
-          <li>No account required</li>
           <li>Saves stay in your browser</li>
           <li>Shared matching links expire automatically</li>
         </ul>
@@ -779,12 +778,12 @@ const SCREENS={
 // the deck
 const projects=[
   {kind:'cover',  bg:'accent', text:'#ffffff'},
-  {kind:'shader', bg:'#1a1a1a', text:'#fff', start:'HOT', look:'forms', h:'Sorted by the weather.', p:'Plans shift in priority as the forecast changes. Tap a forecast to see it.'},
-  {kind:'swipe',  bg:'#faf8f3', text:'#1a1a1a', k:'The feed', h:"Swipe what's on.", p:'Save the plans you like, skip the rest.', picks:['guns','bite','beach','bacchus','celeste']},
+  {kind:'shader', bg:'#1a1a1a', text:'#fff', start:'HOT', look:'forms', h:'Ranked by the forecast.', p:'Sun coming? Terraces climb. Rain? Museums rise. Tap a forecast and watch the city change its mind.'},
+  {kind:'swipe',  bg:'#faf8f3', text:'#1a1a1a', k:'The feed', h:'Right is a yes.', p:"Flick through what's on — star the good ones, toss the rest.", picks:['guns','bite','beach','bacchus','celeste']},
   {kind:'bento',  bg:'#faf8f3', text:'#1a1a1a'},
-  {kind:'shareart', bg:'#faf8f3', text:'#1a1a1a', side:'left', k:'Matching · 01', h:'Save a few. Share one link.', p:'Send it to whoever you have in mind — they need no account and no app.'},
+  {kind:'shareart', bg:'#faf8f3', text:'#1a1a1a', side:'left', k:'Matching · 01', h:'Save a few. Share one link.', p:'They pick from your list, you pick from theirs. The overlap is the plan.'},
   {kind:'slamfull',bg:'accent', text:'#fff', k:'Matching · 02'},
-  {kind:'device', bg:'#1f3a36', text:'#eafaf6', k:'The payoff', h:"Your weekend's set.", p:"Two matches, a live forecast, and a plan you'll both actually keep.", screen:'ready'},
+  {kind:'device', bg:'#1f3a36', text:'#eafaf6', k:'The payoff', h:'Nothing left to plan.', p:'Two matches, a time and a place — and the group chat finally goes quiet.', screen:'ready'},
 ];
 
 
@@ -1016,7 +1015,8 @@ projects.forEach((c)=>{
   media.style.background=(c.bg==='accent')?'radial-gradient(120% 120% at 28% 0%, #ff7a3d 0%, #ff4d1f 40%, #a32d12 100%)':c.bg;
 
   if(c.kind==='cover'){
-    media.innerHTML=`<div class="card-cover"><div class="wk-logo"><span class="wk-dot"></span>WKNDR</div><div class="tag">Your weekend, one swipe away.</div><div class="sub">Amsterdam · No account needed</div></div>`;
+    // the cover gets its own line — the tagline lands once, on the reveal behind it
+    media.innerHTML=`<div class="card-cover"><div class="wk-logo"><span class="wk-dot"></span>WKNDR</div><div class="tag">Weather permitting.</div><div class="sub">Amsterdam · No account needed</div></div>`;
   } else if(c.kind==='shader'){
     media.innerHTML=`<div class="card-shader"><div class="sh-looks"></div><div class="sh-overlay"><h2>${c.h}</h2><div class="sh-sub">${c.p}</div><div class="sh-pills"></div></div></div>`;
     inits.push(()=>{
@@ -1055,7 +1055,7 @@ projects.forEach((c)=>{
   } else if(c.kind==='bento'){
     const order=['guns','beach','bacchus','zee','yumna'];
     const cells=order.map((id,i)=>{const pk=P[id];return `<div class="bento-cell ${i===0?'feat':''}">${photo(pk)}<span class="fit">${fitPill(pk.fit)}</span><div class="lbl"><div class="t">${pk.t}</div><div class="m">${pk.v}</div></div></div>`;}).join('');
-    media.innerHTML=`<div class="card-bento"><div class="bento-head"><div class="htxt"><h3>This weekend, already sorted.</h3><p>The whole city's weekend — re-ranked for a warm, dry Saturday.</p></div><span class="chip"><span class="dot"></span>26°<span class="mode">Hot</span></span></div><div class="bento-grid">${cells}</div></div>`;
+    media.innerHTML=`<div class="card-bento"><div class="bento-head"><div class="htxt"><h3>Every kind of Saturday.</h3><p>All of it in one grid, weighted for 26° and dry.</p></div><span class="chip"><span class="dot"></span>26°<span class="mode">Hot</span></span></div><div class="bento-grid">${cells}</div></div>`;
   } else {
     const screen=SCREENS[c.screen](c.pick?P[c.pick]:undefined,{anim:c.anim});
     const notif=c.notif?`<div class="frag-notif"><span class="ico">${c.notif.ico}</span><div class="tx"><b>${c.notif.b}</b><span>${c.notif.s}</span></div></div>`:'';
