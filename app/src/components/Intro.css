@@ -43,9 +43,9 @@
    Clash poster; Familjen's shapes want a touch less negative tracking than Helvetica did. */
 .intro-lead {
   font-family: 'Familjen Grotesk', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  font-size: clamp(52px, 15.5vw, 124px);
+  font-size: clamp(39px, 11.6vw, 93px);   /* −25% off the 52 / 15.5vw / 124 set */
   font-weight: 700;
-  line-height: 1.0;
+  line-height: 0.8;                        /* leading −20% (was 1.0) */
   letter-spacing: -0.02em;
   text-wrap: balance;
 }
