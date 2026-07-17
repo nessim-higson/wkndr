@@ -38,13 +38,14 @@
   opacity: 0.82;
 }
 .intro-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
-/* bold lead — Clash Display at poster / viewport scale: the one gasp moment */
+/* bold lead — the OG card's Helvetica-bold voice (the "cream" treatment), inverted for the
+   field: white + accent instead of ink on paper. A notch smaller than the old Clash poster. */
 .intro-lead {
-  font-family: var(--font-display);
-  font-size: clamp(62px, 18.5vw, 148px);
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: clamp(52px, 15.5vw, 124px);
   font-weight: 700;
-  line-height: 0.86;
-  letter-spacing: -0.042em;
+  line-height: 1.0;
+  letter-spacing: -0.025em;
   text-wrap: balance;
 }
 /* "one swipe" — the landing hero's accent swap, same treatment here */
