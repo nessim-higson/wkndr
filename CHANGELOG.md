@@ -14,8 +14,28 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.10.11] — 2026-07-17 — pin the intro's four returns (Your / weekend, / one swipe / away.)
+- Explicit `<br>` in `DEFAULT_LEAD` so the V.10.10 −25% resize can't let `text-wrap:balance` reflow
+  the intro lead to two lines; override leads (shared-visit greetings) still balance-wrap.
+
+## [V.10.10] — 2026-07-17 — intro lead −25% size / −20% leading
+- `clamp(52px,15.5vw,124px)` → `clamp(39px,11.6vw,93px)`; line-height 1.0 → 0.8.
+
+## [V.10.9] — 2026-07-17 — the intro + cream OG card set in Familjen Grotesk (the actual face)
+- Self-hosted latin 700 woff2 (~12KB, `src/assets/fonts` — no Google CDN hit, per the privacy posture;
+  Vite rebases the url for both deploy bases). Intro lead → Familjen Grotesk 700, tracking −0.02em.
+- `landing/og.png` redrawn in Familjen (headline, sub, wordmark, pill). **The app's orange `og-app.png`
+  card is untouched** (see the landing entry below).
+
+## [V.10.8] — 2026-07-17 — intro lead in the OG card's Helvetica-bold voice (inverted)
+- The 'cream' type treatment from `og.png` — white + accent over the field instead of ink-on-paper.
+  Clash Display poster scale → Helvetica bold `clamp(52px,15.5vw,124px)`, −0.025em, lh 1.0; the
+  wordmark stays Clash (the logo keeps its voice).
+
 ## [landing] — 2026-07-17 — two surfaces, two cards: the unfurl split + a copy de-dupe pass
-_Landing + OG only — no app version bump (the app binary is unchanged; only its unfurl card/meta moved)._
+_Landing + OG surface, shipped across the V.10.8–10.10 window (commits `1310e5a` copy · `d8962d6`
+unfurl split) — no version tag of its own. The parallel 10.8/10.9 OG work restyled the **cream**
+marketing card's type; this split off the app's **orange** card and rewrote the landing copy._
 - **The two shared links now unfurl as different things.** Before, `wkndr.xyz` (marketing) and
   `app.wkndr.xyz` (the app) served the **same** cream OG card — the only difference was the URL line.
   Now the app gets its own **cover-orange** 1200×630 card ("**Swipe. Save. Match.**", *Match* in black,
