@@ -7,7 +7,11 @@ const FOLLOW = ''
 /** Full-screen intro over the live field: the line, then it lifts away as the app
  *  rises in. Plays every load; tap to skip. `lead` is overridable so a shared visit
  *  can be greeted personally ("Ness shared some picks."). */
-export function Intro({ onDone, lead = 'Tinder your events.', sub, showHint = true }: { onDone: () => void; lead?: string; sub?: React.ReactNode; showHint?: boolean }) {
+// The default lead matches the landing's hero verbatim (V.10.1 retired the Tinder framing
+// there; the app intro finally gets the same memo) — accent on "one swipe", the app's own
+// gesture, exactly like the landing's <span class="swap">.
+const DEFAULT_LEAD = <>Your weekend, <em>one swipe</em> away.</>
+export function Intro({ onDone, lead = DEFAULT_LEAD, sub, showHint = true }: { onDone: () => void; lead?: React.ReactNode; sub?: React.ReactNode; showHint?: boolean }) {
   const LEAD = lead
   useEffect(() => {
     const id = setTimeout(onDone, 2600)

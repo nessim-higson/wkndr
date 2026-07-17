@@ -76,7 +76,7 @@ const TINT_PRESETS = [
   { label: 'Strong', x: 2.4 },
 ]
 import { CATEGORY_LABEL, type Category } from './types'
-import { fixWhen, whenDayGroup, whenSortKey, whenTime, whenIsPast, whenLooksBroken } from './lib/when'
+import { fixWhen, whenDayGroup, whenSortKey, whenTime, whenIsPast, whenLooksBroken, upcomingWeekendEnd } from './lib/when'
 import { confirmLink, inShared } from './lib/share'
 import { fetchRound, relayOn, resolveSentRound, roundReady, sentRounds } from './lib/relay'
 import { sanePicks } from './lib/feed'
@@ -201,8 +201,12 @@ export default function App() {
   const [cats, setCats] = useState<CatKey[]>([])           // What: multi-select categories (empty = all)
   const [whens, setWhens] = useState<When[]>([])           // When: multi-select time/tier (empty = any time)
   const [shareOpen, setShareOpen] = useState(false)        // "My Weekend" share sheet
-  const [shareNudgeOff, setShareNudgeOff] = useState(() => localStorage.getItem('wkndr.sharenudge') === 'off')
-  const dismissShareNudge = () => { setShareNudgeOff(true); localStorage.setItem('wkndr.sharenudge', 'off') }
+  // The third-save checkpoint — the ONE mid-deck moment (an overlay, so the deck never
+  // shifts). Replaces the persistent share-nudge banner: matching's journey entry now
+  // rides the win ("three saves = a weekend") instead of nagging from save #1. Once per
+  // weekend per device; the weekend key rolls with the feed.
+  const [checkpoint, setCheckpoint] = useState(false)
+  const checkpointKey = () => 'wkndr.checkpoint.' + upcomingWeekendEnd().toISOString().slice(0, 10)
   // THE INTENT PROMPT — the mom-test question, asked in-flow after 10 swipes, once ever per
   // device: "would you actually do any of these?" Sentiment lands in the same Formspree inbox
   // as the feedback widget (field `prompt: weekend-intent`) + a funnel event. 'done' persists.
@@ -556,6 +560,13 @@ export default function App() {
     if (dir === 'like' || dir === 'save') {
       setSaved((s) => new Set(s).add(p.id))   // the header counter turns orange + bumps — that's the confirmation
       track('save')
+      // The save that makes THREE = a weekend. Fire the checkpoint once per weekend —
+      // deferred past the fling (700ms) so the card finishes leaving before the veil rises.
+      // Not on a shared match-round visit (that flow has its own slam + payoff).
+      if (!wasSaved && saved.size + 1 === 3 && !SHARED_IDS && !localStorage.getItem(checkpointKey())) {
+        localStorage.setItem(checkpointKey(), '1')
+        window.setTimeout(() => { setCheckpoint(true); track('checkpoint') }, 700)
+      }
     }
     // funnel + the one in-flow question. First swipe = "they got it" (the activation event);
     // ten swipes = invested enough to be asked the mom-test question ONCE, at the moment of
@@ -1061,22 +1072,14 @@ export default function App() {
             </button>
           </div>
         )}
-        {/* Share nudge — matching enters the main journey at the FIRST save (was 3: matching
-            lived only in the menu until you'd saved a pile). One save asks the question; from
-            two the button carries the count. Dismissible; yields while the undo pill is up. */}
-        {!shareNudgeOff && saved.size >= 1 && !SHARED_IDS && filter === 'all' && !intro && !moreLike && !(undoable && undoShown) && (
-          <div className="ctx-bar nudge">
-            <span>{saved.size === 1 ? 'Plan together?' : '💛 Plan together'}</span>
-            <button className="ctx-match" onClick={() => { setShareOpen(true) }}>
-              <Heart size={13} strokeWidth={2.6} fill="currentColor" /> {saved.size >= 2 ? `Share ${saved.size} picks` : 'Share picks'}
-            </button>
-            <button className="ctx-x" onClick={dismissShareNudge} aria-label="Dismiss"><X size={15} strokeWidth={2.5} /></button>
-          </div>
-        )}
-        {/* The intent prompt — same under-header slot, yields to the undo pill AND the share
-            nudge (rarer of the two; it can wait a render). One question, once ever. */}
-        {(intent === 'ask' || intent === 'thanks') && !intro && !moreLike && !(undoable && undoShown) &&
-          (shareNudgeOff || saved.size < 3 || !!SHARED_IDS) && (
+        {/* The share-nudge banner that lived here (V.10.1: matching at the FIRST save) is
+            gone — it displaced the deck on every appearance and stacked with the intent
+            prompt into two competing interrupts. Matching's journey entry is now the
+            third-save CHECKPOINT (an overlay — see below), which celebrates instead of nags. */}
+        {/* The intent prompt — armed at swipe #10, but only SHOWN at the deck's natural end
+            ("that's the weekend"): the pause is when the honest answer comes, and with no
+            cards left the bar displaces nothing. One question, once ever. */}
+        {(intent === 'ask' || intent === 'thanks') && !intro && !moreLike && deck.length === 0 && view === 'stack' && (
           <div className="ctx-bar nudge">
             {intent === 'thanks' ? (
               <span>🙏 Noted — enjoy the weekend.</span>
@@ -1114,7 +1117,7 @@ export default function App() {
                 onClearFilter={() => { setFilter('all'); setCats([]); setWhens([]) }}
                 onSeeList={() => setView('list')}
                 /* the deck owns ←/→ only while nothing sits above it */
-                keysActive={!intro && !detail && !shareOpen && !barOpen && !savesOpen && !matching && !inputsOpen && !filterOpen && !whenOpen && !calibrating && !triaging}
+                keysActive={!intro && !detail && !shareOpen && !barOpen && !savesOpen && !matching && !inputsOpen && !filterOpen && !whenOpen && !calibrating && !triaging && !checkpoint}
               />
             </motion.div>
           ) : view === 'fan' ? (
@@ -1173,6 +1176,26 @@ export default function App() {
           the very render the bump triggers, before the post-render effect would update it. */}
       {triaging && (
         <Triage cityKey={city.key} onClose={() => setTriaging(false)} />
+      )}
+
+      {/* THE CHECKPOINT — three saves = a weekend. The one sanctioned mid-deck interruption:
+          an overlay (the deck never shifts), at a win (not a card count), once per weekend.
+          "Keep swiping" or tapping the veil returns to the deck exactly as it was. */}
+      {checkpoint && (
+        <div className="chk-veil" role="dialog" aria-modal="true" aria-label="Three saves" onClick={() => setCheckpoint(false)}>
+          <div className="chk-card" onClick={(e) => e.stopPropagation()}>
+            <span className="chk-eyebrow">★ ★ ★</span>
+            <h2 className="chk-h">That’s a weekend.</h2>
+            <p className="chk-sub">Three saves — enough for a plan. Keep going, or make it real.</p>
+            <div className="chk-actions">
+              <button className="chk-share" onClick={() => { setCheckpoint(false); setShareOpen(true) }}>
+                <Heart size={14} strokeWidth={2.6} fill="currentColor" /> Share with a friend
+              </button>
+              <button className="chk-list" onClick={() => { setCheckpoint(false); setSavesOpen(true) }}>See my list</button>
+            </div>
+            <button className="chk-skip" onClick={() => setCheckpoint(false)}>Keep swiping</button>
+          </div>
+        </div>
       )}
 
       {calibrating && (

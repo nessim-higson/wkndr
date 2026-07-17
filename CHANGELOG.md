@@ -14,6 +14,21 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.10.7] — 2026-07-17 — the deck knows when you're done (interruption budget: ONE)
+- **The checkpoint**: the save that makes THREE fires a calm overlay — "★★★ That's a weekend." →
+  Share with a friend / See my list / keep swiping. Fires 700ms after the fling (the card finishes
+  leaving first), once per weekend (`wkndr.checkpoint.<sun>` rolls with the feed), never on a shared
+  match-round visit. An overlay, NOT a bar: the deck never shifts.
+- **The persistent share-nudge banner is gone.** It fired at save #1, sat until dismissed, and
+  displaced the deck on every appearance — Ness hit it stacked with the intent prompt and called it
+  "a lot to take on". Matching's journey entry now rides the checkpoint (a win), not a nag.
+- **The intent prompt ("Would you actually do any of these?") moved to the deck's end** — still
+  armed at swipe #10, but only shows on the "That's the weekend" pause, where the honest answer
+  lives and there are no cards left to displace. Mid-deck interruptions: exactly one.
+- **The intro finally drops "Tinder your events."** — now "Your weekend, **one swipe** away."
+  (accent swap, matching the landing hero verbatim; the V.10.1 retirement finally reaches the app).
+  Titles/OG were already correct — the intro default lead was the last survivor.
+
 ## [V.10.6] — 2026-07-17 — compile R8 (issue #16): six summer crowns, one via the tram
 - **Six 👑 TOP ★5 escalations, all promoted from the airlock** (75 → 81 picks): Zomerlicht
   Restaurant on Pampus Island, Amsterdam Pride Run, Phono Lake's Second Night At The Lake,

@@ -138,3 +138,56 @@ body::after {
   background-size: 160px 160px;
 }
 @media (prefers-reduced-motion: reduce) { body::after { opacity: 0.035; } }
+
+/* ─── THE CHECKPOINT — three saves = a weekend (the one sanctioned mid-deck moment) ─── */
+.chk-veil {
+  position: fixed;
+  inset: 0;
+  z-index: 330;   /* over the deck + pills; ShareSheet (320) never coexists — we close first */
+  display: grid;
+  place-items: center;
+  background: rgba(250, 248, 243, 0.88);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 24px;
+  animation: chkIn 0.28s var(--ease-out);
+}
+@keyframes chkIn { from { opacity: 0 } to { opacity: 1 } }
+.chk-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+  max-width: 340px;
+  animation: chkPop 0.36s var(--ease-spring);
+}
+@keyframes chkPop { from { opacity: 0; transform: scale(0.94) translateY(10px) } to { opacity: 1; transform: none } }
+.chk-eyebrow { color: var(--accent); font-size: 15px; letter-spacing: 0.3em; }
+.chk-h {
+  font-family: var(--font-display);
+  font-size: clamp(30px, 8vw, 40px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+}
+.chk-sub { font-size: 14px; line-height: 1.5; color: var(--ink-3); max-width: 280px; text-wrap: balance; }
+.chk-actions { display: flex; flex-direction: column; gap: 9px; margin-top: 12px; width: 100%; max-width: 250px; }
+.chk-share {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  background: var(--accent); color: #fff;
+  font-weight: 700; font-size: 15px;
+  padding: 14px 24px; border-radius: 999px;
+  box-shadow: 0 10px 26px -8px rgba(255, 77, 31, 0.55);
+}
+.chk-list {
+  background: var(--ink); color: var(--paper);
+  font-weight: 600; font-size: 14px;
+  padding: 12px 24px; border-radius: 999px;
+}
+.chk-skip {
+  margin-top: 8px; font-size: 12px; color: var(--ink-4);
+  text-decoration: underline; text-underline-offset: 3px;
+}
+.chk-share:focus-visible, .chk-list:focus-visible, .chk-skip:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) { .chk-veil, .chk-card { animation: none } }

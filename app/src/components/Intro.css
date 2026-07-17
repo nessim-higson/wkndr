@@ -46,6 +46,11 @@
   line-height: 0.86;
   letter-spacing: -0.042em;
   text-wrap: balance;
+}
+/* "one swipe" — the landing hero's accent swap, same treatment here */
+.intro-lead em {
+  font-style: normal;
+  color: var(--accent);
   text-shadow: 0 2px 40px rgba(0, 0, 0, 0.3);
 }
 /* the CTA subline (shared-link arrivals) — smaller, clear, sits under the lead */
