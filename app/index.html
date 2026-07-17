@@ -9,15 +9,17 @@
     <meta name="theme-color" content="#0a0a0a" />
     <!-- THE UNFURL — for a link-shared product, the WhatsApp/iMessage preview IS the first screen.
          Absolute URLs on purpose: scrapers don't resolve relative paths against a SPA. -->
-    <meta name="description" content="Your weekend, one swipe away. Discover Amsterdam plans ranked for the weather — save your favourites, share one link, and see where you match." />
+    <meta name="description" content="Swipe. Save. Match. This weekend's Amsterdam plans — no account, right in the browser." />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="WKNDR" />
-    <meta property="og:title" content="WKNDR — your weekend, one swipe away" />
-    <meta property="og:description" content="Swipe what’s on in Amsterdam · save your favourites · share one link · see where you match." />
+    <meta property="og:title" content="WKNDR — the app" />
+    <meta property="og:description" content="Swipe. Save. Match. This weekend in Amsterdam — no account, right in the browser." />
     <!-- %OG_ORIGIN% is stamped at build time by vite.config: the GitHub Pages URL for the
          default build, https://app.wkndr.xyz for the WKNDR_DEPLOY=domain build. -->
     <meta property="og:url" content="%OG_ORIGIN%/" />
-    <meta property="og:image" content="%OG_ORIGIN%/og.png" />
+    <!-- og-app.png, not og.png: the new filename forces WhatsApp/iMessage to re-scrape instead of
+         serving the cached cream card (og.png also carries the orange card for stale-URL refetches) -->
+    <meta property="og:image" content="%OG_ORIGIN%/og-app.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta name="twitter:card" content="summary_large_image" />
