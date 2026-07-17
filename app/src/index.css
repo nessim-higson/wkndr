@@ -4,6 +4,18 @@
    Weather-mode tokens (--field-*, --accent dynamic) are set on
    [data-mode] in src/weather/modes.ts → applied to <html>.
    ========================================================= */
+/* Familjen Grotesk 700 — the OG card / intro headline voice. SELF-HOSTED (latin subset,
+   ~12KB) rather than pulled from Google's CDN: the privacy page promises no third-party
+   beacons, and a fonts.gstatic hit leaks every visitor's IP. Relative url() so vite
+   fingerprints + rebases it for both deploy bases (/ and /wkndr/). */
+@font-face {
+  font-family: 'Familjen Grotesk';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('./assets/fonts/familjen-grotesk-700.woff2') format('woff2');
+}
+
 /* visually hidden, still read by screen readers (live regions, announcements) */
 .sr-only {
   position: absolute;

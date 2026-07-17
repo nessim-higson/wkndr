@@ -38,14 +38,15 @@
   opacity: 0.82;
 }
 .intro-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
-/* bold lead — the OG card's Helvetica-bold voice (the "cream" treatment), inverted for the
-   field: white + accent instead of ink on paper. A notch smaller than the old Clash poster. */
+/* bold lead — the OG card's voice, set in FAMILJEN GROTESK (the "cream" treatment),
+   inverted for the field: white + accent instead of ink on paper. Smaller than the old
+   Clash poster; Familjen's shapes want a touch less negative tracking than Helvetica did. */
 .intro-lead {
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: 'Familjen Grotesk', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-size: clamp(52px, 15.5vw, 124px);
   font-weight: 700;
   line-height: 1.0;
-  letter-spacing: -0.025em;
+  letter-spacing: -0.02em;
   text-wrap: balance;
 }
 /* "one swipe" — the landing hero's accent swap, same treatment here */
