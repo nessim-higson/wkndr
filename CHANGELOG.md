@@ -14,6 +14,22 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.10.12] — 2026-07-21 — field-feedback reliability pass (persist declines · intro once · honest LBB links)
+- **Declines now survive a refresh.** The `swiped` set was memory-only, so a reload reset the deck to
+  card one — re-serving everything, including picks you'd already declined (saved ★ picks persisted, so
+  the mismatch was glaring). Now persisted to `localStorage` (`wkndr.swiped.v1`, `taste.ts`
+  `loadSwiped`/`persistSwiped`) on the same contract as saved; a refresh resumes where you left off, and
+  the bottomless recycle still clears it so you never dead-end. (Field report, 2026-07-21.)
+- **The full-screen intro is now a first-run / arrival moment, not an every-load wall.** It replayed on
+  every refresh, walling the listings off behind the splash each time. Now: the first visit gets the full
+  line once, a shared-link arrival always gets its personal greeting, and a returning/refreshing visitor
+  lands straight on the deck. `App.tsx` (`visits <= 1 || isArrival`); tunable back up (`<= 3`).
+- **LBB "View event details" no longer lands on a generic roundup.** When the extractor found no
+  per-event outbound link, the adapter fell back to the monthly *agenda article* — so a card promising one
+  exhibition (Ekō @ Scheepvaartmuseum) opened a museum-agenda page. Fallback is now a scoped search for the
+  exact title + venue (`adapters/lbb.ts`); the 4 live picks already carrying the agenda link were patched
+  in `public/data/picks.amsterdam.json` so the reship fixes them immediately.
+
 ## [V.10.11] — 2026-07-17 — pin the intro's four returns (Your / weekend, / one swipe / away.)
 - Explicit `<br>` in `DEFAULT_LEAD` so the V.10.10 −25% resize can't let `text-wrap:balance` reflow
   the intro lead to two lines; override leads (shared-visit greetings) still balance-wrap.

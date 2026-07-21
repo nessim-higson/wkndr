@@ -84,6 +84,7 @@ import { initMetrics, track } from './lib/metrics'
 import { FEEDBACK_FORM } from './components/Feedback'
 import {
   type Taste, applySwipe, revertSwipe, applyMoreLikeThis, hasTaste, loadSaved, loadTaste, persistSaved, persistTaste,
+  loadSwiped, persistSwiped, KEY_SWIPED,
 } from './taste'
 import './App.css'
 
@@ -164,7 +165,7 @@ export default function App() {
   const [view, setView] = useState<View>(SHARED_CONFIRM ? 'list' : 'stack')
   const [wx, setWx] = useState<Wx>(DEMO.HOT)
   const [live, setLive] = useState(false)        // true once the real forecast loads
-  const [swiped, setSwiped] = useState<Set<string>>(new Set())
+  const [swiped, setSwiped] = useState<Set<string>>(() => loadSwiped())   // persisted — declines survive a refresh
   const [saved, setSaved] = useState<Set<string>>(() => loadSaved())   // persisted
   const [taste, setTaste] = useState<Taste>(() => loadTaste())         // persisted taste profile
   const [toast, setToast] = useState<{ text: string; save?: boolean } | null>(null)
@@ -252,10 +253,15 @@ export default function App() {
   const [savesOpen, setSavesOpen] = useState(false)        // the persistent saves dock peek
   const [dockPop, setDockPop] = useState(false)            // brief pulse when a save lands in the counter
   const prevSavedCount = useRef(saved.size)
-  // Weather-aware intro (every load) — but not when we came through ?curate2026!: that
-  // door means "I'm here to rule on the airlock", and Triage (z-340) would cover the
-  // intro (z-60) anyway, leaving its animation running blind behind the veil.
-  const [intro, setIntro] = useState(!CURATE_DOOR)
+  // Weather-aware intro — the full-screen brand moment. Field feedback (2026-07-21): playing it
+  // on EVERY load (incl. every refresh) walls the listings off behind a splash each time. So it's
+  // now a FIRST-RUN / arrival moment: the very first visit gets the full line, and any shared-link
+  // arrival always gets its personal greeting ("<name> sent you some picks.") — but a returning
+  // visitor (refresh, second session) lands straight on the deck. Still skipped for the curate
+  // door (Triage z-340 would cover the intro z-60 anyway, leaving it animating blind behind the veil).
+  // Tunable: widen `visits <= 1` (e.g. `<= 3`) to bring the splash back for the first few visits.
+  const isArrival = SHARED_IDS || SHARED_FROM || SHARED_CONFIRM
+  const [intro, setIntro] = useState(!CURATE_DOOR && (visits <= 1 || !!isArrival))
   const [listStyle, setListStyle] = useState<'wheel' | 'flux'>(() => {  // list motion language
     const s = localStorage.getItem('wkndr.liststyle')
     return s === 'flux' ? 'flux' : 'wheel'
@@ -348,6 +354,7 @@ export default function App() {
       .catch(() => { fetchedFeeds.current.delete(key) /* keep bundled; retry on a later pass */ })
   }, [city.key])
   useEffect(() => { persistSaved(saved) }, [saved])   // your list survives reloads
+  useEffect(() => { persistSwiped(swiped) }, [swiped])   // …and so does what you've already swiped past
   useEffect(() => { persistTaste(taste) }, [taste])   // your taste accumulates over time
   useEffect(() => { localStorage.setItem('wkndr.field', look) }, [look])   // your ambient-field choice sticks
   useEffect(() => {   // the grade-strength knob lands on <html> beside the mode palette vars
@@ -643,6 +650,7 @@ export default function App() {
   function resetData() {
     localStorage.removeItem('wkndr.saved.v1')
     localStorage.removeItem('wkndr.taste.v1')
+    localStorage.removeItem(KEY_SWIPED)
     setSaved(new Set())
     setTaste(loadTaste())   // fresh/empty profile
     setSwiped(new Set())

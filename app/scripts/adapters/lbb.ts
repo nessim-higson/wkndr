@@ -69,6 +69,14 @@ export function prepareArticle(html: string, maxChars = 20000): string {
 const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 48)
 const fmt = (d: Date) => d.toLocaleDateString('en', { weekday: 'long', day: 'numeric', month: 'long' })
 
+/** Fallback link when the extractor found no per-event outbound URL. The old fallback was the
+ *  agenda ARTICLE (a monthly roundup) — so a card promising one exhibition ("View event details")
+ *  landed on a generic listing (field report, 2026-07-21: Ekō @ Scheepvaartmuseum → museum-agenda
+ *  page). A scoped web search for the exact title + venue lands on the real event page instead
+ *  (the venue's own listing near-always ranks first), which is what the CTA promises. */
+const searchLink = (title: string, venue: string) =>
+  `https://duckduckgo.com/?q=${encodeURIComponent([title, venue, 'Amsterdam'].filter(Boolean).join(' '))}`
+
 /** LBB agenda events for a city → Pick[]. Amsterdam-only for now; needs ANTHROPIC_API_KEY. Never throws. */
 export async function lbbExtract(cityKey: string): Promise<Pick[]> {
   if (cityKey !== 'amsterdam' || !KEY) return []
@@ -138,7 +146,11 @@ Return ONLY a JSON array, each item:
             blurb: String(e.blurb ?? '').slice(0, 160),
             why: String(e.why ?? '').slice(0, 60) || 'LBB pick',
             source: 'Your Little Black Book',
-            link: (typeof e.link === 'string' && (e.link as string).startsWith('http') ? (e.link as string) : art.link),
+            // per-event outbound link if the extractor found one; else a scoped search for THIS
+            // event (never the generic agenda article — that's the card↔page mismatch).
+            link: (typeof e.link === 'string' && (e.link as string).startsWith('http')
+              ? (e.link as string)
+              : searchLink(String(e.title), String(e.venue ?? ''))),
             weatherFit: deriveWeatherFit(outdoor),
             verify: false,
           }]

@@ -8,6 +8,7 @@ export type Taste = Record<string, number>
 
 const KEY_SAVED = 'wkndr.saved.v1'
 const KEY_TASTE = 'wkndr.taste.v1'
+export const KEY_SWIPED = 'wkndr.swiped.v1'
 
 /** The tags a pick contributes to / is judged on. */
 export function tokensFor(p: Pick): string[] {
@@ -113,4 +114,14 @@ export function loadTaste(): Taste {
 }
 export function persistTaste(t: Taste) {
   try { localStorage.setItem(KEY_TASTE, JSON.stringify(t)) } catch { /* ignore */ }
+}
+// The IDs you've already swiped past this run — persisted so a refresh doesn't re-deal
+// cards you already declined (the "seeing all cards again from the first one" bug). Saved
+// (★) picks already survived reloads; declines didn't, so the deck reset on every refresh.
+// Same device-local, no-backend contract as saved.
+export function loadSwiped(): Set<string> {
+  try { return new Set(JSON.parse(localStorage.getItem(KEY_SWIPED) || '[]')) } catch { return new Set() }
+}
+export function persistSwiped(s: Set<string>) {
+  try { localStorage.setItem(KEY_SWIPED, JSON.stringify([...s])) } catch { /* ignore */ }
 }
