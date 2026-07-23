@@ -1,5 +1,5 @@
 {
-  "_": "WKNDR TASTE CORPUS — Ness's judgments, injected into every judge (editor + vision). Grows with each curation round. v1 = Board round 1, 2026-07-02, 86 verdicts. v2 = Board round 2, 2026-07-03, 115 verdicts (20 generic club nights killed; 22 canon approvals → src/data/picks.canon2.ts). v3 = Board round 3, 2026-07-04, 81 verdicts (★4+KILL fatigue class → `rested`; organ-concert veto reversed). v4 = Board round 9, 2026-07-23, 73 verdicts (#17): 20 star reinforcements, 2 new 👑 (ij-hallen flea market, worldpride), 'bret x off world' rested (wrong-image card), Scheepvaartmuseum Summer-Activities LINK fixed not vetoed (crown kept — kidsproof.nl/amsterdam generic link → official site; the ARTIS precedent). Organ-concert ★4 reconfirms the R3 reversal (only 'lunchconcerten in de westerkerk' stays vetoed).",
+  "_": "WKNDR TASTE CORPUS — Ness's judgments, injected into every judge (editor + vision). Grows with each curation round. v1 = Board round 1, 2026-07-02, 86 verdicts. v2 = Board round 2, 2026-07-03, 115 verdicts (20 generic club nights killed; 22 canon approvals → src/data/picks.canon2.ts). v3 = Board round 3, 2026-07-04, 81 verdicts (★4+KILL fatigue class → `rested`; organ-concert veto reversed). v4 = Board round 9, 2026-07-23, 73 verdicts (#17): 20 star reinforcements, 2 new 👑 (ij-hallen flea market, worldpride), 'bret x off world' rested (wrong-image card), Scheepvaartmuseum Summer-Activities KILLED as Ness called it (R9b): the ARTIS link-fix precedent was the WRONG read — the card also carried a wrong image (a dance photo) and, crown intact, it led the served deck. Vetoed narrowly on 'summer activities' (title-only match, so the canon 'Het Scheepvaartmuseum' entry and the Ekō show at that venue survive) and the 'scheepvaartmuseum' crown pulled so canon can't inherit the lead. Organ-concert ★4 reconfirms the R3 reversal (only 'lunchconcerten in de westerkerk' stays vetoed).",
   "northStar": "",
   "imageRules": [
     "Prefer atmosphere WITH people in the real place over empty rooms or generic scenery — a market mid-shop, a festival crowd at golden hour, a terrace in use.",
@@ -279,9 +279,10 @@
     "mengelmoes",
     "île de bisous",
     "ile de bisous",
-    "hortus summer tour"
+    "hortus summer tour",
+    "summer activities"
   ],
-  "_vetoNote": "Taste kills from the board — dropped at publish, every run, any source; matched with WORD BOUNDARIES (refresh.ts) so short names like 'monne' can't hit 'Monnickendam'. R5 late-compiles from issues #8/#9 (filed but never read): 'île de bisous' (killed TWICE — it was leading the airlock; ascii twin covers retitles) and 'hortus summer tour' (title-scoped — Hortus Botanicus itself stays ★5). Dupe-kills are deliberately NOT here: R1's Julidans/TREK/Vondelpark twins, and R2's 'The Netherlands – Japan: Connected Through Time' (EN twin of the ★4 Dutch-titled show) were dedup actions, not taste. R3 REVERSAL: 'lunchtime organ concert' removed — Ness ★4'd the Waterlooplein series (community-authentic wins); the Westerkerk lunchconcerten veto stands.",
+  "_vetoNote": "Taste kills from the board — dropped at publish, every run, any source; matched with WORD BOUNDARIES (refresh.ts) so short names like 'monne' can't hit 'Monnickendam'. R5 late-compiles from issues #8/#9 (filed but never read): 'île de bisous' (killed TWICE — it was leading the airlock; ascii twin covers retitles) and 'hortus summer tour' (title-scoped — Hortus Botanicus itself stays ★5). Dupe-kills are deliberately NOT here: R1's Julidans/TREK/Vondelpark twins, and R2's 'The Netherlands – Japan: Connected Through Time' (EN twin of the ★4 Dutch-titled show) were dedup actions, not taste. R3 REVERSAL: 'lunchtime organ concert' removed — Ness ★4'd the Waterlooplein series (community-authentic wins); the Westerkerk lunchconcerten veto stands. R9b: 'summer activities' — the Scheepvaartmuseum card Ness killed (wrong image + generic kidsproof link); scoped tight so the canon museum entry and the venue's Ekō show are untouched.",
   "rested": [
     {
       "match": "stoornis",
@@ -670,7 +671,6 @@
     "zomerlicht",
     "pride run",
     "phono lake",
-    "scheepvaartmuseum",
     "vondelpark openluchttheater",
     "movies at h'art",
     "ij-hallen",

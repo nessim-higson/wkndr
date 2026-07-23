@@ -14,6 +14,16 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.10.14] — 2026-07-23 — R9b: honour the Scheepvaartmuseum kill (my call was wrong)
+- Ness killed "Het Scheepvaartmuseum – Summer Activities" in #17; R9 kept it (link-fix + crown, citing the
+  ARTIS precedent). Wrong read: the card ALSO carried a wrong image (a dance photo, not the museum) and,
+  crown intact, it was being served as the **#1 card in the deck**. Kill honoured.
+- Vetoed narrowly on `summer activities` — veto matches TITLE only, so the canon "Het Scheepvaartmuseum"
+  entry and the Ekō show at that venue (Scheepvaartmuseum is its *venue*, not its title) both survive.
+- Pulled the `scheepvaartmuseum` crown (19 → 18) so the canon museum entry can't inherit the lead.
+- Feed 83 → 82, tops 13 → 12. Deck now opens: WorldPride · IJ-Hallen Flea Market · Milkshake · Vondelpark
+  · Kwaku · Kaap · Strand Zuid · ARTIS. 119 tests green.
+
 ## [V.10.13] — 2026-07-23 — compile R9 (Curation Board issue #17, 73 verdicts)
 - Restamp fast-path (no crawl). **20 star reinforcements** → `starredKeeps` (editorScore floor 8 +
   carry-forward): Droog/MENDO/Moise/Mobilia/Vlieger/De Baanderij/Tacite/Rush Hour/Red Light Records (★5),
