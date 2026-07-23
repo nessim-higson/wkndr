@@ -14,6 +14,16 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [board V.9.17] — 2026-07-22 — "This weekend" build-it-up pile (promote + rank in one place)
+- Ness: "how do I promote and then rank while sitting here… have The Lens where I can immediately
+  upvote and place it in THIS WEEKEND'S PILE, then play with the order." Pile model chosen: **build it up.**
+- The pile is no longer the whole projected deck. It's the set you **promote**: it seeds with your 👑
+  TOPs, and a card's **▲ Add** (the old LEAD, relabelled + accent-styled as the primary action) drops it
+  in live; ✕/▼ removes it; drag ⠿ orders it. Rendered **first** (your working weekend on top), rebuilt on
+  every promote via a global `renderPile()` the card handlers call. Empty-state hint when nothing's promoted.
+- Verdict wire format unchanged (LEAD/TOP flags + PILE hand-order still ride Submit) — verified: add →
+  pile grows + payload carries ▲LEAD · remove → pile shrinks · 14 lens cards all show ▲ Add · drag armed.
+
 ## [board V.9.16] — 2026-07-22 — Helvetica + declutter pass
 - Ness: "the type on the entire tool should be Helvetica and cleaner — there is so much happening."
 - One typeface everywhere (`--sans` Helvetica stack); killed all the `ui-monospace` ALL-CAPS/wide-track
