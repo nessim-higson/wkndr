@@ -14,6 +14,17 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [board V.9.15] — 2026-07-22 — curation board clarity pass (words + trust)
+- Ness's read: the board was confusing — you couldn't tell what you were looking at. Two fixes.
+- **Words:** the ~250-word jargon-wall header (a dozen named concepts before a single card) is gone —
+  replaced by a plain "what this is" (IN ROTATION = live / NEW FINDS = not live yet), the pipeline
+  spelled out (rule → Submit → GitHub → compiled & shipped → testers see it), and two chip **legends**
+  (verdict glyphs · badges), one idea each.
+- **Trust:** every card now carries a **"why it's here"** line keyed to its section (lens / pile / new /
+  approved), and ruling a card lights it green with **"✓ your call — rides Submit"** — the same pick's
+  twins in the lens/pile/feed light up together, so "a verdict counts everywhere" is now visible, not
+  just asserted. Board-only static change; no app-version bump.
+
 ## [V.10.12] — 2026-07-21 — field-feedback reliability pass (persist declines · intro once · honest LBB links)
 - **Declines now survive a refresh.** The `swiped` set was memory-only, so a reload reset the deck to
   card one — re-serving everything, including picks you'd already declined (saved ★ picks persisted, so

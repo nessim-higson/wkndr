@@ -73,14 +73,30 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 .send{background:var(--accent);color:#fff}
 .copybtn{background:rgba(255,255,255,.14);color:#fff}
 .send.done{background:#2faa6a}
+/* ── clarity pass (board V.9.15): plain intro + glyph legend + per-card "why / your call" ── */
+.lede{color:#4a463e;max-width:72ch;line-height:1.5;margin:10px 0 0;font-size:15px}
+.lede b{color:var(--ink)}
+.flow{font-family:ui-monospace,monospace;font-size:11px;letter-spacing:.03em;color:var(--dim);margin:12px 0 0;line-height:1.6}
+.flow .step{color:var(--ink);font-weight:700}
+.legend{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:14px 0 0}
+.legend .lbl{font-family:ui-monospace,monospace;font-size:10px;letter-spacing:.12em;color:var(--dim);text-transform:uppercase;margin-right:2px}
+.legend .chip{font-family:ui-monospace,monospace;font-size:10.5px;letter-spacing:.02em;color:#4a463e;background:#fff;border:1px solid var(--line);border-radius:999px;padding:5px 10px}
+.legend .chip b{color:var(--ink)}
+.why{font-size:11.5px;line-height:1.35;color:#6a655c;background:#faf8f3;border-left:2px solid var(--line);padding:5px 8px;border-radius:0 6px 6px 0}
+.card .ruledtag{display:none}
+.card.ruled{border-color:var(--green);box-shadow:0 0 0 2px rgba(47,170,106,.22)}
+.card.ruled .ruledtag{display:block;font-family:ui-monospace,monospace;font-size:10px;font-weight:700;letter-spacing:.04em;color:var(--green)}
 </style>
 </head>
 <body>
 <div class="wrap">
 <header>
-<p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD V.9.14</p>
-<h1>In rotation vs. new finds<span class="dot">.</span></h1>
-<p><strong>IN ROTATION</strong> opens with <strong>THE LENS — THIS WEEKEND × THIS WEATHER</strong>: what's explicitly dated the coming weekend <em>and</em> fits the forecast (outdoor leads when it's hot), plus — on a hot weekend — the <strong>SUMMER RUNS</strong>: in-season outdoor venues (open-air cinema, urban beaches, terrace programmes) that have no per-day date but are exactly what the weather is for. The same cards ride the pile and feed below; a verdict here counts everywhere. Then <strong>THE WEEKEND PILE</strong> — the projected opening cards, numbered. Control it per weekend: <strong>▲ LEAD</strong> puts a card in the pile <em>this weekend only</em>, <strong>▼ LATER</strong> drops it to the back without killing it — both auto-expire when the weekend rolls. <strong>👑 TOP</strong> is the permanent escalation above both (leads <em>on its own weekend</em> + "Top pick" pill — a future-dated TOP rides the back of the deck until its weekend arrives). <strong>Drag the ⠿ grip</strong> to hand-set the pile order — your order rides Submit and becomes the next run's opening sequence. Then the full feed and the approved canon library (green = yours — kill to retire). <strong>NEW FINDS</strong> opens with <strong>THE AIRLOCK</strong> — the run's unapproved live finds, weekend-topical first; nothing ships until you wave it in (★/👑) or kill it — then trending, bench, canon candidates — star to promote, <strong>+CANON</strong> for the permanent library. Titles link to the real page — flag dumb links. Progress saves in this browser. When you're done: <strong>Submit → GitHub</strong> files the round as an issue on the repo — the one-click path into the engine.</p>
+<p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD V.9.15</p>
+<h1>Your weekend deck, before it ships<span class="dot">.</span></h1>
+<p class="lede"><b>Rule on Amsterdam's picks for this weekend.</b> Two tabs below: <b>IN ROTATION</b> is what's live now — this weekend's deck plus your approved library. <b>NEW FINDS</b> is candidates that are <b>not live yet</b>. Every card tells you why it's there and what a tap does.</p>
+<p class="flow">Your calls don't go live the instant you tap: <span class="step">rule here</span> → <span class="step">Submit → GitHub</span> → compiled &amp; shipped → your testers see it. Progress saves in this browser as you go.</p>
+<div class="legend"><span class="lbl">Verdicts</span><span class="chip"><b>★1–5</b> rate / save</span><span class="chip"><b>✕</b> kill (retire)</span><span class="chip"><b>👑&nbsp;TOP</b> permanent lead</span><span class="chip"><b>▲&nbsp;LEAD</b> up this weekend</span><span class="chip"><b>▼&nbsp;LATER</b> back this weekend</span><span class="chip"><b>+CANON</b> permanent library</span><span class="chip"><b>⠿</b> drag to reorder the pile</span></div>
+<div class="legend"><span class="lbl">Badges</span><span class="chip"><b>LENS</b> dated + weather-right</span><span class="chip"><b>#n</b> pile position</span><span class="chip"><b>★ SAVED</b> / <b>✓ APPROVED</b> your earlier call</span><span class="chip"><b>NEW</b> not live yet</span></div>
 </header>
 <div class="tabs" id="tabs" hidden>
 <button class="tab on" data-tab="rot">IN ROTATION <span class="n" id="nrot"></span></button>
@@ -157,7 +173,7 @@ Promise.all([
   // 10 min (max-age=600), so a just-shipped board fix can lag in an open tab; the eyebrow makes
   // stale-board-vs-fresh-data visible at a glance (2026-07-12: an old tab's tier-mirror pile read
   // as "the board is wrong" when it was just cached).
-  const BOARD_V='V.9.14';
+  const BOARD_V='V.9.15';
   document.getElementById('eyebrow').textContent='WKNDR · CURATION BOARD '+BOARD_V+' · FEED '+(d.generatedAt||'').slice(0,16).replace('T',' · ');
   const board=document.getElementById('board');board.innerHTML='';
   const rot=document.createElement('div');rot.id='tab-rot';board.appendChild(rot);
@@ -331,16 +347,27 @@ function addCard(p,g,tag,pos,probe){
     :bk?'<span class="badge saved">★'+(bk.stars||'·')+' SAVED</span>'
     :tag==='new'?'<span class="badge new">NEW</span>':'';
   const title=p.link?'<a href="'+p.link+'" target="_blank" rel="noopener">'+p.title+'<span class="ext">↗</span></a>':p.title;
+  // WHY IT'S HERE — a plain line so no section needs decoding. Keyed off the card's role (tag).
+  const why=tag==='lens'?(p._summer
+        ?'In season right now — an open-air pick that fits this weekend’s weather.'
+        :'Dated for THIS weekend and fits the forecast — your testers see these first.')
+    :tag==='pile'?'In the opening deck your testers swipe first. Drag ⠿ to set the order.'
+    :tag==='new'?'A new find — NOT live yet. ★ or 👑 waves it into the deck; ✕ kills it.'
+    :tag==='appr'?'Approved for your permanent library — always in rotation. ✕ retires it.'
+    :'';
   el.innerHTML=badge
     +'<button class="kill" title="Kill">✕</button>'
     +'<img loading="lazy" src="'+(p.image||'')+'" alt="">'
-    +'<div class="meta"><h3>'+title+'</h3>'
+    +'<div class="meta">'
+    +(why?'<div class="why">'+why+'</div>':'')
+    +'<h3>'+title+'</h3>'
     +'<div class="sub">'+(p.venue||'')+' · '+(p.when||'')+'</div>'
     +'<div class="src">'+(p.source||p.tier||'')+(p.editorScore!=null?' · judge '+p.editorScore:'')+(p.buzz>1?' · buzz '+p.buzz:'')+'</div>'
     +'<div class="stars">'+[1,2,3,4,5].map(n=>'<button class="star" data-n="'+n+'" aria-label="'+n+' stars">★</button>').join('')+'</div>'
     +'<div class="row"><button class="b imgup">IMG ✓</button><button class="b imgdn">IMG ✗</button><button class="b canon">+CANON</button><button class="b topb" title="Escalate: leads the deck with a Top pick pill">👑 TOP</button><button class="b leadb" title="This weekend only: opens the deck (under TOPs)">▲ LEAD</button><button class="b laterb" title="This weekend only: sinks to the back of the pile (not a kill)">▼ LATER</button></div>'
     +'<input class="inp note" placeholder="note — why / what&#39;s off / bad link">'
     +'<input class="inp better" placeholder="better image URL">'
+    +'<div class="ruledtag">✓ your call — rides Submit</div>'
     +'</div>';
   const get=()=>V[p.id]??={t:p.title};
   if(!V[p.id]&&bk){V[p.id]={t:p.title,stars:bk.stars,img:bk.img,note:bk.note,r1:true}}
@@ -403,6 +430,13 @@ function verdicts(){return Object.values(V).filter(v=>v.stars||v.killed||v.img||
 function update(){
   const vs=Object.values(V);
   document.getElementById('count').textContent=vs.filter(v=>v.top).length+' top · '+vs.filter(v=>v.lead).length+' lead · '+vs.filter(v=>v.later).length+' later · '+vs.filter(v=>v.stars).length+' starred · '+vs.filter(v=>v.killed).length+' killed · '+vs.filter(v=>v.canon).length+' canon';
+  // reflect every open verdict back onto its card(s) — the same pick in the lens/pile/feed lights up
+  // together, so a tap visibly "takes" and it's clear a verdict here counts everywhere.
+  document.querySelectorAll('.card').forEach(el=>{
+    const id=(el.dataset.id||'').replace(/::(pile|lens)$/,'');
+    const v=V[id];
+    el.classList.toggle('ruled',!!(v&&(v.stars||v.killed||v.img||v.note||v.betterImage||v.canon||v.top||v.lead||v.later)));
+  });
   store();
 }
 // the hand-dragged pile order, as a payload line (empty until a drag happens this round)
