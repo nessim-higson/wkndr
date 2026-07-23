@@ -77,6 +77,14 @@ const fmt = (d: Date) => d.toLocaleDateString('en', { weekday: 'long', day: 'num
 const searchLink = (title: string, venue: string) =>
   `https://duckduckgo.com/?q=${encodeURIComponent([title, venue, 'Amsterdam'].filter(Boolean).join(' '))}`
 
+/** A usable per-event outbound link — http(s) AND not a link back into LBB itself. The extractor
+ *  sometimes hands back the agenda ARTICLE's own yourlittleblackbook.me URL as the "event page"
+ *  (2026-07-23 refresh: World Press Photo, Ekō, Nederland–Japan all pointed at museum-agenda pages),
+ *  which is the exact card↔page mismatch — a specific card opening a generic roundup. Treat any
+ *  LBB-internal URL as "no link found" and fall through to the scoped event search. */
+const usableLink = (u: unknown): u is string =>
+  typeof u === 'string' && /^https?:/.test(u) && !/yourlittleblackbook\.me/i.test(u)
+
 /** LBB agenda events for a city → Pick[]. Amsterdam-only for now; needs ANTHROPIC_API_KEY. Never throws. */
 export async function lbbExtract(cityKey: string): Promise<Pick[]> {
   if (cityKey !== 'amsterdam' || !KEY) return []
@@ -146,10 +154,10 @@ Return ONLY a JSON array, each item:
             blurb: String(e.blurb ?? '').slice(0, 160),
             why: String(e.why ?? '').slice(0, 60) || 'LBB pick',
             source: 'Your Little Black Book',
-            // per-event outbound link if the extractor found one; else a scoped search for THIS
-            // event (never the generic agenda article — that's the card↔page mismatch).
-            link: (typeof e.link === 'string' && (e.link as string).startsWith('http')
-              ? (e.link as string)
+            // per-event outbound link if the extractor found a real one; else a scoped search for
+            // THIS event (never the generic agenda article or any LBB self-link — the mismatch).
+            link: (usableLink(e.link)
+              ? e.link
               : searchLink(String(e.title), String(e.venue ?? ''))),
             weatherFit: deriveWeatherFit(outdoor),
             verify: false,
