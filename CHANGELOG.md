@@ -14,6 +14,24 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.10.13] — 2026-07-23 — compile R9 (Curation Board issue #17, 73 verdicts)
+- Restamp fast-path (no crawl). **20 star reinforcements** → `starredKeeps` (editorScore floor 8 +
+  carry-forward): Droog/MENDO/Moise/Mobilia/Vlieger/De Baanderij/Tacite/Rush Hour/Red Light Records (★5),
+  Wils/Utrecht/Strand van Oost/Amsterdamse Bos/Kama/Bar Staal/Rotate/TÊTE/Warung Spang/De Kas/Glou Glou (★4).
+- **2 new 👑 TOPs:** `ij-hallen` (flea market) + `worldpride`. Now 19 crowns — **prune debt is overdue**
+  (guidance ≤6); a cut is due when the summer crowns expire.
+- **`bret x off world` rested** (★4+KILL, wrong-image card) — the specific Off World card drops; the
+  `bret` taste stays. Dropped from the feed.
+- **Scheepvaartmuseum "Summer Activities" — link FIXED, crown KEPT, not vetoed.** The killed card *is* the
+  crowned TOP; its complaint was the generic `kidsproof.nl/amsterdam` link. Per the R8 ARTIS precedent
+  (weak kidsproof link → reroute, don't kill the institution), rerouted to the official site. **Flagged
+  for Ness** — say the word to fully veto instead.
+- **Dekmantel → weekly LATER** (this weekend only; stays in the feed, sinks in the pile). Organ-concert ★4
+  reconfirms the R3 reversal (only `lunchconcerten in de westerkerk` stays vetoed). weekly.json weekend
+  advanced to 2026-07-25; stale lead/pile cleared. 119 tests green.
+- **Not applied (no action possible):** the 5 `img:bad` flags (Milkshake, Nxt Museum, Strand van Oost,
+  De Kas, Red Light Records) carry "(R3 scout) image replaced" notes / no replacement URL — informational.
+
 ## [board V.9.17] — 2026-07-22 — "This weekend" build-it-up pile (promote + rank in one place)
 - Ness: "how do I promote and then rank while sitting here… have The Lens where I can immediately
   upvote and place it in THIS WEEKEND'S PILE, then play with the order." Pile model chosen: **build it up.**

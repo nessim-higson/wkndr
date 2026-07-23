@@ -21,7 +21,9 @@
     "phono lake",
     "scheepvaartmuseum",
     "vondelpark openluchttheater",
-    "movies at h'art"
+    "movies at h'art",
+    "ij-hallen",
+    "worldpride"
   ],
   "picks": [
     {
@@ -48,7 +50,7 @@
       "verify": false,
       "buzz": 3,
       "editorScore": 9,
-      "servePos": 11
+      "servePos": 12
     },
     {
       "id": "web-i-amsterdam-ij-hallen-flea-market",
@@ -74,7 +76,8 @@
       "buzz": 4,
       "image": "https://images.weserv.nl/?url=https%3A%2F%2Fcdn.prod.website-files.com%2F6909cf96cf3cd5be51dbc4c9%2F69a59bec421a798caa552922_ijhallen1.webp&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fcdn.prod.website-files.com%2F6909cf96cf3cd5be51dbc4c9%2F69a59bec421a798caa552922_ijhallen1.webp",
       "editorScore": 8,
-      "servePos": 10
+      "servePos": 2,
+      "top": true
     },
     {
       "id": "web-lbb-world-press-photo-exhibition-2026",
@@ -102,7 +105,7 @@
       "verify": false,
       "buzz": 2,
       "editorScore": 8,
-      "servePos": 15
+      "servePos": 16
     },
     {
       "id": "web-scout-milkshake-festival",
@@ -131,7 +134,7 @@
       "buzz": 4,
       "editorScore": 10,
       "top": true,
-      "servePos": 1
+      "servePos": 3
     },
     {
       "id": "web-lbb-kwaku-summer-festival",
@@ -158,7 +161,7 @@
       "buzz": 2,
       "editorScore": 10,
       "top": true,
-      "servePos": 3
+      "servePos": 5
     },
     {
       "id": "web-lbb-ek-japan-in-twee-beeldverhalen",
@@ -292,7 +295,8 @@
       "verify": false,
       "buzz": 3,
       "editorScore": 10,
-      "servePos": 9
+      "servePos": 1,
+      "top": true
     },
     {
       "id": "web-iams-the-maker-market",
@@ -320,7 +324,7 @@
       "verify": false,
       "buzz": 3,
       "editorScore": 8,
-      "servePos": 12
+      "servePos": 13
     },
     {
       "id": "web-iams-american-identities",
@@ -348,7 +352,7 @@
       "verify": false,
       "buzz": 2,
       "editorScore": 8,
-      "servePos": 16
+      "servePos": 17
     },
     {
       "id": "web-iams-chefs-evening",
@@ -425,7 +429,7 @@
       ],
       "verify": false,
       "editorScore": 8,
-      "servePos": 13
+      "servePos": 14
     },
     {
       "id": "web-iams-vondelpark-openluchttheater",
@@ -451,7 +455,7 @@
       "verify": false,
       "editorScore": 10,
       "top": true,
-      "servePos": 2
+      "servePos": 4
     },
     {
       "id": "web-iams-de-roode-remise-singing-session",
@@ -530,7 +534,7 @@
       ],
       "verify": false,
       "editorScore": 8,
-      "servePos": 14
+      "servePos": 15
     },
     {
       "id": "web-iams-exhibition-worn-in-the-rijksmuseum",
@@ -614,33 +618,6 @@
       "servePos": 37
     },
     {
-      "id": "web-ra-2488586",
-      "title": "BRET x Off World - Olivia Lensen & Tsepo",
-      "venue": "BRET",
-      "area": "",
-      "when": "Fri 24 Jul · 22:00",
-      "category": "live",
-      "freshness": "weekend",
-      "outdoor": false,
-      "kid": false,
-      "price": "",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F63cfdda587ca114344bf775b%2F1xyhdofhh6g1-bret.webp&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F63cfdda587ca114344bf775b%2F1xyhdofhh6g1-bret.webp",
-      "blurb": "OLIVIA LENSEN, Tsepo at BRET.",
-      "why": "On Resident Advisor",
-      "source": "Resident Advisor",
-      "link": "https://ra.co/events/2488586",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "popularity": 1,
-      "editorScore": 8,
-      "servePos": 19
-    },
-    {
       "id": "llm-kidsproof-het-scheepvaartmuseum-summer-activities",
       "title": "Het Scheepvaartmuseum – Summer Activities",
       "venue": "Het Scheepvaartmuseum",
@@ -654,7 +631,7 @@
       "blurb": "Maritime museum offering water yoga, plastic fishing, storytelling, ship exploration, and marine discovery activities; under-5s enter free.",
       "why": "Free entry for youngest; summer activities galore",
       "source": "Kidsproof · Het Scheepvaartmuseum",
-      "link": "https://www.kidsproof.nl/amsterdam",
+      "link": "https://www.hetscheepvaartmuseum.nl/",
       "image": "https://images.weserv.nl/?url=https%3A%2F%2Fadmin.nxtmuseum.com%2Fcontent%2Fuploads%2F2024%2F05%2FLife-In-Our-Minds_-Motherflock-_-III-2023-by-Random-International-%25E2%2580%2593-exhibited-in-%25E2%2580%2598Life-in-a-Different-Resolution-at-Nxt-Museum-The-Netherlands_-Photographer_Maarten-Nauw_01-scaled.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fadmin.nxtmuseum.com%2Fcontent%2Fuploads%2F2024%2F05%2FLife-In-Our-Minds_-Motherflock-_-III-2023-by-Random-International-%25E2%2580%2593-exhibited-in-%25E2%2580%2598Life-in-a-Different-Resolution-at-Nxt-Museum-The-Netherlands_-Photographer_Maarten-Nauw_01-scaled.jpg",
       "weatherFit": [
         "HOT",
@@ -667,7 +644,7 @@
       "buzz": 2,
       "editorScore": 10,
       "top": true,
-      "servePos": 4
+      "servePos": 6
     },
     {
       "id": "ams-hortus",
@@ -694,7 +671,7 @@
       "tier": "classic",
       "buzz": 2,
       "editorScore": 8,
-      "servePos": 17
+      "servePos": 18
     },
     {
       "id": "web-lbb-cinema-culinair",
@@ -844,7 +821,7 @@
       ],
       "when": "Daily · dawn–dusk",
       "tier": "classic",
-      "servePos": 52
+      "servePos": 58
     },
     {
       "id": "the-movies",
@@ -895,7 +872,7 @@
       ],
       "verify": false,
       "editorScore": 8,
-      "servePos": 18
+      "servePos": 19
     },
     {
       "id": "foam-talent",
@@ -970,7 +947,8 @@
       "verify": false,
       "editorScore": 10,
       "top": true,
-      "servePos": 81
+      "servePos": 81,
+      "later": true
     },
     {
       "id": "ams-b2-foam",
@@ -996,7 +974,7 @@
       ],
       "when": "Daily · 10:00–18:00",
       "tier": "bespoke",
-      "servePos": 53
+      "servePos": 59
     },
     {
       "id": "ams-ev2-droog",
@@ -1022,7 +1000,8 @@
       ],
       "when": "Tue–Sun",
       "tier": "classic",
-      "servePos": 54
+      "servePos": 36,
+      "editorScore": 8
     },
     {
       "id": "ams-ev2-mendo",
@@ -1048,7 +1027,8 @@
       ],
       "when": "Daily",
       "tier": "bespoke",
-      "servePos": 56
+      "servePos": 38,
+      "editorScore": 8
     },
     {
       "id": "ams-b2-moise",
@@ -1074,7 +1054,8 @@
       ],
       "when": "Daily exc. Sun–Mon",
       "tier": "bespoke",
-      "servePos": 58
+      "servePos": 40,
+      "editorScore": 8
     },
     {
       "id": "ams-b2-patta",
@@ -1101,7 +1082,7 @@
       "when": "Daily · shop hours",
       "tier": "bespoke",
       "editorScore": 8,
-      "servePos": 36
+      "servePos": 42
     },
     {
       "id": "ams-b2-x-bank",
@@ -1128,7 +1109,7 @@
       "when": "Daily · shop hours",
       "tier": "bespoke",
       "editorScore": 8,
-      "servePos": 38
+      "servePos": 43
     },
     {
       "id": "ams-ev-melkweg",
@@ -1154,7 +1135,7 @@
       ],
       "when": "Eve · gigs + club",
       "tier": "classic",
-      "servePos": 55
+      "servePos": 60
     },
     {
       "id": "ams-b2-mobilia",
@@ -1180,7 +1161,8 @@
       ],
       "when": "Daily · shop hours",
       "tier": "classic",
-      "servePos": 60
+      "servePos": 45,
+      "editorScore": 8
     },
     {
       "id": "ams-ev-utrecht",
@@ -1206,7 +1188,8 @@
       ],
       "when": "Daily · ~25 min by train",
       "tier": "classic",
-      "servePos": 57
+      "servePos": 39,
+      "editorScore": 8
     },
     {
       "id": "ams-b2-vlieger",
@@ -1232,7 +1215,8 @@
       ],
       "when": "Daily · shop hours",
       "tier": "bespoke",
-      "servePos": 62
+      "servePos": 47,
+      "editorScore": 8
     },
     {
       "id": "ams-efteling",
@@ -1257,7 +1241,7 @@
       "when": "Daily · ~1h15 by car",
       "tier": "classic",
       "editorScore": 8,
-      "servePos": 39
+      "servePos": 41
     },
     {
       "id": "ams-ev-ij-hallen",
@@ -1284,7 +1268,8 @@
       "when": "Monthly · one weekend",
       "tier": "bespoke",
       "editorScore": 8,
-      "servePos": 40
+      "servePos": 11,
+      "top": true
     },
     {
       "id": "ams-micropia",
@@ -1310,7 +1295,7 @@
       ],
       "when": "Daily · 10:00–17:00",
       "tier": "bespoke",
-      "servePos": 59
+      "servePos": 61
     },
     {
       "id": "ams-ev-paradiso",
@@ -1336,7 +1321,7 @@
       ],
       "when": "Eve · gig nights",
       "tier": "classic",
-      "servePos": 61
+      "servePos": 62
     },
     {
       "id": "ams-lostin-kriterion",
@@ -1387,7 +1372,7 @@
       "when": "Daily · ~50 min by train",
       "tier": "classic",
       "editorScore": 8,
-      "servePos": 41
+      "servePos": 44
     },
     {
       "id": "ams-ev2-nxt-museum",
@@ -1414,7 +1399,7 @@
       "when": "Wed–Sun (daily in summer)",
       "tier": "bespoke",
       "editorScore": 8,
-      "servePos": 42
+      "servePos": 46
     },
     {
       "id": "ams-ev2-martin-parr-foam",
@@ -1593,7 +1578,7 @@
       "when": "Mon–Sat · 09:00–17:30",
       "tier": "classic",
       "editorScore": 8,
-      "servePos": 43
+      "servePos": 48
     },
     {
       "id": "ams-lostin-de-filmhallen",
@@ -1721,7 +1706,7 @@
       "tier": "classic",
       "top": true,
       "editorScore": 10,
-      "servePos": 7
+      "servePos": 9
     },
     {
       "id": "eye-screening",
@@ -1796,7 +1781,7 @@
       ],
       "when": "Until Sat 25 Jul · Thu–Sat dinners",
       "tier": "bespoke",
-      "servePos": 51
+      "servePos": 57
     },
     {
       "id": "ams-ev-marken-volendam",
@@ -1821,7 +1806,7 @@
       "when": "Daily · bus ~30 min",
       "tier": "bespoke",
       "editorScore": 8,
-      "servePos": 44
+      "servePos": 49
     },
     {
       "id": "ams-ev-zandvoort",
@@ -1846,7 +1831,7 @@
       "when": "Daily · ~30 min by train",
       "tier": "bespoke",
       "editorScore": 8,
-      "servePos": 46
+      "servePos": 51
     },
     {
       "id": "ams-ev-albert-cuyp",
@@ -1871,7 +1856,7 @@
       "when": "Mon–Sat · 09:00–17:00",
       "tier": "classic",
       "editorScore": 8,
-      "servePos": 45
+      "servePos": 50
     },
     {
       "id": "ams-ev-concertgebouw",
@@ -1922,7 +1907,7 @@
       "when": "Mon–Sat · 09:30–18:00",
       "tier": "classic",
       "editorScore": 8,
-      "servePos": 47
+      "servePos": 52
     },
     {
       "id": "web-lbb-the-jollof-club-west-african-restaurant",
@@ -1976,7 +1961,7 @@
       ],
       "verify": false,
       "editorScore": 8,
-      "servePos": 48
+      "servePos": 53
     },
     {
       "id": "web-lbb-nara-nara-egyptian-restaurant",
@@ -2030,7 +2015,7 @@
       ],
       "when": "Dinner · book ahead",
       "editorScore": 8,
-      "servePos": 49
+      "servePos": 54
     },
     {
       "id": "ams-ev2-museum-van-loon",
@@ -2057,7 +2042,7 @@
       "when": "Wed–Mon · 10:00–17:00",
       "tier": "classic",
       "editorScore": 8,
-      "servePos": 50
+      "servePos": 55
     },
     {
       "id": "web-i-amsterdam-pluk-de-nacht-film-festival",
@@ -2083,7 +2068,7 @@
       "image": "https://images.weserv.nl/?url=https%3A%2F%2Fimage.parool.nl%2F220058609%2Fwidth%2F2480%2Fpluk-de-nacht-bij-het-stenen-hoofd-in-west&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fimage.parool.nl%2F220058609%2Fwidth%2F2480%2Fpluk-de-nacht-bij-het-stenen-hoofd-in-west",
       "editorScore": 10,
       "top": true,
-      "servePos": 8
+      "servePos": 10
     },
     {
       "id": "web-lbb-kaap-amsterdam",
@@ -2109,7 +2094,7 @@
       "verify": false,
       "editorScore": 10,
       "top": true,
-      "servePos": 5
+      "servePos": 7
     },
     {
       "id": "web-lbb-strand-zuid",
@@ -2135,7 +2120,7 @@
       "verify": false,
       "editorScore": 10,
       "top": true,
-      "servePos": 6
+      "servePos": 8
     },
     {
       "id": "web-lbb-hannekes-boom",
@@ -2185,6 +2170,33 @@
       "why": "Classic summer activity on the water",
       "editorScore": 9,
       "servePos": 27
+    },
+    {
+      "id": "web-i-amsterdam-your-little-black-book-de-hallen-foodhallen-maker-market",
+      "title": "De Hallen (Foodhallen + Maker Market)",
+      "venue": "De Hallen Amsterdam",
+      "area": "Oud-West",
+      "when": "Sat 25–Sun 26 · 11:00–late",
+      "category": "eat",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fmedia.nomadicmatt.com%2F2021%2Ffoodhallen1.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fmedia.nomadicmatt.com%2F2021%2Ffoodhallen1.jpg",
+      "blurb": "Indoor food hall with 20+ vendors, craft stalls, gallery cinema, independent shops. Perfect rainy-day shelter.",
+      "source": "I amsterdam, Your Little Black Book",
+      "link": "https://www.dehallen-amsterdam.nl/en",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "freshness": "always",
+      "outdoor": false,
+      "kid": true,
+      "price": "free",
+      "why": "All-weather indoor cultural hub",
+      "editorScore": 8,
+      "servePos": 56
     }
-  ]
+  ],
+  "restampedAt": "2026-07-23T17:58:57.419Z"
 }

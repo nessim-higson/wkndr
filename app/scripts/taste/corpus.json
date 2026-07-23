@@ -1,5 +1,5 @@
 {
-  "_": "WKNDR TASTE CORPUS — Ness's judgments, injected into every judge (editor + vision). Grows with each curation round. v1 = Board round 1, 2026-07-02, 86 verdicts. v2 = Board round 2, 2026-07-03, 115 verdicts (20 generic club nights killed; 22 canon approvals → src/data/picks.canon2.ts). v3 = Board round 3, 2026-07-04, 81 verdicts (★4+KILL fatigue class → `rested`; organ-concert veto reversed).",
+  "_": "WKNDR TASTE CORPUS — Ness's judgments, injected into every judge (editor + vision). Grows with each curation round. v1 = Board round 1, 2026-07-02, 86 verdicts. v2 = Board round 2, 2026-07-03, 115 verdicts (20 generic club nights killed; 22 canon approvals → src/data/picks.canon2.ts). v3 = Board round 3, 2026-07-04, 81 verdicts (★4+KILL fatigue class → `rested`; organ-concert veto reversed). v4 = Board round 9, 2026-07-23, 73 verdicts (#17): 20 star reinforcements, 2 new 👑 (ij-hallen flea market, worldpride), 'bret x off world' rested (wrong-image card), Scheepvaartmuseum Summer-Activities LINK fixed not vetoed (crown kept — kidsproof.nl/amsterdam generic link → official site; the ARTIS precedent). Organ-concert ★4 reconfirms the R3 reversal (only 'lunchconcerten in de westerkerk' stays vetoed).",
   "northStar": "",
   "imageRules": [
     "Prefer atmosphere WITH people in the real place over empty rooms or generic scenery — a market mid-shop, a festival crowd at golden hour, a terrace in use.",
@@ -312,6 +312,11 @@
       "match": "trek foodfestival",
       "until": "2026-07-25",
       "note": "R3 issue #3 KILL — a TREK variant the 'festival trek' match misses; same fatigue class"
+    },
+    {
+      "match": "bret x off world",
+      "until": "2026-08-02",
+      "note": "★4 + KILL (R9, issue #17) — the 'wrong image' Off World card (Olivia Lensen & Tsepo). Rests the specific card; the 'bret' starredKeep and taste stay intact."
     }
   ],
   "_restedNote": "The ★4+KILL class from the board: events Ness LIKES but is tired of seeing. NOT a veto — dropped from the feed AND the bench only until their `until` date (then they may return fresh). Their starAnchors and starredKeeps stay: the taste signal is intact, only the exposure rests. Dropped AFTER the starredKeeps pass so carry-forward can't resurrect them.",
@@ -567,6 +572,86 @@
     {
       "match": "mokumboot",
       "stars": 5
+    },
+    {
+      "match": "wils farm",
+      "stars": 4
+    },
+    {
+      "match": "utrecht",
+      "stars": 4
+    },
+    {
+      "match": "droog",
+      "stars": 5
+    },
+    {
+      "match": "mendo",
+      "stars": 5
+    },
+    {
+      "match": "moise",
+      "stars": 5
+    },
+    {
+      "match": "mobilia",
+      "stars": 5
+    },
+    {
+      "match": "vlieger",
+      "stars": 5
+    },
+    {
+      "match": "strand van",
+      "stars": 4
+    },
+    {
+      "match": "amsterdamse bos",
+      "stars": 4
+    },
+    {
+      "match": "kama handroll",
+      "stars": 4
+    },
+    {
+      "match": "bar staal",
+      "stars": 4
+    },
+    {
+      "match": "rotate",
+      "stars": 4
+    },
+    {
+      "match": "baanderij",
+      "stars": 5
+    },
+    {
+      "match": "tacite",
+      "stars": 5
+    },
+    {
+      "match": "tête",
+      "stars": 4
+    },
+    {
+      "match": "warung spang",
+      "stars": 4
+    },
+    {
+      "match": "de kas",
+      "stars": 4
+    },
+    {
+      "match": "glou glou",
+      "stars": 4
+    },
+    {
+      "match": "rush hour",
+      "stars": 5
+    },
+    {
+      "match": "red light records",
+      "stars": 5
     }
   ],
   "_starredNote": "★4-5 live events from the board: (a) editorScore floor 8 when present, (b) CARRIED FORWARD from the prior feed when an adapter fails to re-surface them and they're still date-valid — Ness's investment must not evaporate between runs. Matched with word boundaries (so 'bak' ≠ 'bakkerij'). R2 removals: 'oatly x radio radio' (reversed to KILL — now vetoed).",
@@ -587,8 +672,10 @@
     "phono lake",
     "scheepvaartmuseum",
     "vondelpark openluchttheater",
-    "movies at h'art"
+    "movies at h'art",
+    "ij-hallen",
+    "worldpride"
   ],
-  "_topPicksNote": "R3 issue #3 👑 escalations. Milkshake + Dekmantel are future festivals (late Jul) — TOP is armed and activates when they enter the feed. 't Lemmeke = current restaurant. ARTIS: Ness starred the bench 'ARTIS-Aquarium' card (weak kidsproof.nl link); routed to the canon 'ARTIS Royal Zoo' entry (same visit, real artis.nl link, guaranteed availability) so TOP actually sticks. 'queer amsterdam' = R5 late-compile from issues #8/#9: the Nieuwe Kerk WorldPride flagship ('Queer Amsterdam: The Pink City', opened 9 Jul) — TOP armed; the crawl dropped it from the 7/11 feed, activates when an adapter re-surfaces it. R6 (issue #12) 👑s — the hot-weekend outdoor slate: 'pluk de nacht' (open-air film festival), 'kaap amsterdam', 'strand zuid'. R7 (issue #13) 👑s: 'kwaku' (★4), \"jazz @ h'art\" (★5), 'pllek urban beach' (★4 — the cinema card; the canon 'Pllek — waterfront hang' stays a keep). Now ELEVEN entries against the ≤6 guidance — all Ness's explicit calls, but a prune round is due when the summer crowns expire; if everything is top, nothing is. R8 (issue #16) 👑s — six ★5 crowns, the summer-institutions slate: 'zomerlicht' (the Pampus Island restaurant — FIRST pick to ride triage-deck → board → TOP end to end), 'pride run', 'phono lake', 'scheepvaartmuseum' (the Summer Programme card), 'vondelpark openluchttheater', \"movies at h'art\" (the open-air cinema — distinct from the 'jazz @ h'art' crown, word-boundary keeps them apart). Now SEVENTEEN entries against the ≤6 guidance — the prune debt flagged at R6 and R7 is now urgent; when the summer crowns expire (most are dated runs), cut back hard.",
+  "_topPicksNote": "R3 issue #3 👑 escalations. Milkshake + Dekmantel are future festivals (late Jul) — TOP is armed and activates when they enter the feed. 't Lemmeke = current restaurant. ARTIS: Ness starred the bench 'ARTIS-Aquarium' card (weak kidsproof.nl link); routed to the canon 'ARTIS Royal Zoo' entry (same visit, real artis.nl link, guaranteed availability) so TOP actually sticks. 'queer amsterdam' = R5 late-compile from issues #8/#9: the Nieuwe Kerk WorldPride flagship ('Queer Amsterdam: The Pink City', opened 9 Jul) — TOP armed; the crawl dropped it from the 7/11 feed, activates when an adapter re-surfaces it. R6 (issue #12) 👑s — the hot-weekend outdoor slate: 'pluk de nacht' (open-air film festival), 'kaap amsterdam', 'strand zuid'. R7 (issue #13) 👑s: 'kwaku' (★4), \"jazz @ h'art\" (★5), 'pllek urban beach' (★4 — the cinema card; the canon 'Pllek — waterfront hang' stays a keep). Now ELEVEN entries against the ≤6 guidance — all Ness's explicit calls, but a prune round is due when the summer crowns expire; if everything is top, nothing is. R8 (issue #16) 👑s — six ★5 crowns, the summer-institutions slate: 'zomerlicht' (the Pampus Island restaurant — FIRST pick to ride triage-deck → board → TOP end to end), 'pride run', 'phono lake', 'scheepvaartmuseum' (the Summer Programme card), 'vondelpark openluchttheater', \"movies at h'art\" (the open-air cinema — distinct from the 'jazz @ h'art' crown, word-boundary keeps them apart). Now SEVENTEEN entries against the ≤6 guidance — the prune debt flagged at R6 and R7 is now urgent; when the summer crowns expire (most are dated runs), cut back hard. R9 (issue #17) 👑s: 'ij-hallen' (flea market, ★4) + 'worldpride' (★4). Now NINETEEN — the prune debt is overdue; when the summer crowns expire, cut hard.",
   "_topNote": "Ness's 👑 TOP escalations from the board — the tier ABOVE starredKeeps. Matched picks (word-boundary, any source incl. canon via feed.topMatches) get editorScore 10, lead the served deck ahead of everything, and carry the 'Top pick' pill. Keep this list SHORT (≤6) — if everything is top, nothing is."
 }
