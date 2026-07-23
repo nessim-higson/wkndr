@@ -1,41 +1,18 @@
 {
-  "generatedAt": "2026-07-16T15:03:23.681Z",
-  "count": 4,
+  "generatedAt": "2026-07-23T15:13:10.162Z",
+  "count": 2,
   "candidates": [
     {
-      "id": "web-i-amsterdam-black-harmony-afro-surinamese-terrace-concert",
-      "title": "Black Harmony Afro-Surinamese Terrace Concert",
-      "venue": "Muziekgebouw aan t IJ",
-      "area": "Amsterdam East",
-      "when": "Sat 18 Jul · Evening",
-      "category": "live",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fimages.pexels.com%2Fphotos%2F7626318%2Fpexels-photo-7626318.jpeg%3Fauto%3Dcompress%26cs%3Dtinysrgb%26fit%3Dcrop%26h%3D1200%26w%3D800&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fimages.pexels.com%2Fphotos%2F7626318%2Fpexels-photo-7626318.jpeg%3Fauto%3Dcompress%26cs%3Dtinysrgb%26fit%3Dcrop%26h%3D1200%26w%3D800",
-      "blurb": "Close-harmony vocals and Apinti percussion on terrace overlooking the IJ river.",
-      "source": "I amsterdam",
-      "link": "https://www.iamsterdam.com/en/whats-on/weekend-guide",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL"
-      ],
-      "freshness": "weekend",
-      "outdoor": true,
-      "kid": false,
-      "price": "ticketed",
-      "why": "One of five summer terrace concerts",
-      "editorScore": 5
-    },
-    {
-      "id": "web-i-amsterdam-festive-afro-surinamese-terrace-concert",
-      "title": "Festive Afro-Surinamese Terrace Concert",
-      "venue": "Muziekgebouw aan 't IJ",
-      "area": "Amsterdam East",
-      "when": "Sat 18 Jul · 18:00+",
-      "category": "live",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fimages.pexels.com%2Fphotos%2F29872348%2Fpexels-photo-29872348.jpeg%3Fauto%3Dcompress%26cs%3Dtinysrgb%26fit%3Dcrop%26h%3D1200%26w%3D800&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fimages.pexels.com%2Fphotos%2F29872348%2Fpexels-photo-29872348.jpeg%3Fauto%3Dcompress%26cs%3Dtinysrgb%26fit%3Dcrop%26h%3D1200%26w%3D800",
-      "blurb": "Celebrating Afro-Surinamese culture with live concert at waterside venue.",
-      "source": "I amsterdam",
-      "link": "https://www.iamsterdam.com/en/whats-on/weekend-guide",
+      "id": "web-i-amsterdam-your-little-black-book-de-hallen-foodhallen-maker-market",
+      "title": "De Hallen (Foodhallen + Maker Market)",
+      "venue": "De Hallen Amsterdam",
+      "area": "Oud-West",
+      "when": "Sat 25–Sun 26 · 11:00–late",
+      "category": "eat",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fmedia.nomadicmatt.com%2F2021%2Ffoodhallen1.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fmedia.nomadicmatt.com%2F2021%2Ffoodhallen1.jpg",
+      "blurb": "Indoor food hall with 20+ vendors, craft stalls, gallery cinema, independent shops. Perfect rainy-day shelter.",
+      "source": "I amsterdam, Your Little Black Book",
+      "link": "https://www.dehallen-amsterdam.nl/en",
       "weatherFit": [
         "HOT",
         "WARM",
@@ -43,24 +20,24 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "freshness": "weekend",
+      "freshness": "always",
       "outdoor": false,
-      "kid": false,
-      "price": "ticketed",
-      "why": "Ties to Kwaku festival spirit",
-      "editorScore": 5
+      "kid": true,
+      "price": "free",
+      "why": "All-weather indoor cultural hub",
+      "editorScore": 7
     },
     {
-      "id": "web-ra-2483937",
-      "title": "Klub Analog",
+      "id": "web-ra-2459039",
+      "title": "Last Seen",
       "venue": "Doka",
       "area": "",
-      "when": "Fri 17 Jul · 23:59",
+      "when": "Fri 24 Jul · 23:59",
       "category": "live",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.geitenboerderij.nl%2Fwp-content%2Fuploads%2Falgemeen-54.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fwww.geitenboerderij.nl%2Fwp-content%2Fuploads%2Falgemeen-54.jpg",
-      "blurb": "Young Duif, Piepotelli, Jaimy (2) at Doka.",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fimages.ra.co%2F685a7b50919cdc52a1ddef5a8048d23b6390ab53.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fimages.ra.co%2F685a7b50919cdc52a1ddef5a8048d23b6390ab53.jpg",
+      "blurb": "Gizem, no service at Doka.",
       "source": "Resident Advisor",
-      "link": "https://ra.co/events/2483937",
+      "link": "https://ra.co/events/2459039",
       "weatherFit": [
         "HOT",
         "WARM",
@@ -74,29 +51,6 @@
       "price": "",
       "why": "On Resident Advisor",
       "editorScore": 2
-    },
-    {
-      "id": "llm-kidsproof-artis-zoomeravonden",
-      "title": "ARTIS Zoomeravonden",
-      "venue": "ARTIS Zoo",
-      "area": "Amsterdam Oost",
-      "when": "Sat–Sun 18–19 Jul · evenings",
-      "category": "out",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.leukmetkids.nl%2Fwp-content%2Fuploads%2F2023%2F08%2FArtis-Zoomeravonden-1-scaled.jpeg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fwww.leukmetkids.nl%2Fwp-content%2Fuploads%2F2023%2F08%2FArtis-Zoomeravonden-1-scaled.jpeg",
-      "blurb": "Explore Amsterdam's zoo in evening light with live music. A magical summer experience for families.",
-      "source": "Kidsproof",
-      "link": "https://www.kidsproof.nl/amsterdam",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL"
-      ],
-      "freshness": "weekend",
-      "outdoor": true,
-      "kid": true,
-      "price": "ticketed",
-      "why": "Evening zoo visits with musical performances",
-      "editorScore": 5
     }
   ]
 }
