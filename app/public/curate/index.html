@@ -6,39 +6,41 @@
 <meta name="robots" content="noindex">
 <title>WKNDR — Curation Board</title>
 <style>
-:root{--paper:#F4F1E9;--ink:#1B1A17;--accent:#FF4A21;--gold:#E8A33D;--green:#2faa6a;--dim:#8B8578;--line:rgba(27,26,23,.14)}
+:root{--paper:#F4F1E9;--ink:#1B1A17;--accent:#FF4A21;--gold:#E8A33D;--green:#2faa6a;--dim:#8B8578;--line:rgba(27,26,23,.14);--sans:'Helvetica Neue',Helvetica,Arial,sans-serif}
 *{box-sizing:border-box}
 html{background:var(--paper)}
-body{font-family:-apple-system,'Helvetica Neue',Helvetica,system-ui,sans-serif;color:var(--ink);margin:0;padding:0 16px 150px}
+body{font-family:var(--sans);color:var(--ink);margin:0;padding:0 16px 150px;-webkit-font-smoothing:antialiased}
 .wrap{max-width:1180px;margin:0 auto}
 header{padding:38px 0 10px}
-.eyebrow{font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:11px;letter-spacing:.14em;color:var(--dim);margin:0 0 6px}
+.eyebrow{font-family:var(--sans);font-size:11px;letter-spacing:.14em;color:var(--dim);margin:0 0 6px}
 h1{font-size:clamp(28px,5vw,40px);font-weight:800;letter-spacing:-.03em;margin:0}
 h1 .dot{color:var(--accent)}
 header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:15px}
 .tabs{position:sticky;top:0;z-index:8;display:flex;gap:8px;padding:14px 0 12px;background:linear-gradient(var(--paper) 82%,rgba(244,241,233,0))}
-.tab{font-family:ui-monospace,monospace;font-size:12px;font-weight:700;letter-spacing:.08em;padding:11px 18px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--dim);cursor:pointer}
+.tab{font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:.08em;padding:11px 18px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--dim);cursor:pointer}
 .tab.on{background:var(--ink);border-color:var(--ink);color:#fff}
 .tab .n{opacity:.6;font-weight:400}
-.cathead{font-family:ui-monospace,monospace;font-size:12px;letter-spacing:.14em;color:var(--dim);margin:40px 0 12px;padding-top:18px;border-top:1px solid var(--line);text-transform:uppercase}
-.cathead.hot{color:var(--accent);border-top:2px solid var(--accent)}
-.cathead.lib{color:var(--gold);border-top:2px solid var(--gold)}
+.cathead{font-family:var(--sans);font-size:15px;font-weight:700;letter-spacing:-.01em;color:var(--ink);margin:46px 0 14px;padding-top:16px;border-top:1px solid var(--line)}
+.cathead.hot{border-top:2px solid var(--accent)}
+.cathead.lib{border-top:2px solid var(--gold)}
+.cathead .d{display:block;font-weight:400;font-size:12.5px;letter-spacing:0;color:var(--dim);margin-top:4px;line-height:1.4}
+.cathead.sub{font-size:12.5px;font-weight:600;color:var(--dim);border-top:0;margin:24px 0 10px;padding-top:0}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
 .card{background:#fff;border-radius:16px;overflow:hidden;border:1px solid var(--line);display:flex;flex-direction:column;position:relative;transition:opacity .3s,transform .3s}
 .card.dead{opacity:0;transform:scale(.92);pointer-events:none}
 .card img{width:100%;aspect-ratio:2/3;object-fit:cover;display:block;background:#e8e4da}
-.badge{position:absolute;top:10px;left:10px;color:#fff;font-family:ui-monospace,monospace;font-size:9.5px;font-weight:700;letter-spacing:.08em;padding:4px 8px;border-radius:999px}
+.badge{position:absolute;top:10px;left:10px;color:#fff;font-family:var(--sans);font-size:9.5px;font-weight:700;letter-spacing:.08em;padding:4px 8px;border-radius:999px}
 .badge.saved{background:var(--gold)}
 .badge.new{background:var(--ink)}
 .badge.appr{background:var(--green)}
 .badge.pile{background:var(--accent)}
 .badge.lens{background:#2b6cb0}
-.lowres{position:absolute;bottom:10px;left:10px;background:#c33;color:#fff;font-family:ui-monospace,monospace;font-size:9px;font-weight:700;letter-spacing:.06em;padding:3px 8px;border-radius:999px}
+.lowres{position:absolute;bottom:10px;left:10px;background:#c33;color:#fff;font-family:var(--sans);font-size:9px;font-weight:700;letter-spacing:.06em;padding:3px 8px;border-radius:999px}
 .card img{cursor:zoom-in}
 #veil{position:fixed;inset:0;z-index:60;display:none;place-items:center;background:rgba(6,5,4,.94);backdrop-filter:blur(8px);cursor:zoom-out;padding:20px}
 #veil.on{display:grid}
 #veil img{max-width:100%;max-height:calc(100dvh - 80px);object-fit:contain;border-radius:6px;box-shadow:0 18px 60px rgba(0,0,0,.6);cursor:zoom-out}
-#veilcap{position:absolute;bottom:16px;left:20px;right:20px;text-align:center;font-family:ui-monospace,monospace;font-size:11px;letter-spacing:.06em;color:rgba(255,255,255,.75);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#veilcap{position:absolute;bottom:16px;left:20px;right:20px;text-align:center;font-family:var(--sans);font-size:11px;letter-spacing:.06em;color:rgba(255,255,255,.75);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .kill{position:absolute;top:10px;right:10px;width:34px;height:34px;border-radius:999px;border:0;background:rgba(27,26,23,.75);color:#fff;font-size:16px;line-height:1;cursor:pointer;backdrop-filter:blur(4px)}
 .grip{position:absolute;top:10px;right:52px;height:34px;padding:0 10px;display:flex;align-items:center;border-radius:999px;background:rgba(27,26,23,.75);color:#fff;font-size:13px;letter-spacing:1px;cursor:grab;user-select:none;backdrop-filter:blur(4px);z-index:2}
 .grip:active{cursor:grabbing}
@@ -50,13 +52,13 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 .meta h3 a:hover{color:var(--accent);border-color:var(--accent)}
 .meta h3 .ext{font-size:10px;color:var(--dim);margin-left:3px}
 .meta .sub{font-size:11.5px;color:var(--dim);line-height:1.35}
-.meta .src{font-family:ui-monospace,monospace;font-size:9.5px;letter-spacing:.06em;color:var(--dim)}
+.meta .src{font-family:var(--sans);font-size:9.5px;letter-spacing:.06em;color:var(--dim)}
 .stars{display:flex;gap:2px}
 .star{border:0;background:none;font-size:21px;line-height:1;cursor:pointer;color:#D8D2C4;padding:1px 2px}
 .star.on{color:var(--gold)}
 .star:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
 .row{display:flex;gap:5px;flex-wrap:wrap}
-.b{font-family:ui-monospace,monospace;font-size:10px;font-weight:700;letter-spacing:.06em;padding:6px 9px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--dim);cursor:pointer}
+.b{font-family:var(--sans);font-size:10px;font-weight:700;letter-spacing:.06em;padding:6px 9px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--dim);cursor:pointer}
 .b:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .b.imgup.on{background:#2faa6a;border-color:#2faa6a;color:#fff}
 .b.imgdn.on{background:#c33;border-color:#c33;color:#fff}
@@ -68,7 +70,7 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 .inp:focus{outline:2px solid var(--accent);outline-offset:1px}
 .bar{position:fixed;left:0;right:0;bottom:0;background:rgba(27,26,23,.97);color:#fff;padding:13px 16px calc(13px + env(safe-area-inset-bottom));z-index:9}
 .barin{max-width:1180px;margin:0 auto;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
-.count{font-family:ui-monospace,monospace;font-size:11.5px;color:rgba(255,255,255,.75);flex:1;min-width:200px}
+.count{font-family:var(--sans);font-size:11.5px;color:rgba(255,255,255,.75);flex:1;min-width:200px}
 .send,.copybtn{border:0;font-weight:700;font-size:13.5px;padding:11px 18px;border-radius:999px;cursor:pointer}
 .send{background:var(--accent);color:#fff}
 .copybtn{background:rgba(255,255,255,.14);color:#fff}
@@ -76,22 +78,22 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 /* ── clarity pass (board V.9.15): plain intro + glyph legend + per-card "why / your call" ── */
 .lede{color:#4a463e;max-width:72ch;line-height:1.5;margin:10px 0 0;font-size:15px}
 .lede b{color:var(--ink)}
-.flow{font-family:ui-monospace,monospace;font-size:11px;letter-spacing:.03em;color:var(--dim);margin:12px 0 0;line-height:1.6}
+.flow{font-family:var(--sans);font-size:11px;letter-spacing:.03em;color:var(--dim);margin:12px 0 0;line-height:1.6}
 .flow .step{color:var(--ink);font-weight:700}
 .legend{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:14px 0 0}
-.legend .lbl{font-family:ui-monospace,monospace;font-size:10px;letter-spacing:.12em;color:var(--dim);text-transform:uppercase;margin-right:2px}
-.legend .chip{font-family:ui-monospace,monospace;font-size:10.5px;letter-spacing:.02em;color:#4a463e;background:#fff;border:1px solid var(--line);border-radius:999px;padding:5px 10px}
+.legend .lbl{font-family:var(--sans);font-size:10px;letter-spacing:.12em;color:var(--dim);text-transform:uppercase;margin-right:2px}
+.legend .chip{font-family:var(--sans);font-size:10.5px;letter-spacing:.02em;color:#4a463e;background:#fff;border:1px solid var(--line);border-radius:999px;padding:5px 10px}
 .legend .chip b{color:var(--ink)}
 .why{font-size:11.5px;line-height:1.35;color:#6a655c;background:#faf8f3;border-left:2px solid var(--line);padding:5px 8px;border-radius:0 6px 6px 0}
 .card .ruledtag{display:none}
 .card.ruled{border-color:var(--green);box-shadow:0 0 0 2px rgba(47,170,106,.22)}
-.card.ruled .ruledtag{display:block;font-family:ui-monospace,monospace;font-size:10px;font-weight:700;letter-spacing:.04em;color:var(--green)}
+.card.ruled .ruledtag{display:block;font-family:var(--sans);font-size:10px;font-weight:700;letter-spacing:.04em;color:var(--green)}
 </style>
 </head>
 <body>
 <div class="wrap">
 <header>
-<p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD V.9.15</p>
+<p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD V.9.16</p>
 <h1>Your weekend deck, before it ships<span class="dot">.</span></h1>
 <p class="lede"><b>Rule on Amsterdam's picks for this weekend.</b> Two tabs below: <b>IN ROTATION</b> is what's live now — this weekend's deck plus your approved library. <b>NEW FINDS</b> is candidates that are <b>not live yet</b>. Every card tells you why it's there and what a tap does.</p>
 <p class="flow">Your calls don't go live the instant you tap: <span class="step">rule here</span> → <span class="step">Submit → GitHub</span> → compiled &amp; shipped → your testers see it. Progress saves in this browser as you go.</p>
@@ -173,7 +175,7 @@ Promise.all([
   // 10 min (max-age=600), so a just-shipped board fix can lag in an open tab; the eyebrow makes
   // stale-board-vs-fresh-data visible at a glance (2026-07-12: an old tab's tier-mirror pile read
   // as "the board is wrong" when it was just cached).
-  const BOARD_V='V.9.15';
+  const BOARD_V='V.9.16';
   document.getElementById('eyebrow').textContent='WKNDR · CURATION BOARD '+BOARD_V+' · FEED '+(d.generatedAt||'').slice(0,16).replace('T',' · ');
   const board=document.getElementById('board');board.innerHTML='';
   const rot=document.createElement('div');rot.id='tab-rot';board.appendChild(rot);
@@ -260,17 +262,21 @@ Promise.all([
   const lens=[...dated,...summer];
   {
     const sunD=new Date(WKEND),satD=new Date(sunD.getFullYear(),sunD.getMonth(),sunD.getDate()-1);
-    const M=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+    const M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     const wkLabel=(satD.getMonth()===sunD.getMonth()?satD.getDate():satD.getDate()+' '+M[satD.getMonth()])+'–'+sunD.getDate()+' '+M[sunD.getMonth()];
     const lh=document.createElement('div');lh.className='cathead hot';
-    lh.textContent='THE LENS: THIS WEEKEND ('+wkLabel+')'+(WX?' · '+WX.hi+'° '+WX.mode.replace('_',' & '):'')+' — THE WEATHER-RIGHT SLICE · '+dated.length+' DATED'+(summer.length?' + '+summer.length+' SUMMER RUNS (open-air cinema, beaches, terraces — in season now)':'')+(sunny?' · OUTDOOR FIRST':'')+(WX?'':' · FORECAST UNAVAILABLE — WEATHER FILTER OFF')+' (same cards ride the pile & feed below — a verdict here counts everywhere)';
+    lh.innerHTML='This weekend · '+wkLabel+(WX?' · '+WX.hi+'°':'')
+      +'<span class="d">The tightest slice: '+dated.length+' pick'+(dated.length===1?'':'s')+' dated this weekend that fit the forecast'
+      +(summer.length?', plus '+summer.length+' in-season outdoor run'+(summer.length===1?'':'s'):'')
+      +(sunny?' · outdoor first':'')+(WX?'':' · forecast unavailable — weather filter off')
+      +'. The same cards ride the pile &amp; feed below — a verdict here counts everywhere.</span>';
     rot.appendChild(lh);
     const lg=document.createElement('div');lg.className='grid';rot.appendChild(lg);
     dated.forEach(p=>addCard(p,lg,'lens',pilePos.get(p.id)||0,true));
     summer.forEach(p=>addCard({...p,_summer:true},lg,'lens',pilePos.get(p.id)||0,true));
   }
   if(pile.length){
-    const ph=document.createElement('div');ph.className='cathead hot';ph.textContent='THE WEEKEND PILE — '+pile.length+' CARDS'+(stamped?': THE 10 PROJECTED OPENERS + EVERYTHING LIVE YOU’VE WAVED IN, IN THE APP’S OWN SERVE ORDER':', IN ORDER')+' (drag ⠿ to compose the opening sequence — your order rides Submit and deals first · ▲ lead = up this weekend · ▼ later = not this week)';rot.appendChild(ph);
+    const ph=document.createElement('div');ph.className='cathead hot';ph.innerHTML="This weekend's pile · "+pile.length+' card'+(pile.length===1?'':'s')+'<span class="d">The opening order your testers see first. Drag ⠿ to reorder — your order rides Submit. On a card: ▲ lead = up this weekend · ▼ later = not this week.</span>';rot.appendChild(ph);
     const pg=document.createElement('div');pg.className='grid';rot.appendChild(pg);
     pile.forEach((p,i)=>addCard(p,pg,'pile',i+1,true));
     enableDrag(pg);
@@ -278,19 +284,19 @@ Promise.all([
   // ——— IN ROTATION: this weekend's feed (canonical — seeds the cross-section dupe suppressor) ———
   const byCat={};
   (d.picks||[]).forEach(p=>{(byCat[p.category]??=[]).push(p);seenTok.add(tok(p.title))});
-  const fh=document.createElement('div');fh.className='cathead hot';fh.textContent="THIS WEEKEND'S FEED — "+(d.picks||[]).length+' LIVE';rot.appendChild(fh);
+  const fh=document.createElement('div');fh.className='cathead hot';fh.innerHTML="This weekend's feed · "+(d.picks||[]).length+' live<span class="d">Everything live this weekend — what the deck keeps serving as you swipe onward. Grouped by category.</span>';rot.appendChild(fh);
   Object.keys(CAT).filter(k=>byCat[k]).forEach(k=>{
-    const h=document.createElement('div');h.className='cathead';h.textContent=CAT[k]+' — '+byCat[k].length;rot.appendChild(h);
+    const h=document.createElement('div');h.className='cathead sub';h.textContent=CAT[k]+' · '+byCat[k].length;rot.appendChild(h);
     const g=document.createElement('div');g.className='grid';rot.appendChild(g);
     byCat[k].forEach(p=>addCard(p,g,null,0,true));
   });
   // ——— IN ROTATION: the approved canon library (twins already in this week's feed are hidden) ———
   if(canon.length){
     const lc=fresh(canon);
-    const lh=document.createElement('div');lh.className='cathead lib';lh.textContent='THE CANON LIBRARY — '+lc.keep.length+' IN ROTATION ('+canon.filter(p=>p.approved).length+' board-approved) · kill to retire'+(lc.hidden?' · '+lc.hidden+' hidden (in this week\'s feed above)':'');rot.appendChild(lh);
+    const lh=document.createElement('div');lh.className='cathead lib';lh.innerHTML='Your library · '+lc.keep.length+' in rotation<span class="d">'+canon.filter(p=>p.approved).length+' approved picks, always in rotation. Kill to retire'+(lc.hidden?' · '+lc.hidden+' hidden (already in this week\'s feed)':'')+'.</span>';rot.appendChild(lh);
     const byC={};lc.keep.forEach(p=>{(byC[p.category]??=[]).push(p)});
     Object.keys(CAT).filter(k=>byC[k]).forEach(k=>{
-      const h=document.createElement('div');h.className='cathead';h.textContent=CAT[k]+' — '+byC[k].length;rot.appendChild(h);
+      const h=document.createElement('div');h.className='cathead sub';h.textContent=CAT[k]+' · '+byC[k].length;rot.appendChild(h);
       const g=document.createElement('div');g.className='grid';rot.appendChild(g);
       byC[k].sort((a,b)=>(b.approved?1:0)-(a.approved?1:0)).forEach(p=>addCard(p,g,p.approved?'appr':null));
     });
@@ -301,26 +307,26 @@ Promise.all([
   // PROMOTE into the live deck via restamp (image + judge score intact). ———
   const air=fresh(pending);
   if(air.keep.length){
-    const h=document.createElement('div');h.className='cathead hot';h.textContent='THE AIRLOCK — '+air.keep.length+' NEW FINDS, WEEKEND-TOPICAL FIRST (★ or 👑 waves one into the live deck · ✕ kills it — nothing ships unapproved)';nw.appendChild(h);
+    const h=document.createElement('div');h.className='cathead hot';h.innerHTML='New finds — not live yet · '+air.keep.length+'<span class="d">This run\'s fresh finds, weekend-topical first. ★ or 👑 waves one into the deck · ✕ kills it. Nothing ships until you do.</span>';nw.appendChild(h);
     const g=document.createElement('div');g.className='grid';nw.appendChild(g);
     air.keep.forEach(p=>addCard(p,g,'new',0,true));
   }
   // ——— then trending → bench → canon candidates (each hides twins shown in ANY earlier section) ———
   const tr2=fresh(trending);
   if(tr2.keep.length){
-    const h=document.createElement('div');h.className='cathead hot';h.textContent='TRENDING THIS WEEK — '+tr2.keep.length+' FRESH FINDS (star to flow in · ✕ to pass)';nw.appendChild(h);
+    const h=document.createElement('div');h.className='cathead hot';h.innerHTML='Trending this week · '+tr2.keep.length+'<span class="d">Star to flow one in · ✕ to pass.</span>';nw.appendChild(h);
     const g=document.createElement('div');g.className='grid';nw.appendChild(g);
     tr2.keep.forEach(p=>addCard({...p,id:'trend-'+p.title.toLowerCase().replace(/[^a-z0-9]+/g,'-')},g,'new',0,true));
   }
   const be2=fresh(bench);
   if(be2.keep.length){
-    const h=document.createElement('div');h.className='cathead';h.textContent='THE BENCH — '+be2.keep.length+' ALTERNATIVES (star to promote)'+(be2.hidden?' · '+be2.hidden+' hidden (shown above)':'');nw.appendChild(h);
+    const h=document.createElement('div');h.className='cathead';h.innerHTML='The bench · '+be2.keep.length+'<span class="d">Alternatives — star to promote'+(be2.hidden?' · '+be2.hidden+' hidden (shown above)':'')+'.</span>';nw.appendChild(h);
     const g=document.createElement('div');g.className='grid';nw.appendChild(g);
     be2.keep.forEach(p=>addCard(p,g,'new',0,true));
   }
   const cc2=fresh(canonC);
   if(cc2.keep.length){
-    const h=document.createElement('div');h.className='cathead';h.textContent='CANON CANDIDATES — '+cc2.keep.length+' FOR THE PERMANENT LIBRARY (+canon to approve · ✕ to reject)'+(cc2.hidden?' · '+cc2.hidden+' hidden (already in rotation)':'');nw.appendChild(h);
+    const h=document.createElement('div');h.className='cathead';h.innerHTML='Library candidates · '+cc2.keep.length+'<span class="d">For your permanent library — +canon to approve · ✕ to reject'+(cc2.hidden?' · '+cc2.hidden+' hidden (already in rotation)':'')+'.</span>';nw.appendChild(h);
     const g=document.createElement('div');g.className='grid';nw.appendChild(g);
     cc2.keep.forEach(p=>addCard({...p,id:'canon-cand-'+p.title.toLowerCase().replace(/[^a-z0-9]+/g,'-')},g,'new',0,true));
   }

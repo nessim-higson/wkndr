@@ -14,6 +14,15 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [board V.9.16] — 2026-07-22 — Helvetica + declutter pass
+- Ness: "the type on the entire tool should be Helvetica and cleaner — there is so much happening."
+- One typeface everywhere (`--sans` Helvetica stack); killed all the `ui-monospace` ALL-CAPS/wide-track
+  labels that made the board read as noise.
+- Section headers rewritten from long ALL-CAPS run-on sentences to a short **Title Case label + one
+  light detail line** ("This weekend · 25–26 Jul · 26°" / "This weekend's pile · 24 cards" / "This
+  weekend's feed · 81 live — what the deck keeps serving as you swipe"). Category sub-heads lightened.
+- (Still open, per Ness: the lens→promote→pile→reorder flow should be one live workspace — next pass.)
+
 ## [board V.9.15] — 2026-07-22 — curation board clarity pass (words + trust)
 - Ness's read: the board was confusing — you couldn't tell what you were looking at. Two fixes.
 - **Words:** the ~250-word jargon-wall header (a dozen named concepts before a single card) is gone —
