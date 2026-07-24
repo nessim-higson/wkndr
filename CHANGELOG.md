@@ -33,6 +33,23 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
   ("why it's off") on the row. Historical baked verdicts (r1) excluded so it's only calls that haven't landed.
 - No backend needed — the board already fetches the feed, so it checks its own work.
 
+## [board V.9.20] — 2026-07-23 — reason picker + upvote-anywhere + auto-ranked "Up next"
+- Fixes Ness's three asks in one pass (and respects the caveat: "I don't want to rank 80 cards — automate it").
+- **Reason picker.** ✕ no longer means "delete." It asks **"What's wrong with it?"** → chips: wrong link ·
+  bad image · low-res · off-brand · seen it too much · duplicate. The reason ROUTES the fix — "keep"
+  reasons (wrong link / bad image / low-res) flag the pick for a fix and it STAYS live; the rest remove it.
+  Reason rides Submit (`why:<reason>`) so the compile does the right thing. This is the structural fix for
+  the R9 Scheepvaartmuseum error (a "wrong link" would never again nuke a crown).
+- **Upvote a New Find → it lands in your deck instantly.** ▲ Add on a New Finds card (Advanced) now pulls
+  it into the Simple view's top 10 with a NEW badge (via `extras`, persisted) — no more "crown it and it
+  just sits there." Rides Submit as a promotion.
+- **The tail is now honest.** Below the top 10, "Swap in a card" → **"Up next — auto-ranked"**: the rest of
+  the deck viewers see, in the system's order (you don't hand-rank it — the machine does, and it's getting
+  automated). Tap ↑ to promote one into your top 10. Answers "are those shown to viewers / can I reorder?"
+  in the UI: yes shown, no you don't rank them.
+- Verified: keep-reason stays + flags + status shows "wrong link → fixing" · remove-reason drops · New Find
+  → top 10 + NEW badge · payload carries why:<reason> · Up next filtered + ↑ promote. No console errors.
+
 ## [V.10.15] — 2026-07-23 — the deck opens with The Lens · crowns pruned 18→6
 - **Opening order = The Lens** (weekly.pile): WorldPride · Kwaku · De Parade · IJ-Hallen Flea Market ·
   Wils at the Farm · Milkshake · Vondelpark · Pluk de Nacht · Bottomless Brunch · VriendenLoterij.

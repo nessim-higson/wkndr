@@ -127,12 +127,22 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 .strow .ststate{flex:none;font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:999px}
 .strow .ststate.pending{background:#fdf0e8;color:#c2570f}
 .strow .ststate.done{background:#e8f6ef;color:var(--green)}
+/* ── REASON PICKER (V.9.20): ✕ asks WHY, and the reason routes the fix ── */
+.reasons{display:none;flex-wrap:wrap;gap:5px;padding-top:2px}
+.card.asking .reasons{display:flex}
+.card.asking .row,.card.asking .stars,.card.asking .inp{display:none}
+.reasons .rq{flex-basis:100%;font-size:11px;font-weight:700;color:var(--accent);margin-bottom:1px}
+.rchip{font-family:var(--sans);font-size:11px;font-weight:600;padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--ink);cursor:pointer}
+.rchip:hover{border-color:var(--accent);color:var(--accent)}
+.rchip.keep{border-style:dashed}
+/* new-find that's been pulled into the simple deck */
+.pcard.isnew .pt:after{content:'NEW';margin-left:6px;font-size:9px;font-weight:800;color:#fff;background:var(--ink);padding:1px 5px;border-radius:999px;vertical-align:1px}
 </style>
 </head>
 <body>
 <div class="wrap">
 <header>
-<p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD V.9.19</p>
+<p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD V.9.20</p>
 <h1>Your weekend<span class="dot">.</span></h1>
 <div id="modetoggle"><button class="on" data-mode="simple">Simple</button><button data-mode="advanced">Advanced</button></div>
 </header>
@@ -170,8 +180,11 @@ const CAT={out:'Out & about',eat:'Eat',drink:'Drink',art:'Art & galleries',live:
 let V={},baked={},feedKey='',PILE=null;   // PILE = hand-dragged pile order (titles) — null until a drag
 let renderPile=()=>{};   // rebuilt inside the feed load — lets a card's ▲/👑/✕ live-update the pile
 let renderStatus=()=>{};   // "did my call land?" panel — recompared to the live feed on every verdict
-function store(){try{localStorage.setItem(feedKey,JSON.stringify({V,PILE}))}catch(e){}}
-function restore(){try{const s=JSON.parse(localStorage.getItem(feedKey)||'{}');V=s.V||{};PILE=s.PILE||null}catch(e){}}
+let renderOpen=()=>{};   // the Simple view's ordered deck (top 10 + up-next) — re-rendered on any change
+let addExtra=()=>{};     // pull a NEW FIND into the Simple deck the instant you upvote it in Advanced
+let extras=[];           // New Finds you've upvoted (not in the live feed yet) — ride the deck + Submit
+function store(){try{localStorage.setItem(feedKey,JSON.stringify({V,PILE,extras}))}catch(e){}}
+function restore(){try{const s=JSON.parse(localStorage.getItem(feedKey)||'{}');V=s.V||{};PILE=s.PILE||null;extras=s.extras||[]}catch(e){}}
 // longest matching key wins ("bakers & roasters" beats "bak")
 function bakedFor(title){const t=title.toLowerCase();let best=null,len=-1;for(const k in baked){if(t.includes(k)&&k.length>len){best=baked[k];len=k.length}}return best}
 // word-order-blind identity key (mirror of the pipeline's tokKey) — powers cross-section dupe suppression
@@ -229,7 +242,7 @@ Promise.all([
   // 10 min (max-age=600), so a just-shipped board fix can lag in an open tab; the eyebrow makes
   // stale-board-vs-fresh-data visible at a glance (2026-07-12: an old tab's tier-mirror pile read
   // as "the board is wrong" when it was just cached).
-  const BOARD_V='V.9.19';
+  const BOARD_V='V.9.20';
   document.getElementById('eyebrow').textContent='WKNDR · CURATION BOARD '+BOARD_V+' · FEED '+(d.generatedAt||'').slice(0,16).replace('T',' · ');
   const board=document.getElementById('board');board.innerHTML='';
   const rot=document.createElement('div');rot.id='tab-rot';board.appendChild(rot);
@@ -417,16 +430,18 @@ Promise.all([
   // sends the order (rides pileLine → weekly.pile). The full board is the Advanced view. ———
   {
     const picks=(d.picks||[]);
-    const titleOf=new Map(picks.map(p=>[p.title,p]));
-    const served=picks.filter(p=>p.servePos!=null).sort((a,b)=>a.servePos-b.servePos);
+    const feedServed=picks.filter(p=>p.servePos!=null).sort((a,b)=>a.servePos-b.servePos);
+    const pick=t=>feedServed.find(p=>p.title===t)||extras.find(p=>p.title===t);
+    const isExtra=t=>extras.some(e=>e.title===t);
     const MAX=10;
-    if(!PILE||!PILE.length)PILE=served.slice(0,MAX).map(p=>p.title);   // seed = the live opening
-    const openList=document.getElementById('openlist'),pool=document.getElementById('pool'),openHead=document.getElementById('openhead');
+    if(!PILE||!PILE.length)PILE=feedServed.slice(0,MAX).map(p=>p.title);   // seed = the live opening (auto-ranked)
+    const openList=document.getElementById('openlist'),pool=document.getElementById('pool'),openHead=document.getElementById('openhead'),poolHead=document.getElementById('poolhead');
     const sub=p=>[p.venue,p.when].filter(Boolean).join(' · ');
     const dropped=new Set();   // cards you explicitly removed — so refill can't boomerang them back
-    const fill=()=>{for(const p of served){if(PILE.length>=MAX)break;if(!PILE.includes(p.title)&&!dropped.has(p.title))PILE.push(p.title)}};
+    const fill=()=>{for(const p of feedServed){if(PILE.length>=MAX)break;if(!PILE.includes(p.title)&&!dropped.has(p.title))PILE.push(p.title)}};
     const addOpen=t=>{dropped.delete(t);PILE=PILE.filter(x=>x!==t);if(PILE.length>=MAX)PILE=PILE.slice(0,MAX-1);PILE.push(t);store();renderOpen()};
     const removeOpen=t=>{dropped.add(t);PILE=PILE.filter(x=>x!==t);fill();store();renderOpen()};
+    addExtra=p=>{if(!extras.some(x=>x.title===p.title))extras.push(p);addOpen(p.title)};   // upvote a New Find → straight into your top 10
     function openDrag(list){
       if(!list.__dnd){list.__dnd=true;list.addEventListener('dragover',e=>{if(!list.__drag)return;e.preventDefault();
         const sib=[...list.children].filter(c=>c!==list.__drag).find(c=>{const r=c.getBoundingClientRect();return e.clientY<r.top+r.height/2});
@@ -436,26 +451,30 @@ Promise.all([
         el.addEventListener('dragstart',e=>{list.__drag=el;el.classList.add('dragging');e.dataTransfer.effectAllowed='move'});
         el.addEventListener('dragend',()=>{el.draggable=false;el.classList.remove('dragging');list.__drag=null;PILE=[...list.children].map(c=>c.dataset.title);store();renderOpen()})});
     }
-    function renderOpen(){
-      const items=PILE.map(t=>titleOf.get(t)).filter(Boolean).slice(0,MAX);
-      openHead.innerHTML='Your '+items.length+' opening cards<span class="d">Exactly what your testers see first, in this order. Drag ⠿ to reorder · − to drop one · Submit sends it live.</span>';
+    renderOpen=function(){
+      const items=PILE.map(pick).filter(Boolean).slice(0,MAX);
+      openHead.innerHTML='Your top '+items.length+' — the cards that open the deck<span class="d">The only list you hand-order. Drag ⠿ to reorder · − to drop one · Submit sends it live.</span>';
       openList.innerHTML='';
       items.forEach((p,i)=>{const el=document.createElement('div');el.className='ocard';el.dataset.title=p.title;
         el.innerHTML='<span class="num">'+(i+1)+'</span><span class="ogrip" title="Drag to reorder">⠿</span>'
           +'<img loading="lazy" src="'+(p.image||'')+'" alt="">'
-          +'<div class="ot"><h4>'+p.title+'</h4><div class="os">'+sub(p)+'</div></div>'
+          +'<div class="ot"><h4>'+p.title+(isExtra(p.title)?' <span style="font-size:9px;font-weight:800;color:#fff;background:var(--ink);padding:1px 5px;border-radius:999px;vertical-align:2px">NEW</span>':'')+'</h4><div class="os">'+sub(p)+'</div></div>'
           +'<button class="orm" title="Remove from opening">−</button>';
         el.querySelector('.orm').addEventListener('click',()=>removeOpen(p.title));
         openList.appendChild(el)});
       openDrag(openList);
       const inOpen=new Set(PILE.slice(0,MAX));
+      const universe=[...feedServed,...extras.filter(e=>!feedServed.some(b=>b.title===e.title))];
+      const upnext=universe.filter(p=>!inOpen.has(p.title)).length;
+      poolHead.innerHTML='Up next — auto-ranked · '+upnext+'<span class="d">The rest of the deck your viewers see, in the system’s order — you don’t rank these (that’s the machine’s job, and it’s getting automated). Tap ↑ to pull one into your top 10.</span>';
       pool.innerHTML='';
-      served.forEach(p=>{const el=document.createElement('div');el.className='pcard'+(inOpen.has(p.title)?' inopen':'');
-        el.innerHTML='<button class="padd" title="'+(inOpen.has(p.title)?'In your 10 — tap to remove':'Add to your 10')+'">'+(inOpen.has(p.title)?'✓':'+')+'</button>'
+      universe.filter(p=>!inOpen.has(p.title)).forEach(p=>{const el=document.createElement('div');
+        el.className='pcard'+(isExtra(p.title)?' isnew':'');
+        el.innerHTML='<button class="padd" title="Promote into your top 10">↑</button>'
           +'<img loading="lazy" src="'+(p.image||'')+'" alt=""><div class="pt">'+p.title+'</div>';
-        el.querySelector('.padd').addEventListener('click',e=>{e.stopPropagation();inOpen.has(p.title)?removeOpen(p.title):addOpen(p.title)});
+        el.querySelector('.padd').addEventListener('click',e=>{e.stopPropagation();addOpen(p.title)});
         pool.appendChild(el)});
-    }
+    };
     renderOpen();
     const mt=document.getElementById('modetoggle');
     mt.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{
@@ -475,17 +494,20 @@ Promise.all([
     const st=document.getElementById('status');
     const feedKeys=new Set((d.picks||[]).map(p=>tok(p.title)));
     renderStatus=()=>{
-      // kills (always this-round) + flags you added THIS session (r1 = a pre-baked prior-round verdict,
-      // already compiled — excluded so the panel is only "calls that haven't landed yet").
-      const flags=Object.values(V).filter(v=>v&&(v.killed||((v.img==='bad'||v.betterImage||v.note)&&!v.r1)));
+      // kills + flags (a "keep" reason: wrong link / bad image) you added THIS session. r1 = a pre-baked
+      // prior-round verdict, already compiled — excluded so the panel is only "calls that haven't landed".
+      const RL={link:'wrong link → fixing',image:'bad image → swapping',lowres:'low-res → swapping',offbrand:'off-brand → removing',seen:'seen too much → resting',dupe:'duplicate → merging'};
+      const flags=Object.values(V).filter(v=>v&&(v.killed||v.flag||((v.img==='bad'||v.betterImage||v.note)&&!v.r1)));
       if(!flags.length){st.style.display='none';st.innerHTML='';return}
       st.style.display='';
-      const pend=flags.filter(v=>feedKeys.has(tok(v.t)));
+      // a KILL lands when the card LEAVES the feed; a keep-flag (link/image fix) lands when the card STAYS
+      // but its problem is resolved — which the board can't see yet, so it reads "pending" until compiled.
+      const isPending=v=>v.killed?feedKeys.has(tok(v.t)):true;
+      const pend=flags.filter(isPending);
       const rows=flags.map(v=>{
-        const live=feedKeys.has(tok(v.t));
-        const type=v.killed?'killed':v.img==='bad'?'bad image':v.betterImage?'new image':'note';
-        const state=live?'<span class="ststate pending">● still live — pending ship</span>'
-                        :'<span class="ststate done">✓ dropped / shipped</span>';
+        const type=v.reason?(RL[v.reason]||v.reason):v.killed?'cancelled':v.img==='bad'?'bad image':v.betterImage?'new image':'note';
+        const state=isPending(v)?'<span class="ststate pending">● pending ship</span>'
+                                :'<span class="ststate done">✓ dropped / shipped</span>';
         return '<div class="strow"><span class="sttitle">'+v.t+'</span><span class="sttype">'+type+'</span>'
           +(v.note?'<span class="stnote">“'+v.note+'”</span>':'')+state+'</div>';
       }).join('');
@@ -527,6 +549,13 @@ function addCard(p,g,tag,pos,probe){
     +'<div class="row"><button class="b imgup">IMG ✓</button><button class="b imgdn">IMG ✗</button><button class="b canon">+CANON</button><button class="b topb" title="Escalate: leads the deck with a Top pick pill">👑 TOP</button><button class="b leadb" title="Add to this weekend&#39;s pile (up this weekend, under TOPs)">▲ Add</button><button class="b laterb" title="This weekend only: sinks to the back of the pile (not a kill)">▼ LATER</button></div>'
     +'<input class="inp note" placeholder="note — why / what&#39;s off / bad link">'
     +'<input class="inp better" placeholder="better image URL">'
+    +'<div class="reasons"><span class="rq">What’s wrong with it?</span>'
+      +'<button class="rchip keep" data-r="link">wrong link</button>'
+      +'<button class="rchip keep" data-r="image">bad image</button>'
+      +'<button class="rchip keep" data-r="lowres">low-res</button>'
+      +'<button class="rchip" data-r="offbrand">off-brand</button>'
+      +'<button class="rchip" data-r="seen">seen it too much</button>'
+      +'<button class="rchip" data-r="dupe">duplicate</button></div>'
     +'<div class="ruledtag">✓ your call — rides Submit</div>'
     +'</div>';
   const get=()=>V[p.id]??={t:p.title};
@@ -535,7 +564,16 @@ function addCard(p,g,tag,pos,probe){
   const stars=el.querySelectorAll('.star');
   const paint=n=>stars.forEach(s=>s.classList.toggle('on',+s.dataset.n<=n));
   stars.forEach(s=>s.addEventListener('click',()=>{const n=+s.dataset.n;get().stars=(get().stars===n?undefined:n);paint(get().stars||0);update()}));
-  el.querySelector('.kill').addEventListener('click',()=>{get().killed=true;el.classList.add('dead');setTimeout(()=>el.remove(),320);update();renderPile()});
+  // ✕ no longer means "delete" — it asks WHAT'S WRONG, and the reason routes the fix. "keep" reasons
+  // (wrong link / bad image / low-res) flag it for a fix and the pick STAYS live; the rest remove it.
+  el.querySelector('.kill').addEventListener('click',()=>{el.classList.toggle('asking')});
+  el.querySelectorAll('.rchip').forEach(c=>c.addEventListener('click',()=>{
+    const r=c.dataset.r,keep=c.classList.contains('keep');
+    get().reason=r;
+    if(keep){ get().flag=true; get().killed=undefined; if(r==='image'||r==='lowres')get().img='bad';
+      el.classList.remove('asking'); el.classList.add('ruled'); update(); renderStatus();
+    } else { get().killed=true; get().flag=undefined; el.classList.add('dead'); setTimeout(()=>el.remove(),320); update(); renderPile(); renderStatus(); }
+  }));
   el.querySelectorAll('.b').forEach(b=>b.addEventListener('click',()=>{
     if(b.classList.contains('canon')){b.classList.toggle('on');get().canon=b.classList.contains('on')||undefined;update();return}
     if(b.classList.contains('topb')){b.classList.toggle('on');get().top=b.classList.contains('on')||undefined;update();renderPile();return}
@@ -543,7 +581,9 @@ function addCard(p,g,tag,pos,probe){
       const isLead=b.classList.contains('leadb'),was=b.classList.contains('on');
       el.querySelectorAll('.leadb,.laterb').forEach(x=>x.classList.remove('on'));
       if(!was)b.classList.add('on');
-      get().lead=(!was&&isLead)||undefined;get().later=(!was&&!isLead)||undefined;update();renderPile();return}
+      get().lead=(!was&&isLead)||undefined;get().later=(!was&&!isLead)||undefined;
+      if(isLead&&!was&&tag==='new')addExtra(p);   // upvote a New Find → it lands in the Simple deck's top 10 now
+      update();renderPile();return}
     const up=b.classList.contains('imgup'),was=b.classList.contains('on');
     el.querySelectorAll('.imgup,.imgdn').forEach(x=>x.classList.remove('on'));
     if(!was)b.classList.add('on');
@@ -586,7 +626,7 @@ function enableDrag(pg){
 function renumber(pg){[...pg.children].forEach((el,i)=>{
   const b=el.querySelector('.badge.pile');if(b)b.textContent='#'+(i+1)+(el.dataset.sfx||'');
 })}
-function verdicts(){return Object.values(V).filter(v=>v.stars||v.killed||v.img||v.note||v.betterImage||v.canon||v.top||v.lead||v.later)}
+function verdicts(){return Object.values(V).filter(v=>v.stars||v.killed||v.img||v.note||v.betterImage||v.canon||v.top||v.lead||v.later||v.flag||v.reason)}
 function update(){
   const vs=Object.values(V);
   document.getElementById('count').textContent=vs.filter(v=>v.top).length+' top · '+vs.filter(v=>v.lead).length+' lead · '+vs.filter(v=>v.later).length+' later · '+vs.filter(v=>v.stars).length+' starred · '+vs.filter(v=>v.killed).length+' killed · '+vs.filter(v=>v.canon).length+' canon';
@@ -616,6 +656,8 @@ function payload(){
     if(v.later)bits.push('▼LATER');
     if(v.stars)bits.push('★'.repeat(v.stars));
     if(v.killed)bits.push('KILL');
+    if(v.reason)bits.push('reason:'+v.reason);
+    if(v.flag&&!v.killed)bits.push('FLAG (keep+fix)');
     if(v.canon)bits.push('CANON');
     if(v.img)bits.push('image '+v.img);
     if(v.note)bits.push('“'+v.note+'”');
@@ -635,6 +677,8 @@ function payloadCompact(){
     if(v.later)bits.push('LATER');
     if(v.stars)bits.push(v.stars+'*');
     if(v.killed)bits.push('KILL');
+    if(v.reason)bits.push('why:'+v.reason);
+    if(v.flag&&!v.killed)bits.push('FLAG');
     if(v.canon)bits.push('CANON');
     if(v.img==='bad')bits.push('img:bad');   // img:good omitted from the URL (no-action) → headroom; full record is in Copy/Email
     if(v.note)bits.push('note:'+v.note);
