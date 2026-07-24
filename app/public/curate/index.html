@@ -90,23 +90,60 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 .card.ruled .ruledtag{display:block;font-family:var(--sans);font-size:10px;font-weight:700;letter-spacing:.04em;color:var(--green)}
 .pilehint{color:var(--dim);font-size:13.5px;line-height:1.45;margin:0 0 6px;padding:16px 18px;border:1px dashed var(--line);border-radius:14px;background:#faf8f3}
 .b.leadb{border-color:var(--accent);color:var(--accent)}   /* the primary "add to pile" action */
+/* ── DEAD-SIMPLE VIEW (V.9.18): "your 10 opening cards" + swap pool + mode toggle ── */
+#modetoggle{display:inline-flex;gap:0;margin:18px 0 0;border:1px solid var(--line);border-radius:999px;overflow:hidden;background:#fff}
+#modetoggle button{font-family:var(--sans);font-size:12.5px;font-weight:700;letter-spacing:.01em;padding:9px 18px;border:0;background:transparent;color:var(--dim);cursor:pointer}
+#modetoggle button.on{background:var(--ink);color:#fff}
+.simplelede{color:#4a463e;max-width:64ch;line-height:1.5;margin:16px 0 0;font-size:15px}
+.simplelede b{color:var(--ink)}
+#openlist{display:flex;flex-direction:column;gap:8px;margin:12px 0 0}
+.ocard{position:relative;display:flex;align-items:center;gap:13px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:8px 12px 8px 8px;transition:opacity .2s,transform .2s}
+.ocard.dragging{opacity:.5;transform:scale(.99)}
+.ocard .num{flex:none;width:30px;height:30px;border-radius:999px;background:var(--accent);color:#fff;font-weight:800;font-size:14px;display:grid;place-items:center}
+.ocard img{flex:none;width:54px;height:70px;object-fit:cover;border-radius:9px;background:#e8e4da}
+.ocard .ot{flex:1;min-width:0}
+.ocard .ot h4{margin:0;font-size:15px;font-weight:700;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ocard .ot .os{margin:2px 0 0;font-size:12px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ocard .ogrip{flex:none;cursor:grab;color:var(--dim);font-size:17px;padding:0 6px;user-select:none}
+.ocard .ogrip:active{cursor:grabbing}
+.ocard .orm{flex:none;width:30px;height:30px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--dim);font-size:15px;cursor:pointer;line-height:1}
+.ocard .orm:hover{border-color:#c33;color:#c33}
+#pool{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin:12px 0 0}
+.pcard{position:relative;background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;cursor:pointer}
+.pcard img{width:100%;aspect-ratio:16/10;object-fit:cover;display:block;background:#e8e4da}
+.pcard .pt{padding:8px 9px 10px;font-size:12.5px;font-weight:600;line-height:1.25}
+.pcard .padd{position:absolute;top:7px;right:7px;width:30px;height:30px;border-radius:999px;border:0;background:var(--accent);color:#fff;font-size:19px;line-height:1;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.25)}
+.pcard.inopen{opacity:.5}
+.pcard.inopen .padd{background:var(--green)}
 </style>
 </head>
 <body>
 <div class="wrap">
 <header>
-<p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD V.9.17</p>
-<h1>Your weekend deck, before it ships<span class="dot">.</span></h1>
+<p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD V.9.18</p>
+<h1>Your weekend<span class="dot">.</span></h1>
+<div id="modetoggle"><button class="on" data-mode="simple">Simple</button><button data-mode="advanced">Advanced</button></div>
+</header>
+
+<div id="simple">
+<p class="simplelede"><b>The 10 cards that open the deck</b> — exactly what your testers see first this weekend. Drag to reorder, swap any card in or out, then hit <b>Submit</b>.</p>
+<div class="cathead hot" id="openhead">Your 10 opening cards</div>
+<div id="openlist"></div>
+<div class="cathead" id="poolhead">Swap in a card<span class="d">Tap + to drop a pick into your 10 (it bumps #10 out). This weekend's picks, best first.</span></div>
+<div id="pool"></div>
+</div>
+
+<div id="advanced" hidden>
 <p class="lede"><b>Rule on Amsterdam's picks for this weekend.</b> Two tabs below: <b>IN ROTATION</b> is what's live now — this weekend's deck plus your approved library. <b>NEW FINDS</b> is candidates that are <b>not live yet</b>. Every card tells you why it's there and what a tap does.</p>
 <p class="flow">Your calls don't go live the instant you tap: <span class="step">rule here</span> → <span class="step">Submit → GitHub</span> → compiled &amp; shipped → your testers see it. Progress saves in this browser as you go.</p>
 <div class="legend"><span class="lbl">Verdicts</span><span class="chip"><b>★1–5</b> rate / save</span><span class="chip"><b>✕</b> kill (retire)</span><span class="chip"><b>👑&nbsp;TOP</b> permanent lead</span><span class="chip"><b>▲&nbsp;Add</b> into this weekend's pile</span><span class="chip"><b>▼&nbsp;LATER</b> back this weekend</span><span class="chip"><b>+CANON</b> permanent library</span><span class="chip"><b>⠿</b> drag to reorder the pile</span></div>
 <div class="legend"><span class="lbl">Badges</span><span class="chip"><b>LENS</b> dated + weather-right</span><span class="chip"><b>#n</b> pile position</span><span class="chip"><b>★ SAVED</b> / <b>✓ APPROVED</b> your earlier call</span><span class="chip"><b>NEW</b> not live yet</span></div>
-</header>
 <div class="tabs" id="tabs" hidden>
 <button class="tab on" data-tab="rot">IN ROTATION <span class="n" id="nrot"></span></button>
 <button class="tab" data-tab="new">NEW FINDS <span class="n" id="nnew"></span></button>
 </div>
 <div id="board">Loading the live feed…</div>
+</div>
 </div>
 <div class="bar"><div class="barin">
 <span class="count" id="count">—</span>
@@ -178,7 +215,7 @@ Promise.all([
   // 10 min (max-age=600), so a just-shipped board fix can lag in an open tab; the eyebrow makes
   // stale-board-vs-fresh-data visible at a glance (2026-07-12: an old tab's tier-mirror pile read
   // as "the board is wrong" when it was just cached).
-  const BOARD_V='V.9.17';
+  const BOARD_V='V.9.18';
   document.getElementById('eyebrow').textContent='WKNDR · CURATION BOARD '+BOARD_V+' · FEED '+(d.generatedAt||'').slice(0,16).replace('T',' · ');
   const board=document.getElementById('board');board.innerHTML='';
   const rot=document.createElement('div');rot.id='tab-rot';board.appendChild(rot);
@@ -360,6 +397,62 @@ Promise.all([
     window.scrollTo({top:0});
   }));
   update();
+
+  // ——— DEAD-SIMPLE VIEW (V.9.18): "your 10 opening cards" — the default. Seeds from the deck's
+  // ACTUAL serve order (servePos, = what the app opens with), drag to reorder, +/− to swap, Submit
+  // sends the order (rides pileLine → weekly.pile). The full board is the Advanced view. ———
+  {
+    const picks=(d.picks||[]);
+    const titleOf=new Map(picks.map(p=>[p.title,p]));
+    const served=picks.filter(p=>p.servePos!=null).sort((a,b)=>a.servePos-b.servePos);
+    const MAX=10;
+    if(!PILE||!PILE.length)PILE=served.slice(0,MAX).map(p=>p.title);   // seed = the live opening
+    const openList=document.getElementById('openlist'),pool=document.getElementById('pool'),openHead=document.getElementById('openhead');
+    const sub=p=>[p.venue,p.when].filter(Boolean).join(' · ');
+    const dropped=new Set();   // cards you explicitly removed — so refill can't boomerang them back
+    const fill=()=>{for(const p of served){if(PILE.length>=MAX)break;if(!PILE.includes(p.title)&&!dropped.has(p.title))PILE.push(p.title)}};
+    const addOpen=t=>{dropped.delete(t);PILE=PILE.filter(x=>x!==t);if(PILE.length>=MAX)PILE=PILE.slice(0,MAX-1);PILE.push(t);store();renderOpen()};
+    const removeOpen=t=>{dropped.add(t);PILE=PILE.filter(x=>x!==t);fill();store();renderOpen()};
+    function openDrag(list){
+      if(!list.__dnd){list.__dnd=true;list.addEventListener('dragover',e=>{if(!list.__drag)return;e.preventDefault();
+        const sib=[...list.children].filter(c=>c!==list.__drag).find(c=>{const r=c.getBoundingClientRect();return e.clientY<r.top+r.height/2});
+        if(sib)list.insertBefore(list.__drag,sib);else list.appendChild(list.__drag)})}
+      [...list.children].forEach(el=>{const g=el.querySelector('.ogrip');if(!g)return;
+        g.addEventListener('mousedown',()=>el.draggable=true);
+        el.addEventListener('dragstart',e=>{list.__drag=el;el.classList.add('dragging');e.dataTransfer.effectAllowed='move'});
+        el.addEventListener('dragend',()=>{el.draggable=false;el.classList.remove('dragging');list.__drag=null;PILE=[...list.children].map(c=>c.dataset.title);store();renderOpen()})});
+    }
+    function renderOpen(){
+      const items=PILE.map(t=>titleOf.get(t)).filter(Boolean).slice(0,MAX);
+      openHead.innerHTML='Your '+items.length+' opening cards<span class="d">Exactly what your testers see first, in this order. Drag ⠿ to reorder · − to drop one · Submit sends it live.</span>';
+      openList.innerHTML='';
+      items.forEach((p,i)=>{const el=document.createElement('div');el.className='ocard';el.dataset.title=p.title;
+        el.innerHTML='<span class="num">'+(i+1)+'</span><span class="ogrip" title="Drag to reorder">⠿</span>'
+          +'<img loading="lazy" src="'+(p.image||'')+'" alt="">'
+          +'<div class="ot"><h4>'+p.title+'</h4><div class="os">'+sub(p)+'</div></div>'
+          +'<button class="orm" title="Remove from opening">−</button>';
+        el.querySelector('.orm').addEventListener('click',()=>removeOpen(p.title));
+        openList.appendChild(el)});
+      openDrag(openList);
+      const inOpen=new Set(PILE.slice(0,MAX));
+      pool.innerHTML='';
+      served.forEach(p=>{const el=document.createElement('div');el.className='pcard'+(inOpen.has(p.title)?' inopen':'');
+        el.innerHTML='<button class="padd" title="'+(inOpen.has(p.title)?'In your 10 — tap to remove':'Add to your 10')+'">'+(inOpen.has(p.title)?'✓':'+')+'</button>'
+          +'<img loading="lazy" src="'+(p.image||'')+'" alt=""><div class="pt">'+p.title+'</div>';
+        el.querySelector('.padd').addEventListener('click',e=>{e.stopPropagation();inOpen.has(p.title)?removeOpen(p.title):addOpen(p.title)});
+        pool.appendChild(el)});
+    }
+    renderOpen();
+    const mt=document.getElementById('modetoggle');
+    mt.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{
+      mt.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));
+      const simple=b.dataset.mode==='simple';
+      document.getElementById('simple').style.display=simple?'':'none';
+      document.getElementById('advanced').hidden=simple;
+      if(!simple)renderPile();   // sync the advanced pile to any simple-view reorder
+      window.scrollTo({top:0});
+    }));
+  }
 }).catch(e=>{document.getElementById('board').textContent='Could not load the feed: '+e});
 
 function addCard(p,g,tag,pos,probe){

@@ -14,6 +14,17 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [board V.9.18] — 2026-07-23 — DEAD SIMPLE: "your 10 opening cards" (default) + Advanced toggle
+- Ness: "the setup on the curation board needs to be DEAD simple — here are your top 10 opening cards."
+- The board now opens on ONE plain screen: **Your 10 opening cards** — a numbered list seeded from the
+  deck's ACTUAL serve order (so the board finally mirrors what the app opens with). Drag ⠿ to reorder,
+  − to drop a card (the next-best fills in, always 10), + on a pool card to swap one in (bumps #10 out).
+  Submit sends the order (rides pileLine → weekly.pile).
+- All the rating/veto/canon/★ machinery moved behind an **Advanced** toggle — untouched, just out of the
+  way. Fixes the fidelity gap the V.9.17 build-up pile introduced (it ordered by promotion, not servePos).
+- Verified: seed matches app order · remove refills to 10 without boomerang · add enters + bumps · pool
+  81 cards · Submit payload carries PILE ORDER · Advanced reveals the full board. No console errors.
+
 ## [V.10.15] — 2026-07-23 — the deck opens with The Lens · crowns pruned 18→6
 - **Opening order = The Lens** (weekly.pile): WorldPride · Kwaku · De Parade · IJ-Hallen Flea Market ·
   Wils at the Farm · Milkshake · Vondelpark · Pluk de Nacht · Bottomless Brunch · VriendenLoterij.
