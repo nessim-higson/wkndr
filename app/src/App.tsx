@@ -1206,8 +1206,8 @@ export default function App() {
                 <Heart size={14} strokeWidth={2.6} fill="currentColor" /> Share with a friend
               </button>
               <button className="chk-list" onClick={() => { setCheckpoint(false); setSavesOpen(true) }}>See my list</button>
+              <button className="chk-skip" onClick={() => setCheckpoint(false)}>Keep swiping</button>
             </div>
-            <button className="chk-skip" onClick={() => setCheckpoint(false)}>Keep swiping</button>
           </div>
         </div>
       )}

@@ -198,8 +198,11 @@ body::after {
   padding: 12px 24px; border-radius: 999px;
 }
 .chk-skip {
-  margin-top: 8px; font-size: 12px; color: var(--ink-4);
-  text-decoration: underline; text-underline-offset: 3px;
+  background: #fff; color: var(--ink);
+  font-weight: 600; font-size: 14px;
+  padding: 12px 24px; border-radius: 999px;
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  box-shadow: 0 4px 14px -6px rgba(0, 0, 0, 0.18);
 }
 .chk-share:focus-visible, .chk-list:focus-visible, .chk-skip:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 @media (prefers-reduced-motion: reduce) { .chk-veil, .chk-card { animation: none } }
