@@ -1,0 +1,21 @@
+# wkndr-curate — the curation-overrides Worker (Track A: auto-compile fast-lane).
+#
+# The board POSTs your live curation (pile order, kills, flags) here on Submit; the app GETs it after
+# loading the static feed and applies it client-side — so a reorder / kill / promote goes live in
+# seconds, no human compile, no redeploy. The durable corpus compile still folds these in later.
+#
+# Deploy (wrangler is already authed on Ness's machine):
+#   cd worker/curate
+#   npx wrangler kv namespace create CURATE          # → copy the id into [[kv_namespaces]] below
+#   npx wrangler deploy
+name = "wkndr-curate"
+main = "src/index.ts"
+compatibility_date = "2026-07-01"
+
+# The overrides store. Create with the command above and paste the returned id here.
+[[kv_namespaces]]
+binding = "CURATE"
+id = "ea7216a7fb5844988f5261df6ce9ca51"
+
+[observability]
+enabled = true
