@@ -50,6 +50,17 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 - Verified: keep-reason stays + flags + status shows "wrong link → fixing" · remove-reason drops · New Find
   → top 10 + NEW badge · payload carries why:<reason> · Up next filtered + ↑ promote. No console errors.
 
+## [board V.9.21] — 2026-07-23 — Up next is now reorderable + hawkish · New Find → Top 10 made obvious
+- Ness corrected me: he wants auto-compile for SPEED, not to give up CONTROL. So "Up next" is no longer
+  inert. It's a **draggable row list** (like the Top 10): drag ⠿ to reorder, ↑ to promote into the Top 10,
+  − on a Top-10 card to send it down. Auto-ranked until you touch it — hawkish whenever you want.
+  PILE is now the FULL deck order (top 10 + tail), so the whole arrangement rides Submit.
+- **New Find → Top 10, made unmissable.** The New Finds ▲ button now reads **↑ Top 10** and flips to
+  **✓ In Top 10** on tap; the why-line says "Tap ↑ Top 10 to drop it straight into your deck." Answers
+  "how do I get Pride Walk into my Top 10?" — one tap, and it lands (with a NEW badge) in the Simple view.
+- Verified: promote (tail→#10) · demote (#10→tail) · both lists drag-reorder · New Find label/feedback ·
+  PILE full (81). No console errors.
+
 ## [V.10.15] — 2026-07-23 — the deck opens with The Lens · crowns pruned 18→6
 - **Opening order = The Lens** (weekly.pile): WorldPride · Kwaku · De Parade · IJ-Hallen Flea Market ·
   Wils at the Farm · Milkshake · Vondelpark · Pluk de Nacht · Bottomless Brunch · VriendenLoterij.
