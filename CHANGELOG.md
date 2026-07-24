@@ -61,6 +61,14 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 - Verified: promote (tail→#10) · demote (#10→tail) · both lists drag-reorder · New Find label/feedback ·
   PILE full (81). No console errors.
 
+## [board V.9.24] — 2026-07-23 — Advanced matches Simple's look (kept the grouping)
+- Ness: "the Advanced side is still different from the Simple." It was — grids of tall POSTER cards vs
+  Simple's compact ordered rows, plus legends still describing the removed pile.
+- Restyled Advanced cards into the same **horizontal thumbnail-left row** language as Simple (kept the
+  by-category / Lens grouping, which is useful for rating a batch). Fixed the stale legends: dropped
+  "▲ Add into this weekend's pile", "drag to reorder the pile", "#n pile position"; ✕ is now "cancel + why",
+  ▲ is "↑ Top 10 into your deck (Simple)". Flow line updated to the now-live fast-lane ("live in seconds").
+
 ## [V.10.16 / board V.9.23] — 2026-07-23 — auto-compile LIVE: board Submit → deck in seconds
 - Track A wired end-to-end. The board's Submit now does TWO writes: (1) POST to the wkndr-curate worker
   (the fast-lane) and (2) file the GitHub issue (the durable corpus record). Button reads "Live ✓ — filed".

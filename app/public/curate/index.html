@@ -25,10 +25,11 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 .cathead.lib{border-top:2px solid var(--gold)}
 .cathead .d{display:block;font-weight:400;font-size:12.5px;letter-spacing:0;color:var(--dim);margin-top:4px;line-height:1.4}
 .cathead.sub{font-size:12.5px;font-weight:600;color:var(--dim);border-top:0;margin:24px 0 10px;padding-top:0}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
-.card{background:#fff;border-radius:16px;overflow:hidden;border:1px solid var(--line);display:flex;flex-direction:column;position:relative;transition:opacity .3s,transform .3s}
+/* Advanced cards match the Simple view's row language: a left thumbnail + content, not tall posters. */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:12px}
+.card{background:#fff;border-radius:14px;overflow:hidden;border:1px solid var(--line);display:flex;flex-direction:row;position:relative;transition:opacity .3s,transform .3s}
 .card.dead{opacity:0;transform:scale(.92);pointer-events:none}
-.card img{width:100%;aspect-ratio:2/3;object-fit:cover;display:block;background:#e8e4da}
+.card>img{width:112px;flex:none;align-self:stretch;object-fit:cover;display:block;background:#e8e4da}
 .badge{position:absolute;top:10px;left:10px;color:#fff;font-family:var(--sans);font-size:9.5px;font-weight:700;letter-spacing:.08em;padding:4px 8px;border-radius:999px}
 .badge.saved{background:var(--gold)}
 .badge.new{background:var(--ink)}
@@ -140,7 +141,7 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 <body>
 <div class="wrap">
 <header>
-<p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD V.9.23</p>
+<p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD V.9.24</p>
 <h1>Your weekend<span class="dot">.</span></h1>
 <div id="modetoggle"><button class="on" data-mode="simple">Simple</button><button data-mode="advanced">Advanced</button></div>
 </header>
@@ -156,9 +157,9 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 <div id="advanced" hidden>
 <div id="status"></div>
 <p class="lede"><b>Rule on Amsterdam's picks for this weekend.</b> Two tabs below: <b>IN ROTATION</b> is what's live now — this weekend's deck plus your approved library. <b>NEW FINDS</b> is candidates that are <b>not live yet</b>. Every card tells you why it's there and what a tap does.</p>
-<p class="flow">Your calls don't go live the instant you tap: <span class="step">rule here</span> → <span class="step">Submit → GitHub</span> → compiled &amp; shipped → your testers see it. Progress saves in this browser as you go.</p>
-<div class="legend"><span class="lbl">Verdicts</span><span class="chip"><b>★1–5</b> rate / save</span><span class="chip"><b>✕</b> kill (retire)</span><span class="chip"><b>👑&nbsp;TOP</b> permanent lead</span><span class="chip"><b>▲&nbsp;Add</b> into this weekend's pile</span><span class="chip"><b>▼&nbsp;LATER</b> back this weekend</span><span class="chip"><b>+CANON</b> permanent library</span><span class="chip"><b>⠿</b> drag to reorder the pile</span></div>
-<div class="legend"><span class="lbl">Badges</span><span class="chip"><b>LENS</b> dated + weather-right</span><span class="chip"><b>#n</b> pile position</span><span class="chip"><b>★ SAVED</b> / <b>✓ APPROVED</b> your earlier call</span><span class="chip"><b>NEW</b> not live yet</span></div>
+<p class="flow"><span class="step">Rule here</span> → <span class="step">Submit</span> → <b style="color:var(--ink)">live for your testers in seconds</b> (and filed to GitHub for the record). Progress saves in this browser as you go.</p>
+<div class="legend"><span class="lbl">Verdicts</span><span class="chip"><b>★1–5</b> rate / save</span><span class="chip"><b>✕</b> cancel + why</span><span class="chip"><b>👑&nbsp;TOP</b> permanent lead</span><span class="chip"><b>↑&nbsp;Top 10</b> into your deck (Simple)</span><span class="chip"><b>▼&nbsp;LATER</b> back this weekend</span><span class="chip"><b>+CANON</b> permanent library</span></div>
+<div class="legend"><span class="lbl">Badges</span><span class="chip"><b>LENS</b> dated + weather-right</span><span class="chip"><b>★ SAVED</b> / <b>✓ APPROVED</b> your earlier call</span><span class="chip"><b>NEW</b> not live yet</span></div>
 <div class="tabs" id="tabs" hidden>
 <button class="tab on" data-tab="rot">IN ROTATION <span class="n" id="nrot"></span></button>
 <button class="tab" data-tab="new">NEW FINDS <span class="n" id="nnew"></span></button>
@@ -244,7 +245,7 @@ Promise.all([
   // 10 min (max-age=600), so a just-shipped board fix can lag in an open tab; the eyebrow makes
   // stale-board-vs-fresh-data visible at a glance (2026-07-12: an old tab's tier-mirror pile read
   // as "the board is wrong" when it was just cached).
-  const BOARD_V='V.9.23';
+  const BOARD_V='V.9.24';
   document.getElementById('eyebrow').textContent='WKNDR · CURATION BOARD '+BOARD_V+' · FEED '+(d.generatedAt||'').slice(0,16).replace('T',' · ');
   const board=document.getElementById('board');board.innerHTML='';
   const rot=document.createElement('div');rot.id='tab-rot';board.appendChild(rot);
