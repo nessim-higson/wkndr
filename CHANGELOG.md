@@ -61,6 +61,18 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 - Verified: promote (tail→#10) · demote (#10→tail) · both lists drag-reorder · New Find label/feedback ·
   PILE full (81). No console errors.
 
+## [V.10.16 / board V.9.23] — 2026-07-23 — auto-compile LIVE: board Submit → deck in seconds
+- Track A wired end-to-end. The board's Submit now does TWO writes: (1) POST to the wkndr-curate worker
+  (the fast-lane) and (2) file the GitHub issue (the durable corpus record). Button reads "Live ✓ — filed".
+- The app reads the overrides on feed load (`fetchOverrides` + `applyOverrides`, App.tsx) and layers them on
+  the static feed: `pile` → `pilePos` (the app's hand-order, deals first above every tier), `killed` → dropped.
+  Fail-soft: dead worker or stale override (feed rolled) = the feed as-is.
+- PROVEN live: POSTed {pile:[De Parade,…], killed:[Milkshake]} → the app deck reopened De Parade #1
+  (was #3) and dropped Milkshake, no rebuild/redeploy. `applyOverrides` fixed to stamp `pilePos` (not
+  servePos — the runtime deck orders by pilePos). 126 tests green.
+- Still human: the durable corpus compile (from the GitHub issue) folds these into corpus.json on the next
+  refresh — the fast-lane is the instant layer, the corpus stays source of truth.
+
 ## [board V.9.22] — 2026-07-23 — one ranked deck (Simple↔Advanced consistency)
 - Ness: "I see a ranked order on Simple, then go to Advanced and it's a different order — confusing."
 - Root cause: TWO competing deck concepts. Simple = the ranked deck (top 10 + Up next); Advanced ALSO had

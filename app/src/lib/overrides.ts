@@ -58,30 +58,30 @@ export async function postOverrides(city: string, ov: CurateOverrides): Promise<
 /** Layer overrides onto the static feed. Pure + fail-soft: a null/stale override (feed rolled past
  *  the generatedAt it targets) returns the picks untouched. Mirrors restamp's taste layer:
  *   - killed  → dropped
- *   - pile    → those picks lead, in pile order (servePos re-stamped 1..N); the rest follow in their
- *               existing serve order, renumbered after the pile.
- *   - flags   → attached as `_flag` for the UI (not dropped). */
+ *   - pile    → those picks lead, in pile order — stamped onto `pilePos`, the app's hand-drag override
+ *               (weather/modes.ts orderServed deals pilePos-first, above every tier). The override's
+ *               pile REPLACES any pilePos the last restamp left, so it fully controls the opening.
+ *   - flags   → attached as `_flag` for the UI (not dropped).
+ *  The app re-orders by pilePos itself, so this only re-stamps — no sort needed. */
 export function applyOverrides(picks: Pick[], ov: CurateOverrides | null, generatedAt: string): Pick[] {
   if (!ov || ov.generatedAt !== generatedAt) return picks
 
   const killed = new Set((ov.killed ?? []).map((k) => tokKey(k.title)))
   const flagOf = new Map((ov.flags ?? []).map((f) => [tokKey(f.title), f.reason ?? 'flagged'] as const))
   const pilePos = new Map((ov.pile ?? []).map((t, i) => [tokKey(t), i] as const))
+  const hasPile = pilePos.size > 0
 
-  const kept = picks.filter((p) => !killed.has(tokKey(p.title)))
-
-  // stable original order (by existing servePos, then untouched) — the tail after the pile
-  const byServe = [...kept].sort((a, b) => (a.servePos ?? 1e9) - (b.servePos ?? 1e9))
-  const pileLen = ov.pile?.length ?? 0
-  let tailN = pileLen
-
-  const stamped = byServe.map((p) => {
-    const k = tokKey(p.title)
-    const flag = flagOf.get(k)
-    const inPile = pilePos.get(k)
-    const servePos = inPile != null ? inPile + 1 : ++tailN
-    return { ...p, servePos, ...(flag ? { _flag: flag } : {}) } as Pick
-  })
-
-  return stamped.sort((a, b) => (a.servePos ?? 1e9) - (b.servePos ?? 1e9))
+  return picks
+    .filter((p) => !killed.has(tokKey(p.title)))
+    .map((p) => {
+      const k = tokKey(p.title)
+      const flag = flagOf.get(k)
+      const pp = pilePos.get(k)
+      // when a pile is present it OWNS the hand order: matched picks get their new slot, everyone else
+      // clears (so a prior restamp's pilePos can't linger). No pile → leave pilePos untouched.
+      const next: Pick = { ...p }
+      if (hasPile) next.pilePos = pp != null ? pp + 1 : undefined
+      if (flag) (next as Pick & { _flag?: string })._flag = flag
+      return next
+    })
 }

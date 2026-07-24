@@ -5,6 +5,7 @@ import type { Pick } from '../src/types'
 const p = (title: string, servePos: number): Pick => ({ title, servePos } as unknown as Pick)
 const GEN = '2026-07-23T15:13:10.162Z'
 const feed = [p('WorldPride Amsterdam', 1), p('Kwaku Summer Festival', 2), p('De Parade', 3), p('Bad Card', 4)]
+const pp = (x: Pick) => (x as unknown as { pilePos?: number }).pilePos
 
 test('null override → feed untouched', () => {
   expect(applyOverrides(feed, null, GEN)).toEqual(feed)
@@ -22,18 +23,19 @@ test('killed titles are dropped', () => {
   expect(out.length).toBe(3)
 })
 
-test('pile sets the opening order; the rest follow', () => {
+test('pile sets pilePos (the app\'s hand-order); non-pile picks clear', () => {
   const ov: CurateOverrides = { generatedAt: GEN, pile: ['De Parade', 'WorldPride Amsterdam'] }
-  const out = applyOverrides(feed, ov, GEN).sort((a, b) => (a.servePos! - b.servePos!))
-  expect(out.slice(0, 2).map((x) => x.title)).toEqual(['De Parade', 'WorldPride Amsterdam'])
-  // the non-pile picks come after, in their original serve order
-  expect(out.slice(2).map((x) => x.title)).toEqual(['Kwaku Summer Festival', 'Bad Card'])
+  const out = applyOverrides(feed, ov, GEN)
+  expect(pp(out.find((x) => x.title === 'De Parade')!)).toBe(1)
+  expect(pp(out.find((x) => x.title === 'WorldPride Amsterdam')!)).toBe(2)
+  // non-pile picks have pilePos cleared so a prior restamp can't linger → they fall to auto-rank
+  expect(pp(out.find((x) => x.title === 'Kwaku Summer Festival')!)).toBeUndefined()
 })
 
 test('pile matches across a retitle (tokKey is word-order/accent blind)', () => {
   const ov: CurateOverrides = { generatedAt: GEN, pile: ['de parade'] }
   const out = applyOverrides(feed, ov, GEN)
-  expect(out.find((x) => x.title === 'De Parade')!.servePos).toBe(1)
+  expect(pp(out.find((x) => x.title === 'De Parade')!)).toBe(1)
 })
 
 test('flags attach without dropping', () => {

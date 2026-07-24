@@ -80,6 +80,7 @@ import { fixWhen, whenDayGroup, whenSortKey, whenTime, whenIsPast, whenLooksBrok
 import { confirmLink, inShared } from './lib/share'
 import { fetchRound, relayOn, resolveSentRound, roundReady, sentRounds } from './lib/relay'
 import { sanePicks } from './lib/feed'
+import { fetchOverrides, applyOverrides } from './lib/overrides'
 import { initMetrics, track } from './lib/metrics'
 import { FEEDBACK_FORM } from './components/Feedback'
 import {
@@ -334,22 +335,27 @@ export default function App() {
   const whenSummary = whens.length === 0 ? 'Any time' : whens.length === 1 ? whenLabel(whens[0]) : `${whenLabel(whens[0])} +${whens.length - 1}`
 
   useEffect(() => { applyMode(mode) }, [mode])
-  // pull the active city's live feed once (falls back silently to the bundled set)
+  // pull the active city's live feed once (falls back silently to the bundled set), then layer the
+  // curate OVERRIDES on top — the board's live pile/kills from the wkndr-curate worker (Track A
+  // auto-compile). Fail-soft: a dead worker or a stale override (feed rolled past it) = the feed as-is.
   useEffect(() => {
     const key = city.key
     if (fetchedFeeds.current.has(key)) return
     fetchedFeeds.current.add(key)   // single-flight guard while the fetch is out…
-    fetch(`${import.meta.env.BASE_URL}data/picks.${key}.json`)
-      .then((r) => (r.ok ? r.json() : null))
-      .then((j) => {
-        const picks = j && Array.isArray(j.picks) ? sanePicks(j.picks) : []
+    Promise.all([
+      fetch(`${import.meta.env.BASE_URL}data/picks.${key}.json`).then((r) => (r.ok ? r.json() : null)),
+      fetchOverrides(key),
+    ])
+      .then(([j, ov]) => {
+        const raw = j && Array.isArray(j.picks) ? sanePicks(j.picks) : []
         // …but ONLY a successful ingest keeps the key marked: a transient error used to memoize
         // the ATTEMPT and pin the whole session to the stale bundled snapshot (bad on the flaky
         // mobile data a share-link recipient opens on). Failure → unmark, so a later pass retries.
-        if (!picks.length) { fetchedFeeds.current.delete(key); return }
+        if (!raw.length) { fetchedFeeds.current.delete(key); return }
+        const picks = applyOverrides(raw, ov, j.generatedAt)   // board's live order/kills, in seconds
         // checkedAt = the last time the pipeline actually LOOKED at these listings — a restamp
         // (board verdicts re-applied over live data) counts; it feeds the detail's freshness line
-        setFeeds((prev) => ({ ...prev, [key]: { picks, generatedAt: j.generatedAt, checkedAt: j.restampedAt ?? j.generatedAt, topMatches: Array.isArray(j.topMatches) ? j.topMatches : [] } }))
+        setFeeds((prev) => ({ ...prev, [key]: { picks, generatedAt: j.generatedAt, checkedAt: ov?.at ? new Date(ov.at).toISOString() : (j.restampedAt ?? j.generatedAt), topMatches: Array.isArray(j.topMatches) ? j.topMatches : [] } }))
       })
       .catch(() => { fetchedFeeds.current.delete(key) /* keep bundled; retry on a later pass */ })
   }, [city.key])

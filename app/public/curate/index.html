@@ -140,7 +140,7 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 <body>
 <div class="wrap">
 <header>
-<p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD V.9.22</p>
+<p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD V.9.23</p>
 <h1>Your weekend<span class="dot">.</span></h1>
 <div id="modetoggle"><button class="on" data-mode="simple">Simple</button><button data-mode="advanced">Advanced</button></div>
 </header>
@@ -181,6 +181,8 @@ let renderStatus=()=>{};   // "did my call land?" panel — recompared to the li
 let renderOpen=()=>{};   // the Simple view's ordered deck (top 10 + up-next) — re-rendered on any change
 let addExtra=()=>{};     // pull a NEW FIND into the Simple deck the instant you upvote it in Advanced
 let promoteToDeck=()=>{};   // ▲ on ANY Advanced card → into the Simple deck's Top 10 (one consistent verb)
+let feedGeneratedAt='';     // the feed this round targets — stamped on the overrides so a stale one expires
+const CURATE_URL='https://wkndr-curate.ness-13b.workers.dev';   // Track A auto-compile fast-lane
 let extras=[];           // New Finds you've upvoted (not in the live feed yet) — ride the deck + Submit
 function store(){try{localStorage.setItem(feedKey,JSON.stringify({V,PILE,extras}))}catch(e){}}
 function restore(){try{const s=JSON.parse(localStorage.getItem(feedKey)||'{}');V=s.V||{};PILE=s.PILE||null;extras=s.extras||[]}catch(e){}}
@@ -235,13 +237,14 @@ Promise.all([
 ]).then(([d,c,v,cc,lib,tr,pd,om])=>{
   baked=v.byTitle||{};
   feedKey='wkndr.curate.'+(d.generatedAt||'x');
+  feedGeneratedAt=d.generatedAt||'';
   restore();
   const bench=(c.candidates||[]),canonC=(cc.candidates||[]),canon=(lib.canon||[]),trending=(tr.trending||[]),pending=(pd.pending||[]);
   // BOARD_V is hardcoded — bump it whenever this file changes. GitHub Pages caches this HTML for
   // 10 min (max-age=600), so a just-shipped board fix can lag in an open tab; the eyebrow makes
   // stale-board-vs-fresh-data visible at a glance (2026-07-12: an old tab's tier-mirror pile read
   // as "the board is wrong" when it was just cached).
-  const BOARD_V='V.9.22';
+  const BOARD_V='V.9.23';
   document.getElementById('eyebrow').textContent='WKNDR · CURATION BOARD '+BOARD_V+' · FEED '+(d.generatedAt||'').slice(0,16).replace('T',' · ');
   const board=document.getElementById('board');board.innerHTML='';
   const rot=document.createElement('div');rot.id='tab-rot';board.appendChild(rot);
@@ -677,17 +680,34 @@ document.getElementById('copy').addEventListener('click',async()=>{
 // canonical inbox Claude compiles from (gh issue list). No token needed: a prefilled issue URL,
 // Ness is already signed in. Long payloads exceed GitHub's ~8KB URL cap → auto-fallback: payload
 // goes to the clipboard and the issue opens ready to paste.
+// TRACK A FAST-LANE — the board's live curation as the overrides doc the app applies in seconds.
+// pile = your full deck order; killed/flags carry the reason so the app drops or surfaces accordingly.
+function buildOverrides(){
+  const killed=[],flags=[];
+  for(const v of Object.values(V)){
+    if(v.killed)killed.push({title:v.t,...(v.reason?{reason:v.reason}:{})});
+    else if(v.flag)flags.push({title:v.t,...(v.reason?{reason:v.reason}:{})});
+  }
+  return {generatedAt:feedGeneratedAt,pile:(PILE||[]).slice(0,200),killed,flags};
+}
+async function postCurate(){
+  try{const r=await fetch(CURATE_URL+'/curate/amsterdam',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(buildOverrides())});return r.ok}catch(e){return false}
+}
+// SUBMIT — two writes: (1) the fast-lane POST → the app applies your order/kills in seconds; (2) the
+// GitHub issue → the durable record Claude folds into the corpus on the next refresh. Fast-lane first.
 document.getElementById('ghfile').addEventListener('click',async()=>{
   const b=document.getElementById('ghfile');
+  b.textContent='Publishing…';
+  const live=await postCurate();
   const base='https://github.com/nessim-higson/wkndr/issues/new';
   const title='WKNDR curation '+new Date().toISOString().slice(0,10);
   const full=base+'?labels=curation&title='+encodeURIComponent(title)+'&body='+encodeURIComponent(payloadCompact());
-  if(full.length<7900){window.open(full,'_blank');b.textContent='Filed ✓ — hit Submit'}
+  if(full.length<7900){window.open(full,'_blank');b.textContent=live?'Live ✓ — filed':'Filed ✓ (fast-lane offline)'}
   else{
     // only a monster round (many long image URLs) overflows even compact — clipboard fallback
     try{await navigator.clipboard.writeText(payload())}catch(e){}
     window.open(base+'?labels=curation&title='+encodeURIComponent(title)+'&body='+encodeURIComponent('(long round — verdicts are on your clipboard, paste here)'),'_blank');
-    b.textContent='Copied — paste in issue';
+    b.textContent=live?'Live ✓ — paste issue':'Copied — paste in issue';
   }
   setTimeout(()=>{b.textContent='Submit → GitHub'},3500);
 });
