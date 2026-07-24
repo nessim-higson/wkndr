@@ -14,6 +14,17 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.10.15] — 2026-07-23 — the deck opens with The Lens · crowns pruned 18→6
+- **Opening order = The Lens** (weekly.pile): WorldPride · Kwaku · De Parade · IJ-Hallen Flea Market ·
+  Wils at the Farm · Milkshake · Vondelpark · Pluk de Nacht · Bottomless Brunch · VriendenLoterij.
+  The app now deals exactly these ten first, in this order, above every tier. Dated-this-weekend +
+  forecast-fit, outdoor first.
+- **Crown prune, the ≤6 debt finally paid: 18 → 6.** KEPT: milkshake, 't lemmeke, artis royal zoo, kwaku,
+  ij-hallen, worldpride. DEMOTED (still in the feed, most still starredKeeps): dekmantel, queer amsterdam,
+  pluk de nacht, kaap amsterdam, strand zuid, jazz @ h'art, pllek urban beach, zomerlicht, pride run,
+  phono lake, vondelpark openluchttheater, movies at h'art. "If everything is top, nothing is."
+- 119 tests green.
+
 ## [V.10.14] — 2026-07-23 — R9b: honour the Scheepvaartmuseum kill (my call was wrong)
 - Ness killed "Het Scheepvaartmuseum – Summer Activities" in #17; R9 kept it (link-fix + crown, citing the
   ARTIS precedent). Wrong read: the card ALSO carried a wrong image (a dance photo, not the museum) and,
