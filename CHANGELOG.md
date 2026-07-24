@@ -25,6 +25,14 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 - Verified: seed matches app order · remove refills to 10 without boomerang · add enters + bumps · pool
   81 cards · Submit payload carries PILE ORDER · Advanced reveals the full board. No console errors.
 
+## [board V.9.19] — 2026-07-23 — "did my call land?" status panel (close the kill/flag loop)
+- Ness: "when I cancel a card (bad image, wrong deep link) — how do I know it's getting ingested?"
+- New **Kills & flags status** panel at the top of Advanced: every kill / bad-image / bad-link / note you
+  make this session, checked against the LIVE feed. Still in the feed = **● still live — pending ship**;
+  gone = **✓ dropped / shipped**. Reload after a compile and watch a pending flip to done. Shows your note
+  ("why it's off") on the row. Historical baked verdicts (r1) excluded so it's only calls that haven't landed.
+- No backend needed — the board already fetches the feed, so it checks its own work.
+
 ## [V.10.15] — 2026-07-23 — the deck opens with The Lens · crowns pruned 18→6
 - **Opening order = The Lens** (weekly.pile): WorldPride · Kwaku · De Parade · IJ-Hallen Flea Market ·
   Wils at the Farm · Milkshake · Vondelpark · Pluk de Nacht · Bottomless Brunch · VriendenLoterij.

@@ -115,12 +115,24 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 .pcard .padd{position:absolute;top:7px;right:7px;width:30px;height:30px;border-radius:999px;border:0;background:var(--accent);color:#fff;font-size:19px;line-height:1;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.25)}
 .pcard.inopen{opacity:.5}
 .pcard.inopen .padd{background:var(--green)}
+/* ── KILLS & FLAGS STATUS (V.9.19): "did my call land?" — checked against the live feed ── */
+#status{margin:20px 0 0;border:1px solid var(--line);border-radius:14px;background:#fff;overflow:hidden}
+#status .sthead{padding:12px 16px;font-size:13px;font-weight:700;border-bottom:1px solid var(--line);background:#faf8f3}
+#status .sthead b{color:var(--accent)}
+.strow{display:flex;align-items:center;gap:12px;padding:11px 16px;border-bottom:1px solid var(--line);font-size:13px}
+.strow:last-child{border-bottom:0}
+.strow .sttitle{flex:1;min-width:0;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.strow .sttype{flex:none;font-size:11px;color:var(--dim)}
+.strow .stnote{flex:none;max-width:38%;font-size:11.5px;color:#6a655c;font-style:italic;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.strow .ststate{flex:none;font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:999px}
+.strow .ststate.pending{background:#fdf0e8;color:#c2570f}
+.strow .ststate.done{background:#e8f6ef;color:var(--green)}
 </style>
 </head>
 <body>
 <div class="wrap">
 <header>
-<p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD V.9.18</p>
+<p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD V.9.19</p>
 <h1>Your weekend<span class="dot">.</span></h1>
 <div id="modetoggle"><button class="on" data-mode="simple">Simple</button><button data-mode="advanced">Advanced</button></div>
 </header>
@@ -134,6 +146,7 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 </div>
 
 <div id="advanced" hidden>
+<div id="status"></div>
 <p class="lede"><b>Rule on Amsterdam's picks for this weekend.</b> Two tabs below: <b>IN ROTATION</b> is what's live now — this weekend's deck plus your approved library. <b>NEW FINDS</b> is candidates that are <b>not live yet</b>. Every card tells you why it's there and what a tap does.</p>
 <p class="flow">Your calls don't go live the instant you tap: <span class="step">rule here</span> → <span class="step">Submit → GitHub</span> → compiled &amp; shipped → your testers see it. Progress saves in this browser as you go.</p>
 <div class="legend"><span class="lbl">Verdicts</span><span class="chip"><b>★1–5</b> rate / save</span><span class="chip"><b>✕</b> kill (retire)</span><span class="chip"><b>👑&nbsp;TOP</b> permanent lead</span><span class="chip"><b>▲&nbsp;Add</b> into this weekend's pile</span><span class="chip"><b>▼&nbsp;LATER</b> back this weekend</span><span class="chip"><b>+CANON</b> permanent library</span><span class="chip"><b>⠿</b> drag to reorder the pile</span></div>
@@ -156,6 +169,7 @@ const FORM='https://formspree.io/f/xykqpwkw';
 const CAT={out:'Out & about',eat:'Eat',drink:'Drink',art:'Art & galleries',live:'Live & gigs',stage:'Stage & screen',daytrip:'Day-trips',market:'Markets & one-offs',shop:'Shops',kid:'Kids'};
 let V={},baked={},feedKey='',PILE=null;   // PILE = hand-dragged pile order (titles) — null until a drag
 let renderPile=()=>{};   // rebuilt inside the feed load — lets a card's ▲/👑/✕ live-update the pile
+let renderStatus=()=>{};   // "did my call land?" panel — recompared to the live feed on every verdict
 function store(){try{localStorage.setItem(feedKey,JSON.stringify({V,PILE}))}catch(e){}}
 function restore(){try{const s=JSON.parse(localStorage.getItem(feedKey)||'{}');V=s.V||{};PILE=s.PILE||null}catch(e){}}
 // longest matching key wins ("bakers & roasters" beats "bak")
@@ -215,7 +229,7 @@ Promise.all([
   // 10 min (max-age=600), so a just-shipped board fix can lag in an open tab; the eyebrow makes
   // stale-board-vs-fresh-data visible at a glance (2026-07-12: an old tab's tier-mirror pile read
   // as "the board is wrong" when it was just cached).
-  const BOARD_V='V.9.18';
+  const BOARD_V='V.9.19';
   document.getElementById('eyebrow').textContent='WKNDR · CURATION BOARD '+BOARD_V+' · FEED '+(d.generatedAt||'').slice(0,16).replace('T',' · ');
   const board=document.getElementById('board');board.innerHTML='';
   const rot=document.createElement('div');rot.id='tab-rot';board.appendChild(rot);
@@ -453,6 +467,33 @@ Promise.all([
       window.scrollTo({top:0});
     }));
   }
+
+  // ——— KILLS & FLAGS STATUS: "did my call land?" — every kill / bad-image / bad-link / note you've
+  // made, checked against the LIVE feed. Gone from the feed = shipped (✓). Still there = filed but
+  // not compiled yet (● pending). Closes the loop: reload after a compile and watch it flip. ———
+  {
+    const st=document.getElementById('status');
+    const feedKeys=new Set((d.picks||[]).map(p=>tok(p.title)));
+    renderStatus=()=>{
+      // kills (always this-round) + flags you added THIS session (r1 = a pre-baked prior-round verdict,
+      // already compiled — excluded so the panel is only "calls that haven't landed yet").
+      const flags=Object.values(V).filter(v=>v&&(v.killed||((v.img==='bad'||v.betterImage||v.note)&&!v.r1)));
+      if(!flags.length){st.style.display='none';st.innerHTML='';return}
+      st.style.display='';
+      const pend=flags.filter(v=>feedKeys.has(tok(v.t)));
+      const rows=flags.map(v=>{
+        const live=feedKeys.has(tok(v.t));
+        const type=v.killed?'killed':v.img==='bad'?'bad image':v.betterImage?'new image':'note';
+        const state=live?'<span class="ststate pending">● still live — pending ship</span>'
+                        :'<span class="ststate done">✓ dropped / shipped</span>';
+        return '<div class="strow"><span class="sttitle">'+v.t+'</span><span class="sttype">'+type+'</span>'
+          +(v.note?'<span class="stnote">“'+v.note+'”</span>':'')+state+'</div>';
+      }).join('');
+      st.innerHTML='<div class="sthead">Your kills &amp; flags — did they land? · <b>'+pend.length+' pending</b> · '+(flags.length-pend.length)+' done'
+        +'<br><span style="font-weight:400;color:var(--dim);font-size:11.5px">Checked against the live feed. “Pending” = filed but not shipped yet — reload after a compile to watch it flip to ✓.</span></div>'+rows;
+    };
+    renderStatus();
+  }
 }).catch(e=>{document.getElementById('board').textContent='Could not load the feed: '+e});
 
 function addCard(p,g,tag,pos,probe){
@@ -556,6 +597,7 @@ function update(){
     const v=V[id];
     el.classList.toggle('ruled',!!(v&&(v.stars||v.killed||v.img||v.note||v.betterImage||v.canon||v.top||v.lead||v.later)));
   });
+  renderStatus();   // refresh the "did my call land?" panel on every verdict
   store();
 }
 // the hand-dragged pile order, as a payload line (empty until a drag happens this round)
