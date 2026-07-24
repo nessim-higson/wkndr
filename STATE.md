@@ -1,16 +1,26 @@
 # WKNDR — STATE (catch-me-up snapshot)
 
-_Living "where are we right now" doc — a **snapshot, not a history**. **Updated 2026-07-17.** Read this
+_Living "where are we right now" doc — a **snapshot, not a history**. **Updated 2026-07-23.** Read this
 FIRST in a new chat. For strategy + backlog see `docs/backlog.md`; for the pipeline architecture see
 `docs/pipeline-architecture.md` + `docs/source-map.md`; for **who may write to the deck vs to a personal
-profile** (board / Tune / airlock — read before touching either) see `docs/curation-surfaces.md`; for full
-**version history** see `CHANGELOG.md` (current to V.9.17) and the **git log / tags**. Onboarding:
+profile** (board / Tune / airlock — read before touching either) see `docs/curation-surfaces.md`; for the
+**board roadmap** (auto-compile tracks) see `docs/board-roadmap.md`; for full **version history** see
+`CHANGELOG.md` (current to app V.10.17 / board V.9.23) and the **git log / tags**. Onboarding:
 `CLAUDE.md`. App lives in `/app` (Vite + React + TS, run with `bun`); ships to **Cloudflare Pages**
 (`wkndr.xyz` + `app.wkndr.xyz`) **and** GitHub Pages (legacy, keeps old share links alive)._
 
 > **START-OF-SESSION for WKNDR:** check `gh issue list --label curation` — the Curation Board's
-> **Submit → GitHub** button files Ness's verdict rounds as repo issues. That's the canonical inbox:
+> **Submit** button files Ness's verdict rounds as repo issues. That's the canonical inbox:
 > read the open ones, compile into the taste engine (below), ship, then close the issue.
+>
+> **NEW (2026-07-23) — the FAST-LANE.** Submit now ALSO POSTs the round (pile order + kills) to the
+> `wkndr-curate` worker (`worker/curate/`, KV-backed, `wkndr-curate.ness-13b.workers.dev`). The app
+> reads it on load (`lib/overrides.ts` `fetchOverrides` + `applyOverrides`) and layers `pile` → `pilePos`
+> (deals first) + `killed` → dropped ON TOP of the static feed — so a reorder/kill goes live in seconds,
+> no compile, no redeploy. **The GitHub-issue compile is still the DURABLE record** you fold into
+> `corpus.json`/`weekly.json` on the next refresh (fast-lane = instant layer, corpus = source of truth).
+> Next per `docs/board-roadmap.md`: light polling so open sessions update (today it's on load); a
+> reason→action routing table for the ✕ reason picker.
 
 ## Live right now
 - **Web presence (wkndr.xyz):** Ness registered **wkndr.xyz** through Cloudflare (domain + DNS in
@@ -31,8 +41,17 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
   (on the reveal), cover = "Weather permitting.", feed = "Right is a yes.", payoff = "Nothing left to
   plan.", "The overlap is the plan." revived from Site 02; landing meta/JSON-LD now in the new voice
   ("Amsterdam plans, rearranged by the sky"). See CHANGELOG `[landing] 2026-07-17`.
-- **App: V.10.3** — https://nessim-higson.github.io/wkndr/ (cache-bust `?v=V.10.3`). **V.10.3 =
-  "Tune WKNDR"** — the calibration micro-deck DEV PROTOTYPE (`?dev=1` → menu → Taste · dev):
+- **App: V.10.17** — https://app.wkndr.xyz (cache-bust `?v=V.10.17`; GH-Pages mirror at
+  nessim-higson.github.io/wkndr/). **Recent arc (2026-07-21→23):** V.10.12 = field-feedback reliability
+  (persist declines so a refresh doesn't re-deal them → `wkndr.swiped.v1`; intro is now first-run/arrival
+  only, not every load; LBB "View event details" links fixed — reject LBB self-links → scoped event
+  search, see `adapters/lbb.ts`). V.10.13–10.15 = **compile R9 + R10 prune** (73-verdict round #17: 20 star
+  reinforcements, crowns pruned **18→6**, `weekly.pile` set to THE LENS so the deck opens on this weekend's
+  dated+weather slice; R9b honoured the Scheepvaartmuseum kill I first got wrong). **V.10.16 = the FAST-LANE
+  wired end-to-end** (board Submit → app deck in seconds, see the START-OF-SESSION box + `lib/overrides.ts`).
+  V.10.17 = checkpoint "Keep swiping" is a white pill. **Note:** the app now orders the deck by `pilePos`
+  (the hand/override order in `weather/modes.ts orderServed`), which `applyOverrides` + restamp both stamp.
+  **(V.10.3 = "Tune WKNDR"** — the calibration micro-deck DEV PROTOTYPE (`?dev=1` → menu → Taste · dev):
   8 archetype poster cards swiped in the app's own deck seed the on-device taste profile heavy
   (★ +3/token, ✕ −2) and re-deal instantly; 👑 TOPs still lead by law. Also: SwipeStack
   flying-guard (mid-exit re-fling can't double-write taste). **V.10.2** = og.png redrawn to the
@@ -56,16 +75,27 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
   Amsterdam 👑, Martin Parr canon, BRET image pinned; V.9.9 = **the board reads the deck** — the
   pipeline stamps `servePos` (the app's own serve order, dragged pile included) and the WEEKEND
   PILE renders the stamp instead of the old drifting tier-mirror; V.9.10–V.9.12 = board version in the eyebrow (Pages caches 10 min), SUMMER RUNS join the lens on hot weekends + the big-screen / World Cup websearch facet) ·
-  **Curation Board:** https://nessim-higson.github.io/wkndr/curate/ — tabbed: `IN ROTATION` (opens
-  with **THE LENS — THIS WEEKEND × THIS WEATHER**, the tight dated + forecast-fit slice, outdoor
-  first when hot, forecast via the board's own open-meteo read; then **THE WEEKEND PILE** — the ~10
-  projected opening cards in serve order — then the feed + ~141-pick canon
-  library w/ ✓ APPROVED badges) vs `NEW FINDS` (**THE AIRLOCK** — the run's unapproved live finds,
-  ~71 pending — then TRENDING inbox → bench → canon candidates). Card
-  titles link OUT to the real venue/event page; **click any card photo → the loupe** (uncropped
-  original + true dims + a "LOW RES for the card" verdict). **Submit → GitHub** files the round as an
-  issue (compact ASCII payload → fits an 80+ verdict round in one click, no paste; "Email"/Formspree
-  is the backup).
+  **Curation Board (board V.9.23, redesigned 2026-07-22→23):** https://app.wkndr.xyz/curate/ (or the
+  door `app.wkndr.xyz/?curate2026!` → board on a laptop, Triage deck on a phone; GH-Pages mirror also
+  live). Ness's core feedback drove a rebuild: **Helvetica everywhere, dead-simple, one ranked deck.**
+  Now a **Simple / Advanced toggle** (`#modetoggle`):
+  - **SIMPLE (default) = the ONE ranked deck.** "Your top 10 — the cards that open the deck" (numbered,
+    drag ⠿ to reorder, − to demote) + **"Up next"** (the rest, auto-ranked, but a DRAGGABLE row list — ↑
+    to promote into the Top 10, drag to reorder; Ness wants to stay hawkish). `PILE` is now the FULL deck
+    order and rides Submit (→ `weekly.pile` / the fast-lane `pile`). Seeds from the live serve order so the
+    board mirrors the app.
+  - **ADVANCED = rate / veto / canon / discover only** (NO competing pile — that was the confusing bit,
+    removed). At top: a **"Your kills & flags — did they land?"** status panel (checks each kill/flag vs the
+    live feed → "● pending ship" / "✓ dropped"). Then THE LENS (dated + forecast-fit slice), the feed by
+    category, canon library, and the `NEW FINDS` tab (THE AIRLOCK). Every card's **↑ Top 10** button
+    (`promoteToDeck`) drops it straight into the Simple deck (New Finds get pulled in as `extras`).
+  - **✕ is a REASON PICKER now**, not a blind delete: "What's wrong?" → wrong link / bad image / low-res
+    (keep + flag for a fix, pick STAYS) · off-brand / seen it / duplicate (remove). The reason rides Submit
+    (`why:<reason>`) and is meant to ROUTE the compile action (link-fix vs image-swap vs rest vs veto) —
+    the structural fix for the R9 Scheepvaartmuseum error (a "wrong link" must never veto a crown again).
+  - **Submit = two writes** (see the fast-lane box): POST to `wkndr-curate` (live in seconds) + the GitHub
+    issue (durable compile record). Card titles link OUT to the real page; photo → the loupe (uncropped +
+    LOW-RES verdict). "Email"/Formspree is the backup.
 - **Curation ladder (the whole instrument):** ✕ kill (permanent veto) → ★1-3 → ★4-5 (editorScore
   floor 8 + carry-forward) → **★4+KILL = RESTED** (fatigue ≠ taste: benched from feed+bench until a
   date, then returns; `corpus.rested`) → +CANON (`picks.canon2.ts`, permanent library) → **▲ LEAD /
@@ -81,9 +111,16 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
   integration): `cd landing && npx wrangler pages deploy . --project-name=wkndr-landing` and
   `cd app && bun run build:domain && npx wrangler pages deploy dist --project-name=wkndr-app`
   (wrangler already authed on this machine; bare-URL curl checks may show stale edge cache — bust
-  with a query param). **Tests:** `bun run test` (112 logic tests; CI runs them before every content refresh).
+  with a query param, or verify against the immutable `*.wkndr-app.pages.dev` deploy URL). The board
+  (`app/public/curate/index.html`, bumped via its own `BOARD_V` const + eyebrow) ships inside the app
+  build. **Tests:** `bun run test` (**126 logic tests**; CI runs them before every content refresh).
   **Pages deploy flakes** intermittently ("try again later") — re-dispatch `deploy.yml` (there's an
   auto-retry pattern in the ship watchers).
+- **Compile fast-path (no crawl):** `cd app && bun run scripts/restamp.ts` re-applies the taste layer
+  (veto/rested/topPicks/starredKeeps/weekly pile) to the LAST PUBLISHED feed in ~90s — the way a
+  board round or a `weekly.pile` change ships without a full `refresh` (which needs API keys + ~15min).
+  **The `wkndr-curate` worker** is deployed separately: `cd worker/curate && npx wrangler deploy`
+  (source in-repo, KV id `ea7216a7…` in `wrangler.toml`).
 
 ## Product posture — the MVP (unchanged)
 One view (**Stack**), one ambient look (**Auras**), **Amsterdam only**; taste engine runs silently.
@@ -97,7 +134,12 @@ name, 14-day TTL, no accounts); optional Formspree email ping on round completio
 V.9.7** — worker at `https://wkndr-relay.nessimhigson.workers.dev` (Ness's CF account, deployed
 2026-07-12), `RELAY_URL` set in `app/src/lib/relay.ts` (empty = relay off, old behavior). It stacks
 with V.9.6's ReturnGate: the gate pushes the manual send, the relay delivers even if the recipient
-bails; on a confirm page the poll only absorbs (never reloads). Funnel: `relay-return`.
+bails; on a confirm page the poll only absorbs (never reloads). Funnel: `relay-return`. **WKNDR's
+SECOND backend (2026-07-23) is `wkndr-curate`** — the curation fast-lane worker (Cloudflare Worker +
+KV, source in-repo at `worker/curate/`, live at `wkndr-curate.ness-13b.workers.dev`). Board Submit
+POSTs the round (pile order + kills, scoped to the feed's `generatedAt`); the app GETs + `applyOverrides`
+on load. Same privacy posture as the relay (titles/order/reasons, no accounts). See the START-OF-SESSION
+box + `app/src/lib/overrides.ts`.
 
 ## The content pipeline (V.6.4 → V.7 pipeline era → V.8 taste-engine era)
 The weekly feed is now **deterministic-varied, self-checking, and largely set-and-forget**. Architecture
