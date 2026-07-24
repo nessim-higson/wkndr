@@ -140,7 +140,7 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 <body>
 <div class="wrap">
 <header>
-<p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD V.9.21</p>
+<p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD V.9.22</p>
 <h1>Your weekend<span class="dot">.</span></h1>
 <div id="modetoggle"><button class="on" data-mode="simple">Simple</button><button data-mode="advanced">Advanced</button></div>
 </header>
@@ -180,6 +180,7 @@ let renderPile=()=>{};   // rebuilt inside the feed load — lets a card's ▲/�
 let renderStatus=()=>{};   // "did my call land?" panel — recompared to the live feed on every verdict
 let renderOpen=()=>{};   // the Simple view's ordered deck (top 10 + up-next) — re-rendered on any change
 let addExtra=()=>{};     // pull a NEW FIND into the Simple deck the instant you upvote it in Advanced
+let promoteToDeck=()=>{};   // ▲ on ANY Advanced card → into the Simple deck's Top 10 (one consistent verb)
 let extras=[];           // New Finds you've upvoted (not in the live feed yet) — ride the deck + Submit
 function store(){try{localStorage.setItem(feedKey,JSON.stringify({V,PILE,extras}))}catch(e){}}
 function restore(){try{const s=JSON.parse(localStorage.getItem(feedKey)||'{}');V=s.V||{};PILE=s.PILE||null;extras=s.extras||[]}catch(e){}}
@@ -240,7 +241,7 @@ Promise.all([
   // 10 min (max-age=600), so a just-shipped board fix can lag in an open tab; the eyebrow makes
   // stale-board-vs-fresh-data visible at a glance (2026-07-12: an old tab's tier-mirror pile read
   // as "the board is wrong" when it was just cached).
-  const BOARD_V='V.9.21';
+  const BOARD_V='V.9.22';
   document.getElementById('eyebrow').textContent='WKNDR · CURATION BOARD '+BOARD_V+' · FEED '+(d.generatedAt||'').slice(0,16).replace('T',' · ');
   const board=document.getElementById('board');board.innerHTML='';
   const rot=document.createElement('div');rot.id='tab-rot';board.appendChild(rot);
@@ -293,25 +294,10 @@ Promise.all([
     return items;};
   const pilePos=new Map();   // build-up pile is dynamic → no static pile-number on the lens badge
 
-  // ——— THIS WEEKEND'S PILE — rendered FIRST (your working weekend) and rebuilt live as you promote.
-  // Seeds with your TOPs; ▲ on any card below adds it; drag ⠿ orders it; ✕/▼ removes it. ———
-  {
-    const ph=document.createElement('div');ph.className='cathead hot';ph.id='pilehead';rot.appendChild(ph);
-    const pg=document.createElement('div');pg.className='grid';pg.id='pilegrid';rot.appendChild(pg);
-    const hint=document.createElement('p');hint.className='pilehint';rot.appendChild(hint);
-    renderPile=()=>{
-      const items=computePile();
-      ph.innerHTML="This weekend's pile · "+items.length+' card'+(items.length===1?'':'s')
-        +'<span class="d">Your 👑 TOPs plus everything you upvote (▲ Add) below. Drag ⠿ to set the opening order testers see first — your order rides Submit.</span>';
-      pg.innerHTML='';
-      items.forEach((p,i)=>addCard(p,pg,'pile',i+1,false));
-      enableDrag(pg);
-      hint.style.display=items.length?'none':'';
-      hint.textContent='Nothing promoted yet — upvote picks from “This weekend” below with ▲ Add to build your pile.';
-      update();
-    };
-    renderPile();
-  }
+  // NOTE: the Advanced "This weekend's pile" section was REMOVED (V.9.22) — the RANKED DECK now lives in
+  // ONE place, the Simple view (top 10 + Up next). Advanced is purely rate / veto / canon / discover, so
+  // there's no second, differently-ordered "pile" to contradict it. `renderPile` stays a no-op; the ▲
+  // button below promotes straight into the Simple deck via promoteToDeck().
 
   // ——— IN ROTATION opens with THE LENS — THIS WEEKEND × THIS WEATHER (board-IA call 2026-07-11):
   // the tight slice — only picks explicitly dated the coming weekend (dateInWknd above) that
@@ -357,7 +343,7 @@ Promise.all([
       +'<span class="d">The tightest slice: '+dated.length+' pick'+(dated.length===1?'':'s')+' dated this weekend that fit the forecast'
       +(summer.length?', plus '+summer.length+' in-season outdoor run'+(summer.length===1?'':'s'):'')
       +(sunny?' · outdoor first':'')+(WX?'':' · forecast unavailable — weather filter off')
-      +'. The same cards ride the pile &amp; feed below — a verdict here counts everywhere.</span>';
+      +'. A verdict here counts everywhere — and ↑ Top 10 drops one straight into your deck (Simple view).</span>';
     rot.appendChild(lh);
     const lg=document.createElement('div');lg.className='grid';rot.appendChild(lg);
     dated.forEach(p=>addCard(p,lg,'lens',pilePos.get(p.id)||0,true));
@@ -442,6 +428,9 @@ Promise.all([
     const promote=t=>moveTo(t,MAX-1);   // ↑ from Up next → last slot of the Top 10 (bumps #10 down)
     const demote=t=>moveTo(t,MAX);      // − from Top 10 → first slot of Up next
     addExtra=p=>{if(!extras.some(x=>x.title===p.title))extras.push(p);if(!PILE.includes(p.title))PILE.unshift(p.title);promote(p.title)};   // New Find → into your Top 10
+    // ▲ on ANY Advanced card → into the Simple deck's Top 10. Feed cards are already in the deck (just
+    // promote); New Finds get pulled in first (extras). One verb, both views consistent.
+    promoteToDeck=p=>{const inFeed=feedServed.some(f=>f.title===p.title);if(!inFeed&&!extras.some(x=>x.title===p.title))extras.push(p);if(!PILE.includes(p.title))PILE.unshift(p.title);promote(p.title)};
     // one drag setup, reused for both lists. seg = which PILE slice this list owns (top-10 vs the tail).
     function openDrag(list,seg){
       if(!list.__dnd){list.__dnd=true;list.addEventListener('dragover',e=>{if(!list.__drag||list.__drag.parentNode!==list)return;e.preventDefault();
@@ -540,7 +529,7 @@ function addCard(p,g,tag,pos,probe){
     +'<div class="sub">'+(p.venue||'')+' · '+(p.when||'')+'</div>'
     +'<div class="src">'+(p.source||p.tier||'')+(p.editorScore!=null?' · judge '+p.editorScore:'')+(p.buzz>1?' · buzz '+p.buzz:'')+'</div>'
     +'<div class="stars">'+[1,2,3,4,5].map(n=>'<button class="star" data-n="'+n+'" aria-label="'+n+' stars">★</button>').join('')+'</div>'
-    +'<div class="row"><button class="b imgup">IMG ✓</button><button class="b imgdn">IMG ✗</button><button class="b canon">+CANON</button><button class="b topb" title="Escalate: leads the deck with a Top pick pill">👑 TOP</button><button class="b leadb" title="'+(tag==='new'?'Drop this New Find into your Top 10 (Simple view)':'Add to this weekend&#39;s pile (up this weekend, under TOPs)')+'">'+(tag==='new'?'↑ Top 10':'▲ Add')+'</button><button class="b laterb" title="This weekend only: sinks to the back of the pile (not a kill)">▼ LATER</button></div>'
+    +'<div class="row"><button class="b imgup">IMG ✓</button><button class="b imgdn">IMG ✗</button><button class="b canon">+CANON</button><button class="b topb" title="Escalate: leads the deck with a Top pick pill">👑 TOP</button><button class="b leadb" title="Promote into your Top 10 (Simple view)">↑ Top 10</button><button class="b laterb" title="This weekend only: sinks to the back of the pile (not a kill)">▼ LATER</button></div>'
     +'<input class="inp note" placeholder="note — why / what&#39;s off / bad link">'
     +'<input class="inp better" placeholder="better image URL">'
     +'<div class="reasons"><span class="rq">What’s wrong with it?</span>'
@@ -576,8 +565,8 @@ function addCard(p,g,tag,pos,probe){
       el.querySelectorAll('.leadb,.laterb').forEach(x=>x.classList.remove('on'));
       if(!was)b.classList.add('on');
       get().lead=(!was&&isLead)||undefined;get().later=(!was&&!isLead)||undefined;
-      if(isLead&&tag==='new'){const lb=el.querySelector('.leadb');lb.textContent=was?'↑ Top 10':'✓ In Top 10';if(!was)addExtra(p);}   // New Find → lands in the Simple Top 10, with feedback
-      update();renderPile();return}
+      if(isLead){const lb=el.querySelector('.leadb');lb.textContent=was?'↑ Top 10':'✓ In Top 10';if(!was)promoteToDeck(p);}   // ANY card → into the Simple deck's Top 10, with feedback
+      update();return}
     const up=b.classList.contains('imgup'),was=b.classList.contains('on');
     el.querySelectorAll('.imgup,.imgdn').forEach(x=>x.classList.remove('on'));
     if(!was)b.classList.add('on');

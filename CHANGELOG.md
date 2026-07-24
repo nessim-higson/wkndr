@@ -61,6 +61,15 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 - Verified: promote (tail→#10) · demote (#10→tail) · both lists drag-reorder · New Find label/feedback ·
   PILE full (81). No console errors.
 
+## [board V.9.22] — 2026-07-23 — one ranked deck (Simple↔Advanced consistency)
+- Ness: "I see a ranked order on Simple, then go to Advanced and it's a different order — confusing."
+- Root cause: TWO competing deck concepts. Simple = the ranked deck (top 10 + Up next); Advanced ALSO had
+  a "This weekend's pile · your TOPs + upvotes" built a different way, ordered differently.
+- Fix: **removed the Advanced pile entirely.** The ranked deck now lives in ONE place — Simple. Advanced is
+  purely rate / veto / canon / discover. The ▲ button on EVERY Advanced card is now one verb — **↑ Top 10**
+  (→ "✓ In Top 10") — that promotes straight into the Simple deck's Top 10 (feed cards move up; New Finds get
+  pulled in). No second, contradictory order anywhere.
+
 ## [V.10.15] — 2026-07-23 — the deck opens with The Lens · crowns pruned 18→6
 - **Opening order = The Lens** (weekly.pile): WorldPride · Kwaku · De Parade · IJ-Hallen Flea Market ·
   Wils at the Farm · Milkshake · Vondelpark · Pluk de Nacht · Bottomless Brunch · VriendenLoterij.
