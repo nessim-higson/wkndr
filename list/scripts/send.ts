@@ -12,7 +12,7 @@
 //
 // Env: LIST_URL (the worker origin) + ADMIN_KEY + MAIL_API_KEY. Keep them in list/.env (gitignored).
 
-const LIST_URL = process.env.LIST_URL || 'https://wkndr-list.nessimhigson.workers.dev'
+const LIST_URL = process.env.LIST_URL || 'https://wkndr-list.ness-13b.workers.dev'
 const ADMIN_KEY = process.env.ADMIN_KEY || ''
 const MAIL_API_KEY = process.env.MAIL_API_KEY || ''
 const MAIL_FROM = process.env.MAIL_FROM || 'WKNDR <friday@wkndr.xyz>'

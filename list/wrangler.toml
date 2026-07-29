@@ -3,12 +3,11 @@ name = "wkndr-list"
 main = "src/index.ts"
 compatibility_date = "2026-07-01"
 
-# The subscriber store. Create it once with:
-#   npx wrangler kv namespace create SUBS
-# then paste the id it prints over REPLACE_WITH_KV_ID below.
+# The subscriber store. Created 2026-07-29 (`npx wrangler kv namespace create SUBS`).
+# A namespace id is a routing handle, not a credential — safe in the repo, like the relay's.
 [[kv_namespaces]]
 binding = "SUBS"
-id = "REPLACE_WITH_KV_ID"
+id = "1701f484b4b3461ea0145fdecdaee646"
 
 [vars]
 # 'resend' to actually send · 'none' to log instead (local dev — no key needed, no mail leaves)

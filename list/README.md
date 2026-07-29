@@ -8,7 +8,26 @@ gone by itself", and an email list is the opposite of that. Two workers, two hon
 biggest single lever on whether Gmail files the brief in the inbox or the promotions bin. A
 signup is *not* a subscriber until they click the link in the confirm mail.
 
-## Deploy (once)
+## Status — 2026-07-29
+
+**Deployed, dark, and cannot yet send.** `https://wkndr-list.ness-13b.workers.dev`
+(note: `ness-13b`, the same account subdomain as `wkndr-curate` — *not* the relay's
+`nessimhigson` one).
+
+| | |
+|---|---|
+| ✅ KV namespace `SUBS` | `1701f484b4b3461ea0145fdecdaee646`, in `wrangler.toml` |
+| ✅ `ADMIN_KEY` | set as a Worker secret; local copy in `list/.env` (gitignored) |
+| ✅ Worker deployed | `/stats` answers `{"pending":0,"active":0,"unsub":0}`; unauthed → 404 |
+| ⬜ **`MAIL_API_KEY`** | needs a Resend account — **Ness** |
+| ⬜ **SPF/DKIM on `wkndr.xyz`** | three TXT records Resend prints — **Ness** |
+| ⬜ `LIST_URL` in `landing/index.html` | still `''`, so the form is hidden. Flip last. |
+
+`MAIL_PROVIDER` is `"resend"` with no key, so `/sub` fails loudly rather than silently
+accepting people it can never confirm. That's deliberate — and harmless while the landing
+form is hidden.
+
+## Deploy (once — done, kept for reference)
 
 ```bash
 cd list
