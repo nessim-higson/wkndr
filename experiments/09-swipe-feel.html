@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>WKNDR — Swipe Feel (study)</title>
+<style>
+  :root {
+    --ink:    #0a0a0a;
+    --paper:  #fafaf7;
+    --accent: #ff4d1f;
+    --like:   #12b76a;   /* right  — green  */
+    --nope:   #ff4d1f;   /* left   — orange-red */
+    --save:   #2d5b8a;   /* up     — kid-blue */
+    --skip:   #8a8a86;   /* down   — grey */
+    --line:   #e7e7e1;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font: 400 15px/1.4 "Helvetica Neue", Helvetica, Arial, sans-serif;
+    display: flex; flex-direction: column; align-items: center;
+    overflow: hidden; user-select: none;
+  }
+
+  /* ---- chrome ---- */
+  header {
+    width: 100%; max-width: 480px; padding: 22px 26px 6px;
+    display: flex; align-items: baseline; justify-content: space-between;
+  }
+  .wordmark { font-weight: 700; letter-spacing: -0.02em; font-size: 17px; }
+  .study { font: 500 11px/1 "JetBrains Mono", ui-monospace, monospace;
+           letter-spacing: 0.12em; text-transform: uppercase; color: #9a9a95; }
+
+  /* ---- stage ---- */
+  .stage {
+    position: relative; width: 320px; height: 440px;
+    flex: none;                 /* never let the column's shrink collapse it — its cards are
+                                   absolutely positioned, so it has no intrinsic height to resist */
+    margin: 18px 0 8px; touch-action: none;
+  }
+
+  .card {
+    position: absolute; inset: 0;
+    border-radius: 22px; overflow: hidden;
+    background: #ddd;
+    box-shadow: 0 1px 2px rgba(0,0,0,.04),
+                0 18px 40px -12px rgba(0,0,0,.28);
+    will-change: transform;
+    cursor: grab;
+  }
+  .card:active { cursor: grabbing; }
+  .card .cover { position: absolute; inset: 0; }
+  .card .grad  { position: absolute; inset: 0; }
+  .card .grain { position: absolute; inset: 0; opacity: .5; mix-blend-mode: overlay;
+    background-image: radial-gradient(rgba(255,255,255,.7) .5px, transparent .5px);
+    background-size: 3px 3px; }
+  .card .scrim { position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,.62) 0%, rgba(0,0,0,.12) 42%, transparent 68%); }
+
+  .meta { position: absolute; left: 22px; right: 22px; bottom: 20px; color: #fff; }
+  .cat  { font: 500 11px/1 "JetBrains Mono", ui-monospace, monospace;
+          letter-spacing: .14em; text-transform: uppercase; opacity: .82; }
+  .title { font-size: 25px; font-weight: 700; letter-spacing: -0.02em;
+           margin: 8px 0 5px; text-shadow: 0 1px 12px rgba(0,0,0,.3); }
+  .sub  { font-size: 13px; opacity: .84; }
+  .chip { position: absolute; top: 18px; left: 18px;
+          background: rgba(255,255,255,.9); color: #111;
+          font: 600 11px/1 "Helvetica Neue"; letter-spacing: .01em;
+          padding: 7px 11px; border-radius: 999px; backdrop-filter: blur(6px); }
+
+  /* ---- direction wash + stamp ---- */
+  .wash  { position: absolute; inset: 0; opacity: 0; }
+  .stamp {
+    position: absolute; top: 26px;
+    font: 800 22px/1 "Helvetica Neue"; letter-spacing: .06em;
+    padding: 9px 15px; border-radius: 12px; border: 3.5px solid currentColor;
+    text-transform: uppercase; opacity: 0; transform: scale(.7);
+    backdrop-filter: blur(2px);
+  }
+  .stamp.like { right: 22px; color: var(--like); transform: rotate(-13deg) scale(.7); }
+  .stamp.nope { left: 22px;  color: var(--nope); transform: rotate( 13deg) scale(.7); }
+  .stamp.save { left: 50%; top: 22px; margin-left: -52px; color: var(--save); }
+  .stamp.skip { left: 50%; bottom: 24px; top: auto; margin-left: -52px; color: var(--skip); }
+
+  /* ---- controls ---- */
+  .controls {
+    display: flex; gap: 16px; align-items: center;
+    margin-top: 14px;
+  }
+  .btn {
+    width: 58px; height: 58px; border-radius: 50%;
+    border: 1.5px solid var(--line); background: #fff;
+    display: grid; place-items: center; cursor: pointer;
+    box-shadow: 0 6px 18px -8px rgba(0,0,0,.25);
+    transition: transform .12s cubic-bezier(.2,.8,.3,1), border-color .12s;
+  }
+  .btn:active { transform: scale(.9); }
+  .btn svg { width: 26px; height: 26px; }
+  .btn.nope { color: var(--nope); } .btn.save { width:48px;height:48px; color: var(--save); }
+  .btn.skip { width:48px;height:48px; color: var(--skip); } .btn.like { color: var(--like); }
+
+  /* ---- tuning panel ---- */
+  .panel {
+    width: 320px; margin-top: 20px; padding-top: 16px;
+    border-top: 1px solid var(--line);
+    display: grid; grid-template-columns: auto 1fr auto; gap: 9px 12px; align-items: center;
+  }
+  .panel label { font: 500 12px/1 "Helvetica Neue"; color: #6a6a66; }
+  .panel .val  { font: 500 12px/1 "JetBrains Mono", monospace; color: var(--ink); text-align: right; min-width: 34px; }
+  .panel input[type=range] { width: 100%; accent-color: var(--accent); }
+  .presets { grid-column: 1 / -1; display: flex; gap: 8px; justify-content: center; margin: 2px 0 2px; }
+  .preset {
+    font: 600 12px/1 "Helvetica Neue"; padding: 8px 14px; border-radius: 999px;
+    border: 1.5px solid var(--line); background: #fff; color: var(--ink); cursor: pointer;
+    transition: border-color .12s, background .12s, transform .12s;
+  }
+  .preset:active { transform: scale(.94); }
+  .preset.on { border-color: var(--ink); background: var(--ink); color: #fff; }
+  .hint { grid-column: 1 / -1; margin-top: 4px; color: #9a9a95; font-size: 12px; text-align: center; }
+
+  .empty { position:absolute; inset:0; display:grid; place-items:center; text-align:center;
+           color:#a5a5a0; font-size:14px; gap:10px; }
+  .empty button { font: 600 13px/1 "Helvetica Neue"; padding: 11px 18px; border-radius: 999px;
+                  border: none; background: var(--ink); color: #fff; cursor: pointer; }
+</style>
+</head>
+<body>
+  <header>
+    <div class="wordmark">WKNDR</div>
+    <div class="study">study · swipe feel</div>
+  </header>
+
+  <div class="stage" id="stage"></div>
+
+  <div class="controls">
+    <button class="btn nope" data-dir="nope" title="Nope (←)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <button class="btn skip" data-dir="skip" title="Skip (↓)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 9l7 7 7-7"/></svg>
+    </button>
+    <button class="btn save" data-dir="save" title="Save (↑)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M6 3h12a1 1 0 0 1 1 1v16l-7-5-7 5V4a1 1 0 0 1 1-1z"/></svg>
+    </button>
+    <button class="btn like" data-dir="like" title="Like (→)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 20.5S3.5 14.6 3.5 8.9A4.4 4.4 0 0 1 12 6.9a4.4 4.4 0 0 1 8.5 2c0 5.7-8.5 11.6-8.5 11.6z"/></svg>
+    </button>
+  </div>
+
+  <div class="panel">
+    <div class="presets">
+      <button class="preset" data-preset="snappy">Snappy</button>
+      <button class="preset on" data-preset="default">Default</button>
+      <button class="preset" data-preset="buttery">Buttery</button>
+    </div>
+    <label>Stiffness</label><input id="stiff" type="range" min="90" max="500" value="260"><div class="val" id="stiffV">260</div>
+    <label>Damping</label>  <input id="damp"  type="range" min="8"  max="40"  value="22"> <div class="val" id="dampV">22</div>
+    <label>Torque</label>   <input id="torq"  type="range" min="0"  max="100" value="55"> <div class="val" id="torqV">.55</div>
+    <div class="hint">drag → to like · ← to nope · ↑ to save · ↓ to skip &nbsp;·&nbsp; grab high/low to feel the torque</div>
+  </div>
+
+<script>
+// ---- content: a few real-flavoured Amsterdam picks, weather-gradient covers ----
+const PICKS = [
+  { cat:'Live · Jordaan',   title:'Paradiso — Late Set',   sub:'Sat 23:00 · doors from 22:30',
+    grad:'linear-gradient(150deg,#ff7a3d,#c8305a 55%,#3a1c5a)', chip:'Perfect tonight' },
+  { cat:'Outdoors · West',  title:'Westerpark Loop',        sub:'Sun · 18°C, breaking sun',
+    grad:'linear-gradient(160deg,#8fd6ff,#4b93d8 60%,#255e9c)', chip:'Warm-ish' },
+  { cat:'Museum · Centrum', title:'Foam — New Photography', sub:'Open till 18:00 today',
+    grad:'linear-gradient(155deg,#6f7d86,#3d4b57 55%,#1c2530)', chip:'Indoor pick' },
+  { cat:'Food · De Pijp',   title:'Pancake Boat, Canal',    sub:'Sun 14:00 · with kids',
+    grad:'linear-gradient(150deg,#ffd27a,#ff9a52 55%,#e8623a)', chip:'Kid-friendly' },
+  { cat:'Water · IJ',       title:'Fluistervink Silent Boat',sub:'Fri–Sun · electric, quiet',
+    grad:'linear-gradient(160deg,#a7e8c4,#3fb082 55%,#1f6f5c)', chip:'Golden hour' },
+  { cat:'Club · Noord',     title:'Shelter — All Night',    sub:'Sat 00:00 · under the ring',
+    grad:'linear-gradient(150deg,#c58bff,#7b3ff2 55%,#2a1560)', chip:'Late one' },
+];
+
+const DIRS = {
+  like: { x: 1,  y: 0,  color:'--like' },
+  nope: { x:-1,  y: 0,  color:'--nope' },
+  save: { x: 0,  y:-1,  color:'--save' },
+  skip: { x: 0,  y: 1,  color:'--skip' },
+};
+
+const stage = document.getElementById('stage');
+const THRESH = 96;        // px past which a release commits
+const V_THRESH = 620;     // px/s fling that commits regardless of distance
+let cfg = { stiff: 260, damp: 22, torq: 0.55 };
+let deck = [];            // live card objects, index 0 = top
+
+// ---- tiny spring: integrates pos+vel toward a target each frame ----
+function makeSpring(onFrame) {
+  let raf = 0, last = 0;
+  const s = { x:0, y:0, vx:0, vy:0, tx:0, ty:0, rot:0, alive:false };
+  function step(t) {
+    if (!last) last = t;
+    let dt = Math.min((t - last) / 1000, 1/30); last = t;
+    const k = cfg.stiff, c = cfg.damp;
+    for (const ax of ['x','y']) {
+      const p = s[ax], v = s['v'+ax], target = s['t'+ax];
+      const a = -k * (p - target) - c * v;
+      s['v'+ax] = v + a * dt;
+      s[ax]     = p + s['v'+ax] * dt;
+    }
+    onFrame(s);
+    const settled = Math.abs(s.x-s.tx)<0.3 && Math.abs(s.y-s.ty)<0.3
+                 && Math.abs(s.vx)<6 && Math.abs(s.vy)<6;
+    if (settled) { s.x=s.tx; s.y=s.ty; onFrame(s); s.alive=false; last=0; return; }
+    raf = requestAnimationFrame(step);
+  }
+  s.kick = () => { if (!s.alive) { s.alive=true; last=0; raf=requestAnimationFrame(step); } };
+  s.stop = () => { if (raf) cancelAnimationFrame(raf); s.alive=false; last=0; };
+  return s;
+}
+
+function buildCard(pick, i) {
+  const el = document.createElement('div');
+  el.className = 'card';
+  el.innerHTML = `
+    <div class="cover"><div class="grad" style="background:${pick.grad}"></div>
+      <div class="grain"></div><div class="scrim"></div></div>
+    <div class="chip">${pick.chip}</div>
+    <div class="wash" data-w="like" style="background:var(--like)"></div>
+    <div class="wash" data-w="nope" style="background:var(--nope)"></div>
+    <div class="wash" data-w="save" style="background:var(--save)"></div>
+    <div class="wash" data-w="skip" style="background:var(--skip)"></div>
+    <div class="stamp like">Like</div>
+    <div class="stamp nope">Nope</div>
+    <div class="stamp save">Save</div>
+    <div class="stamp skip">Skip</div>
+    <div class="meta"><div class="cat">${pick.cat}</div>
+      <div class="title">${pick.title}</div><div class="sub">${pick.sub}</div></div>`;
+
+  const obj = {
+    el, pick,
+    grabY: 0,                 // -1 (top) … +1 (bottom) — sets torque sign
+    spring: null,
+    stamps: {
+      like: el.querySelector('.stamp.like'), nope: el.querySelector('.stamp.nope'),
+      save: el.querySelector('.stamp.save'), skip: el.querySelector('.stamp.skip'),
+    },
+    washes: {
+      like: el.querySelector('[data-w=like]'), nope: el.querySelector('[data-w=nope]'),
+      save: el.querySelector('[data-w=save]'), skip: el.querySelector('[data-w=skip]'),
+    },
+  };
+
+  // paint a given position → transform + wash/stamp feedback
+  obj.paint = (x, y) => {
+    // torque: pulling the top pivots one way, the bottom the other; centre barely tilts
+    const lever = obj.grabY;                       // -1..1
+    const tilt = x * (0.06 - cfg.torq * 0.09 * lever);
+    const rot = Math.max(-22, Math.min(22, tilt));
+    el.style.transform = `translate(${x}px, ${y}px) rotate(${rot}deg)`;
+
+    // whichever axis dominates owns the feedback
+    const ax = Math.abs(x), ay = Math.abs(y);
+    const horiz = ax >= ay;
+    const like = horiz && x > 0 ? clamp(x / THRESH) : 0;
+    const nope = horiz && x < 0 ? clamp(-x / THRESH) : 0;
+    const save = !horiz && y < 0 ? clamp(-y / THRESH) : 0;
+    const skip = !horiz && y > 0 ? clamp(y / THRESH) : 0;
+    obj.washes.like.style.opacity = like * 0.5;
+    obj.washes.nope.style.opacity = nope * 0.5;
+    obj.washes.save.style.opacity = save * 0.5;
+    obj.washes.skip.style.opacity = skip * 0.5;
+    stampSet(obj.stamps.like, like, -13);
+    stampSet(obj.stamps.nope, nope,  13);
+    stampSet(obj.stamps.save, save,  0);
+    stampSet(obj.stamps.skip, skip,  0);
+  };
+  return obj;
+}
+
+function stampSet(node, t, deg) {
+  node.style.opacity = Math.min(1, t * 1.5);
+  const s = 0.7 + Math.min(1, t) * 0.3;
+  node.style.transform = deg ? `rotate(${deg}deg) scale(${s})` : `scale(${s})`;
+}
+const clamp = v => Math.max(0, Math.min(1, v));
+
+// ---- depth styling for the 3 visible cards ----
+function restyle() {
+  deck.forEach((c, i) => {
+    c.el.style.zIndex = 100 - i;
+    if (i === 0) return;                          // top card driven by drag/spring
+    if (i > 2) { c.el.style.display = 'none'; return; }
+    c.el.style.display = '';
+    const scale = 1 - i * 0.05;
+    const ty = i * 12;
+    c.el.style.transition = 'transform .38s cubic-bezier(.2,.8,.25,1)';
+    c.el.style.transform = `translateY(${ty}px) scale(${scale})`;
+    c.el.style.pointerEvents = 'none';
+  });
+}
+
+// ---- attach pointer drag to the top card ----
+function arm(card) {
+  const el = card.el;
+  card.spring = card.spring || makeSpring(s => {
+    // torque follows x during the spring too
+    const lever = card.grabY;
+    const tilt = s.x * (0.06 - cfg.torq * 0.09 * lever);
+    const rot = Math.max(-22, Math.min(22, tilt));
+    el.style.transform = `translate(${s.x}px, ${s.y}px) rotate(${rot}deg)`;
+    card.paint(s.x, s.y);
+  });
+
+  let dragging = false, startX = 0, startY = 0, curX = 0, curY = 0;
+  let lastT = 0, lastX = 0, lastY = 0, vx = 0, vy = 0;
+
+  function down(e) {
+    if (deck[0] !== card) return;
+    dragging = true; card.spring.stop();
+    el.setPointerCapture?.(e.pointerId);
+    el.style.transition = 'none';
+    const r = el.getBoundingClientRect();
+    // where along the card's height did you grab → torque lever (-1 top … +1 bottom)
+    card.grabY = clamp((e.clientY - r.top) / r.height) * 2 - 1;
+    startX = e.clientX; startY = e.clientY;
+    lastX = e.clientX; lastY = e.clientY; lastT = e.timeStamp;
+    vx = vy = 0;
+  }
+  function move(e) {
+    if (!dragging) return;
+    curX = e.clientX - startX; curY = e.clientY - startY;
+    const dt = Math.max(1, e.timeStamp - lastT);
+    vx = (e.clientX - lastX) / dt * 1000;
+    vy = (e.clientY - lastY) / dt * 1000;
+    lastX = e.clientX; lastY = e.clientY; lastT = e.timeStamp;
+    card.paint(curX, curY);
+  }
+  function up() {
+    if (!dragging) return; dragging = false;
+    const ax = Math.abs(curX), ay = Math.abs(curY);
+    const horiz = ax >= ay;
+    const dist = horiz ? curX : curY;
+    const vel  = horiz ? vx : vy;
+    let dir = null;
+    if (horiz) { if (curX >  THRESH || vx >  V_THRESH) dir='like';
+                 if (curX < -THRESH || vx < -V_THRESH) dir='nope'; }
+    else       { if (curY < -THRESH || vy < -V_THRESH) dir='save';
+                 if (curY >  THRESH || vy >  V_THRESH) dir='skip'; }
+    if (dir) commit(card, dir, vx, vy);
+    else {    // spring home
+      card.spring.x = curX; card.spring.y = curY;
+      card.spring.vx = vx; card.spring.vy = vy;
+      card.spring.tx = 0;  card.spring.ty = 0;
+      card.spring.kick();
+    }
+  }
+  el.addEventListener('pointerdown', down);
+  el.addEventListener('pointermove', move);
+  el.addEventListener('pointerup', up);
+  el.addEventListener('pointercancel', up);
+}
+
+// ---- commit a swipe: fling off in the chosen direction, then advance ----
+function commit(card, dir, vx = 0, vy = 0) {
+  if (deck[0] !== card) return;
+  card.spring?.stop();
+  const d = DIRS[dir];
+  const el = card.el;
+  const fromX = parseFloat(el.style.transform.match(/translate\(([-\d.]+)px/)?.[1] || 0) || 0;
+  // fly clear of the stage in the direction's vector
+  const toX = d.x * 620 + (dir==='save'||dir==='skip' ? fromX : 0);
+  const toY = d.y * 720;
+  const rot = d.x * 22 + (dir==='save'?-6:dir==='skip'?6:0);
+  el.style.transition = 'transform .42s cubic-bezier(.22,.7,.25,1), opacity .42s ease';
+  requestAnimationFrame(() => {
+    el.style.transform = `translate(${toX}px, ${toY}px) rotate(${rot}deg)`;
+    el.style.opacity = '0';
+  });
+  // snap the direction's stamp fully on for the send-off
+  card.paint(d.x * THRESH * 1.4, d.y * THRESH * 1.4);
+  setTimeout(() => {
+    el.remove();
+    deck.shift();
+    if (deck.length === 0) showEmpty();
+    else { restyle(); arm(deck[0]); deck[0].el.style.pointerEvents = 'auto'; }
+  }, 300);
+}
+
+function showEmpty() {
+  const e = document.createElement('div');
+  e.className = 'empty';
+  e.innerHTML = `<div>You reached the end of the study.</div><button id="reset">Reshuffle deck</button>`;
+  stage.appendChild(e);
+  e.querySelector('#reset').onclick = () => { e.remove(); build(); };
+}
+
+// ---- build the deck (back-to-front so top is on top) ----
+function build() {
+  deck = [];
+  stage.innerHTML = '';
+  // render a rotated, doubled sequence so the study never feels short
+  const seq = [...PICKS, ...PICKS.slice(0,2)];
+  seq.forEach((p, i) => {
+    const c = buildCard(p, i);
+    stage.appendChild(c.el);
+    deck.push(c);
+  });
+  restyle();
+  arm(deck[0]);
+  deck[0].el.style.pointerEvents = 'auto';
+}
+
+// ---- button controls ----
+document.querySelectorAll('.controls .btn').forEach(b => {
+  b.addEventListener('click', () => {
+    if (deck[0]) {
+      const dir = b.dataset.dir;
+      const d = DIRS[dir];
+      commit(deck[0], dir, d.x * 900, d.y * 900);
+    }
+  });
+});
+
+// ---- tuning panel ----
+function wire(id, key, fmt) {
+  const input = document.getElementById(id);
+  const out = document.getElementById(id + 'V');
+  input.addEventListener('input', () => {
+    const v = +input.value;
+    cfg[key] = key === 'torq' ? v / 100 : v;
+    out.textContent = fmt ? fmt(v) : v;
+  });
+}
+wire('stiff', 'stiff');
+wire('damp',  'damp');
+wire('torq',  'torq', v => '.' + String(v).padStart(2,'0'));
+
+// feel presets — three points in the physics space you can A/B by touch
+const PRESETS = {
+  snappy:  { stiff: 400, damp: 30, torq: 40 },  // quick, tight, minimal overshoot
+  default: { stiff: 260, damp: 22, torq: 55 },  // the shipped-ish middle
+  buttery: { stiff: 150, damp: 15, torq: 72 },  // slow glide, generous overshoot, loose tilt
+};
+function applyPreset(name) {
+  const p = PRESETS[name]; if (!p) return;
+  cfg = { stiff: p.stiff, damp: p.damp, torq: p.torq / 100 };
+  // reflect into the sliders + readouts
+  const set = (id, v, fmt) => {
+    document.getElementById(id).value = v;
+    document.getElementById(id + 'V').textContent = fmt ? fmt(v) : v;
+  };
+  set('stiff', p.stiff); set('damp', p.damp);
+  set('torq', p.torq, v => '.' + String(v).padStart(2,'0'));
+  document.querySelectorAll('.preset').forEach(b => b.classList.toggle('on', b.dataset.preset === name));
+}
+document.querySelectorAll('.preset').forEach(b =>
+  b.addEventListener('click', () => applyPreset(b.dataset.preset)));
+// nudging any slider by hand means you've left the presets — clear the active chip
+['stiff','damp','torq'].forEach(id =>
+  document.getElementById(id).addEventListener('input',
+    () => document.querySelectorAll('.preset').forEach(b => b.classList.remove('on'))));
+
+// keyboard: arrows commit the top card
+window.addEventListener('keydown', e => {
+  const map = { ArrowRight:'like', ArrowLeft:'nope', ArrowUp:'save', ArrowDown:'skip' };
+  const dir = map[e.key];
+  if (dir && deck[0]) { e.preventDefault(); const d = DIRS[dir]; commit(deck[0], dir, d.x*900, d.y*900); }
+});
+
+build();
+</script>
+</body>
+</html>

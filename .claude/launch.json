@@ -7,6 +7,20 @@
       "runtimeArgs": ["run", "--cwd", "app", "dev"],
       "port": 5173,
       "autoPort": true
+    },
+    {
+      "name": "wkndr-landing",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "8092", "--directory", "landing"],
+      "port": 8092,
+      "autoPort": true
+    },
+    {
+      "name": "experiments",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "8091", "--directory", "experiments"],
+      "port": 8091,
+      "autoPort": true
     }
   ]
 }

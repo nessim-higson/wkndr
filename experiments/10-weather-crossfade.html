@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>WKNDR — Weather Crossfade (study)</title>
+<style>
+  /* Register the palette props as <color> so they can TRANSITION (a plain custom property
+     can't be animated; an @property one can). This is what lets the whole field morph its
+     hue on a mode change — no rAF, no second layer, survives a backgrounded tab. */
+  @property --f-text { syntax: '<color>'; inherits: true; initial-value: #fbf7ef; }
+  @property --f1     { syntax: '<color>'; inherits: true; initial-value: #ff9a3d; }
+  @property --f2     { syntax: '<color>'; inherits: true; initial-value: #c2310e; }
+  @property --f3     { syntax: '<color>'; inherits: true; initial-value: #5a1606; }
+  @property --glow   { syntax: '<color>'; inherits: true; initial-value: #ffd166; }
+
+  :root { --dur: 1200ms; }
+  html {
+    transition:
+      --f-text var(--dur) ease,
+      --f1 var(--dur) ease, --f2 var(--dur) ease,
+      --f3 var(--dur) ease, --glow var(--dur) ease;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    font: 400 15px/1.5 "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: var(--f-text); overflow: hidden; user-select: none; background: #0a0a0a;
+  }
+
+  /* ---- the weather field ---- */
+  .field { position: fixed; inset: 0; overflow: hidden; }
+  .layer {
+    position: absolute; inset: -20%;                     /* over-scan for the drift */
+    background:
+      radial-gradient(120% 90% at 22% 12%, var(--glow) 0%, transparent 42%),
+      radial-gradient(130% 100% at 78% 22%, var(--f1) 0%, transparent 55%),
+      linear-gradient(158deg, var(--f1) 0%, var(--f2) 48%, var(--f3) 100%);
+    will-change: transform;
+    animation: breathe 15s ease-in-out infinite alternate;
+  }
+  @keyframes breathe {
+    from { transform: scale(1)    translate(0,0); }
+    to   { transform: scale(1.08) translate(-1.5%, -2%); }
+  }
+  .grain { position: fixed; inset: 0; pointer-events: none; opacity: .5; mix-blend-mode: overlay;
+    background-image: radial-gradient(rgba(255,255,255,.8) .5px, transparent .5px); background-size: 3px 3px; }
+
+  /* ---- editorial overlay ---- */
+  .wrap { position: relative; height: 100%; display: flex; flex-direction: column;
+          padding: 34px 30px; max-width: 520px; margin: 0 auto; }
+  .top { display: flex; justify-content: space-between; align-items: baseline; }
+  .wordmark { font-weight: 700; font-size: 18px; letter-spacing: -.02em; }
+  .study { font: 500 11px/1 "JetBrains Mono", ui-monospace, monospace;
+           letter-spacing: .14em; text-transform: uppercase; opacity: .72; }
+
+  .hero { margin-top: auto; }
+  .cond { font: 500 12px/1 "JetBrains Mono", ui-monospace, monospace;
+          letter-spacing: .16em; text-transform: uppercase; opacity: .8; margin-bottom: 16px; }
+  .temp { font-size: 82px; font-weight: 700; letter-spacing: -.04em; line-height: .9;
+          text-shadow: 0 2px 40px rgba(0,0,0,.25); }
+  .temp .deg { font-size: 40px; vertical-align: super; opacity: .7; }
+  .phrase { font-size: 21px; line-height: 1.32; max-width: 15em; margin-top: 18px; min-height: 2.6em;
+            text-shadow: 0 1px 24px rgba(0,0,0,.28); }
+  .phrase span { display: inline-block; opacity: 0; transform: translateY(4px);
+    transition: opacity .5s ease, transform .5s cubic-bezier(.2,.8,.3,1); }
+  .phrase span.in { opacity: 1; transform: none; }
+  .trace { font: 500 11px/1.6 "JetBrains Mono", ui-monospace, monospace;
+           letter-spacing: .06em; opacity: .62; margin-top: 22px; }
+
+  /* ---- mode pills ---- */
+  .pills { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 26px; }
+  .pill {
+    font: 600 13px/1 "Helvetica Neue"; padding: 10px 15px; border-radius: 999px;
+    border: 1.5px solid rgba(255,255,255,.32); background: rgba(255,255,255,.1);
+    color: var(--f-text); cursor: pointer; backdrop-filter: blur(8px);
+    transition: transform .14s cubic-bezier(.2,.8,.3,1), background .2s, border-color .2s;
+  }
+  .pill:active { transform: scale(.93); }
+  .pill.on { background: var(--f-text); color: #111; border-color: var(--f-text); }
+  .auto { margin-left: auto; }
+</style>
+</head>
+<body>
+  <div class="field"><div class="layer"></div></div>
+  <div class="grain"></div>
+
+  <div class="wrap">
+    <div class="top">
+      <div class="wordmark">WKNDR</div>
+      <div class="study">study · weather crossfade</div>
+    </div>
+    <div class="hero">
+      <div class="cond" id="cond">HOT · DRY · keep water close</div>
+      <div class="temp" id="temp">26<span class="deg">°</span></div>
+      <div class="phrase" id="phrase"></div>
+      <div class="trace">Buienradar → KNMI → mode · Amsterdam</div>
+      <div class="pills" id="pills"></div>
+    </div>
+  </div>
+
+<script>
+// ---- 5 modes, palettes verbatim from app/src/weather/modes.ts ----
+const MODES = {
+  HOT:      { label:'Hot',       temp:26, cond:'HOT · DRY · keep water close',
+    phrase:'It turns properly hot by two. Chase the shade, and keep water close.',
+    field:{ text:'#fbf7ef', c1:'#ff9a3d', c2:'#c2310e', c3:'#5a1606', glow:'#ffd166' } },
+  WARM:     { label:'Warm',      temp:19, cond:'WARM · DRY · gentle breeze',
+    phrase:'A soft, generous day — the kind that lets you choose your own adventure.',
+    field:{ text:'#fffdf6', c1:'#d8e08a', c2:'#6fa24a', c3:'#2c4a26', glow:'#fff0b0' } },
+  COOL:     { label:'Cool',      temp:11, cond:'COOL · CLEAR · crisp air',
+    phrase:'Crisp and clear. Layer up and the whole city is walkable.',
+    field:{ text:'#f4f8f7', c1:'#9fc0b8', c2:'#4a716b', c3:'#1e3433', glow:'#cfe6df' } },
+  COLD_WET: { label:'Cold & wet',temp:6,  cond:'COLD · WET · an indoor day',
+    phrase:'Grey and wet through the afternoon. Today is an indoor day, well spent.',
+    field:{ text:'#eef2f7', c1:'#6c7e9c', c2:'#313f5e', c3:'#121a2e', glow:'#9fb2cc' } },
+  VOLATILE: { label:'Volatile',  temp:15, cond:'VOLATILE · sun then storms',
+    phrase:"It can't decide. Keep a backup plan and a rain layer in the bag.",
+    field:{ text:'#f6f1ee', c1:'#e08a4a', c2:'#7a5a7a', c3:'#2a3358', glow:'#ffcf8a' } },
+};
+const ORDER = ['HOT','WARM','COOL','COLD_WET','VOLATILE'];
+
+const root   = document.documentElement;
+const condEl = document.getElementById('cond');
+const tempEl = document.getElementById('temp');
+const phraseEl = document.getElementById('phrase');
+const pillsEl  = document.getElementById('pills');
+const VARS = { text:'--f-text', c1:'--f1', c2:'--f2', c3:'--f3', glow:'--glow' };
+
+let current = 'HOT';
+let tempRaf = 0;
+
+function paintField(f) {                       // CSS transition on <html> tweens these
+  for (const k in VARS) root.style.setProperty(VARS[k], f[k]);
+}
+
+// count the temperature up/down over the crossfade (rAF, but with a synchronous fallback
+// so the number is never left wrong if the tab is backgrounded and rAF is paused)
+function countTemp(from, to, dur) {
+  cancelAnimationFrame(tempRaf);
+  const set = v => { tempEl.firstChild.textContent = v; };
+  set(to);                                     // land on the correct value up front — if the
+                                               // tab is backgrounded and rAF never fires, it
+                                               // simply stays correct (no count-up, but right)
+  const t0 = performance.now();
+  const ease = t => 1 - Math.pow(1 - t, 3);
+  const frame = now => {                       // scheduled, NOT called inline — an inline call
+    const t = Math.min(1, (now - t0) / dur);   // at t0 would snap back to `from` and undo set(to)
+    set(Math.round(from + (to - from) * ease(t)));
+    if (t < 1) tempRaf = requestAnimationFrame(frame);
+  };
+  tempRaf = requestAnimationFrame(frame);
+}
+
+function writePhrase(text) {                    // word-by-word soft reveal (reflow-triggered,
+  phraseEl.innerHTML = '';                      // so it runs even in a throttled tab)
+  const spans = text.split(' ').map((w, i) => {
+    const s = document.createElement('span');
+    s.textContent = w + ' ';
+    s.style.transitionDelay = (0.16 + i * 0.028) + 's';
+    phraseEl.appendChild(s);
+    return s;
+  });
+  void phraseEl.offsetWidth;                    // flush layout, then arm the transition
+  spans.forEach(s => s.classList.add('in'));
+}
+
+function markPill(name) {
+  [...pillsEl.children].forEach(b => b.classList.toggle('on', b.dataset.mode === name && !b.dataset.auto));
+}
+
+function toMode(name) {
+  if (!MODES[name] || name === current) { markPill(name); return; }
+  const dur = parseFloat(getComputedStyle(root).getPropertyValue('--dur')) || 1200;
+  const from = MODES[current], to = MODES[name];
+  paintField(to.field);                         // → the whole field morphs hue
+  condEl.textContent = to.cond;
+  countTemp(from.temp, to.temp, dur);
+  writePhrase(to.phrase);
+  markPill(name);
+  current = name;
+}
+
+// pills + auto-cycle
+ORDER.forEach(name => {
+  const b = document.createElement('button');
+  b.className = 'pill'; b.dataset.mode = name; b.textContent = MODES[name].label;
+  b.onclick = () => { stopAuto(); toMode(name); };
+  pillsEl.appendChild(b);
+});
+const autoBtn = document.createElement('button');
+autoBtn.className = 'pill auto'; autoBtn.dataset.auto = '1'; autoBtn.textContent = '▶ Auto-cycle';
+pillsEl.appendChild(autoBtn);
+
+let autoTimer = 0;
+function startAuto() {
+  autoBtn.classList.add('on'); autoBtn.textContent = '❚❚ Cycling';
+  const tick = () => toMode(ORDER[(ORDER.indexOf(current) + 1) % ORDER.length]);
+  tick();
+  autoTimer = setInterval(tick, 2600);
+}
+function stopAuto() {
+  clearInterval(autoTimer); autoTimer = 0;
+  autoBtn.classList.remove('on'); autoBtn.textContent = '▶ Auto-cycle';
+}
+autoBtn.onclick = () => autoTimer ? stopAuto() : startAuto();
+
+// init on HOT
+paintField(MODES.HOT.field);
+writePhrase(MODES.HOT.phrase);
+markPill('HOT');
+</script>
+</body>
+</html>
