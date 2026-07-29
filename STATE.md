@@ -241,7 +241,9 @@ GUARANTEES topped/led picks into the feed (pull-back from prePool/canon if the b
   they're late-Jul — offer to gate TOP activation to the event's own weekend.
 
 ## Doc map
-`backlog.md` (strategy) · `pipeline-architecture.md` (north star/roadmap) · `source-map.md` (source
+`backlog.md` (strategy) · **`takeovers.md`** (2026-07-28 night memo — guest curators, slot-based
+weather, stickiness, model tasking; advances `curation-surfaces.md` §5 from parked to planned) ·
+`pipeline-architecture.md` (north star/roadmap) · `source-map.md` (source
 registry) · `pipeline-redesign.md` (the 5-problem deep-dive) · `moat.md` · `discovery-direction.md` ·
 `content-pipeline.md` · `jtbd-analysis.md` · `market-scan-2026-06.md` · `mom-test-interviews.md` ·
 `validation-log.md`.

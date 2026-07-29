@@ -103,7 +103,12 @@ themselves retired is a conversation we didn't choose to have.
 great public artifact. The kill list is not. Until that view exists, `/curate/` being discoverable is
 **accepted risk, not an incident** — no write path, and `picks.json` is already public.
 
-## 5. Parked: guest curators (a real option, not this week)
+## 5. Guest curators — UNPARKED 2026-07-28, see `takeovers.md`
+
+> **Status change (2026-07-28).** Ness is leaning in. The framing below stands; the build plan,
+> the write-scope split (Order / Add / Judge), and the risks are in **`takeovers.md`**. Two of the
+> three blockers named at the end of this section got cheaper: `wkndr-curate` (V.10.16) already **is**
+> lens storage, and identity at n=10 is a signed URL, not accounts.
 
 The variable worth tweaking (per the ERRC/JTBD lathe) is **who the curator is for** — not whether
 there's a curator.
