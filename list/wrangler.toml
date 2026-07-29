@@ -1,0 +1,21 @@
+# WKNDR list — Cloudflare Worker + KV for the Friday brief. See README.md for the deploy.
+name = "wkndr-list"
+main = "src/index.ts"
+compatibility_date = "2026-07-01"
+
+# The subscriber store. Create it once with:
+#   npx wrangler kv namespace create SUBS
+# then paste the id it prints over REPLACE_WITH_KV_ID below.
+[[kv_namespaces]]
+binding = "SUBS"
+id = "REPLACE_WITH_KV_ID"
+
+[vars]
+# 'resend' to actually send · 'none' to log instead (local dev — no key needed, no mail leaves)
+MAIL_PROVIDER = "resend"
+MAIL_FROM = "WKNDR <friday@wkndr.xyz>"
+SITE_ORIGIN = "https://wkndr.xyz"
+
+# SECRETS — never in this file, set with `npx wrangler secret put <NAME>`:
+#   MAIL_API_KEY   Resend API key
+#   ADMIN_KEY      long random string; gates /export + /stats (the send script reads it)

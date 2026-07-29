@@ -484,6 +484,30 @@
     font-family:'TWKLausannePan',sans-serif;font-weight:300;font-size:12.5px;letter-spacing:.02em;color:var(--ink-3);text-align:center;}
   .closing-trust li{display:inline;}
   .closing-trust li+li::before{content:'·';margin:0 9px;opacity:.7;}
+  /* The Friday brief opt-in. Deliberately QUIET and below the trust line: the one thing to do
+     here is still Open WKNDR. This catches the person who won't click through today — it is the
+     fallback, not a second ask, and the hierarchy has to say so. */
+  .fb{margin-top:30px;padding-top:26px;border-top:1px solid var(--line);max-width:400px;}
+  .fb-lead{font-family:'TWKLausannePan',sans-serif;font-weight:300;font-size:14px;line-height:1.5;
+    letter-spacing:.01em;color:var(--ink);margin-bottom:14px;}
+  .fb-lead b{font-weight:400;}
+  .fb-form{display:flex;gap:8px;align-items:center;}
+  .fb-in{flex:1;min-width:0;background:transparent;border:1px solid var(--line);border-radius:999px;
+    padding:11px 18px;font-family:'TWKLausannePan',sans-serif;font-weight:300;font-size:15px;color:var(--ink);
+    outline:none;transition:border-color .2s ease;-webkit-appearance:none;}
+  .fb-in::placeholder{color:var(--ink-3);}
+  .fb-in:focus{border-color:var(--accent);}
+  .fb-go{flex:0 0 auto;background:var(--accent);color:#fff;border:none;border-radius:999px;
+    width:44px;height:44px;font-size:17px;cursor:pointer;-webkit-tap-highlight-color:transparent;
+    touch-action:manipulation;transition:transform .2s ease,opacity .2s ease;}
+  .fb-go:hover{transform:translateY(-1px);}
+  .fb-go:disabled{opacity:.45;cursor:default;transform:none;}
+  /* the honeypot — off-canvas, never focusable, invisible to a human, irresistible to a bot */
+  .fb-hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0;}
+  .fb-note{font-family:'TWKLausannePan',sans-serif;font-weight:300;font-size:12.5px;line-height:1.5;
+    color:var(--ink-3);margin-top:11px;min-height:1.2em;}
+  .fb-note.ok{color:var(--accent);}
+  .fb.done .fb-form{display:none;}
   .get-in-touch{background:var(--accent);color:#fff;border:none;border-radius:999px;padding:11px 22px;
     font-family:'TWKLausannePan',sans-serif;font-weight:300;font-size:16px;letter-spacing:.01em;
     cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation;
@@ -677,6 +701,18 @@
           <li>Saves stay in your browser</li>
           <li>Shared matching links expire automatically</li>
         </ul>
+
+        <!-- Not this weekend? Then the inbox is the only way back. -->
+        <div class="fb" id="fb">
+          <div class="fb-lead"><b>Not this weekend?</b> Get the Friday brief — a few Amsterdam picks for the weekend ahead, chosen against the forecast.</div>
+          <form class="fb-form" id="fb-form" novalidate>
+            <input class="fb-hp" type="text" name="company" tabindex="-1" autocomplete="off" aria-hidden="true">
+            <input class="fb-in" id="fb-email" type="email" name="email" inputmode="email" autocomplete="email"
+                   placeholder="you@email.com" aria-label="Your email address" required>
+            <button class="fb-go" id="fb-go" type="submit" aria-label="Sign up for the Friday brief">→</button>
+          </form>
+          <div class="fb-note" id="fb-note" role="status" aria-live="polite">One email a week. Leave in one click.</div>
+        </div>
         <!-- the policy has to be reachable from the site, not just by URL -->
         <a href="/privacy" style="display:inline-block;margin-top:20px;font-family:'TWKLausannePan',sans-serif;font-weight:300;font-size:12px;letter-spacing:.03em;color:inherit;opacity:.5;text-decoration:none;border-bottom:0.5px solid currentColor;padding-bottom:1px">Privacy</a>
       </div>
@@ -1192,6 +1228,43 @@ function frame(ts){
   requestAnimationFrame(frame);
 }
 requestAnimationFrame(frame);
+
+/* ── The Friday brief opt-in ──────────────────────────────────────────────────────────────
+   Posts to the wkndr-list worker, which mails a confirm link. Nobody is a subscriber until
+   they click it — so the success copy promises the CHECK-YOUR-INBOX step, never "you're in".
+   Set LIST_URL='' to hide the whole block (the form is useless without a backend). */
+const LIST_URL='';   // ← 'https://wkndr-list.nessimhigson.workers.dev' once the worker is DEPLOYED (list/README.md)
+(function(){
+  const fb=document.getElementById('fb');
+  if(!fb)return;
+  if(!LIST_URL){fb.style.display='none';return;}
+  const form=document.getElementById('fb-form'),
+        input=document.getElementById('fb-email'),
+        go=document.getElementById('fb-go'),
+        note=document.getElementById('fb-note');
+
+  const say=(msg,ok)=>{note.textContent=msg;note.classList.toggle('ok',!!ok);};
+
+  form.addEventListener('submit',async e=>{
+    e.preventDefault();
+    const email=input.value.trim();
+    // the browser's own check is enough at the door — the confirm click is the real proof
+    if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){say('That address looks incomplete.');input.focus();return;}
+    go.disabled=true;say('Sending…');
+    try{
+      const r=await fetch(LIST_URL+'/sub',{
+        method:'POST',headers:{'content-type':'application/json'},
+        body:JSON.stringify({email,src:'landing',hp:form.company.value})
+      });
+      if(!r.ok)throw new Error(r.status);
+      fb.classList.add('done');
+      say('Check your inbox — one click to confirm.',true);
+    }catch(err){
+      go.disabled=false;
+      say('That didn’t go through. Try again in a moment.');
+    }
+  });
+})();
 </script>
 </body>
 </html>
