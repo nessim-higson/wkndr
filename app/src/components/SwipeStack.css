@@ -35,6 +35,10 @@
   /* top reserve below the nav — the undo pill is fixed at 86px and ~32px tall (bottom ~118px), so
      this keeps a comfortable ~40px gap beneath it: the pill drops in well clear of the card top. */
   .main-stack .stack-wrap { padding-top: 64px; padding-bottom: 9vh; }
+  /* the MATCH screen deck is bottom-anchored too — same 9vh lift as the main stack, or the
+     recipient's desktop view pins the cards + ✕/★ flush to the bottom edge (no undo pill up
+     top, so no padding-top: the .mg header is in-flow above). */
+  .mg .stack-wrap { padding-bottom: 9vh; }
 }
 @media (min-width: 1200px) {
   .stack-deck { width: 600px; }
