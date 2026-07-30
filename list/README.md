@@ -49,9 +49,12 @@ logs what it *would* have mailed and no key is needed.
 
 ## Templates — three comps
 
-`templates/` holds three designs for the brief, plus a side-by-side harness. Same five picks, same
-weekend (a clear 24° Saturday, a wet Sunday — the exact case the deck got wrong), three different
-bets about what the brief *is*:
+`templates/` holds three designs for the brief, plus a side-by-side harness. Same picks, same
+weekend, and the **real forecast for 1–2 Aug 2026** pulled from Open-Meteo's *hourly* endpoint —
+Sat 24°, Sun 26°, no rain either day, but Saturday clouds over at lunch and clears by six while
+Sunday is bright only until one. That hour-level reading is the §3 slot model doing real work: a
+daily summary would have called this "two sunny days" and said nothing useful. Three bets about
+what the brief *is*:
 
 | | Comp | The bet | Size |
 |---|---|---|---|
@@ -59,9 +62,25 @@ bets about what the brief *is*:
 | **B** | `b-dispatch.html` | the **writing** sells it — zero images, hanging numerals, signed | 12.3 KB |
 | **C** | `c-forecast.html` | the **structure** sells it — Sat vs Sun columns, each with its own temp | 13.3 KB |
 
-Compare them: `preview_start` the `wkndr-brief` config (port 4219) → `/compare.html`. Toggles for
-mobile 390, the Outlook.com dark path, and **images off** — which is the default in Outlook desktop
-and for a lot of Gmail users, and the reason Comp A carries a real risk that B and C don't.
+Compare them: `preview_start` the `wkndr-brief` config (port 4219) → `/compare.html`, or live at
+https://wkndr-brief.pages.dev. Toggles for mobile 390, the Outlook.com dark path, and **images
+off**.
+
+**On image blocking, accurately.** Classic Outlook desktop on Windows blocks external images by
+default for senders not on the safe-senders list, and a lot of locked-down corporate mail does the
+same. **Gmail does not** — it has proxied and cached images through `googleusercontent` since 2013
+and displays them by default; the "ask before displaying external images" setting exists but is
+opt-in. Apple Mail displays too (proxied via Mail Privacy Protection on iOS 15+). So blocked-image
+readers are a real but minority slice, concentrated in Outlook desktop and corporate estates —
+treat the published percentages floating around as folklore.
+
+The way to know *your* number: an open is measured by loading a tracking pixel, so **your open rate
+is approximately your image-load rate.** Resend reports it. After two or three sends you'll have a
+better figure for your own list than any published average.
+
+Comp A is hardened for the blocked case anyway — see the hero comment in `a-poster.html`: a
+`bgcolor` on the cell, **no `height` attribute** so a blocked image collapses to a line instead of
+reserving an empty band, and styled `alt` text so it degrades to designed type.
 
 **Email-HTML rules these follow**, worth keeping if you edit them:
 

@@ -82,10 +82,11 @@
 </header>
 <main>
   <p class="note">
-    Each comp makes a different bet about what the brief <b>is</b>. Same content, same five picks,
-    same weekend — a clear 24&deg; Saturday and a wet Sunday, which is the exact scenario the deck
-    got wrong last week. Toggle <b>Images off</b> to see what Outlook desktop and a good share of
-    Gmail users see by default.
+    Each comp makes a different bet about what the brief <b>is</b>. Same picks, same weekend, and
+    the <b>real forecast for 1&ndash;2 Aug</b> — two dry days where the difference is the hour, not
+    the day. Toggle <b>Images off</b> for what classic Outlook desktop and locked-down corporate
+    mail show by default. Gmail and Apple Mail both load images, so that state is a minority of
+    readers — but an unpredictable one.
   </p>
   <div class="grid">
 
@@ -97,7 +98,7 @@
         <div class="meta">
           <span class="tag" id="sz-a">—</span>
           <span class="tag good">Most visual</span>
-          <span class="tag warn">Dies with images off</span>
+          <span class="tag">Hardened for images-off</span>
         </div>
       </div>
       <div class="frame"><iframe src="a-poster.html" title="Comp A — The Poster"></iframe></div>
@@ -148,10 +149,15 @@
       try{const h=f.contentDocument.documentElement;
         on?h.setAttribute('data-ogsc',''):h.removeAttribute('data-ogsc');}catch(e){}
     });};
+  // visibility:hidden would keep the image's BOX, which is not what a blocked image does — the
+  // whole point is whether the layout survives losing that box and whether the alt text reads.
+  // So this breaks the src, forcing the browser down its real broken-image path: alt text, on
+  // whatever bgcolor the cell carries, collapsed to its natural height. That's the honest test.
   i.onclick=()=>{const on=t(i,'noimg');
     document.querySelectorAll('iframe').forEach(f=>{
       try{f.contentDocument.querySelectorAll('img').forEach(im=>{
-        im.style.visibility=on?'hidden':'';
+        if(on){ if(!im.dataset.src) im.dataset.src=im.src; im.src='data:,'; }
+        else if(im.dataset.src){ im.src=im.dataset.src; }
       })}catch(e){}
     });};
   // Byte sizes matter here: Gmail CLIPS a message over ~102KB and hides the rest behind a

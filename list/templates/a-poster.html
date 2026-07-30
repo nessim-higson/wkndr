@@ -52,7 +52,7 @@
      scrapes your first body words instead, which is always worse. The zero-width padding stops
      it pulling the masthead in after it. -->
 <div style="display:none;font-size:1px;color:#eceae3;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;">
-  Saturday is the one. Sunday, go inside — four picks that read the forecast.
+  Two dry days — the difference is the hour. Saturday after six, Sunday before one.
   &#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;
 </div>
 
@@ -69,7 +69,7 @@
           WKNDR<span style="color:#ff4d1f;">&nbsp;&bull;</span>
         </td>
         <td align="right" style="font:400 10px/1 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#8b8a82;" class="ink3">
-          Fri 31 Jul &nbsp;·&nbsp; Amsterdam
+          1&ndash;2 Aug &nbsp;·&nbsp; Amsterdam
         </td>
       </tr>
       </table>
@@ -79,13 +79,20 @@
     <tr><td class="card" style="background:#faf8f3;border-radius:14px;">
       <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-radius:14px;overflow:hidden;">
 
-        <!-- hero. 1200px source at 600 display = crisp on retina. width attr + display:block
-             or Outlook adds a phantom gap beneath it. -->
-        <tr><td style="padding:0;font-size:0;line-height:0;">
+        <!-- HERO — and the images-off insurance.
+             1200px source at 600 display = crisp on retina. width attr + display:block or Outlook
+             adds a phantom gap beneath it.
+             THREE things make the blocked state survivable, which is this comp's only real weakness:
+               1. bgcolor on the cell — blocked, it's a warm paper panel, not a white hole.
+               2. NO height attribute — so a blocked image COLLAPSES to a line of text instead of
+                  reserving an empty 380px band. This is the single biggest one.
+               3. The alt text is written as a caption and STYLED (colour/size/weight via inline
+                  css on the img), so Outlook renders it as designed type rather than 10px serif. -->
+        <tr><td bgcolor="#f2ede3" style="padding:0;font-size:0;line-height:0;background:#f2ede3;border-radius:14px 14px 0 0;">
           <a href="https://app.wkndr.xyz/?utm_source=brief" class="lnk" style="display:block;">
             <img src="https://images.weserv.nl/?url=https%3A%2F%2Fdeparade.nl%2Fwp-content%2Fuploads%2F2026%2F06%2F26-06-19-Parade-Rotterdam-Mijs-Brouwer-23-scaled.jpg&w=1200&h=760&fit=cover&a=attention&output=jpg"
-                 width="600" alt="De Parade — a fairground of theatre tents at dusk in Martin Luther Kingpark"
-                 style="display:block;width:100%;max-width:600px;height:auto;border:0;border-radius:14px 14px 0 0;">
+                 width="600" alt="De Parade — the tents at dusk, Martin Luther Kingpark"
+                 style="display:block;width:100%;max-width:600px;height:auto;border:0;border-radius:14px 14px 0 0;padding:18px 0;font:400 15px/1.5 'Helvetica Neue',Helvetica,Arial,sans-serif;color:#8a6a3a;text-align:center;">
           </a>
         </td></tr>
 
@@ -96,18 +103,19 @@
             <span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#ff4d1f;vertical-align:middle;margin-right:7px;"></span>The forecast
           </div>
           <div class="ink temps" style="margin-top:13px;font:400 17px/1.45 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:-.01em;color:#1a1a1a;">
-            <strong style="font-weight:700;">Saturday 24&deg; and clear.</strong>
-            <span class="ink3" style="color:#8b8a82;">Sunday 16&deg;, rain from noon.</span>
+            <strong style="font-weight:700;">Saturday 24&deg;, Sunday 26&deg;. No rain either day.</strong>
           </div>
           <div class="ink" style="margin-top:9px;font:400 15px/1.55 'Helvetica Neue',Helvetica,Arial,sans-serif;color:#1a1a1a;">
-            So: one day outside, one day in. Ranked accordingly.
+            So the question isn't which day &mdash; it's which hour. Saturday greys over at lunch and
+            clears again by six. Sunday is bright until one, then goes flat and stays warm.
+            Ranked for that.
           </div>
         </td></tr>
 
         <!-- lead pick -->
         <tr><td class="pad" style="padding:30px 34px 0;">
           <div style="font:400 10px/1 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#ff4d1f;">
-            Saturday &nbsp;·&nbsp; outdoors
+            Saturday evening &nbsp;·&nbsp; 22&deg;, clear
           </div>
           <h1 class="ink hero-h" style="margin:11px 0 0;font:400 38px/1.04 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:-.028em;color:#1a1a1a;">
             <a href="https://app.wkndr.xyz/?utm_source=brief" class="ink lnk" style="color:#1a1a1a;">De&nbsp;Parade</a>
@@ -116,9 +124,10 @@
             Martin Luther Kingpark, Zuid &nbsp;·&nbsp; free entry, shows ticketed
           </div>
           <p class="ink" style="margin:15px 0 0;font:400 16px/1.6 'Helvetica Neue',Helvetica,Arial,sans-serif;color:#1a1a1a;">
-            A travelling fairground of theatre tents &mdash; 95 makers, food stalls, carousel
-            light. It only stops here once a year, and a 24&deg; Saturday evening is exactly what
-            it's for. Go at seven, when the tents start glowing.
+            A travelling fairground of theatre tents &mdash; 95 makers, food stalls, carousel light.
+            It only stops here once a year. Saturday's cloud breaks around six and the evening comes
+            in at 22&deg; with a clear sky, which is the single best window of the weekend. Go at
+            seven, when the tents start glowing.
           </p>
         </td></tr>
 
@@ -128,7 +137,7 @@
 
         <tr><td class="pad" style="padding:24px 34px 0;">
           <div style="font:400 10px/1 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#8b8a82;" class="ink3">
-            Sunday &nbsp;·&nbsp; indoors
+            Sunday &nbsp;·&nbsp; 26&deg;, bright till one
           </div>
         </td></tr>
 
@@ -138,20 +147,21 @@
           <tr>
             <td width="104" valign="top" style="width:104px;padding-right:16px;">
               <a href="https://app.wkndr.xyz/?utm_source=brief" class="lnk" style="display:block;">
-                <img class="row-img" src="https://images.weserv.nl/?url=https%3A%2F%2Fwww.nieuwekerk.nl%2Fwp-content%2Fuploads%2F2026%2F02%2F2026-04-23_De-Nieuwe-Kerk_World-Press-Photo-2026__Tomek-Dersu-Aaron_1967.jpg&w=280&h=280&fit=cover&a=attention&output=jpg"
-                     width="104" height="104" alt="World Press Photo 2026 at De Nieuwe Kerk"
-                     style="display:block;width:104px;height:104px;border-radius:7px;border:0;">
+                <img class="row-img" src="https://images.weserv.nl/?url=https%3A%2F%2Fcms.dekmantelfestival.com%2Fuploads%2Fimages%2F5-Sugar-Free-Dekmantel-Fesitval-2025-Please-credit-Karl-Magee.jpg&w=280&h=280&fit=cover&a=attention&output=jpg"
+                     width="104" height="104" alt="Dekmantel"
+                     style="display:block;width:104px;height:104px;border-radius:7px;border:0;background:#f2ede3;font:400 12px/1.4 'Helvetica Neue',Helvetica,Arial,sans-serif;color:#8a6a3a;">
               </a>
             </td>
             <td valign="top">
               <div class="ink" style="font:400 19px/1.2 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:-.018em;color:#1a1a1a;">
-                <a href="https://app.wkndr.xyz/?utm_source=brief" class="ink lnk" style="color:#1a1a1a;">World Press Photo 2026</a>
+                <a href="https://app.wkndr.xyz/?utm_source=brief" class="ink lnk" style="color:#1a1a1a;">Dekmantel &mdash; closing day</a>
               </div>
               <div class="ink3" style="margin-top:6px;font:400 12px/1.45 'Helvetica Neue',Helvetica,Arial,sans-serif;color:#8b8a82;">
-                De Nieuwe Kerk, Dam
+                Amsterdamse Bos &nbsp;·&nbsp; ends Sunday
               </div>
               <div class="ink" style="margin-top:8px;font:400 14px/1.55 'Helvetica Neue',Helvetica,Arial,sans-serif;color:#1a1a1a;">
-                An hour indoors that stays with you for a week. Quiet by 4pm.
+                The heads-down forest rave. 26&deg; under the trees on the last day is the version
+                of it people talk about in December.
               </div>
             </td>
           </tr>
@@ -164,20 +174,21 @@
           <tr>
             <td width="104" valign="top" style="width:104px;padding-right:16px;">
               <a href="https://app.wkndr.xyz/?utm_source=brief" class="lnk" style="display:block;">
-                <img class="row-img" src="https://images.weserv.nl/?url=https%3A%2F%2Fhuismarseille.nl%2Fapp%2Fuploads%2F2026%2F02%2FStill_Life_Moms_Refrigerator.jpg&w=280&h=280&fit=cover&a=attention&output=jpg"
-                     width="104" height="104" alt="Martine Gutierrez, Wunderkind, at Huis Marseille"
-                     style="display:block;width:104px;height:104px;border-radius:7px;border:0;">
+                <img class="row-img" src="https://images.weserv.nl/?url=https%3A%2F%2Fwww.dehortus.nl%2Fwp-content%2Fuploads%2F2025%2F02%2Fhortus-22-van-75-1920x1440.jpg&w=280&h=280&fit=cover&a=attention&output=jpg"
+                     width="104" height="104" alt="Hortus"
+                     style="display:block;width:104px;height:104px;border-radius:7px;border:0;background:#f2ede3;font:400 12px/1.4 'Helvetica Neue',Helvetica,Arial,sans-serif;color:#8a6a3a;">
               </a>
             </td>
             <td valign="top">
               <div class="ink" style="font:400 19px/1.2 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:-.018em;color:#1a1a1a;">
-                <a href="https://app.wkndr.xyz/?utm_source=brief" class="ink lnk" style="color:#1a1a1a;">Martine Gutierrez &mdash; Wunderkind</a>
+                <a href="https://app.wkndr.xyz/?utm_source=brief" class="ink lnk" style="color:#1a1a1a;">Hortus Botanicus</a>
               </div>
               <div class="ink3" style="margin-top:6px;font:400 12px/1.45 'Helvetica Neue',Helvetica,Arial,sans-serif;color:#8b8a82;">
-                Huis Marseille, Canals
+                Plantage &nbsp;·&nbsp; opens 10:00
               </div>
               <div class="ink" style="margin-top:8px;font:400 14px/1.55 'Helvetica Neue',Helvetica,Arial,sans-serif;color:#1a1a1a;">
-                The best-proportioned rooms in the city, and the work earns them.
+                Do it before one, while the light is still direct. The greenhouses hold up either
+                way, but the garden only looks like this in sun.
               </div>
             </td>
           </tr>
@@ -190,20 +201,20 @@
           <tr>
             <td width="104" valign="top" style="width:104px;padding-right:16px;">
               <a href="https://app.wkndr.xyz/?utm_source=brief" class="lnk" style="display:block;">
-                <img class="row-img" src="https://images.weserv.nl/?url=https%3A%2F%2Fd3s3zh7icgjwgd.cloudfront.net%2FAcuCustom%2FSitename%2FDAM%2F345%2FCast-of-The-Little-Big-Things.-Photo--Pamela-Raith-1_LargeLandscape.jpg&w=280&h=280&fit=cover&a=attention&output=jpg"
-                     width="104" height="104" alt="The Little Big Things at Koninklijk Theater Carre"
-                     style="display:block;width:104px;height:104px;border-radius:7px;border:0;">
+                <img class="row-img" src="https://images.weserv.nl/?url=https%3A%2F%2Floeildelaphotographie.com%2Fwp-content%2Fuploads%2F2026%2F04%2Fnew-brighton-england-great-britain-1985-c-martin-parr.jpg&w=280&h=280&fit=cover&a=attention&output=jpg"
+                     width="104" height="104" alt="Martin Parr"
+                     style="display:block;width:104px;height:104px;border-radius:7px;border:0;background:#f2ede3;font:400 12px/1.4 'Helvetica Neue',Helvetica,Arial,sans-serif;color:#8a6a3a;">
               </a>
             </td>
             <td valign="top">
               <div class="ink" style="font:400 19px/1.2 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:-.018em;color:#1a1a1a;">
-                <a href="https://app.wkndr.xyz/?utm_source=brief" class="ink lnk" style="color:#1a1a1a;">The Little Big Things</a>
+                <a href="https://app.wkndr.xyz/?utm_source=brief" class="ink lnk" style="color:#1a1a1a;">Martin Parr at Foam</a>
               </div>
               <div class="ink3" style="margin-top:6px;font:400 12px/1.45 'Helvetica Neue',Helvetica,Arial,sans-serif;color:#8b8a82;">
-                Carr&eacute; &nbsp;·&nbsp; until 16 Aug
+                Keizersgracht &nbsp;·&nbsp; closes 12 Aug
               </div>
               <div class="ink" style="margin-top:8px;font:400 14px/1.55 'Helvetica Neue',Helvetica,Arial,sans-serif;color:#1a1a1a;">
-                A wet Sunday is the correct excuse for a matinee.
+                Where to be once the sky goes flat after one. Two weekends left on this one.
               </div>
             </td>
           </tr>
