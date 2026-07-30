@@ -43,7 +43,7 @@
    "verify": true,
    "buzz": 2,
    "editorScore": 8,
-   "servePos": 16
+   "servePos": 24
   },
   {
    "id": "llm-i-amsterdam-canal-parade",
@@ -126,7 +126,8 @@
    ],
    "verify": false,
    "editorScore": 8,
-   "servePos": 22
+   "servePos": 16,
+   "pilePos": 16
   },
   {
    "id": "web-lbb-american-myth-memory-david-levinthal",
@@ -153,7 +154,8 @@
    ],
    "verify": false,
    "editorScore": 8,
-   "servePos": 24
+   "servePos": 18,
+   "pilePos": 18
   },
   {
    "id": "web-lbb-the-little-big-things",
@@ -180,7 +182,8 @@
    ],
    "verify": false,
    "editorScore": 8,
-   "servePos": 23
+   "servePos": 17,
+   "pilePos": 17
   },
   {
    "id": "web-iams-pure-markt",
@@ -206,8 +209,8 @@
    "verify": false,
    "buzz": 2,
    "editorScore": 8,
-   "servePos": 5,
-   "pilePos": 5
+   "servePos": 4,
+   "pilePos": 4
   },
   {
    "id": "web-iams-american-identities",
@@ -235,7 +238,8 @@
    "verify": false,
    "buzz": 2,
    "editorScore": 8,
-   "servePos": 18
+   "servePos": 12,
+   "pilePos": 12
   },
   {
    "id": "web-iams-museum-market",
@@ -314,8 +318,8 @@
    ],
    "verify": false,
    "editorScore": 8,
-   "servePos": 6,
-   "pilePos": 6
+   "servePos": 5,
+   "pilePos": 5
   },
   {
    "id": "web-iams-nicolas-van-poucke-pianorecital",
@@ -367,8 +371,8 @@
    ],
    "verify": false,
    "editorScore": 8,
-   "servePos": 8,
-   "pilePos": 8
+   "servePos": 7,
+   "pilePos": 7
   },
   {
    "id": "web-iams-exhibition-worn-in-the-rijksmuseum",
@@ -505,7 +509,8 @@
    ],
    "popularity": 2,
    "editorScore": 8,
-   "servePos": 21
+   "servePos": 15,
+   "pilePos": 15
   },
   {
    "id": "web-lbb-cinair-europe",
@@ -557,8 +562,8 @@
    ],
    "verify": false,
    "editorScore": 9,
-   "servePos": 10,
-   "pilePos": 10
+   "servePos": 9,
+   "pilePos": 9
   },
   {
    "id": "pllek-indoor",
@@ -734,7 +739,8 @@
    ],
    "verify": false,
    "editorScore": 8,
-   "servePos": 19
+   "servePos": 13,
+   "pilePos": 13
   },
   {
    "id": "ivna-esajas",
@@ -1693,7 +1699,8 @@
    ],
    "verify": false,
    "editorScore": 8,
-   "servePos": 25
+   "servePos": 20,
+   "pilePos": 20
   },
   {
    "id": "web-lbb-martine-gutierrez-wunderkind",
@@ -1774,7 +1781,8 @@
    "tier": "classic",
    "buzz": 2,
    "editorScore": 8,
-   "servePos": 20
+   "servePos": 14,
+   "pilePos": 14
   },
   {
    "id": "web-lbb-nara-nara-egyptian-restaurant",
@@ -1880,8 +1888,8 @@
    "verify": true,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fimage.parool.nl%2F220058609%2Fwidth%2F2480%2Fpluk-de-nacht-bij-het-stenen-hoofd-in-west&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fimage.parool.nl%2F220058609%2Fwidth%2F2480%2Fpluk-de-nacht-bij-het-stenen-hoofd-in-west",
    "editorScore": 10,
-   "servePos": 9,
-   "pilePos": 9,
+   "servePos": 8,
+   "pilePos": 8,
    "top": true,
    "lead": true
   },
@@ -1908,8 +1916,8 @@
    ],
    "verify": false,
    "editorScore": 10,
-   "servePos": 7,
-   "pilePos": 7
+   "servePos": 6,
+   "pilePos": 6
   },
   {
    "id": "web-lbb-strand-zuid",
@@ -1934,7 +1942,7 @@
    ],
    "verify": false,
    "editorScore": 10,
-   "servePos": 17
+   "servePos": 25
   },
   {
    "id": "web-lbb-hannekes-boom",
@@ -1983,8 +1991,9 @@
    "price": "ticketed",
    "why": "Classic summer activity on the water",
    "editorScore": 9,
-   "servePos": 13,
-   "top": true
+   "servePos": 10,
+   "top": true,
+   "pilePos": 10
   },
   {
    "id": "ams-artis-zoo",
@@ -2010,8 +2019,8 @@
    "tier": "classic",
    "top": true,
    "editorScore": 10,
-   "servePos": 4,
-   "pilePos": 4
+   "servePos": 19,
+   "pilePos": 19
   },
   {
    "id": "web-iams-rapido-and-funhouse-present-worldpride-opening-event",
@@ -2038,7 +2047,7 @@
    "why": "On I amsterdam",
    "editorScore": 5,
    "top": true,
-   "servePos": 14
+   "servePos": 22
   },
   {
    "id": "web-scout-worldpride-amsterdam",
@@ -2064,7 +2073,7 @@
    "why": "WorldPride comes to Amsterdam",
    "editorScore": 10,
    "top": true,
-   "servePos": 11
+   "servePos": 21
   },
   {
    "id": "web-ra-2444343",
@@ -2092,7 +2101,8 @@
    "popularity": 48,
    "editorScore": 8,
    "top": true,
-   "servePos": 12
+   "servePos": 11,
+   "pilePos": 11
   },
   {
    "id": "web-ra-2464093",
@@ -2120,8 +2130,8 @@
    "popularity": 104,
    "editorScore": 8,
    "buzz": 1,
-   "servePos": 15
+   "servePos": 23
   }
  ],
- "restampedAt": "2026-07-30T16:12:40.402Z"
+ "restampedAt": "2026-07-30T16:22:17.018Z"
 }

@@ -61,6 +61,26 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 - Verified: promote (tail→#10) · demote (#10→tail) · both lists drag-reorder · New Find label/feedback ·
   PILE full (81). No console errors.
 
+## [R12 compile / board V.9.29] — 2026-07-30 — the 18:20 reorder live + the half-submit bug it revealed
+- **Compiled the 18:20 round.** It arrived on the fast lane only — **no GitHub issue was ever created**
+  — so the durable record carried the pile and the cancels but NOT the ★ ratings or 👑 crowns.
+  Changes: **ARTIS Royal Zoo demoted #4 → #19**, **Mokumboot promoted into #10**, Dekmantel at #11, no
+  new kills. `weekly.pile` now holds **20** entries rather than the usual 10 — he dragged ARTIS well
+  past the opening slots, so his hand order is deliberate that deep; 21+ keeps auto-ranking.
+- ARTIS keeps its 👑: the crown guarantees a slot, `pilePos` sets the position, and `orderServed` deals
+  the hand order above every tier — so a demoted crown is coherent, not a contradiction.
+
+**The half-submit (fixed V.9.29) — why that round lost its ratings:**
+- Submit does two writes: POST to the fast lane, then `window.open` to GitHub. But that lands on the
+  **prefilled** new-issue form — the issue does not exist until **“Submit new issue”** is pressed
+  there. The button nonetheless flashed **“Live ✓ — filed”** the instant the tab opened. It filed
+  nothing, said it had, and the flash was gone in 3.5s.
+- Now honest about which half is which: **“Live ✓ — finish on GitHub”**, plus a persistent note in the
+  bottom bar — *“One more click: press ‘Submit new issue’… your order and cancels are live already;
+  ★ ratings and 👑 crowns only travel in the issue.”* It stays until the next Submit rather than
+  flashing. A blocked popup (`window.open` → null) is now detected too: the round goes to the
+  clipboard and the note says the ★/👑 did **not** file.
+
 ## [R11 compile / board V.9.28] — 2026-07-30 — round #19 live, and the two bugs it exposed
 - **Compiled issue #19** (69 verdicts, 2026-07-30 16:03). His two cancels were ALREADY live via the
   fast lane; the crowns, stars and slate were not — those need the corpus.

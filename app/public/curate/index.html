@@ -76,6 +76,10 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 .send{background:var(--accent);color:#fff}
 .copybtn{background:rgba(255,255,255,.14);color:#fff}
 .send.done{background:#2faa6a}
+/* the half-submit warning (V.9.29) — stays put until the next Submit, unlike the button's 3.5s flash */
+.barnote{display:none;flex-basis:100%;font-size:12px;line-height:1.45;color:rgba(255,255,255,.82);padding-top:9px;margin-top:2px;border-top:1px solid rgba(255,255,255,.16)}
+.barnote.warn{display:block;color:#ffd9cc}
+.barnote b{color:#fff}
 /* ── clarity pass (board V.9.15): plain intro + glyph legend + per-card "why / your call" ── */
 .lede{color:#4a463e;max-width:72ch;line-height:1.5;margin:10px 0 0;font-size:15px}
 .lede b{color:var(--ink)}
@@ -173,7 +177,7 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 <body>
 <div class="wrap">
 <header>
-<p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD V.9.28</p>
+<p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD V.9.29</p>
 <h1>Your weekend<span class="dot">.</span></h1>
 <div id="modetoggle"><button class="on" data-mode="simple">Simple</button><button data-mode="advanced">Advanced</button></div>
 <div id="overnote" style="display:none"></div>
@@ -207,6 +211,7 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 <button class="copybtn" id="copy">Copy</button>
 <button class="copybtn" id="send">Email</button>
 <button class="send" id="ghfile">Submit → GitHub</button>
+<div id="barnote" class="barnote"></div>
 </div></div>
 <script>
 const FORM='https://formspree.io/f/xykqpwkw';
@@ -414,7 +419,7 @@ Promise.all([
   // 10 min (max-age=600), so a just-shipped board fix can lag in an open tab; the eyebrow makes
   // stale-board-vs-fresh-data visible at a glance (2026-07-12: an old tab's tier-mirror pile read
   // as "the board is wrong" when it was just cached).
-  const BOARD_V='V.9.28';
+  const BOARD_V='V.9.29';
   document.getElementById('eyebrow').textContent='WKNDR · CURATION BOARD '+BOARD_V+' · FEED '+(d.generatedAt||'').slice(0,16).replace('T',' · ');
   const board=document.getElementById('board');board.innerHTML='';
   const rot=document.createElement('div');rot.id='tab-rot';board.appendChild(rot);
@@ -945,14 +950,31 @@ document.getElementById('ghfile').addEventListener('click',async()=>{
   const base='https://github.com/nessim-higson/wkndr/issues/new';
   const title='WKNDR curation '+new Date().toISOString().slice(0,10);
   const full=base+'?labels=curation&title='+encodeURIComponent(title)+'&body='+encodeURIComponent(payloadCompact());
-  if(full.length<7900){window.open(full,'_blank');b.textContent=live?'Live ✓ — filed':'Filed ✓ (fast-lane offline)'}
-  else{
-    // only a monster round (many long image URLs) overflows even compact — clipboard fallback
+  // THE HALF-SUBMIT (fixed V.9.29). window.open lands on GitHub's PREFILLED new-issue form — the issue
+  // does not exist until "Submit new issue" is pressed there. The button used to say "Live ✓ — filed"
+  // the instant the tab opened, which is a claim it cannot make: the 2026-07-30 18:20 round posted to
+  // the fast lane, said "filed", and filed nothing — so its ★ ratings and 👑 crowns were lost. They
+  // only travel in the issue; the fast lane carries pile + cancels + flags ONLY.
+  const long=full.length>=7900;
+  if(long){try{await navigator.clipboard.writeText(payload())}catch(e){}}
+  const win=window.open(long
+    ? base+'?labels=curation&title='+encodeURIComponent(title)+'&body='+encodeURIComponent('(long round — verdicts are on your clipboard, paste here)')
+    : full,'_blank');
+  const note=document.getElementById('barnote');
+  if(!win){   // popup blocked — nothing opened, so say so instead of claiming a draft exists
     try{await navigator.clipboard.writeText(payload())}catch(e){}
-    window.open(base+'?labels=curation&title='+encodeURIComponent(title)+'&body='+encodeURIComponent('(long round — verdicts are on your clipboard, paste here)'),'_blank');
-    b.textContent=live?'Live ✓ — paste issue':'Copied — paste in issue';
+    b.textContent=live?'Live ✓ — popup blocked':'Copied — popup blocked';
+    note.className='barnote warn';
+    note.innerHTML='<b>Your ★ and 👑 did NOT get filed</b> — the GitHub tab was blocked. The round is on your clipboard: open an issue on the repo and paste it. '
+      +(live?'(Your order + cancels ARE live.)':'');
+  }else{
+    b.textContent=live?'Live ✓ — finish on GitHub':'Draft opened (fast-lane offline)';
+    note.className='barnote warn';
+    note.innerHTML='<b>One more click:</b> press <b>“Submit new issue”</b> on the GitHub tab — the issue isn’t created until you do. '
+      +'Your order and cancels are live already; <b>★ ratings and 👑 crowns only travel in the issue</b>.'
+      +(long?' (Long round — the full text is on your clipboard, paste it in.)':'');
   }
-  setTimeout(()=>{b.textContent='Submit → GitHub'},3500);
+  setTimeout(()=>{b.textContent='Submit → GitHub'},3500);   // the note stays until the next Submit
 });
 document.getElementById('send').addEventListener('click',async()=>{
   const b=document.getElementById('send');b.textContent='Sending…';
