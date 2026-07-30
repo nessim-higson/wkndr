@@ -30,6 +30,7 @@ import type { Mode, Pick } from '../src/types'
 const CITY = process.argv.find((a) => a.startsWith('--city='))?.split('=')[1] ?? 'amsterdam'
 const COUNT = 5                       // how many picks make the poster
 const W = 1080, H = 1350              // 4:5 portrait — the best all-rounder for messages + feeds
+const arg = (k: string) => process.argv.find((a) => a.startsWith(`--${k}=`))?.split('=')[1]
 
 /** Chrome, wherever this is running. CI sets PUPPETEER_EXECUTABLE_PATH; otherwise we probe. */
 function chromePath(): string {
@@ -96,7 +97,35 @@ export function topPicks(picks: Pick[], count = COUNT): Pick[] {
 const esc = (s: string) => String(s ?? '').replace(/[&<>"']/g, (c) =>
   ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!))
 
-export function posterHtml(picks: Pick[], wx: Awaited<ReturnType<typeof forecast>>, fontDataUrl: string): string {
+/** THE THUMBNAIL TREATMENT — `--thumb=<style>`, so the house look is one word rather than a re-cut.
+ *  Each variant owns its own row padding: a taller thumb needs tighter rows or the 5 rows blow the
+ *  1350px canvas and the footer clips (which is exactly what the first draft did). `rowPad` is sized
+ *  so thumb + 2×pad stays under ~176px, the per-row budget for five rows. */
+export type ThumbStyle = 'portrait' | 'square' | 'circle' | 'tall' | 'wide' | 'overlay' | 'none'
+export const THUMBS: Record<ThumbStyle, { css: string; rowPad: number; onImage?: boolean; note: string }> = {
+  portrait: { rowPad: 16, note: 'the shipped default — 4:5, matches the app’s card crop',
+    css: 'width:100px;height:125px;border-radius:12px' },
+  square:   { rowPad: 19, note: 'a cleaner index grid; crops wide photos hardest',
+    css: 'width:116px;height:116px;border-radius:10px' },
+  circle:   { rowPad: 19, note: 'softer, editorial; loses the most image to the crop',
+    css: 'width:116px;height:116px;border-radius:50%' },
+  tall:     { rowPad: 8,  note: 'photo-led — the biggest image the canvas allows',
+    css: 'width:112px;height:152px;border-radius:12px' },
+  wide:     { rowPad: 22, note: 'magazine/landscape; kindest to scenery, worst to portraits',
+    css: 'width:172px;height:108px;border-radius:10px' },
+  overlay:  { rowPad: 12, onImage: true, note: 'rank sits ON the photo — frees ~44px for the title',
+    css: 'width:118px;height:140px;border-radius:12px' },
+  none:     { rowPad: 26, note: 'type-only — no images to go wrong, most editorial',
+    css: 'display:none' },
+}
+
+export function posterHtml(
+  picks: Pick[],
+  wx: Awaited<ReturnType<typeof forecast>>,
+  fontDataUrl: string,
+  thumb: ThumbStyle = 'portrait',
+): string {
+  const T = THUMBS[thumb] ?? THUMBS.portrait
   // a split weekend names both days — same rule the app uses (V.10.18)
   const split = !!wx && wx.days.length > 1 && (wx.days[0].mode !== wx.days[1].mode || Math.abs(wx.days[0].hi - wx.days[1].hi) >= 4)
   const temps = !wx ? ''
@@ -104,8 +133,9 @@ export function posterHtml(picks: Pick[], wx: Awaited<ReturnType<typeof forecast
     : `${Math.max(...wx.days.map((d) => d.hi))}°`
   const rows = picks.map((p, i) => `
     <li class="row">
-      <span class="num">${i + 1}</span>
-      <span class="thumb"${p.image ? ` style="background-image:url('${esc(p.image)}')"` : ''}></span>
+      ${T.onImage ? '' : `<span class="num">${i + 1}</span>`}
+      <span class="thumb"${p.image ? ` style="background-image:url('${esc(p.image)}')"` : ''}>${
+        T.onImage ? `<span class="onnum">${i + 1}</span>` : ''}</span>
       <span class="rt">
         <span class="rtitle">${esc(p.title)}</span>
         <span class="rmeta">${esc([realVenue(p), fixWhen(p.when || '')].filter(Boolean).join(' · '))}</span>
@@ -119,27 +149,31 @@ html,body{width:${W}px;height:${H}px}
    room to spare (the first cut overflowed by ~70px and clipped the footer clean off). */
 body{background:#faf8f3;color:#1a1a1a;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;
   padding:70px 68px 58px;display:flex;flex-direction:column;overflow:hidden;-webkit-font-smoothing:antialiased}
-.mark{display:flex;align-items:center;gap:14px;font-family:'Familjen Grotesk','Helvetica Neue',Arial,sans-serif;
+.mark{flex:none;display:flex;align-items:center;gap:14px;font-family:'Familjen Grotesk','Helvetica Neue',Arial,sans-serif;
   font-weight:700;font-size:34px;letter-spacing:-.02em}
 .mark .d{width:15px;height:15px;border-radius:50%;background:#ff4d1f}
-.when{margin-top:38px;font-family:'Familjen Grotesk','Helvetica Neue',Arial,sans-serif;font-weight:700;
+.when{flex:none;margin-top:38px;font-family:'Familjen Grotesk','Helvetica Neue',Arial,sans-serif;font-weight:700;
   font-size:88px;line-height:.94;letter-spacing:-.035em}
-.temps{margin-top:14px;font-size:30px;font-weight:700;letter-spacing:-.01em;color:#8a2818;display:flex;align-items:center}
+.temps{flex:none;margin-top:14px;font-size:30px;font-weight:700;letter-spacing:-.01em;color:#8a2818;display:flex;align-items:center}
 .temps .dot{opacity:.35;margin:0 13px;font-weight:400}
-.rule{margin:30px 0 4px;height:3px;background:#1a1a1a}
+.rule{flex:none;margin:30px 0 4px;height:3px;background:#1a1a1a}
 /* space-between: the rows spread to fill whatever height is left, so the poster stays balanced
    whether it carries 4 picks or 6 */
-ul{list-style:none;flex:1;display:flex;flex-direction:column;justify-content:space-between}
-.row{display:flex;align-items:center;gap:24px;padding:16px 0;border-bottom:1px solid #e7e3d8}
+ul{list-style:none;flex:1;min-height:0;display:flex;flex-direction:column;justify-content:space-between}
+.row{display:flex;align-items:center;gap:24px;padding:${T.rowPad}px 0;border-bottom:1px solid #e7e3d8}
 .row:last-child{border-bottom:0}
 .num{flex:none;width:44px;font-family:'Familjen Grotesk','Helvetica Neue',Arial,sans-serif;font-weight:700;
   font-size:32px;color:#ff4d1f;letter-spacing:-.02em}
-.thumb{flex:none;width:100px;height:125px;border-radius:12px;background:#e7e3d8 center/cover no-repeat}
+.thumb{flex:none;position:relative;background:#e7e3d8 center/cover no-repeat;${T.css}}
+/* the overlay variant's rank — a solid chip so it reads on any photo, light or dark */
+.onnum{position:absolute;left:0;top:0;min-width:44px;height:44px;padding:0 10px;border-radius:12px 0 12px 0;
+  background:#ff4d1f;color:#fff;font-family:'Familjen Grotesk','Helvetica Neue',Arial,sans-serif;font-weight:700;
+  font-size:26px;display:flex;align-items:center;justify-content:center;letter-spacing:-.02em}
 .rt{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px}
 .rtitle{font-family:'Familjen Grotesk','Helvetica Neue',Arial,sans-serif;font-weight:700;font-size:36px;
   line-height:1.06;letter-spacing:-.026em;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .rmeta{font-size:22px;line-height:1.25;color:#6a655c;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.foot{margin-top:26px;padding-top:22px;border-top:3px solid #1a1a1a;display:flex;align-items:baseline;justify-content:space-between}
+.foot{flex:none;margin-top:26px;padding-top:22px;border-top:3px solid #1a1a1a;display:flex;align-items:baseline;justify-content:space-between}
 .foot .u{font-family:'Familjen Grotesk','Helvetica Neue',Arial,sans-serif;font-weight:700;font-size:33px;letter-spacing:-.02em}
 .foot .t{font-size:23px;color:#6a655c}
 </style></head><body>
@@ -163,7 +197,8 @@ if (picks.length < COUNT) throw new Error(`only ${picks.length} imaged picks —
 
 const wx = await forecast()
 const font = readFileSync(join(root, 'src/assets/fonts/familjen-grotesk-700.woff2')).toString('base64')
-const page$ = posterHtml(picks, wx, `data:font/woff2;base64,${font}`)
+const style = (arg('thumb') ?? 'portrait') as ThumbStyle
+const page$ = posterHtml(picks, wx, `data:font/woff2;base64,${font}`, style)
 
 const browser = await puppeteer.launch({ executablePath: chromePath(), args: ['--no-sandbox', '--disable-dev-shm-usage'] })
 try {
@@ -177,9 +212,14 @@ try {
   mkdirSync(dir, { recursive: true })
   const { sat } = upcomingWeekend()
   const key = `${sat.getFullYear()}-${String(sat.getMonth() + 1).padStart(2, '0')}-${String(sat.getDate()).padStart(2, '0')}`
-  writeFileSync(join(dir, 'weekend.png'), shot)     // the stable link
-  writeFileSync(join(dir, `${key}.png`), shot)      // the dated archive
-  console.log(`✓ poster ${CITY} ${key} · ${picks.length} picks · ${(shot.length / 1024).toFixed(0)}KB`)
+  const out = arg('out')
+  if (out) {                                        // a one-off render (variant previews) — don't touch the live poster
+    writeFileSync(out, shot)
+  } else {
+    writeFileSync(join(dir, 'weekend.png'), shot)   // the stable link
+    writeFileSync(join(dir, `${key}.png`), shot)    // the dated archive
+  }
+  console.log(`✓ poster ${CITY} ${key} · thumb=${style} · ${picks.length} picks · ${(shot.length / 1024).toFixed(0)}KB${out ? ` → ${out}` : ''}`)
   console.log(`  ${picks.map((p) => p.title).join(' · ')}`)
 } finally {
   await browser.close()

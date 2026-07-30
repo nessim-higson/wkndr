@@ -5,7 +5,7 @@
 // Importing the module must not launch a browser — poster.ts guards its run block with
 // `import.meta.main`. If that guard is ever removed this file will hang, which is the point.
 import { describe, it, expect } from 'bun:test'
-import { realVenue, topPicks, posterHtml } from '../scripts/poster'
+import { realVenue, topPicks, posterHtml, THUMBS } from '../scripts/poster'
 import type { Mode, Pick } from '../src/types'
 
 const p = (over: Partial<Pick>): Pick => ({
@@ -46,6 +46,29 @@ describe('topPicks — the poster shows the deck’s own front', () => {
   })
   it('caps at the requested count', () => {
     expect(topPicks(Array.from({ length: 20 }, (_, i) => p({ title: `p${i}`, servePos: i })), 5)).toHaveLength(5)
+  })
+})
+
+// The `overlay` variant shipped 21px over budget on its first cut. Because the header/footer are
+// flex children, the overflow didn't push anything off-canvas — it SILENTLY SHRANK the black rule to
+// zero. This pins the budget so a new variant can't repeat that, and the flex:none guard that makes
+// an overflow visible rather than invisible.
+describe('THUMBS — every variant fits the canvas', () => {
+  const PER_ROW = 176   // (1350 − the fixed header/footer furniture) ÷ 5 rows
+
+  for (const [name, t] of Object.entries(THUMBS)) {
+    it(`${name} stays within the per-row budget`, () => {
+      const h = /height:(\d+)px/.exec(t.css)?.[1]
+      if (!h) return          // `none` draws no thumb — its row is text-height only
+      expect(t.rowPad * 2 + Number(h) + 1).toBeLessThanOrEqual(PER_ROW)
+    })
+  }
+
+  it('the fixed furniture cannot be squeezed by an overflowing list', () => {
+    const html = posterHtml([], null, '')
+    for (const sel of ['.mark{flex:none', '.when{flex:none', '.temps{flex:none', '.rule{flex:none', '.foot{flex:none'])
+      expect(html).toContain(sel)
+    expect(html).toContain('ul{list-style:none;flex:1;min-height:0')
   })
 })
 
