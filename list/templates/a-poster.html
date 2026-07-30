@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="x-apple-disable-message-reformatting">
+<meta name="color-scheme" content="light dark">
+<meta name="supported-color-schemes" content="light dark">
+<title>WKNDR — the Friday brief</title>
+<!--[if mso]>
+<xml><o:OfficeDocumentSettings xmlns:o="urn:schemas-microsoft-com:office:office"><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml>
+<![endif]-->
+<style>
+  /* THE POSTER — image-led, closest to the app's own card language.
+     STRUCTURE NOTE, learned the hard way: every <tr> must be a direct child of a <table>
+     (or its implied <tbody>). A <tr> parked inside a <td> is silently DISCARDED by HTML
+     parsers — not shifted, deleted. So the whole card body is ONE inner table below.
+     Email CSS in <style> is enhancement only; everything load-bearing is inline. */
+  body,table,td,a{-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%}
+  table,td{mso-table-lspace:0;mso-table-rspace:0}
+  img{-ms-interpolation-mode:bicubic;border:0;outline:0;line-height:100%;text-decoration:none}
+  a{text-decoration:none}
+  .lnk:hover{opacity:.75!important}
+
+  @media (max-width:620px){
+    .shell{width:100%!important}
+    .pad{padding-left:22px!important;padding-right:22px!important}
+    .hero-h{font-size:33px!important;line-height:1.06!important}
+    .row-img{width:86px!important;height:86px!important}
+    .temps{font-size:15px!important}
+  }
+  /* Dark mode. [data-ogsc] is Outlook.com's rewrite hook; the media query covers Apple Mail
+     and iOS. Gmail mostly leaves light backgrounds alone — which is why the paper tone is a
+     real colour rather than #fff: it survives Gmail's inversion far better. */
+  @media (prefers-color-scheme:dark){
+    .bg{background:#141312!important}
+    .card{background:#1c1a18!important}
+    .ink{color:#f4f1ea!important}
+    .ink3{color:#9a978d!important}
+    .hair{background:#2e2b27!important}
+  }
+  [data-ogsc] .bg{background:#141312!important}
+  [data-ogsc] .card{background:#1c1a18!important}
+  [data-ogsc] .ink{color:#f4f1ea!important}
+  [data-ogsc] .ink3{color:#9a978d!important}
+  [data-ogsc] .hair{background:#2e2b27!important}
+</style>
+</head>
+<body class="bg" style="margin:0;padding:0;width:100%;background:#eceae3;">
+
+<!-- Preheader: the grey line the inbox shows beside the subject. Leave it out and the client
+     scrapes your first body words instead, which is always worse. The zero-width padding stops
+     it pulling the masthead in after it. -->
+<div style="display:none;font-size:1px;color:#eceae3;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;">
+  Saturday is the one. Sunday, go inside — four picks that read the forecast.
+  &#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;
+</div>
+
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background:#eceae3;" class="bg">
+<tr><td align="center" style="padding:26px 12px 40px;">
+
+  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" class="shell" style="width:600px;max-width:600px;">
+
+    <!-- ── masthead ─────────────────────────────────────────────────────────────────── -->
+    <tr><td class="pad" style="padding:0 30px 16px;">
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+      <tr>
+        <td align="left" style="font:700 15px/1 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:-.02em;color:#1a1a1a;" class="ink">
+          WKNDR<span style="color:#ff4d1f;">&nbsp;&bull;</span>
+        </td>
+        <td align="right" style="font:400 10px/1 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#8b8a82;" class="ink3">
+          Fri 31 Jul &nbsp;·&nbsp; Amsterdam
+        </td>
+      </tr>
+      </table>
+    </td></tr>
+
+    <!-- ── the card: ONE inner table, every block a row of it ───────────────────────── -->
+    <tr><td class="card" style="background:#faf8f3;border-radius:14px;">
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-radius:14px;overflow:hidden;">
+
+        <!-- hero. 1200px source at 600 display = crisp on retina. width attr + display:block
+             or Outlook adds a phantom gap beneath it. -->
+        <tr><td style="padding:0;font-size:0;line-height:0;">
+          <a href="https://app.wkndr.xyz/?utm_source=brief" class="lnk" style="display:block;">
+            <img src="https://images.weserv.nl/?url=https%3A%2F%2Fdeparade.nl%2Fwp-content%2Fuploads%2F2026%2F06%2F26-06-19-Parade-Rotterdam-Mijs-Brouwer-23-scaled.jpg&w=1200&h=760&fit=cover&a=attention&output=jpg"
+                 width="600" alt="De Parade — a fairground of theatre tents at dusk in Martin Luther Kingpark"
+                 style="display:block;width:100%;max-width:600px;height:auto;border:0;border-radius:14px 14px 0 0;">
+          </a>
+        </td></tr>
+
+        <!-- the weather claim, right on the fold. This is the reason the brief exists, so it
+             sits above the picks rather than in a sidebar. -->
+        <tr><td class="pad" style="padding:26px 34px 0;">
+          <div style="font:400 10px/1 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:#8b8a82;" class="ink3">
+            <span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#ff4d1f;vertical-align:middle;margin-right:7px;"></span>The forecast
+          </div>
+          <div class="ink temps" style="margin-top:13px;font:400 17px/1.45 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:-.01em;color:#1a1a1a;">
+            <strong style="font-weight:700;">Saturday 24&deg; and clear.</strong>
+            <span class="ink3" style="color:#8b8a82;">Sunday 16&deg;, rain from noon.</span>
+          </div>
+          <div class="ink" style="margin-top:9px;font:400 15px/1.55 'Helvetica Neue',Helvetica,Arial,sans-serif;color:#1a1a1a;">
+            So: one day outside, one day in. Ranked accordingly.
+          </div>
+        </td></tr>
+
+        <!-- lead pick -->
+        <tr><td class="pad" style="padding:30px 34px 0;">
+          <div style="font:400 10px/1 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#ff4d1f;">
+            Saturday &nbsp;·&nbsp; outdoors
+          </div>
+          <h1 class="ink hero-h" style="margin:11px 0 0;font:400 38px/1.04 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:-.028em;color:#1a1a1a;">
+            <a href="https://app.wkndr.xyz/?utm_source=brief" class="ink lnk" style="color:#1a1a1a;">De&nbsp;Parade</a>
+          </h1>
+          <div class="ink3" style="margin-top:12px;font:400 13px/1.5 'Helvetica Neue',Helvetica,Arial,sans-serif;color:#8b8a82;">
+            Martin Luther Kingpark, Zuid &nbsp;·&nbsp; free entry, shows ticketed
+          </div>
+          <p class="ink" style="margin:15px 0 0;font:400 16px/1.6 'Helvetica Neue',Helvetica,Arial,sans-serif;color:#1a1a1a;">
+            A travelling fairground of theatre tents &mdash; 95 makers, food stalls, carousel
+            light. It only stops here once a year, and a 24&deg; Saturday evening is exactly what
+            it's for. Go at seven, when the tents start glowing.
+          </p>
+        </td></tr>
+
+        <tr><td class="pad" style="padding:28px 34px 0;">
+          <div class="hair" style="height:1px;background:#e7e3d8;line-height:1px;font-size:0;">&nbsp;</div>
+        </td></tr>
+
+        <tr><td class="pad" style="padding:24px 34px 0;">
+          <div style="font:400 10px/1 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#8b8a82;" class="ink3">
+            Sunday &nbsp;·&nbsp; indoors
+          </div>
+        </td></tr>
+
+        <!-- thumb row 1 -->
+        <tr><td class="pad" style="padding:18px 34px 0;">
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+          <tr>
+            <td width="104" valign="top" style="width:104px;padding-right:16px;">
+              <a href="https://app.wkndr.xyz/?utm_source=brief" class="lnk" style="display:block;">
+                <img class="row-img" src="https://images.weserv.nl/?url=https%3A%2F%2Fwww.nieuwekerk.nl%2Fwp-content%2Fuploads%2F2026%2F02%2F2026-04-23_De-Nieuwe-Kerk_World-Press-Photo-2026__Tomek-Dersu-Aaron_1967.jpg&w=280&h=280&fit=cover&a=attention&output=jpg"
+                     width="104" height="104" alt="World Press Photo 2026 at De Nieuwe Kerk"
+                     style="display:block;width:104px;height:104px;border-radius:7px;border:0;">
+              </a>
+            </td>
+            <td valign="top">
+              <div class="ink" style="font:400 19px/1.2 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:-.018em;color:#1a1a1a;">
+                <a href="https://app.wkndr.xyz/?utm_source=brief" class="ink lnk" style="color:#1a1a1a;">World Press Photo 2026</a>
+              </div>
+              <div class="ink3" style="margin-top:6px;font:400 12px/1.45 'Helvetica Neue',Helvetica,Arial,sans-serif;color:#8b8a82;">
+                De Nieuwe Kerk, Dam
+              </div>
+              <div class="ink" style="margin-top:8px;font:400 14px/1.55 'Helvetica Neue',Helvetica,Arial,sans-serif;color:#1a1a1a;">
+                An hour indoors that stays with you for a week. Quiet by 4pm.
+              </div>
+            </td>
+          </tr>
+          </table>
+        </td></tr>
+
+        <!-- thumb row 2 -->
+        <tr><td class="pad" style="padding:20px 34px 0;">
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+          <tr>
+            <td width="104" valign="top" style="width:104px;padding-right:16px;">
+              <a href="https://app.wkndr.xyz/?utm_source=brief" class="lnk" style="display:block;">
+                <img class="row-img" src="https://images.weserv.nl/?url=https%3A%2F%2Fhuismarseille.nl%2Fapp%2Fuploads%2F2026%2F02%2FStill_Life_Moms_Refrigerator.jpg&w=280&h=280&fit=cover&a=attention&output=jpg"
+                     width="104" height="104" alt="Martine Gutierrez, Wunderkind, at Huis Marseille"
+                     style="display:block;width:104px;height:104px;border-radius:7px;border:0;">
+              </a>
+            </td>
+            <td valign="top">
+              <div class="ink" style="font:400 19px/1.2 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:-.018em;color:#1a1a1a;">
+                <a href="https://app.wkndr.xyz/?utm_source=brief" class="ink lnk" style="color:#1a1a1a;">Martine Gutierrez &mdash; Wunderkind</a>
+              </div>
+              <div class="ink3" style="margin-top:6px;font:400 12px/1.45 'Helvetica Neue',Helvetica,Arial,sans-serif;color:#8b8a82;">
+                Huis Marseille, Canals
+              </div>
+              <div class="ink" style="margin-top:8px;font:400 14px/1.55 'Helvetica Neue',Helvetica,Arial,sans-serif;color:#1a1a1a;">
+                The best-proportioned rooms in the city, and the work earns them.
+              </div>
+            </td>
+          </tr>
+          </table>
+        </td></tr>
+
+        <!-- thumb row 3 -->
+        <tr><td class="pad" style="padding:20px 34px 0;">
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+          <tr>
+            <td width="104" valign="top" style="width:104px;padding-right:16px;">
+              <a href="https://app.wkndr.xyz/?utm_source=brief" class="lnk" style="display:block;">
+                <img class="row-img" src="https://images.weserv.nl/?url=https%3A%2F%2Fd3s3zh7icgjwgd.cloudfront.net%2FAcuCustom%2FSitename%2FDAM%2F345%2FCast-of-The-Little-Big-Things.-Photo--Pamela-Raith-1_LargeLandscape.jpg&w=280&h=280&fit=cover&a=attention&output=jpg"
+                     width="104" height="104" alt="The Little Big Things at Koninklijk Theater Carre"
+                     style="display:block;width:104px;height:104px;border-radius:7px;border:0;">
+              </a>
+            </td>
+            <td valign="top">
+              <div class="ink" style="font:400 19px/1.2 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:-.018em;color:#1a1a1a;">
+                <a href="https://app.wkndr.xyz/?utm_source=brief" class="ink lnk" style="color:#1a1a1a;">The Little Big Things</a>
+              </div>
+              <div class="ink3" style="margin-top:6px;font:400 12px/1.45 'Helvetica Neue',Helvetica,Arial,sans-serif;color:#8b8a82;">
+                Carr&eacute; &nbsp;·&nbsp; until 16 Aug
+              </div>
+              <div class="ink" style="margin-top:8px;font:400 14px/1.55 'Helvetica Neue',Helvetica,Arial,sans-serif;color:#1a1a1a;">
+                A wet Sunday is the correct excuse for a matinee.
+              </div>
+            </td>
+          </tr>
+          </table>
+        </td></tr>
+
+        <!-- CTA. A padded table cell, not a VML button — degrades to a plain link everywhere
+             and needs no Outlook conditional. -->
+        <tr><td class="pad" style="padding:32px 34px 36px;">
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+          <tr><td align="center" bgcolor="#ff4d1f" style="border-radius:100px;">
+            <a href="https://app.wkndr.xyz/?utm_source=brief" style="display:inline-block;padding:14px 30px;font:400 15px/1 'Helvetica Neue',Helvetica,Arial,sans-serif;color:#ffffff;letter-spacing:-.01em;">
+              Swipe the full deck &nbsp;&rarr;
+            </a>
+          </td></tr>
+          </table>
+          <div class="ink3" style="margin-top:14px;font:400 13px/1.5 'Helvetica Neue',Helvetica,Arial,sans-serif;color:#8b8a82;">
+            Send it to whoever you'd actually go with. The overlap is the plan.
+          </div>
+        </td></tr>
+
+      </table>
+    </td></tr>
+
+    <!-- ── footer ───────────────────────────────────────────────────────────────────── -->
+    <tr><td class="pad" style="padding:22px 30px 0;">
+      <div class="ink3" style="font:400 12px/1.65 'Helvetica Neue',Helvetica,Arial,sans-serif;color:#8b8a82;">
+        You asked for the WKNDR Friday brief. One email a week, Amsterdam only.<br>
+        <a href="{{unsub}}" style="color:#8b8a82;border-bottom:1px solid #cfcbc0;">Unsubscribe</a>
+        &nbsp;&mdash;&nbsp; one click, no questions.
+      </div>
+    </td></tr>
+
+  </table>
+
+</td></tr>
+</table>
+</body>
+</html>

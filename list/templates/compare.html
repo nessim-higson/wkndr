@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WKNDR — Friday brief, three comps</title>
+<style>
+  :root{
+    --paper:#faf8f3; --ink:#1a1a1a; --ink3:#8b8a82; --line:#e7e3d8;
+    --accent:#ff4d1f; --bg:#eceae3;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font:400 15px/1.5 'Helvetica Neue',Helvetica,Arial,sans-serif;}
+  header{position:sticky;top:0;z-index:10;background:rgba(236,234,227,.94);
+    backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding:16px 24px;}
+  .hrow{display:flex;align-items:center;gap:20px;flex-wrap:wrap;}
+  .wm{font-weight:700;letter-spacing:-.02em;font-size:15px;}
+  .wm i{color:var(--accent);font-style:normal}
+  .sub{color:var(--ink3);font-size:12.5px;letter-spacing:.01em}
+  .ctl{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+  button{background:transparent;border:1px solid var(--line);border-radius:100px;
+    padding:7px 15px;font:inherit;font-size:12.5px;color:var(--ink3);cursor:pointer;
+    transition:all .18s ease;}
+  button:hover{border-color:var(--ink3)}
+  button[aria-pressed=true]{background:var(--ink);border-color:var(--ink);color:#fff}
+  main{padding:26px 24px 70px;}
+  .grid{display:flex;gap:26px;align-items:flex-start;overflow-x:auto;padding-bottom:12px;}
+  .comp{flex:0 0 auto;}
+  .cap{margin-bottom:12px;max-width:600px}
+  .cap h2{margin:0;font-size:16px;letter-spacing:-.015em;font-weight:700}
+  .cap h2 span{color:var(--accent);font-weight:400;margin-right:7px}
+  .cap p{margin:6px 0 0;color:var(--ink3);font-size:13px;line-height:1.5}
+  .meta{margin-top:8px;display:flex;gap:7px;flex-wrap:wrap}
+  .tag{font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink3);
+    border:1px solid var(--line);border-radius:100px;padding:3px 9px;background:#fff}
+  .tag.good{color:#2f6b3d;border-color:#bcd9c4;background:#f2f9f4}
+  .tag.warn{color:#8a5a18;border-color:#e6d3b4;background:#fdf6e9}
+  .frame{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff;
+    box-shadow:0 1px 3px rgba(0,0,0,.05);}
+  iframe{display:block;border:0;width:600px;height:1520px;background:#fff;transition:width .2s ease}
+  body.mob iframe{width:390px}
+  body.mob .cap{max-width:390px}
+  body.dark{--bg:#0f0e0d;--ink:#f4f1ea;--ink3:#9a978d;--line:#2e2b27}
+  body.dark header{background:rgba(15,14,13,.94)}
+  body.dark .tag{background:#1c1a18}
+  body.dark .tag.good{background:#152018;border-color:#2c4634;color:#8fc79f}
+  body.dark .tag.warn{background:#221b10;border-color:#4a3a1c;color:#d6ac63}
+  body.dark .frame{background:#141312}
+  .note{max-width:760px;margin:0 0 26px;color:var(--ink3);font-size:13.5px;line-height:1.65}
+  .note b{color:var(--ink);font-weight:400}
+</style>
+</head>
+<body>
+<header>
+  <div class="hrow">
+    <div>
+      <div class="wm">WKNDR<i>&nbsp;&bull;</i></div>
+      <div class="sub">Friday brief &mdash; three comps</div>
+    </div>
+    <div class="ctl">
+      <button id="w" aria-pressed="false">Mobile 390</button>
+      <button id="d" aria-pressed="false" title="Drives the [data-ogsc] Outlook.com dark path. For the prefers-color-scheme path, switch your OS to dark and reload.">Dark (Outlook.com)</button>
+      <button id="i" aria-pressed="false">Images off</button>
+    </div>
+  </div>
+</header>
+<main>
+  <p class="note">
+    Each comp makes a different bet about what the brief <b>is</b>. Same content, same five picks,
+    same weekend — a clear 24&deg; Saturday and a wet Sunday, which is the exact scenario the deck
+    got wrong last week. Toggle <b>Images off</b> to see what Outlook desktop and a good share of
+    Gmail users see by default.
+  </p>
+  <div class="grid">
+
+    <div class="comp">
+      <div class="cap">
+        <h2><span>A</span>The Poster</h2>
+        <p>Image-led, closest to the app's card language. A hero, one lead pick, then thumbnail
+        rows. Bets that the picture sells the weekend.</p>
+        <div class="meta">
+          <span class="tag" id="sz-a">—</span>
+          <span class="tag good">Most visual</span>
+          <span class="tag warn">Dies with images off</span>
+        </div>
+      </div>
+      <div class="frame"><iframe src="a-poster.html" title="Comp A — The Poster"></iframe></div>
+    </div>
+
+    <div class="comp">
+      <div class="cap">
+        <h2><span>B</span>The Dispatch</h2>
+        <p>Zero images. Type, a lede in your voice, hanging numerals, signed. Bets that the
+        writing is the product &mdash; which is also the takeover argument.</p>
+        <div class="meta">
+          <span class="tag" id="sz-b">—</span>
+          <span class="tag good">Best deliverability</span>
+          <span class="tag good">Identical images-off</span>
+        </div>
+      </div>
+      <div class="frame"><iframe src="b-dispatch.html" title="Comp B — The Dispatch"></iframe></div>
+    </div>
+
+    <div class="comp">
+      <div class="cap">
+        <h2><span>C</span>The Forecast</h2>
+        <p>Two columns, Saturday against Sunday, each with its own temperature and colour. Bets
+        that the <em>structure</em> is the product &mdash; the slot model, made visible.</p>
+        <div class="meta">
+          <span class="tag" id="sz-c">—</span>
+          <span class="tag good">Says the moat out loud</span>
+          <span class="tag warn">Stacks on mobile</span>
+        </div>
+      </div>
+      <div class="frame"><iframe src="c-forecast.html" title="Comp C — The Forecast"></iframe></div>
+    </div>
+
+  </div>
+</main>
+<script>
+  const B=document.body;
+  const t=(btn,cls)=>{const on=btn.getAttribute('aria-pressed')!=='true';
+    btn.setAttribute('aria-pressed',on);B.classList.toggle(cls,on);return on};
+  w.onclick=()=>t(w,'mob');
+  // The emails' own dark styles hang off @media (prefers-color-scheme:dark), which follows your
+  // OS/browser setting — a button can't fake it. So this button drives the OTHER dark path the
+  // templates support: [data-ogsc], the attribute Outlook.com stamps on the html element when it
+  // rewrites a message for dark mode. Toggling it here is a REAL test of that code path.
+  // To check the media-query path, switch your OS to dark and reload.
+  d.onclick=()=>{const on=t(d,'dark');
+    document.querySelectorAll('iframe').forEach(f=>{
+      try{const h=f.contentDocument.documentElement;
+        on?h.setAttribute('data-ogsc',''):h.removeAttribute('data-ogsc');}catch(e){}
+    });};
+  i.onclick=()=>{const on=t(i,'noimg');
+    document.querySelectorAll('iframe').forEach(f=>{
+      try{f.contentDocument.querySelectorAll('img').forEach(im=>{
+        im.style.visibility=on?'hidden':'';
+      })}catch(e){}
+    });};
+  // Byte sizes matter here: Gmail CLIPS a message over ~102KB and hides the rest behind a
+  // "View entire message" link — which is where your unsubscribe lives. Show the real numbers.
+  ['a-poster','b-dispatch','c-forecast'].forEach((f,n)=>
+    fetch(f+'.html').then(r=>r.text()).then(x=>{
+      const kb=(new Blob([x]).size/1024).toFixed(1);
+      const el=document.getElementById('sz-'+'abc'[n]);
+      el.textContent=kb+' KB';
+      if(kb>60)el.className='tag warn';
+    }));
+</script>
+</body>
+</html>

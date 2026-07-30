@@ -4,22 +4,52 @@
     {
       "name": "wkndr",
       "runtimeExecutable": "bun",
-      "runtimeArgs": ["run", "--cwd", "app", "dev"],
+      "runtimeArgs": [
+        "run",
+        "--cwd",
+        "app",
+        "dev"
+      ],
       "port": 5173,
       "autoPort": true
     },
     {
       "name": "wkndr-landing",
       "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "8092", "--directory", "landing"],
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8092",
+        "--directory",
+        "landing"
+      ],
       "port": 8092,
       "autoPort": true
     },
     {
       "name": "experiments",
       "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "8091", "--directory", "experiments"],
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8091",
+        "--directory",
+        "experiments"
+      ],
       "port": 8091,
+      "autoPort": true
+    },
+    {
+      "name": "brief-comps",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8093",
+        "--directory",
+        "list/templates"
+      ],
+      "port": 8093,
       "autoPort": true
     }
   ]

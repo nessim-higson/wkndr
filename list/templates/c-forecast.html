@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="x-apple-disable-message-reformatting">
+<meta name="color-scheme" content="light dark">
+<meta name="supported-color-schemes" content="light dark">
+<title>WKNDR — the Friday brief</title>
+<!--[if mso]>
+<xml><o:OfficeDocumentSettings xmlns:o="urn:schemas-microsoft-com:office:office"><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml>
+<![endif]-->
+<style>
+  /* THE FORECAST — the weekend as two days, side by side.
+     This is the slot model from docs/takeovers.md §3 made visible: the brief stops being a
+     ranked list and becomes a comparison. The whole layout says "these are different days"
+     before a word is read.
+     The two columns are <td>s in one row, which STACK on mobile via the .stack class below.
+     Outlook can't do display:block on a td, but Outlook desktop is also never narrow — so the
+     stack only ever needs to work in clients that support the media query. That's the trick
+     that makes a real two-column email safe. */
+  body,table,td,a{-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%}
+  table,td{mso-table-lspace:0;mso-table-rspace:0}
+  img{-ms-interpolation-mode:bicubic;border:0;line-height:100%}
+  a{text-decoration:none}
+
+  @media (max-width:620px){
+    .shell{width:100%!important}
+    .pad{padding-left:20px!important;padding-right:20px!important}
+    .stack{display:block!important;width:100%!important;max-width:100%!important}
+    .stack-gap{height:14px!important;line-height:14px!important;font-size:0!important;display:block!important;width:100%!important}
+    .day-t{font-size:40px!important}
+    .banner{font-size:21px!important;line-height:1.28!important}
+  }
+  @media (prefers-color-scheme:dark){
+    .bg{background:#141312!important}
+    .col{background:#1c1a18!important}
+    .ink{color:#f4f1ea!important}
+    .ink3{color:#9a978d!important}
+    .hair{background:#2e2b27!important}
+  }
+  [data-ogsc] .bg{background:#141312!important}
+  [data-ogsc] .col{background:#1c1a18!important}
+  [data-ogsc] .ink{color:#f4f1ea!important}
+  [data-ogsc] .ink3{color:#9a978d!important}
+  [data-ogsc] .hair{background:#2e2b27!important}
+</style>
+</head>
+<body class="bg" style="margin:0;padding:0;width:100%;background:#eceae3;">
+
+<div style="display:none;font-size:1px;color:#eceae3;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;">
+  24&deg; and clear, then 16&deg; and wet. Two days, two plans.
+  &#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;
+</div>
+
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background:#eceae3;" class="bg">
+<tr><td align="center" style="padding:28px 12px 42px;">
+
+  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" class="shell" style="width:600px;max-width:600px;">
+
+    <!-- masthead -->
+    <tr><td class="pad" style="padding:0 8px 18px;">
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+      <tr>
+        <td align="left" style="font:700 15px/1 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:-.02em;color:#1a1a1a;" class="ink">
+          WKNDR<span style="color:#ff4d1f;">&nbsp;&bull;</span>
+        </td>
+        <td align="right" style="font:400 10px/1 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#8b8a82;" class="ink3">
+          1&ndash;2 Aug &nbsp;·&nbsp; Amsterdam
+        </td>
+      </tr>
+      </table>
+    </td></tr>
+
+    <!-- the claim, full width above the split. One sentence: the weekend has a shape. -->
+    <tr><td class="pad" style="padding:0 8px 20px;">
+      <div class="ink banner" style="font:400 25px/1.22 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:-.026em;color:#1a1a1a;">
+        One good day and one wet one. Don't spend them the same way.
+      </div>
+    </td></tr>
+
+    <!-- ── the split ────────────────────────────────────────────────────────────────── -->
+    <tr><td style="padding:0;">
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+      <tr>
+
+        <!-- SATURDAY -->
+        <td class="stack col" width="288" valign="top" style="width:288px;background:#faf8f3;border-radius:12px;">
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+          <!-- the day's own weather band. Colour carries the mode, the way the app's field does:
+               warm amber for the clear day, cool slate for the wet one. -->
+          <tr><td style="padding:20px 22px 18px;background:#fdf0e2;border-radius:12px 12px 0 0;">
+            <div style="font:400 10px/1 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:#a8642c;">
+              Saturday
+            </div>
+            <div class="day-t" style="margin-top:10px;font:400 44px/1 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:-.035em;color:#8a4a18;">
+              24&deg;
+            </div>
+            <div style="margin-top:8px;font:400 13px/1.45 'Helvetica Neue',Helvetica,Arial,sans-serif;color:#a8642c;">
+              Clear all day. 5% rain.<br>Be outside.
+            </div>
+          </td></tr>
+
+          <tr><td style="padding:20px 22px 4px;">
+            <div class="ink" style="font:400 19px/1.2 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:-.02em;color:#1a1a1a;">
+              <a href="https://app.wkndr.xyz/?utm_source=brief" class="ink" style="color:#1a1a1a;">De Parade</a>
+            </div>
+            <div class="ink3" style="margin-top:6px;font:400 11px/1.4 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:.03em;text-transform:uppercase;color:#8b8a82;">
+              Zuid &nbsp;·&nbsp; from 17:00
+            </div>
+            <div class="ink" style="margin-top:9px;font:400 14px/1.55 'Helvetica Neue',Helvetica,Arial,sans-serif;color:#1a1a1a;">
+              A fairground of theatre tents, once a year. Go at seven, when they start glowing.
+            </div>
+          </td></tr>
+
+          <tr><td style="padding:16px 22px 0;">
+            <div class="hair" style="height:1px;background:#e7e3d8;line-height:1px;font-size:0;">&nbsp;</div>
+          </td></tr>
+
+          <tr><td style="padding:16px 22px 0;">
+            <div class="ink" style="font:400 19px/1.2 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:-.02em;color:#1a1a1a;">
+              <a href="https://app.wkndr.xyz/?utm_source=brief" class="ink" style="color:#1a1a1a;">Kwaku</a>
+            </div>
+            <div class="ink3" style="margin-top:6px;font:400 11px/1.4 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:.03em;text-transform:uppercase;color:#8b8a82;">
+              Zuidoost &nbsp;·&nbsp; afternoon
+            </div>
+            <div class="ink" style="margin-top:9px;font:400 14px/1.55 'Helvetica Neue',Helvetica,Arial,sans-serif;color:#1a1a1a;">
+              The city's most mixed crowd, and the food is the actual reason to go.
+            </div>
+          </td></tr>
+
+          <tr><td style="padding:16px 22px 24px;">
+            <div class="hair" style="height:1px;background:#e7e3d8;line-height:1px;font-size:0;margin-bottom:16px;">&nbsp;</div>
+            <div class="ink" style="font:400 19px/1.2 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:-.02em;color:#1a1a1a;">
+              <a href="https://app.wkndr.xyz/?utm_source=brief" class="ink" style="color:#1a1a1a;">Canal swim, Marineterrein</a>
+            </div>
+            <div class="ink3" style="margin-top:6px;font:400 11px/1.4 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:.03em;text-transform:uppercase;color:#8b8a82;">
+              Centrum &nbsp;·&nbsp; all day
+            </div>
+            <div class="ink" style="margin-top:9px;font:400 14px/1.55 'Helvetica Neue',Helvetica,Arial,sans-serif;color:#1a1a1a;">
+              24&deg; is the whole argument. Water's cleanest early.
+            </div>
+          </td></tr>
+          </table>
+        </td>
+
+        <!-- gutter. A fixed-width spacer td is the only gutter that survives Outlook; the
+             .stack-gap class turns it into vertical space when the columns stack. -->
+        <td class="stack-gap" width="24" style="width:24px;font-size:0;line-height:0;">&nbsp;</td>
+
+        <!-- SUNDAY -->
+        <td class="stack col" width="288" valign="top" style="width:288px;background:#faf8f3;border-radius:12px;">
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+          <tr><td style="padding:20px 22px 18px;background:#e8ecf0;border-radius:12px 12px 0 0;">
+            <div style="font:400 10px/1 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:#5b6b7a;">
+              Sunday
+            </div>
+            <div class="day-t" style="margin-top:10px;font:400 44px/1 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:-.035em;color:#3d4b58;">
+              16&deg;
+            </div>
+            <div style="margin-top:8px;font:400 13px/1.45 'Helvetica Neue',Helvetica,Arial,sans-serif;color:#5b6b7a;">
+              Rain from noon, 85%.<br>Find a roof.
+            </div>
+          </td></tr>
+
+          <tr><td style="padding:20px 22px 4px;">
+            <div class="ink" style="font:400 19px/1.2 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:-.02em;color:#1a1a1a;">
+              <a href="https://app.wkndr.xyz/?utm_source=brief" class="ink" style="color:#1a1a1a;">World Press Photo</a>
+            </div>
+            <div class="ink3" style="margin-top:6px;font:400 11px/1.4 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:.03em;text-transform:uppercase;color:#8b8a82;">
+              De Nieuwe Kerk &nbsp;·&nbsp; Dam
+            </div>
+            <div class="ink" style="margin-top:9px;font:400 14px/1.55 'Helvetica Neue',Helvetica,Arial,sans-serif;color:#1a1a1a;">
+              An hour that stays with you all week. Quiet after four.
+            </div>
+          </td></tr>
+
+          <tr><td style="padding:16px 22px 0;">
+            <div class="hair" style="height:1px;background:#e7e3d8;line-height:1px;font-size:0;">&nbsp;</div>
+          </td></tr>
+
+          <tr><td style="padding:16px 22px 0;">
+            <div class="ink" style="font:400 19px/1.2 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:-.02em;color:#1a1a1a;">
+              <a href="https://app.wkndr.xyz/?utm_source=brief" class="ink" style="color:#1a1a1a;">Martine Gutierrez</a>
+            </div>
+            <div class="ink3" style="margin-top:6px;font:400 11px/1.4 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:.03em;text-transform:uppercase;color:#8b8a82;">
+              Huis Marseille &nbsp;·&nbsp; Canals
+            </div>
+            <div class="ink" style="margin-top:9px;font:400 14px/1.55 'Helvetica Neue',Helvetica,Arial,sans-serif;color:#1a1a1a;">
+              Best rooms in the city. Fifteen minutes from the Kerk, so it pairs.
+            </div>
+          </td></tr>
+
+          <tr><td style="padding:16px 22px 24px;">
+            <div class="hair" style="height:1px;background:#e7e3d8;line-height:1px;font-size:0;margin-bottom:16px;">&nbsp;</div>
+            <div class="ink" style="font:400 19px/1.2 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:-.02em;color:#1a1a1a;">
+              <a href="https://app.wkndr.xyz/?utm_source=brief" class="ink" style="color:#1a1a1a;">The Little Big Things</a>
+            </div>
+            <div class="ink3" style="margin-top:6px;font:400 11px/1.4 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:.03em;text-transform:uppercase;color:#8b8a82;">
+              Carr&eacute; &nbsp;·&nbsp; matinee 14:00
+            </div>
+            <div class="ink" style="margin-top:9px;font:400 14px/1.55 'Helvetica Neue',Helvetica,Arial,sans-serif;color:#1a1a1a;">
+              A wet Sunday is the only defensible reason to be in a theatre at two.
+            </div>
+          </td></tr>
+          </table>
+        </td>
+
+      </tr>
+      </table>
+    </td></tr>
+
+    <!-- CTA -->
+    <tr><td align="center" class="pad" style="padding:30px 8px 0;">
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+      <tr><td align="center" bgcolor="#ff4d1f" style="border-radius:100px;">
+        <a href="https://app.wkndr.xyz/?utm_source=brief" style="display:inline-block;padding:14px 30px;font:400 15px/1 'Helvetica Neue',Helvetica,Arial,sans-serif;color:#ffffff;letter-spacing:-.01em;">
+          Forty more, sorted the same way &nbsp;&rarr;
+        </a>
+      </td></tr>
+      </table>
+      <div class="ink3" style="margin-top:14px;font:400 13px/1.55 'Helvetica Neue',Helvetica,Arial,sans-serif;color:#8b8a82;">
+        Send your saves to whoever you'd go with. The overlap is the plan.
+      </div>
+    </td></tr>
+
+    <tr><td class="pad" style="padding:28px 8px 0;">
+      <div class="ink3" style="font:400 12px/1.65 'Helvetica Neue',Helvetica,Arial,sans-serif;color:#8b8a82;">
+        You asked for the WKNDR Friday brief. One email a week, Amsterdam only.<br>
+        <a href="{{unsub}}" style="color:#8b8a82;border-bottom:1px solid #cfcbc0;">Unsubscribe</a>
+        &nbsp;—&nbsp; one click, no questions.
+      </div>
+    </td></tr>
+
+  </table>
+
+</td></tr>
+</table>
+</body>
+</html>

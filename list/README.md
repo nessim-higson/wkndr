@@ -47,6 +47,39 @@ sandbox domain and deliverability will be poor — do this before the first real
 To develop without sending anything, set `MAIL_PROVIDER = "none"` in `wrangler.toml`; the worker
 logs what it *would* have mailed and no key is needed.
 
+## Templates — three comps
+
+`templates/` holds three designs for the brief, plus a side-by-side harness. Same five picks, same
+weekend (a clear 24° Saturday, a wet Sunday — the exact case the deck got wrong), three different
+bets about what the brief *is*:
+
+| | Comp | The bet | Size |
+|---|---|---|---|
+| **A** | `a-poster.html` | the **picture** sells it — hero image, one lead pick, thumb rows | 14.5 KB |
+| **B** | `b-dispatch.html` | the **writing** sells it — zero images, hanging numerals, signed | 12.3 KB |
+| **C** | `c-forecast.html` | the **structure** sells it — Sat vs Sun columns, each with its own temp | 13.3 KB |
+
+Compare them: `preview_start` the `wkndr-brief` config (port 4219) → `/compare.html`. Toggles for
+mobile 390, the Outlook.com dark path, and **images off** — which is the default in Outlook desktop
+and for a lot of Gmail users, and the reason Comp A carries a real risk that B and C don't.
+
+**Email-HTML rules these follow**, worth keeping if you edit them:
+
+- **Every `<tr>` must be a direct child of a `<table>`.** A `<tr>` inside a `<td>` is *silently
+  discarded* by HTML parsers — not moved, deleted. This cost Comp A its forecast block and its lead
+  pick on the first pass and rendered without any error. There's a checker in the git history of
+  this file's commit; re-run it after structural edits.
+- **Everything load-bearing is inline.** `<style>` is enhancement — Gmail strips it on forwards.
+- **No flexbox, grid, or CSS variables.** Outlook renders through Word. Tables and inline styles.
+- **Two dark paths**: `@media (prefers-color-scheme:dark)` for Apple Mail/iOS, and `[data-ogsc]`
+  for Outlook.com. Both are wired; the paper tone is a real colour (`#faf8f3`, not `#fff`) because
+  it survives Gmail's inversion far better.
+- **Under 102 KB, always.** Past that Gmail clips the message and hides the tail behind "View
+  entire message" — and the tail is where the unsubscribe link lives.
+- **Webfonts don't load.** TWKLausannePan is unavailable in mail, so these use the brand's
+  secondary face (Helvetica Neue → Helvetica → Arial). Don't try to @font-face it.
+- **`{{unsub}}`** appears in all three; `send.ts` swaps it per recipient.
+
 ## The weekly loop
 
 Thursday 13:00 UTC the content pipeline runs. You curate against a fresh deck Thursday evening.
