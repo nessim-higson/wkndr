@@ -86,6 +86,24 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
   that he had cancelled in the same round. `buildOverrides` stripped them for the fast lane (which is
   why the live override was right) but `pileLine` didn't — so the durable record contradicted itself.
   Both payloads strip now. 142 tests pass (3 new guards).
+- **Also compiled the older open round, issue #18** (07:58, against the pre-refresh feed — mostly
+  superseded, but three items were still live business):
+  - **Dekmantel Festival was ★5 👑 TOP LEAD and NOT being served** — the refresh had split it into two
+    RA pickups (`Dekmantel Festival 2026 - Friday`, `Dekmantel At Night - Friday`, judge 8/7) which sat
+    in the airlock with no approval to match. `topPicks` += **dekmantel festival** (the tight match —
+    a bare `dekmantel` would crown the afterparty too) + `starredKeeps` ★5 → **both promoted, the
+    festival crowned**. It runs **Fri 31 Jul**, i.e. tomorrow; without this it would have missed its
+    own weekend.
+  - `topPicks` += **mokumboot** (his ★5 👑).
+  - `Het Scheepvaartmuseum | KILL note:"The link out does not correspond with the card"` — the R9 trap,
+    routed as a LINK fix, not a veto. It sits unapproved in the airlock (judge 3) so nothing is being
+    served; noted rather than vetoed. ⚠️ Its link is the generic `kidsproof.nl/amsterdam`, and
+    **Mokumboot — just crowned — carries the SAME generic link**. Two more live picks share
+    `iamsterdam.com/en/whats-on`. Not systemic (3 of 80), but the crowned one wants a real URL.
+  - `Pride Walk & Pride Park | TOP LEAD KILL why:seen` — event was 25 Jul, already gone from feed and
+    airlock. No action.
+- Feed after both compiles: **80 picks, 9 crowns.**
+
 
 ## [board V.9.27] — 2026-07-30 — ✕ cancels on the spot; the reason waits on a shelf
 - Ness: "when I ✕ something out, it should be removed immediately from my curation board and maybe put
