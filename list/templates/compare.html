@@ -49,6 +49,21 @@
   body.dark .frame{background:#141312}
   .note{max-width:760px;margin:0 0 26px;color:var(--ink3);font-size:13.5px;line-height:1.65}
   .note b{color:var(--ink);font-weight:400}
+
+  /* ── On a phone, side-by-side is a lie: three 600px frames in a horizontal scroll is not a
+     comparison. Stack them, let each fill the width, and let the email's OWN mobile media query
+     (max-width:620px) do its job — which is the thing you actually want to judge on a phone. */
+  @media (max-width:760px){
+    header{padding:13px 18px}
+    main{padding:20px 18px 60px}
+    .grid{display:block;overflow-x:visible}
+    .comp{margin-bottom:38px}
+    .cap,.note{max-width:none}
+    iframe{width:100%!important}
+    body.mob iframe{width:100%!important}
+    #w{display:none}          /* the viewport already IS mobile */
+    .ctl{width:100%;margin-left:0;margin-top:11px}
+  }
 </style>
 </head>
 <body>
