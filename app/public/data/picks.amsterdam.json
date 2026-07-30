@@ -481,8 +481,8 @@
    "popularity": 26,
    "editorScore": 10,
    "top": true,
-   "servePos": 3,
-   "pilePos": 3
+   "servePos": 11,
+   "pilePos": 11
   },
   {
    "id": "web-ra-2488590",
@@ -1993,7 +1993,8 @@
    "editorScore": 9,
    "servePos": 10,
    "top": true,
-   "pilePos": 10
+   "pilePos": 10,
+   "lead": true
   },
   {
    "id": "ams-artis-zoo",
@@ -2099,10 +2100,11 @@
     "VOLATILE"
    ],
    "popularity": 48,
-   "editorScore": 8,
+   "editorScore": 9,
    "top": true,
-   "servePos": 11,
-   "pilePos": 11
+   "servePos": 3,
+   "pilePos": 3,
+   "lead": true
   },
   {
    "id": "web-ra-2464093",
@@ -2133,5 +2135,5 @@
    "servePos": 23
   }
  ],
- "restampedAt": "2026-07-30T16:22:17.018Z"
+ "restampedAt": "2026-07-30T16:31:55.069Z"
 }

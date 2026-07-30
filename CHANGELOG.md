@@ -61,6 +61,20 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 - Verified: promote (tail→#10) · demote (#10→tail) · both lists drag-reorder · New Find label/feedback ·
   PILE full (81). No console errors.
 
+## [R13 compile] — 2026-07-30 — round #20: Dekmantel to #3, three ▲ LEADs
+- **Issue #20 filed properly** (71 verdicts) — the V.9.29 half-submit fix worked; this is the first
+  round since where the ★/👑 actually reached the durable record.
+- **Corpus unchanged.** Every rating in the round reinforces an entry already in `starredKeeps` /
+  `starAnchors`, and all four crowns (Canal Parade, Pluk de Nacht, Dekmantel, Mokumboot) are already in
+  `topPicks` — the first three from R11/R12, Mokumboot from the #18 compile. Nothing new to add.
+- **Weekly slate only:**
+  - `lead` 1 → 3: **Pluk de Nacht**, **Dekmantel Festival 2026 - Friday**, **Mokumboot** (the last two
+    newly ▲ this round).
+  - `pile`: **Dekmantel #11 → #3** (it runs Fri 31 Jul — tomorrow), **BOPS x KIKI #3 → #11**. A straight
+    swap; the rest held.
+- Deck opens **Canal Parade 👑 → Kwaku 👑 → Dekmantel 👑▲ → Pure Markt → Bottomless Brunch**.
+  80 picks, 9 crowns, 3 leads. 142 tests pass.
+
 ## [R12 compile / board V.9.29] — 2026-07-30 — the 18:20 reorder live + the half-submit bug it revealed
 - **Compiled the 18:20 round.** It arrived on the fast lane only — **no GitHub issue was ever created**
   — so the durable record carried the pile and the cancels but NOT the ★ ratings or 👑 crowns.
