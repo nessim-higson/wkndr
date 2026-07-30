@@ -124,14 +124,50 @@ describe('curation board ↔ app date parity', () => {
     expect(html).toMatch(/\.rchip\.until.*get\(\)\.until=inDays\(\+c\.dataset\.d\);kill\(\)/)
   })
 
+  // ——— ✕ = CANCEL NOW, CLASSIFY LATER (V.9.27). Ness: "when I ✕ something out it should be removed
+  // immediately from my board, and maybe put to a section where I can elaborate on it later."
+  // Before this, ✕ only opened the picker and the card sat in place until classified — the verdict
+  // blocked the removal, so triage stalled on every card. ———
+  it('✕ cancels immediately — it never waits for a reason', () => {
+    // both views call killNow() straight off the ✕; neither opens an inline picker any more
+    expect(html).toContain('function killNow(p)')
+    expect(html).toContain("el.querySelector('.okill').addEventListener('click',()=>killNow(p))")
+    expect(html).toMatch(/querySelector\('\.kill'\)\.addEventListener\('click',\(\)=>\{[\s\S]{0,160}killNow\(p\)/)
+    // the old classify-first affordances are gone
+    expect(html).not.toContain("reasonBox('reasons')")
+    expect(html).not.toContain(".addEventListener('click',()=>el.classList.toggle('asking'))")
+  })
+
+  it('a cancel with no reason is still a valid verdict', () => {
+    // killNow sets killed WITHOUT touching reason — an un-reasoned cancel submits as a plain KILL
+    expect(html).toMatch(/function killNow\(p\)\{const v=\(V\[p\.id\]\?\?=\{t:p\.title\}\);v\.killed=true;v\.flag=undefined;/)
+    expect(html).toContain("return 'Cancelled — reason optional'")
+  })
+
+  it('cancelled picks land on a shelf that can be elaborated on later, or undone', () => {
+    expect(html.match(/function renderCancelled\(/g)?.length).toBe(1)
+    for (const host of ['cancelbox', 'cancelbox2'])          // rendered into BOTH views
+      expect(html).toContain(`id="${host}"`)
+    expect(html).toContain("for(const id of ['cancelbox','cancelbox2'])")
+    expect(html).toContain('↩ Put back')
+    expect(html).toContain("reasonBox('oreasons')")           // the chips live on the shelf now
+    expect(html).toContain('.crow .oreasons{display:flex}')   // …and are always visible there
+  })
+
+  it('undo restores the original slot and keeps prior taste', () => {
+    // cancelled titles stay in PILE (filtered at render, stripped from the payload) — that's what
+    // makes Put back land in the old slot rather than at the bottom
+    expect(html).toContain("for(const t of (PILE||[]))if(pick(t)&&!have.has(t)){full.push(t);have.add(t)}")
+    expect(html).toContain('const dead=deadTitles()')
+    // undo clears only the cancel fields, never stars/img
+    expect(html).toMatch(/vv\.killed=undefined;vv\.flag=undefined;vv\.reason=undefined;vv\.until=undefined/)
+  })
+
   it('both views share ONE reason implementation (the V.9.25 drift bug)', () => {
-    // exactly one wiring function, used by the Advanced card and the Simple row alike
     expect(html.match(/function wireReasons\(/g)?.length).toBe(1)
-    // two CALL sites (lookbehind excludes the definition itself): Advanced card + Simple row
-    expect(html.match(/(?<!function )wireReasons\(el,p,/g)?.length).toBe(2)
     expect(html.match(/const reasonBox=/g)?.length).toBe(1)
-    expect(html).toContain("reasonBox('reasons')")
-    expect(html).toContain("reasonBox('oreasons')")
+    // one call site now — the shelf, which both views render
+    expect(html.match(/(?<!function )wireReasons\(el,/g)?.length).toBe(1)
   })
 
   it('the payload distinguishes a REST from a KILL', () => {

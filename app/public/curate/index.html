@@ -127,9 +127,6 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 .strow .ststate.pending{background:#fdf0e8;color:#c2570f}
 .strow .ststate.done{background:#e8f6ef;color:var(--green)}
 /* ── REASON PICKER (V.9.20): ✕ asks WHY, and the reason routes the fix ── */
-.reasons{display:none;flex-wrap:wrap;gap:5px;padding-top:2px}
-.card.asking .reasons{display:flex}
-.card.asking .row,.card.asking .stars,.card.asking .inp{display:none}
 .reasons .rq{flex-basis:100%;font-size:11px;font-weight:700;color:var(--accent);margin-bottom:1px}
 .rchip{font-family:var(--sans);font-size:11px;font-weight:600;padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--ink);cursor:pointer}
 .rchip:hover{border-color:var(--accent);color:var(--accent)}
@@ -138,12 +135,27 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 .rchip.on{background:var(--ink);border-color:var(--ink);color:#fff} /* the reason you picked stays lit while you answer "back when?" */
 /* ── SECOND STEP (V.9.26): a rest asks WHEN it's back; "something else" asks WHAT'S OFF ── */
 .restrow,.otherrow{display:none;flex-basis:100%;flex-wrap:wrap;gap:5px;align-items:center;padding-top:8px;margin-top:7px;border-top:1px dashed var(--line)}
-.reasons.asking-when .restrow,.oreasons.asking-when .restrow{display:flex}
-.reasons.asking-text .otherrow,.oreasons.asking-text .otherrow{display:flex}
+.oreasons.asking-when .restrow{display:flex}
+.oreasons.asking-text .otherrow{display:flex}
 .untildate{font:inherit;font-size:11px;padding:5px 8px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--ink)}
 .othertext{flex:1;min-width:180px;font:inherit;font-size:11.5px;padding:6px 10px;border-radius:999px;border:1px dashed var(--line);background:#fff}
 .othertext:focus,.untildate:focus{outline:2px solid var(--accent);outline-offset:1px}
 .rchip.othergo{border-color:var(--accent);color:var(--accent);font-weight:700}
+/* ── CANCELLED SHELF (V.9.27): ✕ removes the card NOW; you say why here, whenever you feel like it ── */
+#cancelbox,#cancelbox2{margin:34px 0 0}
+.chead{font-family:var(--sans);font-size:15px;font-weight:700;letter-spacing:-.01em;margin:0 0 12px;padding-top:16px;border-top:2px solid #c33}
+.chead .d{display:block;font-weight:400;font-size:12.5px;letter-spacing:0;color:var(--dim);margin-top:4px;line-height:1.4}
+.crow{position:relative;display:flex;flex-wrap:wrap;align-items:center;gap:13px;background:#fff;border:1px solid var(--line);border-left:3px solid #c33;border-radius:14px;padding:9px 12px;margin:0 0 8px}
+.crow.done{border-left-color:var(--green)}
+.crow>img{flex:none;width:44px;height:56px;object-fit:cover;border-radius:8px;background:#e8e4da;filter:grayscale(1);opacity:.7}
+.crow .ct{flex:1;min-width:0}
+.crow .ct h4{margin:0;font-size:14.5px;font-weight:700;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.crow .cs{margin:2px 0 0;font-size:11.5px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.crow .cstate{margin:3px 0 0;font-size:11.5px;font-weight:700;color:#c33}
+.crow.done .cstate{color:var(--green)}
+.crow .cback{flex:none;font-family:var(--sans);font-size:10.5px;font-weight:700;letter-spacing:.04em;padding:7px 11px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--dim);cursor:pointer}
+.crow .cback:hover{border-color:var(--ink);color:var(--ink)}
+.crow .oreasons{display:flex}          /* the shelf IS the elaboration surface — chips always visible */
 /* ── ALREADY-OVER note (V.9.25): what rolled off, so a thinner board reads as intent ── */
 #overnote{margin:16px 0 0;padding:11px 14px;border:1px solid var(--line);border-left:3px solid var(--dim);border-radius:0 10px 10px 0;background:#faf8f3;font-size:12.5px;line-height:1.45;color:#6a655c;max-width:72ch}
 #overnote b{color:var(--ink)}
@@ -151,9 +163,7 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 .ocard{flex-wrap:wrap}
 .ocard .okill{flex:none;width:30px;height:30px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--dim);font-size:14px;cursor:pointer;line-height:1}
 .ocard .okill:hover{border-color:#c33;color:#c33}
-.ocard.asking .okill{background:var(--accent);border-color:var(--accent);color:#fff}
 .oreasons{display:none;flex-basis:100%;flex-wrap:wrap;gap:5px;padding:9px 0 3px;margin-top:8px;border-top:1px solid var(--line)}
-.ocard.asking .oreasons{display:flex}
 .ostate{flex-basis:100%;font-size:11.5px;font-weight:600;color:var(--green);padding-top:6px}
 .ocard.flagged{border-color:var(--green)}
 /* new-find that's been pulled into the simple deck */
@@ -163,25 +173,27 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 <body>
 <div class="wrap">
 <header>
-<p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD V.9.26</p>
+<p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD V.9.27</p>
 <h1>Your weekend<span class="dot">.</span></h1>
 <div id="modetoggle"><button class="on" data-mode="simple">Simple</button><button data-mode="advanced">Advanced</button></div>
 <div id="overnote" style="display:none"></div>
 </header>
 
 <div id="simple">
-<p class="simplelede"><b>The 10 cards that open the deck</b> — exactly what your testers see first this weekend. Drag to reorder, swap any card in or out, <b>✕</b> to cancel one and say what’s wrong with it, then hit <b>Submit</b>.</p>
+<p class="simplelede"><b>The 10 cards that open the deck</b> — exactly what your testers see first this weekend. Drag to reorder, swap any card in or out, <b>✕</b> to cancel one — it comes off straight away and waits on the <b>Cancelled</b> shelf below, where you can say why whenever you like. Then hit <b>Submit</b>.</p>
 <div class="cathead hot" id="openhead">Your 10 opening cards</div>
 <div id="openlist"></div>
 <div class="cathead" id="poolhead">Swap in a card<span class="d">Tap + to drop a pick into your 10 (it bumps #10 out). This weekend's picks, best first.</span></div>
 <div id="pool"></div>
+<div id="cancelbox"></div>
 </div>
 
 <div id="advanced" hidden>
+<div id="cancelbox2"></div>
 <div id="status"></div>
 <p class="lede"><b>Rule on Amsterdam's picks for this weekend.</b> Two tabs below: <b>IN ROTATION</b> is what's live now — this weekend's deck plus your approved library. <b>NEW FINDS</b> is candidates that are <b>not live yet</b>. Every card tells you why it's there and what a tap does.</p>
 <p class="flow"><span class="step">Rule here</span> → <span class="step">Submit</span> → <b style="color:var(--ink)">live for your testers in seconds</b> (and filed to GitHub for the record). Progress saves in this browser as you go.</p>
-<div class="legend"><span class="lbl">Verdicts</span><span class="chip"><b>★1–5</b> rate / save</span><span class="chip"><b>✕</b> cancel · rest · fix</span><span class="chip"><b>👑&nbsp;TOP</b> permanent lead</span><span class="chip"><b>↑&nbsp;Top 10</b> into your deck (Simple)</span><span class="chip"><b>▼&nbsp;LATER</b> back this weekend</span><span class="chip"><b>+CANON</b> permanent library</span></div>
+<div class="legend"><span class="lbl">Verdicts</span><span class="chip"><b>★1–5</b> rate / save</span><span class="chip"><b>✕</b> cancel now · reason later</span><span class="chip"><b>👑&nbsp;TOP</b> permanent lead</span><span class="chip"><b>↑&nbsp;Top 10</b> into your deck (Simple)</span><span class="chip"><b>▼&nbsp;LATER</b> back this weekend</span><span class="chip"><b>+CANON</b> permanent library</span></div>
 <div class="legend"><span class="lbl">Badges</span><span class="chip"><b>LENS</b> dated + weather-right</span><span class="chip"><b>★ SAVED</b> / <b>✓ APPROVED</b> your earlier call</span><span class="chip"><b>NEW</b> not live yet</span></div>
 <div class="tabs" id="tabs" hidden>
 <button class="tab on" data-tab="rot">IN ROTATION <span class="n" id="nrot"></span></button>
@@ -242,10 +254,33 @@ const reasonBox=cls=>'<div class="'+cls+'"><span class="rq">What’s wrong with 
   +'<div class="restrow">'+restRow()+'</div>'
   +'<div class="otherrow"><input class="othertext" placeholder="what’s off with it?">'
   +'<button class="rchip othergo">Cancel it</button></div></div>';
-/** ONE wiring pass for BOTH views. The chips, the "back when?" step and the free-text escape hatch
- *  behave identically on a Simple row and an Advanced card because they ARE the same code — the
- *  V.9.25 bug (picker shipped to Advanced only) came from having two implementations. Callers pass
- *  the two outcomes, since re-rendering differs: Advanced kills a DOM node, Simple re-renders a list. */
+// ——— THE CANCELLED SHELF (V.9.27) — Ness: "when I ✕ something out it should be removed IMMEDIATELY
+// from my board, and maybe put to a section where I can elaborate on it later."
+//
+// Until now ✕ only OPENED the picker and the card sat in place until you classified it — the verdict
+// blocked the removal, so triage stalled on every card. Inverted: ✕ cancels on the spot (no reason
+// needed, the card leaves the deck at once) and lands on a shelf below, where the chips live. Say why
+// whenever you like, or never — an un-reasoned cancel still submits as a plain KILL.
+//
+// The pick is NOT stripped from PILE on cancel: `renderOpen` already filters killed titles and
+// `buildOverrides` strips them from the payload, so leaving it in place is what makes ↩ Put back
+// restore a card to its ORIGINAL slot instead of the bottom of the deck.
+const SEEN=new Map();   // id → pick, so the shelf can still render a card that has left every list
+const cancelled=()=>Object.entries(V).filter(([,v])=>v&&v.killed)
+  .map(([id,v])=>({id,v,p:SEEN.get(id)||{title:v.t}}));
+function cancelState(v){
+  if(v.until)return 'Resting — back '+v.until;
+  if(v.reason==='other')return v.note?'Cancelled — “'+v.note+'”':'Cancelled — type what’s off below';
+  if(v.reason)return REASON_LABEL[v.reason];
+  return 'Cancelled — reason optional';
+}
+/** ✕ anywhere: cancel NOW, classify later. */
+function killNow(p){const v=(V[p.id]??={t:p.title});v.killed=true;v.flag=undefined;
+  update();renderOpen();renderCancelled();}
+/** ONE wiring pass, used by every shelf row. The chips, the "back when?" step and the free-text
+ *  escape hatch are the same code everywhere — the V.9.25 bug (picker shipped to Advanced only)
+ *  came from having two implementations. A `fix` reason RESTORES the pick to the deck, flagged:
+ *  "wrong link / bad image" means the pick is good and the data is broken, so it belongs live. */
 function wireReasons(el,p,onFix,onKill){
   const box=el.querySelector('.reasons,.oreasons');
   const get=()=>(V[p.id]??={t:p.title});
@@ -270,6 +305,37 @@ function wireReasons(el,p,onFix,onKill){
   const txt=box.querySelector('.othertext'),send=()=>{const s=txt.value.trim();if(!s)return;get().note=s;get().until=undefined;kill()};
   box.querySelector('.othergo').addEventListener('click',send);
   txt.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();send()}});
+}
+// The shelf, rendered into BOTH views (only one is visible at a time, so there's no double-up).
+// A hoisted declaration, not an assignment: this sits ABOVE the `let renderOpen` block, so killNow
+// must be able to reach it without tripping the temporal dead zone.
+function renderCancelled(){
+  const rows=cancelled();
+  for(const id of ['cancelbox','cancelbox2']){
+    const host=document.getElementById(id);if(!host)continue;
+    host.innerHTML='';if(!rows.length)continue;
+    const h=document.createElement('div');h.className='chead';
+    h.innerHTML='Cancelled this round · '+rows.length
+      +'<span class="d">Already off your board — none of these ride the deck. Add a reason when you feel like it (it routes the fix), or <b>↩ Put back</b> to undo. '
+      +'A <i>wrong link / bad image / low-res</i> reason puts the pick back live and flags it for a fix — the pick was fine, the data wasn’t.</span>';
+    host.appendChild(h);
+    for(const {id:pid,v,p} of rows){
+      const el=document.createElement('div');el.className='crow'+(v.reason?' done':'');el.dataset.title=v.t;
+      el.innerHTML='<img loading="lazy" src="'+(p.image||'')+'" alt="">'
+        +'<div class="ct"><h4>'+v.t+'</h4><div class="cs">'+[p.venue,p.when].filter(Boolean).join(' · ')+'</div>'
+        +'<div class="cstate">'+cancelState(v)+'</div></div>'
+        +'<button class="cback" title="Put it back in the deck, in its old slot">↩ Put back</button>'
+        +reasonBox('oreasons');
+      // undo clears ONLY the cancel fields — stars / image verdicts / prior-round taste survive
+      el.querySelector('.cback').addEventListener('click',()=>{
+        const vv=V[pid];if(vv){vv.killed=undefined;vv.flag=undefined;vv.reason=undefined;vv.until=undefined;vv.note=vv.r1?vv.note:undefined}
+        update();renderOpen();renderCancelled();
+      });
+      const redraw=()=>{update();renderOpen();renderCancelled()};
+      wireReasons(el,{id:pid,title:v.t},redraw,redraw);
+      host.appendChild(el);
+    }
+  }
 }
 let V={},baked={},feedKey='',PILE=null;   // PILE = hand-dragged pile order (titles) — null until a drag
 let renderPile=()=>{};   // rebuilt inside the feed load — lets a card's ▲/👑/✕ live-update the pile
@@ -341,7 +407,7 @@ Promise.all([
   // 10 min (max-age=600), so a just-shipped board fix can lag in an open tab; the eyebrow makes
   // stale-board-vs-fresh-data visible at a glance (2026-07-12: an old tab's tier-mirror pile read
   // as "the board is wrong" when it was just cached).
-  const BOARD_V='V.9.26';
+  const BOARD_V='V.9.27';
   document.getElementById('eyebrow').textContent='WKNDR · CURATION BOARD '+BOARD_V+' · FEED '+(d.generatedAt||'').slice(0,16).replace('T',' · ');
   const board=document.getElementById('board');board.innerHTML='';
   const rot=document.createElement('div');rot.id='tab-rot';board.appendChild(rot);
@@ -562,6 +628,7 @@ Promise.all([
   // sends the order (rides pileLine → weekly.pile). The full board is the Advanced view. ———
   {
     const picks=(d.picks||[]);
+    picks.forEach(p=>SEEN.set(p.id,p));   // the shelf's lookup — Simple rows never pass through addCard
     const feedServed=picks.filter(p=>p.servePos!=null).sort((a,b)=>a.servePos-b.servePos);
     const pick=t=>feedServed.find(p=>p.title===t)||extras.find(p=>p.title===t);
     const isExtra=t=>extras.some(e=>e.title===t);
@@ -571,8 +638,11 @@ Promise.all([
     // titles cancelled this round — they must not sit in the deck, and must not be re-seeded from the
     // feed on the next render (or a kill would silently "come back" the moment anything re-rendered).
     const deadTitles=()=>new Set(Object.values(V).filter(v=>v&&v.killed).map(v=>v.t));
+    // Cancelled titles STAY in PILE (they're filtered at render and stripped from the payload) — that's
+    // what lets ↩ Put back drop a card into its original slot instead of the bottom of the deck.
+    // The dead-guard survives only on the feed loop, so a pick cancelled in Advanced can't re-enter.
     const seed=()=>{const dead=deadTitles(),have=new Set();const full=[];
-      for(const t of (PILE||[]))if(pick(t)&&!dead.has(t)&&!have.has(t)){full.push(t);have.add(t)}
+      for(const t of (PILE||[]))if(pick(t)&&!have.has(t)){full.push(t);have.add(t)}
       for(const p of feedServed){if(!have.has(p.title)&&!dead.has(p.title)){full.push(p.title);have.add(p.title)}}
       PILE=full;};
     seed();
@@ -607,27 +677,21 @@ Promise.all([
         +'<img loading="lazy" src="'+(p.image||'')+'" alt="">'
         +'<div class="ot"><h4>'+(p.link?'<a href="'+p.link+'" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;border-bottom:1px solid rgba(27,26,23,.25)">'+p.title+'</a>':p.title)+(isExtra(p.title)?' <span class="newtag">NEW</span>':'')+'</h4><div class="os">'+sub(p)+'</div></div>'
         +(tail?'<button class="opr" title="Promote into your Top 10">↑</button>':'<button class="orm" title="Send down to Up next">−</button>')
-        +'<button class="okill" title="Cancel this card — and say why">✕</button>'
-        +(v.flag?'<div class="ostate">✓ flagged — '+(REASON_LABEL[v.reason]||v.reason)+' · stays live until it\'s fixed</div>':'')
-        +reasonBox('oreasons');
+        +'<button class="okill" title="Cancel — off the board now, say why later">✕</button>'
+        +(v.flag?'<div class="ostate">✓ flagged — '+(REASON_LABEL[v.reason]||v.reason)+' · stays live until it\'s fixed</div>':'');
       el.querySelector(tail?'.opr':'.orm').addEventListener('click',()=>tail?promote(p.title):demote(p.title));
-      el.querySelector('.okill').addEventListener('click',()=>el.classList.toggle('asking'));
-      wireReasons(el,p,
-        ()=>{update();renderOpen()},                             // update() stores + refreshes the status panel
-        ()=>{ // a cancel leaves the deck for real: out of the pile, out of any New-Find extras
-          PILE=PILE.filter(x=>x!==p.title);extras=extras.filter(x=>x.title!==p.title);
-          update();renderOpen()});
+      el.querySelector('.okill').addEventListener('click',()=>killNow(p));   // gone immediately → the shelf
       return el;};
     renderOpen=function(){
       const dead=deadTitles();
       const order=PILE.map(pick).filter(p=>p&&!dead.has(p.title));   // a cancel — here or in Advanced — is gone from the deck
       const top=order.slice(0,MAX),tail=order.slice(MAX);
-      openHead.innerHTML='Your top '+top.length+' — the cards that open the deck<span class="d">Drag ⠿ to reorder · − to send one down · ✕ to cancel it and say why · Submit sends it live.</span>';
-      poolHead.innerHTML='Up next · '+tail.length+'<span class="d">The rest of the deck your viewers see, in the system’s order. It auto-ranks until you touch it — drag ⠿ to reorder, ↑ to pull one into your Top 10, ✕ to cancel. Be as hawkish as you like.</span>';
+      openHead.innerHTML='Your top '+top.length+' — the cards that open the deck<span class="d">Drag ⠿ to reorder · − to send one down · ✕ to cancel it on the spot (say why later, below) · Submit sends it live.</span>';
+      poolHead.innerHTML='Up next · '+tail.length+'<span class="d">The rest of the deck your viewers see, in the system’s order. It auto-ranks until you touch it — drag ⠿ to reorder, ↑ to pull one into your Top 10, ✕ to cancel on the spot. Be as hawkish as you like.</span>';
       openList.innerHTML='';top.forEach((p,i)=>openList.appendChild(row(p,i,false)));openDrag(openList,'top');
       pool.innerHTML='';tail.forEach((p,i)=>pool.appendChild(row(p,i+MAX,true)));openDrag(pool,'tail');
     };
-    renderOpen();
+    renderOpen();renderCancelled();
     const mt=document.getElementById('modetoggle');
     mt.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{
       mt.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));
@@ -672,6 +736,7 @@ Promise.all([
 }).catch(e=>{document.getElementById('board').textContent='Could not load the feed: '+e});
 
 function addCard(p,g,tag,pos,probe){
+  SEEN.set(p.id,p);   // so the cancelled shelf can still draw it after it has left every list
   const el=document.createElement('div');el.className='card';el.dataset.id=p.id+(tag==='pile'?'::pile':tag==='lens'?'::lens':'');
   if(tag==='pile'){el.dataset.title=p.title;el.dataset.sfx=(p.top?' · 👑':p.lead?' · ▲':'')}   // for drag reorder + renumber
   if(probe&&p.image)probeRes(el,p.image);
@@ -702,7 +767,6 @@ function addCard(p,g,tag,pos,probe){
     +'<div class="row"><button class="b imgup">IMG ✓</button><button class="b imgdn">IMG ✗</button><button class="b canon">+CANON</button><button class="b topb" title="Escalate: leads the deck with a Top pick pill">👑 TOP</button><button class="b leadb" title="Promote into your Top 10 (Simple view)">↑ Top 10</button><button class="b laterb" title="This weekend only: sinks to the back of the pile (not a kill)">▼ LATER</button></div>'
     +'<input class="inp note" placeholder="note — why / what&#39;s off / bad link">'
     +'<input class="inp better" placeholder="better image URL">'
-    +reasonBox('reasons')
     +'<div class="ruledtag">✓ your call — rides Submit</div>'
     +'</div>';
   const get=()=>V[p.id]??={t:p.title};
@@ -713,12 +777,11 @@ function addCard(p,g,tag,pos,probe){
   stars.forEach(s=>s.addEventListener('click',()=>{const n=+s.dataset.n;get().stars=(get().stars===n?undefined:n);paint(get().stars||0);update()}));
   // ✕ no longer means "delete" — it asks WHAT'S WRONG, and the reason routes the fix. "keep" reasons
   // (wrong link / bad image / low-res) flag it for a fix and the pick STAYS live; the rest remove it.
-  el.querySelector('.kill').addEventListener('click',()=>{el.classList.toggle('asking')});
-  // renderOpen on a kill: a kill in Advanced used to leave the card sitting in the Simple deck's Top
-  // 10 — it read as "the kill didn't take". One cancel, gone from both views.
-  wireReasons(el,p,
-    ()=>{el.classList.add('ruled');update();renderStatus()},
-    ()=>{el.classList.add('dead');setTimeout(()=>el.remove(),320);update();renderPile();renderOpen();renderStatus()});
+  // ✕ cancels on the spot — off this grid, out of the Simple deck, onto the shelf. No classify-first.
+  el.querySelector('.kill').addEventListener('click',()=>{
+    el.classList.add('dead');setTimeout(()=>el.remove(),320);
+    killNow(p);renderPile();renderStatus();
+  });
   el.querySelectorAll('.b').forEach(b=>b.addEventListener('click',()=>{
     if(b.classList.contains('canon')){b.classList.toggle('on');get().canon=b.classList.contains('on')||undefined;update();return}
     if(b.classList.contains('topb')){b.classList.toggle('on');get().top=b.classList.contains('on')||undefined;update();renderPile();return}

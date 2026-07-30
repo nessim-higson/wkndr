@@ -61,6 +61,27 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 - Verified: promote (tail→#10) · demote (#10→tail) · both lists drag-reorder · New Find label/feedback ·
   PILE full (81). No console errors.
 
+## [board V.9.27] — 2026-07-30 — ✕ cancels on the spot; the reason waits on a shelf
+- Ness: "when I ✕ something out, it should be removed immediately from my curation board and maybe put
+  to a section where I can elaborate on it later."
+- **The verdict was blocking the removal.** ✕ only OPENED the picker — the card stayed in the deck
+  until you classified it, so triage stalled on every single card. Inverted: **✕ cancels immediately**
+  (one click, card gone, no reason asked) and the pick lands on a new **Cancelled this round** shelf
+  below the deck, where the chips live. Classify whenever you feel like it — or never: an un-reasoned
+  cancel still submits as a plain `KILL`.
+- **↩ Put back restores the ORIGINAL slot.** Cancelled titles now STAY in `PILE` (they were being
+  stripped) — `renderOpen` already filters killed titles and `buildOverrides` strips them from the
+  payload, so leaving them in place is what makes undo land a card back at #5 instead of at the bottom.
+  Undo clears only the cancel fields; stars, image verdicts and prior-round taste survive.
+- **A `fix` reason puts the pick back LIVE, flagged.** From the shelf, *wrong link / bad image /
+  low-res* returns it to the deck with its green flag — the pick was fine, the data wasn't. The other
+  kinds keep it cancelled and record the routing (`rest` + `until`, `veto`, `other` + note).
+- The inline picker is gone from both the Advanced card and the Simple row; `wireReasons()` now has a
+  single call site — the shelf — which both views render (`#cancelbox` / `#cancelbox2`).
+- Verified end-to-end: 3 cards triaged in 3 clicks with zero classification · shelf survives reload ·
+  undo restores slot #5 with ★4 intact · rest → `back 2026-08-29` · free text → "venue moved" ·
+  un-reasoned cancel still ships. 140 tests pass (5 new shelf/immediacy guards).
+
 ## [board V.9.26] — 2026-07-30 — a cancel can now be a REST: "not on right now, back <date>"
 - Ness: "what if it's something that is not listed? IJ-Hallen was last weekend — that should be
   retired until next month when it comes back, as it's only one weekend every month."
