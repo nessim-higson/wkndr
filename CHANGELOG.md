@@ -61,6 +61,32 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 - Verified: promote (tail→#10) · demote (#10→tail) · both lists drag-reorder · New Find label/feedback ·
   PILE full (81). No console errors.
 
+## [R11 compile / board V.9.28] — 2026-07-30 — round #19 live, and the two bugs it exposed
+- **Compiled issue #19** (69 verdicts, 2026-07-30 16:03). His two cancels were ALREADY live via the
+  fast lane; the crowns, stars and slate were not — those need the corpus.
+- `weekly.json` was stuck on **last** weekend (`weekend: "2026-07-25"`), so the entire slate was being
+  ignored by refresh/restamp. Rolled to **2026-08-01** with #19's pile, `lead: [Pluk de Nacht]`,
+  `later: []` (its only entry, Dekmantel, is no longer in the feed).
+- `corpus.topPicks` += **canal parade**, **pluk de nacht** (both 👑 TOP this round);
+  `starredKeeps` += `canal parade ★5`.
+- `corpus.rested` += **roode remise** and **ij-hallen**, both `until 2026-08-29`. Both were ★4 **and**
+  KILL in the same round — the documented fatigue/scheduling class, so `rested`, **never** `eventVeto`:
+  the taste stays, only the exposure pauses. IJ-Hallen keeps its 👑 crown (rested drops it before
+  topPicks stamps, so it returns crowned). **Neither carried a date** — `until` is a 1-month default.
+- `restamp` → 79 → 78 picks · deck opens **Canal Parade 👑 (Sat 1 Aug) → Kwaku 👑 → BOPS x KIKI 👑 →
+  ARTIS 👑 → Pure Markt**; all three cancelled titles gone (incl. the `IJ-Hallen Flea Market` variant).
+
+**Two board bugs the round exposed — both fixed (V.9.28):**
+- **A two-step reason tagged the pick before its second step.** #19 shipped `IJ-Hallen | KILL
+  why:other` with **no note**: the "something else…" chip was pressed and the text never typed, so the
+  reason was written on the chip click. `rest` had the same hole (a reason with no `until`). Both now
+  only ARM the step — the reason is recorded when the date or the text lands, so an abandoned pick
+  stays a plain un-reasoned cancel instead of a verdict the compile has to guess at.
+- **The issue's PILE-ORDER still listed cancelled titles.** #19 filed a pile with `IJ-Hallen` at #4
+  that he had cancelled in the same round. `buildOverrides` stripped them for the fast lane (which is
+  why the live override was right) but `pileLine` didn't — so the durable record contradicted itself.
+  Both payloads strip now. 142 tests pass (3 new guards).
+
 ## [board V.9.27] — 2026-07-30 — ✕ cancels on the spot; the reason waits on a shelf
 - Ness: "when I ✕ something out, it should be removed immediately from my curation board and maybe put
   to a section where I can elaborate on it later."

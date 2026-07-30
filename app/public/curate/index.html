@@ -173,7 +173,7 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 <body>
 <div class="wrap">
 <header>
-<p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD V.9.27</p>
+<p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD V.9.28</p>
 <h1>Your weekend<span class="dot">.</span></h1>
 <div id="modetoggle"><button class="on" data-mode="simple">Simple</button><button data-mode="advanced">Advanced</button></div>
 <div id="overnote" style="display:none"></div>
@@ -288,21 +288,28 @@ function wireReasons(el,p,onFix,onKill){
   const kill=()=>{const v=get();v.killed=true;v.flag=undefined;el.classList.remove('asking');onKill()};
   box.querySelectorAll('.rchip[data-kind]').forEach(c=>c.addEventListener('click',()=>{
     const r=c.dataset.r,kind=c.dataset.kind,v=get();
-    v.reason=r;lit(c);
+    lit(c);
     box.classList.remove('asking-when','asking-text');
+    // `rest` and `other` only ARM a second step, so the reason is recorded when that step COMPLETES.
+    // Writing it on the chip click tagged abandoned picks: round #19 shipped "IJ-Hallen | KILL
+    // why:other" with no note, because the chip was pressed and the text never typed — which made
+    // the compile guess at intent.
+    if(kind==='rest'){box.dataset.pending=r;box.classList.add('asking-when');return}
+    if(kind==='other'){box.dataset.pending=r;box.classList.add('asking-text');box.querySelector('.othertext').focus();return}
+    v.reason=r;
     if(kind==='fix'){   // stays LIVE, flagged for a fix
       v.flag=true;v.killed=undefined;v.until=undefined;
       if(r==='image'||r==='lowres')v.img='bad';
       el.classList.remove('asking');onFix();return}
-    if(kind==='rest'){box.classList.add('asking-when');return}      // …wait for a date
-    if(kind==='other'){box.classList.add('asking-text');box.querySelector('.othertext').focus();return}
     v.until=undefined;kill();                                      // veto — immediate and permanent
   }));
   // a rest isn't final until it has a return date — that date is what corpus.rested keys off
-  box.querySelectorAll('.rchip.until').forEach(c=>c.addEventListener('click',()=>{get().until=inDays(+c.dataset.d);kill()}));
+  const rest=until=>{const v=get();v.reason=box.dataset.pending||'offcycle';v.until=until;kill()};
+  box.querySelectorAll('.rchip.until').forEach(c=>c.addEventListener('click',()=>rest(inDays(+c.dataset.d))));
   const dateEl=box.querySelector('.untildate');
-  dateEl.addEventListener('change',()=>{if(dateEl.value){get().until=dateEl.value;kill()}});
-  const txt=box.querySelector('.othertext'),send=()=>{const s=txt.value.trim();if(!s)return;get().note=s;get().until=undefined;kill()};
+  dateEl.addEventListener('change',()=>{if(dateEl.value)rest(dateEl.value)});
+  const txt=box.querySelector('.othertext'),send=()=>{const s=txt.value.trim();if(!s)return;
+    const v=get();v.reason='other';v.note=s;v.until=undefined;kill()};
   box.querySelector('.othergo').addEventListener('click',send);
   txt.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();send()}});
 }
@@ -407,7 +414,7 @@ Promise.all([
   // 10 min (max-age=600), so a just-shipped board fix can lag in an open tab; the eyebrow makes
   // stale-board-vs-fresh-data visible at a glance (2026-07-12: an old tab's tier-mirror pile read
   // as "the board is wrong" when it was just cached).
-  const BOARD_V='V.9.27';
+  const BOARD_V='V.9.28';
   document.getElementById('eyebrow').textContent='WKNDR · CURATION BOARD '+BOARD_V+' · FEED '+(d.generatedAt||'').slice(0,16).replace('T',' · ');
   const board=document.getElementById('board');board.innerHTML='';
   const rot=document.createElement('div');rot.id='tab-rot';board.appendChild(rot);
@@ -853,8 +860,14 @@ function update(){
 // the hand-dragged pile order, as a payload line (empty until a drag happens this round)
 function pileLine(compact){
   if(!PILE||!PILE.length)return '';
-  return compact?'\n- PILE-ORDER | '+PILE.join(' > ')
-    :'\n· PILE ORDER (hand-set) — '+PILE.map((t,i)=>(i+1)+'. '+t).join(' · ');
+  // strip cancelled titles — buildOverrides already did this for the fast lane, but the ISSUE line
+  // didn't, so round #19 filed a pile with "IJ-Hallen" at #4 that he'd cancelled in the same round.
+  // A pile and a kill naming the same pick is a contradiction the compile has to resolve by hand.
+  const dead=new Set(Object.values(V).filter(v=>v&&v.killed).map(v=>v.t));
+  const order=PILE.filter(t=>!dead.has(t));
+  if(!order.length)return '';
+  return compact?'\n- PILE-ORDER | '+order.join(' > ')
+    :'\n· PILE ORDER (hand-set) — '+order.map((t,i)=>(i+1)+'. '+t).join(' · ');
 }
 // pretty, human-readable — for Copy + Email (no size limit there)
 function payload(){

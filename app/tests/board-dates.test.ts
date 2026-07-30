@@ -119,9 +119,35 @@ describe('curation board ↔ app date parity', () => {
     expect(html).toContain('Back when?')
     expect(html).toContain('const RESTS=')
     // the rest branch must NOT kill on the chip click — it waits for the date
-    expect(html).toContain("if(kind==='rest'){box.classList.add('asking-when');return}")
-    // …and the date handlers are what call kill()
-    expect(html).toMatch(/\.rchip\.until.*get\(\)\.until=inDays\(\+c\.dataset\.d\);kill\(\)/)
+    expect(html).toContain("if(kind==='rest'){box.dataset.pending=r;box.classList.add('asking-when');return}")
+    // …and the date is what calls kill()
+    expect(html).toContain('const rest=until=>{const v=get();v.reason=box.dataset.pending')
+  })
+
+  // A two-step reason (rest / other) must not tag the pick until the SECOND step completes. Round #19
+  // shipped "IJ-Hallen | KILL why:other" with no note — the chip was pressed, the text never typed —
+  // and the compile had to guess what he meant.
+  it('an abandoned two-step reason leaves no half-written verdict', () => {
+    const wire = slice('function wireReasons(', '\n}')
+    const chipHandler = wire.slice(wire.indexOf("box.querySelectorAll('.rchip[data-kind]')"), wire.indexOf("const rest=until=>"))
+    // the rest/other branches return BEFORE `v.reason=r` — that assignment sits after both guards
+    const restIdx = chipHandler.indexOf("if(kind==='rest')")
+    const otherIdx = chipHandler.indexOf("if(kind==='other')")
+    const assignIdx = chipHandler.indexOf('v.reason=r;')
+    expect(restIdx).toBeGreaterThan(-1)
+    expect(otherIdx).toBeGreaterThan(-1)
+    expect(assignIdx).toBeGreaterThan(otherIdx)
+    expect(assignIdx).toBeGreaterThan(restIdx)
+    // the free-text path writes reason and note together, never one without the other
+    expect(html).toContain("const v=get();v.reason='other';v.note=s;")
+  })
+
+  // A pile and a kill naming the same pick contradict each other; the compile then has to pick one by
+  // hand. buildOverrides stripped cancelled titles, but the GitHub issue line didn't (round #19 filed
+  // a PILE-ORDER with IJ-Hallen at #4 that he had cancelled in the same round).
+  it('cancelled titles are stripped from BOTH submit payloads', () => {
+    expect(html).toContain('const order=PILE.filter(t=>!dead.has(t))')          // the issue line
+    expect(html).toContain('pile:(PILE||[]).filter(t=>!dead.has(t)).slice(0,200)') // the fast lane
   })
 
   // ——— ✕ = CANCEL NOW, CLASSIFY LATER (V.9.27). Ness: "when I ✕ something out it should be removed
