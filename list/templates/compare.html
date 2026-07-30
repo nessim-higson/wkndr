@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>WKNDR — Friday brief, three comps</title>
+<title>WKNDR — Friday brief, four comps</title>
 <style>
   :root{
     --paper:#faf8f3; --ink:#1a1a1a; --ink3:#8b8a82; --line:#e7e3d8;
@@ -25,8 +25,12 @@
   button:hover{border-color:var(--ink3)}
   button[aria-pressed=true]{background:var(--ink);border-color:var(--ink);color:#fff}
   main{padding:26px 24px 70px;}
-  .grid{display:flex;gap:26px;align-items:flex-start;overflow-x:auto;padding-bottom:12px;}
-  .comp{flex:0 0 auto;}
+  /* Four 600px frames is 2400px of horizontal scroll, which is not a comparison either. Wrap
+     into a 2-up grid so any two sit side by side on a normal screen. flex-basis is EXPLICIT:
+     with flex:0 0 auto the fourth item collapsed to zero width once the row overflowed. */
+  .grid{display:flex;flex-wrap:wrap;gap:26px 26px;align-items:flex-start;padding-bottom:12px;}
+  .comp{flex:0 0 600px;width:600px;max-width:100%;}
+  .frame,.cap{width:100%;}
   .cap{margin-bottom:12px;max-width:600px}
   .cap h2{margin:0;font-size:16px;letter-spacing:-.015em;font-weight:700}
   .cap h2 span{color:var(--accent);font-weight:400;margin-right:7px}
@@ -50,14 +54,15 @@
   .note{max-width:760px;margin:0 0 26px;color:var(--ink3);font-size:13.5px;line-height:1.65}
   .note b{color:var(--ink);font-weight:400}
 
-  /* ── On a phone, side-by-side is a lie: three 600px frames in a horizontal scroll is not a
-     comparison. Stack them, let each fill the width, and let the email's OWN mobile media query
-     (max-width:620px) do its job — which is the thing you actually want to judge on a phone. */
+  /* ── On a phone, side-by-side is a lie. Stack the comps, let each fill the width, and let the
+     email's OWN mobile media query (max-width:480px) do its job — the thing worth judging there.
+     That breakpoint has to sit BELOW 600px: email content width is 600, so a 620px breakpoint
+     matched everywhere and comps C/D never once showed their two-column layout. */
   @media (max-width:760px){
     header{padding:13px 18px}
     main{padding:20px 18px 60px}
-    .grid{display:block;overflow-x:visible}
-    .comp{margin-bottom:38px}
+    .grid{display:block}
+    .comp{flex:1 1 100%;width:100%;margin-bottom:38px}
     .cap,.note{max-width:none}
     iframe{width:100%!important}
     body.mob iframe{width:100%!important}
@@ -71,7 +76,7 @@
   <div class="hrow">
     <div>
       <div class="wm">WKNDR<i>&nbsp;&bull;</i></div>
-      <div class="sub">Friday brief &mdash; three comps</div>
+      <div class="sub">Friday brief &mdash; four comps</div>
     </div>
     <div class="ctl">
       <button id="w" aria-pressed="false">Mobile 390</button>
@@ -82,7 +87,7 @@
 </header>
 <main>
   <p class="note">
-    Each comp makes a different bet about what the brief <b>is</b>. Same picks, same weekend, and
+    Four bets about what the brief <b>is</b>. Same picks, same weekend, and
     the <b>real forecast for 1&ndash;2 Aug</b> — two dry days where the difference is the hour, not
     the day. Toggle <b>Images off</b> for what classic Outlook desktop and locked-down corporate
     mail show by default. Gmail and Apple Mail both load images, so that state is a minority of
@@ -132,6 +137,21 @@
       <div class="frame"><iframe src="c-forecast.html" title="Comp C — The Forecast"></iframe></div>
     </div>
 
+    <div class="comp">
+      <div class="cap">
+        <h2><span>D</span>The Hybrid</h2>
+        <p>A's cover over C's split. The hero is a <em>pick</em>, not a mood image &mdash; the one
+        best hour, named &mdash; then the two columns carry the rest, chronological down each day.</p>
+        <div class="meta">
+          <span class="tag" id="sz-d">&mdash;</span>
+          <span class="tag good">Clearest hierarchy</span>
+          <span class="tag good">Hardened for images-off</span>
+          <span class="tag warn">Longest</span>
+        </div>
+      </div>
+      <div class="frame"><iframe src="d-hybrid.html" title="Comp D — The Hybrid"></iframe></div>
+    </div>
+
   </div>
 </main>
 <script>
@@ -162,10 +182,10 @@
     });};
   // Byte sizes matter here: Gmail CLIPS a message over ~102KB and hides the rest behind a
   // "View entire message" link — which is where your unsubscribe lives. Show the real numbers.
-  ['a-poster','b-dispatch','c-forecast'].forEach((f,n)=>
+  ['a-poster','b-dispatch','c-forecast','d-hybrid'].forEach((f,n)=>
     fetch(f+'.html').then(r=>r.text()).then(x=>{
       const kb=(new Blob([x]).size/1024).toFixed(1);
-      const el=document.getElementById('sz-'+'abc'[n]);
+      const el=document.getElementById('sz-'+'abcd'[n]);
       el.textContent=kb+' KB';
       if(kb>60)el.className='tag warn';
     }));

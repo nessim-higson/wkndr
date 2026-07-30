@@ -58,9 +58,27 @@ what the brief *is*:
 
 | | Comp | The bet | Size |
 |---|---|---|---|
-| **A** | `a-poster.html` | the **picture** sells it — hero image, one lead pick, thumb rows | 14.5 KB |
-| **B** | `b-dispatch.html` | the **writing** sells it — zero images, hanging numerals, signed | 12.3 KB |
-| **C** | `c-forecast.html` | the **structure** sells it — Sat vs Sun columns, each with its own temp | 13.3 KB |
+| **A** | `a-poster.html` | the **picture** sells it — hero image, one lead pick, thumb rows | 15.8 KB |
+| **B** | `b-dispatch.html` | the **writing** sells it — zero images, hanging numerals, signed | 12.5 KB |
+| **C** | `c-forecast.html` | the **structure** sells it — Sat vs Sun columns, each with its own temp | 13.4 KB |
+| **D** | `d-hybrid.html` | **A's cover over C's split** — see below | 17.5 KB |
+
+**D, the hybrid**, rests on one rule: *the hero is a pick, not a mood image.* It earns the space by
+being the single best hour of the weekend — named, dated, with a reason — so De Parade appears once,
+as the cover, and never again in the Saturday column. Then a one-line forecast claim explains the
+weekend's shape, and the two columns carry the rest **chronologically down each day** (Saturday:
+1–4pm → early evening → after dark). Reading order becomes doing order.
+
+**Two layout bugs found building it, both worth remembering:**
+
+- **The mobile breakpoint must sit BELOW 600px.** These were written at `max-width:620px`, and email
+  content width *is* 600px — so the query matched everywhere and **comp C never once rendered its
+  two-column layout**, on any screen. It had been silently stacked since it was written. All four are
+  now `max-width:480px`.
+- **The shell is `width:100%; max-width:600px`, never `width:600px`.** The latter fought the
+  wrapper's 12px side padding and produced a 624px document inside a 600px viewport — a horizontal
+  scrollbar in any 600px-wide reading pane. The `width="600"` *attribute* stays for Outlook, which
+  ignores `max-width`. D's columns are percentages (48/4/48) for the same reason.
 
 Compare them: `preview_start` the `wkndr-brief` config (port 4219) → `/compare.html`, or live at
 https://wkndr-brief.pages.dev. Toggles for mobile 390, the Outlook.com dark path, and **images
