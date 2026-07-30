@@ -40,12 +40,21 @@ jobs:
           WEBSEARCH_RPM: '3'                                    # deeper research — assumes the RAISED Anthropic tier
           ANTHROPIC_JUDGE_MODEL: 'claude-sonnet-4-6'            # the stronger "best of the weekend" editor (NOT the haiku extractor)
         run: cd app && bun run refresh
+      # THE WEEKEND POSTER — the shareable graphic, regenerated from the feed the pipeline just
+      # published. continue-on-error: a poster is a nice-to-have; it must never block the CONTENT.
+      # No browser download: puppeteer-core drives the Chrome the runner image already ships.
+      - name: Weekend poster
+        continue-on-error: true
+        env:
+          PUPPETEER_EXECUTABLE_PATH: /usr/bin/google-chrome
+        run: cd app && bun run poster
+
       - name: Commit if the feed changed
         id: commit
         run: |
           git config user.name "wkndr-bot"
           git config user.email "noreply@anthropic.com"
-          git add app/public/data
+          git add app/public/data app/public/share
           if git diff --staged --quiet; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
             echo "No feed changes."

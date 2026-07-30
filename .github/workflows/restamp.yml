@@ -23,12 +23,22 @@ jobs:
       - run: cd app && bun install
       - run: cd app && bun run test
       - run: cd app && bun run scripts/restamp.ts --city=amsterdam
+      - name: Weekend poster
+        continue-on-error: true
+        env:
+          PUPPETEER_EXECUTABLE_PATH: /usr/bin/google-chrome
+        run: cd app && bun run poster
+
       - name: Commit + push
         run: |
           git config user.name "wkndr-bot"
           git config user.email "actions@github.com"
+          # the no-op check stays on app/public/data ONLY. The poster embeds the live forecast, so it
+          # differs on nearly every run — including it here would turn "restamp changed nothing" into
+          # a churn commit + deploy every time the temperature ticked. The poster still rides along
+          # (git add below) whenever the taste layer DID change something worth publishing.
           if git diff --quiet app/public/data; then echo "restamp was a no-op — nothing to publish"; exit 0; fi
-          git add app/public/data
+          git add app/public/data app/public/share
           git commit -m "chore(taste): restamp $(date -u +'%Y-%m-%d %H:%M')"
           pushed=false
           for i in 1 2 3; do

@@ -45,6 +45,13 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
   (on the reveal), cover = "Weather permitting.", feed = "Right is a yes.", payoff = "Nothing left to
   plan.", "The overlap is the plan." revived from Site 02; landing meta/JSON-LD now in the new voice
   ("Amsterdam plans, rearranged by the sky"). See CHANGELOG `[landing] 2026-07-17`.
+- **THE WEEKEND POSTER (2026-07-30)** — a shareable 1080×1350 graphic of the top 5, regenerated on the
+  same cron as the content: **https://app.wkndr.xyz/share/weekend.png** (stable) + `/share/<sat>.png`
+  (dated archive). `app/scripts/poster.ts`, `bun run poster`. Renders with **puppeteer-core against the
+  SYSTEM Chrome** (the brand woff2 faces need a real browser; puppeteer-core ships no binary, and CI
+  runners already have Chrome). Content = the deck's own front (pilePos → servePos), carries the
+  per-day weather, and drops a `venue` that's really the source name. Wired into refresh.yml +
+  restamp.yml as `continue-on-error` — it must never block a content publish.
 - **PER-DAY WEATHER (V.10.18, 2026-07-30)** — the deck used to rank every pick against ONE mode
   blended across Sat+Sun (`Math.max` in both `weekendMode()` and `goLive()`), so a Sunday-only picnic
   was judged by Saturday's sunshine. `lib/when.ts whenWeekendDays()` now says which day a pick is on;

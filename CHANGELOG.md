@@ -61,6 +61,33 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 - Verified: promote (tail→#10) · demote (#10→tail) · both lists drag-reorder · New Find label/feedback ·
   PILE full (81). No console errors.
 
+## [poster v1] — 2026-07-30 — the weekend poster, generated every week
+- Ness: "I'd love a graphic of some of the top picks for the weekend to share with people. Is that
+  something that could be generated week over week?" It is — `app/scripts/poster.ts`, on the same cron
+  as the content, so the poster is never staler than the deck.
+- **1080×1350 (4:5)** — the best all-rounder for messages and feeds. Published to
+  **`/share/weekend.png`** (the stable link) and `/share/<saturday>.png` (dated, so old shares keep
+  resolving). Ships with the app build.
+- **Renderer: `puppeteer-core` against the SYSTEM Chrome.** The brand faces are woff2 (Familjen
+  Grotesk 700 — the OG/intro voice), which satori and every other SVG shaper can't read but a browser
+  can, so the poster uses the REAL typeface instead of a metric-compatible stand-in. `puppeteer-core`
+  ships no browser (~350KB): GitHub's runners already have Chrome, and a full `puppeteer` would
+  re-download ~170MB of Chromium on every run.
+- **Content is the deck's own front** — hand-set `pilePos` first, then the stamped `servePos` — so the
+  graphic can never advertise a different opening than the app deals. Imaged picks only; it refuses to
+  publish a thin poster rather than print blank tiles.
+- Carries the **per-day weather** from V.10.18: a split weekend prints "Sat 27° · Sun 14°", a uniform
+  one prints a single figure, and a dead forecast prints no temperature at all rather than a bogus one.
+- **`realVenue()`** — 8 of 80 live picks have a `venue` that is just their SOURCE name ("I amsterdam",
+  an upstream extraction fallback). On a poster that reads as a place, so it's dropped. The same bug
+  shows on the app's cards; flagged separately for a pipeline fix.
+- Wired into **`refresh.yml`** (weekly) and **`restamp.yml`** (after a compile), both
+  `continue-on-error` — a poster is a nice-to-have and must never block the content publish. restamp's
+  no-op guard deliberately stays on `app/public/data` only: the poster embeds the live forecast, so
+  including it would turn "restamp changed nothing" into a churn commit every time the temperature moved.
+- 180 tests pass (`tests/poster.test.ts` covers the pure half; the run block is behind
+  `import.meta.main` so importing it never launches a browser).
+
 ## [V.10.18 / board V.9.30] — 2026-07-30 — PER-DAY WEATHER: Saturday and Sunday stop being one blob
 - Ness: "should it do a better job of delineating the days and temps and their differences?" It should —
   and the gap was architectural, not cosmetic. **The app had no per-day weather model at all.**

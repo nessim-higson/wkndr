@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "refresh": "bun run scripts/refresh.ts",
     "test": "bun test tests",
-    "bump": "bun run scripts/bump.ts"
+    "bump": "bun run scripts/bump.ts",
+    "poster": "bun run scripts/poster.ts"
   },
   "dependencies": {
     "framer-motion": "^11.15.0",
@@ -23,6 +24,7 @@
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.4",
+    "puppeteer-core": "^25.4.0",
     "typescript": "^5.6.3",
     "vite": "^5.4.11"
   }
