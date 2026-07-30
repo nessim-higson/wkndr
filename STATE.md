@@ -5,7 +5,7 @@ FIRST in a new chat. For strategy + backlog see `docs/backlog.md`; for the pipel
 `docs/pipeline-architecture.md` + `docs/source-map.md`; for **who may write to the deck vs to a personal
 profile** (board / Tune / airlock — read before touching either) see `docs/curation-surfaces.md`; for the
 **board roadmap** (auto-compile tracks) see `docs/board-roadmap.md`; for full **version history** see
-`CHANGELOG.md` (current to app V.10.17 / board V.9.23) and the **git log / tags**. Onboarding:
+`CHANGELOG.md` (current to app V.10.17 / board V.9.25) and the **git log / tags**. Onboarding:
 `CLAUDE.md`. App lives in `/app` (Vite + React + TS, run with `bun`); ships to **Cloudflare Pages**
 (`wkndr.xyz` + `app.wkndr.xyz`) **and** GitHub Pages (legacy, keeps old share links alive)._
 
@@ -75,12 +75,21 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
   Amsterdam 👑, Martin Parr canon, BRET image pinned; V.9.9 = **the board reads the deck** — the
   pipeline stamps `servePos` (the app's own serve order, dragged pile included) and the WEEKEND
   PILE renders the stamp instead of the old drifting tier-mirror; V.9.10–V.9.12 = board version in the eyebrow (Pages caches 10 min), SUMMER RUNS join the lens on hot weekends + the big-screen / World Cup websearch facet) ·
-  **Curation Board (board V.9.23, redesigned 2026-07-22→23):** https://app.wkndr.xyz/curate/ (or the
+  **Curation Board (board V.9.25, redesigned 2026-07-22→23):** https://app.wkndr.xyz/curate/ (or the
   door `app.wkndr.xyz/?curate2026!` → board on a laptop, Triage deck on a phone; GH-Pages mirror also
   live). Ness's core feedback drove a rebuild: **Helvetica everywhere, dead-simple, one ranked deck.**
+  **V.9.25 (2026-07-30) closed two gaps Ness hit:** (1) the board had **no expiry guard** — it rendered
+  the feed as-is, so a week-old feed still showed last weekend's picks (Milkshake & co. holding serve
+  slots #2/#4/#5/#6); it now mirrors `lib/when.ts` (`isOver`/`looksBroken`/`servable`) and culls once at
+  the feed seam, reporting the dropped count in the header. The APP was always correct here — it filters
+  `whenIsPast` — so the board was the only surface lying. (2) the **✕ reason picker existed only in
+  Advanced** while Simple is the default, so on the working screen a card couldn't be cancelled at all;
+  ✕ + the six chips are now on every Simple card, and a kill lands in BOTH views + the Submit payload.
+  Guarded by `tests/board-dates.test.ts` (board↔app date parity, extracted from the HTML itself).
   Now a **Simple / Advanced toggle** (`#modetoggle`):
   - **SIMPLE (default) = the ONE ranked deck.** "Your top 10 — the cards that open the deck" (numbered,
-    drag ⠿ to reorder, − to demote) + **"Up next"** (the rest, auto-ranked, but a DRAGGABLE row list — ↑
+    drag ⠿ to reorder, − to demote, **✕ to cancel + say why**) + **"Up next"** (the rest, auto-ranked, but
+    a DRAGGABLE row list — ↑
     to promote into the Top 10, drag to reorder; Ness wants to stay hawkish). `PILE` is now the FULL deck
     order and rides Submit (→ `weekly.pile` / the fast-lane `pile`). Seeds from the live serve order so the
     board mirrors the app.

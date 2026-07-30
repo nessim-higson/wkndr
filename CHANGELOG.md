@@ -61,6 +61,36 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 - Verified: promote (tail→#10) · demote (#10→tail) · both lists drag-reorder · New Find label/feedback ·
   PILE full (81). No console errors.
 
+## [board V.9.25] — 2026-07-30 — last weekend falls off the board · ✕ + why on the Simple view
+- Ness: "I can't kill selections and explain why. Things like Milkshake are dated last weekend — those
+  should fall off the board." Both were real, and independent.
+- **Already-over picks now fall off.** The board had NO expiry guard: it rendered `picks.<city>.json`
+  as-is, so a feed generated on the 23rd and read on the 30th still showed last weekend's events. On
+  that feed four dead picks — Milkshake (26 Jul), IJ-Hallen Flea Market, Kwaku, Wils at the Farm — held
+  serve slots **#2/#4/#5/#6**, i.e. the top of the opening deck, plus 37 of 70 New Finds and 19 canon
+  entries. The APP was already correct (`App.tsx` filters `whenIsPast`), so none of them ever reached a
+  tester — the board was lying about the deck, not the deck about itself.
+  New inline `isOver` / `looksBroken` / `servable` mirror `lib/when.ts`; one `cull()` at the seam where
+  the feed enters means every list downstream (lens, feed, Simple deck, New Finds, trending, bench,
+  library) inherits it. The dropped count is reported in the header — silence would be its own bug.
+  Also ported when.ts's year-resolution rule: the old board rolled EVERY >45d-past date forward a year,
+  which resurrected a stale feed's finished events as next year's.
+- **✕ + why on the Simple view.** The reason picker shipped in V.9.20 — but only in Advanced, while
+  Simple is the DEFAULT view. On the screen Ness actually works in, a card could be reordered or demoted
+  but never cancelled, and there was nowhere to say why. Every Simple card now carries the same ✕ and the
+  same six chips (one shared `REASONS` source, so the two views can't drift): keep-reasons flag-and-fix
+  (card stays, turns green, shows "wrong link → fixing"), the rest cancel it.
+- **A kill now lands everywhere.** Killing in Advanced used to leave the card sitting in the Simple Top
+  10 — which reads exactly like "the kill didn't take". One cancel now drops it from both views, out of
+  `PILE`, out of any New-Find extras, and out of the Submit payload's pile (a title in both `pile` and
+  `killed` was a contradiction the durable compile had to resolve by hand). Kills survive a reload
+  without being re-seeded from the feed.
+- Guarded by `tests/board-dates.test.ts` — extracts the board's own helpers from the HTML and asserts
+  parity with `when.ts` across every `when` in the shipped data plus adversarial shapes (backwards
+  ranges, Dec→Jan wraps, open runs, >45d-stale one-offs). 130 tests pass.
+- **Note:** this is a board fix, not a data refresh. The live feed is still `generatedAt 2026-07-23` —
+  `bun run refresh` is due, and its own `whenIsPast` pass will clear these at the source.
+
 ## [board V.9.24] — 2026-07-23 — Advanced matches Simple's look (kept the grouping)
 - Ness: "the Advanced side is still different from the Simple." It was — grids of tall POSTER cards vs
   Simple's compact ordered rows, plus legends still describing the removed pile.

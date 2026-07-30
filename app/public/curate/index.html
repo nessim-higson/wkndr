@@ -134,6 +134,18 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 .rchip{font-family:var(--sans);font-size:11px;font-weight:600;padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--ink);cursor:pointer}
 .rchip:hover{border-color:var(--accent);color:var(--accent)}
 .rchip.keep{border-style:dashed}
+/* ── ALREADY-OVER note (V.9.25): what rolled off, so a thinner board reads as intent ── */
+#overnote{margin:16px 0 0;padding:11px 14px;border:1px solid var(--line);border-left:3px solid var(--dim);border-radius:0 10px 10px 0;background:#faf8f3;font-size:12.5px;line-height:1.45;color:#6a655c;max-width:72ch}
+#overnote b{color:var(--ink)}
+/* ── SIMPLE-VIEW ✕ + why (V.9.25): kill a card without leaving the deck you're ordering ── */
+.ocard{flex-wrap:wrap}
+.ocard .okill{flex:none;width:30px;height:30px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--dim);font-size:14px;cursor:pointer;line-height:1}
+.ocard .okill:hover{border-color:#c33;color:#c33}
+.ocard.asking .okill{background:var(--accent);border-color:var(--accent);color:#fff}
+.oreasons{display:none;flex-basis:100%;flex-wrap:wrap;gap:5px;padding:9px 0 3px;margin-top:8px;border-top:1px solid var(--line)}
+.ocard.asking .oreasons{display:flex}
+.ostate{flex-basis:100%;font-size:11.5px;font-weight:600;color:var(--green);padding-top:6px}
+.ocard.flagged{border-color:var(--green)}
 /* new-find that's been pulled into the simple deck */
 .pcard.isnew .pt:after{content:'NEW';margin-left:6px;font-size:9px;font-weight:800;color:#fff;background:var(--ink);padding:1px 5px;border-radius:999px;vertical-align:1px}
 </style>
@@ -141,13 +153,14 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 <body>
 <div class="wrap">
 <header>
-<p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD V.9.24</p>
+<p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD V.9.25</p>
 <h1>Your weekend<span class="dot">.</span></h1>
 <div id="modetoggle"><button class="on" data-mode="simple">Simple</button><button data-mode="advanced">Advanced</button></div>
+<div id="overnote" style="display:none"></div>
 </header>
 
 <div id="simple">
-<p class="simplelede"><b>The 10 cards that open the deck</b> — exactly what your testers see first this weekend. Drag to reorder, swap any card in or out, then hit <b>Submit</b>.</p>
+<p class="simplelede"><b>The 10 cards that open the deck</b> — exactly what your testers see first this weekend. Drag to reorder, swap any card in or out, <b>✕</b> to cancel one and say what’s wrong with it, then hit <b>Submit</b>.</p>
 <div class="cathead hot" id="openhead">Your 10 opening cards</div>
 <div id="openlist"></div>
 <div class="cathead" id="poolhead">Swap in a card<span class="d">Tap + to drop a pick into your 10 (it bumps #10 out). This weekend's picks, best first.</span></div>
@@ -176,6 +189,13 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 <script>
 const FORM='https://formspree.io/f/xykqpwkw';
 const CAT={out:'Out & about',eat:'Eat',drink:'Drink',art:'Art & galleries',live:'Live & gigs',stage:'Stage & screen',daytrip:'Day-trips',market:'Markets & one-offs',shop:'Shops',kid:'Kids'};
+// ——— ✕ VOCABULARY — ONE source, used by BOTH views (V.9.25). `keep` reasons flag-and-fix (the pick
+// stays live); the rest remove it. The reason routes the compile action — see docs/board-roadmap.md
+// Track B. Until now these chips existed only in Advanced, so on the Simple view — the DEFAULT — a
+// card could be reordered but never cancelled, and there was nowhere to say why. ———
+const REASONS=[{r:'link',t:'wrong link',keep:1},{r:'image',t:'bad image',keep:1},{r:'lowres',t:'low-res',keep:1},{r:'offbrand',t:'off-brand'},{r:'seen',t:'seen it too much'},{r:'dupe',t:'duplicate'}];
+const REASON_LABEL={link:'wrong link → fixing',image:'bad image → swapping',lowres:'low-res → swapping',offbrand:'off-brand → removing',seen:'seen too much → resting',dupe:'duplicate → merging'};
+const reasonChips=()=>REASONS.map(x=>'<button class="rchip'+(x.keep?' keep':'')+'" data-r="'+x.r+'">'+x.t+'</button>').join('');
 let V={},baked={},feedKey='',PILE=null;   // PILE = hand-dragged pile order (titles) — null until a drag
 let renderPile=()=>{};   // rebuilt inside the feed load — lets a card's ▲/👑/✕ live-update the pile
 let renderStatus=()=>{};   // "did my call land?" panel — recompared to the live feed on every verdict
@@ -240,12 +260,13 @@ Promise.all([
   feedKey='wkndr.curate.'+(d.generatedAt||'x');
   feedGeneratedAt=d.generatedAt||'';
   restore();
-  const bench=(c.candidates||[]),canonC=(cc.candidates||[]),canon=(lib.canon||[]),trending=(tr.trending||[]),pending=(pd.pending||[]);
+  // `let` (not const): the ALREADY-OVER cull below rewrites these once the date helpers exist.
+  let bench=(c.candidates||[]),canonC=(cc.candidates||[]),canon=(lib.canon||[]),trending=(tr.trending||[]),pending=(pd.pending||[]);
   // BOARD_V is hardcoded — bump it whenever this file changes. GitHub Pages caches this HTML for
   // 10 min (max-age=600), so a just-shipped board fix can lag in an open tab; the eyebrow makes
   // stale-board-vs-fresh-data visible at a glance (2026-07-12: an old tab's tier-mirror pile read
   // as "the board is wrong" when it was just cached).
-  const BOARD_V='V.9.24';
+  const BOARD_V='V.9.25';
   document.getElementById('eyebrow').textContent='WKNDR · CURATION BOARD '+BOARD_V+' · FEED '+(d.generatedAt||'').slice(0,16).replace('T',' · ');
   const board=document.getElementById('board');board.innerHTML='';
   const rot=document.createElement('div');rot.id='tab-rot';board.appendChild(rot);
@@ -261,14 +282,62 @@ Promise.all([
   const WKEND=(()=>{const t=new Date();t.setHours(23,59,59,999);t.setDate(t.getDate()+((7-t.getDay())%7));return t.getTime()})();
   const WKFRI=(()=>{const t=new Date(WKEND);t.setHours(0,0,0,0);t.setDate(t.getDate()-2);return t.getTime()})();
   const MONi={jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11};
-  const datesOf=w=>{const now=new Date(),ts=[];
+  // Year resolution mirrors when.ts resolveDate: THIS year, unless the date is already well past
+  // (>45d) — and then next year ONLY for an open run ("Until 15 Jan" read in July) or a near wrap
+  // (<60d out). The old board rule rolled EVERY >45d-past date forward, which resurrected a merely
+  // STALE feed's finished events as next year's — the exact failure isOver below exists to catch.
+  const OPENRUN=/\b(until|through|thru|till|t\/m|ongoing|runs?|opens?)\b/i;
+  const resolveD=(day,mi,now,openRun)=>{const d=new Date(now.getFullYear(),mi,day,12);
+    if(d.getTime()>=now.getTime()-45*864e5)return d;
+    const nx=new Date(now.getFullYear()+1,mi,day,12);
+    return (openRun||nx.getTime()-now.getTime()<60*864e5)?nx:d};
+  const datesOf=w=>{const now=new Date(),ts=[],openRun=OPENRUN.test(w||'');
     for(const m of (w||'').matchAll(/(\d{1,2})\s*(?:[–—-]\s*(?:mon|tue|wed|thu|fri|sat|sun)[a-z]*\.?)?\s*[–—-]?\s*(\d{1,2})?\s*(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)/gi)){
       const mi=MONi[m[3].slice(0,3).toLowerCase()];
-      for(const d of[m[1],m[2]]){if(!d)continue;let dt=new Date(now.getFullYear(),mi,+d,12);if(dt.getTime()<now.getTime()-45*864e5)dt=new Date(now.getFullYear()+1,mi,+d,12);ts.push(dt.getTime())}}
+      for(const d of[m[1],m[2]]){if(!d)continue;ts.push(resolveD(+d,mi,now,openRun).getTime())}}
     return ts.sort((a,b)=>a-b)};
   const activeBy=w=>{if(/\b(until|through|thru|till|t\/m)\b/i.test(w||''))return true;
     const ts=datesOf(w);return !ts.length||ts[0]<=WKEND};
   const dateInWknd=w=>datesOf(w).some(t=>t>=WKFRI&&t<=WKEND);
+  // ——— ALREADY OVER (board V.9.25) — the board's mirror of when.ts whenIsPast + whenLooksBroken.
+  // The APP filters both out at runtime (App.tsx cityPicks), so a pick that trips either can never
+  // reach a tester's card. The board had NO such guard: the feed is rebuilt weekly, so by midweek
+  // last weekend's picks were still sitting in the opening deck — on the 23 Jul feed, four of them
+  // (Milkshake, IJ-Hallen, Kwaku, Wils) held serve slots #2/#4/#5/#6 — eating Top-10 slots, riding
+  // Submit, and un-killable from the Simple view. Now anything the app won't serve leaves the board.
+  const TODAY=(()=>{const t=new Date();t.setHours(0,0,0,0);return t.getTime()})();
+  // finished = its LATEST concrete date is before today. Undated / recurring / open-into-the-future
+  // ("Daily", "Until 30 Aug") have no past latest date and stay.
+  const isOver=w=>{const ts=datesOf(w);return !!ts.length&&ts[ts.length-1]<TODAY};
+  // a range the date brain can't trust: one month token, days running backwards ("Sun 28 – Sun 12
+  // Jul"), or an explicit start–end pair that ends before it starts. Mirrors whenLooksBroken.
+  const looksBroken=w=>{const s=w||'';if(!s)return false;const openRun=OPENRUN.test(s);
+    for(const m of s.matchAll(/(\d{1,2})\s*[–—-]\s*(?:(?:mon|tue|wed|thu|fri|sat|sun)[a-z]*\.?\s+)?(\d{1,2})\s+(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)/gi))
+      if(+m[1]>+m[2])return true;
+    const now=new Date();
+    for(const m of s.matchAll(/(\d{1,2})\s+(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\s*[–—-]\s*(?:(?:mon|tue|wed|thu|fri|sat|sun)[a-z]*\.?\s+)?(\d{1,2})\s+(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)/gi)){
+      const a=resolveD(+m[1],MONi[m[2].slice(0,3).toLowerCase()],now,openRun),
+            b=resolveD(+m[3],MONi[m[4].slice(0,3).toLowerCase()],now,openRun);
+      if(b.getTime()<a.getTime()){
+        // a Dec→Jan style wrap is fine when next year's end sits a sane distance past the start
+        const bNext=new Date(b.getFullYear()+1,b.getMonth(),b.getDate(),12),
+              span=(bNext.getTime()-a.getTime())/864e5;
+        if(!(span>0&&span<90))return true}}
+    return false};
+  /** Can the app still serve this? The one predicate every board list filters through. */
+  const servable=p=>!isOver(p.when)&&!looksBroken(p.when);
+
+  // ——— THE CULL — applied ONCE here, at the seam where the feed enters the board, so every list
+  // downstream (the lens, the feed, the Simple deck, New Finds, trending, bench, the library)
+  // inherits it with no further filtering. Silent dropping would be its own bug — the count is
+  // reported in the header so a thin board reads as "last weekend rolled off", not "data missing". ———
+  let culled=0;
+  const cull=rows=>{const keep=(rows||[]).filter(servable);culled+=(rows||[]).length-keep.length;return keep};
+  d.picks=cull(d.picks);pending=cull(pending);trending=cull(trending);bench=cull(bench);canonC=cull(canonC);canon=cull(canon);
+  if(culled){const n=document.getElementById('overnote');
+    n.style.display='';
+    n.innerHTML='<b>'+culled+' pick'+(culled===1?'':'s')+' already over</b> — dropped from the board. '
+      +'Anything whose last date has passed falls off automatically: your app never serves it, so there is nothing left to rule on.';}
 
   // ——— the pile, computed FIRST (the LENS badges its overlap with it) ———
   // The pipeline now STAMPS the projected serve order onto every published pick (`servePos` —
@@ -424,7 +493,13 @@ Promise.all([
     const MAX=10;
     // PILE is now the FULL deck order (top 10 + the rest), auto-seeded from the live serve order.
     // You hand-order the top 10; the tail auto-ranks UNTIL you drag it — hawkish whenever you want.
-    const seed=()=>{const have=new Set(PILE||[]);const full=(PILE||[]).filter(t=>pick(t)); for(const p of feedServed){if(!have.has(p.title)){full.push(p.title);have.add(p.title)}} PILE=full;};
+    // titles cancelled this round — they must not sit in the deck, and must not be re-seeded from the
+    // feed on the next render (or a kill would silently "come back" the moment anything re-rendered).
+    const deadTitles=()=>new Set(Object.values(V).filter(v=>v&&v.killed).map(v=>v.t));
+    const seed=()=>{const dead=deadTitles(),have=new Set();const full=[];
+      for(const t of (PILE||[]))if(pick(t)&&!dead.has(t)&&!have.has(t)){full.push(t);have.add(t)}
+      for(const p of feedServed){if(!have.has(p.title)&&!dead.has(p.title)){full.push(p.title);have.add(p.title)}}
+      PILE=full;};
     seed();
     const openList=document.getElementById('openlist'),pool=document.getElementById('pool'),openHead=document.getElementById('openhead'),poolHead=document.getElementById('poolhead');
     const sub=p=>[p.venue,p.when].filter(Boolean).join(' · ');
@@ -447,18 +522,37 @@ Promise.all([
           const now=[...list.children].map(c=>c.dataset.title);
           PILE=seg==='top'?[...now,...PILE.slice(MAX)]:[...PILE.slice(0,MAX),...now];store();renderOpen()})});
     }
-    const row=(p,i,tail)=>{const el=document.createElement('div');el.className='ocard'+(isExtra(p.title)?' isnew':'');el.dataset.title=p.title;
+    // ✕ ON THE SIMPLE CARD (V.9.25) — the same verdict vocabulary Advanced has, on the view you
+    // actually work in. Writes the SAME V[p.id] shape, so a kill here rides Submit and the fast-lane
+    // exactly like an Advanced one: `keep` reasons flag-and-fix (card stays, turns green with its
+    // reason), the rest cancel it (card leaves the deck AND the pile immediately).
+    const row=(p,i,tail)=>{const v=V[p.id]||{};
+      const el=document.createElement('div');el.className='ocard'+(isExtra(p.title)?' isnew':'')+(v.flag?' flagged':'');el.dataset.title=p.title;
       el.innerHTML='<span class="num">'+(i+1)+'</span><span class="ogrip" title="Drag to reorder">⠿</span>'
         +'<img loading="lazy" src="'+(p.image||'')+'" alt="">'
         +'<div class="ot"><h4>'+(p.link?'<a href="'+p.link+'" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;border-bottom:1px solid rgba(27,26,23,.25)">'+p.title+'</a>':p.title)+(isExtra(p.title)?' <span class="newtag">NEW</span>':'')+'</h4><div class="os">'+sub(p)+'</div></div>'
-        +(tail?'<button class="opr" title="Promote into your Top 10">↑</button>':'<button class="orm" title="Send down to Up next">−</button>');
+        +(tail?'<button class="opr" title="Promote into your Top 10">↑</button>':'<button class="orm" title="Send down to Up next">−</button>')
+        +'<button class="okill" title="Cancel this card — and say why">✕</button>'
+        +(v.flag?'<div class="ostate">✓ flagged — '+(REASON_LABEL[v.reason]||v.reason)+' · stays live until it\'s fixed</div>':'')
+        +'<div class="oreasons"><span class="rq">What’s wrong with it?</span>'+reasonChips()+'</div>';
       el.querySelector(tail?'.opr':'.orm').addEventListener('click',()=>tail?promote(p.title):demote(p.title));
+      el.querySelector('.okill').addEventListener('click',()=>el.classList.toggle('asking'));
+      el.querySelectorAll('.rchip').forEach(c=>c.addEventListener('click',()=>{
+        const r=c.dataset.r,keep=c.classList.contains('keep'),vv=(V[p.id]??={t:p.title});
+        vv.reason=r;
+        if(keep){vv.flag=true;vv.killed=undefined;if(r==='image'||r==='lowres')vv.img='bad'}
+        else{vv.killed=true;vv.flag=undefined;
+          // a cancel leaves the deck for real: out of the pile, out of any New-Find extras
+          PILE=PILE.filter(x=>x!==p.title);extras=extras.filter(x=>x.title!==p.title);}
+        update();renderOpen();   // update() stores + refreshes the status panel
+      }));
       return el;};
     renderOpen=function(){
-      const order=PILE.map(pick).filter(Boolean);
+      const dead=deadTitles();
+      const order=PILE.map(pick).filter(p=>p&&!dead.has(p.title));   // a cancel — here or in Advanced — is gone from the deck
       const top=order.slice(0,MAX),tail=order.slice(MAX);
-      openHead.innerHTML='Your top '+top.length+' — the cards that open the deck<span class="d">Drag ⠿ to reorder · − to send one down · Submit sends it live.</span>';
-      poolHead.innerHTML='Up next · '+tail.length+'<span class="d">The rest of the deck your viewers see, in the system’s order. It auto-ranks until you touch it — drag ⠿ to reorder, ↑ to pull one into your Top 10. Be as hawkish as you like.</span>';
+      openHead.innerHTML='Your top '+top.length+' — the cards that open the deck<span class="d">Drag ⠿ to reorder · − to send one down · ✕ to cancel it and say why · Submit sends it live.</span>';
+      poolHead.innerHTML='Up next · '+tail.length+'<span class="d">The rest of the deck your viewers see, in the system’s order. It auto-ranks until you touch it — drag ⠿ to reorder, ↑ to pull one into your Top 10, ✕ to cancel. Be as hawkish as you like.</span>';
       openList.innerHTML='';top.forEach((p,i)=>openList.appendChild(row(p,i,false)));openDrag(openList,'top');
       pool.innerHTML='';tail.forEach((p,i)=>pool.appendChild(row(p,i+MAX,true)));openDrag(pool,'tail');
     };
@@ -483,7 +577,7 @@ Promise.all([
     renderStatus=()=>{
       // kills + flags (a "keep" reason: wrong link / bad image) you added THIS session. r1 = a pre-baked
       // prior-round verdict, already compiled — excluded so the panel is only "calls that haven't landed".
-      const RL={link:'wrong link → fixing',image:'bad image → swapping',lowres:'low-res → swapping',offbrand:'off-brand → removing',seen:'seen too much → resting',dupe:'duplicate → merging'};
+      const RL=REASON_LABEL;
       const flags=Object.values(V).filter(v=>v&&(v.killed||v.flag||((v.img==='bad'||v.betterImage||v.note)&&!v.r1)));
       if(!flags.length){st.style.display='none';st.innerHTML='';return}
       st.style.display='';
@@ -536,13 +630,7 @@ function addCard(p,g,tag,pos,probe){
     +'<div class="row"><button class="b imgup">IMG ✓</button><button class="b imgdn">IMG ✗</button><button class="b canon">+CANON</button><button class="b topb" title="Escalate: leads the deck with a Top pick pill">👑 TOP</button><button class="b leadb" title="Promote into your Top 10 (Simple view)">↑ Top 10</button><button class="b laterb" title="This weekend only: sinks to the back of the pile (not a kill)">▼ LATER</button></div>'
     +'<input class="inp note" placeholder="note — why / what&#39;s off / bad link">'
     +'<input class="inp better" placeholder="better image URL">'
-    +'<div class="reasons"><span class="rq">What’s wrong with it?</span>'
-      +'<button class="rchip keep" data-r="link">wrong link</button>'
-      +'<button class="rchip keep" data-r="image">bad image</button>'
-      +'<button class="rchip keep" data-r="lowres">low-res</button>'
-      +'<button class="rchip" data-r="offbrand">off-brand</button>'
-      +'<button class="rchip" data-r="seen">seen it too much</button>'
-      +'<button class="rchip" data-r="dupe">duplicate</button></div>'
+    +'<div class="reasons"><span class="rq">What’s wrong with it?</span>'+reasonChips()+'</div>'
     +'<div class="ruledtag">✓ your call — rides Submit</div>'
     +'</div>';
   const get=()=>V[p.id]??={t:p.title};
@@ -559,7 +647,9 @@ function addCard(p,g,tag,pos,probe){
     get().reason=r;
     if(keep){ get().flag=true; get().killed=undefined; if(r==='image'||r==='lowres')get().img='bad';
       el.classList.remove('asking'); el.classList.add('ruled'); update(); renderStatus();
-    } else { get().killed=true; get().flag=undefined; el.classList.add('dead'); setTimeout(()=>el.remove(),320); update(); renderPile(); renderStatus(); }
+    } else { get().killed=true; get().flag=undefined; el.classList.add('dead'); setTimeout(()=>el.remove(),320); update(); renderPile(); renderOpen(); renderStatus(); }
+    // renderOpen: a kill in Advanced used to leave the card sitting in the Simple deck's Top 10 —
+    // it read as "the kill didn't take". One cancel, gone from both views.
   }));
   el.querySelectorAll('.b').forEach(b=>b.addEventListener('click',()=>{
     if(b.classList.contains('canon')){b.classList.toggle('on');get().canon=b.classList.contains('on')||undefined;update();return}
@@ -684,12 +774,14 @@ document.getElementById('copy').addEventListener('click',async()=>{
 // TRACK A FAST-LANE — the board's live curation as the overrides doc the app applies in seconds.
 // pile = your full deck order; killed/flags carry the reason so the app drops or surfaces accordingly.
 function buildOverrides(){
-  const killed=[],flags=[];
+  const killed=[],flags=[],dead=new Set();
   for(const v of Object.values(V)){
-    if(v.killed)killed.push({title:v.t,...(v.reason?{reason:v.reason}:{})});
+    if(v.killed){killed.push({title:v.t,...(v.reason?{reason:v.reason}:{})});dead.add(v.t)}
     else if(v.flag)flags.push({title:v.t,...(v.reason?{reason:v.reason}:{})});
   }
-  return {generatedAt:feedGeneratedAt,pile:(PILE||[]).slice(0,200),killed,flags};
+  // a cancelled title never rides the pile — applyOverrides drops killed first, but sending a title
+  // in both lists is a contradiction the durable compile would have to re-resolve by hand.
+  return {generatedAt:feedGeneratedAt,pile:(PILE||[]).filter(t=>!dead.has(t)).slice(0,200),killed,flags};
 }
 async function postCurate(){
   try{const r=await fetch(CURATE_URL+'/curate/amsterdam',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(buildOverrides())});return r.ok}catch(e){return false}
