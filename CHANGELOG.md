@@ -61,6 +61,36 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 - Verified: promote (tail→#10) · demote (#10→tail) · both lists drag-reorder · New Find label/feedback ·
   PILE full (81). No console errors.
 
+## [board V.9.26] — 2026-07-30 — a cancel can now be a REST: "not on right now, back <date>"
+- Ness: "what if it's something that is not listed? IJ-Hallen was last weekend — that should be
+  retired until next month when it comes back, as it's only one weekend every month."
+- **The picker had no way to say "this is fine, it's just not on."** V.9.25 only knew fix-vs-veto, so
+  two different things collapsed into "kill": a pick that's WRONG, and a pick that's simply off-cycle.
+  IJ-Hallen runs ONE WEEKEND A MONTH (`when: "Monthly · one weekend"`, 👑 TOP, servePos 5) — on the
+  other three weekends vetoing it would lose a pick Ness likes, and leaving it means it opens the deck
+  on a weekend the market isn't running.
+- **Four kinds now, and the kind IS the compile routing instruction:**
+  `fix` (wrong link · bad image · low-res) → stays live, flagged · `rest` (**not on right now** · seen
+  it too much) → `corpus.rested` · `veto` (off-brand · duplicate) → `corpus.eventVeto` · `other`
+  (**something else…**) → free text, the escape hatch for anything unlisted.
+- **A rest asks for a return date.** Picking a rest reason does NOT cancel the card — it reveals
+  "Back when?" (in 2 weeks · next month · in 2 months · in 3 months · or a date box), and only the date
+  finalises it. That date rides Submit as `until`, straight into `corpus.rested {match, until, note}` —
+  a mechanism that already existed ("NOT a veto — dropped from the feed AND the bench only until
+  `until`") but that the board had no verb to produce. Verified on IJ-Hallen: taste survives the rest
+  (its ★4 + image-good stay on the verdict), only the exposure pauses.
+- **A REST never reads as a KILL** in either payload — `REST until 2026-08-29 · reason:offcycle`
+  (pretty) / `REST:2026-08-29 why:offcycle` (compact) — so the compile can't mistake one for the other.
+  Fast-lane drops a rest like a kill (right for THIS weekend) and expires with the feed; only the
+  corpus entry holds it off until the date and then brings it back.
+- **One implementation for both views.** New `wireReasons()` + `reasonBox()` are shared by the Advanced
+  card and the Simple row — the V.9.25 bug (picker shipped to Advanced only) came from two copies.
+- Also fixed: `update()` stripped the ✓-ruled border off a card flagged "wrong link" (that reason sets
+  neither img nor note, so the toggle's field list missed it).
+- Routing table documented in `docs/board-roadmap.md`; guarded by 7 new assertions in
+  `tests/board-dates.test.ts` (kinds, the rest-needs-a-date branch, one-implementation, payload shape).
+  136 tests pass.
+
 ## [board V.9.25] — 2026-07-30 — last weekend falls off the board · ✕ + why on the Simple view
 - Ness: "I can't kill selections and explain why. Things like Milkshake are dated last weekend — those
   should fall off the board." Both were real, and independent.

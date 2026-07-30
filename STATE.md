@@ -5,7 +5,7 @@ FIRST in a new chat. For strategy + backlog see `docs/backlog.md`; for the pipel
 `docs/pipeline-architecture.md` + `docs/source-map.md`; for **who may write to the deck vs to a personal
 profile** (board / Tune / airlock — read before touching either) see `docs/curation-surfaces.md`; for the
 **board roadmap** (auto-compile tracks) see `docs/board-roadmap.md`; for full **version history** see
-`CHANGELOG.md` (current to app V.10.17 / board V.9.25) and the **git log / tags**. Onboarding:
+`CHANGELOG.md` (current to app V.10.17 / board V.9.26) and the **git log / tags**. Onboarding:
 `CLAUDE.md`. App lives in `/app` (Vite + React + TS, run with `bun`); ships to **Cloudflare Pages**
 (`wkndr.xyz` + `app.wkndr.xyz`) **and** GitHub Pages (legacy, keeps old share links alive)._
 
@@ -19,8 +19,12 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
 > (deals first) + `killed` → dropped ON TOP of the static feed — so a reorder/kill goes live in seconds,
 > no compile, no redeploy. **The GitHub-issue compile is still the DURABLE record** you fold into
 > `corpus.json`/`weekly.json` on the next refresh (fast-lane = instant layer, corpus = source of truth).
-> Next per `docs/board-roadmap.md`: light polling so open sessions update (today it's on load); a
-> reason→action routing table for the ✕ reason picker.
+> The **reason→action routing table is now SHIPPED** (board V.9.26) and lives in
+> `docs/board-roadmap.md` Track B: every ✕ chip carries a `kind` — `fix` (stays live) / `rest`
+> (`corpus.rested {match,until,note}`, carries a REAL return date from the board) / `veto`
+> (`corpus.eventVeto`) / `other` (free text). **When compiling: a `REST until <date>` line is NOT a
+> kill** — write it to `corpus.rested`, never `eventVeto`. Next per the roadmap: light polling so open
+> sessions update (today it's on load).
 
 ## Live right now
 - **Web presence (wkndr.xyz):** Ness registered **wkndr.xyz** through Cloudflare (domain + DNS in
@@ -75,7 +79,7 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
   Amsterdam 👑, Martin Parr canon, BRET image pinned; V.9.9 = **the board reads the deck** — the
   pipeline stamps `servePos` (the app's own serve order, dragged pile included) and the WEEKEND
   PILE renders the stamp instead of the old drifting tier-mirror; V.9.10–V.9.12 = board version in the eyebrow (Pages caches 10 min), SUMMER RUNS join the lens on hot weekends + the big-screen / World Cup websearch facet) ·
-  **Curation Board (board V.9.25, redesigned 2026-07-22→23):** https://app.wkndr.xyz/curate/ (or the
+  **Curation Board (board V.9.26, redesigned 2026-07-22→23):** https://app.wkndr.xyz/curate/ (or the
   door `app.wkndr.xyz/?curate2026!` → board on a laptop, Triage deck on a phone; GH-Pages mirror also
   live). Ness's core feedback drove a rebuild: **Helvetica everywhere, dead-simple, one ranked deck.**
   **V.9.25 (2026-07-30) closed two gaps Ness hit:** (1) the board had **no expiry guard** — it rendered
@@ -85,7 +89,13 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
   `whenIsPast` — so the board was the only surface lying. (2) the **✕ reason picker existed only in
   Advanced** while Simple is the default, so on the working screen a card couldn't be cancelled at all;
   ✕ + the six chips are now on every Simple card, and a kill lands in BOTH views + the Submit payload.
-  Guarded by `tests/board-dates.test.ts` (board↔app date parity, extracted from the HTML itself).
+  **V.9.26 (same day) added the verb the picker was missing:** a cancel can now be a **REST** —
+  "not on right now" → *Back when?* (in 2 weeks · next month · in 2 months · in 3 months · or a date)
+  → `corpus.rested`, so **IJ-Hallen** (runs ONE WEEKEND A MONTH) retires until it's actually on
+  instead of being vetoed or opening the deck on a dead weekend. Plus **"something else…"**, a
+  free-text escape hatch for reasons not on the chip list. Both views now share ONE `wireReasons()`.
+  Guarded by `tests/board-dates.test.ts` (board↔app date parity + the ✕ vocabulary contract, both
+  extracted from the HTML itself).
   Now a **Simple / Advanced toggle** (`#modetoggle`):
   - **SIMPLE (default) = the ONE ranked deck.** "Your top 10 — the cards that open the deck" (numbered,
     drag ⠿ to reorder, − to demote, **✕ to cancel + say why**) + **"Up next"** (the rest, auto-ranked, but

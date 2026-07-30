@@ -50,15 +50,31 @@ the tail, no ordering, no feedback. And no structured way to say *why* something
   Advanced→Simple gap that exists today (crown promotes but never places).
 - **↓ Push down / not this week** — sinks it (the current LATER), with feedback.
 - **★ rate** — unchanged.
-- **✕ Cancel + why** — kill opens a **reason picker** (chips): *wrong link · bad image · low-res ·
-  off-brand · duplicate · seen it too much*. The reason is not just communication —
+- **✕ Cancel + why** — kill opens a **reason picker** (chips). The reason is not just communication —
 
-  **the reason routes the compile action.** This is the fix for the R9 mistake:
-  - *wrong link* → fix the deep link, keep the pick (don't veto)
-  - *bad image / low-res* → image swap (curated.ts / better-image URL)
-  - *seen it too much* → `rested` (fatigue, returns later)
-  - *off-brand / bad* → `eventVeto` (permanent kill)
-  - *duplicate* → dedup, not taste
+  **the reason routes the compile action.** This is the fix for the R9 mistake.
+  **SHIPPED** — V.9.20 (Advanced), V.9.25 (Simple too), V.9.26 (four kinds + return dates).
+
+  The board tags every reason with a `kind`, which IS the routing instruction — the compiler should
+  never have to re-infer intent from the chip label:
+
+  | kind | chips | compile action |
+  |---|---|---|
+  | `fix` | wrong link · bad image · low-res | pick STAYS live — fix the deep link, or swap the image (`curated.ts` / `betterImage`). Never a veto. |
+  | `rest` | **not on right now** · seen it too much | `corpus.rested` `{match, until, note}` — dropped from feed AND bench only until `until`, then returns fresh. Carries a REAL date from the board. |
+  | `veto` | off-brand · duplicate | `corpus.eventVeto` (permanent). *duplicate* is a dedup signal, not taste. |
+  | `other` | something else… | free text — the escape hatch. Read the note and judge. |
+
+  **`rest` vs `veto` was the V.9.26 fix.** The first cut had no way to say *"this is fine, it's just
+  not on"*. Ness's case: **IJ-Hallen runs one weekend a month**, so on the other three it isn't wrong
+  — vetoing it would lose a pick he likes, and leaving it means it opens the deck on a weekend the
+  market isn't running. A `rest` chip now asks **"back when?"** (in 2 weeks · next month · in 2 months ·
+  in 3 months · or a date box) and the answer rides Submit as `until`, straight into `corpus.rested`.
+
+  Payload shape: a rest reads as `REST until 2026-08-29 · reason:offcycle` (pretty) / `REST:2026-08-29
+  why:offcycle` (compact), never as `KILL` — so the compile can't mistake one for the other.
+  Fast-lane note: the overrides doc drops a rest exactly like a kill (right for THIS weekend) and
+  expires with the feed; only the **corpus entry** can hold it off until the date and then bring it back.
 
 - **Feedback everywhere:** each card shows its resulting state — "in your top 10 · #3" / "pushed to the
   tail" / "cancelled — wrong link (pending)". The V.9.19 status panel already tracks landing; this makes

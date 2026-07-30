@@ -133,7 +133,17 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 .reasons .rq{flex-basis:100%;font-size:11px;font-weight:700;color:var(--accent);margin-bottom:1px}
 .rchip{font-family:var(--sans);font-size:11px;font-weight:600;padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--ink);cursor:pointer}
 .rchip:hover{border-color:var(--accent);color:var(--accent)}
-.rchip.keep{border-style:dashed}
+.rchip.k-fix{border-style:dashed}                                   /* fix-and-keep reads lighter than a removal */
+.rchip.k-other{color:var(--dim)}
+.rchip.on{background:var(--ink);border-color:var(--ink);color:#fff} /* the reason you picked stays lit while you answer "back when?" */
+/* ── SECOND STEP (V.9.26): a rest asks WHEN it's back; "something else" asks WHAT'S OFF ── */
+.restrow,.otherrow{display:none;flex-basis:100%;flex-wrap:wrap;gap:5px;align-items:center;padding-top:8px;margin-top:7px;border-top:1px dashed var(--line)}
+.reasons.asking-when .restrow,.oreasons.asking-when .restrow{display:flex}
+.reasons.asking-text .otherrow,.oreasons.asking-text .otherrow{display:flex}
+.untildate{font:inherit;font-size:11px;padding:5px 8px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--ink)}
+.othertext{flex:1;min-width:180px;font:inherit;font-size:11.5px;padding:6px 10px;border-radius:999px;border:1px dashed var(--line);background:#fff}
+.othertext:focus,.untildate:focus{outline:2px solid var(--accent);outline-offset:1px}
+.rchip.othergo{border-color:var(--accent);color:var(--accent);font-weight:700}
 /* ── ALREADY-OVER note (V.9.25): what rolled off, so a thinner board reads as intent ── */
 #overnote{margin:16px 0 0;padding:11px 14px;border:1px solid var(--line);border-left:3px solid var(--dim);border-radius:0 10px 10px 0;background:#faf8f3;font-size:12.5px;line-height:1.45;color:#6a655c;max-width:72ch}
 #overnote b{color:var(--ink)}
@@ -153,7 +163,7 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 <body>
 <div class="wrap">
 <header>
-<p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD V.9.25</p>
+<p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD V.9.26</p>
 <h1>Your weekend<span class="dot">.</span></h1>
 <div id="modetoggle"><button class="on" data-mode="simple">Simple</button><button data-mode="advanced">Advanced</button></div>
 <div id="overnote" style="display:none"></div>
@@ -171,7 +181,7 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 <div id="status"></div>
 <p class="lede"><b>Rule on Amsterdam's picks for this weekend.</b> Two tabs below: <b>IN ROTATION</b> is what's live now — this weekend's deck plus your approved library. <b>NEW FINDS</b> is candidates that are <b>not live yet</b>. Every card tells you why it's there and what a tap does.</p>
 <p class="flow"><span class="step">Rule here</span> → <span class="step">Submit</span> → <b style="color:var(--ink)">live for your testers in seconds</b> (and filed to GitHub for the record). Progress saves in this browser as you go.</p>
-<div class="legend"><span class="lbl">Verdicts</span><span class="chip"><b>★1–5</b> rate / save</span><span class="chip"><b>✕</b> cancel + why</span><span class="chip"><b>👑&nbsp;TOP</b> permanent lead</span><span class="chip"><b>↑&nbsp;Top 10</b> into your deck (Simple)</span><span class="chip"><b>▼&nbsp;LATER</b> back this weekend</span><span class="chip"><b>+CANON</b> permanent library</span></div>
+<div class="legend"><span class="lbl">Verdicts</span><span class="chip"><b>★1–5</b> rate / save</span><span class="chip"><b>✕</b> cancel · rest · fix</span><span class="chip"><b>👑&nbsp;TOP</b> permanent lead</span><span class="chip"><b>↑&nbsp;Top 10</b> into your deck (Simple)</span><span class="chip"><b>▼&nbsp;LATER</b> back this weekend</span><span class="chip"><b>+CANON</b> permanent library</span></div>
 <div class="legend"><span class="lbl">Badges</span><span class="chip"><b>LENS</b> dated + weather-right</span><span class="chip"><b>★ SAVED</b> / <b>✓ APPROVED</b> your earlier call</span><span class="chip"><b>NEW</b> not live yet</span></div>
 <div class="tabs" id="tabs" hidden>
 <button class="tab on" data-tab="rot">IN ROTATION <span class="n" id="nrot"></span></button>
@@ -189,13 +199,78 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 <script>
 const FORM='https://formspree.io/f/xykqpwkw';
 const CAT={out:'Out & about',eat:'Eat',drink:'Drink',art:'Art & galleries',live:'Live & gigs',stage:'Stage & screen',daytrip:'Day-trips',market:'Markets & one-offs',shop:'Shops',kid:'Kids'};
-// ——— ✕ VOCABULARY — ONE source, used by BOTH views (V.9.25). `keep` reasons flag-and-fix (the pick
-// stays live); the rest remove it. The reason routes the compile action — see docs/board-roadmap.md
-// Track B. Until now these chips existed only in Advanced, so on the Simple view — the DEFAULT — a
-// card could be reordered but never cancelled, and there was nowhere to say why. ———
-const REASONS=[{r:'link',t:'wrong link',keep:1},{r:'image',t:'bad image',keep:1},{r:'lowres',t:'low-res',keep:1},{r:'offbrand',t:'off-brand'},{r:'seen',t:'seen it too much'},{r:'dupe',t:'duplicate'}];
-const REASON_LABEL={link:'wrong link → fixing',image:'bad image → swapping',lowres:'low-res → swapping',offbrand:'off-brand → removing',seen:'seen too much → resting',dupe:'duplicate → merging'};
-const reasonChips=()=>REASONS.map(x=>'<button class="rchip'+(x.keep?' keep':'')+'" data-r="'+x.r+'">'+x.t+'</button>').join('');
+// ——— ✕ VOCABULARY — ONE source, used by BOTH views (V.9.25). The reason routes the compile action —
+// see docs/board-roadmap.md Track B. Until V.9.25 these chips existed only in Advanced, so on the
+// Simple view — the DEFAULT — a card could be reordered but never cancelled, and there was no way to
+// say why.
+//
+// FOUR KINDS (V.9.26). The first cut only had fix-vs-veto, which forced two different things into
+// "kill": a pick that's WRONG and a pick that's simply NOT ON RIGHT NOW. Ness's case: IJ-Hallen runs
+// ONE WEEKEND A MONTH, so on the other three it isn't wrong, it's off-cycle — vetoing it would lose a
+// pick he likes, and leaving it means it opens the deck on a weekend the market isn't running.
+//   fix   — the pick STAYS live, flagged for a fix        → curated.ts / better-image / deep link
+//   rest  — DROPPED ONLY UNTIL `until`, then it returns   → corpus.rested [{match,until,note}]
+//   veto  — gone for good                                 → corpus.eventVeto
+//   other — the escape hatch: cancel + type the reason    → judged at compile
+// `rest` is the one that needed a date, so those chips ask "back when?" — corpus.rested already
+// implements exactly this ("NOT a veto — dropped from the feed AND the bench only until `until`").
+const REASONS=[
+  {r:'link',    t:'wrong link',        kind:'fix'},
+  {r:'image',   t:'bad image',         kind:'fix'},
+  {r:'lowres',  t:'low-res',           kind:'fix'},
+  {r:'offcycle',t:'not on right now',  kind:'rest'},
+  {r:'seen',    t:'seen it too much',  kind:'rest'},
+  {r:'offbrand',t:'off-brand',         kind:'veto'},
+  {r:'dupe',    t:'duplicate',         kind:'veto'},
+  {r:'other',   t:'something else…',   kind:'other'},
+];
+const REASON_KIND=Object.fromEntries(REASONS.map(x=>[x.r,x.kind]));
+const REASON_LABEL={link:'wrong link → fixing',image:'bad image → swapping',lowres:'low-res → swapping',
+  offcycle:'not on now → resting',seen:'seen too much → resting',offbrand:'off-brand → removing',
+  dupe:'duplicate → merging',other:'cancelled → see note'};
+const reasonChips=()=>REASONS.map(x=>'<button class="rchip k-'+x.kind+'" data-r="'+x.r+'" data-kind="'+x.kind+'">'+x.t+'</button>').join('');
+// "back when?" presets for a rest — plain relative hops, plus a date box for anything else.
+// Local-noon arithmetic then sliced to YYYY-MM-DD, the format corpus.rested `until` uses.
+const RESTS=[{d:14,t:'in 2 weeks'},{d:30,t:'next month'},{d:60,t:'in 2 months'},{d:90,t:'in 3 months'}];
+const inDays=n=>{const d=new Date();d.setHours(12,0,0,0);d.setDate(d.getDate()+n);
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+const restRow=()=>'<span class="rq">Back when?</span>'
+  +RESTS.map(x=>'<button class="rchip until" data-d="'+x.d+'">'+x.t+'</button>').join('')
+  +'<input class="untildate" type="date" aria-label="back on (pick a date)">';
+/** The whole ✕ panel. `cls` is .reasons (Advanced) or .oreasons (Simple) — same markup either way. */
+const reasonBox=cls=>'<div class="'+cls+'"><span class="rq">What’s wrong with it?</span>'+reasonChips()
+  +'<div class="restrow">'+restRow()+'</div>'
+  +'<div class="otherrow"><input class="othertext" placeholder="what’s off with it?">'
+  +'<button class="rchip othergo">Cancel it</button></div></div>';
+/** ONE wiring pass for BOTH views. The chips, the "back when?" step and the free-text escape hatch
+ *  behave identically on a Simple row and an Advanced card because they ARE the same code — the
+ *  V.9.25 bug (picker shipped to Advanced only) came from having two implementations. Callers pass
+ *  the two outcomes, since re-rendering differs: Advanced kills a DOM node, Simple re-renders a list. */
+function wireReasons(el,p,onFix,onKill){
+  const box=el.querySelector('.reasons,.oreasons');
+  const get=()=>(V[p.id]??={t:p.title});
+  const lit=c=>box.querySelectorAll('.rchip[data-kind]').forEach(x=>x.classList.toggle('on',x===c));
+  const kill=()=>{const v=get();v.killed=true;v.flag=undefined;el.classList.remove('asking');onKill()};
+  box.querySelectorAll('.rchip[data-kind]').forEach(c=>c.addEventListener('click',()=>{
+    const r=c.dataset.r,kind=c.dataset.kind,v=get();
+    v.reason=r;lit(c);
+    box.classList.remove('asking-when','asking-text');
+    if(kind==='fix'){   // stays LIVE, flagged for a fix
+      v.flag=true;v.killed=undefined;v.until=undefined;
+      if(r==='image'||r==='lowres')v.img='bad';
+      el.classList.remove('asking');onFix();return}
+    if(kind==='rest'){box.classList.add('asking-when');return}      // …wait for a date
+    if(kind==='other'){box.classList.add('asking-text');box.querySelector('.othertext').focus();return}
+    v.until=undefined;kill();                                      // veto — immediate and permanent
+  }));
+  // a rest isn't final until it has a return date — that date is what corpus.rested keys off
+  box.querySelectorAll('.rchip.until').forEach(c=>c.addEventListener('click',()=>{get().until=inDays(+c.dataset.d);kill()}));
+  const dateEl=box.querySelector('.untildate');
+  dateEl.addEventListener('change',()=>{if(dateEl.value){get().until=dateEl.value;kill()}});
+  const txt=box.querySelector('.othertext'),send=()=>{const s=txt.value.trim();if(!s)return;get().note=s;get().until=undefined;kill()};
+  box.querySelector('.othergo').addEventListener('click',send);
+  txt.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();send()}});
+}
 let V={},baked={},feedKey='',PILE=null;   // PILE = hand-dragged pile order (titles) — null until a drag
 let renderPile=()=>{};   // rebuilt inside the feed load — lets a card's ▲/👑/✕ live-update the pile
 let renderStatus=()=>{};   // "did my call land?" panel — recompared to the live feed on every verdict
@@ -266,7 +341,7 @@ Promise.all([
   // 10 min (max-age=600), so a just-shipped board fix can lag in an open tab; the eyebrow makes
   // stale-board-vs-fresh-data visible at a glance (2026-07-12: an old tab's tier-mirror pile read
   // as "the board is wrong" when it was just cached).
-  const BOARD_V='V.9.25';
+  const BOARD_V='V.9.26';
   document.getElementById('eyebrow').textContent='WKNDR · CURATION BOARD '+BOARD_V+' · FEED '+(d.generatedAt||'').slice(0,16).replace('T',' · ');
   const board=document.getElementById('board');board.innerHTML='';
   const rot=document.createElement('div');rot.id='tab-rot';board.appendChild(rot);
@@ -534,18 +609,14 @@ Promise.all([
         +(tail?'<button class="opr" title="Promote into your Top 10">↑</button>':'<button class="orm" title="Send down to Up next">−</button>')
         +'<button class="okill" title="Cancel this card — and say why">✕</button>'
         +(v.flag?'<div class="ostate">✓ flagged — '+(REASON_LABEL[v.reason]||v.reason)+' · stays live until it\'s fixed</div>':'')
-        +'<div class="oreasons"><span class="rq">What’s wrong with it?</span>'+reasonChips()+'</div>';
+        +reasonBox('oreasons');
       el.querySelector(tail?'.opr':'.orm').addEventListener('click',()=>tail?promote(p.title):demote(p.title));
       el.querySelector('.okill').addEventListener('click',()=>el.classList.toggle('asking'));
-      el.querySelectorAll('.rchip').forEach(c=>c.addEventListener('click',()=>{
-        const r=c.dataset.r,keep=c.classList.contains('keep'),vv=(V[p.id]??={t:p.title});
-        vv.reason=r;
-        if(keep){vv.flag=true;vv.killed=undefined;if(r==='image'||r==='lowres')vv.img='bad'}
-        else{vv.killed=true;vv.flag=undefined;
-          // a cancel leaves the deck for real: out of the pile, out of any New-Find extras
-          PILE=PILE.filter(x=>x!==p.title);extras=extras.filter(x=>x.title!==p.title);}
-        update();renderOpen();   // update() stores + refreshes the status panel
-      }));
+      wireReasons(el,p,
+        ()=>{update();renderOpen()},                             // update() stores + refreshes the status panel
+        ()=>{ // a cancel leaves the deck for real: out of the pile, out of any New-Find extras
+          PILE=PILE.filter(x=>x!==p.title);extras=extras.filter(x=>x.title!==p.title);
+          update();renderOpen()});
       return el;};
     renderOpen=function(){
       const dead=deadTitles();
@@ -586,7 +657,8 @@ Promise.all([
       const isPending=v=>v.killed?feedKeys.has(tok(v.t)):true;
       const pend=flags.filter(isPending);
       const rows=flags.map(v=>{
-        const type=v.reason?(RL[v.reason]||v.reason):v.killed?'cancelled':v.img==='bad'?'bad image':v.betterImage?'new image':'note';
+        const type=(v.reason?(RL[v.reason]||v.reason):v.killed?'cancelled':v.img==='bad'?'bad image':v.betterImage?'new image':'note')
+          +(v.until?' · back '+v.until:'');   // a rest states when it returns, so it can't read as a permanent kill
         const state=isPending(v)?'<span class="ststate pending">● pending ship</span>'
                                 :'<span class="ststate done">✓ dropped / shipped</span>';
         return '<div class="strow"><span class="sttitle">'+v.t+'</span><span class="sttype">'+type+'</span>'
@@ -630,7 +702,7 @@ function addCard(p,g,tag,pos,probe){
     +'<div class="row"><button class="b imgup">IMG ✓</button><button class="b imgdn">IMG ✗</button><button class="b canon">+CANON</button><button class="b topb" title="Escalate: leads the deck with a Top pick pill">👑 TOP</button><button class="b leadb" title="Promote into your Top 10 (Simple view)">↑ Top 10</button><button class="b laterb" title="This weekend only: sinks to the back of the pile (not a kill)">▼ LATER</button></div>'
     +'<input class="inp note" placeholder="note — why / what&#39;s off / bad link">'
     +'<input class="inp better" placeholder="better image URL">'
-    +'<div class="reasons"><span class="rq">What’s wrong with it?</span>'+reasonChips()+'</div>'
+    +reasonBox('reasons')
     +'<div class="ruledtag">✓ your call — rides Submit</div>'
     +'</div>';
   const get=()=>V[p.id]??={t:p.title};
@@ -642,15 +714,11 @@ function addCard(p,g,tag,pos,probe){
   // ✕ no longer means "delete" — it asks WHAT'S WRONG, and the reason routes the fix. "keep" reasons
   // (wrong link / bad image / low-res) flag it for a fix and the pick STAYS live; the rest remove it.
   el.querySelector('.kill').addEventListener('click',()=>{el.classList.toggle('asking')});
-  el.querySelectorAll('.rchip').forEach(c=>c.addEventListener('click',()=>{
-    const r=c.dataset.r,keep=c.classList.contains('keep');
-    get().reason=r;
-    if(keep){ get().flag=true; get().killed=undefined; if(r==='image'||r==='lowres')get().img='bad';
-      el.classList.remove('asking'); el.classList.add('ruled'); update(); renderStatus();
-    } else { get().killed=true; get().flag=undefined; el.classList.add('dead'); setTimeout(()=>el.remove(),320); update(); renderPile(); renderOpen(); renderStatus(); }
-    // renderOpen: a kill in Advanced used to leave the card sitting in the Simple deck's Top 10 —
-    // it read as "the kill didn't take". One cancel, gone from both views.
-  }));
+  // renderOpen on a kill: a kill in Advanced used to leave the card sitting in the Simple deck's Top
+  // 10 — it read as "the kill didn't take". One cancel, gone from both views.
+  wireReasons(el,p,
+    ()=>{el.classList.add('ruled');update();renderStatus()},
+    ()=>{el.classList.add('dead');setTimeout(()=>el.remove(),320);update();renderPile();renderOpen();renderStatus()});
   el.querySelectorAll('.b').forEach(b=>b.addEventListener('click',()=>{
     if(b.classList.contains('canon')){b.classList.toggle('on');get().canon=b.classList.contains('on')||undefined;update();return}
     if(b.classList.contains('topb')){b.classList.toggle('on');get().top=b.classList.contains('on')||undefined;update();renderPile();return}
@@ -712,7 +780,9 @@ function update(){
   document.querySelectorAll('.card').forEach(el=>{
     const id=(el.dataset.id||'').replace(/::(pile|lens)$/,'');
     const v=V[id];
-    el.classList.toggle('ruled',!!(v&&(v.stars||v.killed||v.img||v.note||v.betterImage||v.canon||v.top||v.lead||v.later)));
+    // v.flag/v.reason included (V.9.26): a "wrong link" fix sets neither img nor note, so the next
+    // update() used to strip the ✓-ruled border straight back off the card you'd just ruled on.
+    el.classList.toggle('ruled',!!(v&&(v.stars||v.killed||v.img||v.note||v.betterImage||v.canon||v.top||v.lead||v.later||v.flag||v.reason)));
   });
   renderStatus();   // refresh the "did my call land?" panel on every verdict
   store();
@@ -732,7 +802,8 @@ function payload(){
     if(v.lead)bits.push('▲LEAD');
     if(v.later)bits.push('▼LATER');
     if(v.stars)bits.push('★'.repeat(v.stars));
-    if(v.killed)bits.push('KILL');
+    // a REST is not a KILL — it names a return date, and compiles to corpus.rested (not eventVeto)
+    if(v.killed)bits.push(v.until?'REST until '+v.until:'KILL');
     if(v.reason)bits.push('reason:'+v.reason);
     if(v.flag&&!v.killed)bits.push('FLAG (keep+fix)');
     if(v.canon)bits.push('CANON');
@@ -753,7 +824,7 @@ function payloadCompact(){
     if(v.lead)bits.push('LEAD');
     if(v.later)bits.push('LATER');
     if(v.stars)bits.push(v.stars+'*');
-    if(v.killed)bits.push('KILL');
+    if(v.killed)bits.push(v.until?'REST:'+v.until:'KILL');   // REST → corpus.rested {match,until}; KILL → eventVeto
     if(v.reason)bits.push('why:'+v.reason);
     if(v.flag&&!v.killed)bits.push('FLAG');
     if(v.canon)bits.push('CANON');
@@ -776,7 +847,10 @@ document.getElementById('copy').addEventListener('click',async()=>{
 function buildOverrides(){
   const killed=[],flags=[],dead=new Set();
   for(const v of Object.values(V)){
-    if(v.killed){killed.push({title:v.t,...(v.reason?{reason:v.reason}:{})});dead.add(v.t)}
+    // `until` rides along for the durable compile (→ corpus.rested). The fast lane drops a rest the
+    // same way it drops a kill — right for THIS weekend — and the override doc expires with the feed
+    // anyway; only the corpus entry can hold it off until the date and then bring it back.
+    if(v.killed){killed.push({title:v.t,...(v.reason?{reason:v.reason}:{}),...(v.until?{until:v.until}:{})});dead.add(v.t)}
     else if(v.flag)flags.push({title:v.t,...(v.reason?{reason:v.reason}:{})});
   }
   // a cancelled title never rides the pile — applyOverrides drops killed first, but sending a title

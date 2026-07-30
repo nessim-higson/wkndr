@@ -81,6 +81,65 @@ describe('curation board ↔ app date parity', () => {
     expect(whens.size).toBeGreaterThan(fromFeed)
   })
 
+  // ——— the ✕ vocabulary contract (V.9.26). The reason's `kind` IS the compile routing instruction
+  // (docs/board-roadmap.md Track B), so a chip with no kind, or a kind the compiler doesn't handle,
+  // is a verdict that silently does nothing. `rest` is the one that must carry a return date —
+  // without `until`, corpus.rested can't know when to bring the pick back. ———
+  const reasons = new Function(
+    `${slice('const REASONS=[', '];')}\n${slice('const REASON_KIND=', 'x.kind]));')}\n${slice('const REASON_LABEL=', "other:'cancelled → see note'};")}\nreturn {REASONS,REASON_KIND,REASON_LABEL}`,
+  )() as {
+    REASONS: { r: string; t: string; kind: string }[]
+    REASON_KIND: Record<string, string>
+    REASON_LABEL: Record<string, string>
+  }
+
+  it('every ✕ reason declares a kind the compiler routes on', () => {
+    const KINDS = ['fix', 'rest', 'veto', 'other']
+    expect(reasons.REASONS.length).toBeGreaterThan(0)
+    expect(reasons.REASONS.filter((x) => !KINDS.includes(x.kind))).toEqual([])
+    // and every reason is legible in the status panel / payload
+    expect(reasons.REASONS.filter((x) => !reasons.REASON_LABEL[x.r])).toEqual([])
+  })
+
+  it('keeps a rest verb — the "not on right now" case IJ-Hallen needs', () => {
+    const rest = reasons.REASONS.filter((x) => x.kind === 'rest').map((x) => x.r)
+    expect(rest).toContain('offcycle')   // a pick that is fine, just not running this weekend
+    expect(rest).toContain('seen')       // fatigue — same mechanism, different cause
+    // a rest must never be routed as a permanent veto: corpus.rested vs corpus.eventVeto
+    expect(reasons.REASON_KIND.offcycle).toBe('rest')
+    expect(reasons.REASON_KIND.offbrand).toBe('veto')
+  })
+
+  it('offers a free-text escape hatch for reasons not on the list', () => {
+    expect(reasons.REASONS.some((x) => x.kind === 'other')).toBe(true)
+    expect(html).toContain('class="othertext"')
+  })
+
+  it('a rest asks for a return date, and only a date finalises it', () => {
+    expect(html).toContain('Back when?')
+    expect(html).toContain('const RESTS=')
+    // the rest branch must NOT kill on the chip click — it waits for the date
+    expect(html).toContain("if(kind==='rest'){box.classList.add('asking-when');return}")
+    // …and the date handlers are what call kill()
+    expect(html).toMatch(/\.rchip\.until.*get\(\)\.until=inDays\(\+c\.dataset\.d\);kill\(\)/)
+  })
+
+  it('both views share ONE reason implementation (the V.9.25 drift bug)', () => {
+    // exactly one wiring function, used by the Advanced card and the Simple row alike
+    expect(html.match(/function wireReasons\(/g)?.length).toBe(1)
+    // two CALL sites (lookbehind excludes the definition itself): Advanced card + Simple row
+    expect(html.match(/(?<!function )wireReasons\(el,p,/g)?.length).toBe(2)
+    expect(html.match(/const reasonBox=/g)?.length).toBe(1)
+    expect(html).toContain("reasonBox('reasons')")
+    expect(html).toContain("reasonBox('oreasons')")
+  })
+
+  it('the payload distinguishes a REST from a KILL', () => {
+    expect(html).toContain("bits.push(v.until?'REST until '+v.until:'KILL')")
+    expect(html).toContain("bits.push(v.until?'REST:'+v.until:'KILL')")
+    expect(html).toContain('...(v.until?{until:v.until}:{})')   // and it reaches the fast-lane payload
+  })
+
   it('the board still filters every list through servable()', () => {
     // the cull is the whole fix — if any of these go missing, dead picks are back on the board.
     // asserted as a list of names so a failure names the broken list instead of dumping the file.
