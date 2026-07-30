@@ -24,7 +24,7 @@ import { join } from 'node:path'
 import puppeteer from 'puppeteer-core'
 import { classify } from '../src/weather/modes'
 import { upcomingWeekend } from './lib/pipeline'
-import { fixWhen } from '../src/lib/when'
+import { fixWhen, whenWeekendDays, upcomingWeekendEnd } from '../src/lib/when'
 import type { Mode, Pick } from '../src/types'
 
 const CITY = process.argv.find((a) => a.startsWith('--city='))?.split('=')[1] ?? 'amsterdam'
@@ -120,6 +120,50 @@ export const THUMBS: Record<ThumbStyle, { css: string; rowPad: number; onImage?:
 }
 
 
+
+/** The app's own weather palette, at poster weight — so a hot Saturday and a wet Sunday don't just
+ *  read as two numbers, they read as two different days. Mirrors weather/modes.ts MODE_META grades. */
+export const MODE_TINT: Record<Mode, string> = {
+  HOT: '#e2431a', WARM: '#c8862c', COOL: '#4d857a', COLD_WET: '#4a6489', VOLATILE: '#7d5f86',
+}
+
+/** SPLIT THE WEEKEND — which picks belong to Saturday, which to Sunday.
+ *  1. a pick dated to ONE day goes to that day (Canal Parade is a Saturday, full stop);
+ *  2. a flexible pick goes to the day whose MODE it fits — this is the whole point: on a hot-Sat /
+ *     wet-Sun weekend the terrace lands on Saturday and the museum on Sunday, which is the sentence
+ *     the app has been trying to say all along;
+ *  3. anything that fits both (or neither) alternates, so the two columns stay balanced and the
+ *     deck's rank order is preserved within each day.
+ *  Never duplicates a pick across days — the same card twice reads as a bug, not a suggestion. */
+export function assignDays(
+  picks: Pick[],
+  days: { label: string; hi: number; mode: Mode }[] | undefined,
+  per = 2,
+  now: Date = new Date(),
+): { sat: Pick[]; sun: Pick[] } {
+  const end = upcomingWeekendEnd(now)
+  const sunD = new Date(end.getFullYear(), end.getMonth(), end.getDate())
+  const satD = new Date(sunD.getFullYear(), sunD.getMonth(), sunD.getDate() - 1)
+  const satM = days?.[0]?.mode, sunM = days?.[1]?.mode ?? days?.[0]?.mode
+  const out: { sat: Pick[]; sun: Pick[] } = { sat: [], sun: [] }
+  for (const p of picks) {
+    if (out.sat.length >= per && out.sun.length >= per) break
+    const d = whenWeekendDays(p.when, satD, sunD, now)
+    let t: 'sat' | 'sun' | null = null
+    if (d.sat && !d.sun) t = 'sat'
+    else if (d.sun && !d.sat) t = 'sun'
+    else if (satM && sunM && satM !== sunM) {
+      const fs = p.weatherFit?.includes(satM), fu = p.weatherFit?.includes(sunM)
+      if (fs && !fu) t = 'sat'
+      else if (fu && !fs) t = 'sun'
+    }
+    if (!t) t = out.sat.length <= out.sun.length ? 'sat' : 'sun'
+    if (out[t].length >= per) t = t === 'sat' ? 'sun' : 'sat'
+    if (out[t].length < per) out[t].push(p)
+  }
+  return out
+}
+
 /** THE GROUND — the poster's field. `cream` is the landing's #faf8f3; the taupes push the paper
  *  warmer and heavier so the brand carries the graphic rather than the photos. */
 export type Ground = 'cream' | 'taupe' | 'clay' | 'orange' | 'ink'
@@ -134,7 +178,7 @@ export const GROUNDS: Record<Ground, { bg: string; ink: string; mut: string; acc
 /** THE LAYOUT — genuinely different posters, not one poster with a different thumbnail.
  *   list = the shipped five-row index · two = the weekend's top TWO, big
  *   one  = a single hero, full-bleed        · bare = no picks at all, pure brand + forecast */
-export type Layout = 'list' | 'two' | 'one' | 'bare' | 'index'
+export type Layout = 'list' | 'two' | 'one' | 'bare' | 'index' | 'days'
 // `index` — the picks NAMED but not photographed. Without images the titles carry the poster, so
 // they run at 52px instead of 36px: a type specimen of the weekend rather than a thumbnail receipt.
 export interface PosterOpts { thumb?: ThumbStyle; layout?: Layout; ground?: Ground }
@@ -231,6 +275,53 @@ body{padding:64px 0 54px}
 .title{font-size:82px;line-height:.98}
 .tmeta{margin-top:16px;font-size:27px;color:${G.mut}}
 .foot{margin-top:auto}`)
+    }
+
+    // DAYS — the weekend split in two, each half stamped with its own temperature. The payoff of the
+    // per-day weather work (V.10.18): the poster can finally say which day is which.
+    if (layout === 'days') {
+      const per = 2
+      const split2 = assignDays(picks, wx?.days, per)
+      const dayBlock = (key: 'sat' | 'sun', i: number) => {
+        const d = wx?.days[i] ?? wx?.days[0]
+        const name = key === 'sat' ? 'Saturday' : 'Sunday'
+        const tint = d ? MODE_TINT[d.mode] : G.acc
+        return `
+        <section class="day">
+          <div class="dh">
+            <span class="dn dsp">${name}</span>
+            ${d ? `<span class="stamp dsp" style="background:${tint}">${d.hi}°</span>` : ''}
+          </div>
+          ${split2[key].map((p) => `
+            <div class="dr">
+              <span class="dt"${bg(p)}></span>
+              <span class="dx"><span class="dth dsp">${esc(p.title)}</span><span class="dtm">${meta(p)}</span></span>
+            </div>`).join('') || '<div class="dr empty">—</div>'}
+        </section>`
+      }
+      return shell(`
+        <div class="wrap">
+          <div class="mast dsp"><span class="d"></span>WKNDR</div>
+          <div class="date dsp">${esc(wx?.label ?? 'This weekend')}</div>
+          <div class="days">${dayBlock('sat', 0)}${dayBlock('sun', 1)}</div>
+          <div class="foot"><span class="u dsp">app.wkndr.xyz</span><span class="t">Swipe. Save. Match.</span></div>
+        </div>`, `
+.wrap{flex:1;min-height:0;display:flex;flex-direction:column;padding:66px 64px 54px}
+.date{margin-top:24px;font-size:92px;line-height:.9}
+.days{flex:1;min-height:0;display:flex;flex-direction:column;gap:34px;padding:30px 0 22px}
+.day{flex:1;min-height:0;display:flex;flex-direction:column}
+.dh{display:flex;align-items:center;gap:20px;padding-bottom:16px;border-bottom:3px solid ${G.ink};margin-bottom:6px}
+.dn{font-size:46px;letter-spacing:-.03em}
+/* the stamp — the day's temperature in ITS OWN weather colour, so the two halves look different */
+.stamp{margin-left:auto;min-width:104px;height:62px;padding:0 20px;border-radius:999px;color:#fff;
+  font-size:36px;display:flex;align-items:center;justify-content:center;letter-spacing:-.02em}
+.dr{flex:1;display:flex;align-items:center;gap:22px;padding:15px 0;border-bottom:1px solid ${G.line}}
+.dr:last-child{border-bottom:0}
+.dr.empty{color:${G.mut};font-size:24px}
+.dt{flex:none;width:92px;height:112px;border-radius:11px;background:${G.line} center/cover no-repeat}
+.dx{flex:1;min-width:0;display:block}
+.dth{display:block;font-size:38px;line-height:1.04;letter-spacing:-.026em}
+.dtm{display:block;margin-top:8px;font-size:22px;color:${G.mut}}`)
     }
 
     // INDEX — every pick, no photographs. The titles do the work.
@@ -345,14 +436,15 @@ if (import.meta.main) {
 const root = join(import.meta.dir, '..')
 const feed = JSON.parse(readFileSync(join(root, `public/data/picks.${CITY}.json`), 'utf8')) as { picks: Pick[] }
 
-const picks = topPicks(feed.picks)
-if (picks.length < COUNT) throw new Error(`only ${picks.length} imaged picks — refusing to publish a thin poster`)
-
-const wx = await forecast()
-const font = readFileSync(join(root, 'src/assets/fonts/familjen-grotesk-700.woff2')).toString('base64')
 const style = (arg('thumb') ?? 'portrait') as ThumbStyle
 const layout = (arg('layout') ?? 'list') as Layout
 const ground = (arg('ground') ?? 'cream') as Ground
+// `days` fills two columns, so it needs a deeper pool than the five a single list shows
+const picks = topPicks(feed.picks, layout === 'days' ? 8 : COUNT)
+if (picks.length < 4) throw new Error(`only ${picks.length} imaged picks — refusing to publish a thin poster`)
+
+const wx = await forecast()
+const font = readFileSync(join(root, 'src/assets/fonts/familjen-grotesk-700.woff2')).toString('base64')
 const page$ = posterHtml(picks, wx, `data:font/woff2;base64,${font}`, { thumb: style, layout, ground })
 
 const browser = await puppeteer.launch({ executablePath: chromePath(), args: ['--no-sandbox', '--disable-dev-shm-usage'] })

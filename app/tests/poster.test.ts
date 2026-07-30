@@ -5,7 +5,8 @@
 // Importing the module must not launch a browser — poster.ts guards its run block with
 // `import.meta.main`. If that guard is ever removed this file will hang, which is the point.
 import { describe, it, expect } from 'bun:test'
-import { realVenue, topPicks, posterHtml, THUMBS } from '../scripts/poster'
+import { realVenue, topPicks, posterHtml, THUMBS, assignDays, MODE_TINT } from '../scripts/poster'
+import { upcomingWeekendEnd } from '../src/lib/when'
 import type { Mode, Pick } from '../src/types'
 
 const p = (over: Partial<Pick>): Pick => ({
@@ -100,5 +101,63 @@ describe('posterHtml', () => {
   it('renders the fixed canvas the share sizes depend on', () => {
     const html = posterHtml(picks, null, '')
     expect(html).toContain('width:1080px;height:1350px')   // 4:5 portrait
+  })
+})
+
+// ── the DAYS layout: which pick belongs to which half of the weekend ─────────────────────────────
+// This is the per-day weather (V.10.18) made visible: on a hot-Sat / wet-Sun weekend the poster
+// should put the outdoor pick on Saturday and the all-weather one on Sunday, and say so with two
+// differently-coloured temperature stamps.
+describe('assignDays — splitting the weekend', () => {
+  const M = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+  const now = new Date()
+  const end = upcomingWeekendEnd(now)
+  const SUN = new Date(end.getFullYear(), end.getMonth(), end.getDate())
+  const SAT = new Date(SUN.getFullYear(), SUN.getMonth(), SUN.getDate() - 1)
+  const ds = (d: Date) => `${d.getDate()} ${M[d.getMonth()]}`
+  const SPLIT = [{ label: 'Sat', hi: 27, mode: 'HOT' as Mode }, { label: 'Sun', hi: 14, mode: 'COLD_WET' as Mode }]
+
+  it('sends a day-locked pick to its own day', () => {
+    const satOnly = p({ title: 'sat-only', when: `Sat ${ds(SAT)}` })
+    const sunOnly = p({ title: 'sun-only', when: `Sun ${ds(SUN)}` })
+    const out = assignDays([satOnly, sunOnly], SPLIT, 2, now)
+    expect(out.sat.map((x) => x.title)).toContain('sat-only')
+    expect(out.sun.map((x) => x.title)).toContain('sun-only')
+  })
+
+  it('sends a flexible pick to the day whose weather it actually fits', () => {
+    const outdoor = p({ title: 'terrace', when: 'Daily', weatherFit: ['HOT', 'WARM'] })
+    const allWeather = p({ title: 'cinema', when: 'Daily', weatherFit: ['HOT', 'WARM', 'COOL', 'COLD_WET', 'VOLATILE'] })
+    const out = assignDays([outdoor, allWeather], SPLIT, 1, now)
+    expect(out.sat.map((x) => x.title)).toEqual(['terrace'])   // only Saturday is HOT
+    expect(out.sun.map((x) => x.title)).toEqual(['cinema'])    // the one that can take a wet day
+  })
+
+  it('never places the same pick on both days', () => {
+    const picks = Array.from({ length: 8 }, (_, i) => p({ title: `p${i}`, when: 'Daily' }))
+    const out = assignDays(picks, SPLIT, 2, now)
+    const all = [...out.sat, ...out.sun].map((x) => x.title)
+    expect(new Set(all).size).toBe(all.length)
+  })
+
+  it('balances the two days when everything fits both (a uniform weekend)', () => {
+    const same = [{ label: 'Sat', hi: 25, mode: 'HOT' as Mode }, { label: 'Sun', hi: 25, mode: 'HOT' as Mode }]
+    const picks = Array.from({ length: 6 }, (_, i) => p({ title: `p${i}`, when: 'Daily' }))
+    const out = assignDays(picks, same, 2, now)
+    expect(out.sat).toHaveLength(2)
+    expect(out.sun).toHaveLength(2)
+  })
+
+  it('honours the per-day cap and degrades on a dead forecast', () => {
+    const picks = Array.from({ length: 9 }, (_, i) => p({ title: `p${i}`, when: 'Daily' }))
+    expect(assignDays(picks, SPLIT, 3, now).sat).toHaveLength(3)
+    const noWx = assignDays(picks, undefined, 2, now)
+    expect(noWx.sat).toHaveLength(2)
+    expect(noWx.sun).toHaveLength(2)
+  })
+
+  it('stamps each day in its own weather colour', () => {
+    expect(MODE_TINT.HOT).not.toBe(MODE_TINT.COLD_WET)
+    expect(Object.keys(MODE_TINT).sort()).toEqual(['COLD_WET', 'COOL', 'HOT', 'VOLATILE', 'WARM'])
   })
 })
