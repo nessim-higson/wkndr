@@ -134,7 +134,9 @@ export const GROUNDS: Record<Ground, { bg: string; ink: string; mut: string; acc
 /** THE LAYOUT — genuinely different posters, not one poster with a different thumbnail.
  *   list = the shipped five-row index · two = the weekend's top TWO, big
  *   one  = a single hero, full-bleed        · bare = no picks at all, pure brand + forecast */
-export type Layout = 'list' | 'two' | 'one' | 'bare'
+export type Layout = 'list' | 'two' | 'one' | 'bare' | 'index'
+// `index` — the picks NAMED but not photographed. Without images the titles carry the poster, so
+// they run at 52px instead of 36px: a type specimen of the weekend rather than a thumbnail receipt.
 export interface PosterOpts { thumb?: ThumbStyle; layout?: Layout; ground?: Ground }
 
 export function posterHtml(
@@ -229,6 +231,36 @@ body{padding:64px 0 54px}
 .title{font-size:82px;line-height:.98}
 .tmeta{margin-top:16px;font-size:27px;color:${G.mut}}
 .foot{margin-top:auto}`)
+    }
+
+    // INDEX — every pick, no photographs. The titles do the work.
+    if (layout === 'index') {
+      return shell(`
+        <div class="wrap">
+          <div class="mast dsp"><span class="d"></span>WKNDR</div>
+          <div class="hd">
+            <span class="date dsp">${esc(wx?.label ?? 'This weekend')}</span>
+            ${temps ? `<span class="temps">${temps}</span>` : ''}
+          </div>
+          <div class="rule"></div>
+          <ol class="idx">${picks.map((p, i) => `
+            <li><span class="n dsp">${String(i + 1).padStart(2, '0')}</span>
+              <span class="ix"><span class="th dsp">${esc(p.title)}</span><span class="tm">${meta(p)}</span></span>
+            </li>`).join('')}
+          </ol>
+          <div class="foot"><span class="u dsp">app.wkndr.xyz</span><span class="t">Swipe. Save. Match.</span></div>
+        </div>`, `
+.wrap{flex:1;min-height:0;display:flex;flex-direction:column;padding:70px 64px 54px}
+.hd{margin-top:30px;display:flex;align-items:baseline;justify-content:space-between;gap:24px}
+.date{font-size:104px;line-height:.9}
+.rule{flex:none;margin-top:26px;height:3px;background:${G.ink}}
+.idx{flex:1;min-height:0;list-style:none;display:flex;flex-direction:column;justify-content:space-between;padding:6px 0 10px}
+.idx li{display:flex;align-items:baseline;gap:26px;padding:16px 0;border-bottom:1px solid ${G.line}}
+.idx li:last-child{border-bottom:0}
+.n{flex:none;width:76px;font-size:34px;color:${G.acc}}
+.ix{flex:1;min-width:0;display:block}
+.th{display:block;font-size:52px;line-height:1.02}
+.tm{display:block;margin-top:10px;font-size:24px;color:${G.mut}}`)
     }
 
     // BARE — no picks at all. The weekend, the sky, and the brand: a teaser you send on a Thursday.
