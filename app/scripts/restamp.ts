@@ -25,7 +25,7 @@
  */
 import corpus from './taste/corpus.json'
 import weekly from './taste/weekly.json'
-import { rxOf, titleLooseMatch, tokKey, upcomingWeekend, weekendMode, stampServeOrder, toPortrait, approvalCheck, type TasteCorpus, type WeeklySlate } from './lib/pipeline'
+import { rxOf, titleLooseMatch, tokKey, upcomingWeekend, weekendModes, stampServeOrder, toPortrait, approvalCheck, type TasteCorpus, type WeeklySlate } from './lib/pipeline'
 import { curatedImage } from './curated'
 import { heroPicks } from './heroes'
 import { whenIsPast, whenLooksBroken } from '../src/lib/when'
@@ -144,7 +144,7 @@ if (picks.length < 20) { console.error(`✖ restamp abstained: only ${picks.leng
 for (const p of picks) { const c = curatedImage(p.title); if (c) p.image = toPortrait(c) }
 
 // re-stamp the projected serve order — verdicts just moved cards, the board must see the real front
-picks = stampServeOrder(picks, await weekendMode())
+picks = stampServeOrder(picks, await weekendModes())   // per-day: a Sunday pick stamped by Sunday
 
 feed.picks = picks
 feed.count = picks.length

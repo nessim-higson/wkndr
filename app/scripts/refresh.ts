@@ -19,7 +19,7 @@
  */
 import { CITIES, type City } from '../src/data/cities'
 import type { Pick } from '../src/types'
-import { dedupe, balanceByCategory, isGoodImage, isPortraitImage, imageBroken, urlLooksNonPhoto, imageIsCardworthy, fetchEventImage, toPortrait, wikiImage, webImageCandidates, verifyImageForEvent, pexelsImage, whenBeforeWeekend, upcomingWeekend, weekendMode, stampServeOrder, linkOk, mapLimit, rxOf, titleKey, titleLooseMatch, tokKey, approvalCheck, type TasteCorpus, type WeeklySlate } from './lib/pipeline'
+import { dedupe, balanceByCategory, isGoodImage, isPortraitImage, imageBroken, urlLooksNonPhoto, imageIsCardworthy, fetchEventImage, toPortrait, wikiImage, webImageCandidates, verifyImageForEvent, pexelsImage, whenBeforeWeekend, upcomingWeekend, weekendMode, weekendModes, stampServeOrder, linkOk, mapLimit, rxOf, titleKey, titleLooseMatch, tokKey, approvalCheck, type TasteCorpus, type WeeklySlate } from './lib/pipeline'
 import { fixWhen, latestDateOf, whenActiveBy, whenIsPast, whenLooksBroken } from '../src/lib/when'
 import { songkickAdapter } from './adapters/songkick'
 import { llmExtract } from './adapters/llm'
@@ -699,7 +699,9 @@ async function buildCity(city: City) {
     console.log(`  airlock:  ${picks.filter(isLive).length} live approved → feed · ${pendingOut.length} → pending${mode ? ` (weekend mode ${mode})` : ''}`)
     // THE PROJECTED SERVE ORDER — stamped with the app's own pipeline (same mode read), so the
     // board's WEEKEND PILE shows the deck's actual front, not a re-derived approximation.
-    picks = stampServeOrder(picks, mode)
+    // Stamped PER DAY (the airlock sort above keeps the blended mode — it's ranking candidates for
+    // the weekend as a whole, not placing them on a day).
+    picks = stampServeOrder(picks, (await weekendModes()) ?? mode)
   }
 
   // FINAL BROKEN-RANGE SWEEP — picks join the pool at many stages AFTER the early drop

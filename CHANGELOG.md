@@ -61,6 +61,35 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 - Verified: promote (tail→#10) · demote (#10→tail) · both lists drag-reorder · New Find label/feedback ·
   PILE full (81). No console errors.
 
+## [V.10.18 / board V.9.30] — 2026-07-30 — PER-DAY WEATHER: Saturday and Sunday stop being one blob
+- Ness: "should it do a better job of delineating the days and temps and their differences?" It should —
+  and the gap was architectural, not cosmetic. **The app had no per-day weather model at all.**
+- `weekendMode()` (build) and `goLive()` (runtime) both took `Math.max` across Sat AND Sun for high,
+  wetness and swing, then classified **one** Mode. Every pick's `weatherFit` was matched against that
+  single blend, so a **Sunday-only picnic was ranked by Saturday's sunshine** and a Saturday show by
+  Sunday's rain. The deck literally could not say "Saturday's the beach day, Sunday's the museum day".
+  (The *saves* side already thought in days — `whenDayGroup`, the Itinerary. Only the deck flattened.)
+- **`whenWeekendDays()`** (`lib/when.ts`) is the new primitive: which of the weekend's two days is a
+  pick actually on? Undated / recurring / open-run → both (you choose when to go); a dated pick → the
+  days inside its own interval; lands on neither (a Friday one-off) → both, deliberately, since "no
+  day" would strip its weather score entirely.
+- **`rankPicks` now takes `Mode | {sat, sun}`.** Each pick scores against the mode of the day(s) it's
+  available on; an all-weekend pick takes the **best** of the two (a wet Sunday must not demote a
+  terrace you'd visit on Saturday). The sun bonus follows the day too. Passing a bare `Mode` behaves
+  exactly as before — every prior caller and test is untouched.
+- **`stampServeOrder` ranks per-day** via the new `weekendModes()`, so the board's stamped serve order
+  matches the deck the app actually deals.
+- **Surfaced, but only when it matters.** `daysDiffer` gates on a different mode, a ≥4° gap, or a ≥40pt
+  rain gap — this weekend (25°/25°) correctly stays quiet. On a split weekend the header pill reads
+  **"Sat 27° · Sun 14°"**, each in its own mode colour, and the intro headline names both days.
+- **`tempForPick`** — a card dated to ONE day now prints THAT day's high. A Sunday card claiming
+  Saturday's 27° was the same lie one level down.
+- The blended mode is KEPT as the summary: it drives the ambient field and every single-mode surface,
+  and a hot Saturday against a wet Sunday genuinely blends to VOLATILE ("it can't decide"). It was only
+  ever wrong as a *ranking* input.
+- **Board V.9.30** mirrors it — the lens tests each pick against its own day and names both when split.
+- 169 tests pass (`tests/perday.test.ts` + board↔app `daysOf` parity, both mutation-checked).
+
 ## [R13 compile] — 2026-07-30 — round #20: Dekmantel to #3, three ▲ LEADs
 - **Issue #20 filed properly** (71 verdicts) — the V.9.29 half-submit fix worked; this is the first
   round since where the ★/👑 actually reached the durable record.

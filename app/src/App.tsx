@@ -5,7 +5,7 @@ import { Shuffle, Clock, ChevronDown, LayoutGrid, Star, ArrowUpRight, LocateFixe
 // subtle haptic on commit/save (Android/Chrome; iOS Safari ignores navigator.vibrate)
 const haptic = (ms = 10) => { try { navigator.vibrate?.(ms) } catch { /* unsupported */ } }
 import type { Mode, Pick, SwipeDir } from './types'
-import { MODES, MODE_META, classify, applyMode, rankPicks, diversify, orderServed, moreLikeOrder } from './weather/modes'
+import { MODES, MODE_META, classify, applyMode, rankPicks, diversify, orderServed, moreLikeOrder, weekendFrom, modeSpecOf, tempForPick, type DayWx, type WeekendWx } from './weather/modes'
 import { CITIES, DEFAULT_CITY, cityByKey, cityByName, nearestCity, type City } from './data/cities'
 import { AmbientField } from './weather/AmbientField'
 import type { Look } from './weather/ambientEngine'
@@ -165,6 +165,10 @@ export default function App() {
   // you both picked read as an agenda you'd act on, not a deck to swipe through again.
   const [view, setView] = useState<View>(SHARED_CONFIRM ? 'list' : 'stack')
   const [wx, setWx] = useState<Wx>(DEMO.HOT)
+  // the weekend split apart into its two days — null until a real forecast lands, and null is
+  // the honest state: the demo/what-if pills carry one representative figure, not two real days,
+  // so they keep the single-mode ranking rather than inventing a Saturday and a Sunday.
+  const [weekend, setWeekend] = useState<WeekendWx | null>(null)
   const [live, setLive] = useState(false)        // true once the real forecast loads
   const [swiped, setSwiped] = useState<Set<string>>(() => loadSwiped())   // persisted — declines survive a refresh
   const [saved, setSaved] = useState<Set<string>>(() => loadSaved())   // persisted
@@ -468,8 +472,8 @@ export default function App() {
   // then re-ranks. List + stack both change; the stack re-deals with a toast.
   const rankedAll = useMemo(
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    () => rankPicks(cityPicks, mode, hasTaste(tasteRef.current) ? tasteRef.current : undefined, seed),
-    [cityPicks, mode, seed],   // seed jitters the order ("show me more"); NOT [taste] — keeps the deck stable while swiping
+    () => rankPicks(cityPicks, modeSpecOf(weekend, mode), hasTaste(tasteRef.current) ? tasteRef.current : undefined, seed),
+    [cityPicks, mode, weekend, seed],   // seed jitters the order ("show me more"); NOT [taste] — keeps the deck stable while swiping
   )
   // De-clustered full ranking for the MATCH game (it presents picks in order). rankPicks no longer
   // diversifies — the served deck de-clusters in `shown` — so do it here too or the match deck waves.
@@ -670,7 +674,9 @@ export default function App() {
 
   // "preview a different forecast" — explicitly a what-if, not the real weather
   function previewMode(m: Mode) {
-    setMode(m); setWx({ ...DEMO[m], city: city.name }); setLive(false); setSwiped(new Set())
+    // clear the real two-day split: a what-if pill is ONE hypothetical mode for the whole weekend,
+    // so ranking falls back to the single-mode contract rather than pairing it with a stale Sunday.
+    setMode(m); setWeekend(null); setWx({ ...DEMO[m], city: city.name }); setLive(false); setSwiped(new Set())
   }
 
   // Switch the active city's whole feed (and load its weather). Resets the run so you
@@ -725,8 +731,24 @@ export default function App() {
       const hi = Math.round(Math.max(...his))
       const lo = Math.round(Math.min(...los))
       const pp = Math.max(...pps)
-      const m = classify(hi, pp, hi - lo)   // classify the WEEKEND
+      const m = classify(hi, pp, hi - lo)   // the BLENDED weekend — the summary + the ambient field
+      // …and each day on its OWN numbers. The blend is a fine summary but a bad ranking input: it
+      // judged a Sunday-only picnic by Saturday's sunshine. `days` is what rankPicks scores against.
+      const SHORT = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+      const days: DayWx[] = idx.map((i) => {
+        const d = new Date(`${(dly.time as string[])[i]}T12:00:00`)
+        return {
+          key: (d.getDay() === 0 ? 'sun' : 'sat') as DayWx['key'],
+          label: SHORT[d.getDay()],
+          hi: Math.round(dly.temperature_2m_max[i]),
+          lo: Math.round(dly.temperature_2m_min[i]),
+          pop: Math.round(dly.precipitation_probability_max[i] ?? 0),
+          mode: classify(Math.round(dly.temperature_2m_max[i]), dly.precipitation_probability_max[i] ?? 0,
+                         dly.temperature_2m_max[i] - dly.temperature_2m_min[i]),
+        }
+      })
       setMode(m)
+      setWeekend(weekendFrom(days, m))
       setWx({ temp: hi, hi, lo, city: placeName, label })
       setLive(true)
     } catch { /* keep current */ }
@@ -750,7 +772,13 @@ export default function App() {
             /* block + margin = a REAL return (a bare <br> read as mashed); 1pt smaller than the
                .intro-sub base per Ness */
             : live ? <span style={{ fontSize: 'calc(1em - 1pt)', display: 'block' }}>
-                <b style={{ display: 'block', marginBottom: '0.65em' }}>{Math.round(wx.temp)}° this weekend — these picks are ranked for it.</b>
+                {/* On a SPLIT weekend the headline names the two days instead of one average —
+                    "the sky rearranged your weekend" only lands if the app says which day is which. */}
+                <b style={{ display: 'block', marginBottom: '0.65em' }}>{
+                  weekend?.split && weekend.days.length > 1
+                    ? `${weekend.days.map((d) => `${d.label} ${d.hi}°`).join(' · ')} — two different days, and the deck is ranked for each.`
+                    : `${Math.round(wx.temp)}° this weekend — these picks are ranked for it.`
+                }</b>
                 Swipe, save, match with a friend.
               </span>
             : 'Swipe what’s on — match with friends to plan the weekend together.'}
@@ -797,7 +825,20 @@ export default function App() {
                   <span className="tb-when">
                     {locating ? 'Locating…' : live && wx.label ? wx.label : wx.city}
                   </span>
-                  <span className="tb-temp" style={{ color: TEMP_TINT[mode] }}>{wx.temp}°</span>
+                  {/* a SPLIT weekend shows both days — one number would hide the whole point
+                      ("26° this weekend" when Sunday is 17° and wet is a lie of omission) */}
+                  {weekend?.split && weekend.days.length > 1 ? (
+                    <span className="tb-temp tb-temp-split">
+                      {weekend.days.map((d, i) => (
+                        <span key={d.key}>
+                          {i > 0 && <span className="tb-temp-sep" aria-hidden> · </span>}
+                          <span style={{ color: TEMP_TINT[d.mode] }}>{d.label} {d.hi}°</span>
+                        </span>
+                      ))}
+                    </span>
+                  ) : (
+                    <span className="tb-temp" style={{ color: TEMP_TINT[mode] }}>{wx.temp}°</span>
+                  )}
                 </div>
               </div>
 
@@ -1122,6 +1163,7 @@ export default function App() {
                 key={`${dealKey}-${filter}-${cats.join(',')}-${whens.join(',')}-${intro ? 'intro' : 'live'}`}
                 picks={deck}
                 temp={wx.temp}
+                tempOf={(p) => tempForPick(p, weekend, wx.temp)}
                 mode={mode}
                 onSwipe={handleStackSwipe}
                 nudge={!intro}

@@ -166,6 +166,34 @@ export function whenActiveBy(when: string, by: Date, now: Date = new Date()): bo
   return dates[0].getTime() <= by.getTime()
 }
 
+/** WHICH of the weekend's two days is this pick actually available on?
+ *
+ *  The deck used to rank every pick against ONE weather mode blended across Sat+Sun (a `Math.max`
+ *  over both days), so a Sunday-only picnic was judged by Saturday's sunshine and an indoor Saturday
+ *  show by Sunday's rain. This is the primitive that lets each pick be scored against its OWN day.
+ *
+ *  - undated / recurring / open-run ("Daily", "Until 30 Aug") → BOTH days: you choose when to go
+ *  - a dated pick → the days inside its own [first … last] interval
+ *  - lands on NEITHER (a Friday one-off, a past date) → BOTH, deliberately: falling back to "no day"
+ *    would strip its weather score entirely, which is worse than today's blend.
+ */
+export function whenWeekendDays(when: string, sat: Date, sun: Date, now: Date = new Date()): { sat: boolean; sun: boolean } {
+  const BOTH = { sat: true, sun: true }
+  const s = when || ''
+  if (!s || OPEN_RUN.test(s)) return BOTH
+  const dates = datesIn(s, now)
+  if (!dates.length) return BOTH
+  const from = dates[0].getTime()
+  const to = dates[dates.length - 1].getTime()
+  // [from…to] vs the whole calendar day — a noon-resolved single date still covers its own day
+  const covers = (d: Date) => {
+    const a = new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime()
+    return from <= a + 864e5 - 1 && to >= a
+  }
+  const out = { sat: covers(sat), sun: covers(sun) }
+  return out.sat || out.sun ? out : BOTH
+}
+
 /** Has this `when` already finished? (Its latest date is before today.) Undated / open-ended / recurring
  *  picks — "Daily", "Until <future>", a market's "Mon–Sat", evergreen canon — have no concrete latest date
  *  and return false (kept). This is the RUNTIME guard: the feed is rebuilt weekly for the coming weekend,

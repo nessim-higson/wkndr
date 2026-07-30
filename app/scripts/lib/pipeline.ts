@@ -383,13 +383,36 @@ export async function weekendMode(): Promise<Mode | null> {
   } catch { return null }
 }
 
+/** The weekend as its TWO days, each classified on its own numbers — the build-time twin of the
+ *  app's per-day read. `weekendMode()` above blends Sat+Sun with `Math.max`, which is a fine
+ *  SUMMARY but the wrong ranking input: it stamped a Sunday-only pick's serve position using
+ *  Saturday's sunshine. stampServeOrder now ranks with this, so the stamped order the board
+ *  renders matches the deck the app actually deals. Fails soft → null → single-mode as before. */
+export async function weekendModes(): Promise<{ sat: Mode; sun: Mode } | null> {
+  try {
+    const r = await fetch('https://api.open-meteo.com/v1/forecast?latitude=52.37&longitude=4.9&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Europe%2FAmsterdam&forecast_days=7')
+    const j = await r.json() as { daily: { time: string[]; temperature_2m_max: number[]; temperature_2m_min: number[]; precipitation_probability_max: number[] } }
+    const { sat } = upcomingWeekend()
+    const satIso = `${sat.getFullYear()}-${String(sat.getMonth() + 1).padStart(2, '0')}-${String(sat.getDate()).padStart(2, '0')}`
+    const i = j.daily.time.indexOf(satIso)
+    if (i < 0) return null
+    const of = (k: number) => classify(
+      j.daily.temperature_2m_max[k],
+      j.daily.precipitation_probability_max[k] ?? 0,
+      j.daily.temperature_2m_max[k] - j.daily.temperature_2m_min[k],
+    )
+    const satM = of(i)
+    return { sat: satM, sun: i + 1 < j.daily.time.length ? of(i + 1) : satM }
+  } catch { return null }
+}
+
 /** Stamp `servePos` on the final published picks by running the APP'S OWN serve pipeline
  *  (orderServed ∘ diversify ∘ rankPicks — forecast weekend mode, seed 0, no taste). The
  *  Curation Board's WEEKEND PILE renders this stamp instead of re-deriving an approximation:
  *  the V.8.10-era board mirror ignored pilePos (Ness's own dragged order!) and its tier sort
  *  knew nothing of weather fit, the sun bonus or diversify — so board and deck drifted. One
  *  code path, one truth. Forecast down → stamp under WARM (neutral) rather than not at all. */
-export function stampServeOrder(picks: Pick[], mode: Mode | null): Pick[] {
+export function stampServeOrder(picks: Pick[], mode: Mode | { sat: Mode; sun: Mode } | null): Pick[] {
   const proj = orderServed(diversify(rankPicks(picks, mode ?? 'WARM')))
   const pos = new Map(proj.map((p, i) => [p.id, i + 1]))
   return picks.map((p) => ({ ...p, servePos: pos.get(p.id) }))

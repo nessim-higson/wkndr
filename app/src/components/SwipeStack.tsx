@@ -305,10 +305,13 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
 })
 
 export function SwipeStack({
-  picks, temp, mode, onSwipe, onOpen, onRefresh, filterLabel, onClearFilter, onSeeList, nudge, keysActive,
+  picks, temp, tempOf, mode, onSwipe, onOpen, onRefresh, filterLabel, onClearFilter, onSeeList, nudge, keysActive,
 }: {
   picks: Pick[]
   temp?: number
+  /** per-pick temperature — on a split weekend a Saturday card and a Sunday card show DIFFERENT
+   *  numbers. Falls back to `temp` when absent (uniform weekend, or no live forecast yet). */
+  tempOf?: (p: Pick) => number
   mode?: Mode
   onSwipe: (p: Pick, dir: SwipeDir) => void
   onOpen?: (p: Pick, origin?: DOMRect) => void
@@ -398,7 +401,7 @@ export function SwipeStack({
             dealIn={firstDeal.current}
             interactive={i === 0}
             progress={progress}
-            temp={temp}
+            temp={tempOf ? tempOf(p) : temp}
             mode={mode}
             onSwipe={onSwipe}
             onOpen={onOpen}

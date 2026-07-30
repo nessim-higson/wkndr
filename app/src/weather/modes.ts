@@ -1,8 +1,68 @@
 import type { Mode, Pick } from '../types'
 import { tasteScore, tokensFor, type Taste } from '../taste'
-import { latestDateOf, upcomingWeekendEnd, whenActiveBy } from '../lib/when'
+import { latestDateOf, upcomingWeekendEnd, whenActiveBy, whenWeekendDays } from '../lib/when'
 
 export const MODES: Mode[] = ['HOT', 'WARM', 'COOL', 'COLD_WET', 'VOLATILE']
+
+/** One weekend day, classified on its OWN numbers. */
+export interface DayWx {
+  key: 'sat' | 'sun'
+  /** "Sat", "Sun" — for the header/intro */
+  label: string
+  hi: number
+  lo: number
+  /** precipitation probability, % */
+  pop: number
+  mode: Mode
+}
+/** The weekend as TWO days plus the blended summary.
+ *  `mode` stays the whole-weekend classification: it drives the ambient field and every
+ *  single-mode surface, and it is a genuinely good SUMMARY (a hot Saturday against a wet Sunday
+ *  blends to VOLATILE — "it can't decide" is exactly right). It was only ever wrong as a RANKING
+ *  input, which is what `days` now fixes. */
+export interface WeekendWx {
+  days: DayWx[]
+  mode: Mode
+  /** true when the two days differ enough that they're worth planning separately */
+  split: boolean
+}
+/** Either one mode for the whole weekend (the old contract, still valid) or one per day. */
+export type WeekendModes = { sat: Mode; sun: Mode }
+export type ModeSpec = Mode | WeekendModes
+
+/** Do these two days differ enough that the user should plan them separately?
+ *  A different mode is the headline case; the numeric gates catch same-mode days that still
+ *  feel different to a person (24° vs 29°, or dry vs a 60%-chance shower). */
+export function daysDiffer(a: DayWx, b: DayWx): boolean {
+  return a.mode !== b.mode || Math.abs(a.hi - b.hi) >= 4 || Math.abs(a.pop - b.pop) >= 40
+}
+
+/** Build the weekend from per-day figures. `blended` is the caller's existing whole-weekend
+ *  classification, kept as the summary so nothing that reads a single Mode has to change. */
+export function weekendFrom(days: DayWx[], blended: Mode): WeekendWx {
+  return { days, mode: blended, split: days.length > 1 && daysDiffer(days[0], days[1]) }
+}
+
+/** The temperature to print on a pick's card. On a SPLIT weekend a card dated to ONE day shows
+ *  THAT day's high — a Sunday card claiming Saturday's 27° is the same lie the blended mode told,
+ *  just one level down. Anything spanning both days (or a uniform weekend) keeps the weekend figure. */
+export function tempForPick(p: Pick, wx: WeekendWx | null, fallback: number, now: Date = new Date()): number {
+  if (!wx || !wx.split || wx.days.length < 2) return fallback
+  const end = upcomingWeekendEnd(now)
+  const sun = new Date(end.getFullYear(), end.getMonth(), end.getDate())
+  const sat = new Date(sun.getFullYear(), sun.getMonth(), sun.getDate() - 1)
+  const d = whenWeekendDays(p.when, sat, sun, now)
+  if (d.sat && !d.sun) return wx.days[0].hi
+  if (d.sun && !d.sat) return wx.days[1].hi
+  return fallback
+}
+
+/** The per-day spec for ranking. One day (or none) collapses to the single-mode contract. */
+export function modeSpecOf(wx: WeekendWx | null, fallback: Mode): ModeSpec {
+  if (!wx || !wx.days.length) return fallback
+  const [a, b] = wx.days
+  return { sat: a.mode, sun: (b ?? a).mode }
+}
 
 export interface ModeMeta {
   label: string
@@ -141,12 +201,27 @@ const EVERGREEN_FLOOR = 0.5
 // a seasonal "All summer" venue stays evergreen, no bonus. Sized with the other sub-terms (buzz
 // caps 4, editor 5): decisive inside the tier, never enough to cross the +10 weather boundary.
 const SUN_BONUS = 3
-export function rankPicks(picks: Pick[], mode: Mode, taste?: Taste, seed = 0): Pick[] {
+export function rankPicks(picks: Pick[], mode: ModeSpec, taste?: Taste, seed = 0): Pick[] {
   const end = upcomingWeekendEnd()
   const fri = new Date(end.getFullYear(), end.getMonth(), end.getDate() - 2)   // the weekend's Friday, 00:00
-  const sunny = mode === 'HOT' || mode === 'WARM'
+  // PER-DAY WEATHER. Given {sat,sun}, each pick is scored against the mode of the day(s) it is
+  // actually available on — a Sunday-only picnic is judged by Sunday, not by Saturday's sunshine.
+  // A pick available on both days takes the BEST of the two: if Saturday is the good day, you go
+  // Saturday, so a wet Sunday must not demote an all-weekend terrace. Passing a bare Mode keeps
+  // the original single-mode behaviour exactly (every existing caller and test still holds).
+  const sunD = new Date(end.getFullYear(), end.getMonth(), end.getDate())
+  const satD = new Date(sunD.getFullYear(), sunD.getMonth(), sunD.getDate() - 1)
+  const perDay = typeof mode === 'string' ? null : mode
+  const modesFor = (p: Pick): Mode[] => {
+    if (!perDay) return [mode as Mode]
+    const d = whenWeekendDays(p.when, satD, sunD)
+    const out: Mode[] = []
+    if (d.sat) out.push(perDay.sat)
+    if (d.sun) out.push(perDay.sun)
+    return out.length ? out : [perDay.sat, perDay.sun]
+  }
   const sunBonus = (p: Pick) => {
-    if (!sunny || !p.outdoor) return 0
+    if (!p.outdoor || !modesFor(p).some((m) => m === 'HOT' || m === 'WARM')) return 0
     const latest = latestDateOf(p.when)
     return latest && latest.getTime() >= fri.getTime() && whenActiveBy(p.when, end) ? SUN_BONUS : 0
   }
@@ -160,7 +235,7 @@ export function rankPicks(picks: Pick[], mode: Mode, taste?: Taste, seed = 0): P
   // away — a within-tier sub-term capped ~2.5, like buzz. Only picks that carry popularity get the bump.
   const popBoost = (p: Pick) => (p.popularity ? Math.min(2.5, Math.log10(p.popularity + 1)) : 0)
   const score = (p: Pick) =>
-    (p.weatherFit.includes(mode) ? 10 : 0) + freshBoost(p) + buzzBoost(p) + popBoost(p) + sunBonus(p)
+    (modesFor(p).some((m) => p.weatherFit.includes(m)) ? 10 : 0) + freshBoost(p) + buzzBoost(p) + popBoost(p) + sunBonus(p)
     + (p.editorScore ?? 0) * EDITOR_W
     + (taste ? tasteScore(p, taste) : 0) + (seed ? jitter(p.id, seed) * 3.5 : 0)
   // Pure score order. De-clustering used to run HERE (diversify), but App.tsx re-segments the deck into

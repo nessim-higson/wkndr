@@ -177,7 +177,7 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 <body>
 <div class="wrap">
 <header>
-<p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD V.9.29</p>
+<p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD V.9.30</p>
 <h1>Your weekend<span class="dot">.</span></h1>
 <div id="modetoggle"><button class="on" data-mode="simple">Simple</button><button data-mode="advanced">Advanced</button></div>
 <div id="overnote" style="display:none"></div>
@@ -419,7 +419,7 @@ Promise.all([
   // 10 min (max-age=600), so a just-shipped board fix can lag in an open tab; the eyebrow makes
   // stale-board-vs-fresh-data visible at a glance (2026-07-12: an old tab's tier-mirror pile read
   // as "the board is wrong" when it was just cached).
-  const BOARD_V='V.9.29';
+  const BOARD_V='V.9.30';
   document.getElementById('eyebrow').textContent='WKNDR · CURATION BOARD '+BOARD_V+' · FEED '+(d.generatedAt||'').slice(0,16).replace('T',' · ');
   const board=document.getElementById('board');board.innerHTML='';
   const rot=document.createElement('div');rot.id='tab-rot';board.appendChild(rot);
@@ -539,15 +539,40 @@ Promise.all([
     const sunD=new Date(WKEND),satD=new Date(sunD.getFullYear(),sunD.getMonth(),sunD.getDate()-1);
     let i=om.daily.time.indexOf(iso(satD));               // the weekend's Saturday…
     if(i<0)i=om.daily.time.indexOf(iso(sunD));            // …or, on a Sunday board, what's left of it
+    const cls=(hi,wet,swing)=>hi<10?'COLD_WET':wet>65?(hi<16?'COLD_WET':'VOLATILE'):hi>=24?'HOT':swing>=9?'VOLATILE':hi>=16?'WARM':hi>=10?'COOL':'WARM';
     if(i>=0){const ks=[i,i+1].filter(k=>k<om.daily.time.length);
       const hi=Math.max(...ks.map(k=>om.daily.temperature_2m_max[k])),
             wet=Math.max(...ks.map(k=>om.daily.precipitation_probability_max[k])),
             swing=Math.max(...ks.map(k=>om.daily.temperature_2m_max[k]-om.daily.temperature_2m_min[k]));
-      if(isFinite(hi)&&isFinite(wet)&&isFinite(swing))
-        WX={hi:Math.round(hi),mode:hi<10?'COLD_WET':wet>65?(hi<16?'COLD_WET':'VOLATILE'):hi>=24?'HOT':swing>=9?'VOLATILE':hi>=16?'WARM':hi>=10?'COOL':'WARM'};}}
+      if(isFinite(hi)&&isFinite(wet)&&isFinite(swing)){
+        // PER-DAY (board V.9.30) — mirrors the app's weather/modes.ts. The blend stays as the
+        // headline summary, but the LENS now tests a pick against the mode of the day it is
+        // actually on: on a hot-Saturday / wet-Sunday weekend the old single mode either admitted
+        // washed-out Sunday picnics or hid perfectly good Saturday ones.
+        const dayOf=k=>({hi:Math.round(om.daily.temperature_2m_max[k]),
+          mode:cls(om.daily.temperature_2m_max[k],om.daily.precipitation_probability_max[k]??0,
+                   om.daily.temperature_2m_max[k]-om.daily.temperature_2m_min[k])});
+        const a=dayOf(ks[0]), b=ks.length>1?dayOf(ks[1]):a;
+        WX={hi:Math.round(hi),mode:cls(hi,wet,swing),sat:a,sun:b,
+            split:a.mode!==b.mode||Math.abs(a.hi-b.hi)>=4};}}}
+  // which of the two days is a pick on? mirror of lib/when.ts whenWeekendDays — undated / open runs
+  // are available on both, a dated pick covers its own interval, anything else falls back to both.
+  const daysOf=w=>{const BOTH={sat:true,sun:true};
+    if(!w||/\b(until|through|thru|till|t\/m|ongoing|runs?|opens?)\b/i.test(w))return BOTH;
+    const ts=datesOf(w);if(!ts.length)return BOTH;
+    const from=ts[0],to=ts[ts.length-1];
+    const sunD=new Date(WKEND),satD=new Date(sunD.getFullYear(),sunD.getMonth(),sunD.getDate()-1);
+    const on=dt=>{const s=new Date(dt.getFullYear(),dt.getMonth(),dt.getDate()).getTime();return from<=s+864e5-1&&to>=s};
+    const o={sat:on(satD),sun:on(sunD)};return o.sat||o.sun?o:BOTH};
+  /** the modes a pick should be judged against — its own day(s) */
+  const modesOf=p=>{if(!WX)return[];const d=daysOf(p.when);const out=[];
+    if(d.sat)out.push(WX.sat.mode);if(d.sun)out.push(WX.sun.mode);
+    return out.length?out:[WX.sat.mode,WX.sun.mode]};
+  const fitsWx=p=>!WX||(Array.isArray(p.weatherFit)&&modesOf(p).some(m=>p.weatherFit.includes(m)));
+  const sunnyFor=p=>!!WX&&modesOf(p).some(m=>m==='HOT'||m==='WARM');
   const sunny=!!WX&&(WX.mode==='HOT'||WX.mode==='WARM');
-  const dated=(d.picks||[]).filter(p=>dateInWknd(p.when)&&(!WX||(Array.isArray(p.weatherFit)&&p.weatherFit.includes(WX.mode))))
-    .sort((a,b)=>(sunny?(b.outdoor?1:0)-(a.outdoor?1:0):0)||((b.editorScore??0)-(a.editorScore??0))||((b.buzz??0)-(a.buzz??0)));
+  const dated=(d.picks||[]).filter(p=>dateInWknd(p.when)&&fitsWx(p))
+    .sort((a,b)=>((sunnyFor(b)&&b.outdoor?1:0)-(sunnyFor(a)&&a.outdoor?1:0))||((b.editorScore??0)-(a.editorScore??0))||((b.buzz??0)-(a.buzz??0)));
   // SUMMER RUNS (Ness, 2026-07-12: "the lens is serving mainly indoor activities — where are the
   // outdoor cinema picks?"): on a HOT/WARM weekend the weather-right slice must also carry the
   // OUTDOOR SEASONAL supply — open-air cinema, urban beaches, terrace/summer programmes — which is
@@ -565,8 +590,9 @@ Promise.all([
     const M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     const wkLabel=(satD.getMonth()===sunD.getMonth()?satD.getDate():satD.getDate()+' '+M[satD.getMonth()])+'–'+sunD.getDate()+' '+M[sunD.getMonth()];
     const lh=document.createElement('div');lh.className='cathead hot';
-    lh.innerHTML='This weekend · '+wkLabel+(WX?' · '+WX.hi+'°':'')
-      +'<span class="d">The tightest slice: '+dated.length+' pick'+(dated.length===1?'':'s')+' dated this weekend that fit the forecast'
+    // a split weekend names both days — the single blended figure hid which day was which
+    lh.innerHTML='This weekend · '+wkLabel+(WX?(WX.split?' · Sat '+WX.sat.hi+'° · Sun '+WX.sun.hi+'°':' · '+WX.hi+'°'):'')
+      +'<span class="d">The tightest slice: '+dated.length+' pick'+(dated.length===1?'':'s')+' dated this weekend that fit '+(WX&&WX.split?'their OWN day’s forecast':'the forecast')
       +(summer.length?', plus '+summer.length+' in-season outdoor run'+(summer.length===1?'':'s'):'')
       +(sunny?' · outdoor first':'')+(WX?'':' · forecast unavailable — weather filter off')
       +'. A verdict here counts everywhere — and ↑ Top 10 drops one straight into your deck (Simple view).</span>';

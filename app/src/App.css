@@ -65,6 +65,10 @@
 .tb-wx { display: flex; flex-direction: column; line-height: 1.1; gap: 1px; min-width: 0; }
 .tb-when { font-size: 14px; font-weight: 700; letter-spacing: -0.012em; color: #1c1c1a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .tb-temp { font-size: 17px; font-weight: 700; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; transition: color 0.4s ease; }
+/* a SPLIT weekend shows both days ("Sat 26° · Sun 17°") — two figures need to fit the same pill,
+   so they step down a little and each keeps its OWN day's colour */
+.tb-temp-split { font-size: 13.5px; white-space: nowrap; }
+.tb-temp-split .tb-temp-sep { opacity: 0.4; font-weight: 400; }
 
 .tb-icon {
   position: relative;

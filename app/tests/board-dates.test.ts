@@ -13,7 +13,7 @@
 import { describe, it, expect } from 'bun:test'
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { whenIsPast, whenLooksBroken } from '../src/lib/when'
+import { whenIsPast, whenLooksBroken, whenWeekendDays, upcomingWeekendEnd } from '../src/lib/when'
 
 const BOARD = join(import.meta.dir, '../public/curate/index.html')
 const html = readFileSync(BOARD, 'utf8')
@@ -200,6 +200,44 @@ describe('curation board ↔ app date parity', () => {
     expect(html).toContain("bits.push(v.until?'REST until '+v.until:'KILL')")
     expect(html).toContain("bits.push(v.until?'REST:'+v.until:'KILL')")
     expect(html).toContain('...(v.until?{until:v.until}:{})')   // and it reaches the fast-lane payload
+  })
+
+  // ——— PER-DAY WEATHER (board V.9.30). The board's lens tests a pick against the mode of the day
+  // it is actually on, mirroring lib/when.ts whenWeekendDays. A drifted mirror means the lens shows
+  // a slice the deck would never serve — the exact class of bug the date parity above exists for. ———
+  it('the board’s daysOf agrees with the app’s whenWeekendDays', () => {
+    const end = upcomingWeekendEnd()
+    const SUN = new Date(end.getFullYear(), end.getMonth(), end.getDate())
+    const SAT = new Date(SUN.getFullYear(), SUN.getMonth(), SUN.getDate() - 1)
+    const M = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+    const ds = (d: Date) => `${d.getDate()} ${M[d.getMonth()]}`
+    // WKEND is the board's end-of-Sunday timestamp; datesOf + daysOf are lifted verbatim
+    const src = [
+      `const WKEND=${SUN.getTime() + 86_399_999};`,
+      slice('const MONi=', 'return ts.sort((a,b)=>a-b)};'),
+      slice('const daysOf=w=>{', "return o.sat||o.sun?o:BOTH};"),
+    ].join('\n')
+    const daysOf = new Function(`${src}\nreturn daysOf`)() as (w: string) => { sat: boolean; sun: boolean }
+
+    const cases = [
+      `Sat ${ds(SAT)}`, `Sun ${ds(SUN)}`, `${ds(SAT)} – ${ds(SUN)}`,
+      'Daily · 9:00–18:00', 'Ongoing', 'Until 30 Aug', 'All summer · evenings', '',
+      `Fri ${ds(new Date(SAT.getFullYear(), SAT.getMonth(), SAT.getDate() - 1))} · 23:00`,
+      `Sat–Sun ${SAT.getDate()}–${SUN.getDate()} ${M[SUN.getMonth()]}`,
+    ]
+    const drift = cases.filter((w) => {
+      const a = daysOf(w), b = whenWeekendDays(w, SAT, SUN)
+      return a.sat !== b.sat || a.sun !== b.sun
+    })
+    expect(drift).toEqual([])
+  })
+
+  it('the board judges a pick against its own day, not one blended mode', () => {
+    expect(html).toContain('const modesOf=p=>')
+    expect(html).toContain('const fitsWx=p=>')
+    // the lens filter must go through fitsWx, never a bare WX.mode includes()
+    expect(html).toContain('dateInWknd(p.when)&&fitsWx(p)')
+    expect(html).not.toContain('p.weatherFit.includes(WX.mode)')
   })
 
   it('the board still filters every list through servable()', () => {
