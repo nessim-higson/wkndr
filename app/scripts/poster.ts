@@ -202,7 +202,15 @@ export const GROUNDS: Record<Ground, { bg: string; ink: string; mut: string; acc
 export type Layout = 'list' | 'two' | 'one' | 'bare' | 'index' | 'days' | 'og'
 // `index` — the picks NAMED but not photographed. Without images the titles carry the poster, so
 // they run at 52px instead of 36px: a type specimen of the weekend rather than a thumbnail receipt.
-export interface PosterOpts { thumb?: ThumbStyle; layout?: Layout; ground?: Ground }
+/** THE UNFURL'S COMPOSITION. All five render the same 1200×630 and are judged at ~500px in a chat
+ *  bubble, which is the only test that matters: whatever survives that shrink wins.
+ *   split — brand panel left, two photographs right (the shipped one)
+ *   hero  — ONE photograph full-bleed, everything overlaid
+ *   trio  — three photo columns, brand floating over the first
+ *   type  — no photographs at all: masthead + a numbered list
+ *   band  — brand band across the top, a photo strip beneath */
+export type OgVariant = 'split' | 'hero' | 'trio' | 'type' | 'band'
+export interface PosterOpts { thumb?: ThumbStyle; layout?: Layout; ground?: Ground; ogv?: OgVariant }
 
 export function posterHtml(
   picks: Pick[],
@@ -210,7 +218,7 @@ export function posterHtml(
   fontDataUrl: string,
   opts: PosterOpts = {},
 ): string {
-  const { thumb = 'portrait', layout = 'list', ground = 'cream' } = opts
+  const { thumb = 'portrait', layout = 'list', ground = 'cream', ogv = 'split' } = opts
   const T = THUMBS[thumb] ?? THUMBS.portrait
   const G = GROUNDS[ground] ?? GROUNDS.cream
   // a split weekend names both days — same rule the app uses (V.10.18)
@@ -261,44 +269,140 @@ ${css}</style></head><body>${body}</body></html>`
     // someone pastes the link. Read at ~500px wide in a chat bubble, so: two picks maximum, type
     // sized to survive the shrink, and the brand block anchored left where the eye lands first.
     if (layout === 'og') {
-      const two = picks.slice(0, 2)
-      return shell(`
-        <div class="og">
-          <div class="ogl">
-            <div class="mast dsp"><span class="d"></span>WKNDR</div>
-            <div>
-              <div class="ogk">This weekend in Amsterdam</div>
-              <div class="ogd dsp">${esc(wx?.label ?? 'This weekend')}</div>
-              ${temps ? `<div class="temps">${temps}</div>` : ''}
-            </div>
+      const n = ogv === 'hero' ? 1 : ogv === 'split' ? 2 : 3
+      const sel = picks.slice(0, n)
+      const brand = `<div class="mast dsp"><span class="d"></span>WKNDR</div>`
+      const kick = 'This weekend in Amsterdam'
+      const date = esc(wx?.label ?? 'This weekend')
+
+      // shared furniture for the photo tiles
+      const tile = (p: Pick, i: number, w: number, h: number) => `
+        <div class="tile"${cropped(p, w, h)}>
+          <span class="tn dsp">${rankOf(p, i)}</span>
+          <div class="tt"><div class="th dsp">${esc(p.title)}</div><div class="tm">${meta(p)}</div></div>
+        </div>`
+      const tileCss = (title: number, metaSize: number) => `
+.tile{flex:1;position:relative;background:${G.line} center/cover no-repeat;display:flex;flex-direction:column;justify-content:flex-end}
+.tile:after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.74) 0%,rgba(0,0,0,.12) 56%,rgba(0,0,0,0) 82%)}
+.tile+.tile{border-left:3px solid ${G.bg}}
+.tn{position:absolute;top:0;left:0;z-index:2;min-width:50px;height:50px;padding:0 13px;background:${G.acc};
+  color:${ground === 'orange' ? '#fff6f0' : '#fff'};font-size:28px;display:flex;align-items:center;justify-content:center}
+.tt{position:relative;z-index:2;padding:0 20px 20px;color:#fff}
+.th{font-size:${title}px;line-height:1.04;text-shadow:0 2px 14px rgba(0,0,0,.55);
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.tm{margin-top:6px;font-size:${metaSize}px;color:rgba(255,255,255,.9);text-shadow:0 1px 8px rgba(0,0,0,.65);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}`
+
+      // ── SPLIT — the shipped composition: brand panel left, photographs right ─────────────────
+      if (ogv === 'split') {
+        return shell(`<div class="og">
+          <div class="ogl">${brand}
+            <div><div class="ogk">${kick}</div><div class="ogd dsp">${date}</div>
+              ${temps ? `<div class="temps">${temps}</div>` : ''}</div>
             <div class="ogu dsp">app.wkndr.xyz</div>
           </div>
-          <div class="ogr">${two.map((p, i) => `
-            <div class="ogc"${cropped(p, 470, 630)}>
-              <span class="ogn dsp">${rankOf(p, i)}</span>
-              <div class="ogt"><div class="ogh dsp">${esc(p.title)}</div><div class="ogm">${meta(p)}</div></div>
-            </div>`).join('')}
-          </div>
+          <div class="ogr">${sel.map((p, i) => tile(p, i, 470, 630)).join('')}</div>
         </div>`, `
 .og{flex:1;display:flex;min-height:0}
 .ogl{flex:none;width:462px;display:flex;flex-direction:column;justify-content:space-between;padding:44px 40px}
-.mast{font-size:46px;gap:14px}
-.mast .d{width:20px;height:20px}
+.mast{font-size:46px;gap:14px}.mast .d{width:20px;height:20px}
 .ogk{font-size:17px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:${G.mut};margin-bottom:12px}
 .ogd{font-size:82px;line-height:.9}
 .temps{margin-top:12px;font-size:27px}
 .ogu{font-size:25px;letter-spacing:-.02em}
-.ogr{flex:1;display:flex;gap:0}
-.ogc{flex:1;position:relative;background:${G.line} center/cover no-repeat;display:flex;flex-direction:column;justify-content:flex-end}
-.ogc:after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.72) 0%,rgba(0,0,0,.12) 55%,rgba(0,0,0,0) 80%)}
-.ogc+.ogc{border-left:3px solid ${G.bg}}
-.ogn{position:absolute;top:0;left:0;z-index:2;min-width:52px;height:52px;padding:0 14px;background:${G.acc};
-  color:${ground === 'orange' ? '#fff6f0' : '#fff'};font-size:29px;display:flex;align-items:center;justify-content:center}
-.ogt{position:relative;z-index:2;padding:0 22px 22px;color:#fff}
-.ogh{font-size:34px;line-height:1.04;text-shadow:0 2px 14px rgba(0,0,0,.5)}
-.ogm{margin-top:7px;font-size:17px;color:rgba(255,255,255,.9);text-shadow:0 1px 8px rgba(0,0,0,.6);
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ogh{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}`)
+.ogr{flex:1;display:flex}${tileCss(34, 17)}`)
+      }
+
+      // ── HERO — one photograph, everything on top of it. The loudest in a feed. ───────────────
+      if (ogv === 'hero') {
+        const p = sel[0]
+        return shell(`<div class="hero"${cropped(p, 1200, 630)}>
+          <div class="hin">
+            <div class="htop">${brand}${temps ? `<span class="temps">${temps}</span>` : ''}</div>
+            <div class="hbot">
+              <div class="hk">${kick} · ${date}</div>
+              <div class="hh dsp">${esc(p.title)}</div>
+              <div class="hm">${meta(p)}<span class="hu dsp">app.wkndr.xyz</span></div>
+            </div>
+          </div></div>`, `
+.hero{flex:1;position:relative;background:${G.line} center/cover no-repeat;display:flex}
+.hero:after{content:'';position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(0,0,0,.82) 0%,rgba(0,0,0,.25) 48%,rgba(0,0,0,.45) 100%)}
+.hin{position:relative;z-index:2;flex:1;display:flex;flex-direction:column;justify-content:space-between;padding:40px 44px;color:#fff}
+.htop{display:flex;align-items:center;justify-content:space-between}
+.mast{font-size:44px;gap:13px;color:#fff}.mast .d{width:19px;height:19px}
+.temps{font-size:30px;color:#fff}
+.hk{font-size:19px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:12px}
+.hh{font-size:86px;line-height:.96;text-shadow:0 3px 22px rgba(0,0,0,.5);
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.hm{margin-top:14px;font-size:22px;color:rgba(255,255,255,.88);display:flex;justify-content:space-between;align-items:baseline}
+.hu{font-size:24px;color:#fff}`)
+      }
+
+      // ── TRIO — three columns, the brand floating over the first. Most picks, least chrome. ───
+      if (ogv === 'trio') {
+        return shell(`<div class="og">
+          <div class="float">${brand}<div class="fd dsp">${date}${temps ? `<span class="ft">${temps}</span>` : ''}</div></div>
+          ${sel.map((p, i) => tile(p, i, 400, 630)).join('')}
+          <div class="fu dsp">app.wkndr.xyz</div>
+        </div>`, `
+.og{flex:1;display:flex;min-height:0;position:relative}
+.float{position:absolute;top:0;left:0;z-index:5;padding:34px 34px 30px 34px;background:${G.bg};border-radius:0 0 22px 0}
+.mast{font-size:38px;gap:12px}.mast .d{width:17px;height:17px}
+.fd{margin-top:10px;font-size:52px;line-height:.92;display:flex;align-items:baseline;gap:14px}
+.ft{font-size:24px;color:${G.acc}}
+.fu{position:absolute;right:0;top:0;z-index:5;padding:13px 20px;background:${G.bg};border-radius:0 0 0 22px;font-size:20px}
+${tileCss(28, 15)}
+/* AFTER tileCss so these actually win: the rank moves to the BOTTOM-left, clear of both the brand
+   plate (top-left) and the url plate (top-right), and the titles get bottom padding to clear it. */
+.tn{top:auto;bottom:0;left:0;right:auto;border-radius:0 16px 0 0}
+.tt{padding:0 20px 20px 68px}`)
+      }
+
+      // ── TYPE — no photographs. Survives the shrink better than anything else here. ───────────
+      if (ogv === 'type') {
+        return shell(`<div class="og">
+          <div class="tl">${brand}
+            <div><div class="ogk">${kick}</div><div class="ogd dsp">${date}</div>
+              ${temps ? `<div class="temps">${temps}</div>` : ''}</div>
+            <div class="ogu dsp">app.wkndr.xyz</div></div>
+          <ol class="tr">${sel.map((p, i) => `
+            <li><span class="ln dsp">${String(rankOf(p, i)).padStart(2, '0')}</span>
+              <span class="lx"><span class="lh dsp">${esc(p.title)}</span><span class="lm">${meta(p)}</span></span></li>`).join('')}
+          </ol>
+        </div>`, `
+.og{flex:1;display:flex;min-height:0;padding:42px 44px;gap:40px}
+.tl{flex:none;width:400px;display:flex;flex-direction:column;justify-content:space-between}
+.mast{font-size:44px;gap:14px}.mast .d{width:19px;height:19px}
+.ogk{font-size:16px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:${G.mut};margin-bottom:10px}
+.ogd{font-size:76px;line-height:.9}
+.temps{margin-top:10px;font-size:26px}
+.ogu{font-size:23px}
+.tr{flex:1;min-width:0;list-style:none;display:flex;flex-direction:column;justify-content:center;gap:4px;
+  border-left:3px solid ${G.ink};padding-left:38px}
+.tr li{display:flex;align-items:baseline;gap:20px;padding:15px 0}
+.tr li+li{border-top:1px solid ${G.line}}
+.ln{flex:none;width:56px;font-size:26px;color:${G.acc}}
+.lx{flex:1;min-width:0;display:block}
+.lh{display:block;font-size:37px;line-height:1.04;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lm{display:block;margin-top:5px;font-size:18px;color:${G.mut};white-space:nowrap;overflow:hidden;text-overflow:ellipsis}`)
+      }
+
+      // ── BAND — brand across the top, a photo strip beneath. The most poster-like. ────────────
+      return shell(`<div class="og">
+        <div class="bnd">${brand}
+          <div class="bd dsp">${date}${temps ? `<span class="bt">${temps}</span>` : ''}</div>
+          <div class="bu dsp">app.wkndr.xyz</div>
+        </div>
+        <div class="strip">${sel.map((p, i) => tile(p, i, 400, 400)).join('')}</div>
+      </div>`, `
+.og{flex:1;display:flex;flex-direction:column;min-height:0}
+.bnd{flex:none;height:232px;display:flex;align-items:center;gap:34px;padding:0 44px}
+.mast{font-size:44px;gap:14px}.mast .d{width:19px;height:19px}
+.bd{margin-left:auto;font-size:70px;line-height:.9;display:flex;align-items:baseline;gap:16px}
+.bt{font-size:28px;color:${G.acc}}
+.bu{display:none}
+.strip{flex:1;display:flex;min-height:0}${tileCss(28, 15)}`)
     }
 
     // TWO — the weekend's top two, each given a real photograph and a headline-sized title.
@@ -521,6 +625,7 @@ const feed = JSON.parse(readFileSync(join(root, `public/data/picks.${CITY}.json`
 const style = (arg('thumb') ?? 'portrait') as ThumbStyle
 const layout = (arg('layout') ?? 'list') as Layout
 const ground = (arg('ground') ?? 'cream') as Ground
+const ogv = (arg('ogv') ?? 'split') as OgVariant
 // `days` fills two columns, so it needs a deeper pool than the five a single list shows
 const chosen = arg('picks')   // --picks="Canal Parade,Chefs in het Bos" overrides the deck order
 const picks = chosen ? pickByTitle(feed.picks, chosen.split(',')) : topPicks(feed.picks, layout === 'days' ? 8 : COUNT)
@@ -563,7 +668,7 @@ try {
         const [VW, VH] = CANVAS(j.layout)
         await page.setViewport({ width: VW, height: VH, deviceScaleFactor: 1 })
         await page.setContent(posterHtml(j.picks, wx, `data:font/woff2;base64,${font}`,
-          { thumb: style, layout: j.layout, ground: j.ground }), { waitUntil: 'networkidle0', timeout: 45_000 })
+          { thumb: style, layout: j.layout, ground: j.ground, ogv }), { waitUntil: 'networkidle0', timeout: 45_000 })
         await page.evaluateHandle('document.fonts.ready')
         shot = await page.screenshot({ type: 'png' }) as Buffer
       } finally { await page.close() }
