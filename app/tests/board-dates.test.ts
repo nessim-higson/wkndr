@@ -158,7 +158,7 @@ describe('curation board ↔ app date parity', () => {
     // both views call killNow() straight off the ✕; neither opens an inline picker any more
     expect(html).toContain('function killNow(p)')
     expect(html).toContain("el.querySelector('.okill').addEventListener('click',()=>killNow(p))")
-    expect(html).toMatch(/querySelector\('\.kill'\)\.addEventListener\('click',\(\)=>\{[\s\S]{0,160}killNow\(p\)/)
+    expect(html).toMatch(/querySelector\('\.kill'\)\.addEventListener\('click',\(\)=>\{[\s\S]{0,600}killNow\(p\)/)
     // the old classify-first affordances are gone
     expect(html).not.toContain("reasonBox('reasons')")
     expect(html).not.toContain(".addEventListener('click',()=>el.classList.toggle('asking'))")
@@ -166,7 +166,7 @@ describe('curation board ↔ app date parity', () => {
 
   it('a cancel with no reason is still a valid verdict', () => {
     // killNow sets killed WITHOUT touching reason — an un-reasoned cancel submits as a plain KILL
-    expect(html).toMatch(/function killNow\(p\)\{const v=\(V\[p\.id\]\?\?=\{t:p\.title\}\);v\.killed=true;v\.flag=undefined;/)
+    expect(html).toMatch(/function killNow\(p\)\{const v=\(V\[vkey\(p\)\]\?\?=\{t:p\.title\}\);v\.killed=true;v\.flag=undefined;/)
     expect(html).toContain("return 'Cancelled — reason optional'")
   })
 
@@ -249,5 +249,51 @@ describe('curation board ↔ app date parity', () => {
       ...['pending', 'trending', 'bench', 'canonC', 'canon'].filter((l) => !html.includes(`${l}=cull(${l})`)),
     ]
     expect(missing).toEqual([])
+  })
+})
+
+// ── ONE VERDICT PER EVENT (board V.9.31) ────────────────────────────────────────────────────────
+// The board renders the same event in several sections (the lens, the feed, the canon library, a
+// trending twin). Keyed by pick ID, each copy held its OWN verdict — so ✕ on the feed card left the
+// library card untouched, and round #22 filed one pick as both "Pure Markt | 4* KILL" and
+// "Pure Markt | 4*". Keyed by the title token instead, twins are a single record.
+describe('one verdict per event', () => {
+  it('keys verdicts by the title token, not the pick id', () => {
+    expect(html).toContain('const vkey=p=>tok(p.title||\'\')')
+    // no verdict site may still read/write V by raw pick id
+    expect(html).not.toMatch(/V\[p\.id\]/)
+    expect(html).toContain('V[vkey(p)]')
+  })
+
+  it('cards carry their verdict key so every twin lights up together', () => {
+    expect(html).toContain('el.dataset.vk=vkey(p)')
+    expect(html).toContain('const v=V[el.dataset.vk||\'\']')
+  })
+
+  it('a cancel sweeps the twins off screen, not just the clicked card', () => {
+    expect(html).toContain('.card[data-vk="${CSS.escape(vkey(p))}"]')
+  })
+
+  it('migrates an existing id-keyed round instead of losing it', () => {
+    expect(html).toContain('V=rekey(s.V||{})')
+    expect(html).toContain('function rekey(old)')
+    expect(html).toContain('function mergeV(a,b)')
+  })
+
+  it('merging twins keeps the decisive call, never the bare star', () => {
+    const src = slice('function mergeV(a,b){', '\n  return o}')
+    const merge = new Function(`${src}\nreturn mergeV`)() as (a: Record<string, unknown>, b: Record<string, unknown>) => Record<string, unknown>
+    // the exact #22 pair: one copy cancelled, the twin merely rated
+    const out = merge({ t: 'Pure Markt', stars: 4, killed: true }, { t: 'Pure Markt', stars: 4 })
+    expect(out.killed).toBe(true)
+    expect(out.stars).toBe(4)
+    // and the reverse order must agree — merge order is arbitrary
+    const flipped = merge({ t: 'Pure Markt', stars: 4 }, { t: 'Pure Markt', stars: 4, killed: true })
+    expect(flipped.killed).toBe(true)
+    // a cancel clears any flag; the higher star survives
+    const both = merge({ t: 'X', flag: true, stars: 5 }, { t: 'X', killed: true, stars: 3 })
+    expect(both.killed).toBe(true)
+    expect(both.flag).toBeUndefined()
+    expect(both.stars).toBe(5)
   })
 })

@@ -61,6 +61,22 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 - Verified: promote (tail→#10) · demote (#10→tail) · both lists drag-reorder · New Find label/feedback ·
   PILE full (81). No console errors.
 
+## [board V.9.31] — 2026-07-31 — one verdict per event, not one per card
+- Ness: "yes, make same-title cards one verdict." Round #22 filed the proof — **`Pure Markt | 4* KILL`
+  AND `Pure Markt | 4*` in the same payload**, because ✕ on the feed card never touched its library twin.
+- `V` was keyed by **pick id**, so an event rendered in two sections held two INDEPENDENT verdicts.
+  Now keyed by `vkey(p)` = the word-order-blind title token (the same `tok` the cross-section dupe
+  suppressor already used), so twins are a single record and a ★ or ✕ on either lights up both.
+  **14 of this feed's events render as twins** — the contradiction was one bad round away at any time.
+- A cancel now **sweeps the twins off screen**, not just the clicked card: verified live, one ✕ took
+  both Canal Parade cards, left one verdict, one payload entry, one shelf row.
+- **Existing rounds migrate rather than vanish.** `rekey()` folds an id-keyed blob onto title keys on
+  restore, and `mergeV()` resolves a twin pair so the DECISIVE call survives: a cancel outranks a flag
+  outranks nothing, the higher star wins, and a this-round verdict beats a baked prior-round one.
+  Order-independent (merge(a,b) === merge(b,a) for the killed case) and idempotent — tested against
+  the exact #22 pair.
+- 199 tests pass (5 new, including the merge run against the real contradiction).
+
 ## [R14 compile] — 2026-07-31 — two promotions out of the airlock, two fatigue rests
 - **Issue #21** (68 verdicts). Two new finds crowned, two long-serving picks cancelled.
 - **`Chefs in het Bos` (judge 8) and `Horta: Spanish Restaurant Opening` (judge 6) were 👑 TOP ▲ LEAD

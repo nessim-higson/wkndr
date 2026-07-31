@@ -5,7 +5,7 @@ FIRST in a new chat. For strategy + backlog see `docs/backlog.md`; for the pipel
 `docs/pipeline-architecture.md` + `docs/source-map.md`; for **who may write to the deck vs to a personal
 profile** (board / Tune / airlock — read before touching either) see `docs/curation-surfaces.md`; for the
 **board roadmap** (auto-compile tracks) see `docs/board-roadmap.md`; for full **version history** see
-`CHANGELOG.md` (current to app V.10.18 / board V.9.30) and the **git log / tags**. Onboarding:
+`CHANGELOG.md` (current to app V.10.18 / board V.9.31) and the **git log / tags**. Onboarding:
 `CLAUDE.md`. App lives in `/app` (Vite + React + TS, run with `bun`); ships to **Cloudflare Pages**
 (`wkndr.xyz` + `app.wkndr.xyz`) **and** GitHub Pages (legacy, keeps old share links alive)._
 
@@ -93,7 +93,7 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
   Amsterdam 👑, Martin Parr canon, BRET image pinned; V.9.9 = **the board reads the deck** — the
   pipeline stamps `servePos` (the app's own serve order, dragged pile included) and the WEEKEND
   PILE renders the stamp instead of the old drifting tier-mirror; V.9.10–V.9.12 = board version in the eyebrow (Pages caches 10 min), SUMMER RUNS join the lens on hot weekends + the big-screen / World Cup websearch facet) ·
-  **Curation Board (board V.9.30, redesigned 2026-07-22→23):** https://app.wkndr.xyz/curate/ (or the
+  **Curation Board (board V.9.31, redesigned 2026-07-22→23):** https://app.wkndr.xyz/curate/ (or the
   door `app.wkndr.xyz/?curate2026!` → board on a laptop, Triage deck on a phone; GH-Pages mirror also
   live). Ness's core feedback drove a rebuild: **Helvetica everywhere, dead-simple, one ranked deck.**
   **V.9.25 (2026-07-30) closed two gaps Ness hit:** (1) the board had **no expiry guard** — it rendered

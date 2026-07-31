@@ -177,7 +177,7 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 <body>
 <div class="wrap">
 <header>
-<p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD V.9.30</p>
+<p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD V.9.31</p>
 <h1>Your weekend<span class="dot">.</span></h1>
 <div id="modetoggle"><button class="on" data-mode="simple">Simple</button><button data-mode="advanced">Advanced</button></div>
 <div id="overnote" style="display:none"></div>
@@ -280,7 +280,7 @@ function cancelState(v){
   return 'Cancelled — reason optional';
 }
 /** ✕ anywhere: cancel NOW, classify later. */
-function killNow(p){const v=(V[p.id]??={t:p.title});v.killed=true;v.flag=undefined;
+function killNow(p){const v=(V[vkey(p)]??={t:p.title});v.killed=true;v.flag=undefined;
   update();renderOpen();renderCancelled();}
 /** ONE wiring pass, used by every shelf row. The chips, the "back when?" step and the free-text
  *  escape hatch are the same code everywhere — the V.9.25 bug (picker shipped to Advanced only)
@@ -288,7 +288,7 @@ function killNow(p){const v=(V[p.id]??={t:p.title});v.killed=true;v.flag=undefin
  *  "wrong link / bad image" means the pick is good and the data is broken, so it belongs live. */
 function wireReasons(el,p,onFix,onKill){
   const box=el.querySelector('.reasons,.oreasons');
-  const get=()=>(V[p.id]??={t:p.title});
+  const get=()=>(V[vkey(p)]??={t:p.title});
   const lit=c=>box.querySelectorAll('.rchip[data-kind]').forEach(x=>x.classList.toggle('on',x===c));
   const kill=()=>{const v=get();v.killed=true;v.flag=undefined;el.classList.remove('asking');onKill()};
   box.querySelectorAll('.rchip[data-kind]').forEach(c=>c.addEventListener('click',()=>{
@@ -349,6 +349,13 @@ function renderCancelled(){
     }
   }
 }
+// ONE VERDICT PER EVENT (V.9.31). V used to be keyed by pick ID, so the same event appearing in two
+// sections — the live feed AND the canon library, or a trending twin — held two INDEPENDENT verdicts.
+// Round #22 filed the proof: "Pure Markt | 4* KILL" and "Pure Markt | 4*" in one payload, because ✕ on
+// the feed card never touched its library twin. Keyed by the word-order-blind title token instead
+// (the same `tok` the cross-section dupe suppressor already uses), so twins are one record and a
+// verdict on either lights up both.
+const vkey=p=>tok(p.title||'');
 let V={},baked={},feedKey='',PILE=null;   // PILE = hand-dragged pile order (titles) — null until a drag
 let renderPile=()=>{};   // rebuilt inside the feed load — lets a card's ▲/👑/✕ live-update the pile
 let renderStatus=()=>{};   // "did my call land?" panel — recompared to the live feed on every verdict
@@ -359,7 +366,25 @@ let feedGeneratedAt='';     // the feed this round targets — stamped on the ov
 const CURATE_URL='https://wkndr-curate.ness-13b.workers.dev';   // Track A auto-compile fast-lane
 let extras=[];           // New Finds you've upvoted (not in the live feed yet) — ride the deck + Submit
 function store(){try{localStorage.setItem(feedKey,JSON.stringify({V,PILE,extras}))}catch(e){}}
-function restore(){try{const s=JSON.parse(localStorage.getItem(feedKey)||'{}');V=s.V||{};PILE=s.PILE||null;extras=s.extras||[]}catch(e){}}
+function restore(){try{const s=JSON.parse(localStorage.getItem(feedKey)||'{}');V=rekey(s.V||{});PILE=s.PILE||null;extras=s.extras||[]}catch(e){}}
+/** Fold an id-keyed blob (or already-title-keyed one) onto title keys, merging any twins. Idempotent. */
+function rekey(old){const out={};
+  for(const k in old){const v=old[k];if(!v||!v.t)continue;const nk=tok(v.t);
+    out[nk]=out[nk]?mergeV(out[nk],v):v}
+  return out}
+/** Merge two verdicts for the SAME event. A decisive call must never be lost to a bare star from the
+ *  twin: a cancel outranks a flag outranks nothing, and the higher star wins. */
+function mergeV(a,b){
+  const o={...a,...b};
+  o.t=a.t||b.t;
+  o.killed=(a.killed||b.killed)||undefined;
+  o.flag=o.killed?undefined:((a.flag||b.flag)||undefined);
+  o.reason=(a.killed||a.flag?a.reason:undefined)??(b.killed||b.flag?b.reason:undefined)??a.reason??b.reason;
+  o.until=a.until??b.until;
+  o.note=a.note??b.note;
+  o.stars=Math.max(a.stars||0,b.stars||0)||undefined;
+  o.r1=(a.r1&&b.r1)||undefined;   // a THIS-ROUND call beats a baked prior-round one
+  return o}
 // longest matching key wins ("bakers & roasters" beats "bak")
 function bakedFor(title){const t=title.toLowerCase();let best=null,len=-1;for(const k in baked){if(t.includes(k)&&k.length>len){best=baked[k];len=k.length}}return best}
 // word-order-blind identity key (mirror of the pipeline's tokKey) — powers cross-section dupe suppression
@@ -419,7 +444,7 @@ Promise.all([
   // 10 min (max-age=600), so a just-shipped board fix can lag in an open tab; the eyebrow makes
   // stale-board-vs-fresh-data visible at a glance (2026-07-12: an old tab's tier-mirror pile read
   // as "the board is wrong" when it was just cached).
-  const BOARD_V='V.9.30';
+  const BOARD_V='V.9.31';
   document.getElementById('eyebrow').textContent='WKNDR · CURATION BOARD '+BOARD_V+' · FEED '+(d.generatedAt||'').slice(0,16).replace('T',' · ');
   const board=document.getElementById('board');board.innerHTML='';
   const rot=document.createElement('div');rot.id='tab-rot';board.appendChild(rot);
@@ -510,7 +535,7 @@ Promise.all([
   // BUILD-IT-UP pile (Ness, 2026-07-23): the pile is no longer the whole projected deck — it's the
   // set you PROMOTE. It seeds with your 👑 TOPs; upvoting a card (▲) drops it in; drag to order.
   const pickPool=new Map((d.picks||[]).map(p=>[p.id,p]));
-  const promoted=()=>{const out=[];for(const p of (d.picks||[])){const v=V[p.id]||{};
+  const promoted=()=>{const out=[];for(const p of (d.picks||[])){const v=V[vkey(p)]||{};
     const top=v.top!==undefined?v.top:p.top;   // baked TOP unless overridden this round
     const lead=!!v.lead;                        // build-up: LEAD = this round's upvotes only
     if((top||lead)&&!v.later&&!v.killed)out.push(p);}return out;};
@@ -531,7 +556,7 @@ Promise.all([
   // pipeline's weekendMode() takes, through an inline mirror of src/weather/modes.ts classify —
   // so lens, airlock order and deck ranking all agree on what the weekend IS. On a HOT/WARM
   // weekend the outdoor picks lead (the deck's sun bonus, mirrored). Cards here also live in the
-  // pile/feed below — the badge marks the overlap; verdicts share V[p.id], a ★ here counts
+  // pile/feed below — the badge marks the overlap; verdicts share V[vkey(p)], a ★ here counts
   // everywhere. Forecast fetch fails soft → dated-only lens, weather filter off. ———
   let WX=null;
   if(om&&om.daily&&Array.isArray(om.daily.time)){
@@ -666,7 +691,7 @@ Promise.all([
   // sends the order (rides pileLine → weekly.pile). The full board is the Advanced view. ———
   {
     const picks=(d.picks||[]);
-    picks.forEach(p=>SEEN.set(p.id,p));   // the shelf's lookup — Simple rows never pass through addCard
+    picks.forEach(p=>SEEN.set(vkey(p),p));   // the shelf's lookup — Simple rows never pass through addCard
     const feedServed=picks.filter(p=>p.servePos!=null).sort((a,b)=>a.servePos-b.servePos);
     const pick=t=>feedServed.find(p=>p.title===t)||extras.find(p=>p.title===t);
     const isExtra=t=>extras.some(e=>e.title===t);
@@ -706,10 +731,10 @@ Promise.all([
           PILE=seg==='top'?[...now,...PILE.slice(MAX)]:[...PILE.slice(0,MAX),...now];store();renderOpen()})});
     }
     // ✕ ON THE SIMPLE CARD (V.9.25) — the same verdict vocabulary Advanced has, on the view you
-    // actually work in. Writes the SAME V[p.id] shape, so a kill here rides Submit and the fast-lane
+    // actually work in. Writes the SAME V[vkey(p)] record, so a kill here rides Submit and the fast-lane
     // exactly like an Advanced one: `keep` reasons flag-and-fix (card stays, turns green with its
     // reason), the rest cancel it (card leaves the deck AND the pile immediately).
-    const row=(p,i,tail)=>{const v=V[p.id]||{};
+    const row=(p,i,tail)=>{const v=V[vkey(p)]||{};
       const el=document.createElement('div');el.className='ocard'+(isExtra(p.title)?' isnew':'')+(v.flag?' flagged':'');el.dataset.title=p.title;
       el.innerHTML='<span class="num">'+(i+1)+'</span><span class="ogrip" title="Drag to reorder">⠿</span>'
         +'<img loading="lazy" src="'+(p.image||'')+'" alt="">'
@@ -774,8 +799,8 @@ Promise.all([
 }).catch(e=>{document.getElementById('board').textContent='Could not load the feed: '+e});
 
 function addCard(p,g,tag,pos,probe){
-  SEEN.set(p.id,p);   // so the cancelled shelf can still draw it after it has left every list
-  const el=document.createElement('div');el.className='card';el.dataset.id=p.id+(tag==='pile'?'::pile':tag==='lens'?'::lens':'');
+  SEEN.set(vkey(p),p);   // so the cancelled shelf can still draw it after it has left every list
+  const el=document.createElement('div');el.className='card';el.dataset.id=p.id+(tag==='pile'?'::pile':tag==='lens'?'::lens':'');el.dataset.vk=vkey(p);
   if(tag==='pile'){el.dataset.title=p.title;el.dataset.sfx=(p.top?' · 👑':p.lead?' · ▲':'')}   // for drag reorder + renumber
   if(probe&&p.image)probeRes(el,p.image);
   const bk=bakedFor(p.title);
@@ -807,9 +832,9 @@ function addCard(p,g,tag,pos,probe){
     +'<input class="inp better" placeholder="better image URL">'
     +'<div class="ruledtag">✓ your call — rides Submit</div>'
     +'</div>';
-  const get=()=>V[p.id]??={t:p.title};
-  if(!V[p.id]&&bk){V[p.id]={t:p.title,stars:bk.stars,img:bk.img,note:bk.note,r1:true}}
-  const v=V[p.id];
+  const get=()=>V[vkey(p)]??={t:p.title};
+  if(!V[vkey(p)]&&bk){V[vkey(p)]={t:p.title,stars:bk.stars,img:bk.img,note:bk.note,r1:true}}
+  const v=V[vkey(p)];
   const stars=el.querySelectorAll('.star');
   const paint=n=>stars.forEach(s=>s.classList.toggle('on',+s.dataset.n<=n));
   stars.forEach(s=>s.addEventListener('click',()=>{const n=+s.dataset.n;get().stars=(get().stars===n?undefined:n);paint(get().stars||0);update()}));
@@ -817,7 +842,11 @@ function addCard(p,g,tag,pos,probe){
   // (wrong link / bad image / low-res) flag it for a fix and the pick STAYS live; the rest remove it.
   // ✕ cancels on the spot — off this grid, out of the Simple deck, onto the shelf. No classify-first.
   el.querySelector('.kill').addEventListener('click',()=>{
-    el.classList.add('dead');setTimeout(()=>el.remove(),320);
+    // every TWIN goes too — the same event can be rendered in the lens, the feed and the library, and
+    // leaving its copies on screen is what let round #22 file one pick as both "4* KILL" and "4*".
+    document.querySelectorAll(`.card[data-vk="${CSS.escape(vkey(p))}"]`).forEach((c)=>{
+      c.classList.add('dead');setTimeout(()=>c.remove(),320)
+    });
     killNow(p);renderPile();renderStatus();
   });
   el.querySelectorAll('.b').forEach(b=>b.addEventListener('click',()=>{
@@ -879,8 +908,7 @@ function update(){
   // reflect every open verdict back onto its card(s) — the same pick in the lens/pile/feed lights up
   // together, so a tap visibly "takes" and it's clear a verdict here counts everywhere.
   document.querySelectorAll('.card').forEach(el=>{
-    const id=(el.dataset.id||'').replace(/::(pile|lens)$/,'');
-    const v=V[id];
+    const v=V[el.dataset.vk||''];
     // v.flag/v.reason included (V.9.26): a "wrong link" fix sets neither img nor note, so the next
     // update() used to strip the ✓-ruled border straight back off the card you'd just ruled on.
     el.classList.toggle('ruled',!!(v&&(v.stars||v.killed||v.img||v.note||v.betterImage||v.canon||v.top||v.lead||v.later||v.flag||v.reason)));
