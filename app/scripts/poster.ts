@@ -81,6 +81,15 @@ export function realVenue(p: Pick): string {
   return v && !(p.source || '').toLowerCase().includes(v.toLowerCase()) ? v : ''
 }
 
+/** Hand-pick the poster's line-up by title, in the order given — for when the DECK order and the
+ *  best POSTER are not the same thing (two crowd shots in a row rank fine and photograph badly).
+ *  Loose contains-match so "Canal Parade" finds the full title. Unmatched names are skipped. */
+export function pickByTitle(picks: Pick[], names: string[]): Pick[] {
+  return names
+    .map((n) => picks.find((p) => p.title.toLowerCase().includes(n.trim().toLowerCase())))
+    .filter((p): p is Pick => !!p)
+}
+
 /** The poster leads with the deck's OWN opening order — hand-set pile first, then the stamped serve
  *  order — so the graphic can never advertise a different front than the app deals. Imaged picks only. */
 export function topPicks(picks: Pick[], count = COUNT): Pick[] {
@@ -199,6 +208,22 @@ export function posterHtml(
     : `${Math.max(...wx.days.map((d) => d.hi))}°`
   const meta = (p: Pick) => esc([realVenue(p), fixWhen(p.when || '')].filter(Boolean).join(' · '))
   const bg = (p: Pick) => (p.image ? ` style="background-image:url('${esc(p.image)}')"` : '')
+  /** Re-wrap a pick's image at the crop THIS layout needs. Pick images arrive already cropped to the
+   *  app's 800×1200 portrait card; CSS-cropping that again into a landscape slot crops twice and
+   *  beheads people — the first `two` render cut both Chefs in het Bos off at the shoulders. So
+   *  unwrap back to the original and let weserv re-crop with `a=attention`, which centres on the
+   *  subject (faces) instead of the geometric middle. */
+  const cropped = (p: Pick, w: number, h: number) => {
+    let src = p.image || ''
+    try {
+      const u = new URL(src)
+      const inner = u.hostname === 'images.weserv.nl' ? u.searchParams.get('url') : null
+      if (inner) src = decodeURIComponent(inner)
+    } catch { /* not a parseable URL — fall through */ }
+    if (!/^https?:/.test(src)) return bg(p)
+    const url = `https://images.weserv.nl/?url=${encodeURIComponent(src)}&w=${w}&h=${h}&fit=cover&a=attention&output=jpg`
+    return ` style="background-image:url('${esc(url)}')"`
+  }
 
   // ── the non-list layouts: a heavier masthead, a stronger ground, and far fewer picks ──────────
   if (layout !== 'list') {
@@ -228,7 +253,7 @@ ${css}</style></head><body>${body}</body></html>`
           <div class="hd"><span class="date dsp">${esc(wx?.label ?? 'This weekend')}</span>${temps ? `<span class="temps">${temps}</span>` : ''}</div>
         </div>
         <div class="cards">${two.map((p, i) => `
-          <div class="c"${bg(p)}>
+          <div class="c"${cropped(p, 952, 390)}>
             <span class="cn dsp">${i + 1}</span>
             <div class="ct"><div class="ct-h dsp">${esc(p.title)}</div><div class="ct-m">${meta(p)}</div></div>
           </div>`).join('')}
@@ -254,7 +279,7 @@ body{padding:64px 0 54px}
     if (layout === 'one') {
       const p = picks[0]
       return shell(`
-        <div class="hero"${bg(p)}><div class="hero-in">
+        <div class="hero"${cropped(p, 1080, 790)}><div class="hero-in">
           <div class="mast dsp"><span class="d"></span>WKNDR</div>
         </div></div>
         <div class="body">
@@ -440,8 +465,9 @@ const style = (arg('thumb') ?? 'portrait') as ThumbStyle
 const layout = (arg('layout') ?? 'list') as Layout
 const ground = (arg('ground') ?? 'cream') as Ground
 // `days` fills two columns, so it needs a deeper pool than the five a single list shows
-const picks = topPicks(feed.picks, layout === 'days' ? 8 : COUNT)
-if (picks.length < 4) throw new Error(`only ${picks.length} imaged picks — refusing to publish a thin poster`)
+const chosen = arg('picks')   // --picks="Canal Parade,Chefs in het Bos" overrides the deck order
+const picks = chosen ? pickByTitle(feed.picks, chosen.split(',')) : topPicks(feed.picks, layout === 'days' ? 8 : COUNT)
+if (!chosen && picks.length < 4) throw new Error(`only ${picks.length} imaged picks — refusing to publish a thin poster`)
 
 const wx = await forecast()
 const font = readFileSync(join(root, 'src/assets/fonts/familjen-grotesk-700.woff2')).toString('base64')
