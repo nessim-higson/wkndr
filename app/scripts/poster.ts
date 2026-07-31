@@ -210,6 +210,11 @@ export type Layout = 'list' | 'two' | 'one' | 'bare' | 'index' | 'days' | 'og'
  *   type  — no photographs at all: masthead + a numbered list
  *   band  — brand band across the top, a photo strip beneath */
 export type OgVariant = 'split' | 'hero' | 'trio' | 'type' | 'band'
+/** The shipped unfurl composition. `hero` — one photograph full-bleed — because an unfurl is a
+ *  thumbnail that gets a single glance at ~500px, and it is the only variant whose image survives
+ *  that shrink. Trade-off accepted knowingly: it sells ONE pick instead of listing three, and its
+ *  quality tracks the #1 pick's photo. */
+export const OG_DEFAULT: OgVariant = 'hero'
 export interface PosterOpts { thumb?: ThumbStyle; layout?: Layout; ground?: Ground; ogv?: OgVariant }
 
 export function posterHtml(
@@ -625,7 +630,7 @@ const feed = JSON.parse(readFileSync(join(root, `public/data/picks.${CITY}.json`
 const style = (arg('thumb') ?? 'portrait') as ThumbStyle
 const layout = (arg('layout') ?? 'list') as Layout
 const ground = (arg('ground') ?? 'cream') as Ground
-const ogv = (arg('ogv') ?? 'split') as OgVariant
+const ogv = (arg('ogv') ?? 'hero') as OgVariant   // the house unfurl — see --ogv for the alternatives
 // `days` fills two columns, so it needs a deeper pool than the five a single list shows
 const chosen = arg('picks')   // --picks="Canal Parade,Chefs in het Bos" overrides the deck order
 const picks = chosen ? pickByTitle(feed.picks, chosen.split(',')) : topPicks(feed.picks, layout === 'days' ? 8 : COUNT)
@@ -650,8 +655,8 @@ const jobs = out
   : [
       { file: join(dir, 'weekend.png'), layout, ground, picks },
       { file: join(dir, `${key}.png`), layout, ground, picks },
-      { file: join(dir, 'og.png'), layout: 'og' as Layout, ground: 'ink' as Ground, picks: picks.slice(0, 2) },
-      { file: join(dir, `og-${key}.png`), layout: 'og' as Layout, ground: 'ink' as Ground, picks: picks.slice(0, 2) },
+      { file: join(dir, 'og.png'), layout: 'og' as Layout, ground: 'ink' as Ground, picks: picks.slice(0, 3) },
+      { file: join(dir, `og-${key}.png`), layout: 'og' as Layout, ground: 'ink' as Ground, picks: picks.slice(0, 3) },
     ]
 
 const browser = await puppeteer.launch({ executablePath: chromePath(), args: ['--no-sandbox', '--disable-dev-shm-usage'] })
@@ -678,7 +683,7 @@ try {
   }
   console.log(`✓ poster ${CITY} ${key} · ${layout}/${ground} · ${picks.length} picks · ${jobs.length} file(s)`)
   console.log(`  ${picks.map((p, i) => `${rankOf(p, i)}. ${p.title}`).join(' · ')}`)
-  if (!out) console.log(`  unfurl → share/og-${key}.png (og/ink, top 2)`)
+  if (!out) console.log(`  unfurl → share/og-${key}.png (og/${ogv}/ink)`)
 } finally {
   await browser.close()
 }

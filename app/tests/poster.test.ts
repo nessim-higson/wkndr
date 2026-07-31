@@ -5,7 +5,7 @@
 // Importing the module must not launch a browser — poster.ts guards its run block with
 // `import.meta.main`. If that guard is ever removed this file will hang, which is the point.
 import { describe, it, expect } from 'bun:test'
-import { realVenue, topPicks, posterHtml, THUMBS, assignDays, MODE_TINT, rankOf, CANVAS } from '../scripts/poster'
+import { realVenue, topPicks, posterHtml, THUMBS, assignDays, MODE_TINT, rankOf, CANVAS, OG_DEFAULT } from '../scripts/poster'
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { upcomingWeekend } from '../scripts/lib/pipeline'
@@ -219,5 +219,22 @@ describe('rankOf', () => {
   it('falls back to the stamped serve order, then to the poster index', () => {
     expect(rankOf(p({ servePos: 4 }), 0)).toBe(4)
     expect(rankOf(p({}), 1)).toBe(2)
+  })
+})
+
+// The shipped unfurl composition is a deliberate call, not an accident of argument order — pin it so
+// a future default change is visible in a diff rather than silently going out to every pasted link.
+describe('the shipped unfurl composition', () => {
+  const src = readFileSync(join(import.meta.dir, '../scripts/poster.ts'), 'utf8')
+  it('is hero', () => {
+    expect(OG_DEFAULT).toBe('hero')
+    expect(src).toContain("const ogv = (arg('ogv') ?? 'hero') as OgVariant")
+  })
+  it('hero renders exactly one pick, however many it is handed', () => {
+    const three = [p({ title: 'a' }), p({ title: 'b' }), p({ title: 'c' })]
+    const html = posterHtml(three, null, '', { layout: 'og', ogv: 'hero' })
+    expect(html).toContain('>a<')
+    expect(html).not.toContain('>b<')
+    expect(html).not.toContain('>c<')
   })
 })

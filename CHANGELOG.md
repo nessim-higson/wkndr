@@ -62,6 +62,11 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
   PILE full (81). No console errors.
 
 ## [unfurl] — 2026-07-31 — every pasted link now shows THIS weekend's picks
+- **Composition: `hero`** (Ness's call, from five rendered alternatives — `split` · `hero` · `trio` ·
+  `type` · `band`, all behind `--ogv=`). An unfurl is a thumbnail that gets ONE glance at ~500px in a
+  message, and hero is the only composition whose photograph survives that shrink: one image
+  full-bleed, brand and date overlaid. Trade-off taken knowingly — it sells one pick instead of
+  listing three, and its quality tracks the #1 pick's photo, where `type` would never have a bad week.
 - Ness: "where is the poster seen?" Nowhere — nothing referenced it. It was a file at a URL. This
   gives it the surface it was missing, and the highest-leverage one: **the unfurl**.
 - **`og:image` was a fixed card** (`og-app.png`) that said the same thing every week. It now points at
