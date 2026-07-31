@@ -10,6 +10,23 @@ import react from '@vitejs/plugin-react'
 const DOMAIN_ORIGIN = 'https://app.wkndr.xyz'
 const PAGES_ORIGIN = 'https://nessim-higson.github.io/wkndr'
 
+/** The unfurl image for the weekend this build serves. Platforms (WhatsApp, iMessage, Slack, X)
+ *  cache an unfurl BY URL, so a fixed filename would keep serving an old card long after the picks
+ *  changed — this repo already hit that once (see the og-app.png note in index.html). The poster
+ *  script writes `share/og-<saturday>.png` on the same weekly cron, and this stamps the SAME name
+ *  into the tag, so the file and the tag can never drift. Mirrors pipeline.ts upcomingWeekend(). */
+function ogImagePath(now = new Date()): string {
+  // EXACT mirror of pipeline.ts upcomingWeekend(): on a SUNDAY the weekend's Saturday was YESTERDAY.
+  // The first cut used "the next Saturday", which on a Sunday pointed a week ahead — at a file the
+  // poster hadn't written yet, so every link pasted on a Sunday would have unfurled with no image.
+  const d = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+  const dow = d.getDay()                                 // 0 Sun … 6 Sat
+  if (dow === 0) d.setDate(d.getDate() - 1)              // Sun → this weekend's Sat was yesterday
+  else if (dow !== 6) d.setDate(d.getDate() + (6 - dow)) // Mon–Fri → the next Saturday
+  const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+  return `/share/og-${key}.png`
+}
+
 export default defineConfig(({ command }) => {
   const domain = process.env.WKNDR_DEPLOY === 'domain'
   const ogOrigin = domain ? DOMAIN_ORIGIN : PAGES_ORIGIN
@@ -30,7 +47,9 @@ export default defineConfig(({ command }) => {
         transformIndexHtml: {
           order: 'pre',
           handler(html: string) {
-            return html.replaceAll('%OG_ORIGIN%', ogOrigin)
+            return html
+              .replaceAll('%OG_ORIGIN%', ogOrigin)
+              .replaceAll('%OG_IMAGE%', ogImagePath())
           },
         },
       },

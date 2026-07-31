@@ -5,7 +5,10 @@
 // Importing the module must not launch a browser — poster.ts guards its run block with
 // `import.meta.main`. If that guard is ever removed this file will hang, which is the point.
 import { describe, it, expect } from 'bun:test'
-import { realVenue, topPicks, posterHtml, THUMBS, assignDays, MODE_TINT } from '../scripts/poster'
+import { realVenue, topPicks, posterHtml, THUMBS, assignDays, MODE_TINT, rankOf, CANVAS } from '../scripts/poster'
+import { readFileSync } from 'node:fs'
+import { join } from 'node:path'
+import { upcomingWeekend } from '../scripts/lib/pipeline'
 import { upcomingWeekendEnd } from '../src/lib/when'
 import type { Mode, Pick } from '../src/types'
 
@@ -159,5 +162,62 @@ describe('assignDays — splitting the weekend', () => {
   it('stamps each day in its own weather colour', () => {
     expect(MODE_TINT.HOT).not.toBe(MODE_TINT.COLD_WET)
     expect(Object.keys(MODE_TINT).sort()).toEqual(['COLD_WET', 'COOL', 'HOT', 'VOLATILE', 'WARM'])
+  })
+})
+
+// ── THE UNFURL ──────────────────────────────────────────────────────────────────────────────────
+// og:image is stamped by vite.config as /share/og-<saturday>.png, and the poster script writes that
+// exact file on the same weekly cron. The two compute the weekend date INDEPENDENTLY, so if they
+// ever disagree the tag points at a 404 and every pasted link loses its card. This pins them together.
+describe('the unfurl', () => {
+  const viteSrc = readFileSync(join(import.meta.dir, '../vite.config.ts'), 'utf8')
+  // strip the TS signature annotations — new Function() parses JS, not TypeScript
+  const fn = viteSrc
+    .slice(viteSrc.indexOf('function ogImagePath('), viteSrc.indexOf('\n}', viteSrc.indexOf('function ogImagePath(')) + 2)
+    .replace(/\)\s*:\s*string\s*\{/, ') {')
+    .replace(/(\w+)\s*=\s*new Date\(\)\s*:\s*Date/, '$1 = new Date()')
+  const ogImagePath = new Function(`${fn}\nreturn ogImagePath`)() as (now?: Date) => string
+
+  it('vite and the pipeline agree on which Saturday this is', () => {
+    for (const iso of ['2026-07-31', '2026-08-01', '2026-08-02', '2026-08-03', '2026-12-31']) {
+      const now = new Date(`${iso}T09:00:00`)
+      const sat = upcomingWeekend(now).sat
+      const key = `${sat.getFullYear()}-${String(sat.getMonth() + 1).padStart(2, '0')}-${String(sat.getDate()).padStart(2, '0')}`
+      expect(ogImagePath(now), `disagreement on ${iso}`).toBe(`/share/og-${key}.png`)
+    }
+  })
+
+  it('the filename changes weekly — a fixed one would serve a stale card forever', () => {
+    const a = ogImagePath(new Date('2026-08-01T09:00:00'))
+    const b = ogImagePath(new Date('2026-08-08T09:00:00'))
+    expect(a).not.toBe(b)
+  })
+
+  it('index.html asks for the stamped image, not a fixed card', () => {
+    const idx = readFileSync(join(import.meta.dir, '../index.html'), 'utf8')
+    expect(idx).toContain('content="%OG_ORIGIN%%OG_IMAGE%"')
+    expect(idx).not.toContain('og-app.png')
+    expect(idx).toContain('<meta property="og:image:width" content="1200" />')
+    expect(idx).toContain('<meta property="og:image:height" content="630" />')
+  })
+
+  it('renders on the 1.91:1 canvas the platforms expect', () => {
+    const [w, h] = CANVAS('og')
+    expect([w, h]).toEqual([1200, 630])
+    expect(Math.abs(w / h - 1.91)).toBeLessThan(0.02)
+    expect(CANVAS('list')).toEqual([1080, 1350])   // the share poster keeps 4:5
+  })
+})
+
+// The number on a pick is its position in the APP'S DECK, not its index on the poster — with
+// --picks= pinning a hand-chosen pair, poster-index numbering claimed Chefs in het Bos was "2"
+// when the app deals it 9th.
+describe('rankOf', () => {
+  it('prefers the hand-set deck position', () => {
+    expect(rankOf(p({ pilePos: 9, servePos: 3 }), 1)).toBe(9)
+  })
+  it('falls back to the stamped serve order, then to the poster index', () => {
+    expect(rankOf(p({ servePos: 4 }), 0)).toBe(4)
+    expect(rankOf(p({}), 1)).toBe(2)
   })
 })

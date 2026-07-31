@@ -61,6 +61,33 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 - Verified: promote (tail→#10) · demote (#10→tail) · both lists drag-reorder · New Find label/feedback ·
   PILE full (81). No console errors.
 
+## [unfurl] — 2026-07-31 — every pasted link now shows THIS weekend's picks
+- Ness: "where is the poster seen?" Nowhere — nothing referenced it. It was a file at a URL. This
+  gives it the surface it was missing, and the highest-leverage one: **the unfurl**.
+- **`og:image` was a fixed card** (`og-app.png`) that said the same thing every week. It now points at
+  the generated poster, so every WhatsApp / iMessage / Slack / X paste of `app.wkndr.xyz` renders
+  this weekend's actual picks, weather and dates.
+- **New `og` layout** — 1200×630 (1.91:1, the shape platforms render): brand block left, two picks
+  right on full-bleed photographs. Two picks maximum and type sized to survive being shrunk into a
+  chat bubble at ~500px.
+- **The filename changes weekly, on purpose.** Platforms cache an unfurl BY URL — this repo already
+  learned that once (the `og-app.png` vs `og.png` note in index.html). So the poster writes
+  `share/og-<saturday>.png` and vite stamps that same dated name into the tag at build time. New
+  weekend → new URL → forced re-scrape.
+- **`rankOf()` — the number on a pick is now its position in the APP'S DECK**, not its index on the
+  poster. Ness: "if we were to have numbers like 1 and 2, it should correspond to what is seen in the
+  app." With `--picks=` pinning a hand-chosen pair the old numbering actively lied: Chefs in het Bos
+  is 9th in the deck and printed as "2". Applied to every layout that prints a rank.
+- Also new: **`--picks="A,B"`** pins the line-up by title (deck rank and photogenic rank are not the
+  same thing), and the big-image layouts now **re-crop from the ORIGINAL source** with weserv's
+  `a=attention` instead of CSS-cropping the app's 800×1200 portrait a second time — the first render
+  of Canal Parade + Chefs in het Bos cut both chefs off at the shoulders.
+- **A test caught a real bug before it shipped:** vite and the pipeline computed the weekend date
+  independently, and on a SUNDAY `ogImagePath` pointed a week ahead — at a file the poster hadn't
+  written — so any link pasted on a Sunday would have unfurled with no image. Now an exact mirror of
+  `upcomingWeekend()`, pinned by a test across five dates including both weekend days.
+- 205 tests pass.
+
 ## [board V.9.31] — 2026-07-31 — one verdict per event, not one per card
 - Ness: "yes, make same-title cards one verdict." Round #22 filed the proof — **`Pure Markt | 4* KILL`
   AND `Pure Markt | 4*` in the same payload**, because ✕ on the feed card never touched its library twin.

@@ -30,6 +30,9 @@ import type { Mode, Pick } from '../src/types'
 const CITY = process.argv.find((a) => a.startsWith('--city='))?.split('=')[1] ?? 'amsterdam'
 const COUNT = 5                       // how many picks make the poster
 const W = 1080, H = 1350              // 4:5 portrait — the best all-rounder for messages + feeds
+/** The canvas each layout renders on. `og` is the unfurl's fixed 1.91:1; everything else is the 4:5
+ *  share poster. The VIEWPORT has to match, or the screenshot pads the layout into the wrong frame. */
+export const CANVAS = (l: string): [number, number] => (l === 'og' ? [1200, 630] : [W, H])
 const arg = (k: string) => process.argv.find((a) => a.startsWith(`--${k}=`))?.split('=')[1]
 
 /** Chrome, wherever this is running. CI sets PUPPETEER_EXECUTABLE_PATH; otherwise we probe. */
@@ -101,6 +104,15 @@ export function topPicks(picks: Pick[], count = COUNT): Pick[] {
     })
     .filter((p) => p.image)
     .slice(0, count)
+}
+
+/** The number printed on a pick = ITS POSITION IN THE APP'S DECK, not its position on the poster.
+ *  Ness: "if we were to have numbers like 1 and 2, it should correspond to what is seen in the app."
+ *  With --picks= pinning a hand-chosen pair, poster-index numbering actively lied: Chefs in het Bos
+ *  is #9 in the deck and would have printed as "2". Falls back to the poster index only when a pick
+ *  carries no deck position at all. */
+export function rankOf(p: Pick, i: number): number {
+  return p.pilePos ?? p.servePos ?? i + 1
 }
 
 const esc = (s: string) => String(s ?? '').replace(/[&<>"']/g, (c) =>
@@ -187,7 +199,7 @@ export const GROUNDS: Record<Ground, { bg: string; ink: string; mut: string; acc
 /** THE LAYOUT — genuinely different posters, not one poster with a different thumbnail.
  *   list = the shipped five-row index · two = the weekend's top TWO, big
  *   one  = a single hero, full-bleed        · bare = no picks at all, pure brand + forecast */
-export type Layout = 'list' | 'two' | 'one' | 'bare' | 'index' | 'days'
+export type Layout = 'list' | 'two' | 'one' | 'bare' | 'index' | 'days' | 'og'
 // `index` — the picks NAMED but not photographed. Without images the titles carry the poster, so
 // they run at 52px instead of 36px: a type specimen of the weekend rather than a thumbnail receipt.
 export interface PosterOpts { thumb?: ThumbStyle; layout?: Layout; ground?: Ground }
@@ -227,10 +239,11 @@ export function posterHtml(
 
   // ── the non-list layouts: a heavier masthead, a stronger ground, and far fewer picks ──────────
   if (layout !== 'list') {
+    const [CW, CH] = CANVAS(layout)
     const shell = (body: string, css: string) => `<!doctype html><html><head><meta charset="utf-8"><style>
 @font-face{font-family:'Familjen Grotesk';font-weight:700;src:url('${fontDataUrl}') format('woff2')}
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{width:${W}px;height:${H}px}
+html,body{width:${CW}px;height:${CH}px}
 body{background:${G.bg};color:${G.ink};overflow:hidden;-webkit-font-smoothing:antialiased;
   font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;display:flex;flex-direction:column}
 .dsp{font-family:'Familjen Grotesk','Helvetica Neue',Arial,sans-serif;font-weight:700;letter-spacing:-.035em}
@@ -244,6 +257,50 @@ body{background:${G.bg};color:${G.ink};overflow:hidden;-webkit-font-smoothing:an
 .foot .u{font-size:34px}.foot .t{font-size:24px;color:${G.mut}}
 ${css}</style></head><body>${body}</body></html>`
 
+    // OG — THE UNFURL. 1200×630 landscape, the shape WhatsApp / iMessage / Slack / X render when
+    // someone pastes the link. Read at ~500px wide in a chat bubble, so: two picks maximum, type
+    // sized to survive the shrink, and the brand block anchored left where the eye lands first.
+    if (layout === 'og') {
+      const two = picks.slice(0, 2)
+      return shell(`
+        <div class="og">
+          <div class="ogl">
+            <div class="mast dsp"><span class="d"></span>WKNDR</div>
+            <div>
+              <div class="ogk">This weekend in Amsterdam</div>
+              <div class="ogd dsp">${esc(wx?.label ?? 'This weekend')}</div>
+              ${temps ? `<div class="temps">${temps}</div>` : ''}
+            </div>
+            <div class="ogu dsp">app.wkndr.xyz</div>
+          </div>
+          <div class="ogr">${two.map((p, i) => `
+            <div class="ogc"${cropped(p, 470, 630)}>
+              <span class="ogn dsp">${rankOf(p, i)}</span>
+              <div class="ogt"><div class="ogh dsp">${esc(p.title)}</div><div class="ogm">${meta(p)}</div></div>
+            </div>`).join('')}
+          </div>
+        </div>`, `
+.og{flex:1;display:flex;min-height:0}
+.ogl{flex:none;width:462px;display:flex;flex-direction:column;justify-content:space-between;padding:44px 40px}
+.mast{font-size:46px;gap:14px}
+.mast .d{width:20px;height:20px}
+.ogk{font-size:17px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:${G.mut};margin-bottom:12px}
+.ogd{font-size:82px;line-height:.9}
+.temps{margin-top:12px;font-size:27px}
+.ogu{font-size:25px;letter-spacing:-.02em}
+.ogr{flex:1;display:flex;gap:0}
+.ogc{flex:1;position:relative;background:${G.line} center/cover no-repeat;display:flex;flex-direction:column;justify-content:flex-end}
+.ogc:after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.72) 0%,rgba(0,0,0,.12) 55%,rgba(0,0,0,0) 80%)}
+.ogc+.ogc{border-left:3px solid ${G.bg}}
+.ogn{position:absolute;top:0;left:0;z-index:2;min-width:52px;height:52px;padding:0 14px;background:${G.acc};
+  color:${ground === 'orange' ? '#fff6f0' : '#fff'};font-size:29px;display:flex;align-items:center;justify-content:center}
+.ogt{position:relative;z-index:2;padding:0 22px 22px;color:#fff}
+.ogh{font-size:34px;line-height:1.04;text-shadow:0 2px 14px rgba(0,0,0,.5)}
+.ogm{margin-top:7px;font-size:17px;color:rgba(255,255,255,.9);text-shadow:0 1px 8px rgba(0,0,0,.6);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ogh{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}`)
+    }
+
     // TWO — the weekend's top two, each given a real photograph and a headline-sized title.
     if (layout === 'two') {
       const two = picks.slice(0, 2)
@@ -254,7 +311,7 @@ ${css}</style></head><body>${body}</body></html>`
         </div>
         <div class="cards">${two.map((p, i) => `
           <div class="c"${cropped(p, 952, 390)}>
-            <span class="cn dsp">${i + 1}</span>
+            <span class="cn dsp">${rankOf(p, i)}</span>
             <div class="ct"><div class="ct-h dsp">${esc(p.title)}</div><div class="ct-m">${meta(p)}</div></div>
           </div>`).join('')}
         </div>
@@ -360,7 +417,7 @@ body{padding:64px 0 54px}
           </div>
           <div class="rule"></div>
           <ol class="idx">${picks.map((p, i) => `
-            <li><span class="n dsp">${String(i + 1).padStart(2, '0')}</span>
+            <li><span class="n dsp">${String(rankOf(p, i)).padStart(2, '0')}</span>
               <span class="ix"><span class="th dsp">${esc(p.title)}</span><span class="tm">${meta(p)}</span></span>
             </li>`).join('')}
           </ol>
@@ -402,9 +459,9 @@ body{padding:64px 0 54px}
   }
   const rows = picks.map((p, i) => `
     <li class="row">
-      ${T.onImage ? '' : `<span class="num">${i + 1}</span>`}
+      ${T.onImage ? '' : `<span class="num">${rankOf(p, i)}</span>`}
       <span class="thumb"${p.image ? ` style="background-image:url('${esc(p.image)}')"` : ''}>${
-        T.onImage ? `<span class="onnum">${i + 1}</span>` : ''}</span>
+        T.onImage ? `<span class="onnum">${rankOf(p, i)}</span>` : ''}</span>
       <span class="rt">
         <span class="rtitle">${esc(p.title)}</span>
         <span class="rmeta">${esc([realVenue(p), fixWhen(p.when || '')].filter(Boolean).join(' · '))}</span>
@@ -471,29 +528,52 @@ if (!chosen && picks.length < 4) throw new Error(`only ${picks.length} imaged pi
 
 const wx = await forecast()
 const font = readFileSync(join(root, 'src/assets/fonts/familjen-grotesk-700.woff2')).toString('base64')
-const page$ = posterHtml(picks, wx, `data:font/woff2;base64,${font}`, { thumb: style, layout, ground })
+
+const dir = join(root, 'public/share')
+mkdirSync(dir, { recursive: true })
+const { sat } = upcomingWeekend()
+const key = `${sat.getFullYear()}-${String(sat.getMonth() + 1).padStart(2, '0')}-${String(sat.getDate()).padStart(2, '0')}`
+const out = arg('out')
+
+/** THE UNFURL is emitted alongside the share poster on every normal run, so a Thursday refresh
+ *  updates BOTH. Its filename carries the weekend date on purpose: WhatsApp / iMessage / Slack cache
+ *  an unfurl BY URL, so a fixed name would serve August's card in September. (This repo already
+ *  learned that once — see the og-app.png-vs-og.png note in index.html.) vite stamps the same dated
+ *  name into the HTML at build time, so the tag and the file always agree. */
+const jobs = out
+  ? [{ file: out, layout, ground, picks }]
+  : [
+      { file: join(dir, 'weekend.png'), layout, ground, picks },
+      { file: join(dir, `${key}.png`), layout, ground, picks },
+      { file: join(dir, 'og.png'), layout: 'og' as Layout, ground: 'ink' as Ground, picks: picks.slice(0, 2) },
+      { file: join(dir, `og-${key}.png`), layout: 'og' as Layout, ground: 'ink' as Ground, picks: picks.slice(0, 2) },
+    ]
 
 const browser = await puppeteer.launch({ executablePath: chromePath(), args: ['--no-sandbox', '--disable-dev-shm-usage'] })
 try {
-  const page = await browser.newPage()
-  await page.setViewport({ width: W, height: H, deviceScaleFactor: 1 })
-  await page.setContent(page$, { waitUntil: 'networkidle0', timeout: 45_000 })
-  await page.evaluateHandle('document.fonts.ready')
-  const shot = await page.screenshot({ type: 'png' }) as Buffer
-
-  const dir = join(root, 'public/share')
-  mkdirSync(dir, { recursive: true })
-  const { sat } = upcomingWeekend()
-  const key = `${sat.getFullYear()}-${String(sat.getMonth() + 1).padStart(2, '0')}-${String(sat.getDate()).padStart(2, '0')}`
-  const out = arg('out')
-  if (out) {                                        // a one-off render (variant previews) — don't touch the live poster
-    writeFileSync(out, shot)
-  } else {
-    writeFileSync(join(dir, 'weekend.png'), shot)   // the stable link
-    writeFileSync(join(dir, `${key}.png`), shot)    // the dated archive
+  const cache = new Map<string, Buffer>()
+  for (const j of jobs) {
+    const sig = `${j.layout}/${j.ground}/${j.picks.map((p) => p.id).join(',')}`
+    let shot = cache.get(sig)
+    if (!shot) {
+      // a FRESH page per render: reusing one page across setContent calls makes `networkidle0`
+      // hang forever — the first render's image connections keep the network from ever going idle.
+      const page = await browser.newPage()
+      try {
+        const [VW, VH] = CANVAS(j.layout)
+        await page.setViewport({ width: VW, height: VH, deviceScaleFactor: 1 })
+        await page.setContent(posterHtml(j.picks, wx, `data:font/woff2;base64,${font}`,
+          { thumb: style, layout: j.layout, ground: j.ground }), { waitUntil: 'networkidle0', timeout: 45_000 })
+        await page.evaluateHandle('document.fonts.ready')
+        shot = await page.screenshot({ type: 'png' }) as Buffer
+      } finally { await page.close() }
+      cache.set(sig, shot)                          // the stable + dated pair are the same image
+    }
+    writeFileSync(j.file, shot)
   }
-  console.log(`✓ poster ${CITY} ${key} · ${layout}/${ground} · thumb=${style} · ${picks.length} picks · ${(shot.length / 1024).toFixed(0)}KB${out ? ` → ${out}` : ''}`)
-  console.log(`  ${picks.map((p) => p.title).join(' · ')}`)
+  console.log(`✓ poster ${CITY} ${key} · ${layout}/${ground} · ${picks.length} picks · ${jobs.length} file(s)`)
+  console.log(`  ${picks.map((p, i) => `${rankOf(p, i)}. ${p.title}`).join(' · ')}`)
+  if (!out) console.log(`  unfurl → share/og-${key}.png (og/ink, top 2)`)
 } finally {
   await browser.close()
 }

@@ -17,9 +17,11 @@
     <!-- %OG_ORIGIN% is stamped at build time by vite.config: the GitHub Pages URL for the
          default build, https://app.wkndr.xyz for the WKNDR_DEPLOY=domain build. -->
     <meta property="og:url" content="%OG_ORIGIN%/" />
-    <!-- og-app.png, not og.png: the new filename forces WhatsApp/iMessage to re-scrape instead of
-         serving the cached cream card (og.png also carries the orange card for stale-URL refetches) -->
-    <meta property="og:image" content="%OG_ORIGIN%/og-app.png" />
+    <!-- THIS WEEKEND'S actual picks, not a fixed card. %OG_IMAGE% is stamped by vite.config as
+         /share/og-<saturday>.png — a filename that CHANGES WEEKLY on purpose, because WhatsApp /
+         iMessage / Slack cache an unfurl by URL and a fixed name would serve a stale weekend.
+         The poster script writes that exact file on the same weekly cron. -->
+    <meta property="og:image" content="%OG_ORIGIN%%OG_IMAGE%" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta name="twitter:card" content="summary_large_image" />
