@@ -84,6 +84,13 @@ export const CURATED_IMAGES: { match: RegExp; image: string; note: string }[] = 
   // ——— R3 (2026-07-04): BRET's RA flyers were the wrong image TWICE — pin the venue itself. ———
   // (a second /\bbret\b/i pin — the bret.bar og:image garden shot — was REMOVED 2026-07-12: that is
   // the exact image Ness rejected three rounds running; the in-the-booth night-shot pin above wins.)
+  {
+    match: /\bchefs in het bos\b/i,
+    image: 'https://images.squarespace-cdn.com/content/v1/68232868dd88772c21b44a88/93687f7d-2aeb-4783-b388-78277b2f9ed8/CIB+Final+Export+02+1024+38.jpg',
+    note: 'Ness pick (R15, issue #22) — img:bad + his own replacement URL. The event\'s OWN key art, '
+      + '683×1024 portrait: already the card\'s 2:3, and only 1.17× to fill 800×1200 (well under the '
+      + '1.6 low-res line). Squarespace ignores ?format= here — 683w IS the original.',
+  },
 ]
 
 /** The curated image URL for a pick title, or undefined. First match wins. */
