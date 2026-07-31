@@ -61,6 +61,25 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 - Verified: promote (tail→#10) · demote (#10→tail) · both lists drag-reorder · New Find label/feedback ·
   PILE full (81). No console errors.
 
+## [R14 compile] — 2026-07-31 — two promotions out of the airlock, two fatigue rests
+- **Issue #21** (68 verdicts). Two new finds crowned, two long-serving picks cancelled.
+- **`Chefs in het Bos` (judge 8) and `Horta: Spanish Restaurant Opening` (judge 6) were 👑 TOP ▲ LEAD
+  but sitting in the airlock** — both run THIS weekend (Fri 31 Jul – Sun 2 Aug / Sat 1 – Sun 2 Aug) and
+  neither would ever have promoted without a `topPicks` match. Added; both now live at #8 and #9.
+  Matches are word-boundary safe — checked `horta` against every feed and pending title so it can't
+  catch `Hortus Botanicus`.
+- **`Pure Markt` (★4 + KILL) and `Bottomless Brunch` (★5 + KILL) → `corpus.rested`, until 2026-08-31.**
+  Bottomless Brunch was rated **★5 and its image praised in the same round he cancelled it** — that is
+  exposure fatigue, not dislike, so `rested` and never `eventVeto`. Pure Markt had already rested once
+  (to 25 Jul), returned, and was killed on sight; its existing entry was EXTENDED rather than
+  duplicated. Neither carried a date — `until` is the 1-month default.
+- `weekly.pile` ← his 20-deep hand order; `weekly.lead` ← the two named this round.
+- **Note on what a round does NOT say.** #21 never mentions Canal Parade, Dekmantel, Pluk de Nacht or
+  Mokumboot, but their crowns were left alone: a round that is silent about a pick says nothing about
+  it, and his own pile still ranks them #1/#3/#6/#10. Absence is not a demotion.
+- restamp: 80 picks, **11 crowns**, airlock +2 promoted. Deck opens Canal Parade 👑 → Kwaku 👑 →
+  Dekmantel 👑 → Kaap → VriendenLoterij. 194 tests pass.
+
 ## [poster v1] — 2026-07-30 — the weekend poster, generated every week
 - Ness: "I'd love a graphic of some of the top picks for the weekend to share with people. Is that
   something that could be generated week over week?" It is — `app/scripts/poster.ts`, on the same cron

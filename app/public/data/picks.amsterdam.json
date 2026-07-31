@@ -14,7 +14,9 @@
   "canal parade",
   "pluk de nacht",
   "dekmantel festival",
-  "mokumboot"
+  "mokumboot",
+  "chefs in het bos",
+  "horta"
  ],
  "picks": [
   {
@@ -43,7 +45,7 @@
    "verify": true,
    "buzz": 2,
    "editorScore": 8,
-   "servePos": 24
+   "servePos": 25
   },
   {
    "id": "llm-i-amsterdam-canal-parade",
@@ -186,33 +188,6 @@
    "pilePos": 17
   },
   {
-   "id": "web-iams-pure-markt",
-   "title": "Pure Markt",
-   "venue": "I amsterdam",
-   "area": "Dam 1",
-   "when": "Until Sun 20 Dec",
-   "category": "out",
-   "freshness": "always",
-   "outdoor": true,
-   "kid": false,
-   "price": "ticketed",
-   "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6307671aa418187479f0726d%2FPureMarkt-1800x1020.webp&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6307671aa418187479f0726d%2FPureMarkt-1800x1020.webp",
-   "blurb": "Outing for the whole family\n Get your groceries for home, take a seat on one of the terraces to taste the offer in one of the most beautiful parks in Amsterdam,",
-   "why": "On I amsterdam",
-   "source": "I amsterdam · Maps",
-   "link": "https://www.iamsterdam.com/en/whats-on/calendar/festivals/events/pure-markt",
-   "weatherFit": [
-    "HOT",
-    "WARM",
-    "COOL"
-   ],
-   "verify": false,
-   "buzz": 2,
-   "editorScore": 8,
-   "servePos": 4,
-   "pilePos": 4
-  },
-  {
    "id": "web-iams-american-identities",
    "title": "American Identities",
    "venue": "H'ART Museum",
@@ -296,32 +271,6 @@
    "servePos": 31
   },
   {
-   "id": "web-iams-bottomless-brunch",
-   "title": "Bottomless Brunch",
-   "venue": "I amsterdam",
-   "area": "Beursplein 5",
-   "when": "Until Sun 20 Sep",
-   "category": "out",
-   "freshness": "always",
-   "outdoor": true,
-   "kid": false,
-   "price": "from €49",
-   "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F66c74f2ab19fd060b4452c00%2F2._Landscape_Ribs__snacks__and_cocktails_-_Copy.webp&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F66c74f2ab19fd060b4452c00%2F2._Landscape_Ribs__snacks__and_cocktails_-_Copy.webp",
-   "blurb": "Bottomless brunch\n For groups larger than 10 people, there is a special offer available. This deal is valid at Cut Throat's location at Beursplein 5. The highli",
-   "why": "On I amsterdam",
-   "source": "I amsterdam",
-   "link": "https://www.iamsterdam.com/en/whats-on/calendar/festivals/events/bottomless-brunch",
-   "weatherFit": [
-    "HOT",
-    "WARM",
-    "COOL"
-   ],
-   "verify": false,
-   "editorScore": 8,
-   "servePos": 5,
-   "pilePos": 5
-  },
-  {
    "id": "web-iams-nicolas-van-poucke-pianorecital",
    "title": "Nicolas van Poucke - Pianorecital",
    "venue": "The Royal Concertgebouw Amsterdam",
@@ -371,8 +320,8 @@
    ],
    "verify": false,
    "editorScore": 8,
-   "servePos": 7,
-   "pilePos": 7
+   "servePos": 5,
+   "pilePos": 5
   },
   {
    "id": "web-iams-exhibition-worn-in-the-rijksmuseum",
@@ -562,8 +511,8 @@
    ],
    "verify": false,
    "editorScore": 9,
-   "servePos": 9,
-   "pilePos": 9
+   "servePos": 7,
+   "pilePos": 7
   },
   {
    "id": "pllek-indoor",
@@ -1888,10 +1837,9 @@
    "verify": true,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fimage.parool.nl%2F220058609%2Fwidth%2F2480%2Fpluk-de-nacht-bij-het-stenen-hoofd-in-west&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fimage.parool.nl%2F220058609%2Fwidth%2F2480%2Fpluk-de-nacht-bij-het-stenen-hoofd-in-west",
    "editorScore": 10,
-   "servePos": 8,
-   "pilePos": 8,
-   "top": true,
-   "lead": true
+   "servePos": 6,
+   "pilePos": 6,
+   "top": true
   },
   {
    "id": "web-lbb-kaap-amsterdam",
@@ -1916,8 +1864,8 @@
    ],
    "verify": false,
    "editorScore": 10,
-   "servePos": 6,
-   "pilePos": 6
+   "servePos": 4,
+   "pilePos": 4
   },
   {
    "id": "web-lbb-strand-zuid",
@@ -1942,7 +1890,7 @@
    ],
    "verify": false,
    "editorScore": 10,
-   "servePos": 25
+   "servePos": 24
   },
   {
    "id": "web-lbb-hannekes-boom",
@@ -1993,8 +1941,7 @@
    "editorScore": 9,
    "servePos": 10,
    "top": true,
-   "pilePos": 10,
-   "lead": true
+   "pilePos": 10
   },
   {
    "id": "ams-artis-zoo",
@@ -2103,8 +2050,7 @@
    "editorScore": 9,
    "top": true,
    "servePos": 3,
-   "pilePos": 3,
-   "lead": true
+   "pilePos": 3
   },
   {
    "id": "web-ra-2464093",
@@ -2133,7 +2079,66 @@
    "editorScore": 8,
    "buzz": 1,
    "servePos": 23
+  },
+  {
+   "id": "web-lbb-chefs-in-het-bos",
+   "title": "Chefs in het Bos",
+   "venue": "Amsterdamse Bos",
+   "area": "Amsterdam",
+   "when": "Fri 31 Jul – Sun 2 Aug",
+   "category": "eat",
+   "freshness": "weekend",
+   "outdoor": true,
+   "kid": false,
+   "price": "",
+   "image": "https://images.weserv.nl/?url=https%3A%2F%2Fscheepskameel.nl%2Fwp-content%2Fuploads%2F2025%2F09%2Fshareimage-scheepskameel-1.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fscheepskameel.nl%2Fwp-content%2Fuploads%2F2025%2F09%2Fshareimage-scheepskameel-1.jpg",
+   "blurb": "24 Michelin chefs serve signature dishes. Curate your menu, enjoy live music amid green festival setting.",
+   "why": "Fine dining meets summer festival in nature",
+   "source": "Your Little Black Book · Visit Amstelveen",
+   "link": "https://www.chefsinhetbos.nl/",
+   "weatherFit": [
+    "HOT",
+    "WARM",
+    "COOL"
+   ],
+   "verify": false,
+   "buzz": 2,
+   "editorScore": 9,
+   "top": true,
+   "lead": true,
+   "pilePos": 9,
+   "servePos": 9
+  },
+  {
+   "id": "web-i-amsterdam-horta-spanish-restaurant-opening",
+   "title": "Horta: Spanish Restaurant Opening",
+   "venue": "Horta",
+   "area": "Zuid",
+   "when": "Sat 1 Aug – Sun 2 Aug · 12:00–00:00",
+   "category": "eat",
+   "freshness": "new",
+   "outdoor": false,
+   "kid": true,
+   "price": "€€-€€€",
+   "blurb": "New Spanish restaurant from Nazka owner. Paella, patatas bravas, Menu de Día concept. Head chef Polo Alemany's hometown rice.",
+   "why": "Recent opening, southern European fine dining",
+   "source": "I amsterdam",
+   "link": "https://www.iamsterdam.com/en/whats-on/new-in-town",
+   "weatherFit": [
+    "HOT",
+    "WARM",
+    "COOL",
+    "COLD_WET",
+    "VOLATILE"
+   ],
+   "verify": true,
+   "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.reisbeesten.be%2Fwp-content%2Fuploads%2F2023%2F10%2Fhorta-restaurant.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fwww.reisbeesten.be%2Fwp-content%2Fuploads%2F2023%2F10%2Fhorta-restaurant.jpg",
+   "editorScore": 9,
+   "top": true,
+   "lead": true,
+   "pilePos": 8,
+   "servePos": 8
   }
  ],
- "restampedAt": "2026-07-30T16:31:55.069Z"
+ "restampedAt": "2026-07-31T07:53:56.568Z"
 }

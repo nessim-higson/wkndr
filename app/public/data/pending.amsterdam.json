@@ -1,6 +1,6 @@
 {
   "generatedAt": "2026-07-30T15:12:42.404Z",
-  "count": 68,
+  "count": 66,
   "pending": [
     {
       "id": "web-scout-de-parade",
@@ -26,31 +26,6 @@
       "verify": false,
       "buzz": 2,
       "editorScore": 9
-    },
-    {
-      "id": "web-lbb-chefs-in-het-bos",
-      "title": "Chefs in het Bos",
-      "venue": "Amsterdamse Bos",
-      "area": "Amsterdam",
-      "when": "Fri 31 Jul – Sun 2 Aug",
-      "category": "eat",
-      "freshness": "weekend",
-      "outdoor": true,
-      "kid": false,
-      "price": "",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fscheepskameel.nl%2Fwp-content%2Fuploads%2F2025%2F09%2Fshareimage-scheepskameel-1.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fscheepskameel.nl%2Fwp-content%2Fuploads%2F2025%2F09%2Fshareimage-scheepskameel-1.jpg",
-      "blurb": "24 Michelin chefs serve signature dishes. Curate your menu, enjoy live music amid green festival setting.",
-      "why": "Fine dining meets summer festival in nature",
-      "source": "Your Little Black Book · Visit Amstelveen",
-      "link": "https://www.chefsinhetbos.nl/",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL"
-      ],
-      "verify": false,
-      "buzz": 2,
-      "editorScore": 8
     },
     {
       "id": "web-lbb-zomerlicht-restaurant-pampus",
@@ -203,32 +178,6 @@
       ],
       "verify": false,
       "buzz": 2,
-      "editorScore": 6
-    },
-    {
-      "id": "web-i-amsterdam-horta-spanish-restaurant-opening",
-      "title": "Horta: Spanish Restaurant Opening",
-      "venue": "Horta",
-      "area": "Zuid",
-      "when": "Sat 1 Aug – Sun 2 Aug · 12:00–00:00",
-      "category": "eat",
-      "freshness": "new",
-      "outdoor": false,
-      "kid": true,
-      "price": "€€-€€€",
-      "blurb": "New Spanish restaurant from Nazka owner. Paella, patatas bravas, Menu de Día concept. Head chef Polo Alemany's hometown rice.",
-      "why": "Recent opening, southern European fine dining",
-      "source": "I amsterdam",
-      "link": "https://www.iamsterdam.com/en/whats-on/new-in-town",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "verify": true,
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.reisbeesten.be%2Fwp-content%2Fuploads%2F2023%2F10%2Fhorta-restaurant.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fwww.reisbeesten.be%2Fwp-content%2Fuploads%2F2023%2F10%2Fhorta-restaurant.jpg",
       "editorScore": 6
     },
     {
