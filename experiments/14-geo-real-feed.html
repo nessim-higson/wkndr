@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WKNDR — geo prototype · the real feed</title>
+<style>
+  :root {
+    --paper: #fafaf7; --ink: #0a0a0a; --accent: #ff4d1f;
+    --trace: #8b8b82; --hairline: #e5e5de; --panel: #ffffff;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --paper: #131311; --ink: #ecece6; --trace: #97978d; --hairline: #2a2a26; --panel: #1b1b18; }
+  }
+  :root[data-theme="dark"]  { --paper: #131311; --ink: #ecece6; --trace: #97978d; --hairline: #2a2a26; --panel: #1b1b18; }
+  :root[data-theme="light"] { --paper: #fafaf7; --ink: #0a0a0a; --trace: #8b8b82; --hairline: #e5e5de; --panel: #ffffff; }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--paper); color: var(--ink);
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased; line-height: 1.5;
+  }
+  .mono { font-family: ui-monospace, "JetBrains Mono", SFMono-Regular, Menlo, Consolas, monospace; font-size: 11px; letter-spacing: 0.04em; }
+  button { font-family: inherit; cursor: pointer; }
+
+  .page { max-width: 940px; margin: 0 auto; padding: 44px 24px 64px; }
+  .eyebrow { color: var(--accent); text-transform: uppercase; margin-bottom: 14px; }
+  h1 { font-size: clamp(26px, 4vw, 38px); font-weight: 700; letter-spacing: -0.025em; margin: 0 0 10px; text-wrap: balance; }
+  .lede { max-width: 62ch; color: var(--trace); font-size: 14px; margin: 0 0 34px; }
+  .lede b { color: var(--ink); font-weight: 600; }
+
+  .stage { display: flex; gap: 44px; align-items: flex-start; justify-content: center; flex-wrap: wrap; }
+
+  .demo {
+    border: 1px solid var(--hairline); border-radius: 12px; padding: 16px 18px;
+    max-width: 280px; display: flex; flex-direction: column; gap: 14px;
+  }
+  .demo .dlabel { color: var(--trace); text-transform: uppercase; }
+  .demo .drow { display: flex; gap: 6px; flex-wrap: wrap; }
+  .demo button {
+    font-size: 12px; font-weight: 600; border: 1px solid var(--hairline); border-radius: 100px;
+    padding: 6px 12px; background: none; color: var(--ink);
+  }
+  .demo button.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .demo .hint { color: var(--trace); line-height: 1.7; }
+  .demo .hint b { color: var(--ink); }
+  .demo .readout { color: var(--trace); }
+  .demo .readout b { color: var(--accent); }
+
+  /* The mock stays on paper in both themes — it depicts the app, not this page. */
+  .phone {
+    width: 320px; height: 660px; border-radius: 36px; background: #0d0d0d; padding: 10px;
+    box-shadow: 0 28px 70px rgba(10,10,10,0.22); flex: none;
+  }
+  .screen {
+    position: relative; width: 100%; height: 100%; border-radius: 27px; overflow: hidden;
+    background: #fdf4e7; display: flex; flex-direction: column; font-size: 12px; color: #0a0a0a;
+    user-select: none; -webkit-user-select: none;
+  }
+  .field { position: absolute; inset: 0; background:
+    radial-gradient(120% 90% at 78% -8%, #ffd9a3 0%, rgba(255,217,163,0) 58%),
+    radial-gradient(130% 100% at 8% 108%, #ffb37c 0%, rgba(255,179,124,0) 55%); }
+  .screen > * { position: relative; }
+
+  .tb {
+    margin: 12px 12px 6px; background: rgba(255,255,255,0.93); border-radius: 14px;
+    padding: 10px 13px; display: flex; justify-content: space-between; align-items: center;
+    box-shadow: 0 2px 10px rgba(10,10,10,0.06); z-index: 3;
+  }
+  .tb .brand { font-weight: 800; letter-spacing: 0.02em; display: flex; align-items: center; gap: 6px; font-size: 13px; }
+  .tb .dot { width: 6px; height: 6px; border-radius: 50%; background: #ff4d1f; }
+  .tb .wx { color: #6b6b63; font-size: 10px; }
+  .tb .wx b { color: #c96a1e; font-weight: 700; }
+  .tb .acts { display: flex; gap: 10px; align-items: center; }
+  .tb .acts button { background: none; border: none; font-size: 13px; padding: 2px; color: #0a0a0a; }
+  .tb .saves { font-weight: 700; }
+  .tb .saves.has { color: #ff4d1f; }
+
+  .strip { display: flex; gap: 6px; margin: 4px 14px 2px; z-index: 3; }
+  .trigger {
+    font-size: 10.5px; font-weight: 600; color: #0a0a0a; background: rgba(255,255,255,0.9);
+    border: 1px solid #e0e0d8; border-radius: 100px; padding: 5px 11px; white-space: nowrap;
+  }
+  .trigger.on { background: #0a0a0a; border-color: #0a0a0a; color: #fff; }
+  .trigger.hot { border: 1.5px solid #ff4d1f; }
+  .trigger.hot.on { background: #ff4d1f; border-color: #ff4d1f; }
+
+  .deck { flex: 1; position: relative; margin: 10px 18px 4px; min-height: 0; }
+  .card {
+    position: absolute; inset: 0; border-radius: 18px; overflow: hidden; background: #fff;
+    box-shadow: 0 16px 34px rgba(10,10,10,0.16); display: flex; flex-direction: column;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+  .card.peek1 { transform: scale(0.955) translateY(11px); z-index: 1; opacity: 0.9; pointer-events: none; }
+  .card.peek2 { transform: scale(0.91) translateY(22px); z-index: 0; opacity: 0.75; pointer-events: none; }
+  .card.top { z-index: 2; cursor: grab; touch-action: none; }
+  .card .img { flex: 1; position: relative; min-height: 0; }
+  .card .img::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0.04) 40%, rgba(0,0,0,0.52)); }
+  .card .catword {
+    position: absolute; top: 12px; right: 12px; z-index: 1; color: rgba(255,255,255,0.55);
+    font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 700;
+  }
+  .card .pill {
+    position: absolute; top: 12px; left: 12px; z-index: 1; background: #ff4d1f; color: #fff;
+    font-weight: 700; font-size: 9.5px; padding: 4px 9px; border-radius: 100px; letter-spacing: 0.03em;
+  }
+  .card .pill.dim { background: rgba(255,255,255,0.9); color: #b0342a; }
+  .card .cap { position: absolute; left: 14px; right: 14px; bottom: 12px; z-index: 1; color: #fff; }
+  .card .cap .t { font-weight: 800; font-size: 17px; letter-spacing: -0.015em; line-height: 1.12; }
+  .card .cap .m { font-size: 10.5px; opacity: 0.85; margin-top: 4px; }
+  .card .cap .m2 { font-size: 10.5px; font-weight: 700; margin-top: 2px; }
+  .card .meta { padding: 9px 14px; display: flex; justify-content: space-between; align-items: center; font-size: 10.5px; background: #fff; }
+  .card .meta .via { color: #55554e; font-weight: 600; }
+  .card .meta .dist { color: #9a9a90; }
+
+  .stamp {
+    position: absolute; top: 18px; z-index: 2; font-weight: 800; font-size: 15px;
+    padding: 5px 12px; border-radius: 8px; border: 2.5px solid; letter-spacing: 0.06em;
+    opacity: 0; transform: rotate(-8deg);
+  }
+  .stamp.save { right: 14px; color: #ff4d1f; border-color: #ff4d1f; background: rgba(255,255,255,0.85); transform: rotate(8deg); }
+  .stamp.skip { left: 14px; color: #55554e; border-color: #55554e; background: rgba(255,255,255,0.85); }
+
+  .empty {
+    position: absolute; inset: 0; border-radius: 18px; border: 1.5px dashed #d8d5cc;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+    color: #8b8b82; text-align: center; padding: 24px; font-size: 12px;
+  }
+  .empty b { color: #0a0a0a; }
+  .empty button { font-size: 11px; font-weight: 700; border: none; background: #0a0a0a; color: #fff; border-radius: 100px; padding: 8px 16px; }
+
+  .actionbar { display: flex; justify-content: center; gap: 16px; padding: 12px 0 16px; z-index: 3; }
+  .actionbar button {
+    width: 40px; height: 40px; border-radius: 50%; border: none; background: #fff; font-size: 15px;
+    box-shadow: 0 4px 12px rgba(10,10,10,0.14); color: #0a0a0a;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .actionbar .yes { background: #ff4d1f; color: #fff; }
+  .actionbar.ghost button { opacity: 0.28; transform: scale(0.86); }
+  .actionbar.ghost button:hover, .actionbar.ghost button:focus-visible { opacity: 1; transform: scale(1); }
+
+  .scrim {
+    position: absolute; inset: 0; background: rgba(10,10,10,0.34); z-index: 4;
+    opacity: 0; pointer-events: none; transition: opacity 0.25s ease;
+  }
+  .scrim.show { opacity: 1; pointer-events: auto; }
+
+  .sheet {
+    position: absolute; left: 0; right: 0; bottom: 0; z-index: 5;
+    background: #fff; border-radius: 20px 20px 27px 27px; padding: 10px 16px 18px;
+    box-shadow: 0 -12px 40px rgba(10,10,10,0.25);
+    transform: translateY(105%); transition: transform 0.32s cubic-bezier(0.32, 0.72, 0.28, 1);
+  }
+  .sheet.show { transform: translateY(0); }
+  .handle { width: 34px; height: 4px; border-radius: 4px; background: #dddad2; margin: 0 auto 12px; }
+  .sheet h4 { margin: 0 0 3px; font-size: 16px; font-weight: 800; letter-spacing: -0.015em; line-height: 1.15; }
+  .sheet .sub { font-size: 10.5px; color: #8b8b82; margin: 0 0 12px; }
+
+  .togglerow {
+    display: flex; justify-content: space-between; align-items: center;
+    border: 1px solid #eeeee8; border-radius: 12px; padding: 10px 12px; margin-bottom: 12px;
+    font-size: 12.5px; font-weight: 700; cursor: pointer; background: none; width: 100%;
+  }
+  .sw { width: 34px; height: 19px; border-radius: 100px; background: #dddad2; position: relative; flex: none; transition: background 0.2s; }
+  .sw::after { content: ""; position: absolute; top: 2px; left: 2px; width: 15px; height: 15px; border-radius: 50%; background: #fff; transition: transform 0.2s; }
+  .togglerow.on .sw { background: #ff4d1f; }
+  .togglerow.on .sw::after { transform: translateX(15px); }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chips .lbl { width: 100%; font-size: 9px; letter-spacing: 0.09em; text-transform: uppercase; color: #9a9a90; margin: 2px 0; }
+  .chip {
+    font-size: 11px; font-weight: 600; border: 1px solid #e0e0d8; border-radius: 100px;
+    padding: 6px 11px; background: #fafaf7; color: #0a0a0a;
+  }
+  .chip b { color: #b0b0a6; font-weight: 600; }
+  .chip.on { background: #0a0a0a; color: #fff; border-color: #0a0a0a; }
+  .chip.on b { color: #8f8f86; }
+
+  /* detail — EVENT-FIRST: when/about/why/via lead, getting-there is the quiet last line */
+  .fact { display: flex; gap: 10px; font-size: 11.5px; padding: 8px 0; border-top: 1px solid #f0f0ea; }
+  .fact:first-child { border-top: none; }
+  .fact .k { color: #9a9a90; width: 52px; flex: none; }
+  .fact b { font-weight: 700; }
+  .fact.quiet { color: #8b8b82; font-size: 10.5px; }
+  .sheet .go { display: block; width: 100%; margin-top: 12px; border: none; background: #0a0a0a; color: #fff; font-weight: 700; font-size: 12px; border-radius: 100px; padding: 11px; }
+
+  .panel {
+    position: absolute; left: 12px; right: 12px; top: 12px; z-index: 5;
+    background: #fff; border-radius: 14px; padding: 10px 13px 13px;
+    box-shadow: 0 12px 34px rgba(10,10,10,0.22);
+    transform: translateY(-115%); transition: transform 0.3s cubic-bezier(0.32, 0.72, 0.28, 1);
+  }
+  .panel.show { transform: translateY(0); }
+  .panel .prow { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+  .panel .brand { font-weight: 800; font-size: 13px; }
+  .panel .prow button { border: none; background: none; font-size: 14px; }
+  .bar-group { border-top: 1px solid #eeeee8; padding: 9px 0 5px; }
+  .bar-label { font-size: 9px; letter-spacing: 0.09em; text-transform: uppercase; color: #9a9a90; display: block; margin-bottom: 7px; }
+  .bar-row { display: flex; gap: 6px; flex-wrap: wrap; }
+  .bpill { font-size: 11px; font-weight: 600; border: 1px solid #e0e0d8; border-radius: 100px; padding: 5px 11px; background: #fafaf7; color: #0a0a0a; }
+  .bpill.on { background: #ff4d1f; border-color: #ff4d1f; color: #fff; }
+  .bsub { font-size: 9.5px; color: #9a9a90; display: block; margin-top: 7px; }
+
+  .undopill {
+    position: absolute; left: 20px; right: 20px; z-index: 3;
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    border: none; border-radius: 100px; background: #1a1a1a; color: #faf8f3;
+    padding: 7px 7px 7px 15px; font-size: 11px; font-weight: 600; text-align: left;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.32);
+    opacity: 0; transform: translateY(-6px); pointer-events: none;
+    transition: opacity 0.25s, transform 0.25s;
+  }
+  .undopill.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+  .undopill .what { min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  .undopill .what i { font-style: normal; opacity: 0.5; }
+  .undopill .act { flex: none; background: rgba(255,255,255,0.16); border-radius: 100px; padding: 5px 12px; }
+  .undopill.postop { top: 118px; }
+  .undopill.posbottom { top: auto; bottom: 78px; transform: translateY(6px); }
+  .undopill.posbottom.show { transform: translateY(0); }
+
+  .toast {
+    position: absolute; left: 50%; bottom: 76px; transform: translate(-50%, 8px); z-index: 6;
+    background: #0a0a0a; color: #fff; font-size: 10.5px; font-weight: 600;
+    padding: 7px 14px; border-radius: 100px; opacity: 0; transition: opacity 0.25s, transform 0.25s;
+    pointer-events: none; white-space: nowrap;
+  }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+  .colophon { margin-top: 40px; color: var(--trace); line-height: 1.9; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card, .sheet, .panel, .scrim, .toast, .sw, .sw::after, .actionbar button { transition: none; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="eyebrow mono">WKNDR / experiments / 14 — the real feed</div>
+  <h1>Geo, on this weekend's actual deck</h1>
+  <p class="lede">All <b>80 picks from the live published feed</b> (2026-07-30) — real titles, venues,
+  dates, blurbs and sources — run through a hand venue-gazetteer: <b>63 pinned to coordinates,
+  4 to district level, 7 day-trips with travel times, 5 citywide, 1 unmapped</b>. Distances compute
+  live (ferry model included). Cards are back to <b>event-first</b>: the detail leads with when /
+  what / why, and getting-there is the quiet last line.</p>
+
+  <div class="stage">
+    <div class="phone"><div class="screen" id="screen">
+      <div class="field"></div>
+
+      <div class="tb">
+        <div class="brand"><span class="dot"></span>WKNDR</div>
+        <div class="wx">Amsterdam · <b>Sat 27°</b> · Sun 24°</div>
+        <div class="acts">
+          <button class="saves" id="saves" aria-label="Saved picks">★ 0</button>
+          <button id="menubtn" aria-label="Open menu">≡</button>
+        </div>
+      </div>
+
+      <div class="strip">
+        <button class="trigger">◷ Any time</button>
+        <button class="trigger">▦ Everything</button>
+        <button class="trigger hot" id="wheretrigger">◎ Anywhere ▾</button>
+      </div>
+
+      <div class="deck" id="deck"></div>
+
+      <div class="actionbar" id="actionbar">
+        <button id="skip" aria-label="Skip">✕</button>
+        <button class="yes" id="save" aria-label="Save">★</button>
+      </div>
+
+      <button class="undopill postop" id="undopill">
+        <span class="what" id="u-what"></span><span class="act">↩ Undo</span>
+      </button>
+
+      <div class="scrim" id="scrim"></div>
+
+      <div class="sheet" id="wheresheet" role="dialog" aria-label="Where">
+        <div class="handle"></div>
+        <h4>Where</h4>
+        <p class="sub">Near me sorts — far picks sink, they don't vanish. Districts filter.</p>
+        <button class="togglerow" id="nearme"><span>◎ Near me first</span><span class="sw"></span></button>
+        <div class="chips" id="districts"><span class="lbl">Or pin a district</span></div>
+      </div>
+
+      <div class="sheet" id="detailsheet" role="dialog" aria-label="Pick detail">
+        <div class="handle"></div>
+        <h4 id="d-title"></h4>
+        <p class="sub" id="d-sub"></p>
+        <div id="d-facts"></div>
+        <button class="go" id="d-close">Back to the deck</button>
+      </div>
+
+      <div class="panel" id="panel">
+        <div class="prow"><span class="brand">WKNDR</span><button id="panelclose" aria-label="Close menu">✕</button></div>
+        <div class="bar-group">
+          <span class="bar-label">Filter</span>
+          <div class="bar-row"><span class="bpill">◷ Any time</span><span class="bpill">▦ Everything</span><span class="bpill" id="panelwhere">◎ Anywhere</span></div>
+        </div>
+        <div class="bar-group">
+          <span class="bar-label">Your location</span>
+          <div class="bar-row"><span class="bpill on">◎ Use my location</span></div>
+          <span class="bsub">One permission feeds the weather and the distances.</span>
+        </div>
+      </div>
+
+      <div class="toast" id="toast"></div>
+    </div></div>
+
+    <div class="demo">
+      <div>
+        <div class="dlabel mono">Demo · you are at</div>
+        <div class="drow" style="margin-top:8px;">
+          <button id="pov-cs" class="on">Centraal (you)</button>
+          <button id="pov-noord">Noord (the friend)</button>
+        </div>
+      </div>
+      <div>
+        <div class="dlabel mono">Action bar</div>
+        <div class="drow" style="margin-top:8px;">
+          <button id="ab-always">Always visible</button>
+          <button id="ab-earn" class="on">Earns its removal</button>
+        </div>
+        <p class="readout mono" style="margin:8px 0 0;">clean gesture swipes: <b id="fluency">0</b> / 4</p>
+      </div>
+      <div>
+        <div class="dlabel mono">Undo pill placement</div>
+        <div class="drow" style="margin-top:8px;">
+          <button id="up-top" class="on">Under the tabs (as-is)</button>
+          <button id="up-bottom">Bottom (proposed)</button>
+        </div>
+      </div>
+      <p class="hint mono">This is the REAL feed — drag through it. Open <b>◎ Anywhere</b>, pin
+      <b>Noord</b>: 7 real picks (Pllek, Eye, Nxt, Garage Noord, Sexyland, STRAAT, ISO). Near me
+      from <b>Noord</b> floats all seven; day-trips and citywide sink honestly. Distance is now a
+      quiet grey fact — face bottom-right, detail last line.</p>
+      <p class="hint mono" style="border-top:1px dashed var(--hairline); padding-top:10px;">
+      Coverage — 63/80 pinned · 4 district-≈ · 7 day-trips · 5 citywide · 1 unmapped. Hand
+      gazetteer (PDOK is blocked from this sandbox; the cron does it for real). Posters are
+      typographic — real images are wsrv-proxied and can't load in this page.</p>
+    </div>
+  </div>
+
+  <p class="colophon mono">WKNDR experiments · 14-geo-real-feed · content = picks.amsterdam.json
+  (generatedAt 2026-07-30, 80 picks, credited &amp; linked in-app) · minutes computed: haversine
+  × 1.3 @ 15 km/h + IJ ferry model, rounded up to 5s</p>
+</div>
+
+<script>
+const PICKS = [{"id": "llm-i-amsterdam-world-press-photo", "t": "World Press Photo", "v": "De Nieuwe Kerk Amsterdam", "d": "Centrum", "when": "Until 27 Sep · 10:00–17:00", "cat": "Art", "fresh": "always", "src": "I amsterdam · Your Little…", "blurb": "Award-winning photojournalism exhibition showcasing powerful stories from around the globe—one of the world's most prestigious photography contests.", "why": "Globally renowned exhibition, accessible this weekend", "kid": false, "geo": {"lat": 52.3736, "lon": 4.8925, "n": false}}, {"id": "llm-i-amsterdam-canal-parade", "t": "Canal Parade", "v": "Diverse locations", "d": "Citywide", "when": "Sat 1 Aug · 12:00–18:00", "cat": "Out & about", "fresh": "weekend", "src": "Your Little Black Book ·…", "blurb": "WorldPride's flagship celebration—colorful boats parade through canals with music, dance, and LGBTQI+ pride festivities across the city.", "why": "Amsterdam's Pride highlight, free, unmissable spectacle", "kid": true, "geo": {"citywide": true}}, {"id": "web-lbb-kwaku-summer-festival", "t": "Kwaku Summer Festival", "v": "Nelson Mandelapark", "d": "Zuidoost", "when": "Until Sun 2 Aug", "cat": "Live", "fresh": "weekend", "src": "Your Little Black Book ·…", "blurb": "Surinamese and Caribbean food, live music, dance, sports, and activities for the whole family.", "why": "Amsterdam's most versatile summer festival", "kid": true, "geo": {"lat": 52.3163, "lon": 4.9569, "n": false}}, {"id": "web-lbb-ek-japan-in-twee-beeldverhalen", "t": "Ekō – Japan in twee beeldverhalen", "v": "Scheepvaartmuseum", "d": "Centrum", "when": "Until Sun 2 Aug", "cat": "Art", "fresh": "weekend", "src": "Your Little Black Book", "blurb": "Maritime museum exhibition exploring Japan through two visual narratives, connecting oceanic history and cultural storytelling.", "why": "Explore Japan through maritime cultural perspective", "kid": false, "geo": {"lat": 52.3714, "lon": 4.9147, "n": false}}, {"id": "web-lbb-american-myth-memory-david-levinthal", "t": "American Myth Memory – David Levinthal", "v": "Hart Museum", "d": "Centrum", "when": "Until Sun 2 Aug", "cat": "Art", "fresh": "weekend", "src": "Your Little Black Book", "blurb": "Photography exhibition by David Levinthal examining American mythology, memory, and cultural narratives through his distinctive lens.", "why": "Explore American cultural myths through photography", "kid": false, "geo": {"lat": 52.3653, "lon": 4.9024, "n": false}}, {"id": "web-lbb-the-little-big-things", "t": "The Little Big Things", "v": "Koninklijk Theater Carré", "d": "Centrum", "when": "Until Sun 16 Aug", "cat": "Stage & screen", "fresh": "weekend", "src": "Your Little Black Book", "blurb": "West End musical about life-changing moments, featuring live music and emotion in Carré's iconic setting.", "why": "Powerful true-story musical", "kid": false, "geo": {"lat": 52.3625, "lon": 4.904, "n": false}}, {"id": "web-iams-american-identities", "t": "American Identities", "v": "H'ART Museum", "d": "Centrum", "when": "Until Sun 6 Sep", "cat": "Art", "fresh": "always", "src": "I amsterdam · H’ART Museum", "blurb": "David Levinthal \n David Levinthal (born 1949) explores the role of myths in American visual culture. Using carefully constructed miniature scenes, the artist re", "why": "On I amsterdam", "kid": false, "geo": {"lat": 52.3653, "lon": 4.9024, "n": false}}, {"id": "web-iams-museum-market", "t": "Museum Market", "v": "I amsterdam", "d": "Zuid", "when": "Until Sun 13 Dec", "cat": "Shop", "fresh": "always", "src": "I amsterdam", "blurb": "Art, craft and design\n Museum Market takes place every month, every 3rd Sunday of the month (in October the 4th Sunday of the month). Between the trees near the", "why": "On I amsterdam", "kid": false, "geo": {"lat": 52.3579, "lon": 4.8816, "n": false}}, {"id": "web-iams-the-maker-market", "t": "The Maker Market", "v": "De Hallen Amsterdam", "d": "West", "when": "Until Sun 20 Dec", "cat": "Shop", "fresh": "always", "src": "I amsterdam", "blurb": "New editions, discover new creators!\n The Maker Market takes place monthly at De Hallen in Amsterdam-West, a vibrant hub of craftsmanship, design, and inspirati", "why": "On I amsterdam", "kid": false, "geo": {"lat": 52.3669, "lon": 4.8686, "n": false}}, {"id": "web-iams-nicolas-van-poucke-pianorecital", "t": "Nicolas van Poucke - Pianorecital", "v": "The Royal Concertgebouw Amsterdam", "d": "Zuid", "when": "Until Sat 21 Nov", "cat": "Live", "fresh": "always", "src": "I amsterdam", "blurb": "Master pianist Nicolas van Poucke\n Master pianist Nicolas van Poucke returns to the Kleine Zaal, where he continues his remarkable recital tradition. Praised by", "why": "On I amsterdam", "kid": false, "geo": {"lat": 52.3563, "lon": 4.879, "n": false}}, {"id": "web-iams-vriendenloterij-summer-concerts", "t": "VriendenLoterij Summer Concerts", "v": "The Royal Concertgebouw Amsterdam", "d": "Zuid", "when": "Until Sun 30 Aug", "cat": "Out & about", "fresh": "always", "src": "I amsterdam", "blurb": "Celebrate summer with music\n As in previous years, you can once again enjoy epic film music, jazz, singer songwriter, close harmony and much more. Who or what w", "why": "On I amsterdam", "kid": false, "geo": {"lat": 52.3563, "lon": 4.879, "n": false}}, {"id": "web-iams-exhibition-worn-in-the-rijksmuseum", "t": "Exhibition Worn in the Rijksmuseum", "v": "Rijksmuseum", "d": "Zuid", "when": "Until Sun 21 Mar", "cat": "Art", "fresh": "always", "src": "I amsterdam", "blurb": "WORN shows how clothing can lead a life of its own\n In this presentation, you discover worn, repaired and altered pieces from the collection, dating from 1640 t", "why": "On I amsterdam", "kid": false, "geo": {"lat": 52.36, "lon": 4.8852, "n": false}}, {"id": "web-iams-lunchtime-organ-concerts-at-waterlooplein", "t": "Lunchtime organ concerts at Waterlooplein", "v": "I amsterdam", "d": "Centrum", "when": "Until Fri 25 Sep", "cat": "Live", "fresh": "always", "src": "I amsterdam", "blurb": "A moment of music in the middle of the day\n Step inside the Moses and Aaron Church and leave the hustle and bustle of the city behind for a moment. These luncht", "why": "On I amsterdam", "kid": false, "geo": {"lat": 52.3679, "lon": 4.901, "n": false}}, {"id": "web-iams-ligconcert-presents-lying-down-concert-at-the-maritime-museum", "t": "Ligconcert® presents: lying down concert at the Mar…", "v": "The National Maritime Museum", "d": "Centrum", "when": "Until Sat 12 Dec", "cat": "Live", "fresh": "always", "src": "I amsterdam", "blurb": "10,000 sparkling lights\n The one and only Ligconcert® at the Maritime Museum Amsterdam under the enchanting glass roof, illuminated by no fewer than 10,000 spar", "why": "On I amsterdam", "kid": false, "geo": {"lat": 52.3714, "lon": 4.9147, "n": false}}, {"id": "web-ra-2355301", "t": "BOPS x KIKI - WorldPride Amsterdam", "v": "THE OTHER SIDE", "d": "Amsterdam", "when": "Fri 31 Jul · 22:00", "cat": "Live", "fresh": "weekend", "src": "Resident Advisor", "blurb": "Absoluut, TMORGZ, 1000raks, Jay Jay Revlon at THE OTHER SIDE.", "why": "26 going on RA", "kid": false, "geo": null}, {"id": "web-ra-2488590", "t": "HOMOMONUMENT X BRET AFTERHOURS (18+)", "v": "BRET", "d": "West", "when": "Fri 31 Jul · 22:00", "cat": "Live", "fresh": "weekend", "src": "Resident Advisor", "blurb": "Alma Negrot, Juliana, Larry Tee, Olive T at BRET.", "why": "On Resident Advisor", "kid": false, "geo": {"lat": 52.3893, "lon": 4.8372, "n": false}}, {"id": "web-lbb-cinair-europe", "t": "Cinair Europe", "v": "Various outdoor locations", "d": "Citywide", "when": "This weekend", "cat": "Live", "fresh": "weekend", "src": "Your Little Black Book", "blurb": "Watch films at unique outdoor venues like historic buildings and hidden gardens with silent cinema headphones.", "why": "Films under stars at secret locations", "kid": false, "geo": {"citywide": true}}, {"id": "web-lbb-cinema-culinair", "t": "Cinema Culinair", "v": "Cinema Culinair", "d": "Citywide", "when": "This weekend", "cat": "Eat", "fresh": "weekend", "src": "Your Little Black Book", "blurb": "Watch food films while eating dishes from the screen—brunch or seven-course dinner timed perfectly to scenes.", "why": "Eat what you see on screen", "kid": false, "geo": {"citywide": true}}, {"id": "pllek-indoor", "t": "Pllek — waterfront hang", "v": "Pllek", "d": "Noord", "when": "Daily · lunch–late", "cat": "Drink", "fresh": "always", "src": "Your Little Black Book", "blurb": "A cargo-container café-bar on the NDSM wharf — big windows onto the IJ, sofas, and a wood stove when it turns.", "why": "Indoor seating · IJ views · cozy when grey", "kid": true, "geo": {"lat": 52.4013, "lon": 4.8916, "n": true}}, {"id": "cafe-chris", "t": "Café Chris — oldest brown café", "v": "Café Chris", "d": "Centrum", "when": "Daily · afternoon–late", "cat": "Drink", "fresh": "always", "src": "Your Little Black Book", "blurb": "Open since 1624: a creaky, golden-lit Jordaan brown café for a slow afternoon beer while it pours outside.", "why": "Cozy · low-lit · quintessential rainy-day Amsterdam", "kid": false, "geo": {"lat": 52.3739, "lon": 4.879, "n": false}}, {"id": "foodhallen", "t": "Foodhallen", "v": "De Hallen", "d": "West", "when": "Daily · 11:00–23:00", "cat": "Eat", "fresh": "always", "src": "Your Little Black Book", "blurb": "An indoor food hall in a converted tram depot — 20-odd stalls, long tables and two bars under one roof.", "why": "Indoor · grazing for a crowd · weather-proof", "kid": true, "geo": {"lat": 52.3669, "lon": 4.8686, "n": false}}, {"id": "sauna-deco", "t": "Sauna Deco — Art Deco baths", "v": "Sauna Deco", "d": "Centrum", "when": "Daily · 12:00–23:00", "cat": "Out & about", "fresh": "always", "src": "I amsterdam", "blurb": "A 1920s Art Deco bathhouse (salvaged from a Paris department store) with saunas, steam and a quiet tea room.", "why": "Warm · restorative · the ultimate cold-and-wet antidote", "kid": false, "geo": {"lat": 52.3757, "lon": 4.8901, "n": false}}, {"id": "ams-vondelpark-play", "t": "Vondelpark playgrounds", "v": "Vondelpark", "d": "Zuid", "when": "Daily · dawn–dusk", "cat": "Out & about", "fresh": "always", "src": "I amsterdam", "blurb": "Amsterdam’s favourite park: open-air playgrounds, the Kinderkookkafé, ducks and room to run.", "why": "Free · easy any time with kids", "kid": true, "geo": {"lat": 52.358, "lon": 4.8686, "n": false}}, {"id": "the-movies", "t": "The Movies — arthouse cinema", "v": "The Movies", "d": "Centrum", "when": "Daily · evening sessions", "cat": "Stage & screen", "fresh": "always", "src": "Uitkrant · Maps", "blurb": "The Netherlands’ oldest cinema still running — Art Deco rooms, a dinner-and-a-film deal, arthouse bills.", "why": "Indoor · dinner + a film · perfect when it’s wet", "kid": false, "geo": {"lat": 52.3839, "lon": 4.8853, "n": false}}, {"id": "web-scout-two-story", "t": "Two Story", "v": "Two Story — gallery, design store…", "d": "Centrum", "when": "Now open · daytime", "cat": "Shop", "fresh": "new", "src": "Fresh find", "blurb": "An 18th-century canal house rebuilt by Copenhagen's Atelier Axo: design store up front, courtyard café, gallery rotating every three months.", "why": "Copenhagen design eye, Amsterdam canal house", "kid": false, "geo": {"lat": 52.369, "lon": 4.889, "n": false}}, {"id": "ivna-esajas", "t": "Ivna Esajas — Wayward Lines", "v": "Stedelijk Museum", "d": "Zuid", "when": "Until Mon 7 Jun — last days", "cat": "Art", "fresh": "ending", "src": "Stedelijk Museum", "blurb": "The ABN Amro Art Award show threads diasporic memory through installation — its very last weekend.", "why": "Closes Sunday · indoor · see it or miss it", "kid": false, "geo": {"lat": 52.3581, "lon": 4.8798, "n": false}}, {"id": "ams-eat-as", "t": "As", "v": "As", "d": "Zuid", "when": "Lunch & dinner · book ahead", "cat": "Eat", "fresh": "always", "src": "Maps", "blurb": "Wood-fired, ingredient-led cooking and natural wine in a striking round garden pavilion.", "why": "Long lunches · natural wine", "kid": false, "geo": {"lat": 52.346, "lon": 4.877, "n": false}}, {"id": "ams-eat-bak", "t": "BAK", "v": "BAK", "d": "West", "when": "Dinner · book ahead", "cat": "Eat", "fresh": "always", "src": "Maps", "blurb": "A light-filled warehouse with an open kitchen and an art-covered wall; a set seasonal menu of produce-driven dishes.", "why": "Set seasonal menu · book ahead", "kid": false, "geo": {"lat": 52.3902, "lon": 4.8858, "n": false}}, {"id": "ams-ev2-tete", "t": "TÊTE", "v": "TÊTE", "d": "Oost", "when": "Daily · dinner", "cat": "Eat", "fresh": "always", "src": "Ness canon", "blurb": "Affordable all-day bistro on the water in Oost — carafes of wine, easy plates, and dinners that quietly stretch to three hours.", "why": "Waterside bistro, honest prices", "kid": false, "geo": {"lat": 52.3655, "lon": 4.933, "n": false}}, {"id": "ams-b2-foam", "t": "Foam", "v": "Foam", "d": "Centrum", "when": "Daily · 10:00–18:00", "cat": "Art", "fresh": "always", "src": "Maps", "blurb": "A nimble photography museum in a canal house — big-name retrospectives and emerging talent, always worth the drop-in.", "why": "Photography · canal-house museum", "kid": false, "geo": {"lat": 52.3641, "lon": 4.8937, "n": false}}, {"id": "ams-ev2-fyka", "t": "Fyka", "v": "Fyka (by team FYR)", "d": "Centrum", "when": "Daily · from breakfast", "cat": "Eat", "fresh": "always", "src": "Ness canon", "blurb": "The FYR team's bakery-café on the Singel: proper sourdough, patisserie and viennoiserie people already cycle across town for.", "why": "The bakery-café worth the detour", "kid": false, "geo": {"lat": 52.3707, "lon": 4.8896, "n": false}}, {"id": "ams-ev2-droog", "t": "Droog", "v": "Droog", "d": "Centrum", "when": "Tue–Sun", "cat": "Shop", "fresh": "always", "src": "Ness canon", "blurb": "Where Dutch conceptual design was born: gallery, shop, courtyard garden and a single hotel room in a Staalstraat warehouse.", "why": "Dutch design's conceptual mothership", "kid": false, "geo": {"lat": 52.369, "lon": 4.8965, "n": false}}, {"id": "ams-ev2-mendo", "t": "MENDO", "v": "MENDO", "d": "Centrum", "when": "Daily", "cat": "Shop", "fresh": "always", "src": "Ness canon", "blurb": "A self-described candy store for book aficionados: black-walled cabinet of photography, design and fashion monographs.", "why": "Coffee-table-book candy store", "kid": false, "geo": {"lat": 52.369, "lon": 4.884, "n": false}}, {"id": "ams-b2-moise", "t": "Moise", "v": "Moise", "d": "De Pijp", "when": "Daily exc. Sun–Mon", "cat": "Shop", "fresh": "always", "src": "Maps", "blurb": "An understated De Pijp boutique with a razor-sharp eye — Acne, Lemaire, Marant and the like, hand-picked and beautifully shown.", "why": "Hand-picked designer edit", "kid": false, "geo": {"lat": 52.355, "lon": 4.895, "n": false, "approx": true}}, {"id": "ams-b2-patta", "t": "Patta", "v": "Patta", "d": "Centrum", "when": "Daily · shop hours", "cat": "Shop", "fresh": "always", "src": "Maps", "blurb": "The homegrown streetwear label and culture hub — drops, sneakers and the community that put Amsterdam on the map.", "why": "Homegrown streetwear icon", "kid": false, "geo": {"lat": 52.3743, "lon": 4.9, "n": false}}, {"id": "ams-b2-x-bank", "t": "X Bank", "v": "X Bank", "d": "Centrum", "when": "Daily · shop hours", "cat": "Shop", "fresh": "always", "src": "Maps", "blurb": "A concept store in a former bank showing 180+ Dutch fashion, design and art labels — couture to hand-thrown ceramics.", "why": "Best of Dutch design · one room", "kid": false, "geo": {"lat": 52.372, "lon": 4.889, "n": false}}, {"id": "ams-ev-melkweg", "t": "Melkweg", "v": "Melkweg", "d": "Centrum", "when": "Eve · gigs + club", "cat": "Live", "fresh": "always", "src": "Maps", "blurb": "A former dairy turned multi-room culture machine — live music, club nights, film and a gallery, all under one roof.", "why": "Live + club · ex-dairy", "kid": false, "geo": {"lat": 52.3648, "lon": 4.8811, "n": false}}, {"id": "ams-b2-mobilia", "t": "Mobilia", "v": "Mobilia", "d": "Centrum", "when": "Daily · shop hours", "cat": "Shop", "fresh": "always", "src": "Maps", "blurb": "Three floors of high design on the Utrechtsestraat — icons by the masters alongside more attainable covetables.", "why": "Design icons · three floors", "kid": false, "geo": {"lat": 52.363, "lon": 4.899, "n": false}}, {"id": "ams-ev-utrecht", "t": "Utrecht", "v": "Utrecht", "d": "Day-trip", "when": "Daily · ~25 min by train", "cat": "Day-trip", "fresh": "always", "src": "Maps", "blurb": "Amsterdam’s quieter little sister — wharf-side canals, the soaring Dom Tower and a real café culture, minus the crowds.", "why": "Canal city · 25 min by train", "kid": false, "geo": {"train": 25}}, {"id": "ams-b2-vlieger", "t": "Vlieger", "v": "Vlieger", "d": "Centrum", "when": "Daily · shop hours", "cat": "Shop", "fresh": "always", "src": "Maps", "blurb": "A two-floor temple to paper since 1869 — hundreds of colours, handmade sheets and card stacked to the ceiling.", "why": "Paper heaven · since 1869", "kid": false, "geo": {"lat": 52.3665, "lon": 4.8985, "n": false}}, {"id": "ams-efteling", "t": "Efteling", "v": "Efteling", "d": "Day-trip", "when": "Daily · ~1h15 by car", "cat": "Day-trip", "fresh": "always", "src": "Efteling", "blurb": "Europe’s oldest fairytale theme park — enchanted forest, dark rides and proper coasters in a storybook world.", "why": "The dream kid day-trip", "kid": true, "geo": {"train": 75}}, {"id": "ams-micropia", "t": "Micropia", "v": "Micropia", "d": "Centrum", "when": "Daily · 10:00–17:00", "cat": "Art", "fresh": "always", "src": "Micropia", "blurb": "The world’s only microbe museum — microscopes, a kiss-o-meter and the tiny life all around us.", "why": "Indoor · curious kids love it", "kid": true, "geo": {"lat": 52.3665, "lon": 4.9126, "n": false}}, {"id": "ams-ev-paradiso", "t": "Paradiso", "v": "Paradiso", "d": "Centrum", "when": "Eve · gig nights", "cat": "Live", "fresh": "always", "src": "Maps", "blurb": "Amsterdam’s legendary music hall in a converted church — stained glass overhead, a heaving floor below, indie to techno.", "why": "Gigs in a church · legendary", "kid": false, "geo": {"lat": 52.3622, "lon": 4.8836, "n": false}}, {"id": "ams-lostin-kriterion", "t": "Kriterion", "v": "Kriterion", "d": "Centrum", "when": "Daily · check listings", "cat": "Stage & screen", "fresh": "always", "src": "Maps", "blurb": "A legendary student-run cinema and café since 1945 — arthouse programming with a buzzy terrace.", "why": "Student-run · arthouse + café", "kid": false, "geo": {"lat": 52.3628, "lon": 4.9078, "n": false}}, {"id": "ams-madurodam", "t": "Madurodam", "v": "Madurodam", "d": "Day-trip", "when": "Daily · ~50 min by train", "cat": "Day-trip", "fresh": "always", "src": "Madurodam", "blurb": "The whole of the Netherlands at 1:25 — miniature canals, Schiphol and windmills kids can tower over.", "why": "Easy train day-trip · all ages", "kid": true, "geo": {"train": 50}}, {"id": "ams-ev2-nxt-museum", "t": "Nxt Museum", "v": "Nxt Museum", "d": "Noord", "when": "Wed–Sun (daily in summer)", "cat": "Art", "fresh": "always", "src": "Ness canon", "blurb": "Warehouse-scale new-media museum in Noord: room-sized audiovisual installations rewired each season by artists and coders.", "why": "Room-scale digital art in Noord", "kid": false, "geo": {"lat": 52.39, "lon": 4.906, "n": true}}, {"id": "ams-ev-muiderslot", "t": "Muiderslot", "v": "Muiderslot", "d": "Day-trip", "when": "Tue–Sun · ~30 min out", "cat": "Day-trip", "fresh": "always", "src": "Maps", "blurb": "A moated medieval castle on the IJmeer — turrets, falconry and a walled garden, the best-preserved fortress in the country.", "why": "Moated medieval castle", "kid": false, "geo": {"train": 30}}, {"id": "ams-b2-tonton", "t": "TonTon Club", "v": "TonTon Club", "d": "Centrum", "when": "Eve · late", "cat": "Out & about", "fresh": "always", "src": "Maps", "blurb": "An arcade bar where you pay to play — pinball, classic cabinets and Japanese games, with beer and gyoza on tap.", "why": "Arcade bar · pinball + gyoza", "kid": false, "geo": {"lat": 52.3737, "lon": 4.8975, "n": false}}, {"id": "ams-ev-dappermarkt", "t": "Dappermarkt", "v": "Dappermarkt", "d": "Oost", "when": "Mon–Sat · 09:00–17:00", "cat": "Market", "fresh": "always", "src": "Maps", "blurb": "A buzzing, multicultural Oost street market — spices, textiles and world food at honest neighbourhood prices.", "why": "Multicultural Oost market", "kid": false, "geo": {"lat": 52.3622, "lon": 4.9297, "n": false}}, {"id": "ams-lostin-garage-noord", "t": "Garage Noord", "v": "Garage Noord", "d": "Noord", "when": "Eve · check programme", "cat": "Live", "fresh": "always", "src": "Maps", "blurb": "A club, kitchen and cultural space in a former garage — daytime plates, late-night dancing.", "why": "Kitchen by day · club by night", "kid": false, "geo": {"lat": 52.3906, "lon": 4.9296, "n": true}}, {"id": "ams-ev-bloemenmarkt", "t": "Bloemenmarkt", "v": "Bloemenmarkt", "d": "Centrum", "when": "Mon–Sat · 09:00–17:30", "cat": "Market", "fresh": "always", "src": "Maps", "blurb": "The world’s only floating flower market — barges of tulips, bulbs and seeds moored along the Singel since 1862.", "why": "Floating flower market · since 1862", "kid": false, "geo": {"lat": 52.3671, "lon": 4.891, "n": false}}, {"id": "ams-lostin-de-filmhallen", "t": "De Filmhallen", "v": "De Filmhallen", "d": "West", "when": "Daily · check listings", "cat": "Stage & screen", "fresh": "always", "src": "Maps", "blurb": "A nine-screen arthouse cinema in a converted tram depot — with a bustling food hall right next door.", "why": "Arthouse · in the old tram depot", "kid": false, "geo": {"lat": 52.3669, "lon": 4.8686, "n": false}}, {"id": "ams-ev2-wild-swimming-amstelland", "t": "Wild swimming: Gaasperplas & co", "v": "Gaasperplas · Ouderkerkerplas · H…", "d": "Zuidoost", "when": "Summer · warm days", "cat": "Out & about", "fresh": "always", "src": "Ness canon", "blurb": "Three real swimming lakes within cycling distance — grass banks, clean water, zero entrance fee. Where the city actually cools off.", "why": "Free wild swimming, 20 minutes away", "kid": false, "geo": {"lat": 52.312, "lon": 4.992, "n": false}}, {"id": "eye-screening", "t": "Eye Filmmuseum — repertory screening", "v": "Eye Filmmuseum", "d": "Noord", "when": "Daily · check programme", "cat": "Stage & screen", "fresh": "always", "src": "Eye programme", "blurb": "Across the IJ by free ferry: a striking film museum with a daily repertory programme and a river-view café.", "why": "Indoor · a film + the ferry ride · weather-proof", "kid": false, "geo": {"lat": 52.3843, "lon": 4.9006, "n": true}}, {"id": "ams-lostin-sexyland", "t": "Sexyland World", "v": "Sexyland World", "d": "Noord", "when": "Eve · check programme", "cat": "Live", "fresh": "always", "src": "Maps", "blurb": "A members’ club owned by 1,000 people — a different host and a different vibe every single night.", "why": "1,000 owners · nightly surprise", "kid": false, "geo": {"lat": 52.399, "lon": 4.893, "n": true}}, {"id": "ams-ev-marken-volendam", "t": "Marken & Volendam", "v": "Marken & Volendam", "d": "Day-trip", "when": "Daily · bus ~30 min", "cat": "Day-trip", "fresh": "always", "src": "Maps", "blurb": "Two former Zuiderzee fishing villages — wooden houses, working harbours and smoked eel, an easy half-day from Centraal.", "why": "Fishing villages · old Zuiderzee", "kid": false, "geo": {"train": 30}}, {"id": "ams-ev-zandvoort", "t": "Zandvoort Beach", "v": "Zandvoort Beach", "d": "Day-trip", "when": "Daily · ~30 min by train", "cat": "Day-trip", "fresh": "always", "src": "Maps", "blurb": "The nearest North Sea beach — wide sands, beach clubs and a direct train from Centraal; in summer half the city decamps here.", "why": "Beach · 30 min by train", "kid": false, "geo": {"train": 30}}, {"id": "ams-ev-albert-cuyp", "t": "Albert Cuypmarkt", "v": "Albert Cuypmarkt", "d": "De Pijp", "when": "Mon–Sat · 09:00–17:00", "cat": "Market", "fresh": "always", "src": "Maps", "blurb": "The Netherlands’ biggest street market — 250-odd stalls of stroopwafels, cheese, fabric and flowers the length of De Pijp.", "why": "250 stalls · the big one", "kid": false, "geo": {"lat": 52.3559, "lon": 4.8955, "n": false}}, {"id": "ams-ev-concertgebouw", "t": "Royal Concertgebouw", "v": "Royal Concertgebouw", "d": "Zuid", "when": "Eve · concerts · free Wed lunch", "cat": "Live", "fresh": "always", "src": "Maps", "blurb": "One of the world’s great concert halls — peerless acoustics, a resident world-class orchestra, and free Wednesday lunch concerts.", "why": "World-class acoustics · free Wed", "kid": false, "geo": {"lat": 52.3563, "lon": 4.879, "n": false}}, {"id": "ams-ev-kinderdijk", "t": "Kinderdijk Windmills", "v": "Kinderdijk Windmills", "d": "Day-trip", "when": "Daily · ~1h out", "cat": "Day-trip", "fresh": "always", "src": "Maps", "blurb": "Nineteen 18th-century windmills lined along the polders — the postcard Dutch landscape, a UNESCO site you can walk or cycle.", "why": "19 windmills · UNESCO", "kid": false, "geo": {"train": 60}}, {"id": "ams-ev-waterlooplein", "t": "Waterlooplein Flea Market", "v": "Waterlooplein Flea Market", "d": "Centrum", "when": "Mon–Sat · 09:30–18:00", "cat": "Market", "fresh": "always", "src": "Maps", "blurb": "The city’s oldest flea market — secondhand everything, vintage denim, records and bric-a-brac spread out beside the Stopera.", "why": "Flea market · since 1885", "kid": false, "geo": {"lat": 52.3679, "lon": 4.901, "n": false}}, {"id": "web-lbb-the-jollof-club-west-african-restaurant", "t": "The Jollof Club West-African restaurant", "v": "The Jollof Club", "d": "West", "when": "This weekend", "cat": "Eat", "fresh": "weekend", "src": "Your Little Black Book", "blurb": "Chef Nicolas Aquaa's modern West-African cuisine inspired by Ghana, Nigeria and Senegal with wines and cocktails.", "why": "Innovative West-African cooking with culture and storytellin", "kid": false, "geo": {"lat": 52.375, "lon": 4.855, "n": false, "approx": true}}, {"id": "web-lbb-martine-gutierrez-wunderkind", "t": "Martine Gutierrez – Wunderkind", "v": "Huis Marseille", "d": "Centrum", "when": "Until Sun 18 Oct", "cat": "Art", "fresh": "always", "src": "Your Little Black Book", "blurb": "Artist explores identity and self-expression through photographs, self-portraits, childhood toys, and handmade objects from personal discovery.", "why": "Intimate exploration of identity and creativity", "kid": false, "geo": {"lat": 52.3675, "lon": 4.888, "n": false}}, {"id": "web-lbb-nederland-japan-door-de-tijd-verbonden", "t": "Nederland – Japan. Door de tijd verbonden", "v": "Koninklijk Paleis Amsterdam", "d": "Centrum", "when": "Until Sun 27 Sep", "cat": "Art", "fresh": "always", "src": "Your Little Black Book", "blurb": "Explore centuries of Dutch-Japanese cultural exchange through rare objects, lacquerware, swords, and decorative screens.", "why": "Stunning Japan exhibition running all weekend", "kid": false, "geo": {"lat": 52.3731, "lon": 4.8913, "n": false}}, {"id": "ams-hortus", "t": "Hortus Botanicus", "v": "Hortus Botanicus", "d": "Centrum", "when": "Daily · 10:00–17:00", "cat": "Out & about", "fresh": "always", "src": "De Hortus · Your Little B…", "blurb": "One of the world’s oldest botanical gardens — a butterfly greenhouse and three-climate glasshouse to wander.", "why": "Greenhouses work rain or shine", "kid": true, "geo": {"lat": 52.3663, "lon": 4.908, "n": false}}, {"id": "web-lbb-nara-nara-egyptian-restaurant", "t": "Nara Nara Egyptian restaurant", "v": "Nara Nara", "d": "Oost", "when": "This weekend", "cat": "Eat", "fresh": "weekend", "src": "Your Little Black Book", "blurb": "Chef Said's Egyptian restaurant with Cairo-inspired shared dishes, Mediterranean touches and authentic flavours.", "why": "Authentic Egyptian cuisine perfect for family sharing", "kid": true, "geo": {"lat": 52.36, "lon": 4.94, "n": false, "approx": true}}, {"id": "web-iams-straat-collectie", "t": "STRAAT Collectie", "v": "STRAAT Museum – Street art en gra…", "d": "Noord", "when": "Until Sun 31 Jan", "cat": "Art", "fresh": "always", "src": "I amsterdam", "blurb": "Museum for street art and graffiti\n We focus on curating a collection that truly reflects the international street art movement. We do this by recruiting artist", "why": "On I amsterdam", "kid": false, "geo": {"lat": 52.4005, "lon": 4.893, "n": true}}, {"id": "ams-ev2-museum-van-loon", "t": "Museum Van Loon", "v": "Museum Van Loon", "d": "Centrum", "when": "Wed–Mon · 10:00–17:00", "cat": "Art", "fresh": "always", "src": "Ness canon", "blurb": "A patrician canal house still furnished as lived: portraits, coach house, and the quietest formal garden inside the ring.", "why": "Canal-house time capsule with garden", "kid": false, "geo": {"lat": 52.3646, "lon": 4.8946, "n": false}}, {"id": "web-i-amsterdam-pluk-de-nacht-film-festival", "t": "Pluk de Nacht Film Festival", "v": "Stenen Hoofd (Het Stenen Hoofd)", "d": "West", "when": "All summer · evenings", "cat": "Stage & screen", "fresh": "always", "src": "I amsterdam", "blurb": "20+ year tradition: rare unreleased films on big screen, beach chairs, blankets, campfire, cocktails by the IJ.", "why": "Curated cinema festival with unique films; iconic summer exp", "kid": false, "geo": {"lat": 52.39, "lon": 4.888, "n": false}}, {"id": "web-lbb-kaap-amsterdam", "t": "Kaap Amsterdam", "v": "Kaap Amsterdam", "d": "Oost", "when": "This weekend", "cat": "Eat", "fresh": "weekend", "src": "Your Little Black Book", "blurb": "Urban beach with free water views, safe swimming, Woodstock vibes, specialty sandwiches, and relaxed setting.", "why": "Safe swimming spot with high vacation feel", "kid": true, "geo": {"lat": 52.3745, "lon": 4.96, "n": false}}, {"id": "web-lbb-strand-zuid", "t": "Strand Zuid", "v": "Strand Zuid", "d": "Zuid", "when": "This weekend", "cat": "Eat", "fresh": "weekend", "src": "Your Little Black Book", "blurb": "One of Amsterdam's first beach clubs with sand, sun loungers, cold drinks, and boat access.", "why": "Original beach club with proper sand experience", "kid": true, "geo": {"lat": 52.339, "lon": 4.889, "n": false}}, {"id": "web-lbb-hannekes-boom", "t": "Hannekes Boom", "v": "Hannekes Boom", "d": "Centrum", "when": "This weekend", "cat": "Eat", "fresh": "weekend", "src": "Your Little Black Book", "blurb": "Boat-accessible beach club with swimming, colorful interior, and relaxed waterfront atmosphere.", "why": "Scenic waterside escape with boating access", "kid": true, "geo": {"lat": 52.3735, "lon": 4.9095, "n": false}}, {"id": "llm-kidsproof-mokumboot-sloepje-huren", "t": "Mokumboot: sloepje huren", "v": "Mokumboot", "d": "Citywide", "when": "Ongoing", "cat": "Out & about", "fresh": "always", "src": "Kidsproof", "blurb": "Rent a small boat and explore Amsterdam's canals at your own pace—perfect for family water adventures.", "why": "Classic summer activity on the water", "kid": true, "geo": {"citywide": true}}, {"id": "ams-artis-zoo", "t": "ARTIS Royal Zoo", "v": "ARTIS", "d": "Centrum", "when": "Daily · 9:00–18:00", "cat": "Out & about", "fresh": "always", "src": "ARTIS", "blurb": "The country’s oldest zoo — big cats, an aquarium and a planetarium across a leafy 19th-century park.", "why": "All-day with kids · indoor + outdoor mix", "kid": true, "geo": {"lat": 52.3663, "lon": 4.9163, "n": false}}, {"id": "web-iams-rapido-and-funhouse-present-worldpride-opening-event", "t": "Rapido & Funhouse present WorldPride Opening Event", "v": "Melkweg", "d": "Centrum", "when": "Fri 31 Jul · 22:00", "cat": "Drink", "fresh": "weekend", "src": "I amsterdam", "blurb": "Festive start for WorldPride\n Rapido Events and FunHouse are organizing a special opening night for WorldPride Amsterdam 2026 at the Melkweg. You will experienc", "why": "On I amsterdam", "kid": false, "geo": {"lat": 52.3648, "lon": 4.8811, "n": false}}, {"id": "web-scout-worldpride-amsterdam", "t": "WorldPride Amsterdam", "v": "Citywide · Canal Parade Sat 1 Aug", "d": "Citywide", "when": "Sat 25 Jul – Sat 8 Aug", "cat": "Out & about", "fresh": "new", "src": "Fresh find · I amsterdam…", "blurb": "Amsterdam hosts WorldPride 2026: two weeks of citywide street parties and culture, crowned by the world-famous Canal Parade through the grachten.", "why": "WorldPride comes to Amsterdam", "kid": false, "geo": {"citywide": true}}, {"id": "web-ra-2444343", "t": "Dekmantel Festival 2026 - Friday", "v": "Amsterdamse Bos", "d": "Zuid", "when": "Fri 31 Jul · 11:00", "cat": "Live", "fresh": "weekend", "src": "Resident Advisor", "blurb": "James Holden, Surgeon, Kuniyuki, Satoshi Tomiie and more at Amsterdamse Bos.", "why": "48 going on RA", "kid": false, "geo": {"lat": 52.311, "lon": 4.836, "n": false}}, {"id": "web-ra-2464093", "t": "Dekmantel At Night - Friday", "v": "ISOamsterdam", "d": "Noord", "when": "Fri 31 Jul · 23:00", "cat": "Live", "fresh": "weekend", "src": "Resident Advisor", "blurb": "Doudou MD, Francesco Del Garda, Ryan Elliott at ISOamsterdam.", "why": "69 going on RA", "kid": false, "geo": {"lat": 52.401, "lon": 4.903, "n": true}}, {"id": "web-lbb-chefs-in-het-bos", "t": "Chefs in het Bos", "v": "Amsterdamse Bos", "d": "Zuid", "when": "Fri 31 Jul – Sun 2 Aug", "cat": "Eat", "fresh": "weekend", "src": "Your Little Black Book ·…", "blurb": "24 Michelin chefs serve signature dishes. Curate your menu, enjoy live music amid green festival setting.", "why": "Fine dining meets summer festival in nature", "kid": false, "geo": {"lat": 52.311, "lon": 4.836, "n": false}}, {"id": "web-i-amsterdam-horta-spanish-restaurant-opening", "t": "Horta: Spanish Restaurant Opening", "v": "Horta", "d": "Zuid", "when": "Sat 1 Aug – Sun 2 Aug · 12:00–00:00", "cat": "Eat", "fresh": "new", "src": "I amsterdam", "blurb": "New Spanish restaurant from Nazka owner. Paella, patatas bravas, Menu de Día concept. Head chef Polo Alemany's hometown rice.", "why": "Recent opening, southern European fine dining", "kid": true, "geo": {"lat": 52.35, "lon": 4.87, "n": false, "approx": true}}];
+
+
+  // ---- geo model ----
+  const KMH = 15, DETOUR = 1.3;
+  const hav = (a, b) => {
+    const R = 6371, toR = Math.PI / 180;
+    const dLat = (b.lat - a.lat) * toR, dLon = (b.lon - a.lon) * toR;
+    const s = Math.sin(dLat / 2) ** 2 + Math.cos(a.lat * toR) * Math.cos(b.lat * toR) * Math.sin(dLon / 2) ** 2;
+    return 2 * R * Math.asin(Math.sqrt(s));
+  };
+  const bikeMin = (a, b) => hav(a, b) * DETOUR / KMH * 60;
+  const disp = (m) => `~${Math.max(5, Math.ceil(m / 5) * 5)} min`;
+
+  const POV_PTS = {
+    cs:    { lat: 52.3789, lon: 4.9003, north: false },
+    noord: { lat: 52.3903, lon: 4.9022, north: true },
+  };
+  const FERRIES = [
+    { name: 'Buiksloterweg', s: { lat: 52.3803, lon: 4.9000 }, n: { lat: 52.3826, lon: 4.9020 }, wait: 3, cross: 4 },
+    { name: 'NDSM',          s: { lat: 52.3803, lon: 4.9000 }, n: { lat: 52.4009, lon: 4.8933 }, wait: 7, cross: 14 },
+  ];
+  function route(p) {
+    const g = p.geo, from = POV_PTS[S.pov];
+    if (!g) return { mins: 950, meta: '', long: null };
+    if (g.train) return { mins: 800 + g.train, meta: `~${g.train} min · train`, long: `~${g.train} min by train from Centraal` };
+    if (g.citywide) return { mins: 900, meta: 'citywide', long: 'citywide — it comes to you' };
+    const ap = g.approx ? '≈ ' : '';
+    if (from.north === !!g.n) {
+      const m = bikeMin(from, g);
+      return { mins: m, meta: `${ap}${disp(m)} · bike`, long: `${ap}${disp(m)} by bike${g.approx ? ' (district estimate)' : ''}` };
+    }
+    let best = null;
+    for (const f of FERRIES) {
+      const board = from.north ? f.n : f.s, land = from.north ? f.s : f.n;
+      const l1 = bikeMin(from, board), l2 = bikeMin(land, g);
+      const tot = l1 + f.wait + f.cross + l2;
+      if (!best || tot < best.tot) best = { tot, f };
+    }
+    return { mins: best.tot, meta: `${ap}${disp(best.tot)} · bike + ferry`,
+      long: `${ap}${disp(best.tot)} — bike + ${best.f.name} ferry${g.approx ? ' (district estimate)' : ''}` };
+  }
+
+  // typographic poster palettes per category (real images are wsrv-proxied; blocked here)
+  const GRADS = {
+    'Art': [['#c94f38','#8a2818','#2a1a16'],['#8a8a92','#4a4a55','#1a1a20']],
+    'Live': [['#3a2a4a','#1d1430','#ff4d1f'],['#2c4a44','#17332e','#d9812f']],
+    'Eat': [['#e8b04b','#c96a1e','#7a3d1f'],['#d96a8a','#a83a5a','#3d2a3a']],
+    'Drink': [['#f2a65a','#d96a3b','#40544e'],['#d96a8a','#a83a5a','#3d2a3a']],
+    'Out & about': [['#7fae6f','#3d6b4f','#17332e'],['#f2a65a','#d96a3b','#40544e']],
+    'Stage & screen': [['#5a7a8a','#2d4a5a','#e8b04b'],['#3a2a4a','#1d1430','#ff4d1f']],
+    'Market': [['#e8b04b','#c96a1e','#7a3d1f'],['#7fae6f','#3d6b4f','#17332e']],
+    'Shop': [['#8a8a92','#4a4a55','#1a1a20'],['#5a7a8a','#2d4a5a','#e8b04b']],
+    'Day-trip': [['#6f8aae','#3d4f6b','#2c3a44'],['#7fae6f','#3d6b4f','#17332e']],
+  };
+  const gradOf = (p, i) => (GRADS[p.cat] || GRADS['Out & about'])[i % 2];
+
+  const DISTRICTS = ['Noord', 'Centrum', 'West', 'Oost', 'Zuid', 'De Pijp', 'Zuidoost', 'Day-trip'];
+
+  // ---- state ----
+  const S = { pov: 'cs', nearMe: false, districts: new Set(), skipped: [], saved: new Set() };
+  let fluent = 0, abMode = 'earn';
+
+  const $ = (id) => document.getElementById(id);
+  const deckEl = $('deck'), toastEl = $('toast');
+  let toastTimer = null;
+  function toast(msg) {
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toastEl.classList.remove('show'), 1800);
+  }
+
+  function pool() {
+    let list = PICKS.filter((p) => !S.skipped.includes(p.id));
+    if (S.districts.size) list = list.filter((p) => S.districts.has(p.d));
+    if (S.nearMe) list = [...list].sort((a, b) => route(a).mins - route(b).mins);
+    return list;
+  }
+
+  function cardPill(p, r) {
+    if (S.nearMe && r.mins <= 10) return '<span class="pill">Near you</span>';
+    if (p.fresh === 'new') return '<span class="pill">New this week</span>';
+    if (p.fresh === 'ending') return '<span class="pill dim">Ending soon</span>';
+    return '';
+  }
+
+  function render() {
+    const list = pool();
+    deckEl.innerHTML = '';
+    if (!list.length) {
+      const d = document.createElement('div');
+      d.className = 'empty';
+      d.innerHTML = `<span><b>Nothing left here.</b><br>${S.districts.size ? 'That district is thin this weekend — the count warned us.' : 'You’ve been through all 80.'}</span>`;
+      const b = document.createElement('button');
+      b.textContent = S.districts.size ? 'Back to Anywhere' : 'Deal again';
+      b.onclick = () => { S.districts.clear(); S.skipped = []; render(); };
+      d.appendChild(b); deckEl.appendChild(d);
+    } else {
+      list.slice(0, 3).reverse().forEach((p, i, arr) => {
+        const pos = arr.length - 1 - i;
+        const idx = PICKS.indexOf(p);
+        const r = route(p);
+        const g = gradOf(p, idx);
+        const c = document.createElement('div');
+        c.className = 'card ' + (pos === 0 ? 'top' : pos === 1 ? 'peek1' : 'peek2');
+        c.innerHTML = `
+          <div class="img" style="background:linear-gradient(160deg, ${g[0]} 0%, ${g[1]} 55%, ${g[2]} 120%)">
+            ${cardPill(p, r)}
+            <span class="catword">${p.cat}</span>
+            <span class="stamp save">SAVE ★</span><span class="stamp skip">SKIP</span>
+            <div class="cap">
+              <div class="t">${p.t}</div>
+              <div class="m">${p.v}${p.d && p.d !== 'Citywide' ? ' · ' + p.d : ''}</div>
+              <div class="m2">${p.when || ''}</div>
+            </div>
+          </div>
+          <div class="meta"><span class="via">${p.src} ↗</span><span class="dist">${r.meta}</span></div>`;
+        if (pos === 0) c.onclick = () => { if (Date.now() - lastDrag < 350) return; openDetail(p); };
+        deckEl.appendChild(c);
+      });
+    }
+    const wt = $('wheretrigger');
+    const dNames = [...S.districts];
+    wt.textContent = '◎ ' + (dNames.length ? dNames[0] + (dNames.length > 1 ? ` +${dNames.length - 1}` : '') : S.nearMe ? 'Near me' : 'Anywhere') + ' ▾';
+    wt.classList.toggle('on', S.nearMe || S.districts.size > 0);
+    $('nearme').classList.toggle('on', S.nearMe);
+    renderChips();
+    const sv = $('saves');
+    sv.textContent = '★ ' + S.saved.size;
+    sv.classList.toggle('has', S.saved.size > 0);
+    updateAB();
+  }
+
+  function renderChips() {
+    const host = $('districts');
+    host.querySelectorAll('.chip').forEach((n) => n.remove());
+    const counts = {};
+    PICKS.forEach((p) => { counts[p.d] = (counts[p.d] || 0) + 1; });
+    DISTRICTS.forEach((d) => {
+      const b = document.createElement('button');
+      b.className = 'chip' + (S.districts.has(d) ? ' on' : '');
+      b.innerHTML = `${d} <b>· ${counts[d] || 0}</b>`;
+      b.onclick = () => { S.districts.has(d) ? S.districts.delete(d) : S.districts.add(d); render(); };
+      host.appendChild(b);
+    });
+    const any = document.createElement('button');
+    any.className = 'chip' + (S.districts.size === 0 ? ' on' : '');
+    any.textContent = 'Anywhere';
+    any.onclick = () => { S.districts.clear(); render(); };
+    host.appendChild(any);
+  }
+
+  function openSheet(id) { $('scrim').classList.add('show'); $(id).classList.add('show'); }
+  function closeAll() {
+    $('scrim').classList.remove('show');
+    ['wheresheet', 'detailsheet'].forEach((i) => $(i).classList.remove('show'));
+    $('panel').classList.remove('show');
+  }
+  // EVENT-FIRST detail: when / about / why / via lead; getting-there is the quiet last line
+  function openDetail(p) {
+    const r = route(p);
+    $('d-title').textContent = p.t;
+    $('d-sub').textContent = `${p.v}${p.d && p.d !== 'Citywide' ? ' · ' + p.d : ''} · ${p.cat}`;
+    $('d-facts').innerHTML = `
+      ${p.when ? `<div class="fact"><span class="k mono">WHEN</span><span><b>${p.when}</b></span></div>` : ''}
+      ${p.blurb ? `<div class="fact"><span class="k mono">ABOUT</span><span>${p.blurb}</span></div>` : ''}
+      ${p.why ? `<div class="fact"><span class="k mono">WHY</span><span>${p.why}</span></div>` : ''}
+      <div class="fact"><span class="k mono">VIA</span><span>${p.src} ↗</span></div>
+      ${r.long ? `<div class="fact quiet"><span class="k mono">GETTING THERE</span><span>${r.long}</span></div>` : ''}`;
+    openSheet('detailsheet');
+  }
+
+  $('wheretrigger').onclick = () => openSheet('wheresheet');
+  $('panelwhere').onclick = () => { closeAll(); openSheet('wheresheet'); };
+  $('scrim').onclick = closeAll;
+  $('d-close').onclick = closeAll;
+  $('menubtn').onclick = () => { $('panel').classList.add('show'); $('scrim').classList.add('show'); };
+  $('panelclose').onclick = closeAll;
+
+  $('nearme').onclick = () => {
+    S.nearMe = !S.nearMe;
+    render();
+    toast(S.nearMe ? 'Re-ranked — nearest first' : 'Back to the editorial order');
+  };
+
+  // ---- undo pill ----
+  let undoable = null, undoShowT = null, undoHideT = null;
+  const undoEl = $('undopill');
+  function offerUndo(p, kind) {
+    undoable = { p, kind };
+    undoEl.classList.remove('show');
+    clearTimeout(undoShowT); clearTimeout(undoHideT);
+    undoShowT = setTimeout(() => {
+      $('u-what').innerHTML = `${kind} <i>· ${p.t}</i>`;
+      undoEl.classList.add('show');
+      undoHideT = setTimeout(() => { undoEl.classList.remove('show'); undoable = null; }, 5000);
+    }, 1100);
+  }
+  undoEl.onclick = () => {
+    if (!undoable) return;
+    const { p, kind } = undoable;
+    S.skipped = S.skipped.filter((id) => id !== p.id);
+    if (kind === 'Saved') S.saved.delete(p.id);
+    undoable = null; undoEl.classList.remove('show');
+    clearTimeout(undoShowT); clearTimeout(undoHideT);
+    render();
+  };
+  function setUndoPos(pos) {
+    undoEl.classList.toggle('postop', pos === 'top');
+    undoEl.classList.toggle('posbottom', pos === 'bottom');
+    $('up-top').classList.toggle('on', pos === 'top');
+    $('up-bottom').classList.toggle('on', pos === 'bottom');
+  }
+  $('up-top').onclick = () => setUndoPos('top');
+  $('up-bottom').onclick = () => setUndoPos('bottom');
+
+  function resolveTop(action) {
+    const t = pool()[0];
+    if (!t) return;
+    if (action === 'save') S.saved.add(t.id);
+    S.skipped.push(t.id);
+    offerUndo(t, action === 'save' ? 'Saved' : 'Skipped');
+    render();
+  }
+  $('skip').onclick = () => resolveTop('skip');
+  $('save').onclick = () => resolveTop('save');
+
+  // ---- drag gestures ----
+  let drag = null, lastDrag = 0;
+  deckEl.addEventListener('pointerdown', (e) => {
+    const top = deckEl.querySelector('.card.top');
+    if (!top || !top.contains(e.target)) return;
+    drag = { x0: e.clientX, y0: e.clientY, el: top, moved: false };
+    top.setPointerCapture(e.pointerId);
+    top.style.transition = 'none';
+  });
+  deckEl.addEventListener('pointermove', (e) => {
+    if (!drag) return;
+    const dx = e.clientX - drag.x0, dy = e.clientY - drag.y0;
+    if (Math.abs(dx) > 6 || Math.abs(dy) > 6) drag.moved = true;
+    drag.el.style.transform = `translate(${dx}px, ${dy * 0.25}px) rotate(${dx * 0.06}deg)`;
+    const save = drag.el.querySelector('.stamp.save'), skip = drag.el.querySelector('.stamp.skip');
+    if (save) save.style.opacity = Math.min(1, Math.max(0, dx - 24) / 60);
+    if (skip) skip.style.opacity = Math.min(1, Math.max(0, -dx - 24) / 60);
+  });
+  deckEl.addEventListener('pointerup', (e) => {
+    if (!drag) return;
+    const dx = e.clientX - drag.x0;
+    const { el, moved } = drag;
+    drag = null;
+    if (moved) lastDrag = Date.now();
+    el.style.transition = '';
+    if (dx > 70 || dx < -70) {
+      const action = dx > 70 ? 'save' : 'skip';
+      el.style.transform = `translate(${dx > 0 ? 480 : -480}px, -24px) rotate(${dx > 0 ? 18 : -18}deg)`;
+      el.style.opacity = '0';
+      fluent += 1;
+      $('fluency').textContent = fluent;
+      setTimeout(() => resolveTop(action), 240);
+    } else {
+      el.style.transform = '';
+      el.querySelectorAll('.stamp').forEach((s) => { s.style.opacity = 0; });
+    }
+  });
+  deckEl.addEventListener('pointercancel', () => {
+    if (drag) { drag.el.style.transition = ''; drag.el.style.transform = ''; drag = null; }
+  });
+
+  function updateAB() {
+    $('actionbar').classList.toggle('ghost', abMode === 'earn' && fluent >= 4);
+  }
+  function setAB(mode) {
+    abMode = mode;
+    $('ab-always').classList.toggle('on', mode === 'always');
+    $('ab-earn').classList.toggle('on', mode === 'earn');
+    updateAB();
+  }
+  $('ab-always').onclick = () => setAB('always');
+  $('ab-earn').onclick = () => setAB('earn');
+
+  function setPov(pov) {
+    S.pov = pov;
+    $('pov-cs').classList.toggle('on', pov === 'cs');
+    $('pov-noord').classList.toggle('on', pov === 'noord');
+    render();
+    if (S.nearMe) toast(pov === 'noord' ? 'Viewing from Noord — re-ranked' : 'Viewing from Centraal — re-ranked');
+  }
+  $('pov-cs').onclick = () => setPov('cs');
+  $('pov-noord').onclick = () => setPov('noord');
+
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeAll(); });
+
+  render();
+</script>
+</body>
+</html>
