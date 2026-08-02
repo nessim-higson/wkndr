@@ -80,9 +80,26 @@ describe('url handling', () => {
   it('accepts the post permalinks we support and strips tracking params', () => {
     expect(normalizeUrl('https://www.instagram.com/p/CtLr8sgAeHI/?igshid=abc'))
       .toBe('https://www.instagram.com/p/CtLr8sgAeHI/')
-    expect(normalizeUrl('instagram.com/reel/CtLr8sgAeHI/')).toContain('/reel/CtLr8sgAeHI')
     expect(() => normalizeUrl('https://x.com/jack/status/20')).not.toThrow()
     expect(() => normalizeUrl('https://www.tiktok.com/@a/video/6718335390845095173')).not.toThrow()
+  })
+
+  // Copying a link from a PROFILE (rather than from the post itself) gives the username-prefixed
+  // form. It was rejected as "not a single public post" — the first real-world paste hit it.
+  it('accepts the username-prefixed form Instagram gives you from a profile', () => {
+    expect(normalizeUrl('https://www.instagram.com/doubleamagazine/p/DbTKYb2imA9/?img_index=1'))
+      .toBe('https://www.instagram.com/p/DbTKYb2imA9/')
+    expect(normalizeUrl('https://www.instagram.com/paradisoadam/reel/CtLr8sgAeHI/'))
+      .toBe('https://www.instagram.com/p/CtLr8sgAeHI/')
+  })
+
+  it('canonicalises both forms of the same post to one url, so a re-paste dedupes', () => {
+    expect(normalizeUrl('https://www.instagram.com/anyone/p/DbTKYb2imA9/'))
+      .toBe(normalizeUrl('https://www.instagram.com/p/DbTKYb2imA9/'))
+  })
+
+  it('tells you what to do when you paste a profile instead of a post', () => {
+    expect(() => normalizeUrl('https://www.instagram.com/doubleamagazine/')).toThrow(/profile, not a post/)
   })
 
   it('refuses anything that is not a single public post', () => {

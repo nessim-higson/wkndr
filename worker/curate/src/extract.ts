@@ -123,8 +123,12 @@ export function titleFrom(caption: string, author?: string): string {
   return t.length > 90 ? t.slice(0, 87).replace(/[\s,;:–-]+$/, '') + '…' : t
 }
 
+/** Instagram serves a post at BOTH /p/<code>/ and /<username>/p/<code>/ — copying a link from a
+ *  profile gives the second form, so the username segment has to be optional here. */
+const IG_POST = /instagram\.com\/(?:[A-Za-z0-9_.]+\/)?(?:p|reel|tv)\/([A-Za-z0-9_-]+)/
+
 export function shortcodeOf(url: string): string | undefined {
-  return url.match(/instagram\.com\/(?:p|reel|tv)\/([A-Za-z0-9_-]+)/)?.[1]
+  return url.match(IG_POST)?.[1]
 }
 
 export function platformOf(url: string): Drop['platform'] {
@@ -146,17 +150,33 @@ export function normalizeUrl(raw: string): string {
   }
   if (u.protocol !== 'https:' && u.protocol !== 'http:') throw new DropError('Links only.', 'badurl')
   const host = u.hostname.replace(/^www\./, '').toLowerCase()
+
+  // Canonicalise Instagram to /p/<code>/ regardless of which form was pasted. Both the bare
+  // /p/<code>/ and the profile-copied /<username>/p/<code>/ resolve to the same post, so folding
+  // them here means the same post pasted twice dedupes instead of landing as two picks.
+  if (host === 'instagram.com') {
+    const code = shortcodeOf(u.toString())
+    if (!code) {
+      throw new DropError(
+        'That looks like a profile, not a post — open the post first, then copy its link.',
+        'unsupported',
+      )
+    }
+    return `https://www.instagram.com/p/${code}/`
+  }
+
   const ok =
-    (host === 'instagram.com' && /^\/(p|reel|tv)\/[A-Za-z0-9_-]+/.test(u.pathname)) ||
-    (host === 'tiktok.com' && /\/video\/\d+/.test(u.pathname)) ||
-    (host === 'vm.tiktok.com') ||
-    ((host === 'twitter.com' || host === 'x.com') && /\/status\/\d+/.test(u.pathname))
+    (host === 'tiktok.com' && /\/(?:video|photo)\/\d+/.test(u.pathname)) ||
+    (host === 'tiktok.com' && /^\/t\/[A-Za-z0-9]+/.test(u.pathname)) ||
+    host === 'vm.tiktok.com' ||
+    ((host === 'twitter.com' || host === 'x.com') && /\/status(?:es)?\/\d+/.test(u.pathname))
   if (!ok) {
     throw new DropError(
       'That needs to be a link to a single public post — Instagram, TikTok or X.',
       'unsupported',
     )
   }
+  // `?img_index=`, `?igshid=`, utm params — none of them change which post this is.
   u.search = ''
   u.hash = ''
   return u.toString()

@@ -14,6 +14,20 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [drop fix] — 2026-08-02 — accept the URL form Instagram actually gives you
+- **First real paste failed.** `instagram.com/<username>/p/<code>/?img_index=1` — the form you get
+  copying a link **from a profile** — was rejected as "not a single public post". The guard only
+  matched `/p/<code>` at the root, which is the form you get from the post page itself. Both resolve
+  to the same post; only one was accepted.
+- Instagram URLs are now **canonicalised to `/p/<code>/`** whichever form is pasted, so the same post
+  pasted two ways dedupes instead of landing as two picks. `?img_index=`, `?igshid=` and utm params
+  are stripped (they don't change which post it is).
+- Pasting a **profile** now says so — "that looks like a profile, not a post — open the post first,
+  then copy its link" — instead of the generic unsupported message.
+- Also widened: TikTok `/photo/` and `/t/` short links, X `/statuses/`. **233 tests.**
+- Noted while testing: Instagram occasionally flakes a single request (one call in ~six returned
+  nothing, the retry succeeded). Worth a retry if the board ever reports a post it can't read.
+
 ## [board V.9.32] — 2026-08-02 — THE DROP BOX: paste an Instagram link, get a pick
 - **The content blocker, closed.** Every source in the pipeline is a crawlable site; the events Ness
   actually spots are on Instagram, and there was no way in short of describing a post by hand. The
