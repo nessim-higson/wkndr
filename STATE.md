@@ -1,6 +1,6 @@
 # WKNDR — STATE (catch-me-up snapshot)
 
-_Living "where are we right now" doc — a **snapshot, not a history**. **Updated 2026-07-23.** Read this
+_Living "where are we right now" doc — a **snapshot, not a history**. **Updated 2026-08-02.** Read this
 FIRST in a new chat. For strategy + backlog see `docs/backlog.md`; for the pipeline architecture see
 `docs/pipeline-architecture.md` + `docs/source-map.md`; for **who may write to the deck vs to a personal
 profile** (board / Tune / airlock — read before touching either) see `docs/curation-surfaces.md`; for the
@@ -59,6 +59,21 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
   best of the two); `stampServeOrder` uses the new `weekendModes()`. The blend is KEPT as the summary
   (ambient field + every single-mode surface). Surfaced only when `daysDiffer` — header reads
   "Sat 27° · Sun 14°", and `tempForPick` prints a dated card's OWN day. Board V.9.30 mirrors it.
+- **/GEO — THE HYPER-LOCAL PROTOTYPE SURFACE (geo G.1, PR #23, 2026-08-02 — serves at
+  `app.wkndr.xyz/geo/` after the next domain deploy; GH-Pages mirror `/wkndr/geo/`).** Field feedback
+  (a friend in Noord: location should filter more accurately) answered as a SEPARATE surface on the
+  curate-board pattern: `app/public/geo/index.html` ships inside the app build, **reads the LIVE feed**
+  (`data/picks.amsterdam.json`, dealt in `servePos` order, real wsrv posters + credited link-outs,
+  Open-Meteo weekend temps), writes nothing — the MVP app at `/` untouched. The laws: **near-me is a
+  SORT, never a gate** (far picks sink, don't vanish) · **districts are counted filters** ("Noord · 7"
+  makes pool thinness visible instead of silently serving an empty deck) · **the event stays the story**
+  (getting-there is the detail's quiet last line). Geo = an in-page NAME-KEYED venue gazetteer (62/80
+  of the current feed pin; day-trips parse their travel time from the area string; generic "Amsterdam"
+  areas stay honestly unmapped and sink) + haversine ×1.3 @ 15 km/h with an explicit IJ ferry model
+  (Buiksloterweg/NDSM, half-headway wait), rounded UP to fives; "My location" = real geolocation, with
+  Centraal/Noord preset viewpoints. The undo pill sits at the BOTTOM on this surface (the pinned filter
+  tabs own the top — the collision Ness spotted). Design record: `experiments/11`–`14` (placement
+  comps → clickable prototype → fork → real-feed). **Follow-up is pipeline-side, not UI** (open item 8).
 - **App: V.10.18** — https://app.wkndr.xyz (cache-bust `?v=V.10.18`; GH-Pages mirror at
   nessim-higson.github.io/wkndr/). **Recent arc (2026-07-21→23):** V.10.12 = field-feedback reliability
   (persist declines so a refresh doesn't re-deal them → `wkndr.swiped.v1`; intro is now first-run/arrival
@@ -274,7 +289,14 @@ GUARANTEES topped/led picks into the feed (pull-back from prePool/canon if the b
 7. **Offered, not built — scheduled auto-compile:** a cron agent could pull the week's `curation`
   issues, compile, and ship unattended. Ness leaning keep-me-in-the-loop until the corpus feels
   settled (he sees each taste call reasoned through); revisit once stable.
-8. **Two open judgment flags from R3/issue #3:** (a) ARTIS — his ★5/TOP was on the weak bench
+8. **Geo, pipeline-side** (the /geo follow-up, PR #23): stamp venue lat/lon at build time — `ra.ts:82`
+   hardcodes `area:''` while the GraphQL already returns `venue.area{name}` (one-line capture);
+   `iamsterdam.ts` has `location.address` (+ often `geo`) in the JSON-LD it already parses; PDOK
+   Locatieserver (keyless, best-in-NL) geocodes the rest on the cron into a cached
+   `venues.amsterdam.json` gazetteer — then /geo (and later the app) reads coords off the feed instead
+   of its in-page map. Same sweep: `iamsterdam.ts:109` hardcodes `kid:false` — map its family category
+   namespace so the Kids lens sees the live feed (16/80 kid picks today come only from LLM sources).
+9. **Two open judgment flags from R3/issue #3:** (a) ARTIS — his ★5/TOP was on the weak bench
   "ARTIS-Aquarium" card; routed to the canon "ARTIS Royal Zoo" entry (offer: build the aquarium its
   own card if he wants it). (b) Future-festival TOPs (Milkshake, Dekmantel) lead the deck NOW though
   they're late-Jul — offer to gate TOP activation to the event's own weekend.
