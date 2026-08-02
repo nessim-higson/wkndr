@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WKNDR — geo-toggle placement comps</title>
+<style>
+  :root {
+    --paper: #fafaf7;
+    --ink: #0a0a0a;
+    --accent: #ff4d1f;
+    --trace: #8b8b82;
+    --hairline: #e5e5de;
+    --panel: #ffffff;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #131311;
+      --ink: #ecece6;
+      --trace: #97978d;
+      --hairline: #2a2a26;
+      --panel: #1b1b18;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #131311; --ink: #ecece6; --trace: #97978d; --hairline: #2a2a26; --panel: #1b1b18;
+  }
+  :root[data-theme="light"] {
+    --paper: #fafaf7; --ink: #0a0a0a; --trace: #8b8b82; --hairline: #e5e5de; --panel: #ffffff;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .mono {
+    font-family: ui-monospace, "JetBrains Mono", SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+  }
+
+  .wrap { max-width: 1060px; margin: 0 auto; padding: 0 28px; }
+
+  /* ---------- masthead ---------- */
+  .masthead { padding: 64px 0 40px; border-bottom: 1px solid var(--hairline); }
+  .eyebrow { color: var(--accent); text-transform: uppercase; margin-bottom: 20px; }
+  .masthead h1 {
+    font-size: clamp(34px, 5.4vw, 58px);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.02;
+    margin: 0 0 20px;
+    text-wrap: balance;
+    max-width: 15ch;
+  }
+  .lede { font-size: 17px; max-width: 58ch; margin: 0 0 26px; }
+  .lede b { font-weight: 600; }
+  .context {
+    color: var(--trace);
+    border-left: 2px solid var(--accent);
+    padding-left: 12px;
+    max-width: 72ch;
+    line-height: 1.7;
+  }
+
+  /* ---------- comp rows ---------- */
+  .comp {
+    display: grid;
+    grid-template-columns: 340px 1fr;
+    gap: 56px;
+    padding: 56px 0;
+    border-bottom: 1px solid var(--hairline);
+    align-items: start;
+  }
+  @media (max-width: 780px) {
+    .comp { grid-template-columns: 1fr; gap: 32px; }
+  }
+
+  .comp-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 6px; flex-wrap: wrap; }
+  .comp-letter {
+    font-size: 13px; font-weight: 700;
+    width: 26px; height: 26px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: var(--ink); color: var(--paper);
+    flex: none; transform: translateY(4px);
+  }
+  .comp h2 { font-size: 26px; font-weight: 700; letter-spacing: -0.02em; margin: 0; text-wrap: balance; }
+
+  .verdict {
+    display: inline-block; padding: 4px 11px; border-radius: 100px;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;
+    border: 1px solid var(--hairline); color: var(--trace);
+    margin: 10px 0 18px;
+  }
+  .verdict.rec { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .verdict.dead { text-decoration: line-through; }
+  .verdict.law { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+
+  .comp p { max-width: 60ch; margin: 0 0 14px; font-size: 15px; }
+  .comp p.quiet { color: var(--trace); }
+
+  .comps-irl { color: var(--trace); line-height: 1.8; margin: 18px 0 0; padding: 14px 0 0; border-top: 1px dashed var(--hairline); }
+  .comps-irl b { color: var(--ink); font-weight: 600; }
+
+  .pros { list-style: none; padding: 0; margin: 16px 0 0; font-size: 14px; }
+  .pros li { padding-left: 20px; position: relative; margin-bottom: 6px; max-width: 58ch; }
+  .pros li::before { position: absolute; left: 0; font-weight: 700; }
+  .pros li.up::before { content: "+"; color: var(--accent); }
+  .pros li.down::before { content: "–"; color: var(--trace); }
+
+  /* the mini filter-strip inset for comp B */
+  .strip {
+    display: flex; gap: 6px; flex-wrap: wrap;
+    margin: 18px 0 0; padding: 12px; border: 1px solid var(--hairline); border-radius: 10px;
+    background: var(--panel);
+  }
+  .strip .t {
+    font-size: 11px; font-weight: 600; color: #0a0a0a; background: #fafaf7;
+    border: 1px solid #e0e0d8; border-radius: 100px; padding: 5px 10px; white-space: nowrap;
+  }
+  .strip .t.new { border: 1.5px dashed #ff4d1f; color: #ff4d1f; background: #fff; }
+  .strip-note { width: 100%; color: var(--trace); margin-top: 2px; }
+
+  /* ---------- the phone frames ---------- */
+  /* Mockups stay on paper in both themes — they depict the app, not this page. */
+  .phone {
+    width: 300px; height: 610px; margin: 0 auto;
+    border-radius: 34px;
+    background: #0d0d0d;
+    padding: 10px;
+    box-shadow: 0 24px 60px rgba(10,10,10,0.18);
+    flex: none;
+  }
+  .screen {
+    position: relative; width: 100%; height: 100%;
+    border-radius: 25px; overflow: hidden;
+    background: #fafaf7;
+    display: flex; flex-direction: column;
+    font-size: 11px; color: #0a0a0a;
+  }
+  /* WARM-mode aura field */
+  .screen::before {
+    content: ""; position: absolute; inset: 0;
+    background:
+      radial-gradient(120% 90% at 78% -8%, #ffd9a3 0%, rgba(255,217,163,0) 58%),
+      radial-gradient(130% 100% at 8% 108%, #ffb37c 0%, rgba(255,179,124,0) 55%),
+      #fdf4e7;
+  }
+  .screen > * { position: relative; }
+
+  .tb {
+    margin: 12px 10px 8px;
+    background: rgba(255,255,255,0.92);
+    border-radius: 13px;
+    padding: 9px 12px;
+    display: flex; justify-content: space-between; align-items: center;
+    box-shadow: 0 2px 10px rgba(10,10,10,0.06);
+  }
+  .tb .brand { font-weight: 800; letter-spacing: 0.02em; display: flex; align-items: center; gap: 6px; }
+  .tb .dot { width: 6px; height: 6px; border-radius: 50%; background: #ff4d1f; }
+  .tb .wx { color: #6b6b63; font-size: 10px; }
+  .tb .wx b { color: #c96a1e; font-weight: 700; }
+  .tb .acts { display: flex; gap: 8px; align-items: center; color: #0a0a0a; font-size: 12px; }
+
+  .deckcard {
+    margin: 10px 16px 0;
+    background: #fff; border-radius: 16px; overflow: hidden;
+    box-shadow: 0 14px 30px rgba(10,10,10,0.14);
+    flex: 1; display: flex; flex-direction: column;
+    min-height: 0;
+  }
+  .deckcard .img { flex: 1; min-height: 0; position: relative; }
+  .deckcard .img::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0) 55%, rgba(0,0,0,0.38)); }
+  .img.pllek { background: linear-gradient(160deg, #f2a65a 0%, #d96a3b 45%, #40544e 100%); }
+  .img.tolhuis { background: linear-gradient(165deg, #2c4a44 0%, #17332e 55%, #d9812f 130%); }
+  .deckcard .img .pill {
+    position: absolute; top: 10px; left: 10px; z-index: 1;
+    background: #ff4d1f; color: #fff; font-weight: 700; font-size: 9px;
+    padding: 3px 8px; border-radius: 100px; letter-spacing: 0.03em;
+  }
+  .deckcard .img .cap { position: absolute; left: 12px; bottom: 10px; z-index: 1; color: #fff; }
+  .deckcard .img .cap .t { font-weight: 800; font-size: 15px; letter-spacing: -0.01em; }
+  .deckcard .img .cap .m { font-size: 9.5px; opacity: 0.85; }
+  .deckcard .meta { padding: 9px 12px; color: #55554e; font-size: 10px; display: flex; justify-content: space-between; }
+  .deckcard .meta b { color: #0a0a0a; }
+
+  .actions { display: flex; justify-content: center; gap: 14px; padding: 12px 0 16px; }
+  .actions span {
+    width: 34px; height: 34px; border-radius: 50%; background: #fff;
+    display: inline-flex; align-items: center; justify-content: center;
+    box-shadow: 0 3px 10px rgba(10,10,10,0.12); font-size: 13px;
+  }
+  .actions .yes { background: #ff4d1f; color: #fff; }
+
+  .scrim { position: absolute; inset: 0; background: rgba(10,10,10,0.32); border-radius: 25px; }
+
+  /* open bar-panel (comp A) */
+  .panel {
+    position: absolute; left: 10px; right: 10px; top: 12px;
+    background: #fff; border-radius: 13px; padding: 9px 12px 12px;
+    box-shadow: 0 12px 34px rgba(10,10,10,0.22);
+  }
+  .panel .row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+  .panel .brand { font-weight: 800; }
+  .bar-group { border-top: 1px solid #eeeee8; padding: 8px 0 4px; }
+  .bar-label { font-size: 8.5px; letter-spacing: 0.09em; text-transform: uppercase; color: #9a9a90; display: block; margin-bottom: 6px; }
+  .bar-row { display: flex; gap: 6px; flex-wrap: wrap; }
+  .bpill {
+    font-size: 10px; font-weight: 600; border: 1px solid #e0e0d8; border-radius: 100px;
+    padding: 4px 10px; background: #fafaf7; white-space: nowrap;
+  }
+  .bpill.on { background: #ff4d1f; border-color: #ff4d1f; color: #fff; }
+  .bsub { font-size: 9px; color: #9a9a90; display: block; margin-top: 6px; }
+
+  /* bottom sheet (comps B & D) */
+  .sheet {
+    position: absolute; left: 0; right: 0; bottom: 0;
+    background: #fff; border-radius: 18px 18px 25px 25px;
+    padding: 10px 14px 16px;
+    box-shadow: 0 -12px 40px rgba(10,10,10,0.22);
+  }
+  .handle { width: 32px; height: 4px; border-radius: 4px; background: #dddad2; margin: 0 auto 10px; }
+  .sheet h4 { margin: 0 0 3px; font-size: 15px; font-weight: 800; letter-spacing: -0.01em; }
+  .sheet .sub { font-size: 9.5px; color: #8b8b82; margin: 0 0 10px; }
+  .togglerow {
+    display: flex; justify-content: space-between; align-items: center;
+    border: 1px solid #eeeee8; border-radius: 10px; padding: 8px 10px; margin-bottom: 10px;
+    font-size: 11px; font-weight: 700;
+  }
+  .togglerow .sw { width: 30px; height: 17px; border-radius: 100px; background: #ff4d1f; position: relative; flex: none; }
+  .togglerow .sw::after { content: ""; position: absolute; top: 2px; right: 2px; width: 13px; height: 13px; border-radius: 50%; background: #fff; }
+  .chips { display: flex; flex-wrap: wrap; gap: 5px; }
+  .chip { font-size: 9.5px; font-weight: 600; border: 1px solid #e0e0d8; border-radius: 100px; padding: 4px 9px; background: #fafaf7; }
+  .chip b { color: #b0b0a6; font-weight: 600; }
+  .chip.on { background: #0a0a0a; color: #fff; border-color: #0a0a0a; }
+  .chip.on b { color: #8f8f86; }
+
+  /* detail facts (comp D) */
+  .fact { display: flex; gap: 8px; font-size: 10.5px; padding: 6px 0; border-top: 1px solid #f0f0ea; }
+  .fact .k { color: #9a9a90; width: 46px; flex: none; }
+  .fact b { font-weight: 700; }
+
+  /* face-level chip (comp C) */
+  .facechip-row { display: flex; gap: 6px; margin: 0 16px; }
+  .facechip {
+    font-size: 10px; font-weight: 700; border-radius: 100px; padding: 4px 11px;
+    background: #ff4d1f; color: #fff; box-shadow: 0 3px 10px rgba(255,77,31,0.35);
+  }
+  .facechip.ghost { background: rgba(255,255,255,0.85); color: #55554e; font-weight: 600; box-shadow: none; }
+
+  /* the accent callout marker */
+  .mark { outline: 2px dashed #ff4d1f; outline-offset: 3px; border-radius: 10px; position: relative; }
+  .tag {
+    position: absolute; z-index: 5;
+    background: #ff4d1f; color: #fff; font-weight: 600;
+    padding: 3px 8px; border-radius: 4px; white-space: nowrap;
+  }
+
+  /* ---------- recommendation band ---------- */
+  .call { background: var(--ink); color: var(--paper); margin-top: 0; }
+  .call .wrap { padding: 64px 28px 72px; }
+  .call .eyebrow { margin-bottom: 18px; }
+  .call h2 { font-size: clamp(26px, 3.6vw, 40px); font-weight: 700; letter-spacing: -0.025em; margin: 0 0 18px; max-width: 24ch; text-wrap: balance; }
+  .call p { max-width: 62ch; font-size: 16px; margin: 0 0 14px; }
+  .call .steps { margin-top: 30px; padding-top: 18px; border-top: 1px solid rgba(255,255,255,0.18); color: rgba(250,250,247,0.65); line-height: 2; }
+  .call .steps b { color: var(--paper); font-weight: 600; }
+
+  .colophon { color: var(--trace); padding: 26px 0 48px; line-height: 1.9; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .phone { transition: transform 0.35s ease; }
+    .phone:hover { transform: translateY(-4px); }
+  }
+</style>
+</head>
+<body>
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow mono">WKNDR / experiments / 11 — placement comps</div>
+    <h1>Where does “near&nbsp;me” live?</h1>
+    <p class="lede">Four placements for a geo-locate toggle, mocked on the live V.10 frame.
+    The constraint from the field: a friend in <b>Noord</b> wants closer, more relevant picks —
+    but this weekend's feed holds <b>4 Noord picks out of 80</b>, so a hard radius filter hands
+    them an empty deck. Every comp below assumes the pipeline fix lands first (venues geocoded on
+    the Thursday cron), and treats distance as a <b>sort, never a gate</b>.</p>
+    <p class="context mono">FIELD NOTES — feed 2026-07-30 · 80 picks · Noord 4 · Centrum 6+ ·
+    location permission is ALREADY granted for weather (“Use my location”, App.tsx:970) —
+    no comp below asks twice.</p>
+  </div>
+</header>
+
+<!-- ============ COMP A ============ -->
+<div class="wrap"><section class="comp" id="comp-a">
+  <div class="phone"><div class="screen">
+    <div class="tb" aria-hidden="true">
+      <div class="brand"><span class="dot"></span>WKNDR</div>
+      <div class="acts">★ ✕</div>
+    </div>
+    <div class="deckcard" style="opacity:.4">
+      <div class="img pllek"></div>
+    </div>
+    <div class="scrim"></div>
+    <div class="panel">
+      <div class="row"><span class="brand">WKNDR</span><span>✕</span></div>
+      <div class="bar-group">
+        <span class="bar-label">Your list</span>
+        <div class="bar-row"><span class="bpill">★ Saved · 3</span><span class="bpill">Share ↗</span></div>
+      </div>
+      <div class="bar-group">
+        <span class="bar-label">Plan together</span>
+        <div class="bar-row"><span class="bpill">♥ Match with someone</span></div>
+      </div>
+      <div class="bar-group">
+        <span class="bar-label">Filter</span>
+        <div class="bar-row"><span class="bpill">◷ Any time ▾</span><span class="bpill">▦ Everything ▾</span></div>
+      </div>
+      <div class="bar-group mark">
+        <span class="tag mono" style="top:-12px; right:-8px;">← here</span>
+        <span class="bar-label">Your location</span>
+        <div class="bar-row"><span class="bpill">◎ Use my location</span><span class="bpill on">Near me first</span></div>
+        <span class="bsub">One permission feeds the weather and the distances.</span>
+      </div>
+    </div>
+  </div></div>
+
+  <div>
+    <div class="comp-head"><span class="comp-letter">A</span><h2>The bar menu — where the permission already lives</h2></div>
+    <span class="verdict">Keep — as the permission home</span>
+    <p>The lightest touch: the existing <b>Weather → “Use my location”</b> group becomes
+    <b>“Your location”</b>, and a <b>Near me first</b> toggle joins the pill it already has. One
+    grant feeds both the forecast and the distances; the setting is durable, set-and-forget.</p>
+    <p class="quiet">The problem is the hamburger. The friend in Noord never opened this panel —
+    that's how we got the text in the first place. A preference buried here is a preference that
+    doesn't exist for a first-time user.</p>
+    <ul class="pros">
+      <li class="up">Zero new chrome; extends a group that already exists</li>
+      <li class="up">The honest place for the <em>permission</em> and its explanation</li>
+      <li class="down">Invisible until the menu is opened — fails the discovery test</li>
+    </ul>
+    <p class="comps-irl mono">IRL COMPS — <b>Tinder / Hinge</b>: distance lives in preferences,
+    off the deck. Durable setting, weak discovery. Exactly this trade.</p>
+  </div>
+</section></div>
+
+<!-- ============ COMP B ============ -->
+<div class="wrap"><section class="comp" id="comp-b">
+  <div class="phone"><div class="screen">
+    <div class="tb" aria-hidden="true">
+      <div class="brand"><span class="dot"></span>WKNDR</div>
+      <div class="wx">Amsterdam · <b>Sat 27°</b> · Sun 24°</div>
+      <div class="acts">★</div>
+    </div>
+    <div class="deckcard" style="opacity:.35">
+      <div class="img pllek"></div>
+    </div>
+    <div class="scrim"></div>
+    <div class="sheet mark">
+      <span class="tag mono" style="top:-14px; left:14px;">the “where” sheet</span>
+      <div class="handle"></div>
+      <h4>Where</h4>
+      <p class="sub">Near me sorts — far picks sink, they don't vanish. Districts filter.</p>
+      <div class="togglerow"><span>◎ Near me first</span><span class="sw"></span></div>
+      <div class="chips">
+        <span class="chip on">Noord <b>· 4</b></span>
+        <span class="chip">Centrum <b>· 6</b></span>
+        <span class="chip">West <b>· 8</b></span>
+        <span class="chip">Oost <b>· 7</b></span>
+        <span class="chip">Zuid <b>· 9</b></span>
+        <span class="chip">De Pijp <b>· 6</b></span>
+        <span class="chip">Jordaan <b>· 5</b></span>
+        <span class="chip">Anywhere</span>
+      </div>
+    </div>
+  </div></div>
+
+  <div>
+    <div class="comp-head"><span class="comp-letter">B</span><h2>The third filter chip — Where joins When&nbsp;×&nbsp;What</h2></div>
+    <span class="verdict rec">Recommended — the toggle's home</span>
+    <p>The app already speaks a two-axis filter grammar: <b>When</b> (◷ Any time) and
+    <b>What</b> (▦ Everything), each a trigger chip opening a sheet of counted options. Location
+    is the third axis of the same sentence — a <b>◎ Anywhere</b> trigger opening a Where sheet:
+    the <b>Near me first</b> sort on top, district chips below.</p>
+    <p>Two laws keep it honest with a thin pool: <b>Near me is a sort</b> (re-ranks, never
+    empties), and <b>district chips carry their counts</b> — “Noord · 4” tells the truth about
+    curation depth instead of serving a silent near-empty deck.</p>
+    <ul class="pros">
+      <li class="up">Completes a grammar users already learned — no new UI concept</li>
+      <li class="up">Counts make pool thinness visible, not embarrassing</li>
+      <li class="up">Multi-select + summary label (“Noord +1”) matches the other two triggers</li>
+      <li class="down">A third axis of filter state to persist and to reset</li>
+    </ul>
+    <div class="strip">
+      <span class="t">◷ Any time ▾</span>
+      <span class="t">▦ Everything ▾</span>
+      <span class="t new">◎ Anywhere ▾</span>
+      <span class="strip-note mono">the filter row as it would read — one new trigger, same posture</span>
+    </div>
+    <p class="comps-irl mono">IRL COMPS — <b>Airbnb</b>: location as one chip in a filter row,
+    map optional. <b>Google Maps</b>: chips over results. <b>Too Good To Go</b>: distance inside
+    the filter sheet, never on the face.</p>
+  </div>
+</section></div>
+
+<!-- ============ COMP C ============ -->
+<div class="wrap"><section class="comp" id="comp-c">
+  <div class="phone"><div class="screen">
+    <div class="tb" aria-hidden="true">
+      <div class="brand"><span class="dot"></span>WKNDR</div>
+      <div class="wx">Amsterdam · <b>Sat 27°</b></div>
+      <div class="acts">★ ≡</div>
+    </div>
+    <div class="facechip-row mark" style="margin-top:2px;">
+      <span class="tag mono" style="top:-14px; right:-6px;">permanent chrome</span>
+      <span class="facechip">◎ Near me</span>
+      <span class="facechip ghost">✨ Keep swiping</span>
+    </div>
+    <div class="deckcard">
+      <div class="img pllek">
+        <span class="pill">Perfect this weekend</span>
+        <div class="cap"><div class="t">Pllek — NDSM</div><div class="m">Noord · beach bar · from 12:00</div></div>
+      </div>
+      <div class="meta"><span><b>12 min by bike</b> · ferry</span><span>I amsterdam ↗</span></div>
+    </div>
+    <div class="actions"><span>✕</span><span>↻</span><span class="yes">★</span><span>♥</span></div>
+  </div></div>
+
+  <div>
+    <div class="comp-head"><span class="comp-letter">C</span><h2>Face-level pill — always on, under the top bar</h2></div>
+    <span class="verdict dead">Rejected — costs the face</span>
+    <p>Maximum discoverability: a persistent <b>◎ Near me</b> chip in the under-header slot, one
+    tap to re-rank, filled accent when on. Nobody would miss it — including everyone who never
+    asked for it.</p>
+    <p class="quiet">It fails WKNDR's own laws. The under-header slot is already contended — the
+    ✨ checkpoint bar, the share nudge and the match prompt take turns there by design
+    (App.tsx: “they share the under-header slot”). And the face rule is <b>one pill of chrome,
+    highest-signal fact only</b>. A permanent utility toggle is exactly the ambient clutter the
+    aura field was built to avoid.</p>
+    <ul class="pros">
+      <li class="up">Un-missable; one gesture from anywhere</li>
+      <li class="down">Permanent chrome on the calmest surface in the app</li>
+      <li class="down">Collides with the rotating under-header nudges</li>
+      <li class="down">Promotes one lens above weather — the actual thesis</li>
+    </ul>
+    <p class="comps-irl mono">IRL COMPS — <b>Uber Eats / Deliveroo</b>: header location pill,
+    correct for delivery where distance IS the product. <b>Fever</b>: “near me” tab, and the
+    feed reads as listings, not editorial. That's the tell.</p>
+  </div>
+</section></div>
+
+<!-- ============ COMP D ============ -->
+<div class="wrap"><section class="comp" id="comp-d">
+  <div class="phone"><div class="screen">
+    <div class="tb" aria-hidden="true">
+      <div class="brand"><span class="dot"></span>WKNDR</div>
+      <div class="wx">Amsterdam · <b>Sat 27°</b></div>
+      <div class="acts">★ ≡</div>
+    </div>
+    <div class="deckcard" style="opacity:.45">
+      <div class="img tolhuis"></div>
+    </div>
+    <div class="sheet">
+      <div class="handle"></div>
+      <h4>Tolhuistuin — garden sessions</h4>
+      <p class="sub">Noord · Sat 2 Aug · from 16:00 · free</p>
+      <div class="fact"><span class="k mono">WHEN</span><span>Sat 2 Aug · 16:00–23:00</span></div>
+      <div class="fact mark"><span class="tag mono" style="top:-13px; right:-6px;">the fact IS the feature</span>
+        <span class="k mono">FROM YOU</span><span><b>Ferry from CS + 4 min by bike · 18 min door-to-door</b></span></div>
+      <div class="fact"><span class="k mono">WHY</span><span>Warm evening, garden stage, and you're closer than you think.</span></div>
+      <div class="fact"><span class="k mono">VIA</span><span>I amsterdam ↗</span></div>
+    </div>
+  </div></div>
+
+  <div>
+    <div class="comp-head"><span class="comp-letter">D</span><h2>No toggle — distance as an ambient fact</h2></div>
+    <span class="verdict law">Ships regardless — the honest layer</span>
+    <p>The Hara answer: no control at all. Once location is granted (it already is, for
+    weather), proximity becomes a permanent quiet term in <b>rankPicks</b> — near things drift
+    up — and the card detail states the fact: <b>“Ferry from CS + 4 min by bike.”</b> For Noord
+    the ferry line does more than any radius slider; it's the psychological barrier, named and
+    priced.</p>
+    <p class="quiet">Alone it can't express intent — “we're in West this afternoon” has nowhere
+    to go, and its effect is hard to validate because nothing visibly switches. It's a layer,
+    not an answer.</p>
+    <ul class="pros">
+      <li class="up">Zero chrome; pure “show the work” — very WKNDR</li>
+      <li class="up">No thin-pool cliff, ever</li>
+      <li class="down">No user intent; no visible moment to react to</li>
+    </ul>
+    <p class="comps-irl mono">IRL COMPS — <b>Citymapper</b>: “18 min” as editorial honesty.
+    <b>TikTok / Spotify</b> locality: no knob, just ranking. The quiet default everywhere
+    personalization actually works.</p>
+  </div>
+</section></div>
+
+<!-- ============ THE CALL ============ -->
+<section class="call">
+  <div class="wrap">
+    <div class="eyebrow mono">the call</div>
+    <h2>B is the toggle's home. D ships regardless.</h2>
+    <p><b>D first</b> — it's not a placement, it's the honest layer: geocode on the cron, a
+    quiet proximity term in the ranking, “min by bike + ferry” on the detail. It needs no
+    decision and no new UI.</p>
+    <p><b>B when you want the control</b> — Where as the third trigger chip completes the
+    sentence the filter row already speaks, and its counts turn the curation-thinness problem
+    from a silent failure into visible honesty. <b>A</b> stays exactly what it is: the
+    permission's home and its explanation. <b>C</b> dies so the face stays calm.</p>
+    <p class="steps mono">ORDER OF WORK — <b>1</b> pipeline: capture RA area (ra.ts:82 discards it) +
+    I amsterdam address → PDOK geocode → venue cache · <b>2</b> rankPicks proximity term + detail
+    fact (comp D) · <b>3</b> the Where sheet + third trigger (comp B) · <b>4</b> revisit after the
+    Noord friend's next weekend.</p>
+  </div>
+</section>
+
+<div class="wrap">
+  <footer class="colophon mono">
+    WKNDR experiments · 11-geo-toggle-comps · drawn on the V.10 frame, WARM mode ·
+    mockups stay on paper in both themes — they depict the app, not the page ·
+    counts from feed 2026-07-30
+  </footer>
+</div>
+</body>
+</html>

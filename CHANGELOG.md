@@ -14,6 +14,21 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [geo G.1] — 2026-08-02 — /geo: the hyper-local prototype surface (PR #23)
+- Field feedback (a friend in Noord: "wish the location filtered more accurately") → a separate surface
+  at `app.wkndr.xyz/geo/`, curate-board pattern: ships inside the app build, reads the LIVE feed
+  (`servePos` order, real posters + link-outs), writes nothing; the MVP app at `/` untouched.
+- The Where sheet: **near-me is a SORT** (re-ranks, never empties the deck) + **counted district chips**
+  ("Noord · 7" — pool thinness visible, not embarrassing). Event-first cards + detail (getting-there is
+  the quiet last line). Undo pill at the BOTTOM here — the pinned filter tabs own the top. Real
+  geolocation via "My location"; Centraal/Noord preset viewpoints.
+- Distances: in-page name-keyed venue gazetteer (62/80 current-feed pins; day-trips parse their travel
+  time; generic "Amsterdam" areas stay honestly unmapped and sink) + haversine ×1.3 @ 15 km/h + an
+  explicit IJ ferry model, rounded UP to fives.
+- Design record: `experiments/11-geo-toggle-comps` → `12` (clickable) → `13` (fork: honest distances +
+  earned chrome) → `14` (real feed). Next per the PR: pipeline geocoding (`ra.ts:82` area capture ·
+  I amsterdam address JSON-LD · PDOK venue cache on the cron) — STATE.md open item 8.
+
 ## [board V.9.18] — 2026-07-23 — DEAD SIMPLE: "your 10 opening cards" (default) + Advanced toggle
 - Ness: "the setup on the curation board needs to be DEAD simple — here are your top 10 opening cards."
 - The board now opens on ONE plain screen: **Your 10 opening cards** — a numbered list seeded from the
