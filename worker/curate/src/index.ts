@@ -17,10 +17,15 @@
 // Everything else is title-based (matches the board + restamp's titleLooseMatch). Privacy-light:
 // titles, an order, and reasons — no accounts, no personal data. Same posture as the relay.
 
-import { extractDrop, DropError } from './extract'
+import { extractDrop, carouselSlides, DropError } from './extract'
+import { readRoundup, RoundupError } from './roundup'
 
 export interface Env {
   CURATE: KVNamespace
+  /** Optional. Set with `npx wrangler secret put ANTHROPIC_API_KEY`. Absent → /drop/read says so
+   *  and everything else keeps working; the drop box itself never needed a key. */
+  ANTHROPIC_API_KEY?: string
+  ANTHROPIC_VISION_MODEL?: string
 }
 
 type Killed = { title: string; reason?: string }
@@ -145,7 +150,10 @@ export default {
       if (typeof body.url !== 'string') return json({ error: 'no url' }, 400, origin)
       try {
         const drop = await extractDrop(body.url)
-        return json({ ok: true, drop }, 200, origin)
+        // Count the slides so the board can offer "read the listings" on a roundup. Best-effort:
+        // a failed count just means the button doesn't appear, never a failed drop.
+        const slides = await carouselSlides(drop.url)
+        return json({ ok: true, drop: { ...drop, slides: slides.length } }, 200, origin)
       } catch (e) {
         // A DropError carries a message written for Ness; anything else is a genuine surprise.
         const known = e instanceof DropError
@@ -153,6 +161,40 @@ export default {
           { error: known ? e.message : 'Could not read that post.', code: known ? e.code : 'unknown' },
           known ? 422 : 502,
           origin,
+        )
+      }
+    }
+
+    // READ THE LISTINGS — vision pass over a roundup carousel, where the events are typeset into
+    // the slides and the caption says nothing. Stateless, like /drop.
+    if (url.pathname === '/drop/read' || url.pathname === '/drop/read/') {
+      if (request.method !== 'POST') return json({ error: 'method not allowed' }, 405, origin)
+      let body: { url?: unknown }
+      try {
+        body = (await request.json()) as { url?: unknown }
+      } catch {
+        return json({ error: 'bad json' }, 400, origin)
+      }
+      if (typeof body.url !== 'string') return json({ error: 'no url' }, 400, origin)
+      if (!env.ANTHROPIC_API_KEY) {
+        return json(
+          { error: 'The reader is not switched on yet — the server needs an ANTHROPIC_API_KEY.', code: 'no-key' },
+          503, origin,
+        )
+      }
+      try {
+        const drop = await extractDrop(body.url)
+        const slides = await carouselSlides(drop.url)
+        if (slides.length < 2) {
+          return json({ error: 'That post is a single image — there are no listing slides to read.', code: 'not-carousel' }, 422, origin)
+        }
+        const read = await readRoundup(slides, env.ANTHROPIC_API_KEY, env.ANTHROPIC_VISION_MODEL)
+        return json({ ok: true, source: drop, slides: slides.length, ...read }, 200, origin)
+      } catch (e) {
+        const known = e instanceof DropError || e instanceof RoundupError
+        return json(
+          { error: known ? e.message : 'Could not read that post.', code: known ? e.code : 'unknown' },
+          known ? 422 : 502, origin,
         )
       }
     }

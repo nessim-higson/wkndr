@@ -14,6 +14,34 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [board V.9.33] — 2026-08-02 — READ THE LISTINGS: a vision pass over roundup carousels
+- **The problem the drop box exposed.** Accounts like **@doubleamagazine** post a weekly "Amsterdam
+  events" carousel where slide 1 is a cover and slides 2–8 are day-by-day listings **typeset into
+  the images**. The caption carries none of it, so dropping the post gave one card titled "PSA -
+  Events in Amsterdam this Week!" and silently lost the ~20 real events behind it.
+- **A roundup now offers "📖 Read the N slides".** Each listing comes back as its own tickable row,
+  grouped under the day heading exactly as printed; tick what you want and each becomes its own card.
+- **Getting to slides 2..n was the hard part.** `/media/?size=l` only ever returns the first image and
+  ignores every index parameter; the embed endpoint is dead; yt-dlp resolves the children but is a
+  binary and can't run in a Worker. **Instagram server-renders the full carousel JSON only for
+  Googlebot** — every other UA (facebookexternalhit, a real Chrome string, an iPhone string) gets a
+  shell with slide 1. That's the one keyless way in.
+- **The parse MUST be scoped to the `carousel_media` array.** The same page embeds the account's other
+  recent posts in an identical `"code"/"display_uri"` shape — an unscoped parse returned **20 "slides"
+  for an 8-slide post**. Bracket-matched, string-aware (captions contain brackets). Guarded by
+  `tests/roundup.test.ts` against a real captured page, with those decoys still in the fixture.
+- **Vision reads the FULL 1080px slide**, never the page's own `display_uri` (512×640 — too small for
+  dense listings) and never the wsrv portrait render (`fit=cover` **crops**, which cuts off text).
+- Prompt is built from the real slides: DAY/NIGHT section headings (captured as `part` — a genuine
+  signal, NIGHT is club/gig and it's the difference between a picnic and an afters), day headings
+  carried onto each event verbatim, wrapped venue continuation lines rejoined, inconsistent `|`
+  spacing, and an explicit instruction to return `[]` for a cover slide rather than invent filler.
+- Slides run concurrently and one unreadable slide yields `[]` rather than sinking the batch. Dedupe
+  keys on title+date+part so a multi-night run survives but a duplicate print doesn't.
+- Worker: `POST /drop/read` (`worker/curate/src/roundup.ts`), capped at 12 slides. **Needs a key** —
+  `cd worker/curate && npx wrangler secret put ANTHROPIC_API_KEY`. Without it the endpoint says so
+  and everything else keeps working; the drop box itself never needed one. **242 tests.**
+
 ## [drop fix] — 2026-08-02 — accept the URL form Instagram actually gives you
 - **First real paste failed.** `instagram.com/<username>/p/<code>/?img_index=1` — the form you get
   copying a link **from a profile** — was rejected as "not a single public post". The guard only

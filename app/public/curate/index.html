@@ -197,12 +197,26 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 .dbadge{display:inline-block;font-size:9px;font-weight:700;letter-spacing:.06em;padding:3px 7px;border-radius:999px;color:#fff;background:var(--green);margin:0 4px 6px 0;text-transform:uppercase}
 .dbadge.warn{background:#c33}
 .dacts{display:flex;gap:6px;flex-wrap:wrap;margin-top:2px}
+/* READ THE LISTINGS — the vision pass over a roundup carousel */
+#dropevents{margin-top:14px;padding-top:13px;border-top:1px solid var(--line)}
+#dropevents .eh{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+#dropevents .eh b{font-size:13px}
+#dropevents .eh span{font-size:11.5px;color:var(--dim)}
+.evday{font-size:10.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--accent);margin:12px 0 6px;padding-top:9px;border-top:1px solid var(--line)}
+.evday:first-child{margin-top:0;padding-top:0;border-top:0}
+.evrow{display:flex;align-items:flex-start;gap:9px;padding:5px 0}
+.evrow input{margin:3px 0 0;flex:none;width:15px;height:15px;accent-color:var(--accent)}
+.evrow label{font-size:13px;line-height:1.4;cursor:pointer;flex:1;min-width:0}
+.evrow .vn{color:var(--dim)}
+.evrow .pt{font-size:8.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:var(--dim);padding:1px 5px;border-radius:999px;margin-left:5px;vertical-align:1.5px}
+.evrow .pt.night{background:var(--ink)}
+.evfoot{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin-top:13px;padding-top:11px;border-top:1px solid var(--line)}
 </style>
 </head>
 <body>
 <div class="wrap">
 <header>
-<p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD V.9.32</p>
+<p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD V.9.33</p>
 <h1>Your weekend<span class="dot">.</span></h1>
 <div id="modetoggle"><button class="on" data-mode="simple">Simple</button><button data-mode="advanced">Advanced</button></div>
 <div id="overnote" style="display:none"></div>
@@ -219,6 +233,7 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 </div>
 <div id="dropstat" role="status" aria-live="polite"></div>
 <div id="droppreview"></div>
+<div id="dropevents"></div>
 </div>
 <div class="cathead hot" id="openhead">Your 10 opening cards</div>
 <div id="openlist"></div>
@@ -479,7 +494,7 @@ Promise.all([
   // 10 min (max-age=600), so a just-shipped board fix can lag in an open tab; the eyebrow makes
   // stale-board-vs-fresh-data visible at a glance (2026-07-12: an old tab's tier-mirror pile read
   // as "the board is wrong" when it was just cached).
-  const BOARD_V='V.9.32';
+  const BOARD_V='V.9.33';
   document.getElementById('eyebrow').textContent='WKNDR · CURATION BOARD '+BOARD_V+' · FEED '+(d.generatedAt||'').slice(0,16).replace('T',' · ');
   const board=document.getElementById('board');board.innerHTML='';
   const rot=document.createElement('div');rot.id='tab-rot';board.appendChild(rot);
@@ -1035,7 +1050,8 @@ document.getElementById('copy').addEventListener('click',async()=>{
 // can't order a pick the app has never heard of, so drops travel with their content.
 (function(){
   const inp=document.getElementById('dropurl'),go=document.getElementById('dropgo'),
-        stat=document.getElementById('dropstat'),prev=document.getElementById('droppreview');
+        stat=document.getElementById('dropstat'),prev=document.getElementById('droppreview'),
+        evbox=document.getElementById('dropevents');
   if(!inp||!go)return;
   const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   const say=(msg,bad)=>{stat.className=bad?'bad':'';stat.textContent=msg};
@@ -1044,7 +1060,7 @@ document.getElementById('copy').addEventListener('click',async()=>{
 
   async function pull(){
     const url=(inp.value||'').trim();
-    prev.innerHTML='';
+    prev.innerHTML='';evbox.innerHTML='';
     if(!url){say('Paste a link first.',true);return}
     busy(true);
     let r,j;
@@ -1072,17 +1088,82 @@ document.getElementById('copy').addEventListener('click',async()=>{
       +'<p class="dsrc">'+(d.author?'@'+esc(d.author):'')+(d.date?' · '+esc(d.date):'')+'</p>'
       +(dim?'<span class="dbadge'+(d.lowRes?' warn':'')+'">'+dim+(d.lowRes?' · low res':'')+'</span>':'')
       +'<div class="dacts"><button class="b" id="dropadd">↑ Add to my top 10</button>'
+      // A roundup carousel's events are TYPESET INTO the slides — the caption carries none of them.
+      // Dropping the post alone gets one card and loses the twenty events behind it.
+      +(d.slides>1?'<button class="b go" id="dropread">📖 Read the '+d.slides+' slides</button>':'')
       +'<button class="b" id="dropskip">Discard</button></div>'
       +'</div></div>';
     document.getElementById('dropadd').addEventListener('click',()=>{
       if(typeof addExtra!=='function'){say('The board is still loading — give it a second.',true);return}
       addExtra(pick);            // → extras + PILE + persisted, exactly like a New Find
-      inp.value='';prev.innerHTML='';
+      inp.value='';prev.innerHTML='';evbox.innerHTML='';
       // addExtra lands it at slot 10 (promote → moveTo(t, MAX-1)), same as any New Find — say so
       // rather than claiming it leads, or the first drop looks like it went missing.
       say('Added at #10 in your top 10 — drag it up if it should lead. Submit sends it live.');
     });
-    document.getElementById('dropskip').addEventListener('click',()=>{prev.innerHTML='';say('')});
+    const rd=document.getElementById('dropread');
+    if(rd)rd.addEventListener('click',()=>readListings(d,rd));
+    document.getElementById('dropskip').addEventListener('click',()=>{prev.innerHTML='';evbox.innerHTML='';say('')});
+  }
+
+  // ——— READ THE LISTINGS ———
+  async function readListings(d,btn){
+    btn.disabled=true;btn.textContent='Reading…';
+    evbox.innerHTML='';
+    say('Reading '+d.slides+' slides — this takes a few seconds…');
+    let r,j;
+    try{
+      r=await fetch(CURATE_URL+'/drop/read',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({url:d.url})});
+      j=await r.json();
+    }catch(e){btn.disabled=false;btn.textContent='📖 Read the slides';say("Couldn't reach the reader.",true);return}
+    btn.disabled=false;btn.textContent='📖 Read the '+d.slides+' slides';
+    if(!r.ok||!j||!j.events){say((j&&j.error)||'Could not read those slides.',true);return}
+    if(!j.events.length){say('Read '+j.slidesRead+' slides — no listings found on them.',true);return}
+    showEvents(j,d);
+  }
+
+  function showEvents(j,d){
+    say('Found '+j.events.length+' events across '+j.slidesRead+' slides'+(j.failed?' ('+j.failed+' unreadable)':'')+'. Tick the ones you want.');
+    // Group by the day heading exactly as printed — a misread date stays visible rather than being
+    // silently normalised into something plausible.
+    const groups=[];const byDay={};
+    for(const e of j.events){const k=e.date||'No date';if(!byDay[k]){byDay[k]=[];groups.push(k)}byDay[k].push(e)}
+    let html='<div class="eh"><b>'+j.events.length+' events</b><span>from @'+esc(d.author||'')+' · tick to add · each becomes its own card</span></div>';
+    let i=0;
+    for(const g of groups){
+      html+='<div class="evday">'+esc(g)+'</div>';
+      for(const e of byDay[g]){
+        html+='<div class="evrow"><input type="checkbox" id="ev'+i+'" data-i="'+j.events.indexOf(e)+'" checked>'
+          +'<label for="ev'+i+'">'+esc(e.title)
+          +(e.venue?' <span class="vn">· '+esc(e.venue)+'</span>':'')
+          +(e.part?'<span class="pt '+(e.part==='night'?'night':'')+'">'+esc(e.part)+'</span>':'')
+          +'</label></div>';
+        i++;
+      }
+    }
+    html+='<div class="evfoot"><button class="b go" id="evadd">↑ Add ticked to the deck</button>'
+      +'<button class="b" id="evnone">Untick all</button>'
+      +'<button class="b" id="evclose">Close</button></div>';
+    evbox.innerHTML=html;
+
+    document.getElementById('evadd').addEventListener('click',()=>{
+      if(typeof addExtra!=='function'){say('The board is still loading — give it a second.',true);return}
+      const picked=[...evbox.querySelectorAll('input:checked')].map(c=>j.events[+c.dataset.i]).filter(Boolean);
+      if(!picked.length){say('Nothing ticked.',true);return}
+      // Each listing becomes its own pick. It carries the ROUNDUP's link (the listing has no url of
+      // its own) and no image — the pipeline images it on the next refresh, and a drop with no image
+      // renders as the app's typographic poster rather than a blank.
+      for(const e of picked){
+        addExtra({title:e.title,link:d.url,image:'',blurb:[e.venue,e.date].filter(Boolean).join(' · '),
+          venue:e.venue||'',when:'',source:'@'+(d.author||'roundup'),_drop:true});
+      }
+      evbox.innerHTML='';prev.innerHTML='';inp.value='';
+      say('Added '+picked.length+' events to the deck. Submit sends them live.');
+    });
+    document.getElementById('evnone').addEventListener('click',()=>{
+      evbox.querySelectorAll('input').forEach(c=>{c.checked=false});
+    });
+    document.getElementById('evclose').addEventListener('click',()=>{evbox.innerHTML='';say('')});
   }
 
   go.addEventListener('click',pull);

@@ -5,7 +5,7 @@ FIRST in a new chat. For strategy + backlog see `docs/backlog.md`; for the pipel
 `docs/pipeline-architecture.md` + `docs/source-map.md`; for **who may write to the deck vs to a personal
 profile** (board / Tune / airlock — read before touching either) see `docs/curation-surfaces.md`; for the
 **board roadmap** (auto-compile tracks) see `docs/board-roadmap.md`; for full **version history** see
-`CHANGELOG.md` (current to app V.10.19 / board V.9.32) and the **git log / tags**. Onboarding:
+`CHANGELOG.md` (current to app V.10.19 / board V.9.33) and the **git log / tags**. Onboarding:
 `CLAUDE.md`. App lives in `/app` (Vite + React + TS, run with `bun`); ships to **Cloudflare Pages**
 (`wkndr.xyz` + `app.wkndr.xyz`) **and** GitHub Pages (legacy, keeps old share links alive)._
 
@@ -27,6 +27,24 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
 > sessions update (today it's on load).
 
 ## Live right now
+- **READ THE LISTINGS (board V.9.33, 2026-08-02) — ⚠️ NEEDS ONE COMMAND TO SWITCH ON:**
+  `cd worker/curate && npx wrangler secret put ANTHROPIC_API_KEY` (Ness-only — the key is a GitHub
+  secret, unreadable from here). Until then the button says "the reader is not switched on yet" and
+  everything else works. **What it does:** accounts like **@doubleamagazine** post a weekly Amsterdam
+  events carousel with the listings **typeset into the slide images** — the caption has none of them,
+  so a plain drop got one card and lost ~20 events. A carousel drop now offers **"📖 Read the N
+  slides"**; each listing returns as a tickable row grouped under its printed day heading, and each
+  ticked row becomes its own card. **The hard-won bit:** `/media/?size=l` only ever returns slide 1
+  and ignores index params, the embed endpoint is dead, and yt-dlp (which does resolve children) is a
+  binary that can't run in a Worker — **Instagram server-renders the full carousel JSON ONLY for a
+  Googlebot UA**. The parse MUST be scoped to the `carousel_media` array (bracket-matched,
+  string-aware): the page also embeds the account's other posts in the same `"code"/"display_uri"`
+  shape, and an unscoped parse returned 20 "slides" for an 8-slide post. Vision reads the **full
+  1080px** slide — NOT `display_uri` (512×640) and NOT the wsrv portrait render (`fit=cover` crops
+  text off). Prompt handles DAY/NIGHT headers (kept as `part`), wrapped venue lines, ragged `|`
+  spacing, and returns `[]` for a cover slide. `worker/curate/src/roundup.ts`, `POST /drop/read`,
+  12-slide cap, model via `ANTHROPIC_VISION_MODEL` (default `claude-sonnet-5`). Guarded by
+  `tests/roundup.test.ts` against a real captured page with the decoy posts still in the fixture.
 - **THE DROP BOX (board V.9.32, 2026-08-02)** — paste an Instagram / TikTok / X post link into the
   field at the top of Simple, hit **Pull**, and the pick comes back with its picture and caption in
   ~1s. This closes the long-running content blocker: every pipeline source is a crawlable site, and
@@ -190,7 +208,7 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
   (wrangler already authed on this machine; bare-URL curl checks may show stale edge cache — bust
   with a query param, or verify against the immutable `*.wkndr-app.pages.dev` deploy URL). The board
   (`app/public/curate/index.html`, bumped via its own `BOARD_V` const + eyebrow) ships inside the app
-  build. **Tests:** `bun run test` (**230 logic tests**; CI runs them before every content refresh).
+  build. **Tests:** `bun run test` (**242 logic tests**; CI runs them before every content refresh).
   **Pages deploy flakes** intermittently ("try again later") — re-dispatch `deploy.yml` (there's an
   auto-retry pattern in the ship watchers).
 - **Compile fast-path (no crawl):** `cd app && bun run scripts/restamp.ts` re-applies the taste layer

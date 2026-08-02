@@ -25,6 +25,10 @@
 export const CRAWLER_UA = 'facebookexternalhit/1.1'
 export const BROWSER_UA =
   'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36'
+/** Instagram server-renders the FULL post JSON — carousel children included — only for Googlebot.
+ *  Every other UA (including facebookexternalhit and a real Chrome string) gets a shell with just
+ *  the first slide. This is the only keyless way in to slides 2..n. */
+export const GOOGLEBOT_UA = 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'
 
 /** Under this on the long edge means Instagram served a placeholder, i.e. the post is gone. */
 export const MIN_DIM = 600
@@ -212,6 +216,77 @@ export function imageDims(buf: ArrayBuffer): { w: number; h: number } | null {
 }
 
 type Fetcher = (url: string, init?: RequestInit) => Promise<Response>
+
+/** One slide of a carousel post.
+ *  `thumb` is the page's own `display_uri` — only 512×640, fine for a preview and useless for
+ *  reading dense listings. `full` is the per-child native image (1080px), which is what the vision
+ *  pass must use or small text is lost. */
+export type Slide = { code: string; thumb: string; full: string }
+
+export const fullImageUrl = (code: string) => `https://www.instagram.com/p/${code}/media/?size=l`
+
+/** Pull the carousel children out of a Googlebot-rendered post page.
+ *
+ *  MUST be scoped to the `carousel_media` array: the page also embeds the account's OTHER recent
+ *  posts as thumbnails, in the same `"code"/"display_uri"` shape. Parsing the whole document
+ *  returned 20 "slides" for an 8-slide post — 12 of them unrelated posts.
+ *
+ *  Inside the array each child is `"code":"<shortcode>","display_uri":"<url>"`, JSON-escaped
+ *  (`\/` for every slash). Parsing the pair together preserves slide order, which a roundup needs.
+ *  A non-carousel post has no such array → [] → the caller falls back to the single-image lane. */
+export function parseSlides(html: string): Slide[] {
+  const at = html.indexOf('"carousel_media"')
+  if (at < 0) return []
+  const open = html.indexOf('[', at)
+  if (open < 0) return []
+
+  // Walk to the matching close bracket, skipping brackets that sit inside string literals
+  // (captions routinely contain them) and honouring backslash escapes.
+  let depth = 0
+  let end = -1
+  let inStr = false
+  let esc = false
+  for (let i = open; i < html.length; i++) {
+    const c = html[i]
+    if (esc) { esc = false; continue }
+    if (c === '\\') { esc = true; continue }
+    if (c === '"') { inStr = !inStr; continue }
+    if (inStr) continue
+    if (c === '[') depth++
+    else if (c === ']') {
+      depth--
+      if (depth === 0) { end = i; break }
+    }
+  }
+  if (end < 0) return []
+
+  const out: Slide[] = []
+  const seen = new Set<string>()
+  const re = /"code":"([A-Za-z0-9_-]{5,})"\s*,\s*"display_uri":"((?:[^"\\]|\\.)*)"/g
+  for (const m of html.slice(open, end).matchAll(re)) {
+    if (seen.has(m[1])) continue
+    seen.add(m[1])
+    const thumb = m[2].replace(/\\\//g, '/').replace(/\\u0026/g, '&').replace(/\\"/g, '"')
+    if (thumb.startsWith('https://')) out.push({ code: m[1], thumb, full: fullImageUrl(m[1]) })
+  }
+  return out
+}
+
+/** Every slide of a post, best-effort. Returns [] when the page can't be read — the caller keeps
+ *  whatever the normal single-image lane already found rather than failing the whole drop. */
+export async function carouselSlides(url: string, fetchFn: Fetcher = fetch): Promise<Slide[]> {
+  const code = shortcodeOf(url)
+  if (!code) return []
+  try {
+    const r = await fetchFn(`https://www.instagram.com/p/${code}/`, {
+      headers: { 'User-Agent': GOOGLEBOT_UA, 'Accept-Language': 'en-US,en;q=0.9' },
+    })
+    if (!r.ok) return []
+    return parseSlides(await r.text())
+  } catch {
+    return []
+  }
+}
 
 async function text(fetchFn: Fetcher, url: string, ua: string): Promise<string> {
   const r = await fetchFn(url, { headers: { 'User-Agent': ua, 'Accept-Language': 'en-US,en;q=0.9' } })
