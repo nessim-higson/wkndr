@@ -14,6 +14,42 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [board V.9.32] — 2026-08-02 — THE DROP BOX: paste an Instagram link, get a pick
+- **The content blocker, closed.** Every source in the pipeline is a crawlable site; the events Ness
+  actually spots are on Instagram, and there was no way in short of describing a post by hand. The
+  board now has a **Drop a link** field at the top of Simple: paste an Instagram / TikTok / X post,
+  hit **Pull**, and the pick comes back with its picture and caption in about a second.
+- **How it reads a post without a login.** The tools that do this don't scrape Instagram — they read
+  the OpenGraph tags Instagram serves to link-preview bots. A crawler user-agent
+  (`facebookexternalhit`) gets `og:description`, which carries likes, comments, author, date and the
+  caption. No cookie, no API key, no proxy. Verified live from the Worker on 2026-08-02.
+- **Full resolution, which is the part that nearly didn't work.** `og:image` is a preview capped at
+  ~640px (360px on a reel) — under the low-res gate, so drops would have shipped as soft cards. The
+  size token in the CDN URL is covered by the `oh=` signature, so it can't be rewritten upward (403).
+  **`/p/<code>/media/?size=l` redirects to the NATIVE image** — measured 1080×1920, 1080×1351,
+  1080×1043 across real posts. That one extra call is the difference between usable and not.
+- **Three traps, each of which fails silently** (all now covered by `tests/drop.test.ts`, real captured
+  strings): `og:image` arrives HTML-escaped and a stray `&amp;` makes the signed URL fail with "Bad URL
+  hash"; Instagram truncates long captions and **drops the closing quote**, so a greedy match hands the
+  deck a title starting "41M likes, 486K comments - …"; and a Worker subrequest sends **no User-Agent**,
+  which fxtwitter answers with a 401.
+- **Images route through wsrv like every other card.** Instagram's CDN refuses hotlinked browser
+  requests, so an unwrapped URL renders as a broken image on both surfaces — the Worker returns a
+  `toPortrait()` 800×1200 render (and keeps the original for the loupe).
+- **`applyOverrides` learned to ADD.** pile/killed/flags only ever re-stamped picks the app already
+  had; a pasted pick isn't in the static feed at all. Drops now ride the fast lane as `added`,
+  carrying their own content, and are injected client-side — deduped against the feed, skipped if
+  cancelled in the same round, and orderable by the pile like anything else. Id prefix is `drop-`,
+  deliberately outside the airlock's `web-`/`llm-`/`rss-`/`sk-` audit: a hand-paste **is** the approval.
+- Drops also ride the GitHub issue (`DROPPED IN`) so the durable compile can fold them into
+  `taste/scouted.json` — the fast-lane copy expires with the feed.
+- Worker: `POST /drop` (`worker/curate/src/extract.ts`). Board: `#dropbox`. **230 tests.**
+- **Not built: watching accounts automatically.** Scraping is shut — a logged-out profile page returns
+  a 604KB shell with zero post links, and the public RSS bridges now 403. The route that works is
+  Meta's Graph **business_discovery** (free, sanctioned, Business/Creator accounts only); it needs a
+  Meta app plus a WKNDR IG Business account. Deferred until the paste path shows which venues are
+  worth a cron.
+
 ## [geo G.1] — 2026-08-02 — /geo: the hyper-local prototype surface (PR #23)
 - Field feedback (a friend in Noord: "wish the location filtered more accurately") → a separate surface
   at `app.wkndr.xyz/geo/`, curate-board pattern: ships inside the app build, reads the LIVE feed
@@ -28,6 +64,7 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 - Design record: `experiments/11-geo-toggle-comps` → `12` (clickable) → `13` (fork: honest distances +
   earned chrome) → `14` (real feed). Next per the PR: pipeline geocoding (`ra.ts:82` area capture ·
   I amsterdam address JSON-LD · PDOK venue cache on the cron) — STATE.md open item 8.
+
 
 ## [board V.9.18] — 2026-07-23 — DEAD SIMPLE: "your 10 opening cards" (default) + Advanced toggle
 - Ness: "the setup on the curation board needs to be DEAD simple — here are your top 10 opening cards."

@@ -5,7 +5,7 @@ FIRST in a new chat. For strategy + backlog see `docs/backlog.md`; for the pipel
 `docs/pipeline-architecture.md` + `docs/source-map.md`; for **who may write to the deck vs to a personal
 profile** (board / Tune / airlock — read before touching either) see `docs/curation-surfaces.md`; for the
 **board roadmap** (auto-compile tracks) see `docs/board-roadmap.md`; for full **version history** see
-`CHANGELOG.md` (current to app V.10.18 / board V.9.31) and the **git log / tags**. Onboarding:
+`CHANGELOG.md` (current to app V.10.19 / board V.9.32) and the **git log / tags**. Onboarding:
 `CLAUDE.md`. App lives in `/app` (Vite + React + TS, run with `bun`); ships to **Cloudflare Pages**
 (`wkndr.xyz` + `app.wkndr.xyz`) **and** GitHub Pages (legacy, keeps old share links alive)._
 
@@ -27,6 +27,29 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
 > sessions update (today it's on load).
 
 ## Live right now
+- **THE DROP BOX (board V.9.32, 2026-08-02)** — paste an Instagram / TikTok / X post link into the
+  field at the top of Simple, hit **Pull**, and the pick comes back with its picture and caption in
+  ~1s. This closes the long-running content blocker: every pipeline source is a crawlable site, and
+  the events Ness actually spots are on Instagram. **No login, no API key** — the Worker reads the
+  OpenGraph tags Instagram serves link-preview bots (`facebookexternalhit` UA → `og:description`
+  carries likes/comments/author/date/caption). **Full-res is the hard-won bit:** `og:image` is a
+  ~640px preview (360px on a reel) that would trip the low-res gate, and the CDN size token is
+  signature-covered so it can't be rewritten up (403) — **`/p/<code>/media/?size=l` redirects to the
+  NATIVE 1080px image**. Images are `toPortrait()`-wrapped through wsrv (IG's CDN refuses hotlinked
+  browser requests — unwrapped renders blank on BOTH board and card). Worker: `POST /drop`
+  (`worker/curate/src/extract.ts`); board: `#dropbox`; a drop becomes an `extras` entry marked
+  `_drop`, lands at **slot #10** of the Top 10 (same as any New Find — drag it up to lead), and rides
+  Submit twice: the fast-lane `added` array AND a `DROPPED IN` line in the GitHub issue.
+  **`applyOverrides` now ADDS, not just filters** — pile/killed/flags re-stamp picks the app already
+  has, but a pasted pick isn't in the static feed, so drops travel with their own content and are
+  injected client-side (deduped vs the feed, skipped if cancelled that round, orderable by the pile).
+  Id prefix `drop-` sits deliberately outside the airlock's `web-`/`llm-`/`rss-`/`sk-` audit: a
+  hand-paste IS the approval. Guarded by `tests/drop.test.ts` (real captured IG strings — the
+  escaped-`&amp;` "Bad URL hash" trap, the truncated-caption-with-no-closing-quote trap).
+  **Auto-watching accounts is NOT built:** scraping profiles is shut (logged-out profile = 604KB
+  shell, zero post links; public RSS bridges 403). The working route is Meta Graph
+  **business_discovery** — free + sanctioned, Business/Creator accounts only, needs a Meta app + a
+  WKNDR IG Business account. Deferred until the paste path shows which venues deserve a cron.
 - **Web presence (wkndr.xyz):** Ness registered **wkndr.xyz** through Cloudflare (domain + DNS in
   his CF account). Two surfaces ship from this repo to **Cloudflare Pages**: the **landing** at
   `wkndr.xyz` (self-contained static site in `landing/` — hero + 3 steps + one "Open WKNDR" CTA +
@@ -167,7 +190,7 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
   (wrangler already authed on this machine; bare-URL curl checks may show stale edge cache — bust
   with a query param, or verify against the immutable `*.wkndr-app.pages.dev` deploy URL). The board
   (`app/public/curate/index.html`, bumped via its own `BOARD_V` const + eyebrow) ships inside the app
-  build. **Tests:** `bun run test` (**126 logic tests**; CI runs them before every content refresh).
+  build. **Tests:** `bun run test` (**230 logic tests**; CI runs them before every content refresh).
   **Pages deploy flakes** intermittently ("try again later") — re-dispatch `deploy.yml` (there's an
   auto-retry pattern in the ship watchers).
 - **Compile fast-path (no crawl):** `cd app && bun run scripts/restamp.ts` re-applies the taste layer

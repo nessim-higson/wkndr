@@ -5,13 +5,19 @@
 //
 //   POST /curate/<city>   body: Overrides (JSON)   → stores it, returns { ok: true, at }
 //   GET  /curate/<city>                             → returns the stored Overrides, or null
+//   POST /drop            body: { url }             → { ok, drop } — a pasted social link, extracted
 //
 // The app applies these ON TOP of the static picks.<city>.json, mirroring restamp's taste layer:
 //   - `pile`   → the opening order (deal these first, in this order)
 //   - `killed` → drop these titles from the feed (with the reason, for the audit trail)
 //   - `flags`  → soft signals (wrong link / bad image) — surfaced, not dropped
-// Everything is title-based (matches the board + restamp's titleLooseMatch). Privacy-light: titles,
-// an order, and reasons — no accounts, no personal data. Same posture as the relay.
+//   - `added`  → THE DROP BOX: picks Ness pasted in from Instagram/TikTok/X that aren't in the
+//                static feed at all. Unlike the other three (which re-stamp picks the app already
+//                has), these are injected — so the app half had to learn to ADD, not just filter.
+// Everything else is title-based (matches the board + restamp's titleLooseMatch). Privacy-light:
+// titles, an order, and reasons — no accounts, no personal data. Same posture as the relay.
+
+import { extractDrop, DropError } from './extract'
 
 export interface Env {
   CURATE: KVNamespace
@@ -19,11 +25,22 @@ export interface Env {
 
 type Killed = { title: string; reason?: string }
 type Flag = { title: string; reason?: string }
+/** A pasted pick. Deliberately a thin slice of the app's Pick — the app fills the rest with defaults. */
+export type Added = {
+  title: string
+  link: string
+  image?: string
+  blurb?: string
+  venue?: string
+  when?: string
+  source?: string
+}
 export interface Overrides {
   generatedAt: string // the feed this override targets — the app ignores it if the feed has rolled past it
   pile?: string[] // opening order (titles)
   killed?: Killed[]
   flags?: Flag[]
+  added?: Added[] // pasted picks, injected into the feed
   at?: number // server stamp (set here, not trusted from the client)
 }
 
@@ -64,11 +81,47 @@ function sanitize(raw: unknown): Overrides | null {
             return { title: e.title.slice(0, 200), ...(typeof e.reason === 'string' ? { reason: e.reason.slice(0, 40) } : {}) }
           })
       : []
+  // Pasted picks carry URLs, so they get a stricter screen than the title-only fields: https only,
+  // and a cap on how many can ride one round.
+  const httpsOnly = (v: unknown): string | undefined => {
+    if (typeof v !== 'string' || !v) return undefined
+    try {
+      const u = new URL(v)
+      return u.protocol === 'https:' ? u.toString().slice(0, 600) : undefined
+    } catch {
+      return undefined
+    }
+  }
+  const str = (v: unknown, max: number): string | undefined =>
+    typeof v === 'string' && v.trim() ? v.trim().slice(0, max) : undefined
+  const added = (v: unknown): Added[] =>
+    Array.isArray(v)
+      ? v
+          .filter((x) => x && typeof (x as { title?: unknown }).title === 'string')
+          .slice(0, 50)
+          .map((x) => {
+            const e = x as Record<string, unknown>
+            const link = httpsOnly(e.link)
+            if (!link) return null
+            return {
+              title: String(e.title).slice(0, 200),
+              link,
+              image: httpsOnly(e.image),
+              blurb: str(e.blurb, 400),
+              venue: str(e.venue, 120),
+              when: str(e.when, 120),
+              source: str(e.source, 60),
+            }
+          })
+          .filter((x): x is Added => x !== null)
+      : []
+
   return {
     generatedAt: o.generatedAt.slice(0, 40),
     pile: titles(o.pile, 200),
     killed: withReason(o.killed, 300),
     flags: withReason(o.flags, 300),
+    added: added(o.added),
   }
 }
 
@@ -78,6 +131,32 @@ export default {
     if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: cors(origin) })
 
     const url = new URL(request.url)
+
+    // THE DROP BOX — paste a social link, get a pick back. Stateless: this reads the post and
+    // returns it; nothing is stored until the board Submits it as part of `added`.
+    if (url.pathname === '/drop' || url.pathname === '/drop/') {
+      if (request.method !== 'POST') return json({ error: 'method not allowed' }, 405, origin)
+      let body: { url?: unknown }
+      try {
+        body = (await request.json()) as { url?: unknown }
+      } catch {
+        return json({ error: 'bad json' }, 400, origin)
+      }
+      if (typeof body.url !== 'string') return json({ error: 'no url' }, 400, origin)
+      try {
+        const drop = await extractDrop(body.url)
+        return json({ ok: true, drop }, 200, origin)
+      } catch (e) {
+        // A DropError carries a message written for Ness; anything else is a genuine surprise.
+        const known = e instanceof DropError
+        return json(
+          { error: known ? e.message : 'Could not read that post.', code: known ? e.code : 'unknown' },
+          known ? 422 : 502,
+          origin,
+        )
+      }
+    }
+
     const m = url.pathname.match(/^\/curate\/([^/]+)\/?$/)
     if (!m) return json({ error: 'not found' }, 404, origin)
     const city = decodeURIComponent(m[1]).toLowerCase()

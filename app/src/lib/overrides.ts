@@ -7,11 +7,24 @@ import type { Pick } from '../types'
 
 const CURATE_URL = 'https://wkndr-curate.ness-13b.workers.dev'
 
+/** A pick Ness pasted into the board's DROP box (Instagram/TikTok/X link → extracted server-side).
+ *  Thin by design — the worker sends what a post actually carries, and buildAdded fills the rest. */
+export type AddedPick = {
+  title: string
+  link: string
+  image?: string
+  blurb?: string
+  venue?: string
+  when?: string
+  source?: string
+}
+
 export type CurateOverrides = {
   generatedAt: string
   pile?: string[]
   killed?: { title: string; reason?: string }[]
   flags?: { title: string; reason?: string }[]
+  added?: AddedPick[]
   at?: number
 }
 
@@ -55,9 +68,39 @@ export async function postOverrides(city: string, ov: CurateOverrides): Promise<
   }
 }
 
+/** Inflate a pasted pick into a full Pick.
+ *  The `drop-` id prefix is deliberate: the airlock audits `web-`/`llm-`/`rss-`/`sk-` ids, because
+ *  those come from crawls and need a board approval to go live. A drop IS the approval — Ness
+ *  pasted it by hand — so it sits outside that check rather than sneaking past it.
+ *  `when` is left empty: a social post rarely states its own date, and when.ts treats an empty
+ *  string as evergreen (neither past nor broken), so the pick survives the runtime date guard. */
+function buildAdded(a: AddedPick, i: number): Pick {
+  return {
+    id: `drop-${i}-${tokKey(a.title).replace(/\s+/g, '-').slice(0, 40)}`,
+    title: a.title,
+    venue: a.venue ?? '',
+    area: '',
+    when: a.when ?? '',
+    category: 'out',
+    freshness: 'new',
+    outdoor: false,
+    kid: false,
+    price: '',
+    image: a.image,
+    blurb: a.blurb ?? '',
+    why: 'You dropped this in.',
+    source: a.source ?? 'Dropped in',
+    link: a.link,
+    // No forecast data on a pasted post, so it fits every mode rather than being ranked down in
+    // one. It leads on pilePos anyway — the board puts a fresh drop at the top of the pile.
+    weatherFit: ['HOT', 'WARM', 'COOL', 'COLD_WET', 'VOLATILE'],
+  }
+}
+
 /** Layer overrides onto the static feed. Pure + fail-soft: a null/stale override (feed rolled past
  *  the generatedAt it targets) returns the picks untouched. Mirrors restamp's taste layer:
  *   - killed  → dropped
+ *   - added   → pasted picks injected (deduped against the feed, and skipped if also killed)
  *   - pile    → those picks lead, in pile order — stamped onto `pilePos`, the app's hand-drag override
  *               (weather/modes.ts orderServed deals pilePos-first, above every tier). The override's
  *               pile REPLACES any pilePos the last restamp left, so it fully controls the opening.
@@ -71,17 +114,28 @@ export function applyOverrides(picks: Pick[], ov: CurateOverrides | null, genera
   const pilePos = new Map((ov.pile ?? []).map((t, i) => [tokKey(t), i] as const))
   const hasPile = pilePos.size > 0
 
-  return picks
-    .filter((p) => !killed.has(tokKey(p.title)))
-    .map((p) => {
-      const k = tokKey(p.title)
-      const flag = flagOf.get(k)
-      const pp = pilePos.get(k)
-      // when a pile is present it OWNS the hand order: matched picks get their new slot, everyone else
-      // clears (so a prior restamp's pilePos can't linger). No pile → leave pilePos untouched.
-      const next: Pick = { ...p }
-      if (hasPile) next.pilePos = pp != null ? pp + 1 : undefined
-      if (flag) (next as Pick & { _flag?: string })._flag = flag
-      return next
-    })
+  const kept = picks.filter((p) => !killed.has(tokKey(p.title)))
+
+  // Drops the feed doesn't already carry. A drop that duplicates a real pick loses to the real one
+  // (it has dates, a venue and a judged score); a drop that was also cancelled this round stays out.
+  const seen = new Set(kept.map((p) => tokKey(p.title)))
+  const extra: Pick[] = []
+  for (const a of ov.added ?? []) {
+    const k = tokKey(a.title)
+    if (!a.title || !a.link || killed.has(k) || seen.has(k)) continue
+    seen.add(k)
+    extra.push(buildAdded(a, extra.length))
+  }
+
+  return [...kept, ...extra].map((p) => {
+    const k = tokKey(p.title)
+    const flag = flagOf.get(k)
+    const pp = pilePos.get(k)
+    // when a pile is present it OWNS the hand order: matched picks get their new slot, everyone else
+    // clears (so a prior restamp's pilePos can't linger). No pile → leave pilePos untouched.
+    const next: Pick = { ...p }
+    if (hasPile) next.pilePos = pp != null ? pp + 1 : undefined
+    if (flag) (next as Pick & { _flag?: string })._flag = flag
+    return next
+  })
 }

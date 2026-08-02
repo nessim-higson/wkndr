@@ -172,12 +172,37 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 .ocard.flagged{border-color:var(--green)}
 /* new-find that's been pulled into the simple deck */
 .pcard.isnew .pt:after{content:'NEW';margin-left:6px;font-size:9px;font-weight:800;color:#fff;background:var(--ink);padding:1px 5px;border-radius:999px;vertical-align:1px}
+/* ——— THE DROP BOX — paste an IG/TikTok/X link, get a pick ——— */
+#dropbox{margin:18px 0 4px;padding:16px 16px 15px;background:#fff;border:1px solid var(--line);border-radius:14px}
+#dropbox .dlab{font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:var(--dim);margin:0 0 4px}
+#dropbox .dsub{font-size:12px;color:var(--dim);margin:0 0 10px}
+.drow{display:flex;gap:8px;flex-wrap:wrap}
+.drow input{flex:1 1 240px;min-width:0;font-family:var(--sans);font-size:14px;padding:12px 13px;border-radius:10px;border:1px solid var(--line);background:#fff;color:var(--ink)}
+.drow input::placeholder{color:#B4AEA1}
+.drow input:focus-visible{outline:2px solid var(--accent);outline-offset:1px;border-color:var(--accent)}
+#dropgo{font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:.07em;padding:12px 20px;border-radius:10px;border:0;background:var(--ink);color:#fff;cursor:pointer;white-space:nowrap}
+#dropgo:hover{background:var(--accent)}
+#dropgo:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+#dropgo[disabled]{opacity:.5;cursor:default}
+#dropstat{margin-top:10px;font-size:12px;color:var(--dim);display:flex;align-items:center;gap:8px;min-height:16px}
+#dropstat.bad{color:#c33}
+.dspin{width:11px;height:11px;border-radius:50%;border:2px solid var(--line);border-top-color:var(--accent);animation:dsp .7s linear infinite;flex:none}
+@keyframes dsp{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.dspin{animation:none}}
+.dprev{display:flex;gap:12px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+.dprev img{width:76px;height:76px;flex:none;object-fit:cover;border-radius:9px;background:#e8e4da}
+.dprev .dmeta{flex:1;min-width:0}
+.dprev h4{margin:0 0 4px;font-size:13.5px;font-weight:700;line-height:1.35}
+.dprev .dsrc{font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--dim);margin:0 0 7px}
+.dbadge{display:inline-block;font-size:9px;font-weight:700;letter-spacing:.06em;padding:3px 7px;border-radius:999px;color:#fff;background:var(--green);margin:0 4px 6px 0;text-transform:uppercase}
+.dbadge.warn{background:#c33}
+.dacts{display:flex;gap:6px;flex-wrap:wrap;margin-top:2px}
 </style>
 </head>
 <body>
 <div class="wrap">
 <header>
-<p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD V.9.31</p>
+<p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD V.9.32</p>
 <h1>Your weekend<span class="dot">.</span></h1>
 <div id="modetoggle"><button class="on" data-mode="simple">Simple</button><button data-mode="advanced">Advanced</button></div>
 <div id="overnote" style="display:none"></div>
@@ -185,6 +210,16 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 
 <div id="simple">
 <p class="simplelede"><b>The 10 cards that open the deck</b> — exactly what your testers see first this weekend. Drag to reorder, swap any card in or out, <b>✕</b> to cancel one — it comes off straight away and waits on the <b>Cancelled</b> shelf below, where you can say why whenever you like. Then hit <b>Submit</b>.</p>
+<div id="dropbox">
+<p class="dlab">Drop a link</p>
+<p class="dsub">Paste a post from Instagram, TikTok or X. It comes back with its picture and caption, straight into your top 10.</p>
+<div class="drow">
+<input id="dropurl" type="url" spellcheck="false" autocomplete="off" placeholder="https://www.instagram.com/p/…" aria-label="Paste a post link">
+<button id="dropgo" type="button">Pull</button>
+</div>
+<div id="dropstat" role="status" aria-live="polite"></div>
+<div id="droppreview"></div>
+</div>
 <div class="cathead hot" id="openhead">Your 10 opening cards</div>
 <div id="openlist"></div>
 <div class="cathead" id="poolhead">Swap in a card<span class="d">Tap + to drop a pick into your 10 (it bumps #10 out). This weekend's picks, best first.</span></div>
@@ -444,7 +479,7 @@ Promise.all([
   // 10 min (max-age=600), so a just-shipped board fix can lag in an open tab; the eyebrow makes
   // stale-board-vs-fresh-data visible at a glance (2026-07-12: an old tab's tier-mirror pile read
   // as "the board is wrong" when it was just cached).
-  const BOARD_V='V.9.31';
+  const BOARD_V='V.9.32';
   document.getElementById('eyebrow').textContent='WKNDR · CURATION BOARD '+BOARD_V+' · FEED '+(d.generatedAt||'').slice(0,16).replace('T',' · ');
   const board=document.getElementById('board');board.innerHTML='';
   const rot=document.createElement('div');rot.id='tab-rot';board.appendChild(rot);
@@ -929,6 +964,17 @@ function pileLine(compact){
     :'\n· PILE ORDER (hand-set) — '+order.map((t,i)=>(i+1)+'. '+t).join(' · ');
 }
 // pretty, human-readable — for Copy + Email (no size limit there)
+// DROPS in the durable record. The fast-lane `added` array expires with the feed, so without this a
+// pasted pick would vanish on the next refresh — this is what the compile folds into taste/scouted.json.
+function dropLine(compact){
+  const dead=new Set(Object.values(V).filter(v=>v&&v.killed).map(v=>v.t));
+  const ds=extras.filter(e=>e&&e._drop&&!dead.has(e.title));
+  if(!ds.length)return '';
+  return compact
+    ? '\n'+ds.map(d=>'- DROPPED | '+d.title+' | '+d.link).join('\n')
+    : '\n· DROPPED IN (paste-box finds — fold into taste/scouted.json)\n'
+      +ds.map(d=>'  · '+d.title+(d.venue?' — '+d.venue:'')+'\n    '+d.link+(d.image?'\n    image: '+d.image:'')).join('\n');
+}
 function payload(){
   const vs=verdicts();
   return 'WKNDR curation — '+new Date().toISOString().slice(0,16)+' — '+vs.length+' verdicts\n'+vs.map(v=>{
@@ -946,7 +992,7 @@ function payload(){
     if(v.note)bits.push('“'+v.note+'”');
     if(v.betterImage)bits.push('better: '+v.betterImage);
     return '· '+v.t+' — '+bits.join(' · ');
-  }).join('\n')+pileLine(false);
+  }).join('\n')+pileLine(false)+dropLine(false);
 }
 // COMPACT ASCII — for the GitHub prefill URL only. Multi-byte glyphs (★ → %E2%98%85 = 9 chars each,
 // 👑 ▲ ▼ · — “ ”) blow the ~8KB URL cap fast; plain ASCII (4* etc.) keeps even an 80-verdict round
@@ -967,7 +1013,7 @@ function payloadCompact(){
     if(v.note)bits.push('note:'+v.note);
     if(v.betterImage)bits.push('img-url:'+v.betterImage);
     return '- '+v.t+' | '+bits.join(' ');
-  }).join('\n')+pileLine(true);
+  }).join('\n')+pileLine(true)+dropLine(true);
 }
 document.getElementById('copy').addEventListener('click',async()=>{
   try{await navigator.clipboard.writeText(payload())}catch(e){}
@@ -979,6 +1025,70 @@ document.getElementById('copy').addEventListener('click',async()=>{
 // goes to the clipboard and the issue opens ready to paste.
 // TRACK A FAST-LANE — the board's live curation as the overrides doc the app applies in seconds.
 // pile = your full deck order; killed/flags carry the reason so the app drops or surfaces accordingly.
+// ——— THE DROP BOX (V.9.32) — paste a social link, get a pick.
+// Getting real Amsterdam events out of Instagram was the long-running content blocker: the feed's
+// sources are all crawlable sites, and the stuff Ness actually spots is on IG. The Worker reads the
+// post's OpenGraph tags with a crawler UA (no login, no key) and upgrades the image to native
+// resolution via /media/?size=l — og:image alone is a ~640px preview that would trip the low-res gate.
+// A pulled pick becomes an `extras` entry marked `_drop`, so it rides the SAME path New Finds already
+// take (persistence, the pile, Submit) and additionally ships its own data in `added` — the fast lane
+// can't order a pick the app has never heard of, so drops travel with their content.
+(function(){
+  const inp=document.getElementById('dropurl'),go=document.getElementById('dropgo'),
+        stat=document.getElementById('dropstat'),prev=document.getElementById('droppreview');
+  if(!inp||!go)return;
+  const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const say=(msg,bad)=>{stat.className=bad?'bad':'';stat.textContent=msg};
+  const busy=on=>{go.disabled=on;go.textContent=on?'Reading…':'Pull';
+    if(on){stat.className='';stat.innerHTML='<span class="dspin"></span><span>Reading the post…</span>'}};
+
+  async function pull(){
+    const url=(inp.value||'').trim();
+    prev.innerHTML='';
+    if(!url){say('Paste a link first.',true);return}
+    busy(true);
+    let r,j;
+    try{
+      r=await fetch(CURATE_URL+'/drop',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({url})});
+      j=await r.json();
+    }catch(e){busy(false);say("Couldn't reach the reader — check your connection and try again.",true);return}
+    busy(false);
+    if(!r.ok||!j||!j.drop){say((j&&j.error)||'That post could not be read.',true);return}
+    show(j.drop);
+  }
+
+  function show(d){
+    // A pick the app can render: the caption becomes blurb, the post URL is the link out. `_drop`
+    // marks it for the `added` payload; `_lowres` only ever warns — Ness still decides.
+    const pick={title:d.title,link:d.url,image:d.image||'',blurb:d.caption||'',
+      venue:d.author?'@'+d.author:'',when:'',source:d.author?'@'+d.author:(d.platform||'dropped'),
+      _drop:true};
+    const dim=(d.width&&d.height)?d.width+'×'+d.height:'';
+    say('Pulled from '+(d.platform||'the post')+(d.date?' · '+d.date:''));
+    prev.innerHTML='<div class="dprev">'
+      +(d.image?'<img src="'+esc(d.image)+'" alt="">':'')
+      +'<div class="dmeta">'
+      +'<h4>'+esc(d.title)+'</h4>'
+      +'<p class="dsrc">'+(d.author?'@'+esc(d.author):'')+(d.date?' · '+esc(d.date):'')+'</p>'
+      +(dim?'<span class="dbadge'+(d.lowRes?' warn':'')+'">'+dim+(d.lowRes?' · low res':'')+'</span>':'')
+      +'<div class="dacts"><button class="b" id="dropadd">↑ Add to my top 10</button>'
+      +'<button class="b" id="dropskip">Discard</button></div>'
+      +'</div></div>';
+    document.getElementById('dropadd').addEventListener('click',()=>{
+      if(typeof addExtra!=='function'){say('The board is still loading — give it a second.',true);return}
+      addExtra(pick);            // → extras + PILE + persisted, exactly like a New Find
+      inp.value='';prev.innerHTML='';
+      // addExtra lands it at slot 10 (promote → moveTo(t, MAX-1)), same as any New Find — say so
+      // rather than claiming it leads, or the first drop looks like it went missing.
+      say('Added at #10 in your top 10 — drag it up if it should lead. Submit sends it live.');
+    });
+    document.getElementById('dropskip').addEventListener('click',()=>{prev.innerHTML='';say('')});
+  }
+
+  go.addEventListener('click',pull);
+  inp.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();pull()}});
+})();
+
 function buildOverrides(){
   const killed=[],flags=[],dead=new Set();
   for(const v of Object.values(V)){
@@ -990,7 +1100,13 @@ function buildOverrides(){
   }
   // a cancelled title never rides the pile — applyOverrides drops killed first, but sending a title
   // in both lists is a contradiction the durable compile would have to re-resolve by hand.
-  return {generatedAt:feedGeneratedAt,pile:(PILE||[]).filter(t=>!dead.has(t)).slice(0,200),killed,flags};
+  // DROPS ride with their content. pile/killed/flags are title-only because they re-stamp picks the
+  // app already has; a pasted pick isn't in the static feed at all, so applyOverrides has to be able
+  // to build it. Cancelled drops are excluded the same way cancelled titles are.
+  const added=extras.filter(e=>e&&e._drop&&!dead.has(e.title)).slice(0,50)
+    .map(e=>({title:e.title,link:e.link,image:e.image||undefined,blurb:e.blurb||undefined,
+              venue:e.venue||undefined,when:e.when||undefined,source:e.source||undefined}));
+  return {generatedAt:feedGeneratedAt,pile:(PILE||[]).filter(t=>!dead.has(t)).slice(0,200),killed,flags,added};
 }
 async function postCurate(){
   try{const r=await fetch(CURATE_URL+'/curate/amsterdam',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(buildOverrides())});return r.ok}catch(e){return false}
