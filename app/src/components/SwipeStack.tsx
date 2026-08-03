@@ -305,7 +305,7 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
 })
 
 export function SwipeStack({
-  picks, temp, tempOf, mode, onSwipe, onOpen, onRefresh, filterLabel, onClearFilter, onSeeList, nudge, keysActive,
+  picks, temp, tempOf, mode, onSwipe, onOpen, onRefresh, filterLabel, onClearFilter, onSeeList, nudge, keysActive, escape,
 }: {
   picks: Pick[]
   temp?: number
@@ -319,6 +319,9 @@ export function SwipeStack({
   filterLabel?: string | null
   onClearFilter?: () => void
   onSeeList?: () => void
+  /** A better exit than "clear filters" when a specific combination dead-ends — see the
+   *  evergreen escape in the empty state. Named and counted, so it's an offer, not an apology. */
+  escape?: { label: string; note: string; onTake: () => void }
   nudge?: boolean   // arm the one-time first-run swipe hint (fires once per device, ever)
   keysActive?: boolean  // App says when the deck owns the keyboard (no overlay/menu open)
 }) {
@@ -374,13 +377,23 @@ export function SwipeStack({
           {filterLabel ? 'That’s everything in this filter.' : 'That’s the weekend.'}
         </p>
         <span>
-          {filterLabel
-            ? 'Clear the filters for the full set, or check back as the week refreshes.'
-            : 'You’ve seen every pick. Fresh ones land each week — run through again, or browse the full list.'}
+          {escape
+            ? escape.note
+            : filterLabel
+              ? 'Clear the filters for the full set, or check back as the week refreshes.'
+              : 'You’ve seen every pick. Fresh ones land each week — run through again, or browse the full list.'}
         </span>
         <div className="stack-empty-actions">
+          {/* THE EVERGREEN ESCAPE (V.11). Filtering to a district AND a date empties most of
+              Amsterdam — the feed runs ~58 evergreen to ~18 dated, and the dated ones sit in the
+              centre. So when that combination dead-ends we offer the thing that IS there, by
+              name and count, instead of a bare "clear filters". Noord on a hot Saturday means
+              Pllek, not an empty deck. */}
+          {escape && (
+            <button className="stack-btn primary" onClick={escape.onTake}>{escape.label}</button>
+          )}
           {filterLabel && onClearFilter && (
-            <button className="stack-btn primary" onClick={onClearFilter}>Clear filters</button>
+            <button className={`stack-btn${escape ? '' : ' primary'}`} onClick={onClearFilter}>Clear filters</button>
           )}
           {onSeeList && <button className="stack-btn" onClick={onSeeList}>See all in List</button>}
           {onRefresh && <button className="stack-btn" onClick={onRefresh}>Refresh</button>}

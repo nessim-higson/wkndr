@@ -5,7 +5,7 @@ FIRST in a new chat. For strategy + backlog see `docs/backlog.md`; for the pipel
 `docs/pipeline-architecture.md` + `docs/source-map.md`; for **who may write to the deck vs to a personal
 profile** (board / Tune / airlock — read before touching either) see `docs/curation-surfaces.md`; for the
 **board roadmap** (auto-compile tracks) see `docs/board-roadmap.md`; for full **version history** see
-`CHANGELOG.md` (current to app V.10.19 / board V.9.38) and the **git log / tags**. Onboarding:
+`CHANGELOG.md` (current to app **V.11** / board V.9.38) and the **git log / tags**. Onboarding:
 `CLAUDE.md`. App lives in `/app` (Vite + React + TS, run with `bun`); ships to **Cloudflare Pages**
 (`wkndr.xyz` + `app.wkndr.xyz`) **and** GitHub Pages (legacy, keeps old share links alive)._
 
@@ -27,6 +27,38 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
 > sessions update (today it's on load).
 
 ## Live right now
+- **V.11 — WHERE COMES TO THE FACE (2026-08-03).** The whole-version roll. Two changes, one
+  thesis: **the filters people never found are now ON the deck, and one of them is location.**
+  - **THE FILTER STRIP.** `When × What × Where` moved OUT of the ≡ menu onto the face
+    (`.filterstrip` under `</header>`, browse-mode only — saved/shared are fixed lists). Ness's
+    call, against the recommendation to keep them in the menu: a filter nobody finds is a filter
+    that doesn't exist, and the field proved it (a Noord user asked for location filtering the
+    app already half-had). Nothing replaces the group in the menu — a control in two places is a
+    control you can't trust. **Consequence: the undo pill moved BACK to the bottom** (now floating
+    ABOVE the ✕/★ row, not on it — the original sin that got it evicted in V.10), and its motion
+    flipped to rise from below.
+  - **THE WHERE SHEET.** Same `FilterSheet` component as When/What (it gained `lead`/`note`/`hint`
+    slots) so there's no new UI grammar. **Near me first** is a SORT and sits above a rule;
+    **districts** below are counted filters. **The counts are cross-axis** — pin `This weekend`
+    and Noord's chip drops from 7 to 1, because that is the truth (see the pool-shape constraint
+    in the /geo entry). Districts that hold nothing under the current filters are dropped, not
+    shown as 0.
+  - **THE EVERGREEN ESCAPE.** Where × a dated When empties nearly every district, so that
+    dead-end now offers what IS there, by name and count — *"Show all 6 in Noord"* — clearing the
+    WHEN axis and keeping the Where. You asked to be in Noord; you only implied you wanted a
+    ticketed event. This is the answer to "should there be a THIS WEEKEND toggle?": **no** — a
+    weekend-only gate on top of a district gate is how you serve an empty deck.
+  - **`src/lib/geo.ts`** — the geo layer, promoted from the /geo prototype to a real tested module
+    (25 tests, 272 total). Name-keyed gazetteer → district centroids (marked `≈`) → honestly
+    `unknown` (no distance shown, sorts last — **we never guess a place**). Haversine ×1.3 @
+    15 km/h + the IJ ferry model, rounded UP to fives. `nearScore` is a **ranking weight capped
+    under the +10 weather term**, applied before `orderServed`, so weather stays the thesis and
+    👑 TOP / ▲ LEAD / the hand pile still lead the deck by law. `Pick.lat/lon` are optional and
+    PREFERRED when present — the day the cron stamps coords (open item 8), the gazetteer becomes
+    a fallback and nothing else changes.
+  - **One permission, both jobs:** `goLive()` now also sets the distance origin, so the existing
+    "Use my location" grant feeds the forecast AND every distance. Toggling near-me without a
+    grant asks for one.
 - **READ THE LISTINGS (board V.9.35, 2026-08-03) — LIVE, key is set.** **Two carousel shapes:** a
   `listing` (DAY/NIGHT dated agenda — 93 events off one post, NO images: the slide is a wall of text)
   and a `feature` ("Amsterdam's best eats", ONE dish per slide — 8 events, and the slide PHOTO becomes
@@ -102,8 +134,9 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
   best of the two); `stampServeOrder` uses the new `weekendModes()`. The blend is KEPT as the summary
   (ambient field + every single-mode surface). Surfaced only when `daysDiffer` — header reads
   "Sat 27° · Sun 14°", and `tempForPick` prints a dated card's OWN day. Board V.9.30 mirrors it.
-- **/GEO — THE HYPER-LOCAL PROTOTYPE SURFACE (geo G.1, PR #23, 2026-08-02 — serves at
-  `app.wkndr.xyz/geo/` after the next domain deploy; GH-Pages mirror `/wkndr/geo/`).** Field feedback
+- **/GEO — THE HYPER-LOCAL PROTOTYPE SURFACE (geo G.1, PR #23 MERGED 2026-08-02).** **LIVE on
+  GH Pages — https://nessim-higson.github.io/wkndr/geo/**; `app.wkndr.xyz/geo/` needs the manual
+  wrangler domain deploy (`bun run build:domain` + `wrangler pages deploy`), Ness-only. Field feedback
   (a friend in Noord: location should filter more accurately) answered as a SEPARATE surface on the
   curate-board pattern: `app/public/geo/index.html` ships inside the app build, **reads the LIVE feed**
   (`data/picks.amsterdam.json`, dealt in `servePos` order, real wsrv posters + credited link-outs,
@@ -117,6 +150,14 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
   Centraal/Noord preset viewpoints. The undo pill sits at the BOTTOM on this surface (the pinned filter
   tabs own the top — the collision Ness spotted). Design record: `experiments/11`–`14` (placement
   comps → clickable prototype → fork → real-feed). **Follow-up is pipeline-side, not UI** (open item 8).
+  **THE POOL-SHAPE CONSTRAINT (measured on the 2026-07-30 feed, 80 picks) — read before adding any
+  "this weekend only" filter:** the feed is **58 evergreen / 18 weekend-dated / 3 new / 1 ending**, and
+  the dated events cluster hard in the centre. Per district, dated-this-weekend vs evergreen:
+  **Centrum 5/27 · Zuid 4/7 · Noord 1/6 · West 1/5 · De Pijp 1/3 · Oost 2/2 · Day-trip 0/7.**
+  So **Where × This-weekend-only multiplies down to 0–1 picks for every district except Centrum** —
+  the two filters must never both hard-gate. The evergreen half is what makes hyper-local viable at
+  all (Noord's answer on a 27° Saturday is Pllek, not a dated event), so a weekend-only control belongs
+  as a **sort/emphasis with live counts that update as the other axis changes**, never a silent gate.
 - **App: V.10.18** — https://app.wkndr.xyz (cache-bust `?v=V.10.18`; GH-Pages mirror at
   nessim-higson.github.io/wkndr/). **Recent arc (2026-07-21→23):** V.10.12 = field-feedback reliability
   (persist declines so a refresh doesn't re-deal them → `wkndr.swiped.v1`; intro is now first-run/arrival
@@ -202,7 +243,12 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
 - **App-side image polish (V.8.x):** the detail sheet's 3/2 header is re-derived from the ORIGINAL
   (killed the crop-of-a-crop) + a full-screen ⤢ FOCUS lightbox.
 - **`?dev=1`** reveals the full exploration surface (all views, ambient-look switcher, city picker).
-- **Frozen reference builds:** `/wkndr/versions/v6-2/` (tag `v6.2`) and `/wkndr/versions/v4-10/` (tag `v4.10`).
+- **Frozen reference builds:** **`/wkndr/versions/v10-19/` (tag `v10.19`) — THE V.10 FREEZE, cut
+  2026-08-03 as the rollback/compare point before the V.11 face-toggle work** (app V.10.19 + board
+  V.9.38 + geo G.1, the whole V.10 line as it stood; 247/247 tests green at the cut). Also
+  `/wkndr/versions/v6-2/` (tag `v6.2`) and `/wkndr/versions/v4-10/` (tag `v4.10`).
+  **Re-cutting one:** `npx vite build --base=/wkndr/versions/<slug>/ --outDir dist-freeze` then copy
+  into `versions/<slug>/` — the base MUST match the serve path or every asset 404s.
 - **Ship loop:** `cd app && bun run bump` → `bun run build` → commit → push (auto-deploys GH Pages) →
   reply with the `?v=` link. **The two wkndr.xyz surfaces are MANUAL wrangler deploys** (no CF git
   integration): `cd landing && npx wrangler pages deploy . --project-name=wkndr-landing` and

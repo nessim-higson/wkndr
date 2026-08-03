@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>WKNDR — near me (prototype)</title>
+<meta name="robots" content="noindex">
+<style>
+  /* WKNDR /geo — the hyper-local prototype surface. Reads the LIVE published feed
+     (like /curate does), never writes. Ships inside the app build → app.wkndr.xyz/geo/. */
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    margin: 0; background: #0d0d0d; color: #0a0a0a;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased; line-height: 1.5;
+  }
+  .mono { font-family: ui-monospace, "JetBrains Mono", SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: 0.04em; }
+  button { font-family: inherit; cursor: pointer; }
+
+  .stagewrap { min-height: 100dvh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; }
+  .caption { color: rgba(250,250,247,0.5); font-size: 11px; text-align: center; padding: 0 16px; }
+  .caption a { color: rgba(250,250,247,0.75); }
+
+  .screen {
+    position: relative; width: 100vw; height: 100dvh; overflow: hidden;
+    background: #fdf4e7; display: flex; flex-direction: column; font-size: 12px;
+    user-select: none; -webkit-user-select: none;
+  }
+  @media (min-width: 700px) {
+    .screen { width: 390px; height: min(780px, 92dvh); border-radius: 30px; box-shadow: 0 28px 70px rgba(0,0,0,0.5); }
+  }
+  @media (max-width: 699.9px) { .caption { display: none; } .stagewrap { gap: 0; } }
+
+  .field { position: absolute; inset: 0; background:
+    radial-gradient(120% 90% at 78% -8%, #ffd9a3 0%, rgba(255,217,163,0) 58%),
+    radial-gradient(130% 100% at 8% 108%, #ffb37c 0%, rgba(255,179,124,0) 55%); }
+  .screen > * { position: relative; }
+
+  .tb {
+    margin: calc(env(safe-area-inset-top) + 12px) 12px 6px; background: rgba(255,255,255,0.93);
+    border-radius: 14px; padding: 10px 13px; display: flex; justify-content: space-between;
+    align-items: center; box-shadow: 0 2px 10px rgba(10,10,10,0.06); z-index: 3;
+  }
+  .tb .brand { font-weight: 800; letter-spacing: 0.02em; display: flex; align-items: center; gap: 6px; font-size: 13px; }
+  .tb .dot { width: 6px; height: 6px; border-radius: 50%; background: #ff4d1f; }
+  .tb .wx { color: #6b6b63; font-size: 10px; }
+  .tb .wx b { color: #c96a1e; font-weight: 700; }
+  .tb .saves { font-weight: 700; background: none; border: none; font-size: 13px; color: #0a0a0a; }
+  .tb .saves.has { color: #ff4d1f; }
+
+  .strip { display: flex; gap: 6px; margin: 4px 14px 2px; z-index: 3; }
+  .trigger {
+    font-size: 10.5px; font-weight: 600; color: #0a0a0a; background: rgba(255,255,255,0.9);
+    border: 1px solid #e0e0d8; border-radius: 100px; padding: 5px 11px; white-space: nowrap;
+  }
+  .trigger.stub { color: #9a9a90; }
+  .trigger.hot { border: 1.5px solid #ff4d1f; }
+  .trigger.on { background: #ff4d1f; border-color: #ff4d1f; color: #fff; }
+
+  .deck { flex: 1; position: relative; margin: 10px 16px 4px; min-height: 0; }
+  .card {
+    position: absolute; inset: 0; border-radius: 18px; overflow: hidden; background: #2a2a26;
+    box-shadow: 0 16px 34px rgba(10,10,10,0.16); display: flex; flex-direction: column;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+  .card.peek1 { transform: scale(0.955) translateY(11px); z-index: 1; opacity: 0.9; pointer-events: none; }
+  .card.peek2 { transform: scale(0.91) translateY(22px); z-index: 0; opacity: 0.75; pointer-events: none; }
+  .card.top { z-index: 2; cursor: grab; touch-action: none; }
+  .card .img { flex: 1; position: relative; min-height: 0; overflow: hidden; }
+  .card .img img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .card .img .grade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0.06) 38%, rgba(0,0,0,0.6)); }
+  .card .pill {
+    position: absolute; top: 12px; left: 12px; z-index: 2; background: #ff4d1f; color: #fff;
+    font-weight: 700; font-size: 9.5px; padding: 4px 9px; border-radius: 100px; letter-spacing: 0.03em;
+  }
+  .card .pill.dim { background: rgba(255,255,255,0.9); color: #b0342a; }
+  .card .catword {
+    position: absolute; top: 13px; right: 12px; z-index: 2; color: rgba(255,255,255,0.6);
+    font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 700;
+    text-shadow: 0 1px 6px rgba(0,0,0,0.4);
+  }
+  .card .cap { position: absolute; left: 14px; right: 14px; bottom: 12px; z-index: 2; color: #fff; }
+  .card .cap .t { font-weight: 800; font-size: 18px; letter-spacing: -0.015em; line-height: 1.12; text-shadow: 0 1px 10px rgba(0,0,0,0.35); }
+  .card .cap .m { font-size: 10.5px; opacity: 0.88; margin-top: 4px; }
+  .card .cap .m2 { font-size: 10.5px; font-weight: 700; margin-top: 2px; }
+  .card .meta { padding: 9px 14px; display: flex; justify-content: space-between; align-items: center; font-size: 10.5px; background: #fff; gap: 10px; }
+  .card .meta .via { color: #55554e; font-weight: 600; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  .card .meta .dist { color: #9a9a90; flex: none; }
+
+  .stamp {
+    position: absolute; top: 18px; z-index: 3; font-weight: 800; font-size: 15px;
+    padding: 5px 12px; border-radius: 8px; border: 2.5px solid; letter-spacing: 0.06em;
+    opacity: 0; transform: rotate(-8deg);
+  }
+  .stamp.save { right: 14px; color: #ff4d1f; border-color: #ff4d1f; background: rgba(255,255,255,0.85); transform: rotate(8deg); }
+  .stamp.skip { left: 14px; color: #55554e; border-color: #55554e; background: rgba(255,255,255,0.85); }
+
+  .empty {
+    position: absolute; inset: 0; border-radius: 18px; border: 1.5px dashed #d8d5cc;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+    color: #8b8b82; text-align: center; padding: 24px; font-size: 12px;
+  }
+  .empty b { color: #0a0a0a; }
+  .empty button { font-size: 11px; font-weight: 700; border: none; background: #0a0a0a; color: #fff; border-radius: 100px; padding: 8px 16px; }
+
+  .actionbar { display: flex; justify-content: center; gap: 16px; padding: 12px 0 calc(env(safe-area-inset-bottom) + 14px); z-index: 3; }
+  .actionbar button {
+    width: 42px; height: 42px; border-radius: 50%; border: none; background: #fff; font-size: 16px;
+    box-shadow: 0 4px 12px rgba(10,10,10,0.14); color: #0a0a0a;
+  }
+  .actionbar .yes { background: #ff4d1f; color: #fff; }
+
+  .scrim {
+    position: absolute; inset: 0; background: rgba(10,10,10,0.34); z-index: 4;
+    opacity: 0; pointer-events: none; transition: opacity 0.25s ease;
+  }
+  .scrim.show { opacity: 1; pointer-events: auto; }
+
+  .sheet {
+    position: absolute; left: 0; right: 0; bottom: 0; z-index: 5;
+    background: #fff; border-radius: 20px 20px 0 0; padding: 10px 16px calc(env(safe-area-inset-bottom) + 18px);
+    box-shadow: 0 -12px 40px rgba(10,10,10,0.25);
+    transform: translateY(105%); transition: transform 0.32s cubic-bezier(0.32, 0.72, 0.28, 1);
+    max-height: 78%; overflow-y: auto;
+  }
+  @media (min-width: 700px) { .sheet { border-radius: 20px 20px 30px 30px; } }
+  .sheet.show { transform: translateY(0); }
+  .handle { width: 34px; height: 4px; border-radius: 4px; background: #dddad2; margin: 0 auto 12px; }
+  .sheet h4 { margin: 0 0 3px; font-size: 16px; font-weight: 800; letter-spacing: -0.015em; line-height: 1.15; }
+  .sheet .sub { font-size: 10.5px; color: #8b8b82; margin: 0 0 12px; }
+
+  .togglerow {
+    display: flex; justify-content: space-between; align-items: center;
+    border: 1px solid #eeeee8; border-radius: 12px; padding: 10px 12px; margin-bottom: 12px;
+    font-size: 12.5px; font-weight: 700; cursor: pointer; background: none; width: 100%;
+  }
+  .sw { width: 34px; height: 19px; border-radius: 100px; background: #dddad2; position: relative; flex: none; transition: background 0.2s; }
+  .sw::after { content: ""; position: absolute; top: 2px; left: 2px; width: 15px; height: 15px; border-radius: 50%; background: #fff; transition: transform 0.2s; }
+  .togglerow.on .sw { background: #ff4d1f; }
+  .togglerow.on .sw::after { transform: translateX(15px); }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chips .lbl { width: 100%; font-size: 9px; letter-spacing: 0.09em; text-transform: uppercase; color: #9a9a90; margin: 2px 0; }
+  .chip {
+    font-size: 11px; font-weight: 600; border: 1px solid #e0e0d8; border-radius: 100px;
+    padding: 6px 11px; background: #fafaf7; color: #0a0a0a;
+  }
+  .chip b { color: #b0b0a6; font-weight: 600; }
+  .chip.on { background: #0a0a0a; color: #fff; border-color: #0a0a0a; }
+  .chip.on b { color: #8f8f86; }
+
+  .fromrow { border-top: 1px dashed #eeeee8; margin-top: 14px; padding-top: 12px; }
+  .fromrow .lbl { font-size: 9px; letter-spacing: 0.09em; text-transform: uppercase; color: #9a9a90; display: block; margin-bottom: 7px; }
+  .fromrow .chips { gap: 6px; }
+
+  /* detail — EVENT-FIRST; getting-there is the quiet last line */
+  .fact { display: flex; gap: 10px; font-size: 11.5px; padding: 8px 0; border-top: 1px solid #f0f0ea; color: #0a0a0a; }
+  .fact:first-of-type { border-top: none; }
+  .fact .k { color: #9a9a90; width: 58px; flex: none; font-size: 10px; }
+  .fact b { font-weight: 700; }
+  .fact.quiet { color: #8b8b82; font-size: 10.5px; }
+  .sheet a.go {
+    display: block; text-align: center; text-decoration: none; width: 100%; margin-top: 12px;
+    border: none; background: #0a0a0a; color: #fff; font-weight: 700; font-size: 12px;
+    border-radius: 100px; padding: 12px;
+  }
+  .sheet .back { display: block; width: 100%; margin-top: 8px; border: none; background: none; color: #8b8b82; font-size: 11px; font-weight: 600; padding: 6px; }
+
+  /* undo pill — BOTTOM placement (the tabs own the top on this surface) */
+  .undopill {
+    position: absolute; left: 20px; right: 20px; bottom: calc(env(safe-area-inset-bottom) + 74px); z-index: 3;
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    border: none; border-radius: 100px; background: #1a1a1a; color: #faf8f3;
+    padding: 7px 7px 7px 15px; font-size: 11px; font-weight: 600; text-align: left;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.32);
+    opacity: 0; transform: translateY(6px); pointer-events: none;
+    transition: opacity 0.25s, transform 0.25s;
+  }
+  .undopill.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+  .undopill .what { min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  .undopill .what i { font-style: normal; opacity: 0.5; }
+  .undopill .act { flex: none; background: rgba(255,255,255,0.16); border-radius: 100px; padding: 5px 12px; }
+
+  .toast {
+    position: absolute; left: 50%; top: calc(env(safe-area-inset-top) + 112px); transform: translate(-50%, -6px); z-index: 6;
+    background: #0a0a0a; color: #fff; font-size: 10.5px; font-weight: 600;
+    padding: 7px 14px; border-radius: 100px; opacity: 0; transition: opacity 0.25s, transform 0.25s;
+    pointer-events: none; white-space: nowrap;
+  }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+  .feednote {
+    text-align: center; font-size: 9px; color: #b0b0a6; padding-bottom: 4px; z-index: 3;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card, .sheet, .scrim, .toast, .sw, .sw::after, .undopill { transition: none; }
+  }
+</style>
+</head>
+<body>
+<div class="stagewrap">
+  <div class="screen" id="screen">
+    <div class="field"></div>
+
+    <div class="tb">
+      <div class="brand"><span class="dot"></span>WKNDR</div>
+      <div class="wx" id="wx">Amsterdam</div>
+      <button class="saves" id="saves" aria-label="Saved picks">★ 0</button>
+    </div>
+
+    <div class="strip">
+      <button class="trigger stub" id="stub-when">◷ Any time</button>
+      <button class="trigger stub" id="stub-what">▦ Everything</button>
+      <button class="trigger hot" id="wheretrigger">◎ Anywhere ▾</button>
+    </div>
+
+    <div class="deck" id="deck">
+      <div class="empty"><span><b>Loading the live feed…</b></span></div>
+    </div>
+
+    <div class="actionbar">
+      <button id="skip" aria-label="Skip">✕</button>
+      <button class="yes" id="save" aria-label="Save">★</button>
+    </div>
+
+    <button class="undopill" id="undopill">
+      <span class="what" id="u-what"></span><span class="act">↩ Undo</span>
+    </button>
+
+    <div class="feednote mono" id="feednote"></div>
+
+    <div class="scrim" id="scrim"></div>
+
+    <div class="sheet" id="wheresheet" role="dialog" aria-label="Where">
+      <div class="handle"></div>
+      <h4>Where</h4>
+      <p class="sub">Near me sorts — far picks sink, they don't vanish. Districts filter.</p>
+      <button class="togglerow" id="nearme"><span>◎ Near me first</span><span class="sw"></span></button>
+      <div class="chips" id="districts"><span class="lbl">Or pin a district</span></div>
+      <div class="fromrow">
+        <span class="lbl">Distances measured from</span>
+        <div class="chips">
+          <button class="chip on" id="pov-cs">Centraal</button>
+          <button class="chip" id="pov-noord">Noord</button>
+          <button class="chip" id="pov-me">◎ My location</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="sheet" id="detailsheet" role="dialog" aria-label="Pick detail">
+      <div class="handle"></div>
+      <h4 id="d-title"></h4>
+      <p class="sub" id="d-sub"></p>
+      <div id="d-facts"></div>
+      <a class="go" id="d-open" href="#" target="_blank" rel="noreferrer">Open ↗</a>
+      <button class="back" id="d-close">Back to the deck</button>
+    </div>
+
+    <div class="toast" id="toast"></div>
+  </div>
+
+  <p class="caption mono">WKNDR /geo — hyper-local prototype · reads the live feed, saves nothing ·
+  the main app is <a href="../">here</a></p>
+</div>
+
+<script>
+'use strict';
+const GEO_V = 'G.1';
+
+/* ============ the venue gazetteer ============
+   Name-keyed (NOT index-keyed) so it survives feed refreshes: a pick resolves by
+   venue/title match → pin; else its area string → district centroid (≈); else
+   day-trip/citywide/unknown. New venues degrade gracefully to district level —
+   the cron's PDOK geocode + this file growing is the real fix. n = north of the IJ. */
+const GAZ = [
+  ['nieuwe kerk', 52.3736, 4.8925], ['mandelapark', 52.3163, 4.9569],
+  ['scheepvaart', 52.3714, 4.9147], ['maritime museum', 52.3714, 4.9147],
+  ["h'art", 52.3653, 4.9024], ['hart museum', 52.3653, 4.9024],
+  ['carré', 52.3625, 4.9040], ['carre', 52.3625, 4.9040],
+  ['de hallen', 52.3669, 4.8686], ['foodhallen', 52.3669, 4.8686], ['filmhallen', 52.3669, 4.8686],
+  ['concertgebouw', 52.3563, 4.8790], ['rijksmuseum', 52.3600, 4.8852],
+  ['waterlooplein', 52.3679, 4.9010], ['bret', 52.3893, 4.8372],
+  ['pllek', 52.4013, 4.8916, 1], ['café chris', 52.3739, 4.8790], ['cafe chris', 52.3739, 4.8790],
+  ['sauna deco', 52.3757, 4.8901], ['vondelpark', 52.3580, 4.8686],
+  ['the movies', 52.3839, 4.8853], ['two story', 52.3690, 4.8890],
+  ['stedelijk', 52.3581, 4.8798], ['foam', 52.3641, 4.8937], ['fyka', 52.3707, 4.8896],
+  ['droog', 52.3690, 4.8965], ['mendo', 52.3690, 4.8840], ['patta', 52.3743, 4.9000],
+  ['x bank', 52.3720, 4.8890], ['melkweg', 52.3648, 4.8811], ['mobilia', 52.3630, 4.8990],
+  ['vlieger', 52.3665, 4.8985], ['micropia', 52.3665, 4.9126], ['paradiso', 52.3622, 4.8836],
+  ['kriterion', 52.3628, 4.9078], ['nxt museum', 52.3900, 4.9060, 1],
+  ['tonton', 52.3737, 4.8975], ['dappermarkt', 52.3622, 4.9297],
+  ['garage noord', 52.3906, 4.9296, 1], ['bloemenmarkt', 52.3671, 4.8910],
+  ['gaasperplas', 52.3120, 4.9920], ['eye film', 52.3843, 4.9006, 1],
+  ['sexyland', 52.3990, 4.8930, 1], ['albert cuyp', 52.3559, 4.8955],
+  ['huis marseille', 52.3675, 4.8880], ['koninklijk paleis', 52.3731, 4.8913],
+  ['hortus', 52.3663, 4.9080], ['straat', 52.4005, 4.8930, 1], ['ndsm', 52.4005, 4.8930, 1],
+  ['van loon', 52.3646, 4.8946], ['stenen hoofd', 52.3900, 4.8880],
+  ['kaap amsterdam', 52.3745, 4.9600], ['strand zuid', 52.3390, 4.8890],
+  ['hannekes boom', 52.3735, 4.9095], ['artis', 52.3663, 4.9163],
+  ['amsterdamse bos', 52.3110, 4.8360], ['isoamsterdam', 52.4010, 4.9030, 1],
+  ['oedipus', 52.3947, 4.9271, 1], ['skatecafé', 52.3921, 4.9251, 1], ['skatecafe', 52.3921, 4.9251, 1],
+  ['tolhuistuin', 52.3846, 4.9033, 1], ['westergas', 52.3862, 4.8768], ['muziekgebouw', 52.3767, 4.9124],
+  ['bimhuis', 52.3767, 4.9124], ['de school', 52.3599, 4.8290], ['radion', 52.3565, 4.8305],
+  ['lofi', 52.3568, 4.8283], ['de kas', 52.3517, 4.9331], ['frankendael', 52.3517, 4.9331],
+  ['tropenmuseum', 52.3626, 4.9223], ['nemo', 52.3738, 4.9123], ['rembrandthuis', 52.3694, 4.9012],
+];
+// exact-name pins for dangerously short venue names
+const GAZ_EXACT = { 'as': [52.3460, 4.8770], 'bak': [52.3902, 4.8858], 'tête': [52.3655, 4.9330], 'tete': [52.3655, 4.9330] };
+const CENTROIDS = {
+  'Noord': [52.395, 4.920, 1], 'West': [52.375, 4.855, 0], 'Oost': [52.360, 4.940, 0],
+  'Zuid': [52.350, 4.870, 0], 'De Pijp': [52.355, 4.895, 0], 'Centrum': [52.370, 4.895, 0],
+  'Zuidoost': [52.315, 4.955, 0],
+};
+const DISTRICTS = ['Noord', 'Centrum', 'West', 'Oost', 'Zuid', 'De Pijp', 'Zuidoost', 'Day-trip'];
+const CATL = { out: 'Out & about', eat: 'Eat', drink: 'Drink', art: 'Art', live: 'Live', stage: 'Stage & screen', daytrip: 'Day-trip', market: 'Market', shop: 'Shop' };
+
+const norm = (s) => (s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/\s+/g, ' ').trim();
+
+function districtOf(area) {
+  const a = norm(area);
+  // generic "Amsterdam" is NOT a district — those picks stay unmapped rather than guessed
+  if (!a || a === 'amsterdam' || a === 'citywide') return null;
+  if (a.includes('zuidoost')) return 'Zuidoost';
+  if (a.includes('pijp')) return 'De Pijp';
+  if (a.includes('noord')) return 'Noord';
+  // specific Centrum spots BEFORE the generic oost/west/zuid tokens ("Oosterdok" is Centrum)
+  if (/(centrum|centre|jordaan|canals|singel|gracht|leidseplein|leidsebuurt|spui|plantage|nieuwmarkt|haarlemmer|oosterdok|waterloo|negen str|rembrandtplein|staalstraat|berenstraat|utrechtsestraat|zeedijk|kattenburg)/.test(a)) return 'Centrum';
+  if (/(museumplein|museumkwartier|amstelveen|buitenveldert|zuidas|beatrixpark|concertgebouw)/.test(a) || /\brai\b/.test(a)) return 'Zuid';
+  if (/(oost|zeeburg|dapper|watergraafsmeer|indische|javastraat|wibaut)/.test(a)) return 'Oost';
+  if (/(west|houthaven|sloterdijk|bos en lommer)/.test(a)) return 'West';
+  if (a.includes('zuid')) return 'Zuid';
+  return null;
+}
+
+function resolveGeo(p) {
+  const cat = p.category;
+  const hay = norm(p.venue) + ' | ' + norm(p.title);
+  const areaN = norm(p.area);
+  // day-trips: parse the travel time the area string already carries ("~30 min by train", "~1h15")
+  if (cat === 'daytrip' || /day-?trip/.test(areaN)) {
+    let m = 45;
+    const h = areaN.match(/~?(\d)h(\d{2})?/); const mm = areaN.match(/~?(\d{2,3})\s?min/);
+    if (h) m = parseInt(h[1]) * 60 + (h[2] ? parseInt(h[2]) : 0);
+    else if (mm) m = parseInt(mm[1]);
+    return { kind: 'train', train: m, d: 'Day-trip' };
+  }
+  if (/citywide|diverse locat|various|multiple locat/.test(hay + areaN)) return { kind: 'citywide', d: 'Citywide' };
+  const exact = GAZ_EXACT[norm(p.venue)];
+  if (exact) return { kind: 'pin', lat: exact[0], lon: exact[1], n: false, d: districtOf(p.area) || nearestDistrict(exact[0], exact[1]) };
+  for (const g of GAZ) {
+    if (g[0].length >= 4 && hay.includes(g[0])) {
+      return { kind: 'pin', lat: g[1], lon: g[2], n: !!g[3], d: (g[3] ? 'Noord' : districtOf(p.area)) || nearestDistrict(g[1], g[2]) };
+    }
+  }
+  const d = districtOf(p.area);
+  if (d) { const c = CENTROIDS[d]; return { kind: 'approx', lat: c[0], lon: c[1], n: !!c[2], d }; }
+  return { kind: 'unknown', d: null };
+}
+function nearestDistrict(lat, lon) {
+  let best = null, bd = 1e9;
+  for (const [name, c] of Object.entries(CENTROIDS)) {
+    const dd = (c[0] - lat) ** 2 + (c[1] - lon) ** 2;
+    if (dd < bd) { bd = dd; best = name; }
+  }
+  return best;
+}
+
+/* ============ distance model ============ */
+const KMH = 15, DETOUR = 1.3;
+const hav = (a, b) => {
+  const R = 6371, toR = Math.PI / 180;
+  const dLat = (b.lat - a.lat) * toR, dLon = (b.lon - a.lon) * toR;
+  const s = Math.sin(dLat / 2) ** 2 + Math.cos(a.lat * toR) * Math.cos(b.lat * toR) * Math.sin(dLon / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(s));
+};
+const bikeMin = (a, b) => hav(a, b) * DETOUR / KMH * 60;
+const disp = (m) => '~' + Math.max(5, Math.ceil(m / 5) * 5) + ' min';
+const FERRIES = [
+  { name: 'Buiksloterweg', s: { lat: 52.3803, lon: 4.9000 }, n: { lat: 52.3826, lon: 4.9020 }, wait: 3, cross: 4 },
+  { name: 'NDSM', s: { lat: 52.3803, lon: 4.9000 }, n: { lat: 52.4009, lon: 4.8933 }, wait: 7, cross: 14 },
+];
+const POVS = {
+  cs: { lat: 52.3789, lon: 4.9003, north: false, label: 'Centraal' },
+  noord: { lat: 52.3903, lon: 4.9022, north: true, label: 'Noord' },
+};
+function route(p) {
+  const g = p._geo, from = S.from;
+  if (g.kind === 'unknown') return { mins: 950, meta: '', long: null };
+  if (g.kind === 'train') return { mins: 800 + g.train, meta: '~' + g.train + ' min · train', long: '~' + g.train + ' min by train — a day-trip' };
+  if (g.kind === 'citywide') return { mins: 900, meta: 'citywide', long: 'citywide — it comes to you' };
+  const ap = g.kind === 'approx' ? '≈ ' : '';
+  if (from.north === !!g.n) {
+    const m = bikeMin(from, g);
+    return { mins: m, meta: ap + disp(m) + ' · bike', long: ap + disp(m) + ' by bike' + (g.kind === 'approx' ? ' (district estimate)' : '') };
+  }
+  let best = null;
+  for (const f of FERRIES) {
+    const board = from.north ? f.n : f.s, land = from.north ? f.s : f.n;
+    const tot = bikeMin(from, board) + f.wait + f.cross + bikeMin(land, g);
+    if (!best || tot < best.tot) best = { tot, f };
+  }
+  return { mins: best.tot, meta: ap + disp(best.tot) + ' · bike + ferry',
+    long: ap + disp(best.tot) + ' — bike + ' + best.f.name + ' ferry' + (g.kind === 'approx' ? ' (district estimate)' : '') };
+}
+
+/* ============ state + boot ============ */
+const S = { from: POVS.cs, fromKey: 'cs', nearMe: false, districts: new Set(), skipped: [], saved: new Set() };
+let PICKS = [], FEED = null;
+
+const $ = (id) => document.getElementById(id);
+const deckEl = $('deck'), toastEl = $('toast');
+const esc = (s) => String(s || '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+let toastTimer = null;
+function toast(msg) {
+  toastEl.textContent = msg;
+  toastEl.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toastEl.classList.remove('show'), 1800);
+}
+
+const jf = (u, fb) => fetch(u + '?t=' + Date.now()).then((r) => (r.ok ? r.json() : fb)).catch(() => fb);
+Promise.all([
+  jf('../data/picks.amsterdam.json', { picks: [] }),
+  fetch('https://api.open-meteo.com/v1/forecast?latitude=52.37&longitude=4.9&daily=temperature_2m_max&timezone=Europe%2FAmsterdam&forecast_days=7').then((r) => (r.ok ? r.json() : null)).catch(() => null),
+]).then(([feed, wx]) => {
+  FEED = feed;
+  PICKS = (feed.picks || [])
+    .slice()
+    .sort((a, b) => (a.servePos ?? 999) - (b.servePos ?? 999))
+    .map((p) => ({ ...p, _geo: resolveGeo(p) }));
+  if (wx && wx.daily) {
+    try {
+      const days = wx.daily.time.map((t, i) => ({ t: new Date(t + 'T12:00'), hi: Math.round(wx.daily.temperature_2m_max[i]) }));
+      const sat = days.find((d) => d.t.getDay() === 6), sun = days.find((d) => d.t.getDay() === 0);
+      if (sat && sun) $('wx').innerHTML = 'Amsterdam · <b>Sat ' + sat.hi + '°</b> · Sun ' + sun.hi + '°';
+    } catch (e) { /* leave the plain city label */ }
+  }
+  if (feed.generatedAt) {
+    const d = new Date(feed.generatedAt);
+    $('feednote').textContent = 'live feed · ' + d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) + ' · ' + PICKS.length + ' picks · /geo ' + GEO_V;
+  }
+  render();
+});
+
+/* ============ deck ============ */
+function pool() {
+  let list = PICKS.filter((p) => !S.skipped.includes(p.id));
+  if (S.districts.size) list = list.filter((p) => S.districts.has(p._geo.d));
+  if (S.nearMe) list = list.slice().sort((a, b) => route(a).mins - route(b).mins);
+  return list;
+}
+function cardPill(p, r) {
+  if (S.nearMe && r.mins <= 10) return '<span class="pill">Near you</span>';
+  if (p.freshness === 'new') return '<span class="pill">New this week</span>';
+  if (p.freshness === 'ending') return '<span class="pill dim">Ending soon</span>';
+  return '';
+}
+const FALLBACK_GRADS = [
+  ['#c94f38', '#8a2818', '#2a1a16'], ['#3a2a4a', '#1d1430', '#ff4d1f'], ['#2c4a44', '#17332e', '#d9812f'],
+  ['#5a7a8a', '#2d4a5a', '#e8b04b'], ['#e8b04b', '#c96a1e', '#7a3d1f'], ['#7fae6f', '#3d6b4f', '#17332e'],
+];
+function render() {
+  const list = pool();
+  deckEl.innerHTML = '';
+  if (!list.length) {
+    const d = document.createElement('div');
+    d.className = 'empty';
+    d.innerHTML = '<span><b>Nothing left here.</b><br>' + (S.districts.size ? 'That district is thin this weekend — the count warned us.' : 'You’ve been through the deck.') + '</span>';
+    const b = document.createElement('button');
+    b.textContent = S.districts.size ? 'Back to Anywhere' : 'Deal again';
+    b.onclick = () => { S.districts.clear(); S.skipped = []; render(); };
+    d.appendChild(b); deckEl.appendChild(d);
+  } else {
+    list.slice(0, 3).reverse().forEach((p, i, arr) => {
+      const pos = arr.length - 1 - i;
+      const idx = PICKS.indexOf(p);
+      const r = route(p);
+      const g = FALLBACK_GRADS[idx % FALLBACK_GRADS.length];
+      const c = document.createElement('div');
+      c.className = 'card ' + (pos === 0 ? 'top' : pos === 1 ? 'peek1' : 'peek2');
+      const dLabel = p._geo.d && p._geo.d !== 'Citywide' ? ' · ' + p._geo.d : '';
+      c.innerHTML =
+        '<div class="img" style="background:linear-gradient(160deg,' + g[0] + ' 0%,' + g[1] + ' 55%,' + g[2] + ' 120%)">' +
+          (p.image ? '<img src="' + esc(p.image) + '" alt="" loading="lazy" onerror="this.remove()">' : '') +
+          '<div class="grade"></div>' +
+          cardPill(p, r) +
+          '<span class="catword">' + esc(CATL[p.category] || '') + '</span>' +
+          '<span class="stamp save">SAVE ★</span><span class="stamp skip">SKIP</span>' +
+          '<div class="cap">' +
+            '<div class="t">' + esc(p.title) + '</div>' +
+            '<div class="m">' + esc(p.venue) + esc(dLabel) + '</div>' +
+            '<div class="m2">' + esc(p.when || '') + '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="meta"><span class="via">' + esc(p.source) + ' ↗</span><span class="dist">' + r.meta + '</span></div>';
+      if (pos === 0) c.onclick = () => { if (Date.now() - lastDrag < 350) return; openDetail(p); };
+      deckEl.appendChild(c);
+    });
+  }
+  const wt = $('wheretrigger');
+  const dNames = [...S.districts];
+  wt.textContent = '◎ ' + (dNames.length ? dNames[0] + (dNames.length > 1 ? ' +' + (dNames.length - 1) : '') : S.nearMe ? 'Near me' : 'Anywhere') + ' ▾';
+  wt.classList.toggle('on', S.nearMe || S.districts.size > 0);
+  $('nearme').classList.toggle('on', S.nearMe);
+  renderChips();
+  const sv = $('saves');
+  sv.textContent = '★ ' + S.saved.size;
+  sv.classList.toggle('has', S.saved.size > 0);
+}
+function renderChips() {
+  const host = $('districts');
+  host.querySelectorAll('.chip').forEach((n) => n.remove());
+  const counts = {};
+  PICKS.forEach((p) => { if (p._geo.d) counts[p._geo.d] = (counts[p._geo.d] || 0) + 1; });
+  DISTRICTS.forEach((d) => {
+    const b = document.createElement('button');
+    b.className = 'chip' + (S.districts.has(d) ? ' on' : '');
+    b.innerHTML = esc(d) + ' <b>· ' + (counts[d] || 0) + '</b>';
+    b.onclick = () => { S.districts.has(d) ? S.districts.delete(d) : S.districts.add(d); render(); };
+    host.appendChild(b);
+  });
+  const any = document.createElement('button');
+  any.className = 'chip' + (S.districts.size === 0 ? ' on' : '');
+  any.textContent = 'Anywhere';
+  any.onclick = () => { S.districts.clear(); render(); };
+  host.appendChild(any);
+}
+
+/* ============ sheets ============ */
+function openSheet(id) { $('scrim').classList.add('show'); $(id).classList.add('show'); }
+function closeAll() {
+  $('scrim').classList.remove('show');
+  ['wheresheet', 'detailsheet'].forEach((i) => $(i).classList.remove('show'));
+}
+function openDetail(p) {
+  const r = route(p);
+  $('d-title').textContent = p.title;
+  $('d-sub').textContent = p.venue + (p._geo.d && p._geo.d !== 'Citywide' ? ' · ' + p._geo.d : '') + ' · ' + (CATL[p.category] || '');
+  const price = p.price && p.price !== '—' ? ' · ' + p.price : '';
+  $('d-facts').innerHTML =
+    (p.when ? '<div class="fact"><span class="k mono">WHEN</span><span><b>' + esc(p.when) + '</b>' + esc(price) + '</span></div>' : '') +
+    (p.blurb ? '<div class="fact"><span class="k mono">ABOUT</span><span>' + esc(p.blurb) + '</span></div>' : '') +
+    (p.why ? '<div class="fact"><span class="k mono">WHY</span><span>' + esc(p.why) + '</span></div>' : '') +
+    '<div class="fact"><span class="k mono">VIA</span><span>' + esc(p.source) + '</span></div>' +
+    (r.long ? '<div class="fact quiet"><span class="k mono">GETTING THERE</span><span>' + esc(r.long) + '</span></div>' : '');
+  const go = $('d-open');
+  go.href = p.link || '#';
+  go.textContent = 'Open at ' + p.source + ' ↗';
+  openSheet('detailsheet');
+}
+$('wheretrigger').onclick = () => openSheet('wheresheet');
+$('scrim').onclick = closeAll;
+$('d-close').onclick = closeAll;
+$('stub-when').onclick = () => toast('Time filters live in the full app');
+$('stub-what').onclick = () => toast('Category filters live in the full app');
+$('nearme').onclick = () => {
+  S.nearMe = !S.nearMe;
+  render();
+  toast(S.nearMe ? 'Re-ranked — nearest first' : 'Back to the serve order');
+};
+
+/* ============ viewpoint (real geolocation + presets) ============ */
+function setFromChips(key) {
+  ['pov-cs', 'pov-noord', 'pov-me'].forEach((id) => $(id).classList.toggle('on', id === 'pov-' + key));
+}
+$('pov-cs').onclick = () => { S.from = POVS.cs; S.fromKey = 'cs'; setFromChips('cs'); render(); if (S.nearMe) toast('Measuring from Centraal'); };
+$('pov-noord').onclick = () => { S.from = POVS.noord; S.fromKey = 'noord'; setFromChips('noord'); render(); if (S.nearMe) toast('Measuring from Noord'); };
+$('pov-me').onclick = () => {
+  if (!navigator.geolocation) { toast('No geolocation on this device'); return; }
+  toast('Locating…');
+  navigator.geolocation.getCurrentPosition(
+    (pos) => {
+      const { latitude: lat, longitude: lon } = pos.coords;
+      // rough IJ test — good enough inside Amsterdam; the real build derives side from geometry
+      S.from = { lat, lon, north: lat > 52.3815, label: 'you' };
+      S.fromKey = 'me';
+      setFromChips('me');
+      render();
+      toast('Measuring from your location');
+    },
+    () => toast('Location declined — using Centraal'),
+    { timeout: 8000, maximumAge: 60000 }
+  );
+};
+
+/* ============ undo pill (pause-gated like the app: 1.1s show, 5s dwell) ============ */
+let undoable = null, undoShowT = null, undoHideT = null;
+const undoEl = $('undopill');
+function offerUndo(p, kind) {
+  undoable = { p, kind };
+  undoEl.classList.remove('show');
+  clearTimeout(undoShowT); clearTimeout(undoHideT);
+  undoShowT = setTimeout(() => {
+    $('u-what').innerHTML = kind + ' <i>· ' + esc(p.title) + '</i>';
+    undoEl.classList.add('show');
+    undoHideT = setTimeout(() => { undoEl.classList.remove('show'); undoable = null; }, 5000);
+  }, 1100);
+}
+undoEl.onclick = () => {
+  if (!undoable) return;
+  const { p, kind } = undoable;
+  S.skipped = S.skipped.filter((id) => id !== p.id);
+  if (kind === 'Saved') S.saved.delete(p.id);
+  undoable = null; undoEl.classList.remove('show');
+  clearTimeout(undoShowT); clearTimeout(undoHideT);
+  render();
+};
+
+/* ============ actions + drag ============ */
+function resolveTop(action) {
+  const t = pool()[0];
+  if (!t) return;
+  if (action === 'save') S.saved.add(t.id);
+  S.skipped.push(t.id);
+  offerUndo(t, action === 'save' ? 'Saved' : 'Skipped');
+  render();
+}
+$('skip').onclick = () => resolveTop('skip');
+$('save').onclick = () => resolveTop('save');
+
+let drag = null, lastDrag = 0;
+deckEl.addEventListener('pointerdown', (e) => {
+  const top = deckEl.querySelector('.card.top');
+  if (!top || !top.contains(e.target)) return;
+  drag = { x0: e.clientX, y0: e.clientY, el: top, moved: false };
+  top.setPointerCapture(e.pointerId);
+  top.style.transition = 'none';
+});
+deckEl.addEventListener('pointermove', (e) => {
+  if (!drag) return;
+  const dx = e.clientX - drag.x0, dy = e.clientY - drag.y0;
+  if (Math.abs(dx) > 6 || Math.abs(dy) > 6) drag.moved = true;
+  drag.el.style.transform = 'translate(' + dx + 'px,' + dy * 0.25 + 'px) rotate(' + dx * 0.06 + 'deg)';
+  const sv = drag.el.querySelector('.stamp.save'), sk = drag.el.querySelector('.stamp.skip');
+  if (sv) sv.style.opacity = Math.min(1, Math.max(0, dx - 24) / 60);
+  if (sk) sk.style.opacity = Math.min(1, Math.max(0, -dx - 24) / 60);
+});
+deckEl.addEventListener('pointerup', (e) => {
+  if (!drag) return;
+  const dx = e.clientX - drag.x0;
+  const { el, moved } = drag;
+  drag = null;
+  if (moved) lastDrag = Date.now();
+  el.style.transition = '';
+  if (dx > 70 || dx < -70) {
+    const action = dx > 70 ? 'save' : 'skip';
+    el.style.transform = 'translate(' + (dx > 0 ? 480 : -480) + 'px,-24px) rotate(' + (dx > 0 ? 18 : -18) + 'deg)';
+    el.style.opacity = '0';
+    setTimeout(() => resolveTop(action), 240);
+  } else {
+    el.style.transform = '';
+    el.querySelectorAll('.stamp').forEach((s) => { s.style.opacity = 0; });
+  }
+});
+deckEl.addEventListener('pointercancel', () => {
+  if (drag) { drag.el.style.transition = ''; drag.el.style.transform = ''; drag = null; }
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeAll();
+  if (e.key === 'ArrowLeft') resolveTop('skip');
+  if (e.key === 'ArrowRight') resolveTop('save');
+});
+</script>
+</body>
+</html>

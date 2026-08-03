@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { AnimatePresence, MotionConfig, motion } from 'framer-motion'
-import { Shuffle, Clock, ChevronDown, LayoutGrid, Star, ArrowUpRight, LocateFixed, Info, RotateCw, RotateCcw, X, Heart } from 'lucide-react'
+import { Shuffle, Clock, ChevronDown, LayoutGrid, Star, ArrowUpRight, LocateFixed, Info, RotateCw, RotateCcw, X, Heart, Navigation } from 'lucide-react'
 
 // subtle haptic on commit/save (Android/Chrome; iOS Safari ignores navigator.vibrate)
 const haptic = (ms = 10) => { try { navigator.vibrate?.(ms) } catch { /* unsupported */ } }
@@ -24,6 +24,7 @@ import { MatchGame } from './components/MatchGame'
 import { Calibrate } from './components/Calibrate'
 import { Triage } from './components/Triage'
 import { CURATE_DOOR } from './curateDoor'
+import { DISTRICTS, resolveGeo, originAt, type District, type Origin } from './lib/geo'
 import type { Freshness } from './types'
 
 // a partner-shared weekend arrives as ?w=id,id,id&from=Name
@@ -98,7 +99,12 @@ type FilterOpt = { key: CatKey | 'all'; label: string; count: number }
 // bespoke = cooler/curated finds) so you can browse the library by flavour.
 type When = Freshness | 'classic' | 'bespoke'   // selectable when-keys (no 'all' — empty set = any time)
 type WhenKey = When | 'all'
+// the WHERE axis (V.11) — districts, plus a "near me first" SORT that rides alongside them.
+// Filtering and sorting are deliberately different gestures here: a district narrows the pool,
+// near-me only reorders it. See lib/geo.ts for why (the pool is too thin to hard-gate twice).
+type WhereKey = District | 'all'
 type WhenOpt = { key: WhenKey; label: string; count: number }
+type WhereOpt = { key: WhereKey; label: string; count: number }
 
 // the city we boot into: ?city= override, else the default (Amsterdam). Live geolocation
 // can switch it later (goLive) if it lands somewhere we have a feed for.
@@ -206,6 +212,11 @@ export default function App() {
   const [filter, setFilter] = useState<Filter>(SHARED_IDS ? 'shared' : 'all')  // mode: browse / saved / shared
   const [cats, setCats] = useState<CatKey[]>([])           // What: multi-select categories (empty = all)
   const [whens, setWhens] = useState<When[]>([])           // When: multi-select time/tier (empty = any time)
+  const [wheres, setWheres] = useState<District[]>([])     // Where: multi-select districts (empty = anywhere)
+  const [nearMe, setNearMe] = useState(false)              // Where: the near-first SORT (not a filter)
+  // Your position, for distances. Set by the SAME grant that fetches the weather (goLive) — one
+  // permission, both jobs. Null until you've asked; near-me stays inert and honest until then.
+  const [origin, setOrigin] = useState<Origin | null>(null)
   const [shareOpen, setShareOpen] = useState(false)        // "My Weekend" share sheet
   // The third-save checkpoint — the ONE mid-deck moment (an overlay, so the deck never
   // shifts). Replaces the persistent share-nudge banner: matching's journey entry now
@@ -235,8 +246,10 @@ export default function App() {
   // toggle helpers for the multi-select sheets ('all'/'any' clears the set)
   const toggleCat = (k: CatKey | 'all') => setCats((p) => k === 'all' ? [] : p.includes(k) ? p.filter((x) => x !== k) : [...p, k])
   const toggleWhen = (k: WhenKey) => setWhens((p) => k === 'all' ? [] : p.includes(k) ? p.filter((x) => x !== k) : [...p, k])
+  const toggleWhere = (k: WhereKey) => setWheres((p) => k === 'all' ? [] : p.includes(k as District) ? p.filter((x) => x !== k) : [...p, k as District])
   const [filterOpen, setFilterOpen] = useState(false)      // What sheet
   const [whenOpen, setWhenOpen] = useState(false)          // When sheet
+  const [whereOpen, setWhereOpen] = useState(false)        // Where sheet (V.11)
   const [look, setLook] = useState<Look>(() => {       // ambient field (validated)
     // The MVP ships ONE canonical look (Auras). Only honour a stored/switched look inside ?dev=1;
     // otherwise a look picked during a dev session (Riso's grid+arcs, Forms, Silk) would leak
@@ -331,12 +344,41 @@ export default function App() {
     { key: 'bespoke', label: 'Evergreen · bespoke', count: cityPicks.filter((p) => p.freshness === 'always' && p.tier === 'bespoke').length },
     { key: 'ending', label: 'Ending soon', count: cityPicks.filter((p) => p.freshness === 'ending').length },
   ] as WhenOpt[]).filter((o) => o.count > 0), [cityPicks])
+  // WHERE (V.11) — district options, each counted AGAINST THE OTHER ACTIVE AXES. This is the
+  // honest-count rule and it matters more here than anywhere else in the app: the pool is
+  // 58 evergreen / 18 dated, and the dated ones cluster in the centre, so "Noord" alone is 7
+  // picks but "Noord × This weekend" is ONE. A static count would promise seven and deliver one.
+  // Districts with nothing in them under the current filters are dropped rather than shown as 0.
+  const WHERE_FILTERS = useMemo<WhereOpt[]>(() => {
+    const matchesWhen = (p: Pick, w: When) =>
+      w === 'classic' ? (p.freshness === 'always' && p.tier === 'classic')
+        : w === 'bespoke' ? (p.freshness === 'always' && p.tier === 'bespoke')
+        : p.freshness === w
+    const pool = cityPicks.filter((p) => {
+      const whatOk = cats.length === 0 || cats.some((c) => (c === 'kids' ? p.kid : p.category === c))
+      const whenOk = whens.length === 0 || whens.some((w) => matchesWhen(p, w))
+      return whatOk && whenOk
+    })
+    const counts = new Map<District, number>()
+    for (const p of pool) {
+      const d = resolveGeo(p).district
+      if (d) counts.set(d as District, (counts.get(d as District) ?? 0) + 1)
+    }
+    return [
+      { key: 'all' as WhereKey, label: 'Anywhere', count: pool.length },
+      ...DISTRICTS.filter((d) => (counts.get(d) ?? 0) > 0)
+        .map((d) => ({ key: d as WhereKey, label: d, count: counts.get(d)! })),
+    ]
+  }, [cityPicks, cats, whens])
   const activeSources = useMemo(() => new Set(cityPicks.map((p) => p.source)).size, [cityPicks])
   // multi-select summary labels for the two filter triggers ("Eat +2", "This weekend +1")
   const catLabel = (k: CatKey) => (k === 'kids' ? 'Kids' : CATEGORY_LABEL[k])
   const whenLabel = (w: When) => WHEN_FILTERS.find((x) => x.key === w)?.label ?? 'Any time'
   const catSummary = cats.length === 0 ? 'Everything' : cats.length === 1 ? catLabel(cats[0]) : `${catLabel(cats[0])} +${cats.length - 1}`
   const whenSummary = whens.length === 0 ? 'Any time' : whens.length === 1 ? whenLabel(whens[0]) : `${whenLabel(whens[0])} +${whens.length - 1}`
+  // "Anywhere" → "Noord" → "Noord +1"; near-me alone (no district) reads as the sort it is.
+  const whereSummary = wheres.length === 0 ? (nearMe ? 'Near me' : 'Anywhere')
+    : wheres.length === 1 ? wheres[0] : `${wheres[0]} +${wheres.length - 1}`
 
   useEffect(() => { applyMode(mode) }, [mode])
   // pull the active city's live feed once (falls back silently to the bundled set), then layer the
@@ -472,8 +514,8 @@ export default function App() {
   // then re-ranks. List + stack both change; the stack re-deals with a toast.
   const rankedAll = useMemo(
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    () => rankPicks(cityPicks, modeSpecOf(weekend, mode), hasTaste(tasteRef.current) ? tasteRef.current : undefined, seed),
-    [cityPicks, mode, weekend, seed],   // seed jitters the order ("show me more"); NOT [taste] — keeps the deck stable while swiping
+    () => rankPicks(cityPicks, modeSpecOf(weekend, mode), hasTaste(tasteRef.current) ? tasteRef.current : undefined, seed, nearMe ? origin : null),
+    [cityPicks, mode, weekend, seed, nearMe, origin],   // seed jitters the order ("show me more"); NOT [taste] — keeps the deck stable while swiping
   )
   // De-clustered full ranking for the MATCH game (it presents picks in order). rankPicks no longer
   // diversifies — the served deck de-clusters in `shown` — so do it here too or the match deck waves.
@@ -491,7 +533,8 @@ export default function App() {
         // browse: multi-select category + when (empty set = no constraint; selections are a UNION)
         const whatOk = cats.length === 0 || cats.some((c) => (c === 'kids' ? p.kid : p.category === c))
         const whenOk = whens.length === 0 || whens.some((w) => matchesWhen(p, w))
-        return whatOk && whenOk
+        const whereOk = wheres.length === 0 || wheres.includes(resolveGeo(p).district as District)
+        return whatOk && whenOk && whereOk
       })
       // "MORE LIKE THIS" (V.9.3): the whole pool — live and canon alike (canon especially:
       // "more like 't Lemmeke" sweeps the full library for its kin, not just the week's
@@ -499,7 +542,7 @@ export default function App() {
       // deliberately NOT diversified (the cluster IS the ask) and no canon RESERVE.
       // Reorders, never truncates: the endless deck stays endless.
       if (moreLike) return moreLikeOrder(filtered, moreLike, mode)
-      if (filter !== 'all' || cats.length > 0 || whens.length > 0) return diversify(filtered)
+      if (filter !== 'all' || cats.length > 0 || whens.length > 0 || wheres.length > 0) return diversify(filtered)
       // ENDLESS browse (per Ness — this functioned better than fixed sets): the weekend's LIVE picks
       // lead, then a ROTATING slice of the deep canon library. The slice advances every WEEK and on
       // each Shuffle (seed), cycling the whole library across reshuffles. The split is LIVE-vs-canon
@@ -525,11 +568,30 @@ export default function App() {
       // is preserved within each tier (no re-clustering).
       return orderServed([...diversify(fresh), ...diversify(sample)])
     },
-    [rankedAll, filter, cats, whens, saved, seed, sharedPickIds, moreLike, mode],
+    [rankedAll, filter, cats, whens, wheres, saved, seed, sharedPickIds, moreLike, mode],
   )
-  const filterActive = filter !== 'all' || cats.length > 0 || whens.length > 0
+  const filterActive = filter !== 'all' || cats.length > 0 || whens.length > 0 || wheres.length > 0
   const deck = useMemo(() => shown.filter((p) => !swiped.has(p.id)), [shown, swiped])
   // saved picks in rank order — fuels the saves-dock peek
+  // THE EVERGREEN ESCAPE (V.11) — the specific dead-end this release could otherwise create.
+  // Where × a dated When empties nearly every district (Noord has 1 dated pick and 6 evergreen
+  // ones), so when that combination serves nothing we count what IS there in that district and
+  // offer it by name. Dropping the WHEN axis, not the Where — you asked to be in Noord; you only
+  // implied you wanted a ticketed event. Only offered when it actually has something to give.
+  const evergreenEscape = useMemo(() => {
+    if (wheres.length === 0 || whens.length === 0) return undefined
+    const n = cityPicks.filter((p) => {
+      const whatOk = cats.length === 0 || cats.some((c) => (c === 'kids' ? p.kid : p.category === c))
+      return whatOk && wheres.includes(resolveGeo(p).district as District)
+    }).length
+    if (n === 0) return undefined
+    const place = wheres.length === 1 ? wheres[0] : 'these areas'
+    return {
+      label: `Show all ${n} in ${place}`,
+      note: `Nothing dated in ${place} under this filter — but ${n} ${n === 1 ? 'place is' : 'places are'} open anyway. Most of Amsterdam's best is simply always good.`,
+      onTake: () => setWhens([]),
+    }
+  }, [cityPicks, cats, whens, wheres])
   const savedPicks = useMemo(() => rankedAll.filter((p) => saved.has(p.id)), [rankedAll, saved])
   // …grouped into a day-by-day itinerary for the saves dock: dated picks first (chronological,
   // sorted by time within a day), evergreen ("Anytime") last. This is the "breakdown by day +
@@ -684,7 +746,7 @@ export default function App() {
   function selectCity(c: City, autoSwitch = false) {
     if (c.key === city.key) return
     setCity(c)
-    setFilter('all'); setCats([]); setWhens([])
+    setFilter('all'); setCats([]); setWhens([]); setWheres([])   // districts are per-city — Noord means nothing in NOLA
     setMoreLike(null)   // the reference pick belongs to the old city's pool
     setSwiped(new Set()); setSeed(0); setDealKey((k) => k + 1)
     if (!autoSwitch) { setView('stack'); setBarOpen(false); goLive(c.lat, c.lon) }
@@ -703,6 +765,9 @@ export default function App() {
   }
   async function goLive(lat: number, lon: number) {
     setLocating(true)
+    // ONE PERMISSION, BOTH JOBS (V.11): the fix that picks the forecast also anchors every
+    // distance. Set before the awaits so "near me" is live the instant the grant lands.
+    setOrigin(originAt(lat, lon))
     try {
       // the app is about the COMING WEEKEND — pull the week's daily forecast and read the
       // weekend out of it, not today's weather. Forecast + reverse-geocode run in PARALLEL
@@ -939,17 +1004,9 @@ export default function App() {
                       </div>
                     </div>
 
-                    <div className="bar-group">
-                      <span className="bar-label">Filter</span>
-                      <div className="bar-row">
-                        <button className={`filter-trigger${whens.length > 0 ? ' on' : ''}`} onClick={() => setWhenOpen(true)}>
-                          <Clock className="ft-icon" size={14} strokeWidth={2.2} /> {whenSummary}<ChevronDown className="ft-caret" size={14} strokeWidth={2.2} />
-                        </button>
-                        <button className={`filter-trigger${cats.length > 0 ? ' on' : ''}`} onClick={() => setFilterOpen(true)}>
-                          <LayoutGrid className="ft-icon" size={14} strokeWidth={2.2} /> {catSummary}<ChevronDown className="ft-caret" size={14} strokeWidth={2.2} />
-                        </button>
-                      </div>
-                    </div>
+                    {/* The Filter group moved OUT of this menu and onto the face in V.11 (see
+                        the .filterstrip under </header>). Nothing replaces it here — a control
+                        in two places is a control you can't trust. */}
 
                     {DEVUI && (
                     <div className="bar-group">
@@ -1094,6 +1151,27 @@ export default function App() {
           </div>
         </header>
 
+        {/* THE FILTER STRIP (V.11) — When × What × Where, on the face.
+            These three lived inside the ≡ menu through V.10, and the field verdict was that a
+            filter nobody finds is a filter that doesn't exist (a Noord user asked for location
+            filtering the app already half-had). So the controls come out — but ONLY in browse:
+            in saved/shared the deck is a fixed list and filtering it is noise. The strip owns
+            the under-header slot now, which is why the undo pill moved to the bottom (App.css).
+            Order matches the sentence the app already speaks: when → what → where. */}
+        {filter === 'all' && !intro && !moreLike && (
+          <div className="filterstrip" role="group" aria-label="Filter the deck">
+            <button className={`filter-trigger${whens.length > 0 ? ' on' : ''}`} onClick={() => setWhenOpen(true)}>
+              <Clock className="ft-icon" size={13} strokeWidth={2.2} /> {whenSummary}<ChevronDown className="ft-caret" size={13} strokeWidth={2.2} />
+            </button>
+            <button className={`filter-trigger${cats.length > 0 ? ' on' : ''}`} onClick={() => setFilterOpen(true)}>
+              <LayoutGrid className="ft-icon" size={13} strokeWidth={2.2} /> {catSummary}<ChevronDown className="ft-caret" size={13} strokeWidth={2.2} />
+            </button>
+            <button className={`filter-trigger${wheres.length > 0 || nearMe ? ' on' : ''}`} onClick={() => setWhereOpen(true)}>
+              <Navigation className="ft-icon" size={13} strokeWidth={2.2} /> {whereSummary}<ChevronDown className="ft-caret" size={13} strokeWidth={2.2} />
+            </button>
+          </div>
+        )}
+
         {filter === 'saved' && saved.size > 0 && (
           <div className="ctx-bar">
             <span>Your weekend · {saved.size} saved</span>
@@ -1170,10 +1248,11 @@ export default function App() {
                 onOpen={openDetail}
                 onRefresh={refresh}
                 filterLabel={filterActive ? 'this filter' : null}
-                onClearFilter={() => { setFilter('all'); setCats([]); setWhens([]) }}
+                onClearFilter={() => { setFilter('all'); setCats([]); setWhens([]); setWheres([]) }}
                 onSeeList={() => setView('list')}
+                escape={evergreenEscape}
                 /* the deck owns ←/→ only while nothing sits above it */
-                keysActive={!intro && !detail && !shareOpen && !barOpen && !savesOpen && !matching && !inputsOpen && !filterOpen && !whenOpen && !calibrating && !triaging && !checkpoint}
+                keysActive={!intro && !detail && !shareOpen && !barOpen && !savesOpen && !matching && !inputsOpen && !filterOpen && !whenOpen && !whereOpen && !calibrating && !triaging && !checkpoint}
               />
             </motion.div>
           ) : view === 'fan' ? (
@@ -1279,9 +1358,11 @@ export default function App() {
           <motion.div
             key="undo"
             className="undo-anchor"
-            initial={{ opacity: 0, y: -10 }}
+            /* rises from BELOW since V.11 — it lives above the action row now, not under the
+               header (the filter strip took that slot). Motion follows the anchor. */
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0, transition: { duration: 0.24, ease: [0.22, 1, 0.36, 1] } }}
-            exit={{ opacity: 0, y: -8, transition: { duration: 0.12, ease: 'easeIn' } }}
+            exit={{ opacity: 0, y: 8, transition: { duration: 0.12, ease: 'easeIn' } }}
           >
             <button className="undo-bar" onClick={undoSwipe}>
               <span className="undo-what">
@@ -1341,6 +1422,42 @@ export default function App() {
         selected={cats}
         onToggle={toggleCat}
         clearKey={'all'}
+      />
+      {/* WHERE (V.11). Two different gestures in one sheet, kept visually apart on purpose:
+          NEAR ME FIRST is a sort (it reorders, it can never empty the deck) and sits above the
+          rule; the districts below are filters and carry live counts. Turning near-me on without
+          a location grant asks for one — the same grant the weather uses. */}
+      <FilterSheet
+        open={whereOpen}
+        onClose={() => setWhereOpen(false)}
+        title="Where"
+        hint="sort, then narrow"
+        options={WHERE_FILTERS}
+        selected={wheres}
+        onToggle={toggleWhere}
+        clearKey={'all'}
+        lead={
+          <button
+            className={`nearme${nearMe ? ' on' : ''}`}
+            aria-pressed={nearMe}
+            onClick={() => {
+              const next = !nearMe
+              setNearMe(next)
+              if (next && !origin) locate()   // one permission, both jobs — see goLive
+            }}
+          >
+            <span className="nearme-txt">
+              <Navigation size={14} strokeWidth={2.4} /> Near me first
+              <em>{origin ? 'closest first — nothing is hidden' : locating ? 'finding you…' : 'uses your location'}</em>
+            </span>
+            <span className="nearme-sw" aria-hidden />
+          </button>
+        }
+        note={
+          wheres.length > 0
+            ? 'Districts filter the deck. Evergreen places count too — most areas have a handful of dated events on any given weekend, and far more that are simply always good.'
+            : undefined
+        }
       />
       {/* tester feedback — captures version + which screen/card they're on so notes aren't vague */}
       {!intro && (

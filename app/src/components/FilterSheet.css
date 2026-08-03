@@ -55,3 +55,55 @@
   background: var(--ink); color: var(--paper); transition: filter 0.12s;
 }
 .fs-done:hover { filter: brightness(1.5); }
+
+/* NEAR ME FIRST (V.11) — the Where sheet's `lead` slot. Deliberately NOT shaped like the
+   option chips below it: this one SORTS, the chips FILTER, and the form should say so before
+   the label does. Hence a full-width row with a switch, separated by a rule. */
+.nearme {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  margin-bottom: 14px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: var(--paper-2);
+  border: 1px solid transparent;
+  color: var(--ink);
+  text-align: left;
+  transition: all 0.14s var(--ease-out);
+}
+.nearme:hover { background: var(--paper-3); }
+.nearme.on { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 8%, var(--paper-2)); }
+.nearme-txt { display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 14px; font-weight: 600; }
+.nearme-txt em {
+  flex-basis: 100%; font-style: normal; font-size: 11.5px; font-weight: 500;
+  color: var(--ink-4); letter-spacing: 0;
+}
+.nearme.on .nearme-txt em { color: var(--accent); }
+.nearme-sw {
+  flex: none; width: 40px; height: 23px; border-radius: 999px;
+  background: var(--paper-4, rgba(0,0,0,0.18)); position: relative;
+  transition: background 0.18s var(--ease-out);
+}
+.nearme-sw::after {
+  content: ''; position: absolute; top: 2.5px; left: 2.5px;
+  width: 18px; height: 18px; border-radius: 50%; background: var(--paper);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+  transition: transform 0.18s var(--ease-out);
+}
+.nearme.on .nearme-sw { background: var(--accent); }
+.nearme.on .nearme-sw::after { transform: translateX(17px); }
+
+/* the honest-count footnote under the district chips */
+.fs-note {
+  margin: 14px 0 0;
+  font-size: 11.5px;
+  line-height: 1.55;
+  color: var(--ink-4);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nearme, .nearme-sw, .nearme-sw::after { transition: none; }
+}

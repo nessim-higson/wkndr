@@ -1,0 +1,1298 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>WKNDR — Curation Board</title>
+<style>
+:root{--paper:#F4F1E9;--ink:#1B1A17;--accent:#FF4A21;--gold:#E8A33D;--green:#2faa6a;--dim:#8B8578;--line:rgba(27,26,23,.14);--red:#C0392B;--sans:'Helvetica Neue',Helvetica,Arial,sans-serif}
+*{box-sizing:border-box}
+html{background:var(--paper)}
+body{font-family:var(--sans);color:var(--ink);margin:0;padding:0 16px 150px;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto}
+header{padding:38px 0 10px}
+.eyebrow{font-family:var(--sans);font-size:11px;letter-spacing:.14em;color:var(--dim);margin:0 0 6px}
+h1{font-size:clamp(28px,5vw,40px);font-weight:800;letter-spacing:-.03em;margin:0}
+h1 .dot{color:var(--accent)}
+header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:15px}
+.tabs{position:sticky;top:0;z-index:8;display:flex;gap:8px;padding:14px 0 12px;background:linear-gradient(var(--paper) 82%,rgba(244,241,233,0))}
+.tab{font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:.08em;padding:11px 18px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--dim);cursor:pointer}
+.tab.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.tab .n{opacity:.6;font-weight:400}
+.cathead{font-family:var(--sans);font-size:15px;font-weight:700;letter-spacing:-.01em;color:var(--ink);margin:46px 0 14px;padding-top:16px;border-top:1px solid var(--line)}
+.cathead.hot{border-top:2px solid var(--accent)}
+.cathead.lib{border-top:2px solid var(--gold)}
+.cathead .d{display:block;font-weight:400;font-size:12.5px;letter-spacing:0;color:var(--dim);margin-top:4px;line-height:1.4}
+.cathead.sub{font-size:12.5px;font-weight:600;color:var(--dim);border-top:0;margin:24px 0 10px;padding-top:0}
+/* Advanced cards match the Simple view's row language: a left thumbnail + content, not tall posters. */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:12px}
+.card{background:#fff;border-radius:14px;overflow:hidden;border:1px solid var(--line);display:flex;flex-direction:row;position:relative;transition:opacity .3s,transform .3s}
+.card.dead{opacity:0;transform:scale(.92);pointer-events:none}
+.card>img{width:112px;flex:none;align-self:stretch;object-fit:cover;display:block;background:#e8e4da}
+.badge{position:absolute;top:10px;left:10px;color:#fff;font-family:var(--sans);font-size:9.5px;font-weight:700;letter-spacing:.08em;padding:4px 8px;border-radius:999px}
+.badge.saved{background:var(--gold)}
+.badge.new{background:var(--ink)}
+.badge.appr{background:var(--green)}
+.badge.pile{background:var(--accent)}
+.badge.lens{background:#2b6cb0}
+.lowres{position:absolute;bottom:10px;left:10px;background:#c33;color:#fff;font-family:var(--sans);font-size:9px;font-weight:700;letter-spacing:.06em;padding:3px 8px;border-radius:999px}
+.card img{cursor:zoom-in}
+#veil{position:fixed;inset:0;z-index:60;display:none;place-items:center;background:rgba(6,5,4,.94);backdrop-filter:blur(8px);cursor:zoom-out;padding:20px}
+#veil.on{display:grid}
+#veil img{max-width:100%;max-height:calc(100dvh - 80px);object-fit:contain;border-radius:6px;box-shadow:0 18px 60px rgba(0,0,0,.6);cursor:zoom-out}
+#veilcap{position:absolute;bottom:16px;left:20px;right:20px;text-align:center;font-family:var(--sans);font-size:11px;letter-spacing:.06em;color:rgba(255,255,255,.75);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kill{position:absolute;top:10px;right:10px;width:34px;height:34px;border-radius:999px;border:0;background:rgba(27,26,23,.75);color:#fff;font-size:16px;line-height:1;cursor:pointer;backdrop-filter:blur(4px)}
+.grip{position:absolute;top:10px;right:52px;height:34px;padding:0 10px;display:flex;align-items:center;border-radius:999px;background:rgba(27,26,23,.75);color:#fff;font-size:13px;letter-spacing:1px;cursor:grab;user-select:none;backdrop-filter:blur(4px);z-index:2}
+.grip:active{cursor:grabbing}
+.card.dragging{opacity:.45;transform:rotate(1.5deg) scale(.98)}
+.kill:hover{background:#c33}
+.meta{padding:10px 11px 12px;display:flex;flex-direction:column;gap:8px;flex:1}
+.meta h3{font-size:14px;line-height:1.25;letter-spacing:-.01em;margin:0}
+.meta h3 a{color:inherit;text-decoration:none;border-bottom:1px solid rgba(27,26,23,.25)}
+.meta h3 a:hover{color:var(--accent);border-color:var(--accent)}
+.meta h3 .ext{font-size:10px;color:var(--dim);margin-left:3px}
+.meta .sub{font-size:11.5px;color:var(--dim);line-height:1.35}
+.meta .src{font-family:var(--sans);font-size:9.5px;letter-spacing:.06em;color:var(--dim)}
+.stars{display:flex;gap:2px}
+.star{border:0;background:none;font-size:21px;line-height:1;cursor:pointer;color:#D8D2C4;padding:1px 2px}
+.star.on{color:var(--gold)}
+.star:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+.row{display:flex;gap:5px;flex-wrap:wrap}
+.b{font-family:var(--sans);font-size:10px;font-weight:700;letter-spacing:.06em;padding:6px 9px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--dim);cursor:pointer}
+.b:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.b.imgup.on{background:#2faa6a;border-color:#2faa6a;color:#fff}
+.b.imgdn.on{background:#c33;border-color:#c33;color:#fff}
+.b.canon.on{background:var(--gold);border-color:var(--gold);color:#fff}
+.b.topb.on{background:var(--ink);border-color:var(--ink);color:var(--gold)}
+.b.leadb.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.b.laterb.on{background:#8B8578;border-color:#8B8578;color:#fff}
+.inp{width:100%;border:1px dashed var(--line);border-radius:9px;padding:7px 9px;font:inherit;font-size:11px;background:#faf8f3}
+.inp:focus{outline:2px solid var(--accent);outline-offset:1px}
+.bar{position:fixed;left:0;right:0;bottom:0;background:rgba(27,26,23,.97);color:#fff;padding:13px 16px calc(13px + env(safe-area-inset-bottom));z-index:9}
+.barin{max-width:1180px;margin:0 auto;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.count{font-family:var(--sans);font-size:11.5px;color:rgba(255,255,255,.75);flex:1;min-width:200px}
+.send,.copybtn{border:0;font-weight:700;font-size:13.5px;padding:11px 18px;border-radius:999px;cursor:pointer}
+.send{background:var(--accent);color:#fff}
+.copybtn{background:rgba(255,255,255,.14);color:#fff}
+.send.done{background:#2faa6a}
+/* the half-submit warning (V.9.29) — stays put until the next Submit, unlike the button's 3.5s flash */
+.barnote{display:none;flex-basis:100%;font-size:12px;line-height:1.45;color:rgba(255,255,255,.82);padding-top:9px;margin-top:2px;border-top:1px solid rgba(255,255,255,.16)}
+.barnote.warn{display:block;color:#ffd9cc}
+.barnote b{color:#fff}
+/* ── clarity pass (board V.9.15): plain intro + glyph legend + per-card "why / your call" ── */
+.lede{color:#4a463e;max-width:72ch;line-height:1.5;margin:10px 0 0;font-size:15px}
+.lede b{color:var(--ink)}
+.flow{font-family:var(--sans);font-size:11px;letter-spacing:.03em;color:var(--dim);margin:12px 0 0;line-height:1.6}
+.flow .step{color:var(--ink);font-weight:700}
+.legend{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:14px 0 0}
+.legend .lbl{font-family:var(--sans);font-size:10px;letter-spacing:.12em;color:var(--dim);text-transform:uppercase;margin-right:2px}
+.legend .chip{font-family:var(--sans);font-size:10.5px;letter-spacing:.02em;color:#4a463e;background:#fff;border:1px solid var(--line);border-radius:999px;padding:5px 10px}
+.legend .chip b{color:var(--ink)}
+.why{font-size:11.5px;line-height:1.35;color:#6a655c;background:#faf8f3;border-left:2px solid var(--line);padding:5px 8px;border-radius:0 6px 6px 0}
+.card .ruledtag{display:none}
+.card.ruled{border-color:var(--green);box-shadow:0 0 0 2px rgba(47,170,106,.22)}
+.card.ruled .ruledtag{display:block;font-family:var(--sans);font-size:10px;font-weight:700;letter-spacing:.04em;color:var(--green)}
+.pilehint{color:var(--dim);font-size:13.5px;line-height:1.45;margin:0 0 6px;padding:16px 18px;border:1px dashed var(--line);border-radius:14px;background:#faf8f3}
+.b.leadb{border-color:var(--accent);color:var(--accent)}   /* the primary "add to pile" action */
+/* ── DEAD-SIMPLE VIEW (V.9.18): "your 10 opening cards" + swap pool + mode toggle ── */
+#modetoggle{display:inline-flex;gap:0;margin:18px 0 0;border:1px solid var(--line);border-radius:999px;overflow:hidden;background:#fff}
+#modetoggle button{font-family:var(--sans);font-size:12.5px;font-weight:700;letter-spacing:.01em;padding:9px 18px;border:0;background:transparent;color:var(--dim);cursor:pointer}
+#modetoggle button.on{background:var(--ink);color:#fff}
+.simplelede{color:#4a463e;max-width:64ch;line-height:1.5;margin:16px 0 0;font-size:15px}
+.simplelede b{color:var(--ink)}
+#openlist{display:flex;flex-direction:column;gap:8px;margin:12px 0 0}
+.ocard{position:relative;display:flex;align-items:center;gap:13px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:8px 12px 8px 8px;transition:opacity .2s,transform .2s}
+.ocard.dragging{opacity:.5;transform:scale(.99)}
+.ocard .num{flex:none;width:30px;height:30px;border-radius:999px;background:var(--accent);color:#fff;font-weight:800;font-size:14px;display:grid;place-items:center}
+.ocard img{flex:none;width:54px;height:70px;object-fit:cover;border-radius:9px;background:#e8e4da}
+.ocard .ot{flex:1;min-width:0}
+.ocard .ot h4{margin:0;font-size:15px;font-weight:700;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ocard .ot .os{margin:2px 0 0;font-size:12px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ocard .ogrip{flex:none;cursor:grab;color:var(--dim);font-size:17px;padding:0 6px;user-select:none}
+.ocard .ogrip:active{cursor:grabbing}
+.ocard .orm{flex:none;width:30px;height:30px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--dim);font-size:15px;cursor:pointer;line-height:1}
+.ocard .orm:hover{border-color:#c33;color:#c33}
+#pool{display:flex;flex-direction:column;gap:8px;margin:12px 0 0}
+.ocard .opr{flex:none;width:30px;height:30px;border-radius:999px;border:1px solid var(--accent);background:#fff;color:var(--accent);font-size:16px;font-weight:800;cursor:pointer;line-height:1}
+.ocard .opr:hover{background:var(--accent);color:#fff}
+.ocard.isnew{border-color:var(--ink)}
+.ocard .newtag{font-size:9px;font-weight:800;color:#fff;background:var(--ink);padding:1px 5px;border-radius:999px;margin-left:6px;vertical-align:2px}
+/* ── KILLS & FLAGS STATUS (V.9.19): "did my call land?" — checked against the live feed ── */
+#status{margin:20px 0 0;border:1px solid var(--line);border-radius:14px;background:#fff;overflow:hidden}
+#status .sthead{padding:12px 16px;font-size:13px;font-weight:700;border-bottom:1px solid var(--line);background:#faf8f3}
+#status .sthead b{color:var(--accent)}
+.strow{display:flex;align-items:center;gap:12px;padding:11px 16px;border-bottom:1px solid var(--line);font-size:13px}
+.strow:last-child{border-bottom:0}
+.strow .sttitle{flex:1;min-width:0;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.strow .sttype{flex:none;font-size:11px;color:var(--dim)}
+.strow .stnote{flex:none;max-width:38%;font-size:11.5px;color:#6a655c;font-style:italic;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.strow .ststate{flex:none;font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:999px}
+.strow .ststate.pending{background:#fdf0e8;color:#c2570f}
+.strow .ststate.done{background:#e8f6ef;color:var(--green)}
+/* ── REASON PICKER (V.9.20): ✕ asks WHY, and the reason routes the fix ── */
+.reasons .rq{flex-basis:100%;font-size:11px;font-weight:700;color:var(--accent);margin-bottom:1px}
+.rchip{font-family:var(--sans);font-size:11px;font-weight:600;padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--ink);cursor:pointer}
+.rchip:hover{border-color:var(--accent);color:var(--accent)}
+.rchip.k-fix{border-style:dashed}                                   /* fix-and-keep reads lighter than a removal */
+.rchip.k-other{color:var(--dim)}
+.rchip.on{background:var(--ink);border-color:var(--ink);color:#fff} /* the reason you picked stays lit while you answer "back when?" */
+/* ── SECOND STEP (V.9.26): a rest asks WHEN it's back; "something else" asks WHAT'S OFF ── */
+.restrow,.otherrow{display:none;flex-basis:100%;flex-wrap:wrap;gap:5px;align-items:center;padding-top:8px;margin-top:7px;border-top:1px dashed var(--line)}
+.oreasons.asking-when .restrow{display:flex}
+.oreasons.asking-text .otherrow{display:flex}
+.untildate{font:inherit;font-size:11px;padding:5px 8px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--ink)}
+.othertext{flex:1;min-width:180px;font:inherit;font-size:11.5px;padding:6px 10px;border-radius:999px;border:1px dashed var(--line);background:#fff}
+.othertext:focus,.untildate:focus{outline:2px solid var(--accent);outline-offset:1px}
+.rchip.othergo{border-color:var(--accent);color:var(--accent);font-weight:700}
+/* ── CANCELLED SHELF (V.9.27): ✕ removes the card NOW; you say why here, whenever you feel like it ── */
+#cancelbox,#cancelbox2{margin:34px 0 0}
+.chead{font-family:var(--sans);font-size:15px;font-weight:700;letter-spacing:-.01em;margin:0 0 12px;padding-top:16px;border-top:2px solid #c33}
+.chead .d{display:block;font-weight:400;font-size:12.5px;letter-spacing:0;color:var(--dim);margin-top:4px;line-height:1.4}
+.crow{position:relative;display:flex;flex-wrap:wrap;align-items:center;gap:13px;background:#fff;border:1px solid var(--line);border-left:3px solid #c33;border-radius:14px;padding:9px 12px;margin:0 0 8px}
+.crow.done{border-left-color:var(--green)}
+.crow>img{flex:none;width:44px;height:56px;object-fit:cover;border-radius:8px;background:#e8e4da;filter:grayscale(1);opacity:.7}
+.crow .ct{flex:1;min-width:0}
+.crow .ct h4{margin:0;font-size:14.5px;font-weight:700;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.crow .cs{margin:2px 0 0;font-size:11.5px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.crow .cstate{margin:3px 0 0;font-size:11.5px;font-weight:700;color:#c33}
+.crow.done .cstate{color:var(--green)}
+.crow .cback{flex:none;font-family:var(--sans);font-size:10.5px;font-weight:700;letter-spacing:.04em;padding:7px 11px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--dim);cursor:pointer}
+.crow .cback:hover{border-color:var(--ink);color:var(--ink)}
+.crow .oreasons{display:flex}          /* the shelf IS the elaboration surface — chips always visible */
+/* ── ALREADY-OVER note (V.9.25): what rolled off, so a thinner board reads as intent ── */
+#overnote{margin:16px 0 0;padding:11px 14px;border:1px solid var(--line);border-left:3px solid var(--dim);border-radius:0 10px 10px 0;background:#faf8f3;font-size:12.5px;line-height:1.45;color:#6a655c;max-width:72ch}
+#overnote b{color:var(--ink)}
+/* ── SIMPLE-VIEW ✕ + why (V.9.25): kill a card without leaving the deck you're ordering ── */
+.ocard{flex-wrap:wrap}
+.ocard .okill{flex:none;width:30px;height:30px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--dim);font-size:14px;cursor:pointer;line-height:1}
+.ocard .okill:hover{border-color:#c33;color:#c33}
+.oreasons{display:none;flex-basis:100%;flex-wrap:wrap;gap:5px;padding:9px 0 3px;margin-top:8px;border-top:1px solid var(--line)}
+.ostate{flex-basis:100%;font-size:11.5px;font-weight:600;color:var(--green);padding-top:6px}
+.ocard.flagged{border-color:var(--green)}
+/* new-find that's been pulled into the simple deck */
+.pcard.isnew .pt:after{content:'NEW';margin-left:6px;font-size:9px;font-weight:800;color:#fff;background:var(--ink);padding:1px 5px;border-radius:999px;vertical-align:1px}
+/* ——— THE DROP BOX — paste an IG/TikTok/X link, get a pick ———
+   Type scale (6 steps, was 10): 15 title / 14 input / 13 body / 12 meta / 11 micro-caps / 9 pill.
+   Spacing scale: 4 / 8 / 12 / 16 / 24 only. Both were drifting — 10 sizes and 18 spacings in one
+   component reads as visual noise even when no single value looks wrong. */
+#dropbox{margin:16px 0 4px;padding:16px;background:#fff;border:1px solid var(--line);border-radius:14px}
+#dropbox .dlab{font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:var(--dim);margin:0 0 4px}
+#dropbox .dsub{font-size:12px;color:var(--dim);margin:0 0 12px;max-width:60ch}
+/* A URL is ~60 characters. Letting the field span a 1300px desktop board made one short string look
+   like a document editor, and pushed Pull miles from where you type. */
+.drow{display:flex;gap:8px;flex-wrap:wrap;max-width:520px}
+.drow input{flex:1 1 240px;min-width:0;font-family:var(--sans);font-size:14px;padding:12px;border-radius:10px;border:1px solid var(--line);background:#fff;color:var(--ink)}
+.drow input::placeholder{color:#B4AEA1}
+.drow input:focus-visible{outline:2px solid var(--accent);outline-offset:1px;border-color:var(--accent)}
+#dropgo{font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:.07em;padding:12px 24px;border-radius:10px;border:0;background:var(--ink);color:#fff;cursor:pointer;white-space:nowrap}
+#dropgo:hover{background:var(--accent)}
+#dropgo:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+#dropgo[disabled]{opacity:.5;cursor:default}
+#dropstat{margin-top:12px;font-size:12px;color:var(--dim);display:flex;align-items:center;gap:8px;min-height:16px}
+#dropstat.bad{color:var(--red)}
+.dspin{width:12px;height:12px;border-radius:50%;border:2px solid var(--line);border-top-color:var(--accent);animation:dsp .7s linear infinite;flex:none}
+@keyframes dsp{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.dspin{animation:none}}
+.dprev{display:flex;gap:12px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+/* 3:4, matching the card the pick becomes. A square crop of a 1080x1351 poster threw away a third
+   of the image — on a listings slide that meant cropping the text you are judging. */
+.dprev img{width:66px;height:88px;flex:none;object-fit:cover;border-radius:8px;background:#e8e4da}
+.dprev .dmeta{flex:1;min-width:0}
+.dprev h4{margin:0 0 4px;font-size:15px;font-weight:700;line-height:1.3;letter-spacing:-.01em}
+.dprev .dsrc{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--dim);margin:0 0 8px}
+/* The resolution is a spec, not an achievement. A saturated green pill made it the loudest thing in
+   the card while the title sat at 13.5px — hierarchy inverted. Quiet by default; loud only when
+   it is bad, which is the only time it needs your attention. */
+.dbadge{display:inline-block;font-size:9px;font-weight:700;letter-spacing:.06em;padding:4px 8px;border-radius:999px;color:var(--dim);background:transparent;border:1px solid var(--line);margin:0 4px 8px 0;text-transform:uppercase}
+.dbadge.warn{background:var(--red);border-color:var(--red);color:#fff}
+.dacts{display:flex;gap:8px;flex-wrap:wrap}
+/* READ THE LISTINGS — the vision pass over a roundup carousel */
+#dropevents{margin-top:16px;padding-top:12px;border-top:1px solid var(--line)}
+#dropevents .eh{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+#dropevents .eh b{font-size:13px}
+#dropevents .eh span{font-size:12px;color:var(--dim)}
+.evday{font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--accent);margin:16px 0 4px;padding-top:12px;border-top:1px solid var(--line)}
+.evday:first-child{margin-top:0;padding-top:0;border-top:0}
+.evrow{display:flex;align-items:flex-start;gap:8px;padding:4px 0}
+.evrow input{margin:4px 0 0;flex:none;width:16px;height:16px;accent-color:var(--accent)}
+.evrow label{font-size:13px;line-height:1.45;cursor:pointer;flex:1;min-width:0;max-width:70ch}
+.evthumb{width:42px;height:56px;flex:none;object-fit:cover;border-radius:6px;background:#e8e4da}
+.evbl{display:block;font-size:12px;line-height:1.5;color:var(--dim);margin-top:4px}
+.evrow .vn{color:var(--dim)}
+.evrow .pt{font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:var(--dim);padding:2px 8px;border-radius:999px;margin-left:4px;vertical-align:1px}
+.evrow .pt.night{background:var(--ink)}
+.evfoot{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:16px;padding-top:12px;border-top:1px solid var(--line)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+<p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD V.9.38</p>
+<h1>Your weekend<span class="dot">.</span></h1>
+<div id="modetoggle"><button class="on" data-mode="simple">Simple</button><button data-mode="advanced">Advanced</button></div>
+<div id="overnote" style="display:none"></div>
+</header>
+
+<div id="simple">
+<p class="simplelede"><b>The 10 cards that open the deck</b> — exactly what your testers see first this weekend. Drag to reorder, swap any card in or out, <b>✕</b> to cancel one — it comes off straight away and waits on the <b>Cancelled</b> shelf below, where you can say why whenever you like. Then hit <b>Submit</b>.</p>
+<div id="dropbox">
+<p class="dlab">Drop a link</p>
+<p class="dsub">Paste a post from Instagram, TikTok or X. It comes back with its picture and caption, straight into your top 10.</p>
+<div class="drow">
+<input id="dropurl" type="url" spellcheck="false" autocomplete="off" placeholder="https://www.instagram.com/p/…" aria-label="Paste a post link">
+<button id="dropgo" type="button">Pull</button>
+</div>
+<div id="dropstat" role="status" aria-live="polite"></div>
+<div id="droppreview"></div>
+<div id="dropevents"></div>
+</div>
+<div class="cathead hot" id="openhead">Your 10 opening cards</div>
+<div id="openlist"></div>
+<div class="cathead" id="poolhead">Swap in a card<span class="d">Tap + to drop a pick into your 10 (it bumps #10 out). This weekend's picks, best first.</span></div>
+<div id="pool"></div>
+<div id="cancelbox"></div>
+</div>
+
+<div id="advanced" hidden>
+<div id="cancelbox2"></div>
+<div id="status"></div>
+<p class="lede"><b>Rule on Amsterdam's picks for this weekend.</b> Two tabs below: <b>IN ROTATION</b> is what's live now — this weekend's deck plus your approved library. <b>NEW FINDS</b> is candidates that are <b>not live yet</b>. Every card tells you why it's there and what a tap does.</p>
+<p class="flow"><span class="step">Rule here</span> → <span class="step">Submit</span> → <b style="color:var(--ink)">live for your testers in seconds</b> (and filed to GitHub for the record). Progress saves in this browser as you go.</p>
+<div class="legend"><span class="lbl">Verdicts</span><span class="chip"><b>★1–5</b> rate / save</span><span class="chip"><b>✕</b> cancel now · reason later</span><span class="chip"><b>👑&nbsp;TOP</b> permanent lead</span><span class="chip"><b>↑&nbsp;Top 10</b> into your deck (Simple)</span><span class="chip"><b>▼&nbsp;LATER</b> back this weekend</span><span class="chip"><b>+CANON</b> permanent library</span></div>
+<div class="legend"><span class="lbl">Badges</span><span class="chip"><b>LENS</b> dated + weather-right</span><span class="chip"><b>★ SAVED</b> / <b>✓ APPROVED</b> your earlier call</span><span class="chip"><b>NEW</b> not live yet</span></div>
+<div class="tabs" id="tabs" hidden>
+<button class="tab on" data-tab="rot">IN ROTATION <span class="n" id="nrot"></span></button>
+<button class="tab" data-tab="new">NEW FINDS <span class="n" id="nnew"></span></button>
+</div>
+<div id="board">Loading the live feed…</div>
+</div>
+</div>
+<div class="bar"><div class="barin">
+<span class="count" id="count">—</span>
+<button class="copybtn" id="copy">Copy</button>
+<button class="copybtn" id="send">Email</button>
+<button class="send" id="ghfile">Submit → GitHub</button>
+<div id="barnote" class="barnote"></div>
+</div></div>
+<script>
+const FORM='https://formspree.io/f/xykqpwkw';
+const CAT={out:'Out & about',eat:'Eat',drink:'Drink',art:'Art & galleries',live:'Live & gigs',stage:'Stage & screen',daytrip:'Day-trips',market:'Markets & one-offs',shop:'Shops',kid:'Kids'};
+// ——— ✕ VOCABULARY — ONE source, used by BOTH views (V.9.25). The reason routes the compile action —
+// see docs/board-roadmap.md Track B. Until V.9.25 these chips existed only in Advanced, so on the
+// Simple view — the DEFAULT — a card could be reordered but never cancelled, and there was no way to
+// say why.
+//
+// FOUR KINDS (V.9.26). The first cut only had fix-vs-veto, which forced two different things into
+// "kill": a pick that's WRONG and a pick that's simply NOT ON RIGHT NOW. Ness's case: IJ-Hallen runs
+// ONE WEEKEND A MONTH, so on the other three it isn't wrong, it's off-cycle — vetoing it would lose a
+// pick he likes, and leaving it means it opens the deck on a weekend the market isn't running.
+//   fix   — the pick STAYS live, flagged for a fix        → curated.ts / better-image / deep link
+//   rest  — DROPPED ONLY UNTIL `until`, then it returns   → corpus.rested [{match,until,note}]
+//   veto  — gone for good                                 → corpus.eventVeto
+//   other — the escape hatch: cancel + type the reason    → judged at compile
+// `rest` is the one that needed a date, so those chips ask "back when?" — corpus.rested already
+// implements exactly this ("NOT a veto — dropped from the feed AND the bench only until `until`").
+const REASONS=[
+  {r:'link',    t:'wrong link',        kind:'fix'},
+  {r:'image',   t:'bad image',         kind:'fix'},
+  {r:'lowres',  t:'low-res',           kind:'fix'},
+  {r:'offcycle',t:'not on right now',  kind:'rest'},
+  {r:'seen',    t:'seen it too much',  kind:'rest'},
+  {r:'offbrand',t:'off-brand',         kind:'veto'},
+  {r:'dupe',    t:'duplicate',         kind:'veto'},
+  {r:'other',   t:'something else…',   kind:'other'},
+];
+const REASON_KIND=Object.fromEntries(REASONS.map(x=>[x.r,x.kind]));
+const REASON_LABEL={link:'wrong link → fixing',image:'bad image → swapping',lowres:'low-res → swapping',
+  offcycle:'not on now → resting',seen:'seen too much → resting',offbrand:'off-brand → removing',
+  dupe:'duplicate → merging',other:'cancelled → see note'};
+const reasonChips=()=>REASONS.map(x=>'<button class="rchip k-'+x.kind+'" data-r="'+x.r+'" data-kind="'+x.kind+'">'+x.t+'</button>').join('');
+// "back when?" presets for a rest — plain relative hops, plus a date box for anything else.
+// Local-noon arithmetic then sliced to YYYY-MM-DD, the format corpus.rested `until` uses.
+const RESTS=[{d:14,t:'in 2 weeks'},{d:30,t:'next month'},{d:60,t:'in 2 months'},{d:90,t:'in 3 months'}];
+const inDays=n=>{const d=new Date();d.setHours(12,0,0,0);d.setDate(d.getDate()+n);
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+const restRow=()=>'<span class="rq">Back when?</span>'
+  +RESTS.map(x=>'<button class="rchip until" data-d="'+x.d+'">'+x.t+'</button>').join('')
+  +'<input class="untildate" type="date" aria-label="back on (pick a date)">';
+/** The whole ✕ panel. `cls` is .reasons (Advanced) or .oreasons (Simple) — same markup either way. */
+const reasonBox=cls=>'<div class="'+cls+'"><span class="rq">What’s wrong with it?</span>'+reasonChips()
+  +'<div class="restrow">'+restRow()+'</div>'
+  +'<div class="otherrow"><input class="othertext" placeholder="what’s off with it?">'
+  +'<button class="rchip othergo">Cancel it</button></div></div>';
+// ——— THE CANCELLED SHELF (V.9.27) — Ness: "when I ✕ something out it should be removed IMMEDIATELY
+// from my board, and maybe put to a section where I can elaborate on it later."
+//
+// Until now ✕ only OPENED the picker and the card sat in place until you classified it — the verdict
+// blocked the removal, so triage stalled on every card. Inverted: ✕ cancels on the spot (no reason
+// needed, the card leaves the deck at once) and lands on a shelf below, where the chips live. Say why
+// whenever you like, or never — an un-reasoned cancel still submits as a plain KILL.
+//
+// The pick is NOT stripped from PILE on cancel: `renderOpen` already filters killed titles and
+// `buildOverrides` strips them from the payload, so leaving it in place is what makes ↩ Put back
+// restore a card to its ORIGINAL slot instead of the bottom of the deck.
+const SEEN=new Map();   // id → pick, so the shelf can still render a card that has left every list
+const cancelled=()=>Object.entries(V).filter(([,v])=>v&&v.killed)
+  .map(([id,v])=>({id,v,p:SEEN.get(id)||{title:v.t}}));
+function cancelState(v){
+  if(v.until)return 'Resting — back '+v.until;
+  if(v.reason==='other')return v.note?'Cancelled — “'+v.note+'”':'Cancelled — type what’s off below';
+  if(v.reason)return REASON_LABEL[v.reason];
+  return 'Cancelled — reason optional';
+}
+/** ✕ anywhere: cancel NOW, classify later. */
+function killNow(p){const v=(V[vkey(p)]??={t:p.title});v.killed=true;v.flag=undefined;
+  update();renderOpen();renderCancelled();}
+/** ONE wiring pass, used by every shelf row. The chips, the "back when?" step and the free-text
+ *  escape hatch are the same code everywhere — the V.9.25 bug (picker shipped to Advanced only)
+ *  came from having two implementations. A `fix` reason RESTORES the pick to the deck, flagged:
+ *  "wrong link / bad image" means the pick is good and the data is broken, so it belongs live. */
+function wireReasons(el,p,onFix,onKill){
+  const box=el.querySelector('.reasons,.oreasons');
+  const get=()=>(V[vkey(p)]??={t:p.title});
+  const lit=c=>box.querySelectorAll('.rchip[data-kind]').forEach(x=>x.classList.toggle('on',x===c));
+  const kill=()=>{const v=get();v.killed=true;v.flag=undefined;el.classList.remove('asking');onKill()};
+  box.querySelectorAll('.rchip[data-kind]').forEach(c=>c.addEventListener('click',()=>{
+    const r=c.dataset.r,kind=c.dataset.kind,v=get();
+    lit(c);
+    box.classList.remove('asking-when','asking-text');
+    // `rest` and `other` only ARM a second step, so the reason is recorded when that step COMPLETES.
+    // Writing it on the chip click tagged abandoned picks: round #19 shipped "IJ-Hallen | KILL
+    // why:other" with no note, because the chip was pressed and the text never typed — which made
+    // the compile guess at intent.
+    if(kind==='rest'){box.dataset.pending=r;box.classList.add('asking-when');return}
+    if(kind==='other'){box.dataset.pending=r;box.classList.add('asking-text');box.querySelector('.othertext').focus();return}
+    v.reason=r;
+    if(kind==='fix'){   // stays LIVE, flagged for a fix
+      v.flag=true;v.killed=undefined;v.until=undefined;
+      if(r==='image'||r==='lowres')v.img='bad';
+      el.classList.remove('asking');onFix();return}
+    v.until=undefined;kill();                                      // veto — immediate and permanent
+  }));
+  // a rest isn't final until it has a return date — that date is what corpus.rested keys off
+  const rest=until=>{const v=get();v.reason=box.dataset.pending||'offcycle';v.until=until;kill()};
+  box.querySelectorAll('.rchip.until').forEach(c=>c.addEventListener('click',()=>rest(inDays(+c.dataset.d))));
+  const dateEl=box.querySelector('.untildate');
+  dateEl.addEventListener('change',()=>{if(dateEl.value)rest(dateEl.value)});
+  const txt=box.querySelector('.othertext'),send=()=>{const s=txt.value.trim();if(!s)return;
+    const v=get();v.reason='other';v.note=s;v.until=undefined;kill()};
+  box.querySelector('.othergo').addEventListener('click',send);
+  txt.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();send()}});
+}
+// The shelf, rendered into BOTH views (only one is visible at a time, so there's no double-up).
+// A hoisted declaration, not an assignment: this sits ABOVE the `let renderOpen` block, so killNow
+// must be able to reach it without tripping the temporal dead zone.
+function renderCancelled(){
+  const rows=cancelled();
+  for(const id of ['cancelbox','cancelbox2']){
+    const host=document.getElementById(id);if(!host)continue;
+    host.innerHTML='';if(!rows.length)continue;
+    const h=document.createElement('div');h.className='chead';
+    h.innerHTML='Cancelled this round · '+rows.length
+      +'<span class="d">Already off your board — none of these ride the deck. Add a reason when you feel like it (it routes the fix), or <b>↩ Put back</b> to undo. '
+      +'A <i>wrong link / bad image / low-res</i> reason puts the pick back live and flags it for a fix — the pick was fine, the data wasn’t.</span>';
+    host.appendChild(h);
+    for(const {id:pid,v,p} of rows){
+      const el=document.createElement('div');el.className='crow'+(v.reason?' done':'');el.dataset.title=v.t;
+      el.innerHTML='<img loading="lazy" src="'+(p.image||'')+'" alt="">'
+        +'<div class="ct"><h4>'+v.t+'</h4><div class="cs">'+[p.venue,p.when].filter(Boolean).join(' · ')+'</div>'
+        +'<div class="cstate">'+cancelState(v)+'</div></div>'
+        +'<button class="cback" title="Put it back in the deck, in its old slot">↩ Put back</button>'
+        +reasonBox('oreasons');
+      // undo clears ONLY the cancel fields — stars / image verdicts / prior-round taste survive
+      el.querySelector('.cback').addEventListener('click',()=>{
+        const vv=V[pid];if(vv){vv.killed=undefined;vv.flag=undefined;vv.reason=undefined;vv.until=undefined;vv.note=vv.r1?vv.note:undefined}
+        update();renderOpen();renderCancelled();
+      });
+      const redraw=()=>{update();renderOpen();renderCancelled()};
+      wireReasons(el,{id:pid,title:v.t},redraw,redraw);
+      host.appendChild(el);
+    }
+  }
+}
+// ONE VERDICT PER EVENT (V.9.31). V used to be keyed by pick ID, so the same event appearing in two
+// sections — the live feed AND the canon library, or a trending twin — held two INDEPENDENT verdicts.
+// Round #22 filed the proof: "Pure Markt | 4* KILL" and "Pure Markt | 4*" in one payload, because ✕ on
+// the feed card never touched its library twin. Keyed by the word-order-blind title token instead
+// (the same `tok` the cross-section dupe suppressor already uses), so twins are one record and a
+// verdict on either lights up both.
+const vkey=p=>tok(p.title||'');
+let V={},baked={},feedKey='',PILE=null;   // PILE = hand-dragged pile order (titles) — null until a drag
+let renderPile=()=>{};   // rebuilt inside the feed load — lets a card's ▲/👑/✕ live-update the pile
+let renderStatus=()=>{};   // "did my call land?" panel — recompared to the live feed on every verdict
+let renderOpen=()=>{};   // the Simple view's ordered deck (top 10 + up-next) — re-rendered on any change
+let addExtra=()=>{};     // pull a NEW FIND into the Simple deck the instant you upvote it in Advanced
+let promoteToDeck=()=>{};   // ▲ on ANY Advanced card → into the Simple deck's Top 10 (one consistent verb)
+let feedGeneratedAt='';     // the feed this round targets — stamped on the overrides so a stale one expires
+const CURATE_URL='https://wkndr-curate.ness-13b.workers.dev';   // Track A auto-compile fast-lane
+let extras=[],undoExtras=null;           // New Finds you've upvoted (not in the live feed yet) — ride the deck + Submit
+function store(){try{localStorage.setItem(feedKey,JSON.stringify({V,PILE,extras}))}catch(e){}}
+function restore(){try{const s=JSON.parse(localStorage.getItem(feedKey)||'{}');V=rekey(s.V||{});PILE=s.PILE||null;extras=s.extras||[]}catch(e){}}
+/** Fold an id-keyed blob (or already-title-keyed one) onto title keys, merging any twins. Idempotent. */
+function rekey(old){const out={};
+  for(const k in old){const v=old[k];if(!v||!v.t)continue;const nk=tok(v.t);
+    out[nk]=out[nk]?mergeV(out[nk],v):v}
+  return out}
+/** Merge two verdicts for the SAME event. A decisive call must never be lost to a bare star from the
+ *  twin: a cancel outranks a flag outranks nothing, and the higher star wins. */
+function mergeV(a,b){
+  const o={...a,...b};
+  o.t=a.t||b.t;
+  o.killed=(a.killed||b.killed)||undefined;
+  o.flag=o.killed?undefined:((a.flag||b.flag)||undefined);
+  o.reason=(a.killed||a.flag?a.reason:undefined)??(b.killed||b.flag?b.reason:undefined)??a.reason??b.reason;
+  o.until=a.until??b.until;
+  o.note=a.note??b.note;
+  o.stars=Math.max(a.stars||0,b.stars||0)||undefined;
+  o.r1=(a.r1&&b.r1)||undefined;   // a THIS-ROUND call beats a baked prior-round one
+  return o}
+// longest matching key wins ("bakers & roasters" beats "bak")
+function bakedFor(title){const t=title.toLowerCase();let best=null,len=-1;for(const k in baked){if(t.includes(k)&&k.length>len){best=baked[k];len=k.length}}return best}
+// word-order-blind identity key (mirror of the pipeline's tokKey) — powers cross-section dupe suppression
+const TOKSTOP=new Set(['the','a','an','de','het','een','at','in','on','of','and','en','bij','to','met','with','w','amsterdam','festival','back']);
+function tok(t){const x=t.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/\b(19|20)\d{2}\b/g,'').replace(/[^a-z0-9 ]/g,' ').split(/\s+/).filter(y=>y&&!TOKSTOP.has(y));return x.length>=2?[...new Set(x)].sort().join(' '):t.toLowerCase().replace(/[^a-z0-9]/g,'')}
+const seenTok=new Set();
+// filter rows against everything already rendered; seed=false leaves the seen-set untouched (the PILE mirrors the feed by design)
+function fresh(rows,seed=true){const keep=[],skipped=[];for(const p of rows){const k=tok(p.title);if(seenTok.has(k))skipped.push(p);else{keep.push(p);if(seed)seenTok.add(k)}}return{keep,hidden:skipped.length}}
+// LOW-RES probe: load the ORIGINAL image (unwrap the weserv proxy — it masks true size by upscaling
+// to 800×1200) and flag any source the card must stretch >1.6× — the "bitmapped" class.
+const probeQ=[];let probing=0;
+function probeRes(el,imgUrl){
+  let orig=imgUrl;try{const u=new URL(imgUrl);if(u.hostname==='images.weserv.nl'&&u.searchParams.get('url'))orig=decodeURIComponent(u.searchParams.get('url'))}catch(e){}
+  if(!/^https?:/.test(orig))return;
+  probeQ.push(()=>{const im=new Image();
+    im.onload=()=>{probing--;pump();const w=im.naturalWidth,h=im.naturalHeight;if(!w||!h)return;
+      const f=Math.max(800/w,1200/h);
+      if(f>1.6){const t=document.createElement('span');t.className='lowres';t.textContent='LOW RES · '+w+'×'+h;el.appendChild(t)}};
+    im.onerror=()=>{probing--;pump()};
+    im.src=orig});
+  pump();
+}
+function pump(){while(probing<4&&probeQ.length){probing++;probeQ.shift()()}}
+// THE LOUPE — click any card photo to see the ORIGINAL, uncropped, with true dimensions.
+// (Every card render is a wsrv 800×1200 crop; judging an image means seeing the whole frame.)
+const veil=document.createElement('div');veil.id='veil';veil.innerHTML='<img alt=""><span id="veilcap"></span>';document.body.appendChild(veil);
+veil.addEventListener('click',()=>veil.classList.remove('on'));
+document.addEventListener('keydown',e=>{if(e.key==='Escape')veil.classList.remove('on')});
+function focusImg(p){
+  let orig=p.image;try{const u=new URL(p.image);if(u.hostname==='images.weserv.nl'&&u.searchParams.get('url'))orig=decodeURIComponent(u.searchParams.get('url'))}catch(e){}
+  const im=veil.querySelector('img'),cap=document.getElementById('veilcap');
+  cap.textContent=p.title+' · loading original…';
+  im.onload=()=>{cap.textContent=p.title+' · original '+im.naturalWidth+'×'+im.naturalHeight+(Math.max(800/im.naturalWidth,1200/im.naturalHeight)>1.6?' · LOW RES for the card':'')};
+  im.onerror=()=>{if(im.src!==p.image){im.src=p.image;cap.textContent=p.title+' · original blocked — showing the card render'}};
+  im.src=orig;veil.classList.add('on');
+}
+const jf=(u,fb)=>fetch(u+'?t='+Date.now()).then(r=>r.ok?r.json():fb).catch(()=>fb);
+Promise.all([
+ jf('../data/picks.amsterdam.json',{picks:[]}),
+ jf('../data/candidates.amsterdam.json',{candidates:[]}),
+ jf('../data/verdicts.amsterdam.json',{byTitle:{}}),
+ jf('../data/canon-candidates.amsterdam.json',{candidates:[]}),
+ jf('../data/canon.amsterdam.json',{canon:[]}),
+ jf('../data/trending.amsterdam.json',{trending:[]}),
+ jf('../data/pending.amsterdam.json',{pending:[]}),
+ // THE LENS forecast — the same keyless open-meteo call the pipeline's weekendMode() makes (raw
+ // fetch: jf would append a second "?"). Fails soft → null → the lens goes dated-only.
+ fetch('https://api.open-meteo.com/v1/forecast?latitude=52.37&longitude=4.9&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Europe%2FAmsterdam&forecast_days=7').then(r=>r.ok?r.json():null).catch(()=>null)
+]).then(([d,c,v,cc,lib,tr,pd,om])=>{
+  baked=v.byTitle||{};
+  feedKey='wkndr.curate.'+(d.generatedAt||'x');
+  feedGeneratedAt=d.generatedAt||'';
+  restore();
+  // `let` (not const): the ALREADY-OVER cull below rewrites these once the date helpers exist.
+  let bench=(c.candidates||[]),canonC=(cc.candidates||[]),canon=(lib.canon||[]),trending=(tr.trending||[]),pending=(pd.pending||[]);
+  // BOARD_V is hardcoded — bump it whenever this file changes. GitHub Pages caches this HTML for
+  // 10 min (max-age=600), so a just-shipped board fix can lag in an open tab; the eyebrow makes
+  // stale-board-vs-fresh-data visible at a glance (2026-07-12: an old tab's tier-mirror pile read
+  // as "the board is wrong" when it was just cached).
+  const BOARD_V='V.9.38';
+  document.getElementById('eyebrow').textContent='WKNDR · CURATION BOARD '+BOARD_V+' · FEED '+(d.generatedAt||'').slice(0,16).replace('T',' · ');
+  const board=document.getElementById('board');board.innerHTML='';
+  const rot=document.createElement('div');rot.id='tab-rot';board.appendChild(rot);
+  const nw=document.createElement('div');nw.id='tab-new';nw.style.display='none';board.appendChild(nw);
+
+  // ——— shared date mirrors — inline lib/when.ts + refresh.ts, the board is dependency-free
+  // static JS; keep in step. datesOf mirrors when.ts datesIn (every concrete date, sorted);
+  // activeBy mirrors whenActiveBy. dateInWknd is the LENS predicate — deliberately TIGHTER than
+  // the pipeline's datedThisWeekend (which also admits any "until <far future>" ongoing run —
+  // 16 of 23 on the 2026-07-10 feed, no lens at all): a concrete date must fall INSIDE the
+  // weekend window, i.e. the pick happens, opens, or CLOSES this weekend. Strictly a subset of
+  // pipeline-topical, so the lens never shows what the airlock wouldn't call weekend-topical. ———
+  const WKEND=(()=>{const t=new Date();t.setHours(23,59,59,999);t.setDate(t.getDate()+((7-t.getDay())%7));return t.getTime()})();
+  const WKFRI=(()=>{const t=new Date(WKEND);t.setHours(0,0,0,0);t.setDate(t.getDate()-2);return t.getTime()})();
+  const MONi={jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11};
+  // Year resolution mirrors when.ts resolveDate: THIS year, unless the date is already well past
+  // (>45d) — and then next year ONLY for an open run ("Until 15 Jan" read in July) or a near wrap
+  // (<60d out). The old board rule rolled EVERY >45d-past date forward, which resurrected a merely
+  // STALE feed's finished events as next year's — the exact failure isOver below exists to catch.
+  const OPENRUN=/\b(until|through|thru|till|t\/m|ongoing|runs?|opens?)\b/i;
+  const resolveD=(day,mi,now,openRun)=>{const d=new Date(now.getFullYear(),mi,day,12);
+    if(d.getTime()>=now.getTime()-45*864e5)return d;
+    const nx=new Date(now.getFullYear()+1,mi,day,12);
+    return (openRun||nx.getTime()-now.getTime()<60*864e5)?nx:d};
+  const datesOf=w=>{const now=new Date(),ts=[],openRun=OPENRUN.test(w||'');
+    for(const m of (w||'').matchAll(/(\d{1,2})\s*(?:[–—-]\s*(?:mon|tue|wed|thu|fri|sat|sun)[a-z]*\.?)?\s*[–—-]?\s*(\d{1,2})?\s*(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)/gi)){
+      const mi=MONi[m[3].slice(0,3).toLowerCase()];
+      for(const d of[m[1],m[2]]){if(!d)continue;ts.push(resolveD(+d,mi,now,openRun).getTime())}}
+    return ts.sort((a,b)=>a-b)};
+  const activeBy=w=>{if(/\b(until|through|thru|till|t\/m)\b/i.test(w||''))return true;
+    const ts=datesOf(w);return !ts.length||ts[0]<=WKEND};
+  const dateInWknd=w=>datesOf(w).some(t=>t>=WKFRI&&t<=WKEND);
+  // ——— ALREADY OVER (board V.9.25) — the board's mirror of when.ts whenIsPast + whenLooksBroken.
+  // The APP filters both out at runtime (App.tsx cityPicks), so a pick that trips either can never
+  // reach a tester's card. The board had NO such guard: the feed is rebuilt weekly, so by midweek
+  // last weekend's picks were still sitting in the opening deck — on the 23 Jul feed, four of them
+  // (Milkshake, IJ-Hallen, Kwaku, Wils) held serve slots #2/#4/#5/#6 — eating Top-10 slots, riding
+  // Submit, and un-killable from the Simple view. Now anything the app won't serve leaves the board.
+  const TODAY=(()=>{const t=new Date();t.setHours(0,0,0,0);return t.getTime()})();
+  // finished = its LATEST concrete date is before today. Undated / recurring / open-into-the-future
+  // ("Daily", "Until 30 Aug") have no past latest date and stay.
+  const isOver=w=>{const ts=datesOf(w);return !!ts.length&&ts[ts.length-1]<TODAY};
+  // a range the date brain can't trust: one month token, days running backwards ("Sun 28 – Sun 12
+  // Jul"), or an explicit start–end pair that ends before it starts. Mirrors whenLooksBroken.
+  const looksBroken=w=>{const s=w||'';if(!s)return false;const openRun=OPENRUN.test(s);
+    for(const m of s.matchAll(/(\d{1,2})\s*[–—-]\s*(?:(?:mon|tue|wed|thu|fri|sat|sun)[a-z]*\.?\s+)?(\d{1,2})\s+(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)/gi))
+      if(+m[1]>+m[2])return true;
+    const now=new Date();
+    for(const m of s.matchAll(/(\d{1,2})\s+(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\s*[–—-]\s*(?:(?:mon|tue|wed|thu|fri|sat|sun)[a-z]*\.?\s+)?(\d{1,2})\s+(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)/gi)){
+      const a=resolveD(+m[1],MONi[m[2].slice(0,3).toLowerCase()],now,openRun),
+            b=resolveD(+m[3],MONi[m[4].slice(0,3).toLowerCase()],now,openRun);
+      if(b.getTime()<a.getTime()){
+        // a Dec→Jan style wrap is fine when next year's end sits a sane distance past the start
+        const bNext=new Date(b.getFullYear()+1,b.getMonth(),b.getDate(),12),
+              span=(bNext.getTime()-a.getTime())/864e5;
+        if(!(span>0&&span<90))return true}}
+    return false};
+  /** Can the app still serve this? The one predicate every board list filters through. */
+  const servable=p=>!isOver(p.when)&&!looksBroken(p.when);
+
+  // ——— THE CULL — applied ONCE here, at the seam where the feed enters the board, so every list
+  // downstream (the lens, the feed, the Simple deck, New Finds, trending, bench, the library)
+  // inherits it with no further filtering. Silent dropping would be its own bug — the count is
+  // reported in the header so a thin board reads as "last weekend rolled off", not "data missing". ———
+  let culled=0;
+  const cull=rows=>{const keep=(rows||[]).filter(servable);culled+=(rows||[]).length-keep.length;return keep};
+  d.picks=cull(d.picks);pending=cull(pending);trending=cull(trending);bench=cull(bench);canonC=cull(canonC);canon=cull(canon);
+  if(culled){const n=document.getElementById('overnote');
+    n.style.display='';
+    n.innerHTML='<b>'+culled+' pick'+(culled===1?'':'s')+' already over</b> — dropped from the board. '
+      +'Anything whose last date has passed falls off automatically: your app never serves it, so there is nothing left to rule on.';}
+
+  // ——— the pile, computed FIRST (the LENS badges its overlap with it) ———
+  // The pipeline now STAMPS the projected serve order onto every published pick (`servePos` —
+  // the app's own rankPicks → diversify → orderServed under the forecast weekend mode, run at
+  // build/restamp time). The board just reads the stamp, so the pile IS the deck's actual
+  // front: the old inline tier-mirror ignored `pilePos` (Ness's own dragged order ruled the app
+  // while the board showed a phantom pile) and knew nothing of weather fit or the sun bonus.
+  // Runtime can still nudge the phone — live weather ≠ forecast, on-device taste, Shuffle — by
+  // design. Fallback for a pre-stamp feed: the old tier projection.
+  const isLiveP=p=>p.id&&(p.id.startsWith('web-')||p.id.startsWith('llm-'));
+  const tier=p=>{const a=activeBy(p.when);if(a&&p.top)return 0;if(a&&p.lead)return 1;if(a&&!p.later)return 2;if(a)return 3;return p.top?4:5};
+  const stamped=(d.picks||[]).some(p=>p.servePos!=null);
+  // THE PILE POOL (Ness, 2026-07-12: "can we add more fresh elements I have liked so I can
+  // reorder"): not just the 10 projected openers — every LIVE pick in the feed is by definition
+  // one he waved in (the airlock law), so they ALL join the draggable pile, in serve order,
+  // capped at 24. His ⠿ drag over this wider pool becomes the next opening sequence.
+  // BUILD-IT-UP pile (Ness, 2026-07-23): the pile is no longer the whole projected deck — it's the
+  // set you PROMOTE. It seeds with your 👑 TOPs; upvoting a card (▲) drops it in; drag to order.
+  const pickPool=new Map((d.picks||[]).map(p=>[p.id,p]));
+  const promoted=()=>{const out=[];for(const p of (d.picks||[])){const v=V[vkey(p)]||{};
+    const top=v.top!==undefined?v.top:p.top;   // baked TOP unless overridden this round
+    const lead=!!v.lead;                        // build-up: LEAD = this round's upvotes only
+    if((top||lead)&&!v.later&&!v.killed)out.push(p);}return out;};
+  const computePile=()=>{const items=promoted();
+    if(PILE&&PILE.length){const pos=t=>{const i=PILE.indexOf(t);return i<0?999:i};items.sort((a,b)=>pos(a.title)-pos(b.title))}
+    else items.sort((a,b)=>{const ta=((V[a.id]&&V[a.id].top)!==undefined?(V[a.id].top):a.top)?0:1,tb=((V[b.id]&&V[b.id].top)!==undefined?(V[b.id].top):b.top)?0:1;return ta-tb||((b.editorScore??0)-(a.editorScore??0))});
+    return items;};
+  const pilePos=new Map();   // build-up pile is dynamic → no static pile-number on the lens badge
+
+  // NOTE: the Advanced "This weekend's pile" section was REMOVED (V.9.22) — the RANKED DECK now lives in
+  // ONE place, the Simple view (top 10 + Up next). Advanced is purely rate / veto / canon / discover, so
+  // there's no second, differently-ordered "pile" to contradict it. `renderPile` stays a no-op; the ▲
+  // button below promotes straight into the Simple deck via promoteToDeck().
+
+  // ——— IN ROTATION opens with THE LENS — THIS WEEKEND × THIS WEATHER (board-IA call 2026-07-11):
+  // the tight slice — only picks explicitly dated the coming weekend (dateInWknd above) that
+  // ALSO fit the forecast mode. The mode comes from the same open-meteo weekend read the
+  // pipeline's weekendMode() takes, through an inline mirror of src/weather/modes.ts classify —
+  // so lens, airlock order and deck ranking all agree on what the weekend IS. On a HOT/WARM
+  // weekend the outdoor picks lead (the deck's sun bonus, mirrored). Cards here also live in the
+  // pile/feed below — the badge marks the overlap; verdicts share V[vkey(p)], a ★ here counts
+  // everywhere. Forecast fetch fails soft → dated-only lens, weather filter off. ———
+  let WX=null;
+  if(om&&om.daily&&Array.isArray(om.daily.time)){
+    const iso=t=>{const x=new Date(t);return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0')};
+    const sunD=new Date(WKEND),satD=new Date(sunD.getFullYear(),sunD.getMonth(),sunD.getDate()-1);
+    let i=om.daily.time.indexOf(iso(satD));               // the weekend's Saturday…
+    if(i<0)i=om.daily.time.indexOf(iso(sunD));            // …or, on a Sunday board, what's left of it
+    const cls=(hi,wet,swing)=>hi<10?'COLD_WET':wet>65?(hi<16?'COLD_WET':'VOLATILE'):hi>=24?'HOT':swing>=9?'VOLATILE':hi>=16?'WARM':hi>=10?'COOL':'WARM';
+    if(i>=0){const ks=[i,i+1].filter(k=>k<om.daily.time.length);
+      const hi=Math.max(...ks.map(k=>om.daily.temperature_2m_max[k])),
+            wet=Math.max(...ks.map(k=>om.daily.precipitation_probability_max[k])),
+            swing=Math.max(...ks.map(k=>om.daily.temperature_2m_max[k]-om.daily.temperature_2m_min[k]));
+      if(isFinite(hi)&&isFinite(wet)&&isFinite(swing)){
+        // PER-DAY (board V.9.30) — mirrors the app's weather/modes.ts. The blend stays as the
+        // headline summary, but the LENS now tests a pick against the mode of the day it is
+        // actually on: on a hot-Saturday / wet-Sunday weekend the old single mode either admitted
+        // washed-out Sunday picnics or hid perfectly good Saturday ones.
+        const dayOf=k=>({hi:Math.round(om.daily.temperature_2m_max[k]),
+          mode:cls(om.daily.temperature_2m_max[k],om.daily.precipitation_probability_max[k]??0,
+                   om.daily.temperature_2m_max[k]-om.daily.temperature_2m_min[k])});
+        const a=dayOf(ks[0]), b=ks.length>1?dayOf(ks[1]):a;
+        WX={hi:Math.round(hi),mode:cls(hi,wet,swing),sat:a,sun:b,
+            split:a.mode!==b.mode||Math.abs(a.hi-b.hi)>=4};}}}
+  // which of the two days is a pick on? mirror of lib/when.ts whenWeekendDays — undated / open runs
+  // are available on both, a dated pick covers its own interval, anything else falls back to both.
+  const daysOf=w=>{const BOTH={sat:true,sun:true};
+    if(!w||/\b(until|through|thru|till|t\/m|ongoing|runs?|opens?)\b/i.test(w))return BOTH;
+    const ts=datesOf(w);if(!ts.length)return BOTH;
+    const from=ts[0],to=ts[ts.length-1];
+    const sunD=new Date(WKEND),satD=new Date(sunD.getFullYear(),sunD.getMonth(),sunD.getDate()-1);
+    const on=dt=>{const s=new Date(dt.getFullYear(),dt.getMonth(),dt.getDate()).getTime();return from<=s+864e5-1&&to>=s};
+    const o={sat:on(satD),sun:on(sunD)};return o.sat||o.sun?o:BOTH};
+  /** the modes a pick should be judged against — its own day(s) */
+  const modesOf=p=>{if(!WX)return[];const d=daysOf(p.when);const out=[];
+    if(d.sat)out.push(WX.sat.mode);if(d.sun)out.push(WX.sun.mode);
+    return out.length?out:[WX.sat.mode,WX.sun.mode]};
+  const fitsWx=p=>!WX||(Array.isArray(p.weatherFit)&&modesOf(p).some(m=>p.weatherFit.includes(m)));
+  const sunnyFor=p=>!!WX&&modesOf(p).some(m=>m==='HOT'||m==='WARM');
+  const sunny=!!WX&&(WX.mode==='HOT'||WX.mode==='WARM');
+  const dated=(d.picks||[]).filter(p=>dateInWknd(p.when)&&fitsWx(p))
+    .sort((a,b)=>((sunnyFor(b)&&b.outdoor?1:0)-(sunnyFor(a)&&a.outdoor?1:0))||((b.editorScore??0)-(a.editorScore??0))||((b.buzz??0)-(a.buzz??0)));
+  // SUMMER RUNS (Ness, 2026-07-12: "the lens is serving mainly indoor activities — where are the
+  // outdoor cinema picks?"): on a HOT/WARM weekend the weather-right slice must also carry the
+  // OUTDOOR SEASONAL supply — open-air cinema, urban beaches, terrace/summer programmes — which is
+  // never dated-to-a-weekend ("All summer · evenings", "Until 30 Aug"). Admit: outdoor + active +
+  // a seasonal when (a 'summer' token or an until/through run). Year-round outdoor staples
+  // (markets "Mon–Sat", Efteling "Daily") stay out — they're the pile/feed's job, the lens stays
+  // tight. Dated slice first, summer runs after, judge order within.
+  const dIds=new Set(dated.map(p=>p.id));
+  const summer=sunny?(d.picks||[]).filter(p=>p.outdoor&&!dIds.has(p.id)&&activeBy(p.when)
+      &&(/\bsummer\b/i.test(p.when)||/\b(until|through|thru|till|t\/m)\b/i.test(p.when)))
+    .sort((a,b)=>((b.editorScore??0)-(a.editorScore??0))||((b.buzz??0)-(a.buzz??0))):[];
+  const lens=[...dated,...summer];
+  {
+    const sunD=new Date(WKEND),satD=new Date(sunD.getFullYear(),sunD.getMonth(),sunD.getDate()-1);
+    const M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const wkLabel=(satD.getMonth()===sunD.getMonth()?satD.getDate():satD.getDate()+' '+M[satD.getMonth()])+'–'+sunD.getDate()+' '+M[sunD.getMonth()];
+    const lh=document.createElement('div');lh.className='cathead hot';
+    // a split weekend names both days — the single blended figure hid which day was which
+    lh.innerHTML='This weekend · '+wkLabel+(WX?(WX.split?' · Sat '+WX.sat.hi+'° · Sun '+WX.sun.hi+'°':' · '+WX.hi+'°'):'')
+      +'<span class="d">The tightest slice: '+dated.length+' pick'+(dated.length===1?'':'s')+' dated this weekend that fit '+(WX&&WX.split?'their OWN day’s forecast':'the forecast')
+      +(summer.length?', plus '+summer.length+' in-season outdoor run'+(summer.length===1?'':'s'):'')
+      +(sunny?' · outdoor first':'')+(WX?'':' · forecast unavailable — weather filter off')
+      +'. A verdict here counts everywhere — and ↑ Top 10 drops one straight into your deck (Simple view).</span>';
+    rot.appendChild(lh);
+    const lg=document.createElement('div');lg.className='grid';rot.appendChild(lg);
+    dated.forEach(p=>addCard(p,lg,'lens',pilePos.get(p.id)||0,true));
+    summer.forEach(p=>addCard({...p,_summer:true},lg,'lens',pilePos.get(p.id)||0,true));
+  }
+  // ——— IN ROTATION: this weekend's feed (canonical — seeds the cross-section dupe suppressor) ———
+  const byCat={};
+  (d.picks||[]).forEach(p=>{(byCat[p.category]??=[]).push(p);seenTok.add(tok(p.title))});
+  const fh=document.createElement('div');fh.className='cathead hot';fh.innerHTML="This weekend's feed · "+(d.picks||[]).length+' live<span class="d">Everything live this weekend — what the deck keeps serving as you swipe onward. Grouped by category.</span>';rot.appendChild(fh);
+  Object.keys(CAT).filter(k=>byCat[k]).forEach(k=>{
+    const h=document.createElement('div');h.className='cathead sub';h.textContent=CAT[k]+' · '+byCat[k].length;rot.appendChild(h);
+    const g=document.createElement('div');g.className='grid';rot.appendChild(g);
+    byCat[k].forEach(p=>addCard(p,g,null,0,true));
+  });
+  // ——— IN ROTATION: the approved canon library (twins already in this week's feed are hidden) ———
+  if(canon.length){
+    const lc=fresh(canon);
+    const lh=document.createElement('div');lh.className='cathead lib';lh.innerHTML='Your library · '+lc.keep.length+' in rotation<span class="d">'+canon.filter(p=>p.approved).length+' approved picks, always in rotation. Kill to retire'+(lc.hidden?' · '+lc.hidden+' hidden (already in this week\'s feed)':'')+'.</span>';rot.appendChild(lh);
+    const byC={};lc.keep.forEach(p=>{(byC[p.category]??=[]).push(p)});
+    Object.keys(CAT).filter(k=>byC[k]).forEach(k=>{
+      const h=document.createElement('div');h.className='cathead sub';h.textContent=CAT[k]+' · '+byC[k].length;rot.appendChild(h);
+      const g=document.createElement('div');g.className='grid';rot.appendChild(g);
+      byC[k].sort((a,b)=>(b.approved?1:0)-(a.approved?1:0)).forEach(p=>addCard(p,g,p.approved?'appr':null));
+    });
+  }
+  // ——— NEW FINDS: THE AIRLOCK leads — this run's unapproved live finds, in the pipeline's
+  // topical order (dated-this-weekend → fits the weekend forecast → judge → buzz). Full verdict
+  // controls: a ★ / 👑 / kill here rides Submit like any card; on compile, approved picks
+  // PROMOTE into the live deck via restamp (image + judge score intact). ———
+  const air=fresh(pending);
+  if(air.keep.length){
+    const h=document.createElement('div');h.className='cathead hot';h.innerHTML='New finds — not live yet · '+air.keep.length+'<span class="d">This run\'s fresh finds, weekend-topical first. ★ or 👑 waves one into the deck · ✕ kills it. Nothing ships until you do.</span>';nw.appendChild(h);
+    const g=document.createElement('div');g.className='grid';nw.appendChild(g);
+    air.keep.forEach(p=>addCard(p,g,'new',0,true));
+  }
+  // ——— then trending → bench → canon candidates (each hides twins shown in ANY earlier section) ———
+  const tr2=fresh(trending);
+  if(tr2.keep.length){
+    const h=document.createElement('div');h.className='cathead hot';h.innerHTML='Trending this week · '+tr2.keep.length+'<span class="d">Star to flow one in · ✕ to pass.</span>';nw.appendChild(h);
+    const g=document.createElement('div');g.className='grid';nw.appendChild(g);
+    tr2.keep.forEach(p=>addCard({...p,id:'trend-'+p.title.toLowerCase().replace(/[^a-z0-9]+/g,'-')},g,'new',0,true));
+  }
+  const be2=fresh(bench);
+  if(be2.keep.length){
+    const h=document.createElement('div');h.className='cathead';h.innerHTML='The bench · '+be2.keep.length+'<span class="d">Alternatives — star to promote'+(be2.hidden?' · '+be2.hidden+' hidden (shown above)':'')+'.</span>';nw.appendChild(h);
+    const g=document.createElement('div');g.className='grid';nw.appendChild(g);
+    be2.keep.forEach(p=>addCard(p,g,'new',0,true));
+  }
+  const cc2=fresh(canonC);
+  if(cc2.keep.length){
+    const h=document.createElement('div');h.className='cathead';h.innerHTML='Library candidates · '+cc2.keep.length+'<span class="d">For your permanent library — +canon to approve · ✕ to reject'+(cc2.hidden?' · '+cc2.hidden+' hidden (already in rotation)':'')+'.</span>';nw.appendChild(h);
+    const g=document.createElement('div');g.className='grid';nw.appendChild(g);
+    cc2.keep.forEach(p=>addCard({...p,id:'canon-cand-'+p.title.toLowerCase().replace(/[^a-z0-9]+/g,'-')},g,'new',0,true));
+  }
+  document.getElementById('nrot').textContent='('+((d.picks||[]).length+canon.length)+')';
+  document.getElementById('nnew').textContent='('+(pending.length+trending.length+bench.length+canonC.length)+')';
+  const tabs=document.getElementById('tabs');tabs.hidden=false;
+  tabs.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
+    tabs.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===t));
+    rot.style.display=t.dataset.tab==='rot'?'':'none';
+    nw.style.display=t.dataset.tab==='new'?'':'none';
+    window.scrollTo({top:0});
+  }));
+  update();
+
+  // ——— DEAD-SIMPLE VIEW (V.9.18): "your 10 opening cards" — the default. Seeds from the deck's
+  // ACTUAL serve order (servePos, = what the app opens with), drag to reorder, +/− to swap, Submit
+  // sends the order (rides pileLine → weekly.pile). The full board is the Advanced view. ———
+  {
+    const picks=(d.picks||[]);
+    picks.forEach(p=>SEEN.set(vkey(p),p));   // the shelf's lookup — Simple rows never pass through addCard
+    const feedServed=picks.filter(p=>p.servePos!=null).sort((a,b)=>a.servePos-b.servePos);
+    const pick=t=>feedServed.find(p=>p.title===t)||extras.find(p=>p.title===t);
+    const isExtra=t=>extras.some(e=>e.title===t);
+    const MAX=10;
+    // PILE is now the FULL deck order (top 10 + the rest), auto-seeded from the live serve order.
+    // You hand-order the top 10; the tail auto-ranks UNTIL you drag it — hawkish whenever you want.
+    // titles cancelled this round — they must not sit in the deck, and must not be re-seeded from the
+    // feed on the next render (or a kill would silently "come back" the moment anything re-rendered).
+    const deadTitles=()=>new Set(Object.values(V).filter(v=>v&&v.killed).map(v=>v.t));
+    // Cancelled titles STAY in PILE (they're filtered at render and stripped from the payload) — that's
+    // what lets ↩ Put back drop a card into its original slot instead of the bottom of the deck.
+    // The dead-guard survives only on the feed loop, so a pick cancelled in Advanced can't re-enter.
+    const seed=()=>{const dead=deadTitles(),have=new Set();const full=[];
+      for(const t of (PILE||[]))if(pick(t)&&!have.has(t)){full.push(t);have.add(t)}
+      for(const p of feedServed){if(!have.has(p.title)&&!dead.has(p.title)){full.push(p.title);have.add(p.title)}}
+      PILE=full;};
+    seed();
+    const openList=document.getElementById('openlist'),pool=document.getElementById('pool'),openHead=document.getElementById('openhead'),poolHead=document.getElementById('poolhead');
+    const sub=p=>[p.venue,p.when].filter(Boolean).join(' · ');
+    const moveTo=(t,idx)=>{PILE=PILE.filter(x=>x!==t);idx=Math.max(0,Math.min(idx,PILE.length));PILE.splice(idx,0,t);store();renderOpen()};
+    const promote=t=>moveTo(t,MAX-1);   // ↑ from Up next → last slot of the Top 10 (bumps #10 down)
+    const demote=t=>moveTo(t,MAX);      // − from Top 10 → first slot of Up next
+    // Returns TRUE only if this pick was genuinely new. The drop box used to say "Added" whether or
+    // not anything happened — paste the same post twice and it cheerfully lied.
+    addExtra=p=>{const dupe=extras.some(x=>x.title===p.title)||PILE.includes(p.title);
+      if(!extras.some(x=>x.title===p.title))extras.push(p);
+      if(!PILE.includes(p.title))PILE.unshift(p.title);
+      promote(p.title);return !dupe};   // New Find → into your Top 10
+    // UNDO for a drop. Adding 8 (or 93) cards with no way back meant hunting each one down in the
+    // deck to ✕ it — Nielsen's "emergency exit", and the reason undo beats an "are you sure?" prompt.
+    undoExtras=titles=>{const set=new Set(titles);
+      extras=extras.filter(e=>!set.has(e.title));
+      PILE=(PILE||[]).filter(t=>!set.has(t));
+      store();renderOpen()};
+    // ▲ on ANY Advanced card → into the Simple deck's Top 10. Feed cards are already in the deck (just
+    // promote); New Finds get pulled in first (extras). One verb, both views consistent.
+    promoteToDeck=p=>{const inFeed=feedServed.some(f=>f.title===p.title);if(!inFeed&&!extras.some(x=>x.title===p.title))extras.push(p);if(!PILE.includes(p.title))PILE.unshift(p.title);promote(p.title)};
+    // one drag setup, reused for both lists. seg = which PILE slice this list owns (top-10 vs the tail).
+    function openDrag(list,seg){
+      if(!list.__dnd){list.__dnd=true;list.addEventListener('dragover',e=>{if(!list.__drag||list.__drag.parentNode!==list)return;e.preventDefault();
+        const sib=[...list.children].filter(c=>c!==list.__drag).find(c=>{const r=c.getBoundingClientRect();return e.clientY<r.top+r.height/2});
+        if(sib)list.insertBefore(list.__drag,sib);else list.appendChild(list.__drag)})}
+      [...list.children].forEach(el=>{const g=el.querySelector('.ogrip');if(!g)return;
+        g.addEventListener('mousedown',()=>el.draggable=true);
+        el.addEventListener('dragstart',e=>{list.__drag=el;el.classList.add('dragging');e.dataTransfer.effectAllowed='move'});
+        el.addEventListener('dragend',()=>{el.draggable=false;el.classList.remove('dragging');list.__drag=null;
+          const now=[...list.children].map(c=>c.dataset.title);
+          PILE=seg==='top'?[...now,...PILE.slice(MAX)]:[...PILE.slice(0,MAX),...now];store();renderOpen()})});
+    }
+    // ✕ ON THE SIMPLE CARD (V.9.25) — the same verdict vocabulary Advanced has, on the view you
+    // actually work in. Writes the SAME V[vkey(p)] record, so a kill here rides Submit and the fast-lane
+    // exactly like an Advanced one: `keep` reasons flag-and-fix (card stays, turns green with its
+    // reason), the rest cancel it (card leaves the deck AND the pile immediately).
+    const row=(p,i,tail)=>{const v=V[vkey(p)]||{};
+      const el=document.createElement('div');el.className='ocard'+(isExtra(p.title)?' isnew':'')+(v.flag?' flagged':'');el.dataset.title=p.title;
+      el.innerHTML='<span class="num">'+(i+1)+'</span><span class="ogrip" title="Drag to reorder">⠿</span>'
+        +'<img loading="lazy" src="'+(p.image||'')+'" alt="">'
+        +'<div class="ot"><h4>'+(p.link?'<a href="'+p.link+'" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;border-bottom:1px solid rgba(27,26,23,.25)">'+p.title+'</a>':p.title)+(isExtra(p.title)?' <span class="newtag">NEW</span>':'')+'</h4><div class="os">'+sub(p)+'</div></div>'
+        +(tail?'<button class="opr" title="Promote into your Top 10">↑</button>':'<button class="orm" title="Send down to Up next">−</button>')
+        +'<button class="okill" title="Cancel — off the board now, say why later">✕</button>'
+        +(v.flag?'<div class="ostate">✓ flagged — '+(REASON_LABEL[v.reason]||v.reason)+' · stays live until it\'s fixed</div>':'');
+      el.querySelector(tail?'.opr':'.orm').addEventListener('click',()=>tail?promote(p.title):demote(p.title));
+      el.querySelector('.okill').addEventListener('click',()=>killNow(p));   // gone immediately → the shelf
+      return el;};
+    renderOpen=function(){
+      const dead=deadTitles();
+      const order=PILE.map(pick).filter(p=>p&&!dead.has(p.title));   // a cancel — here or in Advanced — is gone from the deck
+      const top=order.slice(0,MAX),tail=order.slice(MAX);
+      openHead.innerHTML='Your top '+top.length+' — the cards that open the deck<span class="d">Drag ⠿ to reorder · − to send one down · ✕ to cancel it on the spot (say why later, below) · Submit sends it live.</span>';
+      poolHead.innerHTML='Up next · '+tail.length+'<span class="d">The rest of the deck your viewers see, in the system’s order. It auto-ranks until you touch it — drag ⠿ to reorder, ↑ to pull one into your Top 10, ✕ to cancel on the spot. Be as hawkish as you like.</span>';
+      openList.innerHTML='';top.forEach((p,i)=>openList.appendChild(row(p,i,false)));openDrag(openList,'top');
+      pool.innerHTML='';tail.forEach((p,i)=>pool.appendChild(row(p,i+MAX,true)));openDrag(pool,'tail');
+    };
+    renderOpen();renderCancelled();
+    const mt=document.getElementById('modetoggle');
+    mt.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{
+      mt.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));
+      const simple=b.dataset.mode==='simple';
+      document.getElementById('simple').style.display=simple?'':'none';
+      document.getElementById('advanced').hidden=simple;
+      if(!simple)renderPile();   // sync the advanced pile to any simple-view reorder
+      window.scrollTo({top:0});
+    }));
+  }
+
+  // ——— KILLS & FLAGS STATUS: "did my call land?" — every kill / bad-image / bad-link / note you've
+  // made, checked against the LIVE feed. Gone from the feed = shipped (✓). Still there = filed but
+  // not compiled yet (● pending). Closes the loop: reload after a compile and watch it flip. ———
+  {
+    const st=document.getElementById('status');
+    const feedKeys=new Set((d.picks||[]).map(p=>tok(p.title)));
+    renderStatus=()=>{
+      // kills + flags (a "keep" reason: wrong link / bad image) you added THIS session. r1 = a pre-baked
+      // prior-round verdict, already compiled — excluded so the panel is only "calls that haven't landed".
+      const RL=REASON_LABEL;
+      const flags=Object.values(V).filter(v=>v&&(v.killed||v.flag||((v.img==='bad'||v.betterImage||v.note)&&!v.r1)));
+      if(!flags.length){st.style.display='none';st.innerHTML='';return}
+      st.style.display='';
+      // a KILL lands when the card LEAVES the feed; a keep-flag (link/image fix) lands when the card STAYS
+      // but its problem is resolved — which the board can't see yet, so it reads "pending" until compiled.
+      const isPending=v=>v.killed?feedKeys.has(tok(v.t)):true;
+      const pend=flags.filter(isPending);
+      const rows=flags.map(v=>{
+        const type=(v.reason?(RL[v.reason]||v.reason):v.killed?'cancelled':v.img==='bad'?'bad image':v.betterImage?'new image':'note')
+          +(v.until?' · back '+v.until:'');   // a rest states when it returns, so it can't read as a permanent kill
+        const state=isPending(v)?'<span class="ststate pending">● pending ship</span>'
+                                :'<span class="ststate done">✓ dropped / shipped</span>';
+        return '<div class="strow"><span class="sttitle">'+v.t+'</span><span class="sttype">'+type+'</span>'
+          +(v.note?'<span class="stnote">“'+v.note+'”</span>':'')+state+'</div>';
+      }).join('');
+      st.innerHTML='<div class="sthead">Your kills &amp; flags — did they land? · <b>'+pend.length+' pending</b> · '+(flags.length-pend.length)+' done'
+        +'<br><span style="font-weight:400;color:var(--dim);font-size:11.5px">Checked against the live feed. “Pending” = filed but not shipped yet — reload after a compile to watch it flip to ✓.</span></div>'+rows;
+    };
+    renderStatus();
+  }
+}).catch(e=>{document.getElementById('board').textContent='Could not load the feed: '+e});
+
+function addCard(p,g,tag,pos,probe){
+  SEEN.set(vkey(p),p);   // so the cancelled shelf can still draw it after it has left every list
+  const el=document.createElement('div');el.className='card';el.dataset.id=p.id+(tag==='pile'?'::pile':tag==='lens'?'::lens':'');el.dataset.vk=vkey(p);
+  if(tag==='pile'){el.dataset.title=p.title;el.dataset.sfx=(p.top?' · 👑':p.lead?' · ▲':'')}   // for drag reorder + renumber
+  if(probe&&p.image)probeRes(el,p.image);
+  const bk=bakedFor(p.title);
+  const badge=tag==='pile'?'<span class="badge pile">#'+pos+(p.top?' · 👑':p.lead?' · ▲':'')+'</span><span class="grip" title="Drag to reorder the pile">⠿</span>'
+    :tag==='lens'?'<span class="badge lens">LENS'+(p._summer?' · SUMMER RUN':'')+(pos?' · PILE #'+pos:'')+'</span>'
+    :tag==='appr'?'<span class="badge appr">✓'+(bk&&bk.stars?' ★'+bk.stars:'')+' APPROVED</span>'
+    :bk?'<span class="badge saved">★'+(bk.stars||'·')+' SAVED</span>'
+    :tag==='new'?'<span class="badge new">NEW</span>':'';
+  const title=p.link?'<a href="'+p.link+'" target="_blank" rel="noopener">'+p.title+'<span class="ext">↗</span></a>':p.title;
+  // WHY IT'S HERE — a plain line so no section needs decoding. Keyed off the card's role (tag).
+  const why=tag==='lens'?(p._summer
+        ?'In season right now — an open-air pick that fits this weekend’s weather.'
+        :'Dated for THIS weekend and fits the forecast — your testers see these first.')
+    :tag==='pile'?'In the opening deck your testers swipe first. Drag ⠿ to set the order.'
+    :tag==='new'?'A new find — NOT live yet. Tap <b>↑ Top 10</b> to drop it straight into your deck (Simple view); ✕ to pass.'
+    :tag==='appr'?'Approved for your permanent library — always in rotation. ✕ retires it.'
+    :'';
+  el.innerHTML=badge
+    +'<button class="kill" title="Kill">✕</button>'
+    +'<img loading="lazy" src="'+(p.image||'')+'" alt="">'
+    +'<div class="meta">'
+    +(why?'<div class="why">'+why+'</div>':'')
+    +'<h3>'+title+'</h3>'
+    +'<div class="sub">'+(p.venue||'')+' · '+(p.when||'')+'</div>'
+    +'<div class="src">'+(p.source||p.tier||'')+(p.editorScore!=null?' · judge '+p.editorScore:'')+(p.buzz>1?' · buzz '+p.buzz:'')+'</div>'
+    +'<div class="stars">'+[1,2,3,4,5].map(n=>'<button class="star" data-n="'+n+'" aria-label="'+n+' stars">★</button>').join('')+'</div>'
+    +'<div class="row"><button class="b imgup">IMG ✓</button><button class="b imgdn">IMG ✗</button><button class="b canon">+CANON</button><button class="b topb" title="Escalate: leads the deck with a Top pick pill">👑 TOP</button><button class="b leadb" title="Promote into your Top 10 (Simple view)">↑ Top 10</button><button class="b laterb" title="This weekend only: sinks to the back of the pile (not a kill)">▼ LATER</button></div>'
+    +'<input class="inp note" placeholder="note — why / what&#39;s off / bad link">'
+    +'<input class="inp better" placeholder="better image URL">'
+    +'<div class="ruledtag">✓ your call — rides Submit</div>'
+    +'</div>';
+  const get=()=>V[vkey(p)]??={t:p.title};
+  if(!V[vkey(p)]&&bk){V[vkey(p)]={t:p.title,stars:bk.stars,img:bk.img,note:bk.note,r1:true}}
+  const v=V[vkey(p)];
+  const stars=el.querySelectorAll('.star');
+  const paint=n=>stars.forEach(s=>s.classList.toggle('on',+s.dataset.n<=n));
+  stars.forEach(s=>s.addEventListener('click',()=>{const n=+s.dataset.n;get().stars=(get().stars===n?undefined:n);paint(get().stars||0);update()}));
+  // ✕ no longer means "delete" — it asks WHAT'S WRONG, and the reason routes the fix. "keep" reasons
+  // (wrong link / bad image / low-res) flag it for a fix and the pick STAYS live; the rest remove it.
+  // ✕ cancels on the spot — off this grid, out of the Simple deck, onto the shelf. No classify-first.
+  el.querySelector('.kill').addEventListener('click',()=>{
+    // every TWIN goes too — the same event can be rendered in the lens, the feed and the library, and
+    // leaving its copies on screen is what let round #22 file one pick as both "4* KILL" and "4*".
+    document.querySelectorAll(`.card[data-vk="${CSS.escape(vkey(p))}"]`).forEach((c)=>{
+      c.classList.add('dead');setTimeout(()=>c.remove(),320)
+    });
+    killNow(p);renderPile();renderStatus();
+  });
+  el.querySelectorAll('.b').forEach(b=>b.addEventListener('click',()=>{
+    if(b.classList.contains('canon')){b.classList.toggle('on');get().canon=b.classList.contains('on')||undefined;update();return}
+    if(b.classList.contains('topb')){b.classList.toggle('on');get().top=b.classList.contains('on')||undefined;update();renderPile();return}
+    if(b.classList.contains('leadb')||b.classList.contains('laterb')){
+      const isLead=b.classList.contains('leadb'),was=b.classList.contains('on');
+      el.querySelectorAll('.leadb,.laterb').forEach(x=>x.classList.remove('on'));
+      if(!was)b.classList.add('on');
+      get().lead=(!was&&isLead)||undefined;get().later=(!was&&!isLead)||undefined;
+      if(isLead){const lb=el.querySelector('.leadb');lb.textContent=was?'↑ Top 10':'✓ In Top 10';if(!was)promoteToDeck(p);}   // ANY card → into the Simple deck's Top 10, with feedback
+      update();return}
+    const up=b.classList.contains('imgup'),was=b.classList.contains('on');
+    el.querySelectorAll('.imgup,.imgdn').forEach(x=>x.classList.remove('on'));
+    if(!was)b.classList.add('on');
+    get().img=was?undefined:(up?'good':'bad');update();
+  }));
+  el.querySelector('img').addEventListener('click',()=>{if(p.image)focusImg(p)});
+  el.querySelector('.note').addEventListener('change',e=>{get().note=e.target.value.trim()||undefined;update()});
+  el.querySelector('.better').addEventListener('change',e=>{get().betterImage=e.target.value.trim()||undefined;update()});
+  if(v){if(v.stars)paint(v.stars);if(v.img)el.querySelector(v.img==='good'?'.imgup':'.imgdn').classList.add('on');
+    if(v.canon)el.querySelector('.canon').classList.add('on');
+    if(v.top)el.querySelector('.topb').classList.add('on');
+    if(v.lead)el.querySelector('.leadb').classList.add('on');
+    if(v.later)el.querySelector('.laterb').classList.add('on');
+    if(v.note)el.querySelector('.note').value=v.note;if(v.betterImage)el.querySelector('.better').value=v.betterImage;
+    if(v.killed){el.remove();return}}
+  g.appendChild(el);
+}
+// ——— PILE DRAG — hand-set the opening order. Native DnD, armed only from the ⠿ grip so the
+// card's inputs/links stay usable. On drop: renumber badges, snapshot titles into PILE (rides
+// store() + the Submit payload as PILE-ORDER, compiled into taste/weekly.json's `pile`). ———
+function enableDrag(pg){
+  let dragEl=null;
+  [...pg.children].forEach(el=>{
+    const grip=el.querySelector('.grip');if(!grip)return;
+    grip.addEventListener('mousedown',()=>{el.draggable=true});
+    el.addEventListener('dragstart',e=>{dragEl=el;el.classList.add('dragging');e.dataTransfer.effectAllowed='move';try{e.dataTransfer.setData('text/plain',el.dataset.title||'')}catch(_){/* IE */}});
+    el.addEventListener('dragend',()=>{el.draggable=false;el.classList.remove('dragging');dragEl=null;
+      PILE=[...pg.children].map(c=>c.dataset.title);renumber(pg);update()});
+  });
+  pg.addEventListener('dragover',e=>{
+    if(!dragEl)return;e.preventDefault();e.dataTransfer.dropEffect='move';
+    const sib=[...pg.children].filter(c=>c!==dragEl).find(c=>{
+      const r=c.getBoundingClientRect();
+      return e.clientY<r.top+r.height/2||(e.clientY<r.bottom&&e.clientX<r.left+r.width/2);
+    });
+    if(sib)pg.insertBefore(dragEl,sib);else pg.appendChild(dragEl);
+  });
+  pg.addEventListener('drop',e=>e.preventDefault());
+}
+function renumber(pg){[...pg.children].forEach((el,i)=>{
+  const b=el.querySelector('.badge.pile');if(b)b.textContent='#'+(i+1)+(el.dataset.sfx||'');
+})}
+function verdicts(){return Object.values(V).filter(v=>v.stars||v.killed||v.img||v.note||v.betterImage||v.canon||v.top||v.lead||v.later||v.flag||v.reason)}
+function update(){
+  const vs=Object.values(V);
+  document.getElementById('count').textContent=vs.filter(v=>v.top).length+' top · '+vs.filter(v=>v.lead).length+' lead · '+vs.filter(v=>v.later).length+' later · '+vs.filter(v=>v.stars).length+' starred · '+vs.filter(v=>v.killed).length+' killed · '+vs.filter(v=>v.canon).length+' canon';
+  // reflect every open verdict back onto its card(s) — the same pick in the lens/pile/feed lights up
+  // together, so a tap visibly "takes" and it's clear a verdict here counts everywhere.
+  document.querySelectorAll('.card').forEach(el=>{
+    const v=V[el.dataset.vk||''];
+    // v.flag/v.reason included (V.9.26): a "wrong link" fix sets neither img nor note, so the next
+    // update() used to strip the ✓-ruled border straight back off the card you'd just ruled on.
+    el.classList.toggle('ruled',!!(v&&(v.stars||v.killed||v.img||v.note||v.betterImage||v.canon||v.top||v.lead||v.later||v.flag||v.reason)));
+  });
+  renderStatus();   // refresh the "did my call land?" panel on every verdict
+  store();
+}
+// the hand-dragged pile order, as a payload line (empty until a drag happens this round)
+function pileLine(compact){
+  if(!PILE||!PILE.length)return '';
+  // strip cancelled titles — buildOverrides already did this for the fast lane, but the ISSUE line
+  // didn't, so round #19 filed a pile with "IJ-Hallen" at #4 that he'd cancelled in the same round.
+  // A pile and a kill naming the same pick is a contradiction the compile has to resolve by hand.
+  const dead=new Set(Object.values(V).filter(v=>v&&v.killed).map(v=>v.t));
+  const order=PILE.filter(t=>!dead.has(t));
+  if(!order.length)return '';
+  return compact?'\n- PILE-ORDER | '+order.join(' > ')
+    :'\n· PILE ORDER (hand-set) — '+order.map((t,i)=>(i+1)+'. '+t).join(' · ');
+}
+// pretty, human-readable — for Copy + Email (no size limit there)
+// DROPS in the durable record. The fast-lane `added` array expires with the feed, so without this a
+// pasted pick would vanish on the next refresh — this is what the compile folds into taste/scouted.json.
+function dropLine(compact){
+  const dead=new Set(Object.values(V).filter(v=>v&&v.killed).map(v=>v.t));
+  const ds=extras.filter(e=>e&&e._drop&&!dead.has(e.title));
+  if(!ds.length)return '';
+  return compact
+    ? '\n'+ds.map(d=>'- DROPPED | '+d.title+' | '+d.link).join('\n')
+    : '\n· DROPPED IN (paste-box finds — fold into taste/scouted.json)\n'
+      +ds.map(d=>'  · '+d.title+(d.venue?' — '+d.venue:'')+'\n    '+d.link+(d.image?'\n    image: '+d.image:'')).join('\n');
+}
+function payload(){
+  const vs=verdicts();
+  return 'WKNDR curation — '+new Date().toISOString().slice(0,16)+' — '+vs.length+' verdicts\n'+vs.map(v=>{
+    const bits=[];
+    if(v.top)bits.push('👑TOP');
+    if(v.lead)bits.push('▲LEAD');
+    if(v.later)bits.push('▼LATER');
+    if(v.stars)bits.push('★'.repeat(v.stars));
+    // a REST is not a KILL — it names a return date, and compiles to corpus.rested (not eventVeto)
+    if(v.killed)bits.push(v.until?'REST until '+v.until:'KILL');
+    if(v.reason)bits.push('reason:'+v.reason);
+    if(v.flag&&!v.killed)bits.push('FLAG (keep+fix)');
+    if(v.canon)bits.push('CANON');
+    if(v.img)bits.push('image '+v.img);
+    if(v.note)bits.push('“'+v.note+'”');
+    if(v.betterImage)bits.push('better: '+v.betterImage);
+    return '· '+v.t+' — '+bits.join(' · ');
+  }).join('\n')+pileLine(false)+dropLine(false);
+}
+// COMPACT ASCII — for the GitHub prefill URL only. Multi-byte glyphs (★ → %E2%98%85 = 9 chars each,
+// 👑 ▲ ▼ · — “ ”) blow the ~8KB URL cap fast; plain ASCII (4* etc.) keeps even an 80-verdict round
+// under the limit, so the issue opens fully prefilled — no paste. Reads + compiles identically.
+function payloadCompact(){
+  const vs=verdicts();
+  return 'WKNDR curation '+new Date().toISOString().slice(0,16)+' - '+vs.length+' verdicts\n'+vs.map(v=>{
+    const bits=[];
+    if(v.top)bits.push('TOP');
+    if(v.lead)bits.push('LEAD');
+    if(v.later)bits.push('LATER');
+    if(v.stars)bits.push(v.stars+'*');
+    if(v.killed)bits.push(v.until?'REST:'+v.until:'KILL');   // REST → corpus.rested {match,until}; KILL → eventVeto
+    if(v.reason)bits.push('why:'+v.reason);
+    if(v.flag&&!v.killed)bits.push('FLAG');
+    if(v.canon)bits.push('CANON');
+    if(v.img==='bad')bits.push('img:bad');   // img:good omitted from the URL (no-action) → headroom; full record is in Copy/Email
+    if(v.note)bits.push('note:'+v.note);
+    if(v.betterImage)bits.push('img-url:'+v.betterImage);
+    return '- '+v.t+' | '+bits.join(' ');
+  }).join('\n')+pileLine(true)+dropLine(true);
+}
+document.getElementById('copy').addEventListener('click',async()=>{
+  try{await navigator.clipboard.writeText(payload())}catch(e){}
+  const b=document.getElementById('copy');b.textContent='Copied';setTimeout(()=>b.textContent='Copy',2000);
+});
+// SUBMIT → GITHUB: files the verdicts as an issue on the wkndr repo — durable, versioned, and the
+// canonical inbox Claude compiles from (gh issue list). No token needed: a prefilled issue URL,
+// Ness is already signed in. Long payloads exceed GitHub's ~8KB URL cap → auto-fallback: payload
+// goes to the clipboard and the issue opens ready to paste.
+// TRACK A FAST-LANE — the board's live curation as the overrides doc the app applies in seconds.
+// pile = your full deck order; killed/flags carry the reason so the app drops or surfaces accordingly.
+// ——— THE DROP BOX (V.9.32) — paste a social link, get a pick.
+// Getting real Amsterdam events out of Instagram was the long-running content blocker: the feed's
+// sources are all crawlable sites, and the stuff Ness actually spots is on IG. The Worker reads the
+// post's OpenGraph tags with a crawler UA (no login, no key) and upgrades the image to native
+// resolution via /media/?size=l — og:image alone is a ~640px preview that would trip the low-res gate.
+// A pulled pick becomes an `extras` entry marked `_drop`, so it rides the SAME path New Finds already
+// take (persistence, the pile, Submit) and additionally ships its own data in `added` — the fast lane
+// can't order a pick the app has never heard of, so drops travel with their content.
+(function(){
+  const inp=document.getElementById('dropurl'),go=document.getElementById('dropgo'),
+        stat=document.getElementById('dropstat'),prev=document.getElementById('droppreview'),
+        evbox=document.getElementById('dropevents');
+  if(!inp||!go)return;
+  const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const say=(msg,bad)=>{stat.className=bad?'bad':'';stat.textContent=msg};
+  const busy=on=>{go.disabled=on;go.textContent=on?'Reading…':'Pull';
+    if(on){stat.className='';stat.innerHTML='<span class="dspin"></span><span>Reading the post…</span>'}};
+
+  async function pull(){
+    const url=(inp.value||'').trim();
+    prev.innerHTML='';evbox.innerHTML='';
+    if(!url){say('Paste a link first.',true);return}
+    busy(true);
+    let r,j;
+    try{
+      r=await fetch(CURATE_URL+'/drop',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({url})});
+      j=await r.json();
+    }catch(e){busy(false);say("Couldn't reach the reader — check your connection and try again.",true);return}
+    busy(false);
+    if(!r.ok||!j||!j.drop){say((j&&j.error)||'That post could not be read.',true);return}
+    show(j.drop);
+  }
+
+  function show(d){
+    // A pick the app can render: the caption becomes blurb, the post URL is the link out. `_drop`
+    // marks it for the `added` payload; `_lowres` only ever warns — Ness still decides.
+    const pick={title:d.title,link:d.url,image:d.image||'',blurb:d.caption||'',
+      venue:d.author?'@'+d.author:'',when:'',source:d.author?'@'+d.author:(d.platform||'dropped'),
+      _drop:true};
+    const dim=(d.width&&d.height)?d.width+'×'+d.height:'';
+    say('Pulled from '+(d.platform||'the post')+(d.date?' · '+d.date:''));
+    prev.innerHTML='<div class="dprev">'
+      +(d.image?'<img src="'+esc(d.image)+'" alt="">':'')
+      +'<div class="dmeta">'
+      +'<h4>'+esc(d.title)+'</h4>'
+      +'<p class="dsrc">'+(d.author?'@'+esc(d.author):'')+(d.date?' · '+esc(d.date):'')+'</p>'
+      +(dim?'<span class="dbadge'+(d.lowRes?' warn':'')+'">'+dim+(d.lowRes?' · low res':'')+'</span>':'')
+      +'<div class="dacts"><button class="b" id="dropadd">↑ Add to my top 10</button>'
+      // A roundup carousel's events are TYPESET INTO the slides — the caption carries none of them.
+      // Dropping the post alone gets one card and loses the twenty events behind it.
+      +(d.slides>1?'<button class="b go" id="dropread">↧ Find the events</button>':'')
+      +'<button class="b" id="dropskip">Discard</button></div>'
+      +'</div></div>';
+    document.getElementById('dropadd').addEventListener('click',()=>{
+      if(typeof addExtra!=='function'){say('The board is still loading — give it a second.',true);return}
+      const isNew=addExtra(pick);   // → extras + PILE + persisted, exactly like a New Find
+      inp.value='';prev.innerHTML='';evbox.innerHTML='';
+      // addExtra lands it at slot 10 (promote → moveTo(t, MAX-1)), same as any New Find — say so
+      // rather than claiming it leads, or the first drop looks like it went missing.
+      if(isNew)undoBar([pick.title],'Added at #10 in your top 10 — drag it up if it should lead.');
+      else say('That one is already in your deck — nothing added.');
+    });
+    const rd=document.getElementById('dropread');
+    if(rd)rd.addEventListener('click',()=>readListings(d,rd));
+    document.getElementById('dropskip').addEventListener('click',()=>{prev.innerHTML='';evbox.innerHTML='';say('')});
+  }
+
+  // Success + an escape hatch in one line. Undo is the reason you can add 40 cards without
+  // hesitating: the cost of being wrong is one click, not forty.
+  function undoBar(titles,msg){
+    stat.className='';
+    stat.innerHTML='<span>'+esc(msg)+' Submit sends them live.</span>'
+      +'<button class="b" id="dropundo" style="margin-left:2px">↩ Undo</button>';
+    document.getElementById('dropundo').addEventListener('click',()=>{
+      if(typeof undoExtras!=='function'){say('Could not undo — reload and try again.',true);return}
+      undoExtras(titles);
+      say('Undone — '+titles.length+' removed from the deck.');
+    });
+  }
+
+  // ——— READ THE LISTINGS ———
+  async function readListings(d,btn){
+    btn.disabled=true;btn.textContent='Reading…';
+    evbox.innerHTML='';
+    say('Reading '+d.slides+' slides — about '+Math.max(5,Math.round(d.slides*2))+' seconds…');
+    let r,j;
+    try{
+      r=await fetch(CURATE_URL+'/drop/read',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({url:d.url})});
+      j=await r.json();
+    }catch(e){btn.disabled=false;btn.textContent='↧ Find the events';say("Couldn't reach the reader.",true);return}
+    btn.disabled=false;btn.textContent='↧ Find the events';
+    if(!r.ok||!j||!j.events){say((j&&j.error)||'Could not read those slides.',true);return}
+    if(!j.events.length){say('Read '+j.slidesRead+' slides — no listings found on them.',true);return}
+    showEvents(j,d);
+  }
+
+  function showEvents(j,d){
+    // A dish roundup returns ~8 and you want most of them, so those start ticked. A full week's
+    // agenda returns ~90 — pre-ticking that means one careless click dumps 90 cards into the deck,
+    // so a big read starts EMPTY and you opt in. The threshold is where "review a shortlist" turns
+    // into "pick a few from a list".
+    const ALL_ON_UPTO=20, preTick=j.events.length<=ALL_ON_UPTO;
+    say('Found '+j.events.length+' events across '+j.slidesRead+' slides'+(j.failed?' ('+j.failed+' unreadable)':'')
+      +(preTick?'. Tick the ones you want.':'. Nothing ticked yet — tick the ones you want.'));
+    // Group by the day heading exactly as printed — a misread date stays visible rather than being
+    // silently normalised into something plausible.
+    const groups=[];const byDay={};
+    for(const e of j.events){const k=e.date||'No date';if(!byDay[k]){byDay[k]=[];groups.push(k)}byDay[k].push(e)}
+    let html='<div class="eh"><b>'+j.events.length+' events</b><span>from @'+esc(d.author||'')+' · tick to add · each becomes its own card</span></div>';
+    let i=0;
+    for(const g of groups){
+      html+='<div class="evday">'+esc(g)+'</div>';
+      for(const e of byDay[g]){
+        html+='<div class="evrow"><input type="checkbox" id="ev'+i+'" data-i="'+j.events.indexOf(e)+'"'+(preTick?' checked':'')+'>'
+          +(e.image?'<img class="evthumb" src="'+esc(e.image)+'" alt="" loading="lazy">':'')
+          +'<label for="ev'+i+'">'+esc(e.title)
+          +(e.venue?' <span class="vn">· '+esc(e.venue)+'</span>':'')
+          +(e.part?'<span class="pt '+(e.part==='night'?'night':'')+'">'+esc(e.part)+'</span>':'')
+          +(e.blurb?'<span class="evbl">'+esc(e.blurb)+'</span>':'')
+          +'</label></div>';
+        i++;
+      }
+    }
+    html+='<div class="evfoot"><button class="b go" id="evadd">↑ Add ticked to the deck</button>'
+      +'<button class="b" id="evnone">'+(preTick?'Untick all':'Tick all')+'</button>'
+      +'<button class="b" id="evclose">Close</button></div>';
+    evbox.innerHTML=html;
+
+    document.getElementById('evadd').addEventListener('click',()=>{
+      if(typeof addExtra!=='function'){say('The board is still loading — give it a second.',true);return}
+      const picked=[...evbox.querySelectorAll('input:checked')].map(c=>j.events[+c.dataset.i]).filter(Boolean);
+      if(!picked.length){say('Nothing ticked.',true);return}
+      // Each listing becomes its own pick, carrying the ROUNDUP's link (a listing has no url of its
+      // own). A FEATURE slide donates its photo — one dish, one picture, so the slide image IS the
+      // card. A dense listing slide sends none: its image is a wall of text, and the app's own
+      // typographic poster beats a photo of a timetable. The pipeline re-images either on refresh.
+      const fresh=[];
+      for(const e of picked){
+        // e.when is the reader's parseable rewrite ("Fri 31 Jul"); e.date is what the slide printed
+        // ("FRI 31/07"), which lib/when.ts cannot read. Passing the printed form would give a card
+        // with no date stamp, no expiry and no per-day weather fit.
+        const ok=addExtra({title:e.title,link:d.url,image:e.image||'',
+          blurb:e.blurb||[e.venue,e.date].filter(Boolean).join(' · '),
+          venue:e.venue||'',when:e.when||'',category:e.category||'',
+          source:'@'+(d.author||'roundup'),_drop:true});
+        if(ok)fresh.push(e.title);
+      }
+      evbox.innerHTML='';prev.innerHTML='';inp.value='';
+      const dupes=picked.length-fresh.length;
+      if(!fresh.length){say('All '+picked.length+' were already in your deck — nothing added.');return}
+      undoBar(fresh,'Added '+fresh.length+' event'+(fresh.length===1?'':'s')
+        +(dupes?' ('+dupes+' already there)':'')+' to the deck.');
+    });
+    document.getElementById('evnone').addEventListener('click',()=>{
+      const on=!preTick;   // mirrors the button's label: "Tick all" on a big read, "Untick all" on a small one
+      evbox.querySelectorAll('input').forEach(c=>{c.checked=on});
+    });
+    document.getElementById('evclose').addEventListener('click',()=>{evbox.innerHTML='';say('')});
+  }
+
+  go.addEventListener('click',pull);
+  inp.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();pull()}});
+})();
+
+function buildOverrides(){
+  const killed=[],flags=[],dead=new Set();
+  for(const v of Object.values(V)){
+    // `until` rides along for the durable compile (→ corpus.rested). The fast lane drops a rest the
+    // same way it drops a kill — right for THIS weekend — and the override doc expires with the feed
+    // anyway; only the corpus entry can hold it off until the date and then bring it back.
+    if(v.killed){killed.push({title:v.t,...(v.reason?{reason:v.reason}:{}),...(v.until?{until:v.until}:{})});dead.add(v.t)}
+    else if(v.flag)flags.push({title:v.t,...(v.reason?{reason:v.reason}:{})});
+  }
+  // a cancelled title never rides the pile — applyOverrides drops killed first, but sending a title
+  // in both lists is a contradiction the durable compile would have to re-resolve by hand.
+  // DROPS ride with their content. pile/killed/flags are title-only because they re-stamp picks the
+  // app already has; a pasted pick isn't in the static feed at all, so applyOverrides has to be able
+  // to build it. Cancelled drops are excluded the same way cancelled titles are.
+  const added=extras.filter(e=>e&&e._drop&&!dead.has(e.title)).slice(0,50)
+    .map(e=>({title:e.title,link:e.link,image:e.image||undefined,blurb:e.blurb||undefined,
+              venue:e.venue||undefined,when:e.when||undefined,category:e.category||undefined,
+              source:e.source||undefined}));
+  return {generatedAt:feedGeneratedAt,pile:(PILE||[]).filter(t=>!dead.has(t)).slice(0,200),killed,flags,added};
+}
+async function postCurate(){
+  try{const r=await fetch(CURATE_URL+'/curate/amsterdam',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(buildOverrides())});return r.ok}catch(e){return false}
+}
+// SUBMIT — two writes: (1) the fast-lane POST → the app applies your order/kills in seconds; (2) the
+// GitHub issue → the durable record Claude folds into the corpus on the next refresh. Fast-lane first.
+document.getElementById('ghfile').addEventListener('click',async()=>{
+  const b=document.getElementById('ghfile');
+  b.textContent='Publishing…';
+  const live=await postCurate();
+  const base='https://github.com/nessim-higson/wkndr/issues/new';
+  const title='WKNDR curation '+new Date().toISOString().slice(0,10);
+  const full=base+'?labels=curation&title='+encodeURIComponent(title)+'&body='+encodeURIComponent(payloadCompact());
+  // THE HALF-SUBMIT (fixed V.9.29). window.open lands on GitHub's PREFILLED new-issue form — the issue
+  // does not exist until "Submit new issue" is pressed there. The button used to say "Live ✓ — filed"
+  // the instant the tab opened, which is a claim it cannot make: the 2026-07-30 18:20 round posted to
+  // the fast lane, said "filed", and filed nothing — so its ★ ratings and 👑 crowns were lost. They
+  // only travel in the issue; the fast lane carries pile + cancels + flags ONLY.
+  const long=full.length>=7900;
+  if(long){try{await navigator.clipboard.writeText(payload())}catch(e){}}
+  const win=window.open(long
+    ? base+'?labels=curation&title='+encodeURIComponent(title)+'&body='+encodeURIComponent('(long round — verdicts are on your clipboard, paste here)')
+    : full,'_blank');
+  const note=document.getElementById('barnote');
+  if(!win){   // popup blocked — nothing opened, so say so instead of claiming a draft exists
+    try{await navigator.clipboard.writeText(payload())}catch(e){}
+    b.textContent=live?'Live ✓ — popup blocked':'Copied — popup blocked';
+    note.className='barnote warn';
+    note.innerHTML='<b>Your ★ and 👑 did NOT get filed</b> — the GitHub tab was blocked. The round is on your clipboard: open an issue on the repo and paste it. '
+      +(live?'(Your order + cancels ARE live.)':'');
+  }else{
+    b.textContent=live?'Live ✓ — finish on GitHub':'Draft opened (fast-lane offline)';
+    note.className='barnote warn';
+    note.innerHTML='<b>One more click:</b> press <b>“Submit new issue”</b> on the GitHub tab — the issue isn’t created until you do. '
+      +'Your order and cancels are live already; <b>★ ratings and 👑 crowns only travel in the issue</b>.'
+      +(long?' (Long round — the full text is on your clipboard, paste it in.)':'');
+  }
+  setTimeout(()=>{b.textContent='Submit → GitHub'},3500);   // the note stays until the next Submit
+});
+document.getElementById('send').addEventListener('click',async()=>{
+  const b=document.getElementById('send');b.textContent='Sending…';
+  try{
+    const r=await fetch(FORM,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({subject:'WKNDR curation',verdicts:payload()})});
+    if(r.ok){b.textContent='Sent ✓';b.classList.add('done')}else throw 0;
+  }catch(e){b.textContent='Send failed — use Copy';}
+  setTimeout(()=>{b.textContent='Email',b.classList.remove('done')},3000);
+});
+</script>
+</body>
+</html>

@@ -1,6 +1,7 @@
 import type { Mode, Pick } from '../types'
 import { tasteScore, tokensFor, type Taste } from '../taste'
 import { latestDateOf, upcomingWeekendEnd, whenActiveBy, whenWeekendDays } from '../lib/when'
+import { nearScore, type Origin } from '../lib/geo'
 
 export const MODES: Mode[] = ['HOT', 'WARM', 'COOL', 'COLD_WET', 'VOLATILE']
 
@@ -201,7 +202,7 @@ const EVERGREEN_FLOOR = 0.5
 // a seasonal "All summer" venue stays evergreen, no bonus. Sized with the other sub-terms (buzz
 // caps 4, editor 5): decisive inside the tier, never enough to cross the +10 weather boundary.
 const SUN_BONUS = 3
-export function rankPicks(picks: Pick[], mode: ModeSpec, taste?: Taste, seed = 0): Pick[] {
+export function rankPicks(picks: Pick[], mode: ModeSpec, taste?: Taste, seed = 0, near?: Origin | null): Pick[] {
   const end = upcomingWeekendEnd()
   const fri = new Date(end.getFullYear(), end.getMonth(), end.getDate() - 2)   // the weekend's Friday, 00:00
   // PER-DAY WEATHER. Given {sat,sun}, each pick is scored against the mode of the day(s) it is
@@ -238,6 +239,10 @@ export function rankPicks(picks: Pick[], mode: ModeSpec, taste?: Taste, seed = 0
     (modesFor(p).some((m) => p.weatherFit.includes(m)) ? 10 : 0) + freshBoost(p) + buzzBoost(p) + popBoost(p) + sunBonus(p)
     + (p.editorScore ?? 0) * EDITOR_W
     + (taste ? tasteScore(p, taste) : 0) + (seed ? jitter(p.id, seed) * 3.5 : 0)
+    // NEAR ME (V.11): only when the user has asked for it AND we know where they are. A weight,
+    // never a filter — see lib/geo.ts nearScore. Capped under the +10 weather term so weather
+    // stays the thesis, and 👑 TOP / ▲ LEAD / the hand pile still lead the deck (orderServed).
+    + (near ? nearScore(p, near) : 0)
   // Pure score order. De-clustering used to run HERE (diversify), but App.tsx re-segments the deck into
   // [live, canonSlice] afterward, which discarded it (→ category "waves"). diversify is now exported and
   // applied to the ACTUAL served sequence in App.tsx instead. Scores are computed ONCE per pick

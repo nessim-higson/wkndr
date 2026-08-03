@@ -39,6 +39,11 @@ export interface Pick {
   source: string       // publication credited (signal + link model)
   link: string         // link out to the source/booking page (never republish)
   weatherFit: Mode[]   // modes this pick peaks in
+  lat?: number         // venue coordinates (V.11). OPTIONAL and usually absent: today `lib/geo.ts`
+  lon?: number         // resolves position from venue/area via its own gazetteer. When the pipeline
+                       // starts stamping coords (STATE.md open item 8 — RA's `venue.area`, I amsterdam's
+                       // address JSON-LD, PDOK on the cron), resolveGeo prefers these and the
+                       // gazetteer becomes the fallback. Nothing else needs to change.
   verify?: boolean     // true = detail (venue/time) needs confirming before relying
   status?: Status      // live availability/scarcity from the crawl
   buzz?: number        // how many independent sources flagged it (the "what's talked about" signal)
