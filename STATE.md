@@ -1,11 +1,11 @@
 # WKNDR — STATE (catch-me-up snapshot)
 
-_Living "where are we right now" doc — a **snapshot, not a history**. **Updated 2026-08-02.** Read this
+_Living "where are we right now" doc — a **snapshot, not a history**. **Updated 2026-08-03.** Read this
 FIRST in a new chat. For strategy + backlog see `docs/backlog.md`; for the pipeline architecture see
 `docs/pipeline-architecture.md` + `docs/source-map.md`; for **who may write to the deck vs to a personal
 profile** (board / Tune / airlock — read before touching either) see `docs/curation-surfaces.md`; for the
 **board roadmap** (auto-compile tracks) see `docs/board-roadmap.md`; for full **version history** see
-`CHANGELOG.md` (current to app V.10.19 / board V.9.33) and the **git log / tags**. Onboarding:
+`CHANGELOG.md` (current to app V.10.19 / board V.9.35) and the **git log / tags**. Onboarding:
 `CLAUDE.md`. App lives in `/app` (Vite + React + TS, run with `bun`); ships to **Cloudflare Pages**
 (`wkndr.xyz` + `app.wkndr.xyz`) **and** GitHub Pages (legacy, keeps old share links alive)._
 
@@ -27,10 +27,12 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
 > sessions update (today it's on load).
 
 ## Live right now
-- **READ THE LISTINGS (board V.9.33, 2026-08-02) — ⚠️ NEEDS ONE COMMAND TO SWITCH ON:**
-  `cd worker/curate && npx wrangler secret put ANTHROPIC_API_KEY` (Ness-only — the key is a GitHub
-  secret, unreadable from here). Until then the button says "the reader is not switched on yet" and
-  everything else works. **What it does:** accounts like **@doubleamagazine** post a weekly Amsterdam
+- **READ THE LISTINGS (board V.9.35, 2026-08-03) — LIVE, key is set.** **Two carousel shapes:** a
+  `listing` (DAY/NIGHT dated agenda — 93 events off one post, NO images: the slide is a wall of text)
+  and a `feature` ("Amsterdam's best eats", ONE dish per slide — 8 events, and the slide PHOTO becomes
+  the card image). The reader classifies each slide (`cover`/`listing`/`feature`) before reading it;
+  the first version only knew listings and returned 2 events from a 10-slide feature post. A read of
+  >20 events starts UNTICKED (93 pre-ticked was one click from 93 cards). **What it does:** accounts like **@doubleamagazine** post a weekly Amsterdam
   events carousel with the listings **typeset into the slide images** — the caption has none of them,
   so a plain drop got one card and lost ~20 events. A carousel drop now offers **"📖 Read the N
   slides"**; each listing returns as a tickable row grouped under its printed day heading, and each

@@ -14,12 +14,22 @@
 // Model default is Sonnet: this is dense-but-clean typography, and the job is transcription plus
 // light structuring, not judgement. The editorial judge downstream is where taste gets applied.
 
-import { type Slide } from './extract'
+import { type Slide, toPortrait } from './extract'
 
 const API = 'https://api.anthropic.com/v1/messages'
 const DEFAULT_MODEL = 'claude-sonnet-5'
 /** A roundup runs to ~10 slides; cap so one pathological post can't burn the budget. */
 export const MAX_SLIDES = 12
+
+/** These accounts post two different carousel shapes, and the difference decides whether the slide's
+ *  photo is worth anything:
+ *   · `listing` — a dense typeset agenda ("FRI 31/07", then "<event> | <venue>" lines). Many events
+ *     per slide, and the slide image is a wall of text: useless as a card photo.
+ *   · `feature` — ONE recommendation per slide, with a real photograph, a title ("Hamachi Crudo at
+ *     Taiko") and a short write-up. The photo IS the card.
+ *   · `cover` — masthead only, no events.
+ *  The model reports which it saw, and only a `feature` slide donates its image. */
+export type SlideKind = 'listing' | 'feature' | 'cover'
 
 export type RoundupEvent = {
   title: string
@@ -31,6 +41,10 @@ export type RoundupEvent = {
    *  film/exhibition — and it's the difference between a 3pm picnic and a 3am afters. */
   part?: 'day' | 'night'
   category?: string
+  /** The slide's own write-up, on a feature slide. Becomes the card's blurb. */
+  blurb?: string
+  /** Set only for a feature slide: that slide's photo, wsrv-wrapped and ready to render. */
+  image?: string
   slide: number
 }
 
@@ -40,30 +54,44 @@ export class RoundupError extends Error {
   }
 }
 
-const SYSTEM = `You are WKNDR's extractor, reading one slide from an Amsterdam weekly-events carousel.
+const SYSTEM = `You are WKNDR's extractor, reading ONE slide from an Amsterdam city-guide carousel.
 
-Layout of these slides:
-- A section heading at the very top, either "DAY" or "NIGHT".
-- Under it, day headings like "FRI 31/07", each followed by event lines.
-- An event line is "<title> | <venue>". Spacing around the "|" is inconsistent — "Mykki Blanco|
-  Melkweg" and "Juno   |   Cinetol" are the same shape.
-- A long line WRAPS, and the wrapped part is indented. The venue is often what wrapped:
-  "Dekmantel with RHR & Skrillex, Skin on Skin, Nicolini & more |" / "    Amsterdams Bos" is ONE
-  event, venue "Amsterdams Bos". Join wrapped lines before splitting on "|".
+First decide which of three kinds of slide this is, and set "kind" accordingly.
 
-Rules:
-- FACTS ONLY. Transcribe exactly what is printed. Never invent, complete or guess a title, venue or
-  date, and never add events that are not on this slide. If a line is illegible, omit it.
-- Carry the day heading above a line onto every event beneath it, verbatim ("FRI 31/07").
-- Set part to "day" or "night" from the heading at the top of the slide.
-- Keep the film-maker or artist prefix in the title (e.g. "Bob Fosse's \\"Cabaret\\"").
-- A COVER slide — just a masthead like "PUBLIC SERVICE ANNOUNCEMENT", a logo, or a date range —
-  has no events: return {"events": []}. Do not manufacture entries to fill it.
+kind "cover" — a masthead only: a big title like "PUBLIC SERVICE ANNOUNCEMENT" or "We 8! Amsterdam's
+best eats right now", maybe over a photo, plus a logo. It lists nothing.
+  → return {"kind":"cover","events":[]}. Never manufacture entries to fill a cover.
+
+kind "listing" — a dense typeset agenda. A section heading at the top, either "DAY" or "NIGHT";
+under it day headings like "FRI 31/07"; under those, event lines shaped "<title> | <venue>".
+  - Spacing around the "|" is ragged: "Mykki Blanco| Melkweg" and "Juno   |   Cinetol" are the same.
+  - A long line WRAPS and the wrapped part is indented, and it is usually the venue that wrapped:
+    "Dekmantel with RHR & Skrillex, Skin on Skin & more |" / "   Amsterdams Bos" is ONE event with
+    venue "Amsterdams Bos". Rejoin wrapped lines before splitting on "|".
+  - Carry the day heading onto every event beneath it, verbatim ("FRI 31/07").
+  - Set part to "day" or "night" from the heading at the top of the slide.
+  - Keep an artist or film-maker prefix in the title (e.g. "Bob Fosse's \\"Cabaret\\"").
+  - Expect MANY events on such a slide. Transcribe every one.
+
+kind "feature" — ONE recommendation, presented as a photograph with a caption. Typically an
+underlined title near the bottom like "Hamachi Crudo at Taiko", then a few lines describing it.
+  → exactly ONE event.
+  - Split "<thing> at <place>" into title "<thing>" and venue "<place>". If there is no "at", put
+    the whole heading in title and leave venue out.
+  - Put the descriptive write-up in blurb, transcribed as printed (trim it at ~300 characters).
+  - These slides usually carry no date. Leave date out rather than inventing one.
+
+Rules for every kind:
+- FACTS ONLY. Transcribe what is printed. Never invent, complete or guess a title, venue, date or
+  description, and never add anything that is not on this slide. Omit an illegible line.
+- Ignore recurring furniture: a website URL in the corner ("full list on doubleamagazine.com"), a
+  page number, a logo, an @handle watermark. None of those are events.
 - category, only when obvious, is one of: out, eat, drink, art, live, stage, daytrip, market, shop.
-  A film screening or theatre is "stage"; a gig, club night or party is "live"; an exhibition or
-  gallery opening is "art". Omit the field when unsure.
+  A dish or restaurant is "eat"; a bar or cocktail is "drink"; a film or theatre is "stage"; a gig,
+  club night or party is "live"; an exhibition or gallery opening is "art". Omit when unsure.
 
-Return ONLY a JSON object: {"events":[{"title","venue","date","part","category"}]}`
+Return ONLY a JSON object:
+{"kind":"cover|listing|feature","events":[{"title","venue","date","part","category","blurb"}]}`
 
 type Fetcher = (url: string, init?: RequestInit) => Promise<Response>
 
@@ -123,22 +151,30 @@ async function readSlide(
   const text = j.content.filter((b) => b?.type === 'text').map((b) => b.text ?? '').join('')
   const a = text.indexOf('{'), b = text.lastIndexOf('}')
   if (a < 0 || b < 0) return []
-  let parsed: { events?: Partial<RoundupEvent>[] }
+  let parsed: { kind?: string; events?: Partial<RoundupEvent>[] }
   try {
     parsed = JSON.parse(text.slice(a, b + 1))
   } catch {
     return []
   }
-  return (parsed.events ?? [])
-    .filter((e) => e && typeof e.title === 'string' && e.title.trim())
-    .map((e) => ({
-      title: String(e.title).trim().slice(0, 200),
-      venue: e.venue ? String(e.venue).trim().slice(0, 120) : undefined,
-      date: e.date ? String(e.date).trim().slice(0, 60) : undefined,
-      part: e.part === 'day' || e.part === 'night' ? e.part : undefined,
-      category: e.category ? String(e.category).trim().slice(0, 20) : undefined,
-      slide: index + 1,
-    }))
+
+  const list = (parsed.events ?? []).filter((e) => e && typeof e.title === 'string' && e.title.trim())
+  // Only a feature slide donates its photo. A listing slide's image is a wall of text — as a card
+  // photo it would be worse than none, since the app falls back to its typographic poster.
+  // Belt and braces: a "feature" that somehow returned many events is really a listing.
+  const isFeature = parsed.kind === 'feature' && list.length === 1
+  const photo = isFeature ? toPortrait(slide.full) : undefined
+
+  return list.map((e) => ({
+    title: String(e.title).trim().slice(0, 200),
+    venue: e.venue ? String(e.venue).trim().slice(0, 120) : undefined,
+    date: e.date ? String(e.date).trim().slice(0, 60) : undefined,
+    part: e.part === 'day' || e.part === 'night' ? e.part : undefined,
+    category: e.category ? String(e.category).trim().slice(0, 20) : undefined,
+    blurb: e.blurb ? String(e.blurb).trim().slice(0, 400) : undefined,
+    image: photo,
+    slide: index + 1,
+  }))
 }
 
 /** Read every slide. Slides run concurrently — one unreadable slide yields [] rather than sinking

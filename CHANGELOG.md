@@ -14,6 +14,29 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [board V.9.35] — 2026-08-03 — the reader handles BOTH carousel shapes, and features keep their photo
+- **Field report: a 10-slide post came back with 2 events.** The prompt was built entirely from
+  @doubleamagazine's *listings* carousel (DAY/NIGHT, "FRI 31/07", "<event> | <venue>"), but the same
+  account also posts a **feature** carousel — "We 8! Amsterdam's best eats right now" — where each
+  slide is ONE dish: a real photograph, an underlined title like "Hamachi Crudo at Taiko", and a
+  short write-up. Nothing on those slides matched the shape the prompt was looking for.
+- The reader now **classifies each slide first** — `cover` / `listing` / `feature` — and reads it
+  accordingly. A feature slide splits "<thing> at <place>" into title + venue and keeps the write-up
+  as the blurb. Measured on the same post: **2 events → 8**, every one with venue, category and text.
+- **Feature slides donate their photo** (Ness: "can we not take the image from the original post").
+  The slide image becomes the card image, wsrv-wrapped. A **listing** slide deliberately does NOT —
+  its image is a wall of text, and the app's own typographic poster beats a photo of a timetable.
+  Guard: a "feature" that somehow returned several events is treated as a listing.
+- **A big read now starts UNTICKED.** The listings post returns **93** events; pre-ticking that meant
+  one careless click dumped 93 cards into the deck. ≤20 events start ticked (a dish roundup — you
+  want most of them), above that you opt in, and the button flips to "Tick all".
+- Tick-rows now show the slide thumbnail and the write-up, so you can see what you're picking.
+- Regression-checked: the listings carousel still reads all 93 with dates, DAY/NIGHT and venues, and
+  still attaches **no** images.
+- Note for testing: the `*.pages.dev` preview URLs are NOT in the Worker's CORS allowlist (only
+  `*.wkndr.xyz`, the GH-Pages mirror and localhost) — the reader will say it can't be reached there.
+  Use `app.wkndr.xyz`.
+
 ## [board V.9.33] — 2026-08-02 — READ THE LISTINGS: a vision pass over roundup carousels
 - **The problem the drop box exposed.** Accounts like **@doubleamagazine** post a weekly "Amsterdam
   events" carousel where slide 1 is a cover and slides 2–8 are day-by-day listings **typeset into

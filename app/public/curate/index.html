@@ -207,6 +207,8 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 .evrow{display:flex;align-items:flex-start;gap:9px;padding:5px 0}
 .evrow input{margin:3px 0 0;flex:none;width:15px;height:15px;accent-color:var(--accent)}
 .evrow label{font-size:13px;line-height:1.4;cursor:pointer;flex:1;min-width:0}
+.evthumb{width:42px;height:42px;flex:none;object-fit:cover;border-radius:7px;background:#e8e4da;margin-top:-1px}
+.evbl{display:block;font-size:11.5px;line-height:1.45;color:var(--dim);margin-top:3px}
 .evrow .vn{color:var(--dim)}
 .evrow .pt{font-size:8.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:var(--dim);padding:1px 5px;border-radius:999px;margin-left:5px;vertical-align:1.5px}
 .evrow .pt.night{background:var(--ink)}
@@ -216,7 +218,7 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 <body>
 <div class="wrap">
 <header>
-<p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD V.9.33</p>
+<p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD V.9.35</p>
 <h1>Your weekend<span class="dot">.</span></h1>
 <div id="modetoggle"><button class="on" data-mode="simple">Simple</button><button data-mode="advanced">Advanced</button></div>
 <div id="overnote" style="display:none"></div>
@@ -494,7 +496,7 @@ Promise.all([
   // 10 min (max-age=600), so a just-shipped board fix can lag in an open tab; the eyebrow makes
   // stale-board-vs-fresh-data visible at a glance (2026-07-12: an old tab's tier-mirror pile read
   // as "the board is wrong" when it was just cached).
-  const BOARD_V='V.9.33';
+  const BOARD_V='V.9.35';
   document.getElementById('eyebrow').textContent='WKNDR · CURATION BOARD '+BOARD_V+' · FEED '+(d.generatedAt||'').slice(0,16).replace('T',' · ');
   const board=document.getElementById('board');board.innerHTML='';
   const rot=document.createElement('div');rot.id='tab-rot';board.appendChild(rot);
@@ -1123,7 +1125,13 @@ document.getElementById('copy').addEventListener('click',async()=>{
   }
 
   function showEvents(j,d){
-    say('Found '+j.events.length+' events across '+j.slidesRead+' slides'+(j.failed?' ('+j.failed+' unreadable)':'')+'. Tick the ones you want.');
+    // A dish roundup returns ~8 and you want most of them, so those start ticked. A full week's
+    // agenda returns ~90 — pre-ticking that means one careless click dumps 90 cards into the deck,
+    // so a big read starts EMPTY and you opt in. The threshold is where "review a shortlist" turns
+    // into "pick a few from a list".
+    const ALL_ON_UPTO=20, preTick=j.events.length<=ALL_ON_UPTO;
+    say('Found '+j.events.length+' events across '+j.slidesRead+' slides'+(j.failed?' ('+j.failed+' unreadable)':'')
+      +(preTick?'. Tick the ones you want.':'. Nothing ticked yet — tick the ones you want.'));
     // Group by the day heading exactly as printed — a misread date stays visible rather than being
     // silently normalised into something plausible.
     const groups=[];const byDay={};
@@ -1133,16 +1141,18 @@ document.getElementById('copy').addEventListener('click',async()=>{
     for(const g of groups){
       html+='<div class="evday">'+esc(g)+'</div>';
       for(const e of byDay[g]){
-        html+='<div class="evrow"><input type="checkbox" id="ev'+i+'" data-i="'+j.events.indexOf(e)+'" checked>'
+        html+='<div class="evrow"><input type="checkbox" id="ev'+i+'" data-i="'+j.events.indexOf(e)+'"'+(preTick?' checked':'')+'>'
+          +(e.image?'<img class="evthumb" src="'+esc(e.image)+'" alt="" loading="lazy">':'')
           +'<label for="ev'+i+'">'+esc(e.title)
           +(e.venue?' <span class="vn">· '+esc(e.venue)+'</span>':'')
           +(e.part?'<span class="pt '+(e.part==='night'?'night':'')+'">'+esc(e.part)+'</span>':'')
+          +(e.blurb?'<span class="evbl">'+esc(e.blurb)+'</span>':'')
           +'</label></div>';
         i++;
       }
     }
     html+='<div class="evfoot"><button class="b go" id="evadd">↑ Add ticked to the deck</button>'
-      +'<button class="b" id="evnone">Untick all</button>'
+      +'<button class="b" id="evnone">'+(preTick?'Untick all':'Tick all')+'</button>'
       +'<button class="b" id="evclose">Close</button></div>';
     evbox.innerHTML=html;
 
@@ -1150,18 +1160,21 @@ document.getElementById('copy').addEventListener('click',async()=>{
       if(typeof addExtra!=='function'){say('The board is still loading — give it a second.',true);return}
       const picked=[...evbox.querySelectorAll('input:checked')].map(c=>j.events[+c.dataset.i]).filter(Boolean);
       if(!picked.length){say('Nothing ticked.',true);return}
-      // Each listing becomes its own pick. It carries the ROUNDUP's link (the listing has no url of
-      // its own) and no image — the pipeline images it on the next refresh, and a drop with no image
-      // renders as the app's typographic poster rather than a blank.
+      // Each listing becomes its own pick, carrying the ROUNDUP's link (a listing has no url of its
+      // own). A FEATURE slide donates its photo — one dish, one picture, so the slide image IS the
+      // card. A dense listing slide sends none: its image is a wall of text, and the app's own
+      // typographic poster beats a photo of a timetable. The pipeline re-images either on refresh.
       for(const e of picked){
-        addExtra({title:e.title,link:d.url,image:'',blurb:[e.venue,e.date].filter(Boolean).join(' · '),
+        addExtra({title:e.title,link:d.url,image:e.image||'',
+          blurb:e.blurb||[e.venue,e.date].filter(Boolean).join(' · '),
           venue:e.venue||'',when:'',source:'@'+(d.author||'roundup'),_drop:true});
       }
       evbox.innerHTML='';prev.innerHTML='';inp.value='';
       say('Added '+picked.length+' events to the deck. Submit sends them live.');
     });
     document.getElementById('evnone').addEventListener('click',()=>{
-      evbox.querySelectorAll('input').forEach(c=>{c.checked=false});
+      const on=!preTick;   // mirrors the button's label: "Tick all" on a big read, "Untick all" on a small one
+      evbox.querySelectorAll('input').forEach(c=>{c.checked=on});
     });
     document.getElementById('evclose').addEventListener('click',()=>{evbox.innerHTML='';say('')});
   }
