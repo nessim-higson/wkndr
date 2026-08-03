@@ -14,6 +14,21 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [v10.19 — THE V.10 FREEZE] — 2026-08-03 — frozen reference build before the V.11 work
+- **Freeze point cut** at app **V.10.19** + board **V.9.38** + geo **G.1** — the whole V.10 line as it
+  stood, built and committed to `versions/v10-19/` (serves at `/wkndr/versions/v10-19/`) and tagged
+  `v10.19`. This is the rollback/compare point before the V.11 face-toggle release.
+- **247/247 tests green** at the cut. (Note for future sessions: a bare checkout has an EMPTY
+  `node_modules` — `bun install` first, or `tests/poster.test.ts` fails on a missing `puppeteer-core`
+  import and looks like a code defect. It isn't.)
+- Frozen builds must be built with `--base=/wkndr/versions/<slug>/`; the default `/wkndr/` base 404s
+  every asset when served from the versions path.
+- **Measured the pool shape** while answering "should there be a THIS WEEKEND toggle?": the feed is
+  58 evergreen / 18 weekend-dated / 3 new / 1 ending, and dated events cluster in Centrum (5) + Zuid
+  (4) — **Noord has 1, West 1, De Pijp 1, Day-trip 0**. Where × weekend-only collapses to 0–1 picks
+  outside the centre, so the two axes must never both hard-gate. Recorded in STATE.md.
+- **Next: V.11** — `bun run bump` rolls V.10.19 → V.11 (a whole-version milestone, tag `v11.0`).
+
 ## [board V.9.38] — 2026-08-03 — dropped picks keep their date and category
 Found during a CEO review, before a seeding session rather than after. The reader was extracting a
 date and a category for every listing and both were being **thrown away** between the vision pass

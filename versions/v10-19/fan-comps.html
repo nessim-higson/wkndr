@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="referrer" content="no-referrer" />
+<title>WKNDR — mobile browse comps</title>
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=clash-display@600,700&display=swap" />
+<style>
+  :root{
+    --paper:#f4f1ea; --ink:#16140f; --accent:#ff4d1f; --accent2:#7c5cff;
+    --font-disp:'Clash Display',system-ui,sans-serif;
+    --font-body:'Helvetica Neue',Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%}
+  body{
+    font-family:var(--font-body);color:var(--ink);
+    background:radial-gradient(120% 80% at 50% -10%,#2a2440 0%,#171425 45%,#0c0a14 100%);
+    overflow:hidden;
+  }
+  /* ---- shell + tabs ---- */
+  .shell{position:fixed;inset:0;display:flex;flex-direction:column}
+  .topbar{
+    flex:0 0 auto;display:flex;align-items:center;gap:10px;justify-content:center;
+    padding:max(14px,env(safe-area-inset-top)) 14px 10px;
+  }
+  .wm{font-family:var(--font-disp);font-weight:700;letter-spacing:-.01em;color:#fff;font-size:18px;display:flex;align-items:center;gap:7px}
+  .wm i{width:8px;height:8px;border-radius:50%;background:var(--accent);display:block}
+  .tabs{
+    flex:0 0 auto;display:flex;gap:6px;justify-content:center;padding:0 12px 10px;
+  }
+  .tab{
+    font-family:var(--font-disp);font-weight:600;font-size:12px;letter-spacing:.01em;
+    color:rgba(255,255,255,.62);background:rgba(255,255,255,.07);
+    border:1px solid rgba(255,255,255,.1);border-radius:999px;padding:8px 14px;cursor:pointer;
+    transition:.18s;
+  }
+  .tab.on{color:#16140f;background:#fff;border-color:#fff}
+  .stage{flex:1 1 auto;position:relative;min-height:0;overflow:hidden}
+  .pane{position:absolute;inset:0;display:none}
+  .pane.on{display:block}
+  .hint{
+    position:absolute;left:0;right:0;bottom:max(16px,env(safe-area-inset-bottom));text-align:center;
+    color:rgba(255,255,255,.5);font-size:11px;letter-spacing:.06em;text-transform:uppercase;pointer-events:none;z-index:5;
+  }
+  .cat{font-size:10px;letter-spacing:.14em;text-transform:uppercase;opacity:.8}
+  .ttl{font-family:var(--font-body);font-weight:700;letter-spacing:-.02em;line-height:1.08}
+  .when{font-size:11px;opacity:.85;margin-top:3px;letter-spacing:.02em}
+
+  /* ============ 1 · COVERFLOW ============ */
+  #cf .track{
+    position:absolute;inset:0;display:flex;align-items:center;gap:0;
+    overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;
+    padding:0 calc(50vw - 36vw);perspective:1400px;
+  }
+  #cf .track::-webkit-scrollbar{display:none}
+  #cf .cfc{
+    flex:0 0 72vw;height:64vh;scroll-snap-align:center;position:relative;
+    border-radius:22px;overflow:hidden;background:#222;
+    box-shadow:0 30px 60px rgba(0,0,0,.5);
+    transform-origin:center center;will-change:transform,filter;
+    transition:filter .15s;
+  }
+  #cf .cfc img{width:100%;height:100%;object-fit:cover;display:block}
+  #cf .cfc .meta{position:absolute;left:18px;right:18px;bottom:18px;color:#fff;text-shadow:0 2px 14px rgba(0,0,0,.6)}
+  #cf .cfc .meta .ttl{font-size:21px}
+  #cf .cfc::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.72),transparent 52%)}
+
+  /* ============ 2 · PEEK DECK ============ */
+  #pd{align-items:center;justify-content:center}
+  #pd.on{display:flex}
+  #pd .deck{position:relative;width:74vw;height:66vh}
+  #pd .pdc{
+    position:absolute;inset:0;border-radius:24px;overflow:hidden;background:#222;
+    box-shadow:0 24px 50px rgba(0,0,0,.5);will-change:transform,opacity;
+    transform-origin:center bottom;
+  }
+  #pd .pdc img{width:100%;height:100%;object-fit:cover}
+  #pd .pdc::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.74),transparent 50%)}
+  #pd .pdc .meta{position:absolute;left:18px;right:18px;bottom:20px;color:#fff;text-shadow:0 2px 14px rgba(0,0,0,.6)}
+  #pd .pdc .meta .ttl{font-size:22px}
+
+  /* ============ 3 · IMMERSIVE REEL ============ */
+  #rl .reel{position:absolute;inset:0;overflow-y:auto;scroll-snap-type:y mandatory;scrollbar-width:none}
+  #rl .reel::-webkit-scrollbar{display:none}
+  #rl .rlc{position:relative;width:100%;height:100%;scroll-snap-align:center;overflow:hidden}
+  #rl .rlc img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  #rl .rlc::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.8) 2%,transparent 38%,rgba(0,0,0,.3))}
+  #rl .rlc .meta{position:absolute;left:22px;right:22px;bottom:max(60px,12vh);color:#fff;z-index:2;text-shadow:0 2px 16px rgba(0,0,0,.6)}
+  #rl .rlc .meta .ttl{font-size:30px}
+  #rl .rlc .meta .when{font-size:13px;margin-top:6px;opacity:.92}
+  #rl .save{position:absolute;right:20px;bottom:max(60px,12vh);z-index:3;width:52px;height:52px;border-radius:50%;
+    background:rgba(255,255,255,.15);backdrop-filter:blur(8px);border:1.5px solid rgba(255,255,255,.4);
+    display:grid;place-items:center;color:#fff;font-size:22px}
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="topbar"><div class="wm"><i></i>WKNDR · mobile comps</div></div>
+  <div class="tabs">
+    <button class="tab on" data-pane="cf">Coverflow</button>
+    <button class="tab" data-pane="pd">Peek Deck</button>
+    <button class="tab" data-pane="rl">Reel</button>
+  </div>
+  <div class="stage">
+    <section class="pane on" id="cf"><div class="track"></div><div class="hint">swipe sideways</div></section>
+    <section class="pane" id="pd"><div class="deck"></div><div class="hint">swipe up to advance</div></section>
+    <section class="pane" id="rl"><div class="reel"></div></section>
+  </div>
+</div>
+
+<script>
+const PICKS = [
+  {t:"Women in Street Art Weekend",c:"Art",w:"Sat–Sun 13–14 Jun",img:"https://api.straatmuseum.com/assets/museum/0340.jpg"},
+  {t:"OLIVIA DEAN & Jalen Ngonda",c:"Live",w:"Sun 14 Jun",img:"https://upload.wikimedia.org/wikipedia/commons/3/3e/Olivia_Dean_-_Sabrina_Carpenter_at_BST_Hyde_Park_-_20250706_-_115_%28cropped%29_%28cropped%29.jpg"},
+  {t:"East Beach — rooftop city beach",c:"Drink",w:"New · daily",img:"https://cdn.amsterdamnow.com/app/uploads/strand-oost-amsterdam_1.jpg"},
+  {t:"Cabaret Voltaire",c:"Live",w:"Sat 13 Jun",img:"https://assets.paradiso.nl/images/transforms/event/_1200x630_crop_center-center_none/Cabaret-Voltaire-2025-4042.jpeg"},
+  {t:"Yumna Al-Arashi — Body as Resistance",c:"Art",w:"Until 21 Jun",img:"https://huismarseille.nl/app/uploads/2025/11/iam2.jpg"},
+  {t:"De Pimpelmees",c:"Drink",w:"New · daily",img:"https://cdn.amsterdamnow.com/app/uploads/pimpelmees-wijn-cafe-amsterdam.jpg"},
+];
+
+/* ---- tabs ---- */
+const panes = {};
+document.querySelectorAll('.tab').forEach(t=>{
+  panes[t.dataset.pane]=document.getElementById(t.dataset.pane);
+  t.onclick=()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===t));
+    document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===t.dataset.pane));
+  };
+});
+
+/* ============ 1 · COVERFLOW ============ */
+(function(){
+  const track=document.querySelector('#cf .track');
+  PICKS.forEach(p=>{
+    const c=document.createElement('div');c.className='cfc';
+    c.innerHTML=`<img src="${p.img}" alt=""><div class="meta"><div class="cat">${p.c}</div><div class="ttl">${p.t}</div><div class="when">${p.w}</div></div>`;
+    track.appendChild(c);
+  });
+  const cards=[...track.querySelectorAll('.cfc')];
+  function render(){
+    const mid=track.scrollLeft+track.clientWidth/2;
+    cards.forEach(c=>{
+      const cc=c.offsetLeft+c.clientWidth/2;
+      const d=(cc-mid)/c.clientWidth;            // distance in card-widths from centre
+      const ad=Math.min(Math.abs(d),2);
+      const rot=Math.max(-50,Math.min(50,-d*42));
+      const sc=1-ad*0.16, tx=-d*16;
+      c.style.transform=`translateX(${tx}px) rotateY(${rot}deg) scale(${sc})`;
+      c.style.filter=`brightness(${(1-ad*0.4).toFixed(2)})`;
+      c.style.zIndex=String(100-Math.round(ad*10));
+    });
+  }
+  track.addEventListener('scroll',()=>requestAnimationFrame(render),{passive:true});
+  // centre the first card, then render
+  requestAnimationFrame(()=>{track.scrollLeft=cards[0].offsetLeft-(track.clientWidth-cards[0].clientWidth)/2;render();});
+  window.addEventListener('resize',render);
+})();
+
+/* ============ 2 · PEEK DECK ============ */
+(function(){
+  const deck=document.querySelector('#pd .deck');
+  let order=PICKS.map((_,i)=>i);
+  function build(){
+    deck.innerHTML='';
+    order.slice(0,4).forEach((pi,depth)=>{
+      const p=PICKS[pi];const c=document.createElement('div');c.className='pdc';c.dataset.depth=depth;
+      c.innerHTML=`<img src="${p.img}" alt=""><div class="meta"><div class="cat">${p.c}</div><div class="ttl">${p.t}</div><div class="when">${p.w}</div></div>`;
+      // peek from below: each deeper card sits lower + smaller + dimmer
+      c.style.transform=`translateY(${depth*26}px) scale(${1-depth*0.06})`;
+      c.style.opacity=depth>2?'0':'1';
+      c.style.zIndex=String(10-depth);
+      c.style.filter=`brightness(${1-depth*0.16})`;
+      deck.appendChild(c);
+    });
+    wire();
+  }
+  function wire(){
+    const front=deck.querySelector('.pdc[data-depth="0"]');if(!front)return;
+    let sy=0,dy=0,drag=false;
+    front.onpointerdown=e=>{drag=true;sy=e.clientY;front.style.transition='none';front.setPointerCapture(e.pointerId)};
+    front.onpointermove=e=>{if(!drag)return;dy=e.clientY-sy;front.style.transform=`translateY(${Math.min(0,dy)}px) rotate(${dy*0.01}deg)`};
+    front.onpointerup=()=>{drag=false;front.style.transition='transform .35s cubic-bezier(.22,1,.36,1),opacity .35s';
+      if(dy<-90){front.style.transform=`translateY(-120%) rotate(-6deg)`;front.style.opacity='0';
+        setTimeout(()=>{order.push(order.shift());build();},300);}
+      else{front.style.transform='translateY(0) scale(1)';}dy=0;};
+  }
+  build();
+})();
+
+/* ============ 3 · IMMERSIVE REEL ============ */
+(function(){
+  const reel=document.querySelector('#rl .reel');
+  PICKS.forEach(p=>{
+    const c=document.createElement('div');c.className='rlc';
+    c.innerHTML=`<img src="${p.img}" alt=""><div class="meta"><div class="cat">${p.c}</div><div class="ttl">${p.t}</div><div class="when">${p.w}</div></div><button class="save">★</button>`;
+    reel.appendChild(c);
+  });
+  reel.querySelectorAll('.save').forEach(b=>b.onclick=()=>{b.style.background=b.style.background?'':'var(--accent)';b.textContent='★';});
+})();
+</script>
+</body>
+</html>

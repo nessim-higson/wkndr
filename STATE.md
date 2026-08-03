@@ -102,8 +102,9 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
   best of the two); `stampServeOrder` uses the new `weekendModes()`. The blend is KEPT as the summary
   (ambient field + every single-mode surface). Surfaced only when `daysDiffer` — header reads
   "Sat 27° · Sun 14°", and `tempForPick` prints a dated card's OWN day. Board V.9.30 mirrors it.
-- **/GEO — THE HYPER-LOCAL PROTOTYPE SURFACE (geo G.1, PR #23, 2026-08-02 — serves at
-  `app.wkndr.xyz/geo/` after the next domain deploy; GH-Pages mirror `/wkndr/geo/`).** Field feedback
+- **/GEO — THE HYPER-LOCAL PROTOTYPE SURFACE (geo G.1, PR #23 MERGED 2026-08-02).** **LIVE on
+  GH Pages — https://nessim-higson.github.io/wkndr/geo/**; `app.wkndr.xyz/geo/` needs the manual
+  wrangler domain deploy (`bun run build:domain` + `wrangler pages deploy`), Ness-only. Field feedback
   (a friend in Noord: location should filter more accurately) answered as a SEPARATE surface on the
   curate-board pattern: `app/public/geo/index.html` ships inside the app build, **reads the LIVE feed**
   (`data/picks.amsterdam.json`, dealt in `servePos` order, real wsrv posters + credited link-outs,
@@ -117,6 +118,14 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
   Centraal/Noord preset viewpoints. The undo pill sits at the BOTTOM on this surface (the pinned filter
   tabs own the top — the collision Ness spotted). Design record: `experiments/11`–`14` (placement
   comps → clickable prototype → fork → real-feed). **Follow-up is pipeline-side, not UI** (open item 8).
+  **THE POOL-SHAPE CONSTRAINT (measured on the 2026-07-30 feed, 80 picks) — read before adding any
+  "this weekend only" filter:** the feed is **58 evergreen / 18 weekend-dated / 3 new / 1 ending**, and
+  the dated events cluster hard in the centre. Per district, dated-this-weekend vs evergreen:
+  **Centrum 5/27 · Zuid 4/7 · Noord 1/6 · West 1/5 · De Pijp 1/3 · Oost 2/2 · Day-trip 0/7.**
+  So **Where × This-weekend-only multiplies down to 0–1 picks for every district except Centrum** —
+  the two filters must never both hard-gate. The evergreen half is what makes hyper-local viable at
+  all (Noord's answer on a 27° Saturday is Pllek, not a dated event), so a weekend-only control belongs
+  as a **sort/emphasis with live counts that update as the other axis changes**, never a silent gate.
 - **App: V.10.18** — https://app.wkndr.xyz (cache-bust `?v=V.10.18`; GH-Pages mirror at
   nessim-higson.github.io/wkndr/). **Recent arc (2026-07-21→23):** V.10.12 = field-feedback reliability
   (persist declines so a refresh doesn't re-deal them → `wkndr.swiped.v1`; intro is now first-run/arrival
@@ -202,7 +211,12 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
 - **App-side image polish (V.8.x):** the detail sheet's 3/2 header is re-derived from the ORIGINAL
   (killed the crop-of-a-crop) + a full-screen ⤢ FOCUS lightbox.
 - **`?dev=1`** reveals the full exploration surface (all views, ambient-look switcher, city picker).
-- **Frozen reference builds:** `/wkndr/versions/v6-2/` (tag `v6.2`) and `/wkndr/versions/v4-10/` (tag `v4.10`).
+- **Frozen reference builds:** **`/wkndr/versions/v10-19/` (tag `v10.19`) — THE V.10 FREEZE, cut
+  2026-08-03 as the rollback/compare point before the V.11 face-toggle work** (app V.10.19 + board
+  V.9.38 + geo G.1, the whole V.10 line as it stood; 247/247 tests green at the cut). Also
+  `/wkndr/versions/v6-2/` (tag `v6.2`) and `/wkndr/versions/v4-10/` (tag `v4.10`).
+  **Re-cutting one:** `npx vite build --base=/wkndr/versions/<slug>/ --outDir dist-freeze` then copy
+  into `versions/<slug>/` — the base MUST match the serve path or every asset 404s.
 - **Ship loop:** `cd app && bun run bump` → `bun run build` → commit → push (auto-deploys GH Pages) →
   reply with the `?v=` link. **The two wkndr.xyz surfaces are MANUAL wrangler deploys** (no CF git
   integration): `cd landing && npx wrangler pages deploy . --project-name=wkndr-landing` and
