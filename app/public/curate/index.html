@@ -228,7 +228,7 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 <body>
 <div class="wrap">
 <header>
-<p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD V.9.36</p>
+<p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD V.9.37</p>
 <h1>Your weekend<span class="dot">.</span></h1>
 <div id="modetoggle"><button class="on" data-mode="simple">Simple</button><button data-mode="advanced">Advanced</button></div>
 <div id="overnote" style="display:none"></div>
@@ -426,7 +426,7 @@ let addExtra=()=>{};     // pull a NEW FIND into the Simple deck the instant you
 let promoteToDeck=()=>{};   // ▲ on ANY Advanced card → into the Simple deck's Top 10 (one consistent verb)
 let feedGeneratedAt='';     // the feed this round targets — stamped on the overrides so a stale one expires
 const CURATE_URL='https://wkndr-curate.ness-13b.workers.dev';   // Track A auto-compile fast-lane
-let extras=[];           // New Finds you've upvoted (not in the live feed yet) — ride the deck + Submit
+let extras=[],undoExtras=null;           // New Finds you've upvoted (not in the live feed yet) — ride the deck + Submit
 function store(){try{localStorage.setItem(feedKey,JSON.stringify({V,PILE,extras}))}catch(e){}}
 function restore(){try{const s=JSON.parse(localStorage.getItem(feedKey)||'{}');V=rekey(s.V||{});PILE=s.PILE||null;extras=s.extras||[]}catch(e){}}
 /** Fold an id-keyed blob (or already-title-keyed one) onto title keys, merging any twins. Idempotent. */
@@ -506,7 +506,7 @@ Promise.all([
   // 10 min (max-age=600), so a just-shipped board fix can lag in an open tab; the eyebrow makes
   // stale-board-vs-fresh-data visible at a glance (2026-07-12: an old tab's tier-mirror pile read
   // as "the board is wrong" when it was just cached).
-  const BOARD_V='V.9.36';
+  const BOARD_V='V.9.37';
   document.getElementById('eyebrow').textContent='WKNDR · CURATION BOARD '+BOARD_V+' · FEED '+(d.generatedAt||'').slice(0,16).replace('T',' · ');
   const board=document.getElementById('board');board.innerHTML='';
   const rot=document.createElement('div');rot.id='tab-rot';board.appendChild(rot);
@@ -776,7 +776,18 @@ Promise.all([
     const moveTo=(t,idx)=>{PILE=PILE.filter(x=>x!==t);idx=Math.max(0,Math.min(idx,PILE.length));PILE.splice(idx,0,t);store();renderOpen()};
     const promote=t=>moveTo(t,MAX-1);   // ↑ from Up next → last slot of the Top 10 (bumps #10 down)
     const demote=t=>moveTo(t,MAX);      // − from Top 10 → first slot of Up next
-    addExtra=p=>{if(!extras.some(x=>x.title===p.title))extras.push(p);if(!PILE.includes(p.title))PILE.unshift(p.title);promote(p.title)};   // New Find → into your Top 10
+    // Returns TRUE only if this pick was genuinely new. The drop box used to say "Added" whether or
+    // not anything happened — paste the same post twice and it cheerfully lied.
+    addExtra=p=>{const dupe=extras.some(x=>x.title===p.title)||PILE.includes(p.title);
+      if(!extras.some(x=>x.title===p.title))extras.push(p);
+      if(!PILE.includes(p.title))PILE.unshift(p.title);
+      promote(p.title);return !dupe};   // New Find → into your Top 10
+    // UNDO for a drop. Adding 8 (or 93) cards with no way back meant hunting each one down in the
+    // deck to ✕ it — Nielsen's "emergency exit", and the reason undo beats an "are you sure?" prompt.
+    undoExtras=titles=>{const set=new Set(titles);
+      extras=extras.filter(e=>!set.has(e.title));
+      PILE=(PILE||[]).filter(t=>!set.has(t));
+      store();renderOpen()};
     // ▲ on ANY Advanced card → into the Simple deck's Top 10. Feed cards are already in the deck (just
     // promote); New Finds get pulled in first (extras). One verb, both views consistent.
     promoteToDeck=p=>{const inFeed=feedServed.some(f=>f.title===p.title);if(!inFeed&&!extras.some(x=>x.title===p.title))extras.push(p);if(!PILE.includes(p.title))PILE.unshift(p.title);promote(p.title)};
@@ -1102,33 +1113,47 @@ document.getElementById('copy').addEventListener('click',async()=>{
       +'<div class="dacts"><button class="b" id="dropadd">↑ Add to my top 10</button>'
       // A roundup carousel's events are TYPESET INTO the slides — the caption carries none of them.
       // Dropping the post alone gets one card and loses the twenty events behind it.
-      +(d.slides>1?'<button class="b go" id="dropread">↧ Read the '+d.slides+' slides</button>':'')
+      +(d.slides>1?'<button class="b go" id="dropread">↧ Find the events</button>':'')
       +'<button class="b" id="dropskip">Discard</button></div>'
       +'</div></div>';
     document.getElementById('dropadd').addEventListener('click',()=>{
       if(typeof addExtra!=='function'){say('The board is still loading — give it a second.',true);return}
-      addExtra(pick);            // → extras + PILE + persisted, exactly like a New Find
+      const isNew=addExtra(pick);   // → extras + PILE + persisted, exactly like a New Find
       inp.value='';prev.innerHTML='';evbox.innerHTML='';
       // addExtra lands it at slot 10 (promote → moveTo(t, MAX-1)), same as any New Find — say so
       // rather than claiming it leads, or the first drop looks like it went missing.
-      say('Added at #10 in your top 10 — drag it up if it should lead. Submit sends it live.');
+      if(isNew)undoBar([pick.title],'Added at #10 in your top 10 — drag it up if it should lead.');
+      else say('That one is already in your deck — nothing added.');
     });
     const rd=document.getElementById('dropread');
     if(rd)rd.addEventListener('click',()=>readListings(d,rd));
     document.getElementById('dropskip').addEventListener('click',()=>{prev.innerHTML='';evbox.innerHTML='';say('')});
   }
 
+  // Success + an escape hatch in one line. Undo is the reason you can add 40 cards without
+  // hesitating: the cost of being wrong is one click, not forty.
+  function undoBar(titles,msg){
+    stat.className='';
+    stat.innerHTML='<span>'+esc(msg)+' Submit sends them live.</span>'
+      +'<button class="b" id="dropundo" style="margin-left:2px">↩ Undo</button>';
+    document.getElementById('dropundo').addEventListener('click',()=>{
+      if(typeof undoExtras!=='function'){say('Could not undo — reload and try again.',true);return}
+      undoExtras(titles);
+      say('Undone — '+titles.length+' removed from the deck.');
+    });
+  }
+
   // ——— READ THE LISTINGS ———
   async function readListings(d,btn){
     btn.disabled=true;btn.textContent='Reading…';
     evbox.innerHTML='';
-    say('Reading '+d.slides+' slides — this takes a few seconds…');
+    say('Reading '+d.slides+' slides — about '+Math.max(5,Math.round(d.slides*2))+' seconds…');
     let r,j;
     try{
       r=await fetch(CURATE_URL+'/drop/read',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({url:d.url})});
       j=await r.json();
-    }catch(e){btn.disabled=false;btn.textContent='↧ Read the slides';say("Couldn't reach the reader.",true);return}
-    btn.disabled=false;btn.textContent='↧ Read the '+d.slides+' slides';
+    }catch(e){btn.disabled=false;btn.textContent='↧ Find the events';say("Couldn't reach the reader.",true);return}
+    btn.disabled=false;btn.textContent='↧ Find the events';
     if(!r.ok||!j||!j.events){say((j&&j.error)||'Could not read those slides.',true);return}
     if(!j.events.length){say('Read '+j.slidesRead+' slides — no listings found on them.',true);return}
     showEvents(j,d);
@@ -1174,13 +1199,18 @@ document.getElementById('copy').addEventListener('click',async()=>{
       // own). A FEATURE slide donates its photo — one dish, one picture, so the slide image IS the
       // card. A dense listing slide sends none: its image is a wall of text, and the app's own
       // typographic poster beats a photo of a timetable. The pipeline re-images either on refresh.
+      const fresh=[];
       for(const e of picked){
-        addExtra({title:e.title,link:d.url,image:e.image||'',
+        const ok=addExtra({title:e.title,link:d.url,image:e.image||'',
           blurb:e.blurb||[e.venue,e.date].filter(Boolean).join(' · '),
           venue:e.venue||'',when:'',source:'@'+(d.author||'roundup'),_drop:true});
+        if(ok)fresh.push(e.title);
       }
       evbox.innerHTML='';prev.innerHTML='';inp.value='';
-      say('Added '+picked.length+' events to the deck. Submit sends them live.');
+      const dupes=picked.length-fresh.length;
+      if(!fresh.length){say('All '+picked.length+' were already in your deck — nothing added.');return}
+      undoBar(fresh,'Added '+fresh.length+' event'+(fresh.length===1?'':'s')
+        +(dupes?' ('+dupes+' already there)':'')+' to the deck.');
     });
     document.getElementById('evnone').addEventListener('click',()=>{
       const on=!preTick;   // mirrors the button's label: "Tick all" on a big read, "Untick all" on a small one

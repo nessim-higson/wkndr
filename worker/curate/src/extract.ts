@@ -161,6 +161,15 @@ export function normalizeUrl(raw: string): string {
   if (host === 'instagram.com') {
     const code = shortcodeOf(u.toString())
     if (!code) {
+      // A story is a real thing the user linked to, not a mistake — saying "that's a profile"
+      // sends them looking for an error they didn't make.
+      if (/^\/stories\//.test(u.pathname)) {
+        throw new DropError(
+          "Stories can't be read — they're gone in 24 hours and aren't public. If the same thing " +
+            'is in a post, use that link instead.',
+          'story',
+        )
+      }
       throw new DropError(
         'That looks like a profile, not a post — open the post first, then copy its link.',
         'unsupported',
@@ -319,10 +328,22 @@ async function fromInstagram(fetchFn: Fetcher, url: string): Promise<Drop> {
 
   // A deleted/private post answers 200 with a small placeholder — that's the tell.
   if (long && long < MIN_DIM && !parsed.caption) {
-    throw new DropError('That post is gone — deleted, or the account is private.', 'gone')
+    throw new DropError(
+      'That post came back empty — it has probably been deleted, or the account is private. ' +
+        'Open the link in a browser to check.',
+      'gone',
+    )
   }
   if (!parsed.caption && !image) {
-    throw new DropError("Instagram didn't return anything for that link.", 'empty-response')
+    // Nothing at all came back. The user cannot tell a typo from a private account from a deleted
+    // post, and the old copy ("Instagram didn't return anything") left them with no next move —
+    // so name the three causes and give them one thing to try.
+    throw new DropError(
+      "Nothing came back for that link. Either the post is private or deleted, the code is " +
+        "mistyped, or Instagram just flaked — it does occasionally. Try Pull again, and if it " +
+        'still fails, open the link in a browser to see whether the post is really there.',
+      'empty-response',
+    )
   }
   const caption = parsed.caption ?? ''
   return {

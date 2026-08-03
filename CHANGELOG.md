@@ -14,6 +14,26 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [board V.9.37] — 2026-08-03 — drop box: a UX-heuristics pass (undo, honest status, real errors)
+Ran the drop box against Krug + Nielsen. Scored 6/10. Five findings, fixed in severity order:
+- **No undo (severity 3).** Adding 8 — or 93 — cards left you hunting each one down in the deck to
+  ✕ it. Every add now returns an **↩ Undo** in the status line; one click removes exactly what that
+  add put in (`undoExtras`). This is the fix that makes a 40-card add feel safe rather than final.
+- **The board lied about duplicates (severity 2).** `addExtra` silently skipped a pick already in the
+  deck but the toast said "Added" regardless. It now returns whether anything was genuinely new —
+  a repeat says "already in your deck — nothing added", and a batch reports "Added 5 (3 already there)".
+- **Errors named the symptom, not the cure (severity 3).** A typo, a private account and a deleted
+  post all produced "Instagram didn't return anything for that link" — nothing to act on. The copy
+  now names all three likely causes, mentions that Instagram genuinely flakes about one call in six,
+  and tells you to retry then check the link in a browser.
+- **A story link was called a profile (severity 2).** Linking a story is a reasonable thing to try,
+  and being told it's a profile sends you hunting for a mistake you didn't make. Its own message now.
+- **"Read the 10 slides" named the mechanism, not the outcome (severity 1)** → **"Find the events"**.
+  And "this takes a few seconds" for a ~20s wait is the kind of small lie that reads as a hang —
+  now an honest estimate scaled to slide count.
+Still short of 10/10: a 20-second read shows an estimate, not real progress. Slides are read
+concurrently and the Worker returns once, so per-slide progress needs streaming — not worth it yet.
+
 ## [board V.9.36] — 2026-08-03 — drop box: a Refactoring-UI pass
 Audited the drop box against the Refactoring UI framework. Scored it 6/10 — states, tokens and
 focus rings were fine, but five things were wrong, three of them measurable:
