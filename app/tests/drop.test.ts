@@ -190,6 +190,27 @@ describe('applyOverrides — injecting a dropped pick', () => {
     expect(applyOverrides(feed, ov({ added: bad }), AT)).toHaveLength(1)
   })
 
+
+  it('honours the category the reader assigned, instead of filing everything as "out"', () => {
+    const dishes = [
+      { title: 'Hamachi Crudo', link: 'https://www.instagram.com/p/A1/', category: 'eat', when: 'Fri 31 Jul' },
+      { title: 'Mykki Blanco', link: 'https://www.instagram.com/p/A2/', category: 'live' },
+      { title: 'Something odd', link: 'https://www.instagram.com/p/A3/', category: 'nightlife' },
+    ]
+    const out = applyOverrides(feed, ov({ added: dishes }), AT)
+    expect(out.find((p) => p.title === 'Hamachi Crudo')!.category).toBe('eat')
+    expect(out.find((p) => p.title === 'Mykki Blanco')!.category).toBe('live')
+    // an unknown category must not reach the deck as-is — it falls back, it does not leak
+    expect(out.find((p) => p.title === 'Something odd')!.category).toBe('out')
+  })
+
+  it('carries a parseable date onto the card so it can expire and be weather-ranked', () => {
+    const out = applyOverrides(feed, ov({
+      added: [{ title: 'Dekmantel', link: 'https://www.instagram.com/p/A9/', when: 'Fri 31 Jul' }],
+    }), AT)
+    expect(out.find((p) => p.title === 'Dekmantel')!.when).toBe('Fri 31 Jul')
+  })
+
   it('survives an override with no added array at all (the pre-V.9.32 shape)', () => {
     expect(applyOverrides(feed, ov({ pile: ['Existing Thing'] }), AT)).toHaveLength(1)
   })

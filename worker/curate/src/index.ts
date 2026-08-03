@@ -38,6 +38,9 @@ export type Added = {
   blurb?: string
   venue?: string
   when?: string
+  /** One of the app's 9 categories. Without it every drop lands as "out" — which meant a seeded
+   *  deck of 90 roundup picks rendered 90 identical posters and diversify() had nothing to spread. */
+  category?: string
   source?: string
 }
 export interface Overrides {
@@ -115,6 +118,7 @@ function sanitize(raw: unknown): Overrides | null {
               blurb: str(e.blurb, 400),
               venue: str(e.venue, 120),
               when: str(e.when, 120),
+              category: str(e.category, 20),
               source: str(e.source, 60),
             }
           })

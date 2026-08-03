@@ -34,9 +34,11 @@ export type SlideKind = 'listing' | 'feature' | 'cover'
 export type RoundupEvent = {
   title: string
   venue?: string
-  /** As printed on the slide, e.g. "MON 27/07" — deliberately NOT normalised here. The board shows
-   *  it verbatim so a misread is obvious; when.ts does the parsing at compile time. */
+  /** As printed on the slide, e.g. "MON 27/07". Shown on the board verbatim so a misread is obvious. */
   date?: string
+  /** The same date rewritten for `lib/when.ts` ("Fri 31 Jul"). The printed numeric form does not
+   *  parse, so without this a dropped pick carries no date the app can act on. */
+  when?: string
   /** These carousels split DAY and NIGHT slides. Real signal: NIGHT is club/gig, DAY skews
    *  film/exhibition — and it's the difference between a 3pm picnic and a 3am afters. */
   part?: 'day' | 'night'
@@ -52,6 +54,36 @@ export class RoundupError extends Error {
   constructor(message: string, readonly code: string) {
     super(message)
   }
+}
+
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+const DAYS: Record<string, string> = {
+  mon: 'Mon', tue: 'Tue', wed: 'Wed', thu: 'Thu', fri: 'Fri', sat: 'Sat', sun: 'Sun',
+}
+
+/** "FRI 31/07" → "Fri 31 Jul".
+ *
+ *  These carousels print dates numerically, and `lib/when.ts` cannot read that: verified that
+ *  "Fri 31 Jul" parses and "FRI 31/07" does not. Left as printed, a dropped pick has no date the
+ *  app understands — so no date stamp on the card, no expiry when the day passes, and no per-day
+ *  weather ranking. Converting here (server-side, once) keeps the whole app on one date brain.
+ *  Anything we can't confidently convert is returned untouched rather than guessed at. */
+export function normalizeWhen(raw?: string): string | undefined {
+  const s = (raw ?? '').trim()
+  if (!s) return undefined
+  const m = s.match(/^(?:([A-Za-z]{3,9})\.?\s+)?(\d{1,2})\s*[/.-]\s*(\d{1,2})$/)
+  if (!m) return s // already words ("Fri 31 Jul"), a range, or something we shouldn't touch
+  const day = Number(m[2])
+  const mon = Number(m[3])
+  if (!(day >= 1 && day <= 31) || !(mon >= 1 && mon <= 12)) return s
+  const dow = m[1] ? DAYS[m[1].slice(0, 3).toLowerCase()] : undefined
+  return `${dow ? dow + ' ' : ''}${day} ${MONTHS[mon - 1]}`
+}
+
+const CATEGORIES = new Set(['out', 'eat', 'drink', 'art', 'live', 'stage', 'daytrip', 'market', 'shop'])
+export const cleanCategory = (c?: string): string | undefined => {
+  const k = (c ?? '').trim().toLowerCase()
+  return CATEGORIES.has(k) ? k : undefined
 }
 
 const SYSTEM = `You are WKNDR's extractor, reading ONE slide from an Amsterdam city-guide carousel.
@@ -165,16 +197,20 @@ async function readSlide(
   const isFeature = parsed.kind === 'feature' && list.length === 1
   const photo = isFeature ? toPortrait(slide.full) : undefined
 
-  return list.map((e) => ({
-    title: String(e.title).trim().slice(0, 200),
-    venue: e.venue ? String(e.venue).trim().slice(0, 120) : undefined,
-    date: e.date ? String(e.date).trim().slice(0, 60) : undefined,
-    part: e.part === 'day' || e.part === 'night' ? e.part : undefined,
-    category: e.category ? String(e.category).trim().slice(0, 20) : undefined,
-    blurb: e.blurb ? String(e.blurb).trim().slice(0, 400) : undefined,
-    image: photo,
-    slide: index + 1,
-  }))
+  return list.map((e) => {
+    const printed = e.date ? String(e.date).trim().slice(0, 60) : undefined
+    return {
+      title: String(e.title).trim().slice(0, 200),
+      venue: e.venue ? String(e.venue).trim().slice(0, 120) : undefined,
+      date: printed, // shown on the board verbatim, so a misread stays obvious
+      when: normalizeWhen(printed), // what the app's date brain can actually read
+      part: e.part === 'day' || e.part === 'night' ? e.part : undefined,
+      category: cleanCategory(e.category),
+      blurb: e.blurb ? String(e.blurb).trim().slice(0, 400) : undefined,
+      image: photo,
+      slide: index + 1,
+    }
+  })
 }
 
 /** Read every slide. Slides run concurrently — one unreadable slide yields [] rather than sinking

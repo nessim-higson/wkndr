@@ -14,6 +14,24 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [board V.9.38] — 2026-08-03 — dropped picks keep their date and category
+Found during a CEO review, before a seeding session rather than after. The reader was extracting a
+date and a category for every listing and both were being **thrown away** between the vision pass
+and the card:
+- **Category was hardcoded to `out`.** `Added` had no category field and `buildAdded` filed
+  everything as "out". Seeding 93 roundup picks would have produced 93 identical category posters,
+  and `diversify()` — which de-clusters the served deck by category — would have had nothing to
+  spread. Now honoured end to end; an unrecognised category falls back rather than leaking through.
+  Measured on the real roundup: 64 live / 19 stage / 5 art / 1 shop, 4 unclassified.
+- **The date was dropped into a blurb string** (`when:''` on every roundup add), so a dropped pick
+  had no date the app could act on: no date stamp on the card, no expiry when the day passed, no
+  per-day weather ranking.
+- **And the printed format doesn't parse.** Verified against `lib/when.ts`: `"Fri 31 Jul"` parses,
+  `"FRI 31/07"` does not. `normalizeWhen()` rewrites the printed numeric form server-side, once, so
+  the whole app stays on one date brain. Ranges, prose and nonsense are returned untouched rather
+  than half-converted. All 93 events off the real roundup now carry a parseable `when`.
+The board still shows the date exactly as the slide printed it, so a misread stays visible.
+
 ## [board V.9.37] — 2026-08-03 — drop box: a UX-heuristics pass (undo, honest status, real errors)
 Ran the drop box against Krug + Nielsen. Scored 6/10. Five findings, fixed in severity order:
 - **No undo (severity 3).** Adding 8 — or 93 — cards left you hunting each one down in the deck to

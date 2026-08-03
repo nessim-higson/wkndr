@@ -5,6 +5,8 @@
 // lane, corpus is the source of truth). See worker/curate/ for the storage contract.
 import type { Pick } from '../types'
 
+const CATEGORIES = new Set(['out','eat','drink','art','live','stage','daytrip','market','shop'])
+
 const CURATE_URL = 'https://wkndr-curate.ness-13b.workers.dev'
 
 /** A pick Ness pasted into the board's DROP box (Instagram/TikTok/X link → extracted server-side).
@@ -16,6 +18,7 @@ export type AddedPick = {
   blurb?: string
   venue?: string
   when?: string
+  category?: string
   source?: string
 }
 
@@ -81,7 +84,9 @@ function buildAdded(a: AddedPick, i: number): Pick {
     venue: a.venue ?? '',
     area: '',
     when: a.when ?? '',
-    category: 'out',
+    // The roundup reader classifies each listing; honour it. Hardcoding 'out' made every dropped
+    // pick share one poster treatment and defeated the deck's category de-clustering.
+    category: (CATEGORIES.has(a.category ?? '') ? a.category : 'out') as Pick['category'],
     freshness: 'new',
     outdoor: false,
     kid: false,

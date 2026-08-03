@@ -5,7 +5,7 @@ FIRST in a new chat. For strategy + backlog see `docs/backlog.md`; for the pipel
 `docs/pipeline-architecture.md` + `docs/source-map.md`; for **who may write to the deck vs to a personal
 profile** (board / Tune / airlock — read before touching either) see `docs/curation-surfaces.md`; for the
 **board roadmap** (auto-compile tracks) see `docs/board-roadmap.md`; for full **version history** see
-`CHANGELOG.md` (current to app V.10.19 / board V.9.37) and the **git log / tags**. Onboarding:
+`CHANGELOG.md` (current to app V.10.19 / board V.9.38) and the **git log / tags**. Onboarding:
 `CLAUDE.md`. App lives in `/app` (Vite + React + TS, run with `bun`); ships to **Cloudflare Pages**
 (`wkndr.xyz` + `app.wkndr.xyz`) **and** GitHub Pages (legacy, keeps old share links alive)._
 
@@ -210,7 +210,7 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
   (wrangler already authed on this machine; bare-URL curl checks may show stale edge cache — bust
   with a query param, or verify against the immutable `*.wkndr-app.pages.dev` deploy URL). The board
   (`app/public/curate/index.html`, bumped via its own `BOARD_V` const + eyebrow) ships inside the app
-  build. **Tests:** `bun run test` (**242 logic tests**; CI runs them before every content refresh).
+  build. **Tests:** `bun run test` (**247 logic tests**; CI runs them before every content refresh).
   **Pages deploy flakes** intermittently ("try again later") — re-dispatch `deploy.yml` (there's an
   auto-retry pattern in the ship watchers).
 - **Compile fast-path (no crawl):** `cd app && bun run scripts/restamp.ts` re-applies the taste layer
