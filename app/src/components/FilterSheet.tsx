@@ -1,4 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion'
+import type { ReactNode } from 'react'
 import { Check } from 'lucide-react'
 import { useDialogA11y } from '../lib/useDialogA11y'
 import './FilterSheet.css'
@@ -9,7 +10,8 @@ export interface FilterOption<K extends string> { key: K; label: string; count?:
  *  "Everything"/"Any time" option that resets the selection; it reads as on when nothing else is.
  *  Toggling keeps the sheet open (batch your picks); close via the backdrop or Done. */
 export function FilterSheet<K extends string>({
-  open, onClose, options, selected, onToggle, clearKey, title = 'Show me',
+  open, onClose, options, selected, onToggle, clearKey, title = 'Show me', hint = 'tap to combine',
+  lead, note,
 }: {
   open: boolean
   onClose: () => void
@@ -18,6 +20,12 @@ export function FilterSheet<K extends string>({
   onToggle: (k: K) => void     // toggle one; passing clearKey clears all
   clearKey: K
   title?: string
+  hint?: string
+  /** Optional control ABOVE the options (V.11: the Where sheet's "Near me first" sort toggle —
+   *  a sort is a different kind of thing from a filter, so it sits apart from the chips). */
+  lead?: ReactNode
+  /** Optional line under the options — used to explain a thin count rather than let it confuse. */
+  note?: ReactNode
 }) {
   // mobile = a bottom sheet that slides up (native, effortless); desktop = a centred modal that
   // fades + scales in (sliding up from the bottom edge felt foreign on a big screen).
@@ -46,8 +54,9 @@ export function FilterSheet<K extends string>({
             <div className="fs-handle" />
             <div className="fs-head">
               <h3 className="fs-title">{title}</h3>
-              <span className="fs-hint">tap to combine</span>
+              <span className="fs-hint">{hint}</span>
             </div>
+            {lead}
             <div className="fs-options">
               {options.map((o) => {
                 const on = isOn(o.key)
@@ -64,6 +73,7 @@ export function FilterSheet<K extends string>({
                 )
               })}
             </div>
+            {note && <p className="fs-note">{note}</p>}
             <button className="fs-done" onClick={onClose}>Done</button>
           </motion.div>
         </motion.div>

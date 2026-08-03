@@ -14,6 +14,33 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.11] — 2026-08-03 — WHERE COMES TO THE FACE (whole-version roll)
+- **Ness's call, made against the recommendation** (which was: keep the filters in the menu, put
+  only *state* on the face). His reasoning won on the field evidence — a filter nobody finds is a
+  filter that doesn't exist, and a Noord user asked for location filtering the app already
+  half-had. So `When × What × Where` now live on the deck as `.filterstrip`, browse-mode only.
+  The Filter group is GONE from the ≡ menu — a control in two places is a control you can't trust.
+- **The undo pill moved back to the bottom**, since the strip took its slot under the header. It
+  floats ABOVE the ✕/★ row rather than on it (the collision that got it evicted from the bottom in
+  the first place), and its motion now rises from below. The 1.1s pause-gate means it still never
+  lands mid-fling.
+- **The Where sheet** reuses `FilterSheet` (now with `lead` / `note` / `hint` slots) so there is no
+  new UI grammar to learn. **Near me first** is a SORT, above a rule; **districts** are counted
+  filters below it. **Counts are cross-axis**: with `This weekend` on, Noord reads 1, not 7.
+- **The evergreen escape.** Where × a dated When empties nearly every district, so that dead-end
+  offers what IS there — "Show all 6 in Noord" — dropping the WHEN axis and keeping the Where.
+  This is the answer to "should there be a THIS WEEKEND toggle?": no. Two hard gates on a pool
+  that runs 58 evergreen to 18 dated is how you serve an empty deck.
+- **`src/lib/geo.ts`** — the /geo prototype's geo layer promoted to a tested module (+25 tests,
+  **272 total**). Gazetteer → district centroid (`≈`) → honestly unknown; **we never guess a
+  place** (an area of just "Amsterdam" shows no distance and sorts last). Haversine ×1.3 @ 15 km/h
+  + the IJ ferry model, rounded UP to fives. `nearScore` is capped under the +10 weather term and
+  applied before `orderServed`, so weather stays the thesis and 👑/▲/pile still lead.
+- **`Pick.lat/lon`** added as optional and PREFERRED when present — the pipeline geocode (open
+  item 8) can start stamping coords with no further app change.
+- One permission, both jobs: `goLive()` sets the distance origin, so "Use my location" feeds the
+  forecast and every distance.
+
 ## [v10.19 — THE V.10 FREEZE] — 2026-08-03 — frozen reference build before the V.11 work
 - **Freeze point cut** at app **V.10.19** + board **V.9.38** + geo **G.1** — the whole V.10 line as it
   stood, built and committed to `versions/v10-19/` (serves at `/wkndr/versions/v10-19/`) and tagged

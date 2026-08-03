@@ -452,6 +452,23 @@
   transition: all 0.15s var(--ease-out);
 }
 .filter-trigger:hover { background: rgba(0, 0, 0, 0.3); }
+
+/* THE FILTER STRIP (V.11) — When × What × Where on the face, under the header module.
+   Scrolls horizontally rather than wrapping: a second row would push the deck down and the
+   deck is the product. The strip owns this slot now, so the undo pill lives at the BOTTOM
+   (see .undo-anchor) — they used to collide here. */
+.filterstrip {
+  display: flex;
+  gap: 7px;
+  padding: 0 20px 2px;          /* matches .app side padding so it lines up with the nav */
+  margin: 8px 0 2px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  scroll-padding: 0 20px;
+}
+.filterstrip::-webkit-scrollbar { display: none; }
+.filterstrip .filter-trigger { font-size: 12.5px; padding: 7px 13px; gap: 6px; }
 .filter-trigger.on { background: var(--field-text); color: #1a1a1a; border-color: var(--field-text); }
 .ft-icon { font-size: 14px; }
 
@@ -614,14 +631,17 @@
 }
 .toast--save { background: var(--accent); color: #fff; }   /* save reads warm + positive */
 
-/* Undo — a tappable take-back pill after a stack swipe. Lives at the TOP, under the
-   header module — OUT of the bottom swipe/action zone, so it can never block or steal
-   a fast swipe (it used to sit right over the ✕/★ buttons). A full-width anchor
-   flex-centres the pill so framer's animated transform can never knock it off-centre. */
+/* Undo — a tappable take-back pill after a stack swipe. A full-width anchor flex-centres
+   the pill so framer's animated transform can never knock it off-centre.
+   POSITION, TWICE MOVED: it began at the bottom, sitting right over the ✕/★ buttons where it
+   stole fast swipes, so V.10 moved it to the top, under the header. V.11 put the filter strip
+   in that slot, so it comes back DOWN — but now it floats ABOVE the action row (the buttons
+   start ~72px up) instead of on top of it, which was the original sin. It still only appears
+   after a ~1.1s pause, so it never lands mid-fling. */
 .undo-anchor {
   position: fixed;
   left: 0; right: 0;
-  top: calc(env(safe-area-inset-top) + 86px);
+  bottom: calc(env(safe-area-inset-bottom) + 104px);
   z-index: 201;
   display: flex;
   justify-content: center;

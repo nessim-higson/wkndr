@@ -5,7 +5,7 @@ FIRST in a new chat. For strategy + backlog see `docs/backlog.md`; for the pipel
 `docs/pipeline-architecture.md` + `docs/source-map.md`; for **who may write to the deck vs to a personal
 profile** (board / Tune / airlock — read before touching either) see `docs/curation-surfaces.md`; for the
 **board roadmap** (auto-compile tracks) see `docs/board-roadmap.md`; for full **version history** see
-`CHANGELOG.md` (current to app V.10.19 / board V.9.38) and the **git log / tags**. Onboarding:
+`CHANGELOG.md` (current to app **V.11** / board V.9.38) and the **git log / tags**. Onboarding:
 `CLAUDE.md`. App lives in `/app` (Vite + React + TS, run with `bun`); ships to **Cloudflare Pages**
 (`wkndr.xyz` + `app.wkndr.xyz`) **and** GitHub Pages (legacy, keeps old share links alive)._
 
@@ -27,6 +27,38 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
 > sessions update (today it's on load).
 
 ## Live right now
+- **V.11 — WHERE COMES TO THE FACE (2026-08-03).** The whole-version roll. Two changes, one
+  thesis: **the filters people never found are now ON the deck, and one of them is location.**
+  - **THE FILTER STRIP.** `When × What × Where` moved OUT of the ≡ menu onto the face
+    (`.filterstrip` under `</header>`, browse-mode only — saved/shared are fixed lists). Ness's
+    call, against the recommendation to keep them in the menu: a filter nobody finds is a filter
+    that doesn't exist, and the field proved it (a Noord user asked for location filtering the
+    app already half-had). Nothing replaces the group in the menu — a control in two places is a
+    control you can't trust. **Consequence: the undo pill moved BACK to the bottom** (now floating
+    ABOVE the ✕/★ row, not on it — the original sin that got it evicted in V.10), and its motion
+    flipped to rise from below.
+  - **THE WHERE SHEET.** Same `FilterSheet` component as When/What (it gained `lead`/`note`/`hint`
+    slots) so there's no new UI grammar. **Near me first** is a SORT and sits above a rule;
+    **districts** below are counted filters. **The counts are cross-axis** — pin `This weekend`
+    and Noord's chip drops from 7 to 1, because that is the truth (see the pool-shape constraint
+    in the /geo entry). Districts that hold nothing under the current filters are dropped, not
+    shown as 0.
+  - **THE EVERGREEN ESCAPE.** Where × a dated When empties nearly every district, so that
+    dead-end now offers what IS there, by name and count — *"Show all 6 in Noord"* — clearing the
+    WHEN axis and keeping the Where. You asked to be in Noord; you only implied you wanted a
+    ticketed event. This is the answer to "should there be a THIS WEEKEND toggle?": **no** — a
+    weekend-only gate on top of a district gate is how you serve an empty deck.
+  - **`src/lib/geo.ts`** — the geo layer, promoted from the /geo prototype to a real tested module
+    (25 tests, 272 total). Name-keyed gazetteer → district centroids (marked `≈`) → honestly
+    `unknown` (no distance shown, sorts last — **we never guess a place**). Haversine ×1.3 @
+    15 km/h + the IJ ferry model, rounded UP to fives. `nearScore` is a **ranking weight capped
+    under the +10 weather term**, applied before `orderServed`, so weather stays the thesis and
+    👑 TOP / ▲ LEAD / the hand pile still lead the deck by law. `Pick.lat/lon` are optional and
+    PREFERRED when present — the day the cron stamps coords (open item 8), the gazetteer becomes
+    a fallback and nothing else changes.
+  - **One permission, both jobs:** `goLive()` now also sets the distance origin, so the existing
+    "Use my location" grant feeds the forecast AND every distance. Toggling near-me without a
+    grant asks for one.
 - **READ THE LISTINGS (board V.9.35, 2026-08-03) — LIVE, key is set.** **Two carousel shapes:** a
   `listing` (DAY/NIGHT dated agenda — 93 events off one post, NO images: the slide is a wall of text)
   and a `feature` ("Amsterdam's best eats", ONE dish per slide — 8 events, and the slide PHOTO becomes
