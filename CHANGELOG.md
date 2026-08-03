@@ -14,6 +14,24 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [board V.9.36] — 2026-08-03 — drop box: a Refactoring-UI pass
+Audited the drop box against the Refactoring UI framework. Scored it 6/10 — states, tokens and
+focus rings were fine, but five things were wrong, three of them measurable:
+- **Type scale drifted to 10 sizes in one component** (8.5 / 9 / 9.5 / 10.5 / 11 / 11.5 / 12 / 13 /
+  13.5 / 14). Collapsed to **6** steps: 15 title / 14 input / 13 body / 12 meta / 11 micro-caps /
+  9 pill. Half-pixel sizes read as noise even when no single value looks wrong.
+- **Spacing used 18 values, 12 of them off-scale** (3, 5, 7, 9, 11, 13, 15, 18, 20…). Now **4 / 8 /
+  12 / 16 / 24** only.
+- **Hierarchy was inverted.** The resolution badge was a saturated green pill while the pick's title
+  sat at 13.5px — the loudest element was a spec. Title up to 15px; the badge is now a quiet outline
+  and only goes loud (red) when the image is LOW RES, which is the only time it needs attention.
+- **The URL field spanned the full board** (~1180px on desktop) for a ~60-character string, pushing
+  Pull far from where you type. Row capped at 520px.
+- **Square thumbnails cropped portrait posters.** Both previews are now 3:4 — matching the card the
+  pick becomes — so a listings slide isn't cropped through the text you're judging.
+Also: `#c33` was hardcoded twice with no token behind it → `--red`. The lone 📖 emoji became `↧`,
+matching the board's existing text-glyph language (↑ − ✕).
+
 ## [board V.9.35] — 2026-08-03 — the reader handles BOTH carousel shapes, and features keep their photo
 - **Field report: a 10-slide post came back with 2 events.** The prompt was built entirely from
   @doubleamagazine's *listings* carousel (DAY/NIGHT, "FRI 31/07", "<event> | <venue>"), but the same

@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex">
 <title>WKNDR — Curation Board</title>
 <style>
-:root{--paper:#F4F1E9;--ink:#1B1A17;--accent:#FF4A21;--gold:#E8A33D;--green:#2faa6a;--dim:#8B8578;--line:rgba(27,26,23,.14);--sans:'Helvetica Neue',Helvetica,Arial,sans-serif}
+:root{--paper:#F4F1E9;--ink:#1B1A17;--accent:#FF4A21;--gold:#E8A33D;--green:#2faa6a;--dim:#8B8578;--line:rgba(27,26,23,.14);--red:#C0392B;--sans:'Helvetica Neue',Helvetica,Arial,sans-serif}
 *{box-sizing:border-box}
 html{background:var(--paper)}
 body{font-family:var(--sans);color:var(--ink);margin:0;padding:0 16px 150px;-webkit-font-smoothing:antialiased}
@@ -172,53 +172,63 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 .ocard.flagged{border-color:var(--green)}
 /* new-find that's been pulled into the simple deck */
 .pcard.isnew .pt:after{content:'NEW';margin-left:6px;font-size:9px;font-weight:800;color:#fff;background:var(--ink);padding:1px 5px;border-radius:999px;vertical-align:1px}
-/* ——— THE DROP BOX — paste an IG/TikTok/X link, get a pick ——— */
-#dropbox{margin:18px 0 4px;padding:16px 16px 15px;background:#fff;border:1px solid var(--line);border-radius:14px}
+/* ——— THE DROP BOX — paste an IG/TikTok/X link, get a pick ———
+   Type scale (6 steps, was 10): 15 title / 14 input / 13 body / 12 meta / 11 micro-caps / 9 pill.
+   Spacing scale: 4 / 8 / 12 / 16 / 24 only. Both were drifting — 10 sizes and 18 spacings in one
+   component reads as visual noise even when no single value looks wrong. */
+#dropbox{margin:16px 0 4px;padding:16px;background:#fff;border:1px solid var(--line);border-radius:14px}
 #dropbox .dlab{font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:var(--dim);margin:0 0 4px}
-#dropbox .dsub{font-size:12px;color:var(--dim);margin:0 0 10px}
-.drow{display:flex;gap:8px;flex-wrap:wrap}
-.drow input{flex:1 1 240px;min-width:0;font-family:var(--sans);font-size:14px;padding:12px 13px;border-radius:10px;border:1px solid var(--line);background:#fff;color:var(--ink)}
+#dropbox .dsub{font-size:12px;color:var(--dim);margin:0 0 12px;max-width:60ch}
+/* A URL is ~60 characters. Letting the field span a 1300px desktop board made one short string look
+   like a document editor, and pushed Pull miles from where you type. */
+.drow{display:flex;gap:8px;flex-wrap:wrap;max-width:520px}
+.drow input{flex:1 1 240px;min-width:0;font-family:var(--sans);font-size:14px;padding:12px;border-radius:10px;border:1px solid var(--line);background:#fff;color:var(--ink)}
 .drow input::placeholder{color:#B4AEA1}
 .drow input:focus-visible{outline:2px solid var(--accent);outline-offset:1px;border-color:var(--accent)}
-#dropgo{font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:.07em;padding:12px 20px;border-radius:10px;border:0;background:var(--ink);color:#fff;cursor:pointer;white-space:nowrap}
+#dropgo{font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:.07em;padding:12px 24px;border-radius:10px;border:0;background:var(--ink);color:#fff;cursor:pointer;white-space:nowrap}
 #dropgo:hover{background:var(--accent)}
 #dropgo:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 #dropgo[disabled]{opacity:.5;cursor:default}
-#dropstat{margin-top:10px;font-size:12px;color:var(--dim);display:flex;align-items:center;gap:8px;min-height:16px}
-#dropstat.bad{color:#c33}
-.dspin{width:11px;height:11px;border-radius:50%;border:2px solid var(--line);border-top-color:var(--accent);animation:dsp .7s linear infinite;flex:none}
+#dropstat{margin-top:12px;font-size:12px;color:var(--dim);display:flex;align-items:center;gap:8px;min-height:16px}
+#dropstat.bad{color:var(--red)}
+.dspin{width:12px;height:12px;border-radius:50%;border:2px solid var(--line);border-top-color:var(--accent);animation:dsp .7s linear infinite;flex:none}
 @keyframes dsp{to{transform:rotate(360deg)}}
 @media (prefers-reduced-motion:reduce){.dspin{animation:none}}
 .dprev{display:flex;gap:12px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
-.dprev img{width:76px;height:76px;flex:none;object-fit:cover;border-radius:9px;background:#e8e4da}
+/* 3:4, matching the card the pick becomes. A square crop of a 1080x1351 poster threw away a third
+   of the image — on a listings slide that meant cropping the text you are judging. */
+.dprev img{width:66px;height:88px;flex:none;object-fit:cover;border-radius:8px;background:#e8e4da}
 .dprev .dmeta{flex:1;min-width:0}
-.dprev h4{margin:0 0 4px;font-size:13.5px;font-weight:700;line-height:1.35}
-.dprev .dsrc{font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--dim);margin:0 0 7px}
-.dbadge{display:inline-block;font-size:9px;font-weight:700;letter-spacing:.06em;padding:3px 7px;border-radius:999px;color:#fff;background:var(--green);margin:0 4px 6px 0;text-transform:uppercase}
-.dbadge.warn{background:#c33}
-.dacts{display:flex;gap:6px;flex-wrap:wrap;margin-top:2px}
+.dprev h4{margin:0 0 4px;font-size:15px;font-weight:700;line-height:1.3;letter-spacing:-.01em}
+.dprev .dsrc{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--dim);margin:0 0 8px}
+/* The resolution is a spec, not an achievement. A saturated green pill made it the loudest thing in
+   the card while the title sat at 13.5px — hierarchy inverted. Quiet by default; loud only when
+   it is bad, which is the only time it needs your attention. */
+.dbadge{display:inline-block;font-size:9px;font-weight:700;letter-spacing:.06em;padding:4px 8px;border-radius:999px;color:var(--dim);background:transparent;border:1px solid var(--line);margin:0 4px 8px 0;text-transform:uppercase}
+.dbadge.warn{background:var(--red);border-color:var(--red);color:#fff}
+.dacts{display:flex;gap:8px;flex-wrap:wrap}
 /* READ THE LISTINGS — the vision pass over a roundup carousel */
-#dropevents{margin-top:14px;padding-top:13px;border-top:1px solid var(--line)}
-#dropevents .eh{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+#dropevents{margin-top:16px;padding-top:12px;border-top:1px solid var(--line)}
+#dropevents .eh{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-bottom:12px}
 #dropevents .eh b{font-size:13px}
-#dropevents .eh span{font-size:11.5px;color:var(--dim)}
-.evday{font-size:10.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--accent);margin:12px 0 6px;padding-top:9px;border-top:1px solid var(--line)}
+#dropevents .eh span{font-size:12px;color:var(--dim)}
+.evday{font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--accent);margin:16px 0 4px;padding-top:12px;border-top:1px solid var(--line)}
 .evday:first-child{margin-top:0;padding-top:0;border-top:0}
-.evrow{display:flex;align-items:flex-start;gap:9px;padding:5px 0}
-.evrow input{margin:3px 0 0;flex:none;width:15px;height:15px;accent-color:var(--accent)}
-.evrow label{font-size:13px;line-height:1.4;cursor:pointer;flex:1;min-width:0}
-.evthumb{width:42px;height:42px;flex:none;object-fit:cover;border-radius:7px;background:#e8e4da;margin-top:-1px}
-.evbl{display:block;font-size:11.5px;line-height:1.45;color:var(--dim);margin-top:3px}
+.evrow{display:flex;align-items:flex-start;gap:8px;padding:4px 0}
+.evrow input{margin:4px 0 0;flex:none;width:16px;height:16px;accent-color:var(--accent)}
+.evrow label{font-size:13px;line-height:1.45;cursor:pointer;flex:1;min-width:0;max-width:70ch}
+.evthumb{width:42px;height:56px;flex:none;object-fit:cover;border-radius:6px;background:#e8e4da}
+.evbl{display:block;font-size:12px;line-height:1.5;color:var(--dim);margin-top:4px}
 .evrow .vn{color:var(--dim)}
-.evrow .pt{font-size:8.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:var(--dim);padding:1px 5px;border-radius:999px;margin-left:5px;vertical-align:1.5px}
+.evrow .pt{font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:var(--dim);padding:2px 8px;border-radius:999px;margin-left:4px;vertical-align:1px}
 .evrow .pt.night{background:var(--ink)}
-.evfoot{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin-top:13px;padding-top:11px;border-top:1px solid var(--line)}
+.evfoot{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:16px;padding-top:12px;border-top:1px solid var(--line)}
 </style>
 </head>
 <body>
 <div class="wrap">
 <header>
-<p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD V.9.35</p>
+<p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD V.9.36</p>
 <h1>Your weekend<span class="dot">.</span></h1>
 <div id="modetoggle"><button class="on" data-mode="simple">Simple</button><button data-mode="advanced">Advanced</button></div>
 <div id="overnote" style="display:none"></div>
@@ -496,7 +506,7 @@ Promise.all([
   // 10 min (max-age=600), so a just-shipped board fix can lag in an open tab; the eyebrow makes
   // stale-board-vs-fresh-data visible at a glance (2026-07-12: an old tab's tier-mirror pile read
   // as "the board is wrong" when it was just cached).
-  const BOARD_V='V.9.35';
+  const BOARD_V='V.9.36';
   document.getElementById('eyebrow').textContent='WKNDR · CURATION BOARD '+BOARD_V+' · FEED '+(d.generatedAt||'').slice(0,16).replace('T',' · ');
   const board=document.getElementById('board');board.innerHTML='';
   const rot=document.createElement('div');rot.id='tab-rot';board.appendChild(rot);
@@ -1092,7 +1102,7 @@ document.getElementById('copy').addEventListener('click',async()=>{
       +'<div class="dacts"><button class="b" id="dropadd">↑ Add to my top 10</button>'
       // A roundup carousel's events are TYPESET INTO the slides — the caption carries none of them.
       // Dropping the post alone gets one card and loses the twenty events behind it.
-      +(d.slides>1?'<button class="b go" id="dropread">📖 Read the '+d.slides+' slides</button>':'')
+      +(d.slides>1?'<button class="b go" id="dropread">↧ Read the '+d.slides+' slides</button>':'')
       +'<button class="b" id="dropskip">Discard</button></div>'
       +'</div></div>';
     document.getElementById('dropadd').addEventListener('click',()=>{
@@ -1117,8 +1127,8 @@ document.getElementById('copy').addEventListener('click',async()=>{
     try{
       r=await fetch(CURATE_URL+'/drop/read',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({url:d.url})});
       j=await r.json();
-    }catch(e){btn.disabled=false;btn.textContent='📖 Read the slides';say("Couldn't reach the reader.",true);return}
-    btn.disabled=false;btn.textContent='📖 Read the '+d.slides+' slides';
+    }catch(e){btn.disabled=false;btn.textContent='↧ Read the slides';say("Couldn't reach the reader.",true);return}
+    btn.disabled=false;btn.textContent='↧ Read the '+d.slides+' slides';
     if(!r.ok||!j||!j.events){say((j&&j.error)||'Could not read those slides.',true);return}
     if(!j.events.length){say('Read '+j.slidesRead+' slides — no listings found on them.',true);return}
     showEvents(j,d);
