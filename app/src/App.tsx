@@ -211,7 +211,12 @@ export default function App() {
   const [inputsOpen, setInputsOpen] = useState(false)      // "what's feeding this" sheet
   const [filter, setFilter] = useState<Filter>(SHARED_IDS ? 'shared' : 'all')  // mode: browse / saved / shared
   const [cats, setCats] = useState<CatKey[]>([])           // What: multi-select categories (empty = all)
-  const [whens, setWhens] = useState<When[]>([])           // When: multi-select time/tier (empty = any time)
+  // The app IS about the coming weekend, so it opens on it rather than on "any time" — the
+  // promise made concrete on arrival. Costs breadth: only ~18 of 80 picks are weekend-dated,
+  // and a non-empty When also switches `shown` off the endless live+canon rotation. The
+  // evergreen escape below is what buys that back — one tap, counted, when the deck runs dry.
+  const DEFAULT_WHENS: When[] = ['weekend']
+  const [whens, setWhens] = useState<When[]>(DEFAULT_WHENS)   // When: multi-select time/tier (empty = any time)
   const [wheres, setWheres] = useState<District[]>([])     // Where: multi-select districts (empty = anywhere)
   const [nearMe, setNearMe] = useState(false)              // Where: the near-first SORT (not a filter)
   // Your position, for distances. Set by the SAME grant that fetches the weather (goLive) — one
@@ -570,7 +575,11 @@ export default function App() {
     },
     [rankedAll, filter, cats, whens, wheres, saved, seed, sharedPickIds, moreLike, mode],
   )
-  const filterActive = filter !== 'all' || cats.length > 0 || whens.length > 0 || wheres.length > 0
+  // "you have narrowed something" — measured against the DEFAULT, not against empty. With
+  // When defaulting to This weekend, counting it as active would light the menu's dot on a
+  // fresh load and make the resting state look like a filtered one.
+  const whensAtDefault = whens.length === DEFAULT_WHENS.length && whens.every((w) => DEFAULT_WHENS.includes(w))
+  const filterActive = filter !== 'all' || cats.length > 0 || !whensAtDefault || wheres.length > 0
   const deck = useMemo(() => shown.filter((p) => !swiped.has(p.id)), [shown, swiped])
   // saved picks in rank order — fuels the saves-dock peek
   // THE EVERGREEN ESCAPE (V.11) — the specific dead-end this release could otherwise create.
@@ -579,16 +588,19 @@ export default function App() {
   // offer it by name. Dropping the WHEN axis, not the Where — you asked to be in Noord; you only
   // implied you wanted a ticketed event. Only offered when it actually has something to give.
   const evergreenEscape = useMemo(() => {
-    if (wheres.length === 0 || whens.length === 0) return undefined
+    if (whens.length === 0) return undefined   // already at the widest — nothing to offer
     const n = cityPicks.filter((p) => {
       const whatOk = cats.length === 0 || cats.some((c) => (c === 'kids' ? p.kid : p.category === c))
-      return whatOk && wheres.includes(resolveGeo(p).district as District)
+      const whereOk = wheres.length === 0 || wheres.includes(resolveGeo(p).district as District)
+      return whatOk && whereOk
     }).length
     if (n === 0) return undefined
-    const place = wheres.length === 1 ? wheres[0] : 'these areas'
+    const place = wheres.length === 1 ? wheres[0] : wheres.length > 1 ? 'these areas' : null
     return {
-      label: `Show all ${n} in ${place}`,
-      note: `Nothing dated in ${place} under this filter — but ${n} ${n === 1 ? 'place is' : 'places are'} open anyway. Most of Amsterdam's best is simply always good.`,
+      label: place ? `Show all ${n} in ${place}` : `Show all ${n}`,
+      note: place
+        ? `Nothing dated in ${place} under this filter — but ${n} ${n === 1 ? 'place is' : 'places are'} open anyway. Most of Amsterdam's best is simply always good.`
+        : `That's this weekend's dated events — but ${n} places are open regardless. Most of Amsterdam's best isn't on a schedule.`,
       onTake: () => setWhens([]),
     }
   }, [cityPicks, cats, whens, wheres])
@@ -1248,6 +1260,8 @@ export default function App() {
                 onOpen={openDetail}
                 onRefresh={refresh}
                 filterLabel={filterActive ? 'this filter' : null}
+                /* clears to the WIDEST pool (Any time), not back to the weekend default —
+                   this button exists to escape an empty deck, so it must genuinely widen */
                 onClearFilter={() => { setFilter('all'); setCats([]); setWhens([]); setWheres([]) }}
                 onSeeList={() => setView('list')}
                 escape={evergreenEscape}

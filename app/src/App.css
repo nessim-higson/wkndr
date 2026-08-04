@@ -285,7 +285,7 @@
   transition: all 0.15s var(--ease-out);
 }
 .bar-pill:hover { background: rgba(0, 0, 0, 0.09); }
-.bar-pill.on { background: #1c1c1a; color: #faf8f3; border-color: #1c1c1a; }
+.bar-pill.on { background: var(--accent); color: #fff; border-color: var(--accent); }
 .bar-pill--danger { color: #b23b2e; border-color: rgba(178, 59, 46, 0.35); }
 .bar-pill--danger:hover { background: rgba(178, 59, 46, 0.1); }
 .bar-pill--match { color: #fff; background: var(--accent); border-color: var(--accent); font-weight: 600; }
@@ -306,7 +306,7 @@
 .topbar-module .toggle button.on { background: #1c1c1a; color: #faf8f3; opacity: 1; }
 .topbar-module .filter-trigger { background: rgba(0, 0, 0, 0.05); border-color: rgba(0, 0, 0, 0.12); color: #1c1c1a; }
 .topbar-module .filter-trigger:hover { background: rgba(0, 0, 0, 0.09); }
-.topbar-module .filter-trigger.on { background: #1c1c1a; color: #faf8f3; border-color: #1c1c1a; }
+.topbar-module .filter-trigger.on { background: var(--accent); color: #fff; border-color: var(--accent); }
 .topbar-module .mode-pills button { color: #1c1c1a; opacity: 0.5; }
 .topbar-module .mode-pills button.on { background: #1c1c1a; color: #faf8f3; opacity: 1; }
 .topbar-module .field-pills button.on { background: var(--accent); color: #fff; opacity: 1; }
@@ -472,7 +472,7 @@
   display: flex;
   gap: 4px;
   width: var(--module-w);       /* identical to .topbar-module, by construction */
-  margin: 8px auto 2px;
+  margin: 13px auto 2px;        /* +5px of air under the nav module */
   padding-bottom: 2px;
   /* `safe` keeps the chips centred when they fit and falls back to flex-start when they
      overflow — plain `center` would clip the first chip out of reach on a narrow phone. */
@@ -486,9 +486,18 @@
    metrics the three chips measured 374px and overflowed — which clipped `Anywhere`, i.e.
    exactly the control V.11 exists to surface. These fit with room to spare; genuinely narrow
    handsets (≤360px) still scroll gracefully, and `safe center` keeps the first chip reachable. */
-.filterstrip .filter-trigger { font-size: 12px; padding: 7px 9px; gap: 5px; }
-.filterstrip .ft-caret { margin-left: -1px; }
-.filter-trigger.on { background: var(--field-text); color: #1a1a1a; border-color: var(--field-text); }
+.filterstrip .filter-trigger { font-size: 12px; padding: 7px 10px; gap: 5px; }
+/* NO CARET on the face. Three chips + icons + carets measured 355px in a 340px column once
+   the default label became "This weekend" (25px longer than "Any time"), and trimming padding
+   could only claw back ~14px — leaving nothing for longer states like "Noord +1" or
+   "Evergreen · classics". The caret was the cheapest thing to lose: the leading icon already
+   says WHICH filter this is, and a pill still reads as tappable. Buys ~54px of headroom.
+   Delete this rule to bring them back. */
+.filterstrip .ft-caret { display: none; }
+/* ACTIVE = ORANGE, everywhere. On/off used to be signalled by an ink-or-paper swap that
+   changed meaning with the surface (dark chip on the light menu, light chip on the dark
+   field) — so "on" looked like a different thing in each place. One accent says it once. */
+.filter-trigger.on { background: var(--accent); color: #fff; border-color: var(--accent); }
 .ft-icon { font-size: 14px; }
 
 /* contextual bar (Saved → share · Shared → save all). A centred, capped frosted pill that
