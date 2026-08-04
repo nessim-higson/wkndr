@@ -456,19 +456,43 @@
 /* THE FILTER STRIP (V.11) — When × What × Where on the face, under the header module.
    Scrolls horizontally rather than wrapping: a second row would push the deck down and the
    deck is the product. The strip owns this slot now, so the undo pill lives at the BOTTOM
-   (see .undo-anchor) — they used to collide here. */
+   (see .undo-anchor) — they used to collide here.
+
+   GEOMETRY: this is a control FOR the deck, so it tracks THE DECK'S column, not the viewport
+   — same width steps as .stack-deck (SwipeStack.css) and centred the same way. Full-bleed was
+   wrong on desktop: .app spans the whole window, so the chips stranded themselves in the left
+   margin while the nav and cards sat centred hundreds of pixels away. No horizontal padding of
+   its own either — .app already pads 20px, and adding more double-inset it on phones. */
 .filterstrip {
   display: flex;
   gap: 7px;
-  padding: 0 20px 2px;          /* matches .app side padding so it lines up with the nav */
-  margin: 8px 0 2px;
+  width: min(340px, 100%);      /* mobile — exactly .topbar-module / .stack-deck */
+  margin: 8px auto 2px;
+  padding-bottom: 2px;
+  /* `safe` keeps the chips centred when they fit and falls back to flex-start when they
+     overflow — plain `center` would clip the first chip out of reach on a narrow phone. */
+  justify-content: safe center;
   overflow-x: auto;
   scrollbar-width: none;
   -ms-overflow-style: none;
-  scroll-padding: 0 20px;
 }
 .filterstrip::-webkit-scrollbar { display: none; }
 .filterstrip .filter-trigger { font-size: 12.5px; padding: 7px 13px; gap: 6px; }
+/* PHONES: the three chips measured 374px inside a 340px column — which clipped `Anywhere`,
+   i.e. exactly the control V.11 exists to surface. Tighten the chip metrics (they were sized
+   for the roomier menu they used to live in) so all three fit without a scroll. Very narrow
+   handsets still scroll gracefully — `safe center` keeps the first chip reachable. */
+@media (max-width: 719px) {
+  .filterstrip .filter-trigger { font-size: 12px; padding: 7px 9px; gap: 5px; }
+  .filterstrip { gap: 4px; }
+  .filterstrip .ft-caret { margin-left: -1px; }
+}
+@media (min-width: 720px) {
+  .filterstrip { width: min(52vw, 560px); }   /* tracks .stack-deck */
+}
+@media (min-width: 1200px) {
+  .filterstrip { width: 600px; }              /* tracks .stack-deck */
+}
 .filter-trigger.on { background: var(--field-text); color: #1a1a1a; border-color: var(--field-text); }
 .ft-icon { font-size: 14px; }
 
