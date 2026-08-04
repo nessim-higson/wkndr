@@ -462,16 +462,19 @@
    deck is the product. The strip owns this slot now, so the undo pill lives at the BOTTOM
    (see .undo-anchor) — they used to collide here.
 
-   GEOMETRY: it hangs off the nav, so it wears the nav's width — `--module-w`, the SAME token
-   .topbar-module uses, at every breakpoint. It first shipped full-bleed (chips stranded in the
-   desktop left margin), then tracking .stack-deck (340 → 600), which left it ~34px wider than
-   the nav on desktop — near-alignment reads as a mistake, so the two now share one number and
-   can't drift. No horizontal padding of its own: .app already pads 20px, and more double-inset
-   it on phones. The chip metrics below are sized to FIT this column. */
+   GEOMETRY — it sizes to its own content, centred. The history is the argument: full-bleed
+   (chips stranded in the desktop left margin) → tracking .stack-deck (~34px wider than the
+   nav, which read as a near-miss) → pinned to the nav's --module-w (matched, but 340px is too
+   tight for three chips once the default label became "This weekend", so the carets had to
+   go). `fit-content` ends the tug-of-war: the strip is exactly as wide as the chips need, so
+   it can't be a near-miss against anything, and there is no magic number to keep in sync.
+   Capped at 100% so a phone contains it and it scrolls instead of overflowing the page.
+   No horizontal padding of its own — .app already pads 20px, and more double-inset it. */
 .filterstrip {
   display: flex;
   gap: 4px;
-  width: var(--module-w);       /* identical to .topbar-module, by construction */
+  width: fit-content;
+  max-width: 100%;
   margin: 13px auto 2px;        /* +5px of air under the nav module */
   padding-bottom: 2px;
   /* `safe` keeps the chips centred when they fit and falls back to flex-start when they
@@ -482,18 +485,19 @@
   -ms-overflow-style: none;
 }
 .filterstrip::-webkit-scrollbar { display: none; }
-/* Compact at EVERY width, because the column is 340px at every width. At the old roomier
-   metrics the three chips measured 374px and overflowed — which clipped `Anywhere`, i.e.
-   exactly the control V.11 exists to surface. These fit with room to spare; genuinely narrow
-   handsets (≤360px) still scroll gracefully, and `safe center` keeps the first chip reachable. */
+/* Compact metrics — the chips are subordinate chrome under the nav. Roomy enough on desktop
+   that the strip lands ~20px wider than the nav: clearly wider by intent, not a near-miss. */
 .filterstrip .filter-trigger { font-size: 12px; padding: 7px 10px; gap: 5px; }
-/* NO CARET on the face. Three chips + icons + carets measured 355px in a 340px column once
-   the default label became "This weekend" (25px longer than "Any time"), and trimming padding
-   could only claw back ~14px — leaving nothing for longer states like "Noord +1" or
-   "Evergreen · classics". The caret was the cheapest thing to lose: the leading icon already
-   says WHICH filter this is, and a pill still reads as tappable. Buys ~54px of headroom.
-   Delete this rule to bring them back. */
-.filterstrip .ft-caret { display: none; }
+.filterstrip .ft-caret { margin-left: -1px; }
+/* PHONES have no room to spare: three chips with icons AND carets measure ~361px against the
+   ~350px a 390px handset actually offers, which clipped `Anywhere` — the control V.11 exists
+   to surface. Shave the padding here only (desktop keeps its air) so the common phones fit on
+   one line. Genuinely narrow handsets still scroll, with `safe center` keeping the first chip
+   reachable. */
+@media (max-width: 719px) {
+  .filterstrip .filter-trigger { padding: 7px 8px; }
+  .filterstrip { gap: 3px; }
+}
 /* ACTIVE = ORANGE, everywhere. On/off used to be signalled by an ink-or-paper swap that
    changed meaning with the surface (dark chip on the light menu, light chip on the dark
    field) — so "on" looked like a different thing in each place. One accent says it once. */
