@@ -6,6 +6,8 @@
 //   POST /curate/<city>   body: Overrides (JSON)   → stores it, returns { ok: true, at }
 //   GET  /curate/<city>                             → returns the stored Overrides, or null
 //   POST /drop            body: { url }             → { ok, drop } — a pasted social link, extracted
+//   POST /drop/read       body: { url }             → { ok, events } — vision over a roundup carousel
+//   POST /drop/image      body: { title, venue }    → { ok, image } — find a photo for a listing
 //
 // The app applies these ON TOP of the static picks.<city>.json, mirroring restamp's taste layer:
 //   - `pile`   → the opening order (deal these first, in this order)
@@ -19,6 +21,7 @@
 
 import { extractDrop, carouselSlides, DropError } from './extract'
 import { readRoundup, RoundupError } from './roundup'
+import { findImageFor } from './findimage'
 
 export interface Env {
   CURATE: KVNamespace
@@ -200,6 +203,40 @@ export default {
           { error: known ? e.message : 'Could not read that post.', code: known ? e.code : 'unknown' },
           known ? 422 : 502, origin,
         )
+      }
+    }
+
+    // FIND AN IMAGE — for one listing that arrived without a photograph. One event per request
+    // deliberately: it keeps each call inside the Worker subrequest budget, lets the board show
+    // real progress across a batch, and means a single failure loses one card, not the round.
+    if (url.pathname === '/drop/image' || url.pathname === '/drop/image/') {
+      if (request.method !== 'POST') return json({ error: 'method not allowed' }, 405, origin)
+      let body: { title?: unknown; venue?: unknown; category?: unknown; blurb?: unknown }
+      try {
+        body = (await request.json()) as typeof body
+      } catch {
+        return json({ error: 'bad json' }, 400, origin)
+      }
+      if (typeof body.title !== 'string' || !body.title.trim()) return json({ error: 'no title' }, 400, origin)
+      if (!env.ANTHROPIC_API_KEY) {
+        return json({ error: 'The image finder needs an ANTHROPIC_API_KEY.', code: 'no-key' }, 503, origin)
+      }
+      try {
+        const image = await findImageFor(
+          {
+            title: body.title.slice(0, 200),
+            venue: typeof body.venue === 'string' ? body.venue.slice(0, 120) : undefined,
+            category: typeof body.category === 'string' ? body.category.slice(0, 20) : undefined,
+            blurb: typeof body.blurb === 'string' ? body.blurb.slice(0, 300) : undefined,
+          },
+          env.ANTHROPIC_API_KEY,
+          env.ANTHROPIC_VISION_MODEL,
+        )
+        // `image: null` is a real answer, not a failure — it means nothing on-subject was found and
+        // the app's typographic poster is the better card.
+        return json({ ok: true, image }, 200, origin)
+      } catch {
+        return json({ ok: true, image: null }, 200, origin)
       }
     }
 

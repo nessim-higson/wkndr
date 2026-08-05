@@ -56,6 +56,28 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
   outside the centre, so the two axes must never both hard-gate. Recorded in STATE.md.
 - **Next: V.11** — `bun run bump` rolls V.10.19 → V.11 (a whole-version milestone, tag `v11.0`).
 
+## [board V.9.39] — 2026-08-06 — dropped listings now find their own photograph
+- **The gap:** a roundup *agenda* slide is typeset text, so there is no photo on it to lift — 93 of
+  93 events arrived with no image. (A *feature* slide is one dish with a real photo; those already
+  got it, 8/8.) Ness: "all of the cards will need an image."
+- **Search, then let vision throw out the wrong ones.** Same two-stage shape the build-time pipeline
+  already uses for its own picks, ported into the Worker: keyless DuckDuckGo image search, ranked
+  portrait-first (the card is a tall crop), then a vision pass that keeps only a photo that genuinely
+  depicts the event. `POST /drop/image`, `worker/curate/src/findimage.ts`.
+- **The vision stage is the whole point.** A bare search returned something for 8/8 real events, but
+  "Pride Is A Protest" came back with a stock photo from an Indian news site. Coverage was 100%,
+  accuracy was not. Vision rejected exactly those, and a rejection is a real answer — the app's own
+  typographic poster beats a wrong photograph, so the prompt is told to prefer 0 when it's close.
+- **Measured 8/9 on a real agenda.** Film screenings resolve beautifully — Criterion for *Chimes at
+  Midnight*, UniFrance for the Douard film, Halden Pop for Iguana Death Cult.
+- **Runs on KEEP, not on read.** You discard most of a 93-event agenda, so imaging at read time
+  would pay for 83 pictures you're about to throw away. Ticking N events images those N, three at a
+  time, with live progress ("Finding images — 4/10 checked, 3 found…").
+- **Never overwrites.** Only picks with NO image are searched; a post's own photo always wins, since
+  it was taken by whoever is promoting the thing.
+- Verified end to end on app.wkndr.xyz: 3 ticked → 3 photos, correct dates, correct categories,
+  rendering at 800×1200, undo intact.
+
 ## [board V.9.38] — 2026-08-03 — dropped picks keep their date and category
 Found during a CEO review, before a seeding session rather than after. The reader was extracting a
 date and a category for every listing and both were being **thrown away** between the vision pass

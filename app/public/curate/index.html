@@ -228,7 +228,7 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 <body>
 <div class="wrap">
 <header>
-<p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD V.9.38</p>
+<p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD V.9.39</p>
 <h1>Your weekend<span class="dot">.</span></h1>
 <div id="modetoggle"><button class="on" data-mode="simple">Simple</button><button data-mode="advanced">Advanced</button></div>
 <div id="overnote" style="display:none"></div>
@@ -506,7 +506,7 @@ Promise.all([
   // 10 min (max-age=600), so a just-shipped board fix can lag in an open tab; the eyebrow makes
   // stale-board-vs-fresh-data visible at a glance (2026-07-12: an old tab's tier-mirror pile read
   // as "the board is wrong" when it was just cached).
-  const BOARD_V='V.9.38';
+  const BOARD_V='V.9.39';
   document.getElementById('eyebrow').textContent='WKNDR · CURATION BOARD '+BOARD_V+' · FEED '+(d.generatedAt||'').slice(0,16).replace('T',' · ');
   const board=document.getElementById('board');board.innerHTML='';
   const rot=document.createElement('div');rot.id='tab-rot';board.appendChild(rot);
@@ -1143,6 +1143,54 @@ document.getElementById('copy').addEventListener('click',async()=>{
     });
   }
 
+
+  // ADD, WITH IMAGES. An agenda listing arrives with no photograph — the slide it came from is
+  // typeset text. So before a ticked listing becomes a card we go and find one: DuckDuckGo search,
+  // then a vision check that discards anything that isn't genuinely the event (measured 8/9 on a
+  // real agenda). A miss leaves the app's own typographic poster, which beats a wrong photo.
+  // Only ever runs on picks with NO image — a post's own photo always wins and is never replaced.
+  async function addTicked(picked,d){
+    const needImage=picked.filter(e=>!e.image);
+    const btn=document.getElementById('evadd');
+    if(needImage.length){
+      if(btn)btn.disabled=true;
+      let done=0,found=0;
+      const tick=()=>say('Finding images — '+done+'/'+needImage.length+' checked, '+found+' found…');
+      tick();
+      // three at a time: fast enough to feel live, gentle enough not to hammer search
+      const queue=[...needImage];
+      await Promise.all([0,1,2].map(async()=>{
+        while(queue.length){
+          const e=queue.shift();
+          try{
+            const r=await fetch(CURATE_URL+'/drop/image',{method:'POST',headers:{'Content-Type':'application/json'},
+              body:JSON.stringify({title:e.title,venue:e.venue||'',category:e.category||'',blurb:e.blurb||''})});
+            const j=await r.json();
+            if(j&&j.image){e.image=j.image;found++}
+          }catch(err){/* a miss is fine — the card falls back to its poster */}
+          done++;tick();
+        }
+      }));
+      if(btn)btn.disabled=false;
+    }
+    const fresh=[];
+    for(const e of picked){
+      // e.when is the reader's parseable rewrite ("Fri 31 Jul"); e.date is what the slide printed
+      // ("FRI 31/07"), which lib/when.ts cannot read.
+      const ok=addExtra({title:e.title,link:d.url,image:e.image||'',
+        blurb:e.blurb||[e.venue,e.date].filter(Boolean).join(' · '),
+        venue:e.venue||'',when:e.when||'',category:e.category||'',
+        source:'@'+(d.author||'roundup'),_drop:true});
+      if(ok)fresh.push(e.title);
+    }
+    evbox.innerHTML='';prev.innerHTML='';inp.value='';
+    const dupes=picked.length-fresh.length;
+    if(!fresh.length){say('All '+picked.length+' were already in your deck — nothing added.');return}
+    const withImg=picked.filter(e=>e.image).length;
+    undoBar(fresh,'Added '+fresh.length+' event'+(fresh.length===1?'':'s')
+      +' ('+withImg+' with a photo)'+(dupes?', '+dupes+' already there':'')+'.');
+  }
+
   // ——— READ THE LISTINGS ———
   async function readListings(d,btn){
     btn.disabled=true;btn.textContent='Reading…';
@@ -1199,22 +1247,7 @@ document.getElementById('copy').addEventListener('click',async()=>{
       // own). A FEATURE slide donates its photo — one dish, one picture, so the slide image IS the
       // card. A dense listing slide sends none: its image is a wall of text, and the app's own
       // typographic poster beats a photo of a timetable. The pipeline re-images either on refresh.
-      const fresh=[];
-      for(const e of picked){
-        // e.when is the reader's parseable rewrite ("Fri 31 Jul"); e.date is what the slide printed
-        // ("FRI 31/07"), which lib/when.ts cannot read. Passing the printed form would give a card
-        // with no date stamp, no expiry and no per-day weather fit.
-        const ok=addExtra({title:e.title,link:d.url,image:e.image||'',
-          blurb:e.blurb||[e.venue,e.date].filter(Boolean).join(' · '),
-          venue:e.venue||'',when:e.when||'',category:e.category||'',
-          source:'@'+(d.author||'roundup'),_drop:true});
-        if(ok)fresh.push(e.title);
-      }
-      evbox.innerHTML='';prev.innerHTML='';inp.value='';
-      const dupes=picked.length-fresh.length;
-      if(!fresh.length){say('All '+picked.length+' were already in your deck — nothing added.');return}
-      undoBar(fresh,'Added '+fresh.length+' event'+(fresh.length===1?'':'s')
-        +(dupes?' ('+dupes+' already there)':'')+' to the deck.');
+      addTicked(picked,d);
     });
     document.getElementById('evnone').addEventListener('click',()=>{
       const on=!preTick;   // mirrors the button's label: "Tick all" on a big read, "Untick all" on a small one
