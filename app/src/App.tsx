@@ -547,7 +547,13 @@ export default function App() {
       // deliberately NOT diversified (the cluster IS the ask) and no canon RESERVE.
       // Reorders, never truncates: the endless deck stays endless.
       if (moreLike) return moreLikeOrder(filtered, moreLike, mode)
-      if (filter !== 'all' || cats.length > 0 || whens.length > 0 || wheres.length > 0) return diversify(filtered)
+      // FILTERED DECK — de-cluster, then ALWAYS re-apply orderServed. Without it the hand pile,
+      // 👑 TOP and ▲ LEAD are all discarded, because diversify only knows about categories.
+      // This was silently true on EVERY load: DEFAULT_WHENS is ['weekend'], so `whens.length > 0`
+      // is true before the user touches anything — the board's order never reached the deck once.
+      if (filter !== 'all' || cats.length > 0 || whens.length > 0 || wheres.length > 0) {
+        return orderServed(diversify(filtered))
+      }
       // ENDLESS browse (per Ness — this functioned better than fixed sets): the weekend's LIVE picks
       // lead, then a ROTATING slice of the deep canon library. The slice advances every WEEK and on
       // each Shuffle (seed), cycling the whole library across reshuffles. The split is LIVE-vs-canon
