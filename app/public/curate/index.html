@@ -228,7 +228,7 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 <body>
 <div class="wrap">
 <header>
-<p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD V.9.39</p>
+<p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD V.9.40</p>
 <h1>Your weekend<span class="dot">.</span></h1>
 <div id="modetoggle"><button class="on" data-mode="simple">Simple</button><button data-mode="advanced">Advanced</button></div>
 <div id="overnote" style="display:none"></div>
@@ -506,7 +506,7 @@ Promise.all([
   // 10 min (max-age=600), so a just-shipped board fix can lag in an open tab; the eyebrow makes
   // stale-board-vs-fresh-data visible at a glance (2026-07-12: an old tab's tier-mirror pile read
   // as "the board is wrong" when it was just cached).
-  const BOARD_V='V.9.39';
+  const BOARD_V='V.9.40';
   document.getElementById('eyebrow').textContent='WKNDR · CURATION BOARD '+BOARD_V+' · FEED '+(d.generatedAt||'').slice(0,16).replace('T',' · ');
   const board=document.getElementById('board');board.innerHTML='';
   const rot=document.createElement('div');rot.id='tab-rot';board.appendChild(rot);
@@ -1113,7 +1113,7 @@ document.getElementById('copy').addEventListener('click',async()=>{
       +'<div class="dacts"><button class="b" id="dropadd">↑ Add to my top 10</button>'
       // A roundup carousel's events are TYPESET INTO the slides — the caption carries none of them.
       // Dropping the post alone gets one card and loses the twenty events behind it.
-      +(d.slides>1?'<button class="b go" id="dropread">↧ Find the events</button>':'')
+      +(d.slides>=1?'<button class="b go" id="dropread">↧ Find the events</button>':'')
       +'<button class="b" id="dropskip">Discard</button></div>'
       +'</div></div>';
     document.getElementById('dropadd').addEventListener('click',()=>{
@@ -1195,7 +1195,7 @@ document.getElementById('copy').addEventListener('click',async()=>{
   async function readListings(d,btn){
     btn.disabled=true;btn.textContent='Reading…';
     evbox.innerHTML='';
-    say('Reading '+d.slides+' slides — about '+Math.max(5,Math.round(d.slides*2))+' seconds…');
+    say(d.slides>1?('Reading '+d.slides+' slides — about '+Math.max(5,Math.round(d.slides*2))+' seconds…'):'Reading the post — a few seconds…');
     let r,j;
     try{
       r=await fetch(CURATE_URL+'/drop/read',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({url:d.url})});

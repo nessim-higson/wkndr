@@ -19,7 +19,7 @@
 // Everything else is title-based (matches the board + restamp's titleLooseMatch). Privacy-light:
 // titles, an order, and reasons — no accounts, no personal data. Same posture as the relay.
 
-import { extractDrop, carouselSlides, DropError } from './extract'
+import { extractDrop, carouselSlides, shortcodeOf, fullImageUrl, DropError } from './extract'
 import { readRoundup, RoundupError } from './roundup'
 import { findImageFor } from './findimage'
 
@@ -160,7 +160,10 @@ export default {
         // Count the slides so the board can offer "read the listings" on a roundup. Best-effort:
         // a failed count just means the button doesn't appear, never a failed drop.
         const slides = await carouselSlides(drop.url)
-        return json({ ok: true, drop: { ...drop, slides: slides.length } }, 200, origin)
+        // A non-carousel post still HAS one image, and that image is often a whole month's events
+        // (@amsterdamwithfel's "AMSTERDAM AUGUST EVENT CALENDAR" is a single 1080x1921 poster).
+        // Reporting 0 made the board hide the reader on exactly the posts worth reading.
+        return json({ ok: true, drop: { ...drop, slides: Math.max(1, slides.length) } }, 200, origin)
       } catch (e) {
         // A DropError carries a message written for Ness; anything else is a genuine surprise.
         const known = e instanceof DropError
@@ -191,9 +194,16 @@ export default {
       }
       try {
         const drop = await extractDrop(body.url)
-        const slides = await carouselSlides(drop.url)
-        if (slides.length < 2) {
-          return json({ error: 'That post is a single image — there are no listing slides to read.', code: 'not-carousel' }, 422, origin)
+        // Carousel children when there are any; otherwise the post's own single image. The vision
+        // pass reads one image at a time either way, so refusing a single-image post was an
+        // arbitrary gate — and it excluded month-calendar posters, which are the richest input we get.
+        let slides = await carouselSlides(drop.url)
+        if (!slides.length) {
+          const code = shortcodeOf(drop.url)
+          if (!code) {
+            return json({ error: 'Nothing readable on that post.', code: 'not-readable' }, 422, origin)
+          }
+          slides = [{ code, thumb: drop.imageOriginal ?? '', full: fullImageUrl(code) }]
         }
         const read = await readRoundup(slides, env.ANTHROPIC_API_KEY, env.ANTHROPIC_VISION_MODEL)
         return json({ ok: true, source: drop, slides: slides.length, ...read }, 200, origin)
