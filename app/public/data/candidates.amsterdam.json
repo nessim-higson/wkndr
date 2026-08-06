@@ -1,31 +1,98 @@
 {
-  "generatedAt": "2026-07-30T15:12:42.404Z",
-  "count": 1,
+  "generatedAt": "2026-08-06T15:16:19.620Z",
+  "count": 4,
   "candidates": [
     {
-      "id": "web-ra-2368413",
-      "title": "FunHouse - The World Pride Friday Edition",
-      "venue": "WestWeelde",
-      "area": "",
-      "when": "Fri 31 Jul · 22:00",
-      "category": "live",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fimages.ra.co%2F93e91f34b64edbc85fdce99b95a809c7ba4406e4.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fimages.ra.co%2F93e91f34b64edbc85fdce99b95a809c7ba4406e4.jpg",
-      "blurb": "Club night at WestWeelde.",
-      "source": "Resident Advisor",
-      "link": "https://ra.co/events/2368413",
+      "id": "web-lbb-artis-zoomeravonden",
+      "title": "ARTIS Zoomeravonden",
+      "venue": "ARTIS-Park",
+      "area": "Amsterdam",
+      "when": "Sun 9 Aug (regular Saturdays until 29 Aug)",
+      "category": "out",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.landezine.com%2Fwp-content%2Fuploads%2F2010%2F12%2Fvondelpark-playground-amsterdam-by-carve-landscape-architecture-09.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fwww.landezine.com%2Fwp-content%2Fuploads%2F2010%2F12%2Fvondelpark-playground-amsterdam-by-carve-landscape-architecture-09.jpg",
+      "blurb": "Zoo stays open until sunset with live music, workshops, yoga, and animal encounters in evening light.",
+      "source": "Your Little Black Book",
+      "link": "https://duckduckgo.com/?q=ARTIS%20Zoomeravonden%20ARTIS-Park%20Amsterdam",
       "weatherFit": [
         "HOT",
         "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
+        "COOL"
+      ],
+      "freshness": "always",
+      "outdoor": true,
+      "kid": true,
+      "price": "",
+      "why": "Zoo transformed for evening magic",
+      "editorScore": 5
+    },
+    {
+      "id": "web-your-little-black-book-yourlittleblackb-vondelpark-open-air-theatre",
+      "title": "Vondelpark Open Air Theatre",
+      "venue": "Vondelpark",
+      "area": "South",
+      "when": "All summer · weekends (Sat 8 & Sun 9 Aug)",
+      "category": "stage",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fcdn.amsterdamnow.com%2Fapp%2Fuploads%2Fvondelpark-openluchttheater.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fcdn.amsterdamnow.com%2Fapp%2Fuploads%2Fvondelpark-openluchttheater.jpg",
+      "blurb": "Free weekend performances with music, dance, comedy & classical concerts. Saturday: family theatre; Sunday: classical & live music.",
+      "source": "Your Little Black Book (yourlittleblackb",
+      "link": "https://www.yourlittleblackbook.me/en/weekendtips-amsterdam/",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL"
+      ],
+      "freshness": "always",
+      "outdoor": true,
+      "kid": true,
+      "price": "free",
+      "why": "Free; varied programming; beloved summer institution",
+      "editorScore": 6
+    },
+    {
+      "id": "web-i-amsterdam-movies-h-art-museum",
+      "title": "Movies @ H'ART Museum",
+      "venue": "H'ART Museum",
+      "area": "Plantage",
+      "when": "Sat 8 Aug · 21:00, Sun 9 Aug · 21:00",
+      "category": "stage",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.iamsterdam.com%2F_next%2Fimage%3Furl%3Dhttps%3A%252F%252Fapp.thefeedfactory.nl%252Fapi%252Fassets%252F68cc1581d9cbeb176aaae63e%252F2025-08-06_HART-Museum_869.webp%26w%3D3840%26q%3D75&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fwww.iamsterdam.com%2F_next%2Fimage%3Furl%3Dhttps%3A%252F%252Fapp.thefeedfactory.nl%252Fapi%252Fassets%252F68cc1581d9cbeb176aaae63e%252F2025-08-06_HART-Museum_869.webp%26w%3D3840%26q%3D75",
+      "blurb": "Amsterdam's largest open-air cinema. Classic films in romantic courtyard with film quiz and live introductions.",
+      "source": "I amsterdam",
+      "link": "https://www.moviesathartmuseum.nl/",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL"
       ],
       "freshness": "weekend",
-      "outdoor": false,
+      "outdoor": true,
       "kid": false,
-      "price": "",
-      "why": "On Resident Advisor",
-      "editorScore": 4
+      "price": "ticketed",
+      "why": "Iconic summer tradition, sold out",
+      "editorScore": 6
+    },
+    {
+      "id": "web-i-amsterdam-cinetree-s-forest-film-festival",
+      "title": "Cinetree's Forest Film Festival",
+      "venue": "Bostheater",
+      "area": "Amsterdamse Bos",
+      "when": "Thu–Sat 6–8 Aug · 21:30",
+      "category": "stage",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Falmostginger.com%2Fwp-content%2Fuploads%2F2018%2F10%2FFilmtheater-Kriterion-Courtesy-of-Amsterdamming-9393843589_cedc6162e2_b-1024x678.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Falmostginger.com%2Fwp-content%2Fuploads%2F2018%2F10%2FFilmtheater-Kriterion-Courtesy-of-Amsterdamming-9393843589_cedc6162e2_b-1024x678.jpg",
+      "blurb": "Films under stars with live music, poetry, expert introductions. Award-winning cinema in forest setting.",
+      "source": "I amsterdam",
+      "link": "https://bostheater.nl/en/our-program/cinetree/",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL"
+      ],
+      "freshness": "weekend",
+      "outdoor": true,
+      "kid": false,
+      "price": "from €15",
+      "why": "Unique immersive experience",
+      "editorScore": 5
     }
   ]
 }
