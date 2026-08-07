@@ -36,6 +36,9 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 .badge.appr{background:var(--green)}
 .badge.pile{background:var(--accent)}
 .badge.lens{background:#2b6cb0}
+.badge.verb{background:#6a655c}
+/* the VERBATIM tab's text block — the source's own words are the card, so they get room */
+.vtext{font-size:12.5px;line-height:1.5;color:var(--ink);white-space:pre-wrap;background:#f4f2ed;border-left:2px solid #c9c9c6;border-radius:0 8px 8px 0;padding:8px 10px;max-height:200px;overflow:auto}
 .lowres{position:absolute;bottom:10px;left:10px;background:#c33;color:#fff;font-family:var(--sans);font-size:9px;font-weight:700;letter-spacing:.06em;padding:3px 8px;border-radius:999px}
 .card img{cursor:zoom-in}
 #veil{position:fixed;inset:0;z-index:60;display:none;place-items:center;background:rgba(6,5,4,.94);backdrop-filter:blur(8px);cursor:zoom-out;padding:20px}
@@ -228,7 +231,7 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 <body>
 <div class="wrap">
 <header>
-<p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD V.9.40</p>
+<p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD V.9.41</p>
 <h1>Your weekend<span class="dot">.</span></h1>
 <div id="modetoggle"><button class="on" data-mode="simple">Simple</button><button data-mode="advanced">Advanced</button></div>
 <div id="overnote" style="display:none"></div>
@@ -264,6 +267,7 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 <div class="tabs" id="tabs" hidden>
 <button class="tab on" data-tab="rot">IN ROTATION <span class="n" id="nrot"></span></button>
 <button class="tab" data-tab="new">NEW FINDS <span class="n" id="nnew"></span></button>
+<button class="tab" data-tab="verb">VERBATIM <span class="n" id="nverb"></span></button>
 </div>
 <div id="board">Loading the live feed…</div>
 </div>
@@ -492,10 +496,12 @@ Promise.all([
  jf('../data/canon.amsterdam.json',{canon:[]}),
  jf('../data/trending.amsterdam.json',{trending:[]}),
  jf('../data/pending.amsterdam.json',{pending:[]}),
+ // VERBATIM exhibit (board V.9.41) — written by the "Verbatim cards" workflow, board-only, never fed to the app
+ jf('../data/verbatim.amsterdam.json',null),
  // THE LENS forecast — the same keyless open-meteo call the pipeline's weekendMode() makes (raw
  // fetch: jf would append a second "?"). Fails soft → null → the lens goes dated-only.
  fetch('https://api.open-meteo.com/v1/forecast?latitude=52.37&longitude=4.9&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Europe%2FAmsterdam&forecast_days=7').then(r=>r.ok?r.json():null).catch(()=>null)
-]).then(([d,c,v,cc,lib,tr,pd,om])=>{
+]).then(([d,c,v,cc,lib,tr,pd,vb,om])=>{
   baked=v.byTitle||{};
   feedKey='wkndr.curate.'+(d.generatedAt||'x');
   feedGeneratedAt=d.generatedAt||'';
@@ -506,11 +512,12 @@ Promise.all([
   // 10 min (max-age=600), so a just-shipped board fix can lag in an open tab; the eyebrow makes
   // stale-board-vs-fresh-data visible at a glance (2026-07-12: an old tab's tier-mirror pile read
   // as "the board is wrong" when it was just cached).
-  const BOARD_V='V.9.40';
+  const BOARD_V='V.9.41';
   document.getElementById('eyebrow').textContent='WKNDR · CURATION BOARD '+BOARD_V+' · FEED '+(d.generatedAt||'').slice(0,16).replace('T',' · ');
   const board=document.getElementById('board');board.innerHTML='';
   const rot=document.createElement('div');rot.id='tab-rot';board.appendChild(rot);
   const nw=document.createElement('div');nw.id='tab-new';nw.style.display='none';board.appendChild(nw);
+  const vbd=document.createElement('div');vbd.id='tab-verb';vbd.style.display='none';board.appendChild(vbd);
 
   // ——— shared date mirrors — inline lib/when.ts + refresh.ts, the board is dependency-free
   // static JS; keep in step. datesOf mirrors when.ts datesIn (every concrete date, sorted);
@@ -737,13 +744,50 @@ Promise.all([
     const g=document.createElement('div');g.className='grid';nw.appendChild(g);
     cc2.keep.forEach(p=>addCard({...p,id:'canon-cand-'+p.title.toLowerCase().replace(/[^a-z0-9]+/g,'-')},g,'new',0,true));
   }
+  // ——— VERBATIM (board V.9.41, Ness 2026-08-08): the sources' recommendations IN THEIR OWN
+  // WORDS, their order, no ranking, no rewrite — with a flat grey stand-in image so the words
+  // are judged alone. Board-only exhibit: the app never reads verbatim.amsterdam.json, and the
+  // legal model (signal + link, never republish) means a verbatim blurb is REWRITTEN before
+  // anything ships. Not passed through fresh() on purpose — feed twins are the point of the
+  // comparison, and a verdict here shares V[vkey] with its twin like any two renders of a pick. ———
+  let verbCount=0;
+  {
+    const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    const GREY='data:image/svg+xml;utf8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1200"><rect width="800" height="1200" fill="#c9c9c6"/></svg>');
+    const hasL=vb&&vb.lbb&&vb.lbb.items&&vb.lbb.items.length,hasI=vb&&vb.iamsterdam&&vb.iamsterdam.items&&vb.iamsterdam.items.length;
+    if(hasL||hasI){
+      const note=document.createElement('div');note.className='cathead hot';
+      note.innerHTML='In their own words · fetched '+esc((vb.generatedAt||'').slice(0,16).replace('T',' · '))
+        +'<span class="d">Each card carries the source’s recommendation <b>verbatim</b> — no rewrite, no re-ranking, their order — on a grey stand-in image so the words carry the card. Verdicts here ride Submit like anywhere else (a twin in the feed shares the verdict). Review only: the legal model (signal + link, never republish) means verbatim text is rewritten before anything ships.</span>';
+      vbd.appendChild(note);
+      const section=(html,items,srcName)=>{
+        const h=document.createElement('div');h.className='cathead';h.innerHTML=html;vbd.appendChild(h);
+        const g=document.createElement('div');g.className='grid';vbd.appendChild(g);
+        items.forEach(it=>{verbCount++;addCard({id:it.id,title:it.title,venue:it.venue||'',area:it.area||'',
+          when:it.when||'',category:it.category||'',price:it.price||'',image:GREY,link:it.link,
+          source:srcName+' · verbatim',verbatim:it.text},g,'verb')});
+      };
+      if(hasL){const a=vb.lbb.article||{};
+        section('Your Little Black Book · '+vb.lbb.items.length
+          +'<span class="d">From “'+esc(a.title||'the weekly weekendtips article')+'” — <a href="'+esc(a.link||'#')+'" target="_blank" rel="noopener">read the article ↗</a></span>',
+          vb.lbb.items,'Your Little Black Book');}
+      if(hasI){
+        section('I amsterdam · '+vb.iamsterdam.items.length
+          +'<span class="d">Their weekend selection, event descriptions as published — <a href="'+esc(vb.iamsterdam.page||'#')+'" target="_blank" rel="noopener">source listing ↗</a></span>',
+          vb.iamsterdam.items,'I amsterdam');}
+    }else{
+      vbd.innerHTML='<div class="cathead">Verbatim cards<span class="d">No verbatim data yet — run the “Verbatim cards” workflow (GitHub → Actions → Verbatim cards) and reload.</span></div>';
+    }
+  }
   document.getElementById('nrot').textContent='('+((d.picks||[]).length+canon.length)+')';
   document.getElementById('nnew').textContent='('+(pending.length+trending.length+bench.length+canonC.length)+')';
+  document.getElementById('nverb').textContent='('+verbCount+')';
   const tabs=document.getElementById('tabs');tabs.hidden=false;
   tabs.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
     tabs.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===t));
     rot.style.display=t.dataset.tab==='rot'?'':'none';
     nw.style.display=t.dataset.tab==='new'?'':'none';
+    vbd.style.display=t.dataset.tab==='verb'?'':'none';
     window.scrollTo({top:0});
   }));
   update();
@@ -881,7 +925,8 @@ function addCard(p,g,tag,pos,probe){
     :tag==='lens'?'<span class="badge lens">LENS'+(p._summer?' · SUMMER RUN':'')+(pos?' · PILE #'+pos:'')+'</span>'
     :tag==='appr'?'<span class="badge appr">✓'+(bk&&bk.stars?' ★'+bk.stars:'')+' APPROVED</span>'
     :bk?'<span class="badge saved">★'+(bk.stars||'·')+' SAVED</span>'
-    :tag==='new'?'<span class="badge new">NEW</span>':'';
+    :tag==='new'?'<span class="badge new">NEW</span>'
+    :tag==='verb'?'<span class="badge verb">VERBATIM</span>':'';
   const title=p.link?'<a href="'+p.link+'" target="_blank" rel="noopener">'+p.title+'<span class="ext">↗</span></a>':p.title;
   // WHY IT'S HERE — a plain line so no section needs decoding. Keyed off the card's role (tag).
   const why=tag==='lens'?(p._summer
@@ -890,6 +935,7 @@ function addCard(p,g,tag,pos,probe){
     :tag==='pile'?'In the opening deck your testers swipe first. Drag ⠿ to set the order.'
     :tag==='new'?'A new find — NOT live yet. Tap <b>↑ Top 10</b> to drop it straight into your deck (Simple view); ✕ to pass.'
     :tag==='appr'?'Approved for your permanent library — always in rotation. ✕ retires it.'
+    :tag==='verb'?'The source’s own words, unedited — grey image on purpose, so the words carry the card.'
     :'';
   el.innerHTML=badge
     +'<button class="kill" title="Kill">✕</button>'
@@ -898,6 +944,8 @@ function addCard(p,g,tag,pos,probe){
     +(why?'<div class="why">'+why+'</div>':'')
     +'<h3>'+title+'</h3>'
     +'<div class="sub">'+(p.venue||'')+' · '+(p.when||'')+'</div>'
+    // the VERBATIM tab's payload — the source's full text, escaped (verbatim ≠ trusted markup)
+    +(p.verbatim?'<div class="vtext">'+String(p.verbatim).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</div>':'')
     +'<div class="src">'+(p.source||p.tier||'')+(p.editorScore!=null?' · judge '+p.editorScore:'')+(p.buzz>1?' · buzz '+p.buzz:'')+'</div>'
     +'<div class="stars">'+[1,2,3,4,5].map(n=>'<button class="star" data-n="'+n+'" aria-label="'+n+' stars">★</button>').join('')+'</div>'
     +'<div class="row"><button class="b imgup">IMG ✓</button><button class="b imgdn">IMG ✗</button><button class="b canon">+CANON</button><button class="b topb" title="Escalate: leads the deck with a Top pick pill">👑 TOP</button><button class="b leadb" title="Promote into your Top 10 (Simple view)">↑ Top 10</button><button class="b laterb" title="This weekend only: sinks to the back of the pile (not a kill)">▼ LATER</button></div>'

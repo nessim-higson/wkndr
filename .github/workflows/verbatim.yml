@@ -1,0 +1,40 @@
+name: Verbatim cards
+
+# ONE-SHOT FETCH for the board's VERBATIM tab (Ness, 2026-08-08): pulls the current LBB
+# weekendtips article + I amsterdam's weekend selection IN THEIR OWN WORDS (keyless, no LLM
+# — see app/scripts/verbatim.ts) and commits data/verbatim.amsterdam.json to the branch it
+# was dispatched on. Review exhibit only — nothing here touches the live feed files.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: verbatim
+  cancel-in-progress: false
+
+jobs:
+  verbatim:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: cd app && bun install
+      - run: cd app && bun run scripts/verbatim.ts
+      - name: Commit + push
+        run: |
+          git config user.name "wkndr-bot"
+          git config user.email "actions@github.com"
+          if git diff --quiet app/public/data/verbatim.amsterdam.json; then
+            git status --porcelain app/public/data/verbatim.amsterdam.json | grep -q . || { echo "nothing changed"; exit 0; }
+          fi
+          git add app/public/data/verbatim.amsterdam.json
+          git commit -m "data(verbatim): LBB + I amsterdam in their own words $(date -u +'%Y-%m-%d %H:%M')"
+          for i in 1 2 3; do
+            if git pull --rebase --autostash origin "${GITHUB_REF_NAME}" && git push origin HEAD; then exit 0; fi
+            git rebase --abort >/dev/null 2>&1 || true
+            echo "push attempt $i failed — retrying"; sleep 3
+          done
+          echo "::error::push failed after 3 attempts"
+          exit 1
