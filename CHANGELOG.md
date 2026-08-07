@@ -14,6 +14,18 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [board V.9.41] — 2026-08-08 — THE VERBATIM TAB (review exhibit, Ness's ask)
+- **Third board tab: VERBATIM** — I amsterdam's and Your Little Black Book's weekend
+  recommendations **in the source's own words**: no rewrite, no re-ranking, their order, on a
+  flat grey stand-in image so the words are judged alone. Verdicts on these cards ride Submit
+  like any twin (shared `V[vkey]`).
+- **`app/scripts/verbatim.ts` + `verbatim.yml`** — keyless, deterministic fetch (no LLM touches
+  the text, so "verbatim" is true by construction): LBB via the WordPress RSS `content:encoded`
+  article (the weekly weekendtips), I amsterdam via their event pages' schema.org JSON-LD, full
+  descriptions untruncated. Writes `data/verbatim.amsterdam.json` — **board-only, the app never
+  reads it**, and the legal model (signal + link, never republish) still means verbatim text is
+  rewritten before anything ships.
+
 ## [V.11] — 2026-08-03 — WHERE COMES TO THE FACE (whole-version roll)
 - **Ness's call, made against the recommendation** (which was: keep the filters in the menu, put
   only *state* on the face). His reasoning won on the field evidence — a filter nobody finds is a

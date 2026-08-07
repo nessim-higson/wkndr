@@ -80,11 +80,17 @@ export function lbbItems(articleHtml: string, articleLink: string): VerbItem[] {
     if (!title || title.length < 3) continue
     // housekeeping headings, not recommendations
     if (/nieuwsbrief|newsletter|volg (ons|je|us)|save this|bewaar dit|deel (dit|je)|share this|meer (weekend)?tips|more (weekend )?tips|hotspot updates|comments?|reacties/i.test(title)) continue
+    // article chrome (seen on the 2026-08-07 issue): the guide's own lede block, the AMSTERDAM
+    // UPDATES signup, in-article section headers ("➋ … op een rij:" / anything ending in ":"),
+    // and the closing "wat er verder…" outro — none of these is a recommendation
+    if (/^amsterdam weekend guide|^amsterdam updates|^wat er verder/i.test(title)) continue
+    if (/:\s*$/.test(title) || /^[➀-➓➊❶-❿①-⑩]/.test(title)) continue
     const start = hs[i].index! + hs[i][0].length
     const end = i + 1 < hs.length ? hs[i + 1].index! : articleHtml.length
     const block = articleHtml.slice(start, end)
     const text = verbatimText(block)
     if (text.length < 60) continue   // a bare heading with no body isn't a tip
+    if (/geeft vereiste velden aan|this field is for validation/i.test(text)) continue   // an embedded signup form
     // this tip's own outbound link: first anchor that isn't social/share/LBB-internal chrome
     let link = ''
     for (const a of block.matchAll(/<a[^>]+href="(https?:[^"]+)"[^>]*>/gi)) {
