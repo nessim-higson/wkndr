@@ -4,8 +4,13 @@ name: Verbatim cards
 # weekendtips article + I amsterdam's weekend selection IN THEIR OWN WORDS (keyless, no LLM
 # — see app/scripts/verbatim.ts) and commits data/verbatim.amsterdam.json to the branch it
 # was dispatched on. Review exhibit only — nothing here touches the live feed files.
+# workflow_dispatch only registers once the file reaches the default branch, so the push
+# trigger (scoped to the working branch) is what runs it during review. No self-loop: the
+# data commit below uses GITHUB_TOKEN, and GITHUB_TOKEN pushes never trigger workflows.
 on:
   workflow_dispatch:
+  push:
+    branches: ['claude/wkndr-curation-cards-uo8gss']
 
 permissions:
   contents: write
