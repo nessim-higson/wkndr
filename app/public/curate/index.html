@@ -943,7 +943,7 @@ function addCard(p,g,tag,pos,probe){
     +'<div class="meta">'
     +(why?'<div class="why">'+why+'</div>':'')
     +'<h3>'+title+'</h3>'
-    +'<div class="sub">'+(p.venue||'')+' · '+(p.when||'')+'</div>'
+    +'<div class="sub">'+([p.venue,p.when].filter(Boolean).join(' · '))+'</div>'
     // the VERBATIM tab's payload — the source's full text, escaped (verbatim ≠ trusted markup)
     +(p.verbatim?'<div class="vtext">'+String(p.verbatim).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</div>':'')
     +'<div class="src">'+(p.source||p.tier||'')+(p.editorScore!=null?' · judge '+p.editorScore:'')+(p.buzz>1?' · buzz '+p.buzz:'')+'</div>'
