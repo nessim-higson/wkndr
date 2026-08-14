@@ -14,6 +14,26 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [board V.9.41] — 2026-08-14 — FOUR QUICK WINS (guest-curator usability pass)
+Out of a Krug/Nielsen heuristic audit run with the takeover use-case in mind (a first-time guest
+doing the twenty-minute re-rank): the deltas were all guest-facing, none structural.
+- **Type-to-filter on "Up next"** (`#poolfilter`) — the 60+-row tail was a read-the-whole-list scan.
+  Filters title · venue · when; rows keep their REAL deck numbers; the drag grips hide while a
+  filter is on (reordering a list you can only partly see writes an order you didn't mean) — ↑ and
+  ✕, the verbs you filter for, stay live.
+- **↺ Reset to the system's order** — the missing emergency exit for the order itself: one drag
+  froze the whole PILE with no way back short of clearing localStorage. Re-seeds from the live
+  serve order (drops re-land at slot 10); the same button is a one-shot ↩ Undo.
+- **The bar speaks the view's language.** Simple's footer counted in Advanced vocabulary
+  ("0 top · 0 lead · 0 canon" — taste-ladder jargon on the default view); it now counts what
+  Simple shows ("73 in the deck · 2 cancelled · 1 added by you"). Submit is mode-aware the same
+  way: **"Submit — send it live"** in Simple, "Submit → GitHub" in Advanced.
+- **The drop box is one line** (label · input · Pull, status/preview rows appear only with content)
+  — the four-row card was pushing the Top 10, the board's actual job, below the fold on open.
+- (Same session, pipeline-side: refresh cron moved to Thu 10:00 UTC — GitHub delays scheduled runs
+  75–130 min, so the "13:00 UTC = 3 PM Amsterdam" slot actually landed ~16:30–17:15; the feed is
+  now live before the 15:00 curation hour, and Simple re-seeds fresh off the new `generatedAt`.)
+
 ## [V.11] — 2026-08-03 — WHERE COMES TO THE FACE (whole-version roll)
 - **Ness's call, made against the recommendation** (which was: keep the filters in the menu, put
   only *state* on the face). His reasoning won on the field evidence — a filter nobody finds is a

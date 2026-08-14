@@ -223,12 +223,30 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 .evrow .pt{font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:var(--dim);padding:2px 8px;border-radius:999px;margin-left:4px;vertical-align:1px}
 .evrow .pt.night{background:var(--ink)}
 .evfoot{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:16px;padding-top:12px;border-top:1px solid var(--line)}
+/* ── QUICK WINS (V.9.41): one-line drop box · reset the order · filter the tail ──
+   The drop box used to be a four-row card that pushed the Top 10 — the board's actual job —
+   below the fold on open. One row: label · input · Pull; the status/preview rows appear only
+   once they have something to say. */
+#dropbox{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:10px 14px}
+#dropbox .dlab{margin:0;flex:none}
+.drow{flex:1;margin:0}
+#dropstat{flex-basis:100%;min-height:0;margin-top:0}
+#dropstat:empty,#droppreview:empty,#dropevents:empty{display:none}
+#droppreview,#dropevents{flex-basis:100%}
+#dropevents{margin-top:0}
+#deckbar{display:flex;justify-content:flex-end;margin:10px 0 0}
+#poolbar{display:flex;align-items:center;gap:10px;margin:12px 0 0}
+#poolfilter{flex:0 1 340px;min-width:200px;font-family:var(--sans);font-size:13px;padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:#fff;color:var(--ink)}
+#poolfilter::placeholder{color:#B4AEA1}
+#poolfilter:focus-visible{outline:2px solid var(--accent);outline-offset:1px;border-color:var(--accent)}
+#poolfc{font-size:11.5px;color:var(--dim)}
+#pool.filtering .ogrip{visibility:hidden}
 </style>
 </head>
 <body>
 <div class="wrap">
 <header>
-<p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD V.9.40</p>
+<p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD V.9.41</p>
 <h1>Your weekend<span class="dot">.</span></h1>
 <div id="modetoggle"><button class="on" data-mode="simple">Simple</button><button data-mode="advanced">Advanced</button></div>
 <div id="overnote" style="display:none"></div>
@@ -238,9 +256,8 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 <p class="simplelede"><b>The 10 cards that open the deck</b> — exactly what your testers see first this weekend. Drag to reorder, swap any card in or out, <b>✕</b> to cancel one — it comes off straight away and waits on the <b>Cancelled</b> shelf below, where you can say why whenever you like. Then hit <b>Submit</b>.</p>
 <div id="dropbox">
 <p class="dlab">Drop a link</p>
-<p class="dsub">Paste a post from Instagram, TikTok or X. It comes back with its picture and caption, straight into your top 10.</p>
 <div class="drow">
-<input id="dropurl" type="url" spellcheck="false" autocomplete="off" placeholder="https://www.instagram.com/p/…" aria-label="Paste a post link">
+<input id="dropurl" type="url" spellcheck="false" autocomplete="off" placeholder="Paste an Instagram / TikTok / X post — it becomes a card in your top 10" aria-label="Paste a post link">
 <button id="dropgo" type="button">Pull</button>
 </div>
 <div id="dropstat" role="status" aria-live="polite"></div>
@@ -248,8 +265,10 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 <div id="dropevents"></div>
 </div>
 <div class="cathead hot" id="openhead">Your 10 opening cards</div>
+<div id="deckbar"><button id="resetorder" class="b" title="Throw away your drag order and re-seed the whole deck from the system's ranking. One-shot undo on the same button.">↺ Reset to the system's order</button></div>
 <div id="openlist"></div>
 <div class="cathead" id="poolhead">Swap in a card<span class="d">Tap + to drop a pick into your 10 (it bumps #10 out). This weekend's picks, best first.</span></div>
+<div id="poolbar"><input id="poolfilter" type="search" spellcheck="false" autocomplete="off" placeholder="Type to filter — title, venue, day…" aria-label="Filter the Up next list"><span id="poolfc"></span></div>
 <div id="pool"></div>
 <div id="cancelbox"></div>
 </div>
@@ -419,6 +438,7 @@ function renderCancelled(){
 // verdict on either lights up both.
 const vkey=p=>tok(p.title||'');
 let V={},baked={},feedKey='',PILE=null;   // PILE = hand-dragged pile order (titles) — null until a drag
+let MODE='simple';   // which view is on — the bottom bar speaks its language (plain words in Simple)
 let renderPile=()=>{};   // rebuilt inside the feed load — lets a card's ▲/👑/✕ live-update the pile
 let renderStatus=()=>{};   // "did my call land?" panel — recompared to the live feed on every verdict
 let renderOpen=()=>{};   // the Simple view's ordered deck (top 10 + up-next) — re-rendered on any change
@@ -506,7 +526,7 @@ Promise.all([
   // 10 min (max-age=600), so a just-shipped board fix can lag in an open tab; the eyebrow makes
   // stale-board-vs-fresh-data visible at a glance (2026-07-12: an old tab's tier-mirror pile read
   // as "the board is wrong" when it was just cached).
-  const BOARD_V='V.9.40';
+  const BOARD_V='V.9.41';
   document.getElementById('eyebrow').textContent='WKNDR · CURATION BOARD '+BOARD_V+' · FEED '+(d.generatedAt||'').slice(0,16).replace('T',' · ');
   const board=document.getElementById('board');board.innerHTML='';
   const rot=document.createElement('div');rot.id='tab-rot';board.appendChild(rot);
@@ -772,6 +792,31 @@ Promise.all([
       PILE=full;};
     seed();
     const openList=document.getElementById('openlist'),pool=document.getElementById('pool'),openHead=document.getElementById('openhead'),poolHead=document.getElementById('poolhead');
+    // ↺ RESET (V.9.41) — the missing emergency exit for the ORDER itself. One drag freezes the whole
+    // PILE, and until now the only way back to the system's ranking was clearing localStorage by hand.
+    // Reset re-seeds from the live serve order (hand-added drops re-land at slot 10, same as a fresh
+    // paste); the same button is a one-shot undo — undo beats an "are you sure?" prompt.
+    const resetBtn=document.getElementById('resetorder');
+    let beforeReset=null;
+    if(resetBtn)resetBtn.addEventListener('click',()=>{
+      if(beforeReset){PILE=beforeReset.slice();beforeReset=null;resetBtn.textContent='↺ Reset to the system’s order'}
+      else{beforeReset=(PILE||[]).slice();PILE=null;seed();
+        for(const e of extras)if(pick(e.title)&&!PILE.includes(e.title))PILE.splice(Math.min(9,PILE.length),0,e.title);
+        resetBtn.textContent='↩ Undo reset'}
+      store();renderOpen();update();
+    });
+    // TYPE-TO-FILTER (V.9.41) — "Up next" is a 60+-row scan, and finding one pick meant reading the
+    // list. Filters on title · venue · when; numbering keeps each row's REAL deck position. The drag
+    // grips hide while a filter is on — reordering a list you can only partly see writes an order you
+    // didn't mean. ↑ and ✕ (the verbs you filter FOR) stay live.
+    const pf=document.getElementById('poolfilter'),pfc=document.getElementById('poolfc');
+    const applyFilter=()=>{if(!pf)return;const q=pf.value.trim().toLowerCase();
+      pool.classList.toggle('filtering',!!q);
+      let n=0;const total=pool.children.length;
+      [...pool.children].forEach(el=>{const hit=!q||(el.dataset.hay||'').includes(q);el.style.display=hit?'':'none';if(hit)n++});
+      if(pfc)pfc.textContent=q?n+' of '+total+' shown':'';
+    };
+    if(pf)pf.addEventListener('input',applyFilter);
     const sub=p=>[p.venue,p.when].filter(Boolean).join(' · ');
     const moveTo=(t,idx)=>{PILE=PILE.filter(x=>x!==t);idx=Math.max(0,Math.min(idx,PILE.length));PILE.splice(idx,0,t);store();renderOpen()};
     const promote=t=>moveTo(t,MAX-1);   // ↑ from Up next → last slot of the Top 10 (bumps #10 down)
@@ -809,6 +854,7 @@ Promise.all([
     // reason), the rest cancel it (card leaves the deck AND the pile immediately).
     const row=(p,i,tail)=>{const v=V[vkey(p)]||{};
       const el=document.createElement('div');el.className='ocard'+(isExtra(p.title)?' isnew':'')+(v.flag?' flagged':'');el.dataset.title=p.title;
+      el.dataset.hay=(p.title+' '+(p.venue||'')+' '+(p.when||'')).toLowerCase();   // the filter's haystack
       el.innerHTML='<span class="num">'+(i+1)+'</span><span class="ogrip" title="Drag to reorder">⠿</span>'
         +'<img loading="lazy" src="'+(p.image||'')+'" alt="">'
         +'<div class="ot"><h4>'+(p.link?'<a href="'+p.link+'" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;border-bottom:1px solid rgba(27,26,23,.25)">'+p.title+'</a>':p.title)+(isExtra(p.title)?' <span class="newtag">NEW</span>':'')+'</h4><div class="os">'+sub(p)+'</div></div>'
@@ -826,15 +872,20 @@ Promise.all([
       poolHead.innerHTML='Up next · '+tail.length+'<span class="d">The rest of the deck your viewers see, in the system’s order. It auto-ranks until you touch it — drag ⠿ to reorder, ↑ to pull one into your Top 10, ✕ to cancel on the spot. Be as hawkish as you like.</span>';
       openList.innerHTML='';top.forEach((p,i)=>openList.appendChild(row(p,i,false)));openDrag(openList,'top');
       pool.innerHTML='';tail.forEach((p,i)=>pool.appendChild(row(p,i+MAX,true)));openDrag(pool,'tail');
+      applyFilter();   // a re-render must not silently drop an active filter
     };
     renderOpen();renderCancelled();
+    update();   // seed the bar's Simple counters (deck size exists only after seed())
     const mt=document.getElementById('modetoggle');
     mt.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{
       mt.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));
       const simple=b.dataset.mode==='simple';
+      MODE=simple?'simple':'advanced';
+      document.getElementById('ghfile').textContent=submitLabel();   // the button speaks the view's language too
       document.getElementById('simple').style.display=simple?'':'none';
       document.getElementById('advanced').hidden=simple;
       if(!simple)renderPile();   // sync the advanced pile to any simple-view reorder
+      update();                  // re-speak the bar in the new view's vocabulary
       window.scrollTo({top:0});
     }));
   }
@@ -977,7 +1028,17 @@ function renumber(pg){[...pg.children].forEach((el,i)=>{
 function verdicts(){return Object.values(V).filter(v=>v.stars||v.killed||v.img||v.note||v.betterImage||v.canon||v.top||v.lead||v.later||v.flag||v.reason)}
 function update(){
   const vs=Object.values(V);
-  document.getElementById('count').textContent=vs.filter(v=>v.top).length+' top · '+vs.filter(v=>v.lead).length+' lead · '+vs.filter(v=>v.later).length+' later · '+vs.filter(v=>v.stars).length+' starred · '+vs.filter(v=>v.killed).length+' killed · '+vs.filter(v=>v.canon).length+' canon';
+  // The bar speaks the view's language (V.9.41). "0 top · 0 lead · 0 canon" is taste-ladder
+  // vocabulary — Advanced's counters. On the default view (and for a guest curator) it read as
+  // jargon, so Simple counts what Simple shows: the deck, the cancels, your adds.
+  const cnt=document.getElementById('count');
+  if(MODE==='simple'){
+    const dead=new Set(vs.filter(v=>v&&v.killed).map(v=>v.t));
+    const deckN=(PILE||[]).filter(t=>!dead.has(t)).length;
+    cnt.textContent=(deckN?deckN+' in the deck · ':'')+vs.filter(v=>v.killed).length+' cancelled · '+extras.length+' added by you';
+  }else{
+    cnt.textContent=vs.filter(v=>v.top).length+' top · '+vs.filter(v=>v.lead).length+' lead · '+vs.filter(v=>v.later).length+' later · '+vs.filter(v=>v.stars).length+' starred · '+vs.filter(v=>v.killed).length+' killed · '+vs.filter(v=>v.canon).length+' canon';
+  }
   // reflect every open verdict back onto its card(s) — the same pick in the lens/pile/feed lights up
   // together, so a tap visibly "takes" and it's clear a verdict here counts everywhere.
   document.querySelectorAll('.card').forEach(el=>{
@@ -1285,6 +1346,10 @@ async function postCurate(){
 }
 // SUBMIT — two writes: (1) the fast-lane POST → the app applies your order/kills in seconds; (2) the
 // GitHub issue → the durable record Claude folds into the corpus on the next refresh. Fast-lane first.
+// The label is mode-aware (V.9.41): "→ GitHub" is information for Ness and noise-to-alarming for a
+// guest curator on the default view — Simple says what the button DOES, Advanced says how.
+function submitLabel(){return MODE==='simple'?'Submit — send it live':'Submit → GitHub'}
+document.getElementById('ghfile').textContent=submitLabel();
 document.getElementById('ghfile').addEventListener('click',async()=>{
   const b=document.getElementById('ghfile');
   b.textContent='Publishing…';
@@ -1316,7 +1381,7 @@ document.getElementById('ghfile').addEventListener('click',async()=>{
       +'Your order and cancels are live already; <b>★ ratings and 👑 crowns only travel in the issue</b>.'
       +(long?' (Long round — the full text is on your clipboard, paste it in.)':'');
   }
-  setTimeout(()=>{b.textContent='Submit → GitHub'},3500);   // the note stays until the next Submit
+  setTimeout(()=>{b.textContent=submitLabel()},3500);   // the note stays until the next Submit
 });
 document.getElementById('send').addEventListener('click',async()=>{
   const b=document.getElementById('send');b.textContent='Sending…';
