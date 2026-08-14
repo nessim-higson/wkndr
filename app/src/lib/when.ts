@@ -21,16 +21,23 @@ const WDAY = 'mon(?:day)?|tue(?:s(?:day)?)?|wed(?:nesday)?|thu(?:r(?:s(?:day)?)?
 const OPEN_RUN = /\b(until|through|thru|till|t\/m|ongoing|runs?|opens?)\b/i
 
 // Resolve a bare day+month to the right year. This year, unless the date is already well past
-// (>45d) — then it MAY be next year's, but only when the phrasing is an open run (an exhibition
-// "Until 15 Jan" seen in July) or the wrap lands near (a late-Dec feed saying "Sat 2 Jan").
-// A merely-stale feed's events therefore stay in THIS year and get filtered as past, instead
-// of resurrecting as next year's (the >45-day-lag failure mode).
+// (>45d) — then it MAY be next year's, but only when the phrasing is an open run whose date is
+// LONG gone (>120d — an exhibition "Until 15 Jan" seen in July means NEXT January) or the wrap
+// lands near (a late-Dec feed saying "Sat 2 Jan"). A merely-stale feed's events therefore stay
+// in THIS year and get filtered as past, instead of resurrecting as next year's.
+//
+// The 45–120d band is the STALE ZONE, and open runs must stay past inside it: the old rule
+// rolled EVERY >45d-past open run forward, so "Until 21 Jun" read in mid-August became next
+// June — which kept two finished exhibitions (hand-authored `ending` picks from the June seed
+// pool) alive on the deck and the board for two months. A run that ended weeks ago is over;
+// only one that ended the better part of a year ago plausibly means the year ahead.
 function resolveDate(day: number, mon: number, now: Date, openRun = false): Date {
   const y = now.getFullYear()
   const d = new Date(y, mon, day, 12, 0, 0)
   if (d.getTime() >= now.getTime() - 45 * 864e5) return d
   const next = new Date(y + 1, mon, day, 12, 0, 0)
-  return openRun || next.getTime() - now.getTime() < 60 * 864e5 ? next : d
+  const longGone = d.getTime() < now.getTime() - 120 * 864e5
+  return (openRun && longGone) || next.getTime() - now.getTime() < 60 * 864e5 ? next : d
 }
 
 /** Correct the weekday(s) in a freeform `when` string to match the actual date. Idempotent. */

@@ -141,24 +141,10 @@ export const PICKS: Pick[] = [
   },
 
   // ═════════ ART & MUSEUMS — incl. closing-soon (museum sites) ═════════
-  {
-    id: 'ivna-esajas', title: 'Ivna Esajas — Wayward Lines', venue: 'Stedelijk Museum', area: 'Museumplein', when: 'Until Sun 7 Jun — last days',
-    image: 'https://artdaily.cc/imagenes/2026/03/07/abn-2.jpg',
-    category: 'art', freshness: 'ending', outdoor: false, kid: false, price: '€22.50',
-    blurb: 'The ABN Amro Art Award show threads diasporic memory through installation — its very last weekend.',
-    why: 'Closes Sunday · indoor · see it or miss it',
-    source: 'Stedelijk Museum', link: 'https://www.stedelijk.nl/en/exhibitions/en-abn-amro-art-award-ivna-esajas',
-    weatherFit: ['COOL', 'COLD_WET', 'VOLATILE'], status: 'final-week',
-  },
-  {
-    id: 'yumna-al-arashi', title: 'Yumna Al-Arashi — Body as Resistance', venue: 'Huis Marseille', area: 'Keizersgracht', when: 'Until 21 Jun',
-    category: 'art', freshness: 'ending', outdoor: false, kid: false, price: '~€10',
-    image: 'https://huismarseille.nl/app/uploads/2025/11/iam2.jpg',
-    blurb: 'First solo museum show for Al-Arashi — photography, sculpture and book confront the policing of women’s bodies.',
-    why: 'Final weeks · indoor · canal-house museum',
-    source: 'Huis Marseille', link: 'https://huismarseille.nl/en/exhibitions/yumna-al-arashi/',
-    weatherFit: ['COOL', 'COLD_WET', 'VOLATILE'], status: 'final-week',
-  },
+  // (The June-2026 `ending` entries — Ivna Esajas, Yumna Al-Arashi — are DELETED, not just culled:
+  // a hand-authored pick with a concrete end date rots in place, and the year-inference that kept
+  // them alive is exactly the bug resolveDate's stale-zone rule now guards. Closing-soon picks
+  // belong to the weekly crawl, which drops them the week they finish.)
   {
     id: 'carel-visser', title: 'Carel Visser — sculpture in the gardens', venue: 'Rijksmuseum Gardens', area: 'Museumplein', when: 'Opens Fri 5 Jun · until 25 Oct',
     category: 'art', freshness: 'new', outdoor: true, kid: true, price: 'free',

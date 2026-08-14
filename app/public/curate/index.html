@@ -246,7 +246,7 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 <body>
 <div class="wrap">
 <header>
-<p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD V.9.41</p>
+<p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD V.9.42</p>
 <h1>Your weekend<span class="dot">.</span></h1>
 <div id="modetoggle"><button class="on" data-mode="simple">Simple</button><button data-mode="advanced">Advanced</button></div>
 <div id="overnote" style="display:none"></div>
@@ -526,7 +526,7 @@ Promise.all([
   // 10 min (max-age=600), so a just-shipped board fix can lag in an open tab; the eyebrow makes
   // stale-board-vs-fresh-data visible at a glance (2026-07-12: an old tab's tier-mirror pile read
   // as "the board is wrong" when it was just cached).
-  const BOARD_V='V.9.41';
+  const BOARD_V='V.9.42';
   document.getElementById('eyebrow').textContent='WKNDR · CURATION BOARD '+BOARD_V+' · FEED '+(d.generatedAt||'').slice(0,16).replace('T',' · ');
   const board=document.getElementById('board');board.innerHTML='';
   const rot=document.createElement('div');rot.id='tab-rot';board.appendChild(rot);
@@ -543,14 +543,15 @@ Promise.all([
   const WKFRI=(()=>{const t=new Date(WKEND);t.setHours(0,0,0,0);t.setDate(t.getDate()-2);return t.getTime()})();
   const MONi={jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11};
   // Year resolution mirrors when.ts resolveDate: THIS year, unless the date is already well past
-  // (>45d) — and then next year ONLY for an open run ("Until 15 Jan" read in July) or a near wrap
-  // (<60d out). The old board rule rolled EVERY >45d-past date forward, which resurrected a merely
-  // STALE feed's finished events as next year's — the exact failure isOver below exists to catch.
+  // (>45d) — and then next year ONLY for an open run whose date is LONG gone (>120d — "Until
+  // 15 Jan" read in July means NEXT January) or a near wrap (<60d out). Open runs in the 45–120d
+  // stale zone stay past: rolling every >45d-past open run forward is what kept two finished June
+  // exhibitions ("Until 21 Jun" read in August → next June) on the board into mid-August.
   const OPENRUN=/\b(until|through|thru|till|t\/m|ongoing|runs?|opens?)\b/i;
   const resolveD=(day,mi,now,openRun)=>{const d=new Date(now.getFullYear(),mi,day,12);
     if(d.getTime()>=now.getTime()-45*864e5)return d;
     const nx=new Date(now.getFullYear()+1,mi,day,12);
-    return (openRun||nx.getTime()-now.getTime()<60*864e5)?nx:d};
+    return ((openRun&&d.getTime()<now.getTime()-120*864e5)||nx.getTime()-now.getTime()<60*864e5)?nx:d};
   const datesOf=w=>{const now=new Date(),ts=[],openRun=OPENRUN.test(w||'');
     for(const m of (w||'').matchAll(/(\d{1,2})\s*(?:[–—-]\s*(?:mon|tue|wed|thu|fri|sat|sun)[a-z]*\.?)?\s*[–—-]?\s*(\d{1,2})?\s*(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)/gi)){
       const mi=MONi[m[3].slice(0,3).toLowerCase()];

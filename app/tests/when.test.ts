@@ -182,3 +182,29 @@ describe('upcomingWeekendEnd', () => {
     expect(upcomingWeekendEnd(new Date(2026, 6, 12)).getDate()).toBe(12)
   })
 })
+
+// ——— THE STALE ZONE (2026-08-14) — year inference must not resurrect a finished open run.
+// The live failure: "Until 21 Jun" and "Until Sun 7 Jun — last days" (hand-authored June `ending`
+// picks) read in mid-August. The old rule rolled EVERY open-run date >45d past forward a year, so
+// both resolved to NEXT June (7 Jun 2027 is indeed a Monday — the recomputed weekday was the tell),
+// slipped every expiry guard, and sat on the deck and the board for two months. Open runs now roll
+// forward only when the date is LONG gone (>120d); the 45–120d band stays this year → past → culled.
+describe('resolveDate stale zone — a finished open run stays finished', () => {
+  const AUG = new Date(2026, 7, 14, 12, 0, 0)   // Fri 14 Aug 2026 — the day the bug was caught
+  it('drops an open run that ended weeks ago (the two June exhibitions)', () => {
+    expect(whenIsPast('Until 21 Jun', AUG)).toBe(true)                     // 54d past → over
+    expect(whenIsPast('Until Sun 7 Jun — last days', AUG)).toBe(true)      // 68d past → over
+  })
+  it('still rolls a LONG-gone open run across the year boundary', () => {
+    expect(whenIsPast('Until 15 Jan', new Date(2026, 6, 15, 12))).toBe(false)   // 181d past → next Jan
+  })
+  it('still honours the near wrap for one-offs', () => {
+    expect(whenIsPast('Sat 2 Jan', new Date(2026, 11, 28, 12))).toBe(false)     // late-Dec feed → 2 Jan next
+  })
+  it('the ≤45d grace window is unchanged — a just-finished run is past, not next year', () => {
+    expect(whenIsPast('Until 21 Jun', new Date(2026, 6, 10, 12))).toBe(true)    // 19d past → over
+  })
+  it('a stale one-off never resurrects either way', () => {
+    expect(whenIsPast('Sat 6 Jun', AUG)).toBe(true)                        // the June seed concerts
+  })
+})

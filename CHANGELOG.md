@@ -14,6 +14,22 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.11.1 · board V.9.42] — 2026-08-14 — THE STALE ZONE (year-inference fix)
+Two exhibitions that ended in June were still on the deck and the board in mid-August: "Ivna
+Esajas — Wayward Lines" (Until Sun 7 Jun) and "Yumna Al-Arashi" (Until 21 Jun). `resolveDate`
+rolled EVERY open-run date >45d past forward a year, so "Until 21 Jun" read in August became
+next June (7 Jun 2027 is indeed a Monday — the recomputed weekday was the tell) and slipped
+every expiry guard.
+- **The rule (when.ts + the board's mirror, parity-tested):** an open run rolls across the year
+  boundary only when its date is LONG gone (>120d — "Until 15 Jan" seen in July still means next
+  January). The 45–120d band is the stale zone: a run that ended weeks ago is OVER. The ≤45d
+  grace and the <60d near-wrap ("Sat 2 Jan" in late December) are unchanged.
+- **The rotten data is deleted, not just culled:** both were hand-authored June `ending` picks in
+  the static seed pool (`src/data/picks.ts`) — a concrete end date in a permanent file rots in
+  place. Closing-soon picks belong to the weekly crawl.
+- Board cull on the 13 Aug feed went 25 → 31 — the fix also caught four more resurrections in
+  the bench/canon lists. 281 tests (5 new stale-zone regressions in when.test.ts).
+
 ## [board V.9.41] — 2026-08-14 — FOUR QUICK WINS (guest-curator usability pass)
 Out of a Krug/Nielsen heuristic audit run with the takeover use-case in mind (a first-time guest
 doing the twenty-minute re-rank): the deltas were all guest-facing, none structural.
