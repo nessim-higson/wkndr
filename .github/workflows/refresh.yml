@@ -1,14 +1,19 @@
 name: Refresh content
 
-# Runs WEEKLY — automatically every THURSDAY 13:00 UTC (15:00 CET) — and ON DEMAND (the "Run
-# workflow" button in the Actions tab). THURSDAY, not Monday: the key sources (Your Little Black
-# Book's weekend agenda, I amsterdam's weekend curation) publish mid-to-late week, so a Monday
-# pull predated them and the weekend always felt stale. Thursday afternoon catches the fresh
-# weekend guides while still leaving Fri–Sun to plan. Pulls fresh picks via the pipeline, ranks
-# them by buzz, commits the updated picks.json, then kicks the Pages deploy. No prompting needed.
+# Runs WEEKLY — automatically every THURSDAY — and ON DEMAND (the "Run workflow" button in the
+# Actions tab). THURSDAY, not Monday: the key sources (Your Little Black Book's weekend agenda,
+# I amsterdam's weekend curation) publish mid-to-late week, so a Monday pull predated them and
+# the weekend always felt stale. Pulls fresh picks via the pipeline, ranks them by buzz, commits
+# the updated picks.json, then kicks the Pages deploy. No prompting needed.
+#
+# TIMING: the target is "fresh feed live BY 15:00 Amsterdam every Thursday" (the curation hour —
+# board sessions + guest curators open to fresh content). GitHub delays scheduled runs by a
+# measured 75–130 min at this hour, and the run itself takes ~11 min, so the cron is set ~2.5h
+# ahead of the target: 10:00 UTC → actual start ~11:15–12:10 → live ~12:30 UTC = 14:30 CEST
+# (13:30 CET in winter). Still after the Thursday-morning weekend guides drop (noon Amsterdam).
 on:
   schedule:
-    - cron: '0 13 * * 4'     # Thursday 13:00 UTC (15:00 CET) — after the weekend guides drop
+    - cron: '0 10 * * 4'     # Thursday 10:00 UTC — delay-compensated so the feed is LIVE by 15:00 Amsterdam
   workflow_dispatch:
 
 permissions:
