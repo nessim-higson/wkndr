@@ -118,6 +118,9 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 .ocard .opr:hover{background:var(--accent);color:#fff}
 .ocard.isnew{border-color:var(--ink)}
 .ocard .newtag{font-size:9px;font-weight:800;color:#fff;background:var(--ink);padding:1px 5px;border-radius:999px;margin-left:6px;vertical-align:2px}
+/* BUZZ — evidence, not status, so it reads quieter than NEW's solid ink: tinted, outlined, ignorable
+   until you're looking for it. Shared selector — the same tag serves Simple rows and Advanced cards. */
+.buzztag{display:inline-block;font-size:9px;font-weight:800;color:#4a463e;background:#eee9df;border:1px solid #e0dace;padding:1px 5px;border-radius:999px;margin-left:6px;vertical-align:2px;letter-spacing:.04em;white-space:nowrap;cursor:help}
 /* ── KILLS & FLAGS STATUS (V.9.19): "did my call land?" — checked against the live feed ── */
 #status{margin:20px 0 0;border:1px solid var(--line);border-radius:14px;background:#fff;overflow:hidden}
 #status .sthead{padding:12px 16px;font-size:13px;font-weight:700;border-bottom:1px solid var(--line);background:#faf8f3}
@@ -399,6 +402,20 @@ function wireReasons(el,p,onFix,onKill){
   box.querySelector('.othergo').addEventListener('click',send);
   txt.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();send()}});
 }
+// BUZZ, MADE VISIBLE (V.9.43) — `dedupe()` folds keyless duplicates into their structured twin and
+// counts the corroboration as `buzz`, which then up-levels ranking steeply (2→+1.5, 3→+3, 4+→+4).
+// That signal drove the order you're looking at but was invisible here except as raw "· buzz 3" debug
+// text in Advanced. On a 71-row promote/demote scan it's the fact you actually want: the city agrees
+// on this one. Threshold 2 — buzz≥3 fires on ~1 pick a week, a grammar nobody would learn.
+// "SOURCES", deliberately, not "guides": one corroborator is sometimes the venue's own site, and the
+// fold count can exceed the number of distinct names the pick kept.
+const srcNames=p=>[...new Map(String(p.source||'').split(/[·\/]/).map(s=>s.trim()).filter(Boolean)
+  .map(s=>[s.toLowerCase(),s])).values()];   // some picks carry a doubled source string ("A · B / A · B")
+const buzzTag=p=>{const n=p.buzz||0;if(n<2)return'';
+  const names=srcNames(p);
+  // The count and the NAMES can legitimately disagree — `buzz` counts folded records, `source` keeps a
+  // display string — so the tip states the count and lists what's actually named, never implying parity.
+  return '<span class="buzztag" title="'+n+' corroborating mentions'+(names.length?' · named: '+names.join(' · '):'')+'">'+n+' SOURCES</span>';};
 // The shelf, rendered into BOTH views (only one is visible at a time, so there's no double-up).
 // A hoisted declaration, not an assignment: this sits ABOVE the `let renderOpen` block, so killNow
 // must be able to reach it without tripping the temporal dead zone.
@@ -526,7 +543,7 @@ Promise.all([
   // 10 min (max-age=600), so a just-shipped board fix can lag in an open tab; the eyebrow makes
   // stale-board-vs-fresh-data visible at a glance (2026-07-12: an old tab's tier-mirror pile read
   // as "the board is wrong" when it was just cached).
-  const BOARD_V='V.9.42';
+  const BOARD_V='V.9.43';
   document.getElementById('eyebrow').textContent='WKNDR · CURATION BOARD '+BOARD_V+' · FEED '+(d.generatedAt||'').slice(0,16).replace('T',' · ');
   const board=document.getElementById('board');board.innerHTML='';
   const rot=document.createElement('div');rot.id='tab-rot';board.appendChild(rot);
@@ -858,7 +875,7 @@ Promise.all([
       el.dataset.hay=(p.title+' '+(p.venue||'')+' '+(p.when||'')).toLowerCase();   // the filter's haystack
       el.innerHTML='<span class="num">'+(i+1)+'</span><span class="ogrip" title="Drag to reorder">⠿</span>'
         +'<img loading="lazy" src="'+(p.image||'')+'" alt="">'
-        +'<div class="ot"><h4>'+(p.link?'<a href="'+p.link+'" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;border-bottom:1px solid rgba(27,26,23,.25)">'+p.title+'</a>':p.title)+(isExtra(p.title)?' <span class="newtag">NEW</span>':'')+'</h4><div class="os">'+sub(p)+'</div></div>'
+        +'<div class="ot"><h4>'+(p.link?'<a href="'+p.link+'" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;border-bottom:1px solid rgba(27,26,23,.25)">'+p.title+'</a>':p.title)+(isExtra(p.title)?' <span class="newtag">NEW</span>':'')+buzzTag(p)+'</h4><div class="os">'+sub(p)+'</div></div>'
         +(tail?'<button class="opr" title="Promote into your Top 10">↑</button>':'<button class="orm" title="Send down to Up next">−</button>')
         +'<button class="okill" title="Cancel — off the board now, say why later">✕</button>'
         +(v.flag?'<div class="ostate">✓ flagged — '+(REASON_LABEL[v.reason]||v.reason)+' · stays live until it\'s fixed</div>':'');
@@ -948,9 +965,9 @@ function addCard(p,g,tag,pos,probe){
     +'<img loading="lazy" src="'+(p.image||'')+'" alt="">'
     +'<div class="meta">'
     +(why?'<div class="why">'+why+'</div>':'')
-    +'<h3>'+title+'</h3>'
+    +'<h3>'+title+buzzTag(p)+'</h3>'
     +'<div class="sub">'+(p.venue||'')+' · '+(p.when||'')+'</div>'
-    +'<div class="src">'+(p.source||p.tier||'')+(p.editorScore!=null?' · judge '+p.editorScore:'')+(p.buzz>1?' · buzz '+p.buzz:'')+'</div>'
+    +'<div class="src">'+(srcNames(p).join(' · ')||p.tier||'')+(p.editorScore!=null?' · judge '+p.editorScore:'')+'</div>'
     +'<div class="stars">'+[1,2,3,4,5].map(n=>'<button class="star" data-n="'+n+'" aria-label="'+n+' stars">★</button>').join('')+'</div>'
     +'<div class="row"><button class="b imgup">IMG ✓</button><button class="b imgdn">IMG ✗</button><button class="b canon">+CANON</button><button class="b topb" title="Escalate: leads the deck with a Top pick pill">👑 TOP</button><button class="b leadb" title="Promote into your Top 10 (Simple view)">↑ Top 10</button><button class="b laterb" title="This weekend only: sinks to the back of the pile (not a kill)">▼ LATER</button></div>'
     +'<input class="inp note" placeholder="note — why / what&#39;s off / bad link">'

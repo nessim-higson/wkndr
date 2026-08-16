@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>15 · Buzz pill comps</title>
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=clash-display@600,700&display=swap">
+<style>
+  :root{
+    --paper:#faf8f3; --ink:#1c1c1a; --accent:#e04a2a;
+    --glass:rgba(44,36,28,.58);
+    --font-display:'Clash Display',Helvetica,Arial,sans-serif;
+    --font-body:'Helvetica Neue',Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0}
+  body{background:var(--paper);color:var(--ink);font-family:var(--font-body);padding:48px 40px 80px}
+  .eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#8b8578;margin-bottom:6px}
+  h1{font-family:var(--font-display);font-weight:600;font-size:34px;margin-bottom:6px}
+  .sub{font-size:14px;color:#6a655c;max-width:640px;line-height:1.5;margin-bottom:40px}
+  h2{font-family:var(--font-display);font-weight:600;font-size:20px;margin:56px 0 4px}
+  .rule{height:2px;background:var(--accent);width:36px;margin:8px 0 24px}
+  .row{display:flex;gap:32px;flex-wrap:wrap;align-items:flex-start}
+
+  .comp{width:270px}
+  .comp h3{font-size:13px;font-weight:700;margin-bottom:2px}
+  .comp .why{font-size:12px;color:#6a655c;line-height:1.45;margin-bottom:12px;min-height:52px}
+  .comp .tag{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.08em;border-radius:999px;padding:2px 8px;margin-bottom:8px}
+  .tag.rec{background:#e8f6ef;color:#1e7a4d}
+  .tag.alt{background:#eee9df;color:#6a655c}
+  .tag.no{background:#fdeae5;color:#b03418}
+
+  /* ---- the card ---- */
+  .card{position:relative;width:270px;height:470px;border-radius:22px;overflow:hidden;
+        background-size:cover;background-position:center;
+        box-shadow:0 18px 40px rgba(0,0,0,.22)}
+  .card::after{content:'';position:absolute;inset:0;
+        background:linear-gradient(to top, rgba(10,8,6,.72) 0%, rgba(10,8,6,.18) 34%, rgba(10,8,6,0) 55%),
+                   linear-gradient(to bottom, rgba(10,8,6,.18) 0%, rgba(10,8,6,0) 22%)}
+  .chips{position:absolute;z-index:2;top:16px;left:16px;display:flex;flex-direction:column;align-items:flex-start;gap:8px}
+  .chip{display:inline-flex;align-items:center;gap:8px;background:var(--glass);backdrop-filter:blur(8px);
+        -webkit-backdrop-filter:blur(8px);color:#fff;border-radius:999px;padding:7px 13px;
+        font-size:12.5px;font-weight:600;letter-spacing:.01em}
+  .chip .div{opacity:.45;font-weight:400}
+  .badge{display:inline-block;background:var(--accent);color:#fff;border-radius:999px;padding:7px 13px;
+        font-size:10.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase}
+  .badge.naive{background:#ff4d1f}
+  .title{position:absolute;z-index:2;left:18px;right:18px;bottom:18px;color:#fff;
+        font-family:var(--font-display);font-weight:600;font-size:27px;line-height:1.05}
+  .pretitle{position:absolute;z-index:2;left:19px;bottom:56px;color:rgba(255,255,255,.82);
+        font-size:12px;font-weight:600}
+  .chiprow{position:absolute;z-index:2;top:16px;left:16px;right:16px;display:flex;flex-wrap:wrap;gap:8px;align-items:flex-start}
+
+  /* copy specimens */
+  .specimens{display:flex;gap:14px;flex-wrap:wrap;align-items:center;background:#28211b;border-radius:14px;padding:22px}
+  .specimens .chip{position:static}
+  .spec{display:flex;flex-direction:column;gap:6px;align-items:center}
+  .spec small{color:#b4aea1;font-size:11px}
+  .spec small b{color:#e8e4da}
+
+  /* provenance strip */
+  .prov{background:#fff;border:1px solid #e8e4da;border-radius:14px;padding:18px 22px;max-width:640px;margin-bottom:14px}
+  .prov .lab{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#8b8578;margin-bottom:6px}
+  .prov p{font-size:13px;color:#4a463e;line-height:1.5}
+  .prov p b{color:var(--ink)}
+  .note{font-size:12px;color:#6a655c;max-width:640px;line-height:1.5;margin-top:18px}
+  .note b{color:var(--ink)}
+</style>
+</head>
+<body>
+
+<div class="eyebrow">WKNDR · Experiment 15 · 2026-08-16</div>
+<h1>The buzz pill<span style="color:var(--accent)">.</span></h1>
+<p class="sub">Surfacing corroboration the pipeline already counts. Real cards, real buzz values from this
+week's feed (Grachtenfestival · buzz 3, Hortus · buzz 2). Derivation rules: rides the existing chip grammar (R1),
+never accent orange, subordinate to the weather badge (R2), zero new tokens (R3), a falsifiable count — never a vibe (R4),
+passive on the card, receipt in the detail sheet (R5).</p>
+
+<h2>Placement</h2><div class="rule"></div>
+<div class="row">
+
+  <div class="comp">
+    <span class="tag rec">RECOMMENDED</span>
+    <h3>A · In the stack</h3>
+    <p class="why">Third chip under the badge — same glass, same scale. Reads as texture at a glance,
+    evidence at fixation. Weather verdict keeps the top slot.</p>
+    <div class="card" style="background-image:url('https://images.weserv.nl/?url=https%3A%2F%2Fwww.dagjeweg.nl%2Fimg%2Fafb%2F0%2Fc%2F4%2Fr0-50-1555-800-13b-art_grachtenfestival_amsterdam_klassiek_op_ponton-1565171298.jpeg&w=800&h=1200&fit=cover&a=attention&output=jpg')">
+      <div class="chips">
+        <span class="chip">🕐 Until Sun 16 Aug <span class="div">|</span> 24°</span>
+        <span class="badge">Perfect this weekend</span>
+        <span class="chip">In 3 city guides</span>
+      </div>
+      <div class="title">Grachtenfestival</div>
+    </div>
+  </div>
+
+  <div class="comp">
+    <span class="tag alt">ALTERNATE</span>
+    <h3>B · With the clock</h3>
+    <p class="why">Same row as the when-chip, wrapping. One line of metadata, two facts.
+    Denser; the two chips compete on busy photos.</p>
+    <div class="card" style="background-image:url('https://images.weserv.nl/?url=https%3A%2F%2Fwww.dagjeweg.nl%2Fimg%2Fafb%2F0%2Fc%2F4%2Fr0-50-1555-800-13b-art_grachtenfestival_amsterdam_klassiek_op_ponton-1565171298.jpeg&w=800&h=1200&fit=cover&a=attention&output=jpg')">
+      <div class="chips" style="right:16px">
+        <div style="display:flex;flex-wrap:wrap;gap:8px">
+          <span class="chip">🕐 Until Sun 16 Aug <span class="div">|</span> 24°</span>
+          <span class="chip">In 3 guides</span>
+        </div>
+        <span class="badge">Perfect this weekend</span>
+      </div>
+      <div class="title">Grachtenfestival</div>
+    </div>
+  </div>
+
+  <div class="comp">
+    <span class="tag alt">ALTERNATE</span>
+    <h3>C · At the name</h3>
+    <p class="why">A quiet pre-title line — evidence lives with the identity it endorses.
+    Least 50ms cost; also least likely to ever be noticed.</p>
+    <div class="card" style="background-image:url('https://images.weserv.nl/?url=https%3A%2F%2Fwww.dagjeweg.nl%2Fimg%2Fafb%2F0%2Fc%2F4%2Fr0-50-1555-800-13b-art_grachtenfestival_amsterdam_klassiek_op_ponton-1565171298.jpeg&w=800&h=1200&fit=cover&a=attention&output=jpg')">
+      <div class="chips">
+        <span class="chip">🕐 Until Sun 16 Aug <span class="div">|</span> 24°</span>
+        <span class="badge">Perfect this weekend</span>
+      </div>
+      <div class="pretitle">In 3 city guides</div>
+      <div class="title">Grachtenfestival</div>
+    </div>
+  </div>
+
+  <div class="comp">
+    <span class="tag no">RULED OUT</span>
+    <h3>D · The naive build</h3>
+    <p class="why">What the derivation exists to prevent: accent orange (breaks R2 — three orange signals),
+    new grammar (R3), vibe-claim (R4), reads as urgency theater.</p>
+    <div class="card" style="background-image:url('https://images.weserv.nl/?url=https%3A%2F%2Fwww.dagjeweg.nl%2Fimg%2Fafb%2F0%2Fc%2F4%2Fr0-50-1555-800-13b-art_grachtenfestival_amsterdam_klassiek_op_ponton-1565171298.jpeg&w=800&h=1200&fit=cover&a=attention&output=jpg')">
+      <div class="chips">
+        <span class="chip">🕐 Until Sun 16 Aug <span class="div">|</span> 24°</span>
+        <span class="badge">Perfect this weekend</span>
+        <span class="badge naive">🔥 Trending</span>
+      </div>
+      <div class="title">Grachtenfestival</div>
+    </div>
+  </div>
+
+</div>
+
+<h2>Copy</h2><div class="rule"></div>
+<div class="specimens">
+  <div class="spec"><span class="chip">In 3 city guides</span><small><b>Recommended.</b> Count + concrete noun</small></div>
+  <div class="spec"><span class="chip">Picked by 3 guides</span><small>Verb carries curation, 1 word longer</small></div>
+  <div class="spec"><span class="chip">3 guides agree</span><small>Charming; "agree" implies debate</small></div>
+  <div class="spec"><span class="chip" style="opacity:.55">Talked about · 3</span><small>Vague — 3 what? Fails R4</small></div>
+</div>
+<p class="note"><b>The Hortus edge case (buzz 2, one "source" is the venue itself):</b> counting the venue's own site
+as a "guide" overclaims. Rule: count only non-venue sources — if that leaves ≥2, count them ("In 2 city guides");
+if it leaves 1, <b>name it instead</b>: <span class="chip" style="background:var(--glass);font-size:11.5px;padding:5px 11px">Picked by Your Little Black Book</span> — naming one credible guide is stronger than counting to one.</p>
+
+<h2>The receipt (detail sheet)</h2><div class="rule"></div>
+<div class="prov">
+  <div class="lab">Today</div>
+  <p>↳ surfaced from Your Little Black Book · ranked for this weekend's weather · listing checked 10 days ago</p>
+</div>
+<div class="prov">
+  <div class="lab">With the pill · names already in the feed's source field</div>
+  <p>↳ picked by <b>Your Little Black Book</b> and <b>I amsterdam</b> · ranked for this weekend's weather · listing checked 10 days ago</p>
+</div>
+<p class="note">The chip claims, the sheet proves — and the corroborator names are already in the feed's
+<b>source</b> string (·-separated), so this ships app-side with no pipeline change. (Found in passing:
+Grachtenfestival's source string is duplicated — "A · B / A · B" — worth a one-line dedupe.)</p>
+
+</body>
+</html>

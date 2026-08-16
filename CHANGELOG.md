@@ -14,6 +14,35 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [board V.9.43] — 2026-08-16 — CORROBORATION, MADE VISIBLE
+Out of a Perception-First Design audit of both surfaces: the pipeline has been *computing* social
+proof all along and showing it to nobody. `dedupe()` folds keyless duplicates into their structured
+twin, counts the corroboration as `buzz`, and up-levels ranking steeply on it (2→+1.5, 3→+3, 4+→+4) —
+but on the board that only ever surfaced as raw `· buzz 3` debug text in Advanced. On a 71-row
+promote/demote scan it is exactly the fact you want: the city agrees on this one.
+- **The `N SOURCES` tag** — beside the title in BOTH views, in the same slot and grammar as `NEW`,
+  but tinted-and-outlined rather than solid ink: `NEW` is a *status*, this is *evidence*, and evidence
+  should be scannable without competing with the title. Fires at **buzz ≥ 2** (≥3 hits ~1 pick a week
+  — a grammar nobody would learn); 5 rows in Simple, 9 in Advanced on the 2026-08-13 feed. The tooltip
+  carries the receipt: the named publications.
+- **"SOURCES", not "guides"** — deliberately. Hortus's two corroborators include De Hortus itself, and
+  calling a venue's own site a city guide overclaims on the one surface built to catch that.
+- **The count and the names are allowed to disagree.** Grachtenfestival ships `buzz: 3` with two
+  distinct publications (`buzz` counts folded records; `source` keeps a display string), so the tip
+  reads "3 corroborating mentions · named: A · B" and never implies parity.
+- **The doubled source string is deduped on display** — Grachtenfestival rendered as
+  "A · B / A · B" in Advanced, now "Your Little Black Book · I amsterdam". Display-only; the feed data
+  is still doubled, so the real fix is pipeline-side in `dedupe()`. (Same family: `Fresh find` is a
+  tier label leaking into a source field.)
+- Guarded by **`tests/board-buzz.test.ts`**, which lifts the shipped helpers straight out of the HTML
+  (same trick as `board-dates.test.ts`) and pins the threshold, the doubled-string trap, and the
+  no-implied-parity wording against the real feed. **287 tests.**
+- Design record: `experiments/15-buzz-pill-comps.html`. **The app-side card pill is NOT shipped** — the
+  deck face already carries 20 pill-shaped containers in one viewport, so a 21st would put the product's
+  best trust signal in its most generic wrapper. Open, with a lead: the card scrim is `rgba(0,0,0,.42)`
+  at the top but `.84` at the bottom, so the chips are pills only because the top scrim can't carry
+  naked type — evidence in the title block needs no container at all.
+
 ## [V.11.1 · board V.9.42] — 2026-08-14 — THE STALE ZONE (year-inference fix)
 Two exhibitions that ended in June were still on the deck and the board in mid-August: "Ivna
 Esajas — Wayward Lines" (Until Sun 7 Jun) and "Yumna Al-Arashi" (Until 21 Jun). `resolveDate`
