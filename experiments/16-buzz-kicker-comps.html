@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>16 · Buzz kicker comps</title>
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=clash-display@600,700&display=swap">
+<style>
+  :root{--paper:#faf8f3;--ink:#1c1c1a;--accent:#e04a2a;--glass:rgba(44,36,28,.58);
+    --font-display:'Clash Display',Helvetica,Arial,sans-serif;
+    --font-body:'Helvetica Neue',Helvetica,Arial,sans-serif}
+  *{box-sizing:border-box;margin:0}
+  body{background:var(--paper);color:var(--ink);font-family:var(--font-body);padding:48px 40px 80px}
+  .eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#8b8578;margin-bottom:6px}
+  h1{font-family:var(--font-display);font-weight:600;font-size:34px;margin-bottom:6px}
+  .sub{font-size:14px;color:#6a655c;max-width:660px;line-height:1.5;margin-bottom:40px}
+  h2{font-family:var(--font-display);font-weight:600;font-size:20px;margin:56px 0 4px}
+  .rule{height:2px;background:var(--accent);width:36px;margin:8px 0 24px}
+  .row{display:flex;gap:32px;flex-wrap:wrap;align-items:flex-start}
+  .comp{width:270px}
+  .comp h3{font-size:13px;font-weight:700;margin-bottom:2px}
+  .comp .why{font-size:12px;color:#6a655c;line-height:1.45;margin-bottom:12px;min-height:66px}
+  .tag{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.08em;border-radius:999px;padding:2px 8px;margin-bottom:8px}
+  .tag.rec{background:#e8f6ef;color:#1e7a4d}.tag.alt{background:#eee9df;color:#6a655c}.tag.base{background:#eef2f6;color:#3d5a78}
+
+  /* the card — scrim matches the shipped .card-scrim (42% top / 84% bottom) */
+  .card{position:relative;width:270px;height:470px;border-radius:22px;overflow:hidden;
+    background-size:cover;background-position:center;box-shadow:0 18px 40px rgba(0,0,0,.22)}
+  .card::after{content:'';position:absolute;inset:0;
+    background:linear-gradient(180deg,rgba(0,0,0,.42) 0%,transparent 26%,transparent 42%,rgba(0,0,0,.58) 72%,rgba(0,0,0,.84) 100%)}
+  .chips{position:absolute;z-index:2;top:16px;left:16px;display:flex;flex-direction:column;align-items:flex-start;gap:8px}
+  .chip{display:inline-flex;align-items:center;gap:8px;background:var(--glass);backdrop-filter:blur(8px);
+    -webkit-backdrop-filter:blur(8px);color:#fff;border-radius:999px;padding:7px 13px;font-size:12.5px;font-weight:600}
+  .chip .div{opacity:.45;font-weight:400}
+  .badge{display:inline-block;background:var(--accent);color:#fff;border-radius:999px;padding:7px 13px;
+    font-size:10.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase}
+  .tblock{position:absolute;z-index:2;left:18px;right:18px;bottom:18px;color:#fff}
+  .kicker{font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.78);margin-bottom:7px}
+  .kicker .star{color:rgba(255,255,255,.55);margin-right:5px;letter-spacing:0}
+  .title{font-family:var(--font-display);font-weight:600;font-size:27px;line-height:1.05}
+  .credits{font-size:11.5px;font-weight:500;color:rgba(255,255,255,.72);margin-top:7px}
+  .credits b{color:rgba(255,255,255,.92);font-weight:600}
+
+  .note{font-size:12px;color:#6a655c;max-width:660px;line-height:1.5;margin-top:18px}
+  .note b{color:var(--ink)}
+  .prov{background:#fff;border:1px solid #e8e4da;border-radius:14px;padding:18px 22px;max-width:660px;margin-bottom:14px}
+  .prov .lab{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#8b8578;margin-bottom:6px}
+  .prov p{font-size:13px;color:#4a463e;line-height:1.5}.prov p b{color:var(--ink)}
+</style>
+</head>
+<body>
+<div class="eyebrow">WKNDR · Experiment 16 · 2026-08-20 · round 2 (after the pill-density call)</div>
+<h1>The buzz kicker<span style="color:var(--accent)">.</span></h1>
+<p class="sub">Round 1 recommended a fourth chip; Ness counted the viewport: 20 pill containers already.
+Round 2 kills the container. The card's own scrim is 42% up top — chips need glass to survive there —
+but 84% at the bottom, where the title already sits as naked type. So evidence joins the NAME, container-less.
+Real card: World Press Photo, buzz 2 (I amsterdam · Your Little Black Book), live feed 2026-08-20.
+Card chrome above stays exactly as shipped — nothing new is a pill.</p>
+
+<h2>Placement</h2><div class="rule"></div>
+<div class="row">
+
+  <div class="comp">
+    <span class="tag rec">RECOMMENDED</span>
+    <h3>A · The kicker</h3>
+    <p class="why">Magazine grammar: a small-caps line above the name. Reads as editorial voice, not UI.
+    Zero new containers; the eye already lands here for the title.</p>
+    <div class="card" style="background-image:url('https://images.weserv.nl/?url=https%3A%2F%2Fwww.nieuwekerk.nl%2Fwp-content%2Fuploads%2F2026%2F02%2F2026-04-23_De-Nieuwe-Kerk_World-Press-Photo-2026__Tomek-Dersu-Aaron_1967.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fwww.nieuwekerk.nl%2Fwp-content%2Fuploads%2F2026%2F02%2F2026-04-23_De-Nieuwe-Kerk_World-Press-Photo-2026__Tomek-Dersu-Aaron_1967.jpg')">
+      <div class="chips">
+        <span class="chip">🕐 Until 27 Sep <span class="div">|</span> 24°</span>
+        <span class="badge">Perfect this weekend</span>
+      </div>
+      <div class="tblock">
+        <div class="kicker">In 2 city guides</div>
+        <div class="title">World Press Photo</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="comp">
+    <span class="tag alt">ALTERNATE</span>
+    <h3>B · The credit line</h3>
+    <p class="why">Name the chorus instead of counting it — byline grammar, under the title.
+    Strongest claim (verifiable names) but longest, and competes with the title's air.</p>
+    <div class="card" style="background-image:url('https://images.weserv.nl/?url=https%3A%2F%2Fwww.nieuwekerk.nl%2Fwp-content%2Fuploads%2F2026%2F02%2F2026-04-23_De-Nieuwe-Kerk_World-Press-Photo-2026__Tomek-Dersu-Aaron_1967.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fwww.nieuwekerk.nl%2Fwp-content%2Fuploads%2F2026%2F02%2F2026-04-23_De-Nieuwe-Kerk_World-Press-Photo-2026__Tomek-Dersu-Aaron_1967.jpg')">
+      <div class="chips">
+        <span class="chip">🕐 Until 27 Sep <span class="div">|</span> 24°</span>
+        <span class="badge">Perfect this weekend</span>
+      </div>
+      <div class="tblock">
+        <div class="title">World Press Photo</div>
+        <div class="credits">Picked by <b>I amsterdam</b> · <b>Your Little Black Book</b></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="comp">
+    <span class="tag alt">ALTERNATE</span>
+    <h3>C · Kicker, starred</h3>
+    <p class="why">A with a ✦ glyph — a touch more eye-catch at scan speed, a touch more
+    ornament. Same geometry as A otherwise.</p>
+    <div class="card" style="background-image:url('https://images.weserv.nl/?url=https%3A%2F%2Fwww.nieuwekerk.nl%2Fwp-content%2Fuploads%2F2026%2F02%2F2026-04-23_De-Nieuwe-Kerk_World-Press-Photo-2026__Tomek-Dersu-Aaron_1967.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fwww.nieuwekerk.nl%2Fwp-content%2Fuploads%2F2026%2F02%2F2026-04-23_De-Nieuwe-Kerk_World-Press-Photo-2026__Tomek-Dersu-Aaron_1967.jpg')">
+      <div class="chips">
+        <span class="chip">🕐 Until 27 Sep <span class="div">|</span> 24°</span>
+        <span class="badge">Perfect this weekend</span>
+      </div>
+      <div class="tblock">
+        <div class="kicker"><span class="star">✦</span>In 2 city guides</div>
+        <div class="title">World Press Photo</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="comp">
+    <span class="tag base">BASELINE</span>
+    <h3>D · Nothing on the face</h3>
+    <p class="why">The honest do-nothing option: face stays as-is, the receipt lives only in the
+    detail sheet. Zero density cost, zero scan-time value.</p>
+    <div class="card" style="background-image:url('https://images.weserv.nl/?url=https%3A%2F%2Fwww.nieuwekerk.nl%2Fwp-content%2Fuploads%2F2026%2F02%2F2026-04-23_De-Nieuwe-Kerk_World-Press-Photo-2026__Tomek-Dersu-Aaron_1967.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fwww.nieuwekerk.nl%2Fwp-content%2Fuploads%2F2026%2F02%2F2026-04-23_De-Nieuwe-Kerk_World-Press-Photo-2026__Tomek-Dersu-Aaron_1967.jpg')">
+      <div class="chips">
+        <span class="chip">🕐 Until 27 Sep <span class="div">|</span> 24°</span>
+        <span class="badge">Perfect this weekend</span>
+      </div>
+      <div class="tblock">
+        <div class="title">World Press Photo</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<h2>Copy · the honest count</h2><div class="rule"></div>
+<p class="note">Same rule the board V.9.43 tag settled, now load-bearing on a consumer surface:
+<b>count only city guides, never the organiser's own site.</b> World Press Photo's two credits are both
+guides → "In 2 city guides". Prinsengrachtconcert (buzz 3 this week) counts prinsengrachtconcert.nl
+among its three → it reads <b>"In 2 city guides"</b>, not 3. When only ONE guide remains after the
+filter, name it instead — "Picked by Your Little Black Book" — naming one credible guide beats
+counting to one. Singular fallback and the guide-only filter both ship app-side off the feed's
+existing <code>source</code> string; no pipeline change.</p>
+
+<h2>The receipt (detail sheet, unchanged from round 1)</h2><div class="rule"></div>
+<div class="prov">
+  <div class="lab">With the kicker · names from the feed's source field</div>
+  <p>↳ picked by <b>I amsterdam</b> and <b>Your Little Black Book</b> · ranked for this weekend's weather · listing checked 2 hours ago</p>
+</div>
+<p class="note"><b>The claim stays falsifiable end to end:</b> the kicker counts, the sheet names.
+Found while building this: the feed's Prinsengrachtconcert card image is literally
+<code>ChatGPT-Image-2-apr.png</code> — an AI render past the image smell-test; "ChatGPT-Image" /
+"DALL-E" / "midjourney" belong in the <code>urlLooksNonPhoto</code> filename patterns.</p>
+</body>
+</html>
