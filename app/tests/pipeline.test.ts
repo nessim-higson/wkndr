@@ -2,7 +2,7 @@
 // the image URL screens, and the weekend window. These are the pure functions the whole content
 // pipeline leans on; each rule here encodes a bug we actually hit during the pipeline era.
 import { describe, it, expect } from 'bun:test'
-import { dedupe, titleKey, urlLooksNonPhoto, toPortrait, upcomingWeekend, whenBeforeWeekend } from '../scripts/lib/pipeline'
+import { dedupe, unionCredits, titleKey, urlLooksNonPhoto, toPortrait, upcomingWeekend, whenBeforeWeekend } from '../scripts/lib/pipeline'
 import { whenIsPast } from '../src/lib/when'
 import type { Pick } from '../src/types'
 
@@ -68,6 +68,36 @@ describe('dedupe — unioning many sources safely', () => {
     expect(out.length).toBe(1)
     expect(out[0].id).toBe('web-iams-world-press-photo-2026')
     expect(out[0].buzz).toBe(2)
+  })
+})
+
+describe('unionCredits — the buzz count must be earnable, not inflatable', () => {
+  // The three traps board V.9.43 surfaced, pinned at the source. Grachtenfestival shipped buzz 3
+  // off two real publications because a websearch LLM cited both in ONE slash-joined string.
+  it('splits a slash-compound credit instead of counting it as a phantom source', () => {
+    const u = unionCredits('Your Little Black Book', 'I amsterdam / Your Little Black Book')
+    expect(u.source).toBe('Your Little Black Book · I amsterdam')
+    expect(u.buzz).toBe(2)
+  })
+  it('is idempotent — re-folding an already-doubled string cannot grow it', () => {
+    const doubled = 'Your Little Black Book · I amsterdam / Your Little Black Book · I amsterdam'
+    expect(unionCredits(doubled)).toEqual({ source: 'Your Little Black Book · I amsterdam', buzz: 2 })
+  })
+  it('dedupes case-insensitively, keeping first-seen casing', () => {
+    const u = unionCredits('I amsterdam', 'I Amsterdam')
+    expect(u.source).toBe('I amsterdam')
+    expect(u.buzz).toBe(1)
+  })
+  it('keeps tier labels in the display string but out of the count', () => {
+    const u = unionCredits('Fresh find', 'I amsterdam')
+    expect(u.source).toBe('Fresh find · I amsterdam')
+    expect(u.buzz).toBe(1)   // "Fresh find" is scouted.ts's label, not a corroborating publication
+  })
+  it('does not split names on an unspaced slash (24/7 Gym stays whole)', () => {
+    expect(unionCredits('24/7 Gym').source).toBe('24/7 Gym')
+  })
+  it('survives undefined and empty sources', () => {
+    expect(unionCredits(undefined, '', 'RA')).toEqual({ source: 'RA', buzz: 1 })
   })
 })
 

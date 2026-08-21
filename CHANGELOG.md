@@ -14,6 +14,31 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [board V.9.44 · worker · pipeline] — 2026-08-16 — THE WRITE GATE (+ honest buzz counts)
+The PFD audit's scariest finding, confirmed and closed: every `wkndr-curate` POST was open to the
+internet. The fast-lane write could reorder or kill the live deck; the `added` array could INJECT
+arbitrary cards (title + link + image) that the app renders to every user in seconds; `/drop/read`
+ran 12-slide Claude vision reads on the Anthropic key — all for anyone who read the board's public JS.
+- **Worker: `X-Curate-Key` on every POST.** `CURATE_KEY` wrangler secret; constant-time compare
+  (`timingSafeEq` — a plain `===` leaks prefix timing on exactly the kind of tiny endpoint people
+  scan); secret unset = everything stays open, the `ANTHROPIC_API_KEY` graceful-absence pattern, so
+  a fresh deploy can't lock the board out before the secret exists. GET stays public — the app reads
+  overrides keyless, and they contain nothing the feed doesn't. CORS allows the new header.
+- **Board V.9.44: the key, asked once.** `curateFetch()` wraps all four worker writes (Submit, drop,
+  read-the-slides, find-an-image): prompts once per browser, localStorage (`wkndr.curate.key`),
+  and a 401 clears + re-asks — a rotated secret self-heals on the next Submit instead of failing dark.
+- **Pipeline: `unionCredits()` — the buzz count is now earnable, not inflatable.** Both `dedupe()`
+  fold sites shared one flawed union: split on `·` only, so a websearch LLM citing two publications
+  in ONE slash-joined string ("I amsterdam / Your Little Black Book") rode along as a phantom third
+  credit — **Grachtenfestival shipped buzz 3 with two real publications behind it** — and re-folds
+  doubled the display string ("A · B / A · B", the V.9.43 display-side catch, now fixed at the root).
+  Also: case-insensitive name dedupe, and tier labels ("Fresh find", scouted.ts) stay in the display
+  string but no longer count toward buzz — a label is not a corroborating publication. Lands in the
+  data on the next refresh/restamp; V.9.43's display-side dedupe covers the already-published feed.
+- Guarded by **`tests/worker-auth.test.ts`** (no-secret grace · lock · constant-time) and six
+  `unionCredits` pins in `tests/pipeline.test.ts` (slash-compound, idempotence, casing, labels,
+  unspaced-slash names, empties). **296 tests.**
+
 ## [board V.9.43] — 2026-08-16 — CORROBORATION, MADE VISIBLE
 Out of a Perception-First Design audit of both surfaces: the pipeline has been *computing* social
 proof all along and showing it to nobody. `dedupe()` folds keyless duplicates into their structured

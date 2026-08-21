@@ -117,17 +117,39 @@ export function approvalCheck(
     slate.some((t) => titleLooseMatch(p.title, t))
 }
 
+// Union source credits across a fold. Three traps this owns (board V.9.43 surfaced all three):
+//   · a websearch LLM sometimes cites two publications in ONE string ("I amsterdam / Your Little
+//     Black Book") — split on " / " too, or the compound rides along as a phantom third credit
+//     (Grachtenfestival shipped buzz 3 with two real publications behind it)
+//   · the same name can arrive with different casing — dedupe case-insensitively, keep first seen
+//   · tier labels ride the source field ("Fresh find", scouted.ts) but are NOT corroborating
+//     publications — they stay in the display string yet must not count toward buzz
+const NON_CREDITS = new Set(['fresh find'])
+export function unionCredits(...sources: (string | undefined)[]): { source: string; buzz: number } {
+  const seen = new Map<string, string>()
+  for (const src of sources)
+    for (const tok of String(src ?? '').split(/\s+\/\s+|\s*·\s*/)) {
+      const t = tok.trim()
+      if (t && !seen.has(t.toLowerCase())) seen.set(t.toLowerCase(), t)
+    }
+  const names = [...seen.values()]
+  return {
+    source: names.join(' · '),
+    buzz: names.filter((n) => !NON_CREDITS.has(n.toLowerCase())).length,
+  }
+}
+
 // Merge the same event arriving from multiple adapters. Key = title+venue. The richest
 // record wins; we union the source credits (the cross-source "buzz" signal lives here).
 export function dedupe(picks: Pick[]): Pick[] {
   // merge b INTO a: richer record (longer blurb / has image) wins, credits union, buzz = #sources
   const merge = (a: Pick, b: Pick): Pick => {
     const richer = (b.blurb?.length ?? 0) + (b.image ? 50 : 0) > (a.blurb?.length ?? 0) + (a.image ? 50 : 0) ? b : a
-    const credits = new Set((a.source + ' · ' + b.source).split(' · ').filter(Boolean))
+    const { source, buzz } = unionCredits(a.source, b.source)
     // keep the strongest draw signal through the merge — the {...richer} spread would otherwise drop it
     // when the richer record is the one WITHOUT a popularity count (e.g. a web-search dup of an RA night).
     const popularity = Math.max(a.popularity ?? 0, b.popularity ?? 0) || undefined
-    return { ...a, ...richer, source: [...credits].join(' · '), buzz: credits.size, popularity }
+    return { ...a, ...richer, source, buzz, popularity }
   }
 
   // Structured sources (I amsterdam, RA) carry a STABLE per-event id (a slug), so two similarly-titled but
@@ -182,9 +204,9 @@ export function dedupe(picks: Pick[]): Pick[] {
     // Photo 2026" (structured) — same prefix rule PASS 2 uses among keyless picks (≥12 chars).
     if (!s) for (const [sk, sp] of struct) { if ((sk.length >= 12 && k.startsWith(sk)) || (k.length >= 12 && sk.startsWith(k))) { s = sp; break } }
     if (s) {
-      const credits = new Set((s.source + ' · ' + p.source).split(' · ').filter(Boolean))
-      s.source = [...credits].join(' · ')
-      s.buzz = credits.size
+      const u = unionCredits(s.source, p.source)
+      s.source = u.source
+      s.buzz = u.buzz
       s.popularity = Math.max(s.popularity ?? 0, p.popularity ?? 0) || undefined
     } else kept.push(p)
   }

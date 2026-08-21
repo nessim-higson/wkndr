@@ -5,7 +5,7 @@ FIRST in a new chat. For strategy + backlog see `docs/backlog.md`; for the pipel
 `docs/pipeline-architecture.md` + `docs/source-map.md`; for **who may write to the deck vs to a personal
 profile** (board / Tune / airlock — read before touching either) see `docs/curation-surfaces.md`; for the
 **board roadmap** (auto-compile tracks) see `docs/board-roadmap.md`; for full **version history** see
-`CHANGELOG.md` (current to app **V.11** / board V.9.39) and the **git log / tags**. Onboarding:
+`CHANGELOG.md` (current to app **V.11** / board V.9.44) and the **git log / tags**. Onboarding:
 `CLAUDE.md`. App lives in `/app` (Vite + React + TS, run with `bun`); ships to **Cloudflare Pages**
 (`wkndr.xyz` + `app.wkndr.xyz`) **and** GitHub Pages (legacy, keeps old share links alive)._
 
@@ -250,20 +250,30 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
   **Re-cutting one:** `npx vite build --base=/wkndr/versions/<slug>/ --outDir dist-freeze` then copy
   into `versions/<slug>/` — the base MUST match the serve path or every asset 404s.
 - **Ship loop:** `cd app && bun run bump` → `bun run build` → commit → push (auto-deploys GH Pages) →
-  reply with the `?v=` link. **The two wkndr.xyz surfaces are MANUAL wrangler deploys** (no CF git
-  integration): `cd landing && npx wrangler pages deploy . --project-name=wkndr-landing` and
-  `cd app && bun run build:domain && npx wrangler pages deploy dist --project-name=wkndr-app`
-  (wrangler already authed on this machine; bare-URL curl checks may show stale edge cache — bust
-  with a query param, or verify against the immutable `*.wkndr-app.pages.dev` deploy URL). The board
+  reply with the `?v=` link. **The two wkndr.xyz surfaces deploy AUTOMATICALLY on push** — `deploy.yml`
+  grew a `cloudflare` job that wrangler-deploys BOTH Pages projects (`wkndr-app`, `wkndr-landing`)
+  on every push to main, alongside the GH-Pages job (verified green 2026-08-16; this doc said
+  "manual wrangler" long after it stopped being true). Manual `npx wrangler pages deploy` still
+  works as a fallback (wrangler stays authed on this machine). Verification caveats: bare-URL curls
+  may hit stale edge cache — bust with a query param — and `/curate/index.html` 308-redirects on
+  Cloudflare, so curl WITHOUT `-L` returns empty; check `/curate/?v=...` instead. The board
   (`app/public/curate/index.html`, bumped via its own `BOARD_V` const + eyebrow) ships inside the app
-  build. **Tests:** `bun run test` (**247 logic tests**; CI runs them before every content refresh).
+  build. **Tests:** `bun run test` (**296 logic tests**; CI runs them before every content refresh).
   **Pages deploy flakes** intermittently ("try again later") — re-dispatch `deploy.yml` (there's an
   auto-retry pattern in the ship watchers).
 - **Compile fast-path (no crawl):** `cd app && bun run scripts/restamp.ts` re-applies the taste layer
   (veto/rested/topPicks/starredKeeps/weekly pile) to the LAST PUBLISHED feed in ~90s — the way a
   board round or a `weekly.pile` change ships without a full `refresh` (which needs API keys + ~15min).
   **The `wkndr-curate` worker** is deployed separately: `cd worker/curate && npx wrangler deploy`
-  (source in-repo, KV id `ea7216a7…` in `wrangler.toml`).
+  (source in-repo, KV id `ea7216a7…` in `wrangler.toml`). **Every worker POST requires
+  `X-Curate-Key` since board V.9.44** — the fast-lane write, and worse the `added` array (inject
+  arbitrary cards into the live deck), were open to anyone who read the board's public JS (PFD-audit
+  finding, 2026-08-16), and `/drop/read` burned the Anthropic key unauthenticated. The secret is
+  `CURATE_KEY` (wrangler secret — value NOT in the repo, Ness holds it; rotate with `npx wrangler
+  secret put CURATE_KEY`); the board prompts once per browser, keeps it in localStorage
+  (`wkndr.curate.key`), and re-prompts on 401 so a rotation self-heals. GET stays public — the app
+  reads overrides keyless. Secret unset = everything open (fresh-deploy grace, the
+  `ANTHROPIC_API_KEY` pattern). Guarded by `tests/worker-auth.test.ts`.
 
 ## Product posture — the MVP (unchanged)
 One view (**Stack**), one ambient look (**Auras**), **Amsterdam only**; taste engine runs silently.

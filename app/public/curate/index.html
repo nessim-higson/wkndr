@@ -463,6 +463,27 @@ let addExtra=()=>{};     // pull a NEW FIND into the Simple deck the instant you
 let promoteToDeck=()=>{};   // ▲ on ANY Advanced card → into the Simple deck's Top 10 (one consistent verb)
 let feedGeneratedAt='';     // the feed this round targets — stamped on the overrides so a stale one expires
 const CURATE_URL='https://wkndr-curate.ness-13b.workers.dev';   // Track A auto-compile fast-lane
+// THE KEY (V.9.44) — every worker WRITE now carries X-Curate-Key (the fast-lane could be reordered,
+// and `added` INJECTED into the live deck, by anyone who read this file's source). Asked for once,
+// kept in localStorage per browser (laptop + phone Triage each ask once). A 401 clears the stored
+// value and re-asks — so a rotated secret heals itself on the next Submit instead of failing dark.
+const KEY_LS='wkndr.curate.key';
+function curateFetch(path,body){
+  let k=localStorage.getItem(KEY_LS);
+  if(!k){k=(prompt('This board needs its key (once per browser):')||'').trim();
+    if(!k)return Promise.resolve(new Response(JSON.stringify({error:'This board needs its key.'}),{status:401}));
+    localStorage.setItem(KEY_LS,k)}
+  const go=key=>fetch(CURATE_URL+path,{method:'POST',
+    headers:{'Content-Type':'application/json','X-Curate-Key':key},body:JSON.stringify(body)});
+  return go(k).then(r=>{
+    if(r.status!==401)return r;
+    localStorage.removeItem(KEY_LS);
+    const again=(prompt('That key was not accepted — try again:')||'').trim();
+    if(!again)return r;
+    localStorage.setItem(KEY_LS,again);
+    return go(again);
+  });
+}
 let extras=[],undoExtras=null;           // New Finds you've upvoted (not in the live feed yet) — ride the deck + Submit
 function store(){try{localStorage.setItem(feedKey,JSON.stringify({V,PILE,extras}))}catch(e){}}
 function restore(){try{const s=JSON.parse(localStorage.getItem(feedKey)||'{}');V=rekey(s.V||{});PILE=s.PILE||null;extras=s.extras||[]}catch(e){}}
@@ -543,7 +564,7 @@ Promise.all([
   // 10 min (max-age=600), so a just-shipped board fix can lag in an open tab; the eyebrow makes
   // stale-board-vs-fresh-data visible at a glance (2026-07-12: an old tab's tier-mirror pile read
   // as "the board is wrong" when it was just cached).
-  const BOARD_V='V.9.43';
+  const BOARD_V='V.9.44';
   document.getElementById('eyebrow').textContent='WKNDR · CURATION BOARD '+BOARD_V+' · FEED '+(d.generatedAt||'').slice(0,16).replace('T',' · ');
   const board=document.getElementById('board');board.innerHTML='';
   const rot=document.createElement('div');rot.id='tab-rot';board.appendChild(rot);
@@ -1167,7 +1188,7 @@ document.getElementById('copy').addEventListener('click',async()=>{
     busy(true);
     let r,j;
     try{
-      r=await fetch(CURATE_URL+'/drop',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({url})});
+      r=await curateFetch('/drop',{url});
       j=await r.json();
     }catch(e){busy(false);say("Couldn't reach the reader — check your connection and try again.",true);return}
     busy(false);
@@ -1242,8 +1263,7 @@ document.getElementById('copy').addEventListener('click',async()=>{
         while(queue.length){
           const e=queue.shift();
           try{
-            const r=await fetch(CURATE_URL+'/drop/image',{method:'POST',headers:{'Content-Type':'application/json'},
-              body:JSON.stringify({title:e.title,venue:e.venue||'',category:e.category||'',blurb:e.blurb||''})});
+            const r=await curateFetch('/drop/image',{title:e.title,venue:e.venue||'',category:e.category||'',blurb:e.blurb||''});
             const j=await r.json();
             if(j&&j.image){e.image=j.image;found++}
           }catch(err){/* a miss is fine — the card falls back to its poster */}
@@ -1277,7 +1297,7 @@ document.getElementById('copy').addEventListener('click',async()=>{
     say(d.slides>1?('Reading '+d.slides+' slides — about '+Math.max(5,Math.round(d.slides*2))+' seconds…'):'Reading the post — a few seconds…');
     let r,j;
     try{
-      r=await fetch(CURATE_URL+'/drop/read',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({url:d.url})});
+      r=await curateFetch('/drop/read',{url:d.url});
       j=await r.json();
     }catch(e){btn.disabled=false;btn.textContent='↧ Find the events';say("Couldn't reach the reader.",true);return}
     btn.disabled=false;btn.textContent='↧ Find the events';
@@ -1360,7 +1380,7 @@ function buildOverrides(){
   return {generatedAt:feedGeneratedAt,pile:(PILE||[]).filter(t=>!dead.has(t)).slice(0,200),killed,flags,added};
 }
 async function postCurate(){
-  try{const r=await fetch(CURATE_URL+'/curate/amsterdam',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(buildOverrides())});return r.ok}catch(e){return false}
+  try{const r=await curateFetch('/curate/amsterdam',buildOverrides());return r.ok}catch(e){return false}
 }
 // SUBMIT — two writes: (1) the fast-lane POST → the app applies your order/kills in seconds; (2) the
 // GitHub issue → the durable record Claude folds into the corpus on the next refresh. Fast-lane first.

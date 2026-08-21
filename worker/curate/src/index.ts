@@ -29,6 +29,11 @@ export interface Env {
    *  and everything else keeps working; the drop box itself never needed a key. */
   ANTHROPIC_API_KEY?: string
   ANTHROPIC_VISION_MODEL?: string
+  /** Optional. Set with `npx wrangler secret put CURATE_KEY`. Absent → every POST stays open
+   *  (the pre-V.9.44 behavior, so a fresh deploy can't lock Ness out before the secret exists).
+   *  Present → every WRITE route requires the X-Curate-Key header. GET stays public: the app
+   *  reads the overrides without a key, and they contain nothing the feed doesn't. */
+  CURATE_KEY?: string
 }
 
 type Killed = { title: string; reason?: string }
@@ -66,7 +71,7 @@ const cors = (origin: string | null): Record<string, string> => ({
       ? origin
       : 'https://app.wkndr.xyz',
   'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type',
+  'Access-Control-Allow-Headers': 'Content-Type, X-Curate-Key',
   'Access-Control-Max-Age': '86400',
 })
 
@@ -137,6 +142,19 @@ function sanitize(raw: unknown): Overrides | null {
   }
 }
 
+// The write gate. Every POST route mutates state, spends the Anthropic key, or (worst) can INJECT
+// cards into the live deck via `added` — so all of them check the key. Constant-time compare: a
+// plain === leaks length/prefix timing, and this is exactly the kind of tiny endpoint people scan.
+export const timingSafeEq = (a: string, b: string): boolean => {
+  const ea = new TextEncoder().encode(a)
+  const eb = new TextEncoder().encode(b)
+  let diff = ea.length ^ eb.length
+  for (let i = 0; i < Math.max(ea.length, eb.length); i++) diff |= (ea[i] ?? 0) ^ (eb[i] ?? 0)
+  return diff === 0
+}
+export const authed = (request: Request, env: Env): boolean =>
+  !env.CURATE_KEY || timingSafeEq(request.headers.get('X-Curate-Key') ?? '', env.CURATE_KEY)
+
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const origin = request.headers.get('Origin')
@@ -148,6 +166,7 @@ export default {
     // returns it; nothing is stored until the board Submits it as part of `added`.
     if (url.pathname === '/drop' || url.pathname === '/drop/') {
       if (request.method !== 'POST') return json({ error: 'method not allowed' }, 405, origin)
+      if (!authed(request, env)) return json({ error: 'This board needs its key.', code: 'bad-key' }, 401, origin)
       let body: { url?: unknown }
       try {
         body = (await request.json()) as { url?: unknown }
@@ -179,6 +198,7 @@ export default {
     // the slides and the caption says nothing. Stateless, like /drop.
     if (url.pathname === '/drop/read' || url.pathname === '/drop/read/') {
       if (request.method !== 'POST') return json({ error: 'method not allowed' }, 405, origin)
+      if (!authed(request, env)) return json({ error: 'This board needs its key.', code: 'bad-key' }, 401, origin)
       let body: { url?: unknown }
       try {
         body = (await request.json()) as { url?: unknown }
@@ -221,6 +241,7 @@ export default {
     // real progress across a batch, and means a single failure loses one card, not the round.
     if (url.pathname === '/drop/image' || url.pathname === '/drop/image/') {
       if (request.method !== 'POST') return json({ error: 'method not allowed' }, 405, origin)
+      if (!authed(request, env)) return json({ error: 'This board needs its key.', code: 'bad-key' }, 401, origin)
       let body: { title?: unknown; venue?: unknown; category?: unknown; blurb?: unknown }
       try {
         body = (await request.json()) as typeof body
@@ -262,6 +283,7 @@ export default {
     }
 
     if (request.method === 'POST') {
+      if (!authed(request, env)) return json({ error: 'This board needs its key.', code: 'bad-key' }, 401, origin)
       const len = Number(request.headers.get('Content-Length') || 0)
       if (len > MAX_BYTES) return json({ error: 'too large' }, 413, origin)
       let raw: unknown
