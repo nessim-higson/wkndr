@@ -1,9 +1,9 @@
 {
   "city": "amsterdam",
   "label": "Amsterdam",
-  "generatedAt": "2026-08-20T10:46:29.128Z",
+  "generatedAt": "2026-08-27T20:25:48.553Z",
   "live": true,
-  "count": 78,
+  "count": 76,
   "topMatches": [
     "milkshake festival",
     "'t lemmeke",
@@ -20,155 +20,21 @@
   ],
   "picks": [
     {
-      "id": "llm-i-amsterdam-world-press-photo",
-      "title": "World Press Photo",
-      "venue": "De Nieuwe Kerk Amsterdam",
-      "area": "City Centre",
-      "when": "Until 27 Sep · 10:00–17:00",
-      "category": "art",
+      "id": "web-iams-the-maker-market",
+      "title": "The Maker Market",
+      "venue": "De Hallen Amsterdam",
+      "area": "Hannie Dankbaarpassage 47",
+      "when": "Until Sun 20 Dec",
+      "category": "shop",
       "freshness": "always",
       "outdoor": false,
-      "kid": true,
-      "price": "ticketed",
-      "blurb": "Acclaimed international photography exhibition showcasing award-winning photojournalism—still running this weekend and beyond.",
-      "why": "World-class visual storytelling on display",
-      "source": "I amsterdam · Your Little Black Book",
-      "link": "https://www.iamsterdam.com/en/whats-on",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.nieuwekerk.nl%2Fwp-content%2Fuploads%2F2026%2F02%2F2026-04-23_De-Nieuwe-Kerk_World-Press-Photo-2026__Tomek-Dersu-Aaron_1967.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fwww.nieuwekerk.nl%2Fwp-content%2Fuploads%2F2026%2F02%2F2026-04-23_De-Nieuwe-Kerk_World-Press-Photo-2026__Tomek-Dersu-Aaron_1967.jpg",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "verify": true,
-      "buzz": 2,
-      "editorScore": 8,
-      "servePos": 11
-    },
-    {
-      "id": "web-lbb-american-myth-memory-david-levinthal-photographs",
-      "title": "American Myth Memory – David Levinthal Photographs",
-      "venue": "H'art Museum",
-      "area": "Amsterdam",
-      "when": "Until Sun 6 Sep",
-      "category": "art",
-      "freshness": "weekend",
-      "outdoor": false,
       "kid": false,
-      "price": "",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.si.edu%2Fsites%2Fdefault%2Ffiles%2Fnewsdesk%2Fpress_releases%2Fsaam-2018.3.190_1.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fwww.si.edu%2Fsites%2Fdefault%2Ffiles%2Fnewsdesk%2Fpress_releases%2Fsaam-2018.3.190_1.jpg",
-      "blurb": "Photographer David Levinthal examines American mythology and collective memory through compelling visual narratives.",
-      "why": "American culture through photographic lens",
-      "source": "Your Little Black Book",
-      "link": "https://duckduckgo.com/?q=American%20Myth%20Memory%20%E2%80%93%20David%20Levinthal%20Photographs%20H'art%20Museum%20Amsterdam",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "verify": false,
-      "editorScore": 8,
-      "servePos": 14
-    },
-    {
-      "id": "web-lbb-ek-japan-in-twee-beeldverhalen",
-      "title": "Ekō – Japan in twee beeldverhalen",
-      "venue": "Scheepvaartmuseum",
-      "area": "Amsterdam",
-      "when": "Until Sun 30 Aug",
-      "category": "art",
-      "freshness": "weekend",
-      "outdoor": false,
-      "kid": false,
-      "price": "",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fverkeersbureaus.info%2Fwp-content%2Fuploads%2F2026%2F02%2FIngekleurde-foto-japanse-vrouw-met-parasol-1867-foto-felice-beato-collectie-scheepvaartmuseum-amsterdam.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fverkeersbureaus.info%2Fwp-content%2Fuploads%2F2026%2F02%2FIngekleurde-foto-japanse-vrouw-met-parasol-1867-foto-felice-beato-collectie-scheepvaartmuseum-amsterdam.jpg",
-      "blurb": "Japanese art and visual narratives exploring cultural connections through maritime and historical perspectives.",
-      "why": "Japan through maritime storytelling",
-      "source": "Your Little Black Book",
-      "link": "https://duckduckgo.com/?q=Ek%C5%8D%20%E2%80%93%20Japan%20in%20twee%20beeldverhalen%20Scheepvaartmuseum%20Amsterdam",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "verify": false,
-      "editorScore": 8,
-      "servePos": 16
-    },
-    {
-      "id": "web-i-amsterdam-prinsengrachtconcert",
-      "title": "Prinsengrachtconcert",
-      "venue": "Prinsengracht Canal (Pontoon, Hotel Pulitzer)",
-      "area": "Amsterdam-City Centre",
-      "when": "Sat 22 Aug · 20:15",
-      "category": "live",
-      "freshness": "weekend",
-      "outdoor": true,
-      "kid": true,
       "price": "free",
-      "blurb": "Annual televised classical music concert on canal pontoon. Watch from bridges & quays; iconic summer tradition.",
-      "why": "Free, canal-side, world-class orchestra",
-      "source": "prinsengrachtconcert.nl · I amsterdam · AmsterdamTips",
-      "link": "https://www.iamsterdam.com/en/whats-on/weekend-guide",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL"
-      ],
-      "verify": true,
-      "buzz": 3,
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Famsterdamlokaal.nl%2Fwp-content%2Fuploads%2F2026%2F04%2FChatGPT-Image-2-apr.-2026-12_04_56.png&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Famsterdamlokaal.nl%2Fwp-content%2Fuploads%2F2026%2F04%2FChatGPT-Image-2-apr.-2026-12_04_56.png",
-      "editorScore": 9,
-      "servePos": 8
-    },
-    {
-      "id": "web-i-amsterdam-pluk-de-nacht-seize-the-night",
-      "title": "Pluk de Nacht (Seize the Night)",
-      "venue": "Het Stenen Hoofd",
-      "area": "Amsterdam-West",
-      "when": "Wed 19 – Sun 30 Aug · 19:00–midnight",
-      "category": "out",
-      "freshness": "always",
-      "outdoor": true,
-      "kid": true,
-      "price": "ticketed",
-      "blurb": "Open-air cinema festival. Independent & arthouse films, documentaries, animations on waterfront under stars.",
-      "why": "Iconic summer cinema, scenic location",
-      "source": "I amsterdam",
-      "link": "https://www.iamsterdam.com/en/whats-on/weekend-guide",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL"
-      ],
-      "verify": true,
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.amsterdamnow.com%2Fapp%2Fuploads%2FPluk-de-Nacht-2023-79981-1-scaled-1.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fwww.amsterdamnow.com%2Fapp%2Fuploads%2FPluk-de-Nacht-2023-79981-1-scaled-1.jpg",
-      "editorScore": 10,
-      "top": true,
-      "servePos": 5
-    },
-    {
-      "id": "web-iams-agathas-almanac",
-      "title": "Agatha's Almanac",
-      "venue": "De Balie",
-      "area": "Kleine-Gartmanplantsoen 10",
-      "when": "Thu 20 – Wed 26 Aug",
-      "category": "stage",
-      "freshness": "weekend",
-      "outdoor": false,
-      "kid": false,
-      "price": "from €13.5",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F69e187c1a8ab8e24a45b73ce%2Fhttps___culturekit-assets.imgix.net_1_assets_640e4920-cd7c-4464-ab53-d637a36e8518.webp&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F69e187c1a8ab8e24a45b73ce%2Fhttps___culturekit-assets.imgix.net_1_assets_640e4920-cd7c-4464-ab53-d637a36e8518.webp",
-      "blurb": "A life on a remote farm in Manitoba\n Agatha is 90 years old and lives alone on the old family farm in Manitoba, Canada. She consciously chooses to stay there, f",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F697250f4f8ac733b5bd29b88%2FIMG_3236.webp&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F697250f4f8ac733b5bd29b88%2FIMG_3236.webp",
+      "blurb": "New editions, discover new creators!\n The Maker Market takes place monthly at De Hallen in Amsterdam-West, a vibrant hub of craftsmanship, design, and inspirati",
       "why": "On I amsterdam",
-      "source": "I amsterdam",
-      "link": "https://www.iamsterdam.com/en/whats-on/calendar/festivals/events/agathas-almanac",
+      "source": "I amsterdam · AmsterdamTips · Your Little Black Book",
+      "link": "https://www.iamsterdam.com/en/whats-on/calendar/shopping/markets/the-maker-market",
       "weatherFit": [
         "HOT",
         "WARM",
@@ -177,15 +43,16 @@
         "VOLATILE"
       ],
       "verify": false,
+      "buzz": 3,
       "editorScore": 8,
-      "servePos": 15
+      "servePos": 7
     },
     {
       "id": "web-iams-vriendenloterij-summer-concerts",
       "title": "VriendenLoterij Summer Concerts",
       "venue": "The Royal Concertgebouw Amsterdam",
       "area": "Concertgebouwplein 10",
-      "when": "Until Sun 30 Aug",
+      "when": "Thu 27 – Sun 30 Aug",
       "category": "out",
       "freshness": "weekend",
       "outdoor": true,
@@ -203,7 +70,7 @@
       ],
       "verify": false,
       "editorScore": 8,
-      "servePos": 9
+      "servePos": 61
     },
     {
       "id": "web-iams-museum-market",
@@ -230,7 +97,7 @@
       ],
       "verify": false,
       "editorScore": 8,
-      "servePos": 21
+      "servePos": 16
     },
     {
       "id": "web-iams-exhibition-worn-in-the-rijksmuseum",
@@ -257,12 +124,12 @@
       ],
       "verify": false,
       "editorScore": 8,
-      "servePos": 22
+      "servePos": 17
     },
     {
       "id": "web-iams-lunchtime-organ-concerts-at-waterlooplein",
       "title": "Lunchtime organ concerts at Waterlooplein",
-      "venue": "I amsterdam",
+      "venue": "Mozes en Aäronkerk",
       "area": "Waterlooplein 205",
       "when": "Until Fri 25 Sep",
       "category": "live",
@@ -284,7 +151,7 @@
       ],
       "verify": false,
       "editorScore": 8,
-      "servePos": 23
+      "servePos": 18
     },
     {
       "id": "web-iams-ligconcert-presents-lying-down-concert-at-the-maritime-museum",
@@ -311,7 +178,34 @@
       ],
       "verify": false,
       "editorScore": 8,
-      "servePos": 25
+      "servePos": 20
+    },
+    {
+      "id": "ams-hortus",
+      "title": "Hortus Botanicus",
+      "venue": "Hortus Botanicus",
+      "area": "Plantage",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.dehortus.nl%2Fwp-content%2Fuploads%2F2025%2F02%2Fhortus-22-van-75-1920x1440.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fwww.dehortus.nl%2Fwp-content%2Fuploads%2F2025%2F02%2Fhortus-22-van-75-1920x1440.jpg",
+      "category": "out",
+      "freshness": "always",
+      "outdoor": true,
+      "kid": true,
+      "price": "€12",
+      "blurb": "One of the world’s oldest botanical gardens — a butterfly greenhouse and three-climate glasshouse to wander.",
+      "why": "Greenhouses work rain or shine",
+      "source": "De Hortus · Your Little Black Book",
+      "link": "https://www.dehortus.nl/en/",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL",
+        "COLD_WET"
+      ],
+      "when": "Daily · 10:00–17:00",
+      "tier": "classic",
+      "buzz": 2,
+      "editorScore": 8,
+      "servePos": 59
     },
     {
       "id": "pllek-indoor",
@@ -336,7 +230,7 @@
         "VOLATILE"
       ],
       "editorScore": 8,
-      "servePos": 24
+      "servePos": 19
     },
     {
       "id": "cafe-chris",
@@ -360,7 +254,7 @@
         "VOLATILE"
       ],
       "editorScore": 8,
-      "servePos": 76
+      "servePos": 21
     },
     {
       "id": "foodhallen",
@@ -386,7 +280,7 @@
         "VOLATILE"
       ],
       "editorScore": 8,
-      "servePos": 26
+      "servePos": 22
     },
     {
       "id": "sauna-deco",
@@ -409,7 +303,7 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "servePos": 78
+      "servePos": 40
     },
     {
       "id": "ams-vondelpark-play",
@@ -434,7 +328,7 @@
       ],
       "when": "Daily · dawn–dusk",
       "tier": "classic",
-      "servePos": 54
+      "servePos": 75
     },
     {
       "id": "the-movies",
@@ -458,7 +352,7 @@
         "VOLATILE"
       ],
       "buzz": 2,
-      "servePos": 77
+      "servePos": 38
     },
     {
       "id": "web-scout-two-story",
@@ -485,7 +379,7 @@
       ],
       "verify": false,
       "editorScore": 8,
-      "servePos": 12
+      "servePos": 9
     },
     {
       "id": "east-beach",
@@ -507,7 +401,7 @@
         "HOT",
         "WARM"
       ],
-      "servePos": 53
+      "servePos": 72
     },
     {
       "id": "de-pimpelmees",
@@ -531,7 +425,7 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "servePos": 55
+      "servePos": 39
     },
     {
       "id": "ams-eat-as",
@@ -557,7 +451,7 @@
         "VOLATILE"
       ],
       "when": "Lunch & dinner · book ahead",
-      "servePos": 56
+      "servePos": 41
     },
     {
       "id": "ams-eat-bak",
@@ -584,7 +478,7 @@
       ],
       "when": "Dinner · book ahead",
       "editorScore": 8,
-      "servePos": 28
+      "servePos": 24
     },
     {
       "id": "ams-ev2-tete",
@@ -611,7 +505,7 @@
       "when": "Daily · dinner",
       "tier": "bespoke",
       "editorScore": 8,
-      "servePos": 30
+      "servePos": 26
     },
     {
       "id": "ams-b2-foam",
@@ -637,7 +531,7 @@
       ],
       "when": "Daily · 10:00–18:00",
       "tier": "bespoke",
-      "servePos": 57
+      "servePos": 42
     },
     {
       "id": "ams-ev2-fyka",
@@ -663,7 +557,7 @@
       ],
       "when": "Daily · from breakfast",
       "tier": "bespoke",
-      "servePos": 58
+      "servePos": 43
     },
     {
       "id": "ams-ev2-droog",
@@ -690,7 +584,7 @@
       "when": "Tue–Sun",
       "tier": "classic",
       "editorScore": 8,
-      "servePos": 27
+      "servePos": 23
     },
     {
       "id": "ams-ev2-mendo",
@@ -717,7 +611,7 @@
       "when": "Daily",
       "tier": "bespoke",
       "editorScore": 8,
-      "servePos": 29
+      "servePos": 25
     },
     {
       "id": "ams-b2-moise",
@@ -744,7 +638,7 @@
       "when": "Daily exc. Sun–Mon",
       "tier": "bespoke",
       "editorScore": 8,
-      "servePos": 31
+      "servePos": 27
     },
     {
       "id": "ams-b2-patta",
@@ -771,7 +665,7 @@
       "when": "Daily · shop hours",
       "tier": "bespoke",
       "editorScore": 8,
-      "servePos": 33
+      "servePos": 29
     },
     {
       "id": "ams-b2-x-bank",
@@ -798,7 +692,7 @@
       "when": "Daily · shop hours",
       "tier": "bespoke",
       "editorScore": 8,
-      "servePos": 35
+      "servePos": 31
     },
     {
       "id": "ams-ev-melkweg",
@@ -824,7 +718,7 @@
       ],
       "when": "Eve · gigs + club",
       "tier": "classic",
-      "servePos": 59
+      "servePos": 44
     },
     {
       "id": "ams-b2-mobilia",
@@ -851,7 +745,7 @@
       "when": "Daily · shop hours",
       "tier": "classic",
       "editorScore": 8,
-      "servePos": 37
+      "servePos": 33
     },
     {
       "id": "ams-ev-utrecht",
@@ -878,7 +772,7 @@
       "when": "Daily · ~25 min by train",
       "tier": "classic",
       "editorScore": 8,
-      "servePos": 32
+      "servePos": 28
     },
     {
       "id": "ams-b2-vlieger",
@@ -905,7 +799,7 @@
       "when": "Daily · shop hours",
       "tier": "bespoke",
       "editorScore": 8,
-      "servePos": 39
+      "servePos": 35
     },
     {
       "id": "ams-efteling",
@@ -930,7 +824,7 @@
       "when": "Daily · ~1h15 by car",
       "tier": "classic",
       "editorScore": 8,
-      "servePos": 34
+      "servePos": 63
     },
     {
       "id": "ams-micropia",
@@ -956,7 +850,7 @@
       ],
       "when": "Daily · 10:00–17:00",
       "tier": "bespoke",
-      "servePos": 60
+      "servePos": 45
     },
     {
       "id": "ams-ev-paradiso",
@@ -982,7 +876,7 @@
       ],
       "when": "Eve · gig nights",
       "tier": "classic",
-      "servePos": 61
+      "servePos": 46
     },
     {
       "id": "ams-lostin-kriterion",
@@ -1008,7 +902,7 @@
       ],
       "when": "Daily · check listings",
       "tier": "bespoke",
-      "servePos": 62
+      "servePos": 47
     },
     {
       "id": "ams-madurodam",
@@ -1033,7 +927,7 @@
       "when": "Daily · ~50 min by train",
       "tier": "classic",
       "editorScore": 8,
-      "servePos": 36
+      "servePos": 64
     },
     {
       "id": "ams-ev2-nxt-museum",
@@ -1060,7 +954,7 @@
       "when": "Wed–Sun (daily in summer)",
       "tier": "bespoke",
       "editorScore": 8,
-      "servePos": 38
+      "servePos": 30
     },
     {
       "id": "ams-ev-muiderslot",
@@ -1086,7 +980,7 @@
       ],
       "when": "Tue–Sun · ~30 min out",
       "tier": "bespoke",
-      "servePos": 63
+      "servePos": 48
     },
     {
       "id": "ams-b2-tonton",
@@ -1112,7 +1006,7 @@
       ],
       "when": "Eve · late",
       "tier": "bespoke",
-      "servePos": 64
+      "servePos": 49
     },
     {
       "id": "ams-ev-dappermarkt",
@@ -1136,7 +1030,7 @@
       ],
       "when": "Mon–Sat · 09:00–17:00",
       "tier": "bespoke",
-      "servePos": 65
+      "servePos": 74
     },
     {
       "id": "ams-lostin-garage-noord",
@@ -1162,7 +1056,7 @@
       ],
       "when": "Eve · check programme",
       "tier": "bespoke",
-      "servePos": 66
+      "servePos": 50
     },
     {
       "id": "ams-b2-rijksmuseum",
@@ -1188,7 +1082,7 @@
       ],
       "when": "Daily · 09:00–17:00",
       "tier": "classic",
-      "servePos": 67
+      "servePos": 51
     },
     {
       "id": "ams-ev-bloemenmarkt",
@@ -1213,7 +1107,7 @@
       "when": "Mon–Sat · 09:00–17:30",
       "tier": "classic",
       "editorScore": 8,
-      "servePos": 40
+      "servePos": 65
     },
     {
       "id": "ams-lostin-de-filmhallen",
@@ -1239,7 +1133,7 @@
       ],
       "when": "Daily · check listings",
       "tier": "bespoke",
-      "servePos": 68
+      "servePos": 52
     },
     {
       "id": "ams-ev2-wild-swimming-amstelland",
@@ -1263,7 +1157,7 @@
       ],
       "when": "Summer · warm days",
       "tier": "bespoke",
-      "servePos": 69
+      "servePos": 76
     },
     {
       "id": "ams-ev2-artis-aquarium",
@@ -1289,7 +1183,7 @@
       ],
       "when": "Daily · 10:00–17:00",
       "tier": "classic",
-      "servePos": 71
+      "servePos": 53
     },
     {
       "id": "ams-artis-zoo",
@@ -1315,7 +1209,7 @@
       "tier": "classic",
       "top": true,
       "editorScore": 10,
-      "servePos": 6
+      "servePos": 5
     },
     {
       "id": "eye-screening",
@@ -1340,7 +1234,7 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "servePos": 70
+      "servePos": 54
     },
     {
       "id": "ams-b2-huis-marseille",
@@ -1366,7 +1260,7 @@
       ],
       "when": "Tue–Sun · 11:00–18:00",
       "tier": "bespoke",
-      "servePos": 72
+      "servePos": 55
     },
     {
       "id": "ams-ev2-museum-van-loon",
@@ -1393,7 +1287,7 @@
       "when": "Wed–Mon · 10:00–17:00",
       "tier": "classic",
       "editorScore": 8,
-      "servePos": 41
+      "servePos": 32
     },
     {
       "id": "ams-lostin-sexyland",
@@ -1419,32 +1313,7 @@
       ],
       "when": "Eve · check programme",
       "tier": "bespoke",
-      "servePos": 73
-    },
-    {
-      "id": "ams-ev2-strand-van-oost",
-      "title": "Strand van Oost",
-      "venue": "Rooftop of Orchid House",
-      "area": "Linnaeusstraat, Oost",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fstrandvanoost.nl%2Fwp-content%2Fuploads%2F2026%2F05%2FDSC3884-scaled.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fstrandvanoost.nl%2Fwp-content%2Fuploads%2F2026%2F05%2FDSC3884-scaled.jpg",
-      "category": "out",
-      "freshness": "always",
-      "outdoor": true,
-      "kid": false,
-      "price": "€€",
-      "blurb": "A beach on a roof in Oost: sand-and-sunset bar on top of Orchid House that makes the city briefly disappear.",
-      "why": "Beach feeling without leaving Oost",
-      "source": "Ness canon",
-      "link": "https://www.strandvanoost.nl/",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL"
-      ],
-      "when": "Summer · evenings",
-      "tier": "bespoke",
-      "editorScore": 8,
-      "servePos": 42
+      "servePos": 56
     },
     {
       "id": "ams-ev-marken-volendam",
@@ -1469,7 +1338,7 @@
       "when": "Daily · bus ~30 min",
       "tier": "bespoke",
       "editorScore": 8,
-      "servePos": 43
+      "servePos": 66
     },
     {
       "id": "ams-ev-zandvoort",
@@ -1494,7 +1363,7 @@
       "when": "Daily · ~30 min by train",
       "tier": "bespoke",
       "editorScore": 8,
-      "servePos": 45
+      "servePos": 68
     },
     {
       "id": "ams-ev-albert-cuyp",
@@ -1519,7 +1388,7 @@
       "when": "Mon–Sat · 09:00–17:00",
       "tier": "classic",
       "editorScore": 8,
-      "servePos": 44
+      "servePos": 67
     },
     {
       "id": "ams-b2-stedelijk",
@@ -1545,7 +1414,7 @@
       ],
       "when": "Daily · 10:00–18:00",
       "tier": "classic",
-      "servePos": 74
+      "servePos": 57
     },
     {
       "id": "ams-ev-concertgebouw",
@@ -1571,7 +1440,7 @@
       ],
       "when": "Eve · concerts · free Wed lunch",
       "tier": "classic",
-      "servePos": 75
+      "servePos": 58
     },
     {
       "id": "ams-ev-kinderdijk",
@@ -1596,7 +1465,7 @@
       "when": "Daily · ~1h out",
       "tier": "bespoke",
       "editorScore": 8,
-      "servePos": 47
+      "servePos": 70
     },
     {
       "id": "ams-ev-waterlooplein",
@@ -1621,7 +1490,7 @@
       "when": "Mon–Sat · 09:30–18:00",
       "tier": "classic",
       "editorScore": 8,
-      "servePos": 46
+      "servePos": 69
     },
     {
       "id": "web-lbb-cinema-culinair",
@@ -1648,7 +1517,7 @@
       ],
       "verify": false,
       "editorScore": 8,
-      "servePos": 17
+      "servePos": 11
     },
     {
       "id": "web-lbb-the-jollof-club-west-african-restaurant",
@@ -1675,8 +1544,35 @@
       ],
       "verify": false,
       "editorScore": 8,
-      "servePos": 4,
+      "servePos": 3,
       "pilePos": 20
+    },
+    {
+      "id": "web-lbb-american-myth-memory-david-levinthal-photographs",
+      "title": "American Myth Memory – David Levinthal Photographs",
+      "venue": "H'art Museum",
+      "area": "Amsterdam",
+      "when": "Until Sun 6 Sep",
+      "category": "art",
+      "freshness": "weekend",
+      "outdoor": false,
+      "kid": false,
+      "price": "",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.si.edu%2Fsites%2Fdefault%2Ffiles%2Fnewsdesk%2Fpress_releases%2Fsaam-2018.3.190_1.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fwww.si.edu%2Fsites%2Fdefault%2Ffiles%2Fnewsdesk%2Fpress_releases%2Fsaam-2018.3.190_1.jpg",
+      "blurb": "Photographer David Levinthal examines American mythology and collective memory through compelling visual narratives.",
+      "why": "American culture through photographic lens",
+      "source": "Your Little Black Book",
+      "link": "https://duckduckgo.com/?q=American%20Myth%20Memory%20%E2%80%93%20David%20Levinthal%20Photographs%20H'art%20Museum%20Amsterdam",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "verify": false,
+      "editorScore": 8,
+      "servePos": 12
     },
     {
       "id": "web-iams-american-identities",
@@ -1704,7 +1600,7 @@
       "verify": false,
       "buzz": 2,
       "editorScore": 8,
-      "servePos": 13
+      "servePos": 8
     },
     {
       "id": "web-lbb-martine-gutierrez-wunderkind",
@@ -1731,7 +1627,34 @@
       ],
       "verify": false,
       "editorScore": 9,
-      "servePos": 19
+      "servePos": 15
+    },
+    {
+      "id": "web-lbb-ek-japan-in-twee-beeldverhalen",
+      "title": "Ekō – Japan in twee beeldverhalen",
+      "venue": "Scheepvaartmuseum",
+      "area": "Amsterdam",
+      "when": "Until Sun 30 Aug",
+      "category": "art",
+      "freshness": "weekend",
+      "outdoor": false,
+      "kid": false,
+      "price": "",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fverkeersbureaus.info%2Fwp-content%2Fuploads%2F2026%2F02%2FIngekleurde-foto-japanse-vrouw-met-parasol-1867-foto-felice-beato-collectie-scheepvaartmuseum-amsterdam.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fverkeersbureaus.info%2Fwp-content%2Fuploads%2F2026%2F02%2FIngekleurde-foto-japanse-vrouw-met-parasol-1867-foto-felice-beato-collectie-scheepvaartmuseum-amsterdam.jpg",
+      "blurb": "Japanese art and visual narratives exploring cultural connections through maritime and historical perspectives.",
+      "why": "Japan through maritime storytelling",
+      "source": "Your Little Black Book",
+      "link": "https://duckduckgo.com/?q=Ek%C5%8D%20%E2%80%93%20Japan%20in%20twee%20beeldverhalen%20Scheepvaartmuseum%20Amsterdam",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "verify": false,
+      "editorScore": 8,
+      "servePos": 13
     },
     {
       "id": "web-lbb-nederland-japan-door-de-tijd-verbonden",
@@ -1758,7 +1681,35 @@
       ],
       "verify": false,
       "editorScore": 8,
-      "servePos": 48
+      "servePos": 34
+    },
+    {
+      "id": "llm-i-amsterdam-world-press-photo",
+      "title": "World Press Photo",
+      "venue": "De Nieuwe Kerk Amsterdam",
+      "area": "City Centre",
+      "when": "Until 27 Sep · 10:00–17:00",
+      "category": "art",
+      "freshness": "always",
+      "outdoor": false,
+      "kid": true,
+      "price": "ticketed",
+      "blurb": "Acclaimed international photography exhibition showcasing award-winning photojournalism—still running this weekend and beyond.",
+      "why": "World-class visual storytelling on display",
+      "source": "I amsterdam · Your Little Black Book",
+      "link": "https://www.iamsterdam.com/en/whats-on",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.nieuwekerk.nl%2Fwp-content%2Fuploads%2F2026%2F02%2F2026-04-23_De-Nieuwe-Kerk_World-Press-Photo-2026__Tomek-Dersu-Aaron_1967.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fwww.nieuwekerk.nl%2Fwp-content%2Fuploads%2F2026%2F02%2F2026-04-23_De-Nieuwe-Kerk_World-Press-Photo-2026__Tomek-Dersu-Aaron_1967.jpg",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "verify": true,
+      "buzz": 2,
+      "editorScore": 8,
+      "servePos": 10
     },
     {
       "id": "web-iams-nicolas-van-poucke-pianorecital",
@@ -1785,62 +1736,7 @@
       ],
       "verify": false,
       "editorScore": 8,
-      "servePos": 49
-    },
-    {
-      "id": "web-iams-the-maker-market",
-      "title": "The Maker Market",
-      "venue": "De Hallen Amsterdam",
-      "area": "Hannie Dankbaarpassage 47",
-      "when": "Until Sun 20 Dec",
-      "category": "shop",
-      "freshness": "always",
-      "outdoor": false,
-      "kid": false,
-      "price": "free",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F697250f4f8ac733b5bd29b88%2FIMG_3236.webp&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F697250f4f8ac733b5bd29b88%2FIMG_3236.webp",
-      "blurb": "New editions, discover new creators!\n The Maker Market takes place monthly at De Hallen in Amsterdam-West, a vibrant hub of craftsmanship, design, and inspirati",
-      "why": "On I amsterdam",
-      "source": "I amsterdam",
-      "link": "https://www.iamsterdam.com/en/whats-on/calendar/shopping/markets/the-maker-market",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "verify": false,
-      "editorScore": 8,
-      "servePos": 50
-    },
-    {
-      "id": "ams-hortus",
-      "title": "Hortus Botanicus",
-      "venue": "Hortus Botanicus",
-      "area": "Plantage",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.dehortus.nl%2Fwp-content%2Fuploads%2F2025%2F02%2Fhortus-22-van-75-1920x1440.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fwww.dehortus.nl%2Fwp-content%2Fuploads%2F2025%2F02%2Fhortus-22-van-75-1920x1440.jpg",
-      "category": "out",
-      "freshness": "always",
-      "outdoor": true,
-      "kid": true,
-      "price": "€12",
-      "blurb": "One of the world’s oldest botanical gardens — a butterfly greenhouse and three-climate glasshouse to wander.",
-      "why": "Greenhouses work rain or shine",
-      "source": "De Hortus · Your Little Black Book",
-      "link": "https://www.dehortus.nl/en/",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET"
-      ],
-      "when": "Daily · 10:00–17:00",
-      "tier": "classic",
-      "buzz": 2,
-      "editorScore": 8,
-      "servePos": 3,
-      "pilePos": 14
+      "servePos": 36
     },
     {
       "id": "web-lbb-nara-nara-egyptian-restaurant",
@@ -1867,7 +1763,7 @@
       ],
       "verify": false,
       "editorScore": 8,
-      "servePos": 18
+      "servePos": 14
     },
     {
       "id": "web-iams-straat-collectie",
@@ -1894,7 +1790,33 @@
       ],
       "verify": false,
       "editorScore": 8,
-      "servePos": 51
+      "servePos": 37
+    },
+    {
+      "id": "web-i-amsterdam-pluk-de-nacht-seize-the-night",
+      "title": "Pluk de Nacht (Seize the Night)",
+      "venue": "Het Stenen Hoofd",
+      "area": "Amsterdam-West",
+      "when": "Wed 19 – Sun 30 Aug · 19:00–midnight",
+      "category": "out",
+      "freshness": "always",
+      "outdoor": true,
+      "kid": true,
+      "price": "ticketed",
+      "blurb": "Open-air cinema festival. Independent & arthouse films, documentaries, animations on waterfront under stars.",
+      "why": "Iconic summer cinema, scenic location",
+      "source": "I amsterdam",
+      "link": "https://www.iamsterdam.com/en/whats-on/weekend-guide",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL"
+      ],
+      "verify": true,
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.amsterdamnow.com%2Fapp%2Fuploads%2FPluk-de-Nacht-2023-79981-1-scaled-1.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fwww.amsterdamnow.com%2Fapp%2Fuploads%2FPluk-de-Nacht-2023-79981-1-scaled-1.jpg",
+      "editorScore": 10,
+      "top": true,
+      "servePos": 6
     },
     {
       "id": "web-lbb-kaap-amsterdam",
@@ -1945,7 +1867,7 @@
       ],
       "verify": false,
       "editorScore": 10,
-      "servePos": 10
+      "servePos": 60
     },
     {
       "id": "web-lbb-hannekes-boom",
@@ -1970,7 +1892,7 @@
       ],
       "verify": false,
       "editorScore": 8,
-      "servePos": 20
+      "servePos": 62
     },
     {
       "id": "llm-kidsproof-mokumboot-sloepje-huren",
@@ -1999,6 +1921,31 @@
       "pilePos": 10
     },
     {
+      "id": "ams-ev2-strand-van-oost",
+      "title": "Strand van Oost",
+      "venue": "Rooftop of Orchid House",
+      "area": "Linnaeusstraat, Oost",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fstrandvanoost.nl%2Fwp-content%2Fuploads%2F2026%2F05%2FDSC3884-scaled.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fstrandvanoost.nl%2Fwp-content%2Fuploads%2F2026%2F05%2FDSC3884-scaled.jpg",
+      "category": "out",
+      "freshness": "always",
+      "outdoor": true,
+      "kid": false,
+      "price": "€€",
+      "blurb": "A beach on a roof in Oost: sand-and-sunset bar on top of Orchid House that makes the city briefly disappear.",
+      "why": "Beach feeling without leaving Oost",
+      "source": "Ness canon",
+      "link": "https://www.strandvanoost.nl/",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL"
+      ],
+      "when": "Summer · evenings",
+      "tier": "bespoke",
+      "editorScore": 8,
+      "servePos": 71
+    },
+    {
       "id": "web-iams-live-at-amsterdamse-bos",
       "title": "Live at Amsterdamse Bos",
       "venue": "Amsterdamse Bostheater",
@@ -2012,7 +1959,7 @@
       "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F5fd22ff29ba7fe3e0c6f8552%2F34273485-be0b-46f8-a545-8555e165a556.webp&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F5fd22ff29ba7fe3e0c6f8552%2F34273485-be0b-46f8-a545-8555e165a556.webp",
       "blurb": "Live in the Amsterdamse Bos\n Hidden among the trees, you will find the beautiful Forest Theatre, where various artists perform during the summer months for uniq",
       "why": "On I amsterdam",
-      "source": "I amsterdam",
+      "source": "I amsterdam · Your Little Black Book",
       "link": "https://www.iamsterdam.com/en/whats-on/calendar/festivals/events/live-at-amsterdamse-bos",
       "weatherFit": [
         "HOT",
@@ -2020,36 +1967,36 @@
         "COOL"
       ],
       "verify": false,
-      "editorScore": 1,
-      "servePos": 52
+      "editorScore": 2,
+      "buzz": 2,
+      "servePos": 73
     },
     {
-      "id": "ams-ev-ij-hallen",
-      "title": "IJ-Hallen",
-      "venue": "IJ-Hallen",
-      "area": "Noord (NDSM)",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.happyrichmillennial.com%2Fwp-content%2Fuploads%2F2020%2F05%2Fijhallen-.jpg%3Fw%3D660&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fwww.happyrichmillennial.com%2Fwp-content%2Fuploads%2F2020%2F05%2Fijhallen-.jpg%3Fw%3D660",
+      "id": "web-lbb-ij-hallen-flea-market",
+      "title": "IJ-Hallen Flea Market",
+      "venue": "NDSM-werf",
+      "area": "Amsterdam-Noord",
+      "when": "Sat–Sun 29–30 Aug · 09:00",
       "category": "market",
-      "freshness": "always",
-      "outdoor": false,
-      "kid": false,
-      "price": "from €6",
-      "blurb": "Europe’s biggest flea market — 750 stalls across two NDSM shipyard warehouses, a proper treasure-hunt of vintage and junk.",
-      "why": "Europe’s biggest flea · NDSM",
-      "source": "Maps",
-      "link": "https://www.google.com/maps/search/?api=1&query=IJ-Hallen%20Amsterdam",
+      "freshness": "weekend",
+      "outdoor": true,
+      "kid": true,
+      "price": "",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fcdn.prod.website-files.com%2F6909cf96cf3cd5be51dbc4c9%2F69a59bec421a798caa552922_ijhallen1.webp&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fcdn.prod.website-files.com%2F6909cf96cf3cd5be51dbc4c9%2F69a59bec421a798caa552922_ijhallen1.webp",
+      "blurb": "Europe's largest flea market with 750 stalls across the outdoor terrain. Browse vintage, antiques and curiosities.",
+      "why": "Europe's largest flea market returns",
+      "source": "Your Little Black Book · AmsterdamTips.com",
+      "link": "https://duckduckgo.com/?q=IJ-Hallen%20Flea%20Market%20NDSM-werf%20Amsterdam",
       "weatherFit": [
         "HOT",
         "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
+        "COOL"
       ],
-      "when": "Monthly · one weekend",
-      "tier": "bespoke",
-      "top": true,
+      "verify": false,
+      "buzz": 2,
       "editorScore": 10,
-      "servePos": 7
+      "top": true,
+      "servePos": 4
     }
   ]
 }
