@@ -14,6 +14,44 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.11.5 · pipeline + board] — 2026-08-29 — THE DAILY POLL (Workstream 3: ingest)
+The brief's ingest workstream, built on what the live-fetch test proved rather than what the
+source list hoped. **The roster's rss lane was EMPTY for Amsterdam** — "rss: 0 feeds → 0 picks"
+on every run since the adapter shipped.
+- **THE KEYLESS RSS FLOOR — three sources, live-tested before wiring:** Het Parool PS (37 items,
+  rich city culture), Subbacultcha (independent music/art), Amsterdam Foodie (fills the eat-source
+  gap open since July). Time Out has no feed (404) → wired on the LLM lane. **Rejected on
+  evidence:** r/Amsterdam answers 200 but serves a "Blocked" page to scripts; 3voor12's feeds 404.
+  Wiring rough RSS only became SAFE this morning: the publish bar means the Thursday judge scores
+  article-shaped picks and junk stays below `JUDGE_FLOOR` — before V.11.3 anything ingested was one
+  approval away from the deck, which is why this lane sat empty.
+- **`scripts/ingest.ts` + `ingest.yml` (05:30 UTC daily)** — keyless only (RSS floor + I amsterdam
+  + Resident Advisor), no LLM, no images, no API spend: a daily job that costs nothing can never
+  become "too expensive to keep running". It NEVER touches the served feed — publishing stays
+  Thursday's job through the judge. First real run: 101 picks from 5 sources, 69 titles registered,
+  31 in the inbox, 0 alerts.
+- **THE SEEN REGISTRY (`seen.<city>.json`)** — titleKey → first-seen DATE, at daily resolution.
+  Now the authoritative source for `firstSeen`: the weekly refresh only knew "which Thursday", and
+  it heals V.11.2's legacy hole (a pick that predates firstSeen but is sighted by the poll gains a
+  real record). Min-date merge shared by both writers (`scripts/lib/ingest.ts`) — they can only
+  make each other more precise. Pruned at 180 days so an annual event's next edition reads as new.
+- **THE CANDIDATE INBOX (`inbox.<city>.json`)** — fresh finds not visible anywhere the board can
+  see (feed, airlock, bench), arrival-dated, newest-first. Workstream 2's force-rank UI will
+  consume it; until then it surfaces as a count.
+- **INGEST HEALTH (`ingest-health.<city>.json` + the board's `#ingestbar` strip)** — per-source
+  yield history (daily + weekly runs in one dashboard), with the brief's monitoring rule: a source
+  at zero for 3 consecutive runs, or first-seen inflow < 3 across 3 runs, turns the strip amber
+  with the reason. Failures are expected operating conditions — a dead source is a zero in a file,
+  never a red run.
+- **THE WATCHLIST (`scripts/taste/watchlist.json`)** — scaffold for the 100–150 IG handles,
+  deliberately near-empty (handles are Ness's call; invented ones would poison the poll). The
+  sanctioned route is Meta Graph business_discovery, gated on two Ness-only steps (Meta app + IG
+  Business account) — documented in `docs/ingest.md`. Until then the Drop Box is the IG path.
+- **Async drop queue DEFERRED, with reasoning** (`docs/ingest.md`): `/drop` is one ~1s await on a
+  single-user tool; the genuinely async workload arrives with the business_discovery poller, which
+  runs on a cron, not in the UI. Guarded by **`tests/ingest.test.ts`** (min-date rule, inbox
+  visibility rule, alert raise/clear, same-day idempotence). **327 tests.**
+
 ## [V.11.4 · pipeline] — 2026-08-29 — THE ★ IS A THUMB, NOT A CEILING (+ regenerate now)
 Ness reloaded after V.11.3 and saw the same content — correctly, and the reason is the part of
 V.11.3's own writeup that mattered most: the new code governs the NEXT feed, and the live feed was

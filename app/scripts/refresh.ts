@@ -22,6 +22,7 @@ import type { Pick } from '../src/types'
 import { dedupe, balanceByCategory, isGoodImage, isPortraitImage, imageBroken, urlLooksNonPhoto, imageIsCardworthy, fetchEventImage, toPortrait, wikiImage, webImageCandidates, verifyImageForEvent, pexelsImage, whenBeforeWeekend, upcomingWeekend, weekendMode, weekendModes, stampServeOrder, publishCheck, crownsActive, JUDGE_FLOOR, STAR_BOOST, linkOk, mapLimit, rxOf, titleKey, titleLooseMatch, tokKey, approvalCheck, type TasteCorpus, type WeeklySlate } from './lib/pipeline'
 import { fixWhen, latestDateOf, whenActiveBy, whenIsPast, whenLooksBroken } from '../src/lib/when'
 import { effectiveFreshness, NEW_DAYS } from '../src/lib/freshness'
+import { mergeSightings, pruneRegistry, appendRun, type SeenRegistry, type HealthFile } from './lib/ingest'
 import { songkickAdapter } from './adapters/songkick'
 import { llmExtract } from './adapters/llm'
 import { websearchExtract } from './adapters/websearch'
@@ -79,6 +80,18 @@ async function buildCity(city: City) {
     for (const p of priorPicks) if (p.firstSeen) firstSeenOf.set(titleKey(p.title), p.firstSeen)
     console.log(`  novelty:  ${seenLastWeek.size} titles seen last week (new ones will lead)`)
   } catch { /* first run / no prior feed */ }
+  // THE SEEN REGISTRY (scripts/ingest.ts, daily) outranks the prior-feed record: it knows the
+  // actual DAY a title arrived, where the feed only knows Thursdays — and it heals the legacy
+  // hole, because a pick that predates firstSeen but was later sighted by the daily poll now HAS
+  // a record. Min-date rule, same as the registry's own merge: first sighting wins, ever.
+  let registry: SeenRegistry = { v: 1, seen: {} }
+  try {
+    registry = await Bun.file(`${OUT_DIR}/seen.${city.key}.json`).json()
+    for (const [k, d] of Object.entries(registry.seen)) {
+      const prior = firstSeenOf.get(k)
+      if (!prior || d < prior) firstSeenOf.set(k, d)
+    }
+  } catch { /* no registry yet — the daily poll hasn't run */ }
 
   // FETCH + NORMALIZE — every adapter emits Pick[] in our shape.
   const canon = city.picks                                          // hand-authored floor (always)
@@ -794,6 +807,10 @@ async function buildCity(city: City) {
       p.firstSeen = firstSeenOf.get(k) ?? (seenLastWeek.has(k) ? undefined : today)
       p.freshness = effectiveFreshness(p)
     }
+    // write this run's sightings back so the registry stays whole even if the daily poll dies —
+    // the two writers share one min-date merge, so they can only ever make each other more precise
+    registry = pruneRegistry(mergeSightings(registry, [...picks, ...pendingOut].map((p) => titleKey(p.title)), today), today)
+    await Bun.write(`${OUT_DIR}/seen.${city.key}.json`, JSON.stringify(registry, null, 1))
     const arrived = picks.filter((p) => p.firstSeen === today).length
     const legacy = picks.filter((p) => !p.firstSeen).length
     console.log(`  seen:     ${arrived} first seen today · ${legacy} undated legacy · ${picks.filter((p) => p.freshness === 'new').length} claim New (≤${NEW_DAYS}d)`)
@@ -848,6 +865,19 @@ async function buildCity(city: City) {
   // must not touch the pending pool either.
   await Bun.write(`${OUT_DIR}/pending.${city.key}.json`, JSON.stringify({ generatedAt: feed.generatedAt, count: pendingOut.length, pending: pendingOut }, null, 2))
   console.log(`  → wrote pending.${city.key}.json (${pendingOut.length} picks in the airlock)`)
+
+  // INGEST HEALTH — the weekly run reports into the same dashboard the daily poll writes, so the
+  // board's one strip covers both cadences. Live picks only: canon is bundled, not ingested.
+  {
+    const healthPath = `${OUT_DIR}/ingest-health.${city.key}.json`
+    const health0: HealthFile = await Bun.file(healthPath).json().catch(() => ({ v: 1, runs: [], alerts: [] }))
+    const counts: Record<string, number> = {}
+    for (const p of [...picks, ...pendingOut].filter(isLive)) counts[p.source] = (counts[p.source] ?? 0) + 1
+    const today = new Date().toISOString().slice(0, 10)
+    const health = appendRun(health0, { date: today, kind: 'weekly', sources: counts, fresh: picks.filter((p) => p.firstSeen === today).length + pendingOut.filter((p) => p.firstSeen === today).length })
+    await Bun.write(healthPath, JSON.stringify(health, null, 1))
+    for (const a of health.alerts) console.log(`  ⚠ ingest: ${a.detail}`)
+  }
 
   // CANDIDATES — the imaged, date-valid live events that lost a slot to the caps (never junk: they passed
   // every screen). The Curation Board deals these in as replacements when Ness KILLS a card. Excluded:

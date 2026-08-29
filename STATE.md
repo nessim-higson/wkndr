@@ -5,7 +5,7 @@ FIRST in a new chat. For strategy + backlog see `docs/backlog.md`; for the pipel
 `docs/pipeline-architecture.md` + `docs/source-map.md`; for **who may write to the deck vs to a personal
 profile** (board / Tune / airlock — read before touching either) see `docs/curation-surfaces.md`; for the
 **board roadmap** (auto-compile tracks) see `docs/board-roadmap.md`; for full **version history** see
-`CHANGELOG.md` (current to app **V.11.4** / board V.9.44) and the **git log / tags**. Onboarding:
+`CHANGELOG.md` (current to app **V.11.5** / board V.9.44) and the **git log / tags**. Onboarding:
 `CLAUDE.md`. App lives in `/app` (Vite + React + TS, run with `bun`); ships to **Cloudflare Pages**
 (`wkndr.xyz` + `app.wkndr.xyz`) **and** GitHub Pages (legacy, keeps old share links alive)._
 
@@ -27,6 +27,18 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
 > sessions update (today it's on load).
 
 ## Live right now
+- **V.11.5 — THE DAILY POLL (2026-08-29, Workstream 3).** Ingest now runs DAILY (`ingest.yml`
+  05:30 UTC → `scripts/ingest.ts`): keyless only (new RSS floor: Het Parool PS + Subbacultcha +
+  Amsterdam Foodie, all live-tested; + I amsterdam + RA), zero API spend, never touches the served
+  feed. Writes three files: **`seen.<city>.json`** (the seen registry — titleKey → first-seen DATE;
+  now the authority behind `firstSeen`, min-date merge shared with refresh via
+  `scripts/lib/ingest.ts`), **`inbox.<city>.json`** (fresh finds not in feed/airlock/bench —
+  Workstream 2's future force-rank feedstock), **`ingest-health.<city>.json`** (per-source yields,
+  daily + weekly in one dashboard; source quiet 3 runs or inflow < 3 → amber `#ingestbar` strip on
+  the board). Time Out on the LLM lane (no feed); r/Amsterdam + 3voor12 tested and REJECTED —
+  don't re-wire without a fresh live test (`docs/ingest.md` has the method). IG watchlist scaffold
+  at `scripts/taste/watchlist.json` — polling gated on Meta business_discovery (Ness-side: Meta
+  app + IG Business account). Async drop queue deferred with reasoning. **327 tests.**
 - **V.11.3 — AUTO IS THE DEFAULT (2026-08-29).** The airlock, inverted. V.11.2 fixed what picks were
   LABELLED; this fixes which picks there ARE. Ness after three untouched weeks: the app should
   auto-populate fresh every week, vetted against the sources, with the board as the adjustment layer

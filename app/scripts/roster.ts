@@ -25,6 +25,15 @@ export const ROSTERS: Record<string, RosterSource[]> = {
     { facet: 'art shows, especially closing soon', name: 'Stedelijk', url: 'https://www.stedelijk.nl/en/exhibitions', type: 'llm', category: 'art' },
     { facet: 'kid-friendly things', name: 'Kidsproof', url: 'https://www.kidsproof.nl/amsterdam', type: 'llm' },
     { facet: 'members’ events', name: 'Soho House Amsterdam', url: 'https://www.sohohouse.com/houses/soho-house-amsterdam', type: 'llm' }, // members-only; usually sparse publicly
+    { facet: 'what’s on this weekend', name: 'Time Out Amsterdam', url: 'https://www.timeout.com/amsterdam/things-to-do/things-to-do-in-amsterdam-this-weekend', type: 'llm' }, // no RSS (verified 2026-08-29); may be JS-thin — health file will say
+    // THE KEYLESS RSS FLOOR (Workstream 3, 2026-08-29) — the roster's rss lane was EMPTY for
+    // Amsterdam ("rss: 0 feeds → 0 picks" every run). All three verified live before wiring.
+    // RSS picks are rough by design (article-shaped, verify:true) — safe to ingest since the
+    // publish bar: the judge scores them Thursday and junk stays below JUDGE_FLOOR. Rejected:
+    // r/Amsterdam (hard-blocked, serves a "Blocked" page to scripts), 3voor12 (feeds 404).
+    { facet: 'city culture + openings', name: 'Het Parool PS', url: 'https://www.parool.nl/ps/rss.xml', type: 'rss' },
+    { facet: 'independent music + art community', name: 'Subbacultcha', url: 'https://subbacultcha.nl/feed/', type: 'rss', category: 'live' },
+    { facet: 'restaurant + food openings', name: 'Amsterdam Foodie', url: 'https://www.amsterdamfoodie.nl/feed/', type: 'rss', category: 'eat' },
   ],
   'new-orleans': [
     { facet: 'live music + festivals this weekend', name: 'OffBeat', url: 'https://www.offbeat.com/events/', type: 'llm', category: 'live' }, // events page, not the blog feed

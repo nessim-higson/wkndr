@@ -1,0 +1,54 @@
+name: Daily ingest
+
+# The DAILY POLL (Workstream 3) — keyless sources only (RSS floor + I amsterdam + Resident
+# Advisor), no LLM, no images, no API spend. Writes the seen registry (arrival-date truth for
+# `firstSeen`), the board's candidate inbox, and the ingest-health dashboard. It NEVER touches
+# picks.<city>.json — publishing stays Thursday's job (refresh.yml), through the judge and the
+# publish bar. 05:30 UTC: after most sources' morning publish, hours before any board session,
+# and clear of Thursday's 10:00 refresh slot.
+#
+# Failures are expected operating conditions (the brief's words): a dead source is a zero in the
+# health file — three zeros in a row raises a visible alert on the curation board — never a red run.
+on:
+  schedule:
+    - cron: '30 5 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+# Shares the refresh group so the two writers can never race a commit to app/public/data.
+concurrency:
+  group: refresh
+  cancel-in-progress: false
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - name: Install deps
+        run: cd app && bun install --frozen-lockfile
+      - name: Run daily ingest
+        run: cd app && bun run ingest
+      - name: Commit if anything changed
+        run: |
+          git config user.name "wkndr-bot"
+          git config user.email "noreply@anthropic.com"
+          git add app/public/data/seen.*.json app/public/data/inbox.*.json app/public/data/ingest-health.*.json
+          if git diff --staged --quiet; then
+            echo "No ingest changes."
+          else
+            git commit -m "chore(ingest): daily poll $(date -u +%Y-%m-%d)"
+            pushed=false
+            for i in 1 2 3; do
+              if git pull --rebase --autostash origin main && git push; then pushed=true; break; fi
+              git rebase --abort >/dev/null 2>&1 || true
+              echo "push attempt $i failed — retrying"; sleep 3
+            done
+            if [ "$pushed" != "true" ]; then
+              echo "::error::push failed after 3 attempts — ingest NOT recorded"
+              exit 1
+            fi
+          fi

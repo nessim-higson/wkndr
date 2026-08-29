@@ -1,0 +1,7 @@
+{
+  "_": "THE INSTAGRAM WATCHLIST (Workstream 3) — the 100-150 Amsterdam handles the daily poll will read ONCE the sanctioned route exists. Broad IG scraping is shut and stays shut (logged-out profiles serve a 604KB shell with zero post links; RSS bridges 403 — verified 2026-08-02). The working route is Meta Graph business_discovery: free, sanctioned, Business/Creator accounts only. It needs TWO Ness-side steps that code cannot do: (1) a Meta developer app, (2) a WKNDR IG Business account linked to a Facebook page. Until those exist this file is the paste-path checklist — the accounts worth checking by hand — and the poller field stays 'manual'. When creds land, flip method to 'business_discovery' per handle and wire the poller into scripts/ingest.ts; handles that are not Business/Creator accounts CANNOT be read via the API and stay 'manual' forever.",
+  "_seeding": "Deliberately near-empty: handles are Ness's call (his taste, his sources), and inventing plausible-looking handles would poison the poll with guesses. @doubleamagazine is real and proven — it is the account the board's 📖 Read-the-slides reader was built against.",
+  "handles": [
+    { "handle": "doubleamagazine", "label": "Double A Magazine", "note": "weekly Amsterdam events carousel — listings typeset into slide images; the roundup reader's home turf", "method": "manual" }
+  ]
+}

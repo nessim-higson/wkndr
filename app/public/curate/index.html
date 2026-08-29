@@ -182,6 +182,12 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 #dropbox{margin:16px 0 4px;padding:16px;background:#fff;border:1px solid var(--line);border-radius:14px}
 #dropbox .dlab{font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:var(--dim);margin:0 0 4px}
 #dropbox .dsub{font-size:12px;color:var(--dim);margin:0 0 12px;max-width:60ch}
+/* INGEST STRIP (Workstream 3) — one quiet line: is content flowing in? Amber only when the daily
+   health file says a source went quiet or inflow starved; otherwise a dim heartbeat. */
+#ingestbar{margin:10px 0 0;padding:9px 14px;background:#fff;border:1px solid var(--line);border-radius:12px;font-size:12px;color:var(--dim);display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+#ingestbar b{color:var(--ink);font-weight:600}
+#ingestbar.warn{border-color:#e2a33c;background:#fdf6e9}
+#ingestbar.warn .alerts{color:#9a6b12;font-weight:600}
 /* A URL is ~60 characters. Letting the field span a 1300px desktop board made one short string look
    like a document editor, and pushed Pull miles from where you type. */
 .drow{display:flex;gap:8px;flex-wrap:wrap;max-width:520px}
@@ -279,6 +285,7 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 <div id="advanced" hidden>
 <div id="cancelbox2"></div>
 <div id="status"></div>
+<div id="ingestbar" hidden></div>
 <p class="lede"><b>Rule on Amsterdam's picks for this weekend.</b> Two tabs below: <b>IN ROTATION</b> is what's live now — this weekend's deck plus your approved library. <b>NEW FINDS</b> is candidates that are <b>not live yet</b>. Every card tells you why it's there and what a tap does.</p>
 <p class="flow"><span class="step">Rule here</span> → <span class="step">Submit</span> → <b style="color:var(--ink)">live for your testers in seconds</b> (and filed to GitHub for the record). Progress saves in this browser as you go.</p>
 <div class="legend"><span class="lbl">Verdicts</span><span class="chip"><b>★1–5</b> rate / save</span><span class="chip"><b>✕</b> cancel now · reason later</span><span class="chip"><b>👑&nbsp;TOP</b> permanent lead</span><span class="chip"><b>↑&nbsp;Top 10</b> into your deck (Simple)</span><span class="chip"><b>▼&nbsp;LATER</b> back this weekend</span><span class="chip"><b>+CANON</b> permanent library</span></div>
@@ -928,6 +935,25 @@ Promise.all([
       window.scrollTo({top:0});
     }));
   }
+
+  // ——— INGEST HEARTBEAT (Workstream 3): is content flowing in? Reads the daily poll's health
+  // file + candidate inbox. Both fetches fail SOFT — before the first daily run the files 404 and
+  // the strip simply stays hidden. Amber = a source has been quiet 3 runs, or inflow starved.
+  Promise.all([
+    jf('../data/ingest-health.amsterdam.json',null),
+    jf('../data/inbox.amsterdam.json',null),
+  ]).then(([h,ib])=>{
+    const bar=document.getElementById('ingestbar');
+    if(!h||!h.runs||!h.runs.length){return}
+    const last=h.runs[h.runs.length-1];
+    const total=Object.values(last.sources||{}).reduce((a,n)=>a+n,0);
+    const alerts=(h.alerts||[]);
+    bar.hidden=false;
+    bar.className=alerts.length?'warn':'';
+    bar.innerHTML='<span>Ingest · last poll <b>'+last.date+'</b> ('+last.kind+') · <b>'+total+'</b> picks from '+Object.keys(last.sources||{}).length+' sources · <b>'+(last.fresh||0)+'</b> first-seen</span>'
+      +(ib&&ib.count?'<span> · inbox <b>'+ib.count+'</b> fresh finds</span>':'')
+      +(alerts.length?'<span class="alerts">⚠ '+alerts.map(a=>a.detail).join(' · ')+'</span>':'');
+  }).catch(()=>{});
 
   // ——— KILLS & FLAGS STATUS: "did my call land?" — every kill / bad-image / bad-link / note you've
   // made, checked against the LIVE feed. Gone from the feed = shipped (✓). Still there = filed but
