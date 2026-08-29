@@ -14,7 +14,7 @@
  *      intact (deduped by tokKey); live feed picks whose approval lapsed (an expired weekly slate)
  *      DEMOTE back to pending. Same approvalCheck refresh.ts publishes through.
  *   4. corpus.topPicks   → p.top stamped + feed.topMatches refreshed (canon stamping at ingestion)
- *   5. corpus.starredKeeps (★4-5) → editorScore floor 8
+ *   5. corpus.starredKeeps (★4-5) → editorScore = judge+2 (the ★ boost, see refresh.ts)
  *   6. weekly lead/later/pile (if `weekend` matches the upcoming Saturday) → p.lead / p.later /
  *      p.pilePos (pile via titleLooseMatch — survives retitles)
  *   7. whenIsPast guard  → past picks dropped
@@ -25,7 +25,7 @@
  */
 import corpus from './taste/corpus.json'
 import weekly from './taste/weekly.json'
-import { rxOf, titleLooseMatch, tokKey, upcomingWeekend, crownsActive, publishCheck, weekendModes, stampServeOrder, toPortrait, approvalCheck, type TasteCorpus, type WeeklySlate } from './lib/pipeline'
+import { rxOf, titleLooseMatch, tokKey, upcomingWeekend, crownsActive, publishCheck, STAR_BOOST, weekendModes, stampServeOrder, toPortrait, approvalCheck, type TasteCorpus, type WeeklySlate } from './lib/pipeline'
 import { curatedImage } from './curated'
 import { heroPicks } from './heroes'
 import { whenIsPast, whenLooksBroken } from '../src/lib/when'
@@ -79,7 +79,11 @@ if (pendingFile) {
     if (!canPublish(p)) { pendingKeep.push(p); continue }
     const tk = tokKey(p.title)
     if (inFeedIds.has(p.id) || (tk && inFeedToks.has(tk))) continue
-    picks.push(p); promoted++
+    // MATERIALIZE the migration on the way through the door: a legacy pending pick (pre-judgeScore)
+    // carries its judge verdict only in editorScore — sound there, nothing ever floored an unapproved
+    // pick. Stamp it as judgeScore now or the published feed fails its own airlock audit (the test
+    // reads judgeScore, and an unstamped merit pick would look like a rogue).
+    picks.push({ ...p, judgeScore: p.judgeScore ?? p.editorScore }); promoted++
     if (tk) inFeedToks.add(tk)
   }
   // demoted picks rejoin the queue at the back (the refresh-authored topical order stays intact)
@@ -126,8 +130,8 @@ const topRx = crownsLive ? (corpus.topPicks as string[]).map(rxOf) : []
 const keepRx = (corpus.starredKeeps as { match: string; stars: number }[])
   .filter((k) => k.stars >= 4).map((k) => rxOf(k.match))
 for (const p of picks) {
-  if (topRx.some((rx) => rx.test(p.title))) p.top = true
-  if (keepRx.some((rx) => rx.test(p.title))) p.editorScore = Math.max(p.editorScore ?? 0, 8)
+  p.top = topRx.some((rx) => rx.test(p.title)) || undefined   // recompute — a retired crown must CLEAR
+  if (keepRx.some((rx) => rx.test(p.title))) p.editorScore = Math.min(10, (p.judgeScore ?? 6) + STAR_BOOST)   // ★ = judge+2, not a floor (see refresh.ts)
 }
 const { sat } = upcomingWeekend()
 const satKey = `${sat.getFullYear()}-${String(sat.getMonth() + 1).padStart(2, '0')}-${String(sat.getDate()).padStart(2, '0')}`

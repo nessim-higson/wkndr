@@ -14,6 +14,27 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.11.4 · pipeline] — 2026-08-29 — THE ★ IS A THUMB, NOT A CEILING (+ regenerate now)
+Ness reloaded after V.11.3 and saw the same content — correctly, and the reason is the part of
+V.11.3's own writeup that mattered most: the new code governs the NEXT feed, and the live feed was
+still Thursday's file with its scores baked in. Two moves close the gap.
+- **★ floor → ★ boost.** `editorScore = max(score, 8)` became `min(10, judgeScore + STAR_BOOST)`
+  (`STAR_BOOST` = 2, env-tunable — the brief's "weights are config, not constants"). A floor of 8
+  against a judge ceiling of ~7 was a ceiling fresh content could never reach; judge+2 keeps a ★ a
+  real thumb on the scale — a starred judge-7 lands 9 and tops the deck, a starred judge-3 lands 5
+  and no longer outranks fresh merit. **Canon starred picks take a baseline of 6, landing on 8 —
+  the exact value the floor gave them** (the judge only reads live picks), so the hand-curated
+  library does not move an inch. Mirrored in restamp.
+- **Stale crowns actually CLEAR.** Both publishers recompute `top` instead of only ever adding it —
+  a carried-forward pick arrived with `top` baked from the week it was crowned, and restamp's
+  stamp-only loop would have left every retired 👑 leading from beyond the grave.
+- **restamp materializes `judgeScore` on promotion** — a legacy pending pick carries its verdict
+  only in `editorScore` (sound there: nothing ever floored an unapproved pick); stamped through the
+  door or the published feed would fail its own airlock audit.
+- **And the feed regenerated TODAY** — `refresh.yml` has always had a manual trigger; dispatched it
+  rather than waiting for Thursday, so the full pipeline (crawl → judge → new gate → boost) rebuilt
+  the live feed for THIS weekend under all of V.11.2–.4. **318 tests.**
+
 ## [V.11.3 · pipeline] — 2026-08-29 — AUTO IS THE DEFAULT (the airlock, inverted)
 V.11.2 fixed what the picks were LABELLED. This fixes which picks there ARE. Ness, on opening the app
 after three untouched weeks: _"it should auto-populate every week with fresh, relevant picks, vetted

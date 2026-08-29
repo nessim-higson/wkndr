@@ -5,7 +5,7 @@ FIRST in a new chat. For strategy + backlog see `docs/backlog.md`; for the pipel
 `docs/pipeline-architecture.md` + `docs/source-map.md`; for **who may write to the deck vs to a personal
 profile** (board / Tune / airlock — read before touching either) see `docs/curation-surfaces.md`; for the
 **board roadmap** (auto-compile tracks) see `docs/board-roadmap.md`; for full **version history** see
-`CHANGELOG.md` (current to app **V.11.3** / board V.9.44) and the **git log / tags**. Onboarding:
+`CHANGELOG.md` (current to app **V.11.4** / board V.9.44) and the **git log / tags**. Onboarding:
 `CLAUDE.md`. App lives in `/app` (Vite + React + TS, run with `bun`); ships to **Cloudflare Pages**
 (`wkndr.xyz` + `app.wkndr.xyz`) **and** GitHub Pages (legacy, keeps old share links alive)._
 
@@ -52,11 +52,11 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
   - **restamp publishes through the same bar** so the fast path can't demote what Thursday shipped.
   - **`docs/curation-surfaces.md` carries a dated doctrine revision** — the 1:1 airlock law is
     retired, §5 (only Ness writes to the corpus) is untouched. Read it before "restoring" the airlock.
-  - **⚠️ REMAINING FREEZER — the ★ score floor decides who LEADS.** 50 of 76 picks carry a floor of 8
-    against a judge ceiling of ~7, so fresh picks now get INTO the deck but sit below the whole
-    incumbent block. Fix is a boost (`judgeScore + 2`) not a floor — blocked on canon having no
-    judgeScore at all (a naive boost demotes the whole hand-curated library). `docs/pipeline-freshness.md`
-    Part III. **318 tests.**
+  - **V.11.4 (same day): the ★ floor is now a BOOST** — `editorScore = min(10, judgeScore + STAR_BOOST)`
+    (STAR_BOOST=2, env-tunable). Canon starred = baseline 6 → lands 8, exactly what the floor gave it,
+    so the hand-curated library doesn't move; live starred picks scale with the judge. Stale baked 👑
+    now CLEAR in both publishers (recompute, not accumulate). restamp stamps judgeScore on promotion.
+    Feed regenerated same day via refresh.yml's manual trigger. **318 tests.**
 - **V.11.2 — NEW THIS WEEK NOW MEANS THIS WEEK (2026-08-29).** The freshness fix. `New this week`
   was serving weeks-old content after a quiet stretch, and the cause was NOT backfill — **the `new`
   label had no expiry at all.** `freshness` is a bare enum written by whoever touched the record last

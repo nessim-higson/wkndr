@@ -19,7 +19,7 @@
  */
 import { CITIES, type City } from '../src/data/cities'
 import type { Pick } from '../src/types'
-import { dedupe, balanceByCategory, isGoodImage, isPortraitImage, imageBroken, urlLooksNonPhoto, imageIsCardworthy, fetchEventImage, toPortrait, wikiImage, webImageCandidates, verifyImageForEvent, pexelsImage, whenBeforeWeekend, upcomingWeekend, weekendMode, weekendModes, stampServeOrder, publishCheck, crownsActive, JUDGE_FLOOR, linkOk, mapLimit, rxOf, titleKey, titleLooseMatch, tokKey, approvalCheck, type TasteCorpus, type WeeklySlate } from './lib/pipeline'
+import { dedupe, balanceByCategory, isGoodImage, isPortraitImage, imageBroken, urlLooksNonPhoto, imageIsCardworthy, fetchEventImage, toPortrait, wikiImage, webImageCandidates, verifyImageForEvent, pexelsImage, whenBeforeWeekend, upcomingWeekend, weekendMode, weekendModes, stampServeOrder, publishCheck, crownsActive, JUDGE_FLOOR, STAR_BOOST, linkOk, mapLimit, rxOf, titleKey, titleLooseMatch, tokKey, approvalCheck, type TasteCorpus, type WeeklySlate } from './lib/pipeline'
 import { fixWhen, latestDateOf, whenActiveBy, whenIsPast, whenLooksBroken } from '../src/lib/when'
 import { effectiveFreshness, NEW_DAYS } from '../src/lib/freshness'
 import { songkickAdapter } from './adapters/songkick'
@@ -594,16 +594,21 @@ async function buildCity(city: City) {
     if (before !== picks.length) console.log(`  veto:     dropped ${before - picks.length} Ness-killed events`)
   }
 
-  // STARRED KEEPS — events Ness rated ★4-5 on the Curation Board. Two guarantees: (a) when present they
-  // carry an editorScore FLOOR of 8 (his stars outrank the judge), and (b) when an adapter fails to
-  // re-surface one that's still date-valid, it's CARRIED FORWARD from the prior feed — his curation
-  // investment must not evaporate because web-search rolled differently this week.
+  // STARRED KEEPS — events Ness rated ★4-5 on the Curation Board. Two guarantees: (a) a ★ BOOSTS the
+  // ranking score two points over the judge's verdict, and (b) a time-critical miss is carried forward
+  // (below). The boost REPLACED a flat floor of 8 (2026-08-29): the floor made every starred pick wear
+  // 8-10 against a judge ceiling of ~7 on fresh content — a ceiling nothing new could reach, so the
+  // same starred venues led every week regardless of merit. judge+2 keeps a ★ a real thumb on the
+  // scale (a starred 7 → 9 tops the deck) without letting it lift a judged-3 above fresh merit.
+  // Canon starred picks carry no judgeScore (the judge only reads live picks) — they take a baseline
+  // of 6, landing on 8: exactly the value the floor gave them, so the hand-curated library does not
+  // move an inch. Only live starred picks change: they now scale with what the judge actually saw.
   {
     const keeps = (corpus.starredKeeps as { match: string; stars: number }[])
       .filter((k) => k.stars >= 4)
       .map((k) => ({ ...k, rx: rxOf(k.match) }))
     let floored = 0, carried = 0
-    for (const p of picks) if (keeps.some((k) => k.rx.test(p.title))) { p.editorScore = Math.max(p.editorScore ?? 0, 8); floored++ }
+    for (const p of picks) if (keeps.some((k) => k.rx.test(p.title))) { p.editorScore = Math.min(10, (p.judgeScore ?? 6) + STAR_BOOST); floored++ }
     // CARRY-FORWARD IS NOW A TIME-CRITICAL RESCUE ONLY — it must be dated THIS weekend. It used to
     // pull back any date-valid star, which quietly meant every undated evergreen one ("Now open"),
     // every week, forever: 18 picks last run, and a third of why the deck read identical three weeks
@@ -620,7 +625,7 @@ async function buildCity(city: City) {
       if (pin) prior.image = toPortrait(pin)
       picks.push(prior); carried++
     }
-    if (floored || carried) console.log(`  starred:  ${floored} score-floored (his ★) · ${carried} carried forward from the prior feed`)
+    if (floored || carried) console.log(`  starred:  ${floored} ★-boosted (judge+${STAR_BOOST}) · ${carried} carried forward from the prior feed`)
   }
 
   // RESTED — the ★4+KILL class from the board: events Ness LIKES but is tired of seeing. Not a veto:
@@ -650,6 +655,9 @@ async function buildCity(city: City) {
   // ships as feed.topMatches so the app re-stamps at ingestion (belt and braces). Tops lead the deck.
   {
     const tops = crownsLive ? (corpus.topPicks as string[]).map(rxOf) : []
+    // RECOMPUTE, don't accumulate: a carried-forward pick can arrive with `top` baked from the week
+    // it was crowned. Stale crowns must fall off here or they lead the deck from beyond the grave.
+    for (const p of picks) if (p.top && !tops.some((rx) => rx.test(p.title))) p.top = undefined
     if (!crownsLive) console.log(`  top:      ${(corpus.topPicks as string[]).length} 👑 EXPIRED (stamped ${(corpus as { topPicksWeekend?: string }).topPicksWeekend ?? 'never'}, this weekend is not) — re-crown on the board to lead the deck`)
     let stamped = 0, pulled = 0
     for (const p of picks) if (tops.some((rx) => rx.test(p.title))) { p.top = true; p.editorScore = 10; stamped++ }

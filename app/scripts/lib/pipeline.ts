@@ -116,6 +116,12 @@ export function crownsActive(corpus: { topPicksWeekend?: string }, now: Date = n
 // and cuts the bottom 47. Raise it if junk gets through; lower it if the deck runs thin.
 export const JUDGE_FLOOR = Number(process.env.WKNDR_JUDGE_FLOOR ?? 5)
 
+// THE ★ BOOST — how far a board star lifts a pick's RANKING score above the judge's verdict.
+// Replaced the flat floor of 8 (2026-08-29): a floor was a ceiling nothing fresh could reach.
+// Canon starred picks (no judgeScore — the judge only reads live picks) take a baseline of 6,
+// landing on 8 — the exact value the floor gave them, so the hand-curated library doesn't move.
+export const STAR_BOOST = Number(process.env.WKNDR_STAR_BOOST ?? 2)
+
 /** MAY THIS PICK SHIP? The gate refresh.ts publishes through, and the one tests/airlock.test.ts
  *  audits the feed with — one predicate, so a rogue pick means the pipeline regressed, not that the
  *  test drifted.
