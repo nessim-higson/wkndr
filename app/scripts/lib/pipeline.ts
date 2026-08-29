@@ -96,6 +96,45 @@ const anchorFrags = (title: string): string[] =>
   title.split(/\s*\/\s*/)
     .map((x) => x.split(/\s*[(—–,]\s*/)[0].trim())
     .filter((x) => x.length >= 3)
+/** ARE THE 👑 CROWNS STILL LIVE? A crown is a call about ONE weekend, not a permanent fact — same
+ *  law as weekly.json's `weekend` gate on the ▲▼ slate, and now the same mechanism. topPicks had no
+ *  expiry while the slate did, so the 2026-07-31 crowns were still leading the deck on 2026-08-29:
+ *  Kaap Amsterdam opened the app four Saturdays running.
+ *
+ *  Shared by refresh.ts and restamp.ts so the slow and fast publishers cannot disagree about the
+ *  deck's front. Fails CLOSED — an absent or stale stamp retires the crowns rather than granting
+ *  them, because the failure mode of guessing wrong is a month of frozen front page. */
+export function crownsActive(corpus: { topPicksWeekend?: string }, now: Date = new Date()): boolean {
+  const { sat } = upcomingWeekend(now)
+  const key = `${sat.getFullYear()}-${String(sat.getMonth() + 1).padStart(2, '0')}-${String(sat.getDate()).padStart(2, '0')}`
+  return corpus.topPicksWeekend === key
+}
+
+// THE PUBLISH BAR — the judge score a live pick must reach to ship without Ness having approved it.
+// Env-overridable so it can be tuned without a deploy. FIVE is the midpoint and it was measured, not
+// guessed: against the 2026-08-27 airlock (78 held, judged 1-7) a floor of 5 publishes 31, all dated,
+// and cuts the bottom 47. Raise it if junk gets through; lower it if the deck runs thin.
+export const JUDGE_FLOOR = Number(process.env.WKNDR_JUDGE_FLOOR ?? 5)
+
+/** MAY THIS PICK SHIP? The gate refresh.ts publishes through, and the one tests/airlock.test.ts
+ *  audits the feed with — one predicate, so a rogue pick means the pipeline regressed, not that the
+ *  test drifted.
+ *
+ *  Inverted 2026-08-29 from an ALLOW-LIST to a BLOCK-LIST plus a floor. It used to be `approvalCheck`
+ *  alone: a live pick shipped only if Ness had already approved something matching it, which made the
+ *  app structurally unable to run unattended — stop curating and nothing new could ever publish.
+ *  Vetoes and rests still kill upstream; what survives ships on the judge's own verdict, and an
+ *  explicit approval still admits regardless of score. Taste ranks the survivors, it no longer picks them.
+ *
+ *  Reads `judgeScore`, NEVER `editorScore`: the latter carries the ★ floor of 8 and the 👑 10, so
+ *  gating on it would be circular — approved picks clearing a bar their own approval had set. */
+export function publishCheck(
+  corpus: TasteCorpus, weekly: WeeklySlate, heroTitles: string[], now: Date = new Date(),
+): (p: { title: string; buzz?: number; judgeScore?: number }) => boolean {
+  const approved = approvalCheck(corpus, weekly, heroTitles, now)
+  return (p) => (p.judgeScore ?? 0) >= JUDGE_FLOOR || approved(p)
+}
+
 export function approvalCheck(
   corpus: TasteCorpus, weekly: WeeklySlate, heroTitles: string[], now: Date = new Date(),
 ): (p: { title: string; buzz?: number }) => boolean {

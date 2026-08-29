@@ -52,6 +52,10 @@ export interface Pick {
                        // WORLD; this is our record of when the claim started, and a `new` is
                        // honoured only while the record still supports it (lib/freshness.ts).
                        // Absent = we have no record of it arriving, so it cannot claim to be new.
+  judgeScore?: number  // 0..10 — the judge's RAW verdict, never overwritten by an approval. editorScore
+                       // below is the RANKING score and later passes raise it (★ floors it at 8, 👑 sets
+                       // 10), so only this one can be compared across approved and unapproved picks.
+                       // The publish bar (JUDGE_FLOOR in refresh.ts) reads this and nothing else.
   editorScore?: number // 0..10 editorial quality from the build-time judge (scripts/adapters/editor.ts);
                        // a term in rankPicks so "best" actually ranks. Live picks only; undefined → 0.
   popularity?: number  // real-draw signal from structured sources (e.g. Resident Advisor "attending"

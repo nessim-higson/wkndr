@@ -202,6 +202,61 @@ Worth recording, because three Workstream-1 tasks are already true:
   `picks.<city>.json` (surfaced) → `rested` / `eventVeto` (retired), with the airlock demoting
   both directions. That is a naming and documentation gap, not a build.
 
+---
+
+# Part III — the deck itself, not just the label
+
+_2026-08-29, same day. Part II fixed what the picks were LABELLED. Ness: "I haven't touched this in
+three weeks and the same picks are coming up… it should auto-populate every week with fresh,
+relevant picks, vetted against the sources, and the curation tool is how I adjust it on top."_
+
+## Measured
+
+```
+08-06 → 08-13:  90% of the feed carried over
+08-13 → 08-20:  83%
+08-20 → 08-27:  99%   ← one new pick, all week
+```
+
+Kaap Amsterdam led the deck four Saturdays running. The crawl was never the problem — the
+2026-08-27 run pulled **227 picks, 95 genuinely new**, and published 25.
+
+## Four freezers, in order of grip
+
+1. **The airlock (the big one).** `approvalCheck` was an ALLOW-LIST: a live pick shipped only if it
+   matched something Ness had already approved. `airlock: 25 live approved → feed · 78 → pending`.
+   Zero curation → zero new content, structurally. **Fixed:** `publishCheck` — block-list plus a
+   judge floor (`JUDGE_FLOOR`, default 5, env-tunable). Doctrine change recorded in
+   `curation-surfaces.md`.
+2. **Crowns never expired.** 12 👑 from 31 July still leading on 29 August. `weekly.json` always
+   expired on its `weekend` stamp; `topPicks` had no equivalent. **Fixed:** `crownsActive` +
+   `corpus.topPicksWeekend`, same law, fails closed.
+3. **Starred carry-forward.** Any date-valid ★ was pulled back from last week's feed when a crawl
+   missed it — which in practice meant every undated evergreen one, every week (18 last run).
+   **Fixed:** carry-forward is now a time-critical rescue only (must be dated this weekend).
+4. **The ★ score floor — NOT fixed, and it decides who LEADS.** A ★4+ pick gets
+   `editorScore = max(score, 8)`. Fresh content realistically tops out at judge 7. So:
+
+   > **All 25 published live picks were ★-floored. Zero earned their score. 50 of 76 feed picks
+   > carry a floor of 8 against a judge ceiling of 7.**
+
+   Inverting the gate gets fresh picks INTO the deck; this keeps them out of the top of it.
+
+## Simulated against the real pool
+
+Replaying 2026-08-27's own pending queue through the new gate: **31 of 78 held picks clear the
+floor** (feed 76 → 107), crowns retire, and 4 of the top 10 change — South East Jazz Festival,
+ZeeZout, Indische Buurt Festival and the Hockey World Cup final break in. The top 4 do not move,
+because of freezer 4.
+
+## The open decision on freezer 4
+
+A ★ should be a thumb on the scale, not a ceiling nobody else can reach — `judgeScore + 2` rather
+than `max(score, 8)`. **The trap:** the judge only scores LIVE picks, so canon has no `judgeScore`
+at all and a naive boost would demote the entire hand-curated library to ~2. Canon needs its own
+baseline before the floor can become a boost. Not attempted here — getting it wrong demotes the
+actual product.
+
 ## Status
 - ✅ `firstSeen` stamped + carried forward (`refresh.ts`), airlock included.
 - ✅ `new` expires against it at build AND read time (`lib/freshness.ts`).
@@ -209,4 +264,6 @@ Worth recording, because three Workstream-1 tasks are already true:
 - ✅ Empty freshness bucket is never offered (existing count>0 law).
 - ◻ `scouted.ts` still stamps `'new'` unconditionally, and two canon entries still hardcode it.
   Harmless now — the rule neutralises them — but the claims are still untrue at the source.
+- ✅ Airlock inverted to a block-list + judge floor; crowns expire weekly; carry-forward bounded.
+- ◻ **The ★ score floor → a boost.** Needs a canon baseline first. The remaining freezer.
 - ◻ Buzz/velocity scoring (Workstream 2) and ingest automation (Workstream 3) — unstarted.

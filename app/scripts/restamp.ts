@@ -25,7 +25,7 @@
  */
 import corpus from './taste/corpus.json'
 import weekly from './taste/weekly.json'
-import { rxOf, titleLooseMatch, tokKey, upcomingWeekend, weekendModes, stampServeOrder, toPortrait, approvalCheck, type TasteCorpus, type WeeklySlate } from './lib/pipeline'
+import { rxOf, titleLooseMatch, tokKey, upcomingWeekend, crownsActive, publishCheck, weekendModes, stampServeOrder, toPortrait, approvalCheck, type TasteCorpus, type WeeklySlate } from './lib/pipeline'
 import { curatedImage } from './curated'
 import { heroPicks } from './heroes'
 import { whenIsPast, whenLooksBroken } from '../src/lib/when'
@@ -51,15 +51,24 @@ let picks = feed.picks.filter(tasteOk)
 
 // THE AIRLOCK, both directions — kills/stars from the round Ness JUST submitted take effect here.
 const isApproved = approvalCheck(corpus as TasteCorpus, weekly as WeeklySlate, heroPicks(CITY).map((h) => h.title))
+// THE SAME BAR AS THE SLOW PATH (refresh.ts) — promote/demote must agree with publish or the two
+// publishers fight: refresh ships a merit pick on Thursday and the next restamp demotes it back to
+// the airlock for lacking an approval it never needed.
+//
+// `judgeScore ?? editorScore` is a ONE-RUN MIGRATION, and only sound on this side: a pick sitting in
+// pending was by definition never approved, so nothing floored its editorScore — it IS the judge's
+// verdict. Feeds written after 2026-08-29 carry judgeScore properly and the fallback stops firing.
+const mayShip = publishCheck(corpus as TasteCorpus, weekly as WeeklySlate, heroPicks(CITY).map((h) => h.title))
+const canPublish = (p: Pick) => mayShip({ ...p, judgeScore: p.judgeScore ?? p.editorScore })
 const isLive = (p: Pick) => ['web-', 'llm-', 'rss-', 'sk-'].some((pre) => p.id.startsWith(pre))
 let promoted = 0, demoted = 0
 const pendingKeep: Pick[] = []
 if (pendingFile) {
   // DEMOTE first: a live pick whose approval lapsed (weekly slate rolled, nothing else holds it)
   // returns to the airlock rather than shipping unapproved — the invariant survives between runs.
-  const back = picks.filter((p) => isLive(p) && !isApproved(p))
+  const back = picks.filter((p) => isLive(p) && !canPublish(p))
     .map((p) => ({ ...p, top: undefined, lead: undefined, later: undefined, pilePos: undefined }))
-  picks = picks.filter((p) => !(isLive(p) && !isApproved(p)))
+  picks = picks.filter((p) => !(isLive(p) && !canPublish(p)))
   demoted = back.length
   // PROMOTE: approved pending picks join the feed, image + judge score intact; tokKey dedupe so a
   // retitled twin of something already published can't double-card. Approved-but-duplicate picks
@@ -67,7 +76,7 @@ if (pendingFile) {
   const inFeedIds = new Set(picks.map((p) => p.id))
   const inFeedToks = new Set(picks.map((p) => tokKey(p.title)).filter(Boolean))
   for (const p of (pendingFile.pending ?? []).filter(tasteOk)) {
-    if (!isApproved(p)) { pendingKeep.push(p); continue }
+    if (!canPublish(p)) { pendingKeep.push(p); continue }
     const tk = tokKey(p.title)
     if (inFeedIds.has(p.id) || (tk && inFeedToks.has(tk))) continue
     picks.push(p); promoted++
@@ -110,7 +119,10 @@ try {
 
 // clear the ephemeral stamps, then re-apply from the CURRENT corpus + weekly
 picks = picks.map((p) => ({ ...p, top: undefined, lead: undefined, later: undefined, pilePos: undefined }))
-const topRx = (corpus.topPicks as string[]).map(rxOf)
+// Crowns expire weekly (refresh.ts owns the law). Mirrored here or the fast path would re-crown
+// everything the Thursday run just retired — the two publishers must not disagree about the front.
+const crownsLive = crownsActive(corpus as { topPicksWeekend?: string })
+const topRx = crownsLive ? (corpus.topPicks as string[]).map(rxOf) : []
 const keepRx = (corpus.starredKeeps as { match: string; stars: number }[])
   .filter((k) => k.stars >= 4).map((k) => rxOf(k.match))
 for (const p of picks) {
@@ -154,7 +166,7 @@ picks = stampServeOrder(picks, await weekendModes())   // per-day: a Sunday pick
 
 feed.picks = picks
 feed.count = picks.length
-feed.topMatches = corpus.topPicks as string[]
+feed.topMatches = crownsLive ? (corpus.topPicks as string[]) : []
 feed.restampedAt = new Date().toISOString()
 await Bun.write(path, JSON.stringify(feed, null, 1))
 if (pendingFile) {

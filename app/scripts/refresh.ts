@@ -19,7 +19,7 @@
  */
 import { CITIES, type City } from '../src/data/cities'
 import type { Pick } from '../src/types'
-import { dedupe, balanceByCategory, isGoodImage, isPortraitImage, imageBroken, urlLooksNonPhoto, imageIsCardworthy, fetchEventImage, toPortrait, wikiImage, webImageCandidates, verifyImageForEvent, pexelsImage, whenBeforeWeekend, upcomingWeekend, weekendMode, weekendModes, stampServeOrder, linkOk, mapLimit, rxOf, titleKey, titleLooseMatch, tokKey, approvalCheck, type TasteCorpus, type WeeklySlate } from './lib/pipeline'
+import { dedupe, balanceByCategory, isGoodImage, isPortraitImage, imageBroken, urlLooksNonPhoto, imageIsCardworthy, fetchEventImage, toPortrait, wikiImage, webImageCandidates, verifyImageForEvent, pexelsImage, whenBeforeWeekend, upcomingWeekend, weekendMode, weekendModes, stampServeOrder, publishCheck, crownsActive, JUDGE_FLOOR, linkOk, mapLimit, rxOf, titleKey, titleLooseMatch, tokKey, approvalCheck, type TasteCorpus, type WeeklySlate } from './lib/pipeline'
 import { fixWhen, latestDateOf, whenActiveBy, whenIsPast, whenLooksBroken } from '../src/lib/when'
 import { effectiveFreshness, NEW_DAYS } from '../src/lib/freshness'
 import { songkickAdapter } from './adapters/songkick'
@@ -550,7 +550,12 @@ async function buildCity(city: City) {
     const { scores, dupes } = await editorialScores(liveNow, city.name)
     if (scores.size) {
       let n = 0
-      for (const p of picks) { const s = scores.get(p.id); if (s != null) { p.editorScore = s; n++ } }
+      // TWO SCORES, deliberately. `editorScore` is the RANKING score and later passes raise it —
+      // starredKeeps floors it at 8, a 👑 sets it to 10. `judgeScore` is the judge's own verdict and
+      // NOTHING overwrites it, because the publish bar reads it. Fusing them made the scale a liar:
+      // approved picks wore a manufactured 8-10 while unapproved ones were judged on merit and
+      // topped out at 7, so no threshold could compare them. Keep them apart.
+      for (const p of picks) { const s = scores.get(p.id); if (s != null) { p.editorScore = s; p.judgeScore = s; n++ } }
       console.log(`  editor:   scored ${n}/${liveNow.length} live picks (judge ${process.env.ANTHROPIC_JUDGE_MODEL || 'claude-sonnet-4-6'})`)
     }
     // SEMANTIC DEDUP — the judge names clusters that are the SAME real-world event under different
@@ -599,11 +604,18 @@ async function buildCity(city: City) {
       .map((k) => ({ ...k, rx: rxOf(k.match) }))
     let floored = 0, carried = 0
     for (const p of picks) if (keeps.some((k) => k.rx.test(p.title))) { p.editorScore = Math.max(p.editorScore ?? 0, 8); floored++ }
+    // CARRY-FORWARD IS NOW A TIME-CRITICAL RESCUE ONLY — it must be dated THIS weekend. It used to
+    // pull back any date-valid star, which quietly meant every undated evergreen one ("Now open"),
+    // every week, forever: 18 picks last run, and a third of why the deck read identical three weeks
+    // running. A starred event happening in two days that the crawl dropped is worth rescuing; a
+    // starred venue that no source lists any more is not news, and if it should be permanent it
+    // belongs in canon (+CANON on the board), which is the escape hatch that already exists.
     for (const k of keeps) {
       if (picks.some((p) => k.rx.test(p.title))) continue
       const prior = prePool.find((p) => k.rx.test(p.title))
         ?? priorPicks.find((p) => k.rx.test(p.title))
       if (!prior || whenIsPast(prior.when) || whenBeforeWeekend(prior.when)) continue
+      if (!datedThisWeekend(prior)) continue
       const pin = curatedImage(prior.title)
       if (pin) prior.image = toPortrait(pin)
       picks.push(prior); carried++
@@ -625,12 +637,20 @@ async function buildCity(city: City) {
     }
   }
 
+  // CROWNS EXPIRE WEEKLY — same law as the ▼▲ slate directly below, and for the same reason. A 👑 is
+  // a call about THIS weekend, not a permanent fact, but topPicks had no expiry while weekly.json did:
+  // the 2026-07-31 crowns were still leading the deck on 2026-08-29, so Kaap Amsterdam opened the app
+  // four Saturdays running. A compile that sets crowns must stamp `topPicksWeekend` with the Saturday
+  // they are for; anything else is inert and says so loudly in the log rather than failing dark.
+  const crownsLive = crownsActive(corpus as { topPicksWeekend?: string })
+
   // TOP PICKS — Ness's 👑 escalations (the tier above starredKeeps): stamped `top` + editorScore 10.
   // A topped pick is GUARANTEED into the feed — if the balance stages cut it (or it's a canon place the
   // selection skipped), it's pulled back from the pre-publish pool / bundled canon. The match list also
   // ships as feed.topMatches so the app re-stamps at ingestion (belt and braces). Tops lead the deck.
   {
-    const tops = (corpus.topPicks as string[]).map(rxOf)
+    const tops = crownsLive ? (corpus.topPicks as string[]).map(rxOf) : []
+    if (!crownsLive) console.log(`  top:      ${(corpus.topPicks as string[]).length} 👑 EXPIRED (stamped ${(corpus as { topPicksWeekend?: string }).topPicksWeekend ?? 'never'}, this weekend is not) — re-crown on the board to lead the deck`)
     let stamped = 0, pulled = 0
     for (const p of picks) if (tops.some((rx) => rx.test(p.title))) { p.top = true; p.editorScore = 10; stamped++ }
     for (const rx of tops) {
@@ -693,10 +713,26 @@ async function buildCity(city: City) {
   // (a) dated THIS weekend, (b) fits the weekend-forecast mode, (c) judge score, (d) buzz.
   let pendingOut: Pick[] = []
   {
-    const isApproved = approvalCheck(corpus as TasteCorpus, weekly as WeeklySlate, heroPicks(city.key).map((h) => h.title))
-    const unapproved = (p: Pick) => isLive(p) && !isApproved(p)
-    pendingOut = picks.filter(unapproved)
-    picks = picks.filter((p) => !unapproved(p))
+    // THE BAR, INVERTED (2026-08-29). This gate used to be an ALLOW-LIST: a live pick published only
+    // if it matched something Ness had already approved on the board. That made the app structurally
+    // incapable of running on its own — stop curating and nothing new can ever ship. The 2026-08-27
+    // run crawled 227 picks, 95 of them genuinely new, and published 25: a jazz festival, a craft
+    // festival and a Concertgebouw night all sat in pending while the deck served its fourth
+    // consecutive week of the same cards.
+    //
+    // Now it is a BLOCK-LIST with a junk floor. Vetoes and rests still kill (they ran above). What
+    // remains publishes if it clears the judge, OR if Ness explicitly called it — approval still
+    // admits, it just no longer has to. His taste ranks the survivors instead of choosing them.
+    //
+    // The floor reads `judgeScore`, never `editorScore`: the latter carries the ★ floor of 8 and the
+    // 👑 10, so gating on it would be circular — approved picks passing a bar their approval set.
+    const heroTitles = heroPicks(city.key).map((h) => h.title)
+    const isApproved = approvalCheck(corpus as TasteCorpus, weekly as WeeklySlate, heroTitles)
+    const clearsBar = publishCheck(corpus as TasteCorpus, weekly as WeeklySlate, heroTitles)
+    const held = (p: Pick) => isLive(p) && !clearsBar(p)
+    const merit = picks.filter((p) => isLive(p) && !isApproved(p) && clearsBar(p)).length
+    pendingOut = picks.filter(held)
+    picks = picks.filter((p) => !held(p))
     const mode = await weekendMode()
     const topical = (p: Pick) => (datedThisWeekend(p) ? 1 : 0)
     const wx = (p: Pick) => (mode && Array.isArray(p.weatherFit) && p.weatherFit.includes(mode) ? 1 : 0)
@@ -705,7 +741,7 @@ async function buildCity(city: City) {
       wx(b) - wx(a) ||
       (b.editorScore ?? 0) - (a.editorScore ?? 0) ||
       (b.buzz ?? 1) - (a.buzz ?? 1))
-    console.log(`  airlock:  ${picks.filter(isLive).length} live approved → feed · ${pendingOut.length} → pending${mode ? ` (weekend mode ${mode})` : ''}`)
+    console.log(`  airlock:  ${picks.filter(isLive).length} live → feed (${merit} on judge merit alone, floor ${JUDGE_FLOOR}) · ${pendingOut.length} held below the bar${mode ? ` (weekend mode ${mode})` : ''}`)
     // THE PROJECTED SERVE ORDER — stamped with the app's own pipeline (same mode read), so the
     // board's WEEKEND PILE shows the deck's actual front, not a re-derived approximation.
     // Stamped PER DAY (the airlock sort above keeps the blended mode — it's ranking candidates for
@@ -795,7 +831,7 @@ async function buildCity(city: City) {
   }
 
   // PUBLISH — the app reads this at runtime.
-  const feed = { city: city.key, label: city.label, generatedAt: new Date().toISOString(), live: LLM_ON, count: picks.length, topMatches: corpus.topPicks as string[], picks }
+  const feed = { city: city.key, label: city.label, generatedAt: new Date().toISOString(), live: LLM_ON, count: picks.length, topMatches: crownsLive ? (corpus.topPicks as string[]) : [], picks }
   await Bun.write(`${OUT_DIR}/picks.${city.key}.json`, JSON.stringify(feed, null, 2))
   console.log(`  → wrote picks.${city.key}.json (${picks.length} picks)`)
 

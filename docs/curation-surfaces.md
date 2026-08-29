@@ -25,11 +25,30 @@ radius is completely different in each case.
 `applyCalibration()` and a board verdict are the same *gesture* with different consequences. One
 re-ranks your phone. The other re-ranks everyone's.
 
-STATE.md, 2026-07-10: _"THE AIRLOCK — the live deck is 1:1 with his board approvals."_ That is the
+STATE.md, 2026-07-10: _"THE AIRLOCK — the live deck is 1:1 with his board approvals."_ That was the
 product. The landing page's promise is literally **"Not another events feed"** — the value is that a
 specific human with a specific viewpoint picked these. The moment power users can write into the
 airlock, WKNDR is an events feed with voting, and the promise is void. Consensus is the opposite of
 taste.
+
+> **REVISED 2026-08-29 — approval is no longer the GATE, it is the RANKER.** The 1:1 law held for
+> seven weeks and then showed what it costs. With no board session since 31 July, the 2026-08-27 run
+> crawled 227 picks — 95 genuinely new — and published **25**, because a live pick could only ship by
+> matching something Ness had already approved. A jazz festival, a craft festival and a Concertgebouw
+> night sat in `pending` while the deck served its fourth consecutive week of the same cards, and
+> 99% of the feed carried over week to week. **Auto-by-default was impossible by construction:** stop
+> curating and the app cannot serve anything new, ever.
+>
+> The gate is now a BLOCK-LIST with a junk floor (`publishCheck`, `scripts/lib/pipeline.ts`): vetoes
+> and rests still kill, what survives ships if it clears the judge (`JUDGE_FLOOR`, default 5) OR if
+> Ness explicitly called it. Approval still admits — it just no longer has to.
+>
+> **§5 is untouched and still binding.** Nothing here grants anyone but Ness write access to the
+> taste corpus. The change is that WKNDR's viewpoint is now expressed by a judge reading his corpus
+> — 85 starred keeps, 31 star anchors, 66 vetoes, 10 event rules — rather than by his hand on every
+> individual card. That is still a specific human with a specific viewpoint; it is not a vote. What
+> was traded away is the 1:1 guarantee, knowingly: a deck that is 100% his picks and three weeks
+> stale serves the promise worse than one his taste ranked but did not individually touch.
 
 So:
 

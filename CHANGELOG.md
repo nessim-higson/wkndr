@@ -14,6 +14,61 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.11.3 · pipeline] — 2026-08-29 — AUTO IS THE DEFAULT (the airlock, inverted)
+V.11.2 fixed what the picks were LABELLED. This fixes which picks there ARE. Ness, on opening the app
+after three untouched weeks: _"it should auto-populate every week with fresh, relevant picks, vetted
+against the sources — and the curation tool is how I adjust it on top."_ The app was built on the
+opposite law and could not do it. **The crawl was never the problem:** the 2026-08-27 run pulled 227
+picks, 95 genuinely new, and published 25. Week-over-week the feed carried 90% → 83% → **99%**, and
+Kaap Amsterdam led the deck four Saturdays running.
+- **THE AIRLOCK, INVERTED — `publishCheck` (`scripts/lib/pipeline.ts`).** `approvalCheck` was an
+  ALLOW-LIST: a live pick shipped only if it matched something Ness had already approved on the
+  board (`airlock: 25 live approved → feed · 78 → pending`). **Zero curation → zero new content, by
+  construction** — a jazz festival, a craft festival and a Concertgebouw night all sat in `pending`
+  while the deck served its fourth identical week. Now a BLOCK-LIST plus a junk floor: vetoes and
+  rests still kill upstream, and what survives ships if it clears the judge OR if Ness explicitly
+  called it. **Approval still admits — it just no longer has to.** His taste ranks the survivors
+  instead of choosing them.
+- **`JUDGE_FLOOR` = 5, measured not guessed**, and env-overridable (`WKNDR_JUDGE_FLOOR`) so it tunes
+  without a deploy. Against 2026-08-27's own airlock (78 held, judged 1–7) a floor of 5 publishes 31,
+  all dated, and cuts the bottom 47. What it admits at exactly 5 is real: Amsterdam Craft Festival, a
+  4K Tati restoration, a De School-lineage club night.
+- **`Pick.judgeScore` — the scale was a liar.** The bar had to read a score approvals don't write.
+  `editorScore` is the RANKING score and later passes raise it (★ floors to 8, 👑 sets 10), so
+  approved picks wore a manufactured 8–10 while unapproved ones were judged on merit and topped out
+  at 7 — **all 25 published live picks were ★-floored; not one earned its score.** `judgeScore` is
+  the judge's own verdict, written once and never overwritten, and it is the only thing the gate reads.
+  Gating on `editorScore` would have been circular: approvals clearing a bar their approval had set.
+- **CROWNS EXPIRE WEEKLY — `crownsActive` + `corpus.topPicksWeekend`.** A 👑 is a call about ONE
+  weekend, not a permanent fact. `weekly.json` always expired on its `weekend` stamp; `topPicks` had
+  no equivalent, so twelve crowns compiled on **31 July were still leading the deck on 29 August**.
+  Same law, same mechanism, now shared by refresh + restamp so the slow and fast publishers can't
+  disagree about the deck's front. **Fails closed:** a compile that forgets the stamp ships inert
+  crowns and says so loudly, rather than granting eternal ones. The current corpus is stamped
+  `2026-08-01`, which retires the July crowns deliberately.
+- **CARRY-FORWARD IS NOW A TIME-CRITICAL RESCUE.** A ★ pick an adapter missed was pulled back from
+  last week's feed if merely date-valid — which meant every undated evergreen one, every week, for
+  ever (18 last run). Now it must be dated THIS weekend. A starred event happening in two days that
+  the crawl dropped is worth rescuing; a starred venue no source lists any more is not news, and
+  +CANON is the escape hatch that already exists for making something permanent.
+- **`restamp.ts` publishes through the same bar**, or the 90-second fast path would demote on Monday
+  what the Thursday run shipped on merit. Carries a documented one-run `judgeScore ?? editorScore`
+  migration, sound only on the pending side (nothing floored an unapproved pick's score).
+- **Doctrine updated, not quietly broken.** `docs/curation-surfaces.md` stated the 1:1 airlock law as
+  product truth; it now carries a dated revision explaining what was traded and why. §5 (nobody but
+  Ness writes to the corpus) is untouched and still binding — this is a judge reading his taste, not
+  a vote.
+- **SIMULATED against the real pool before shipping:** replaying 2026-08-27's pending queue through
+  the new gate admits **31 of 78** (feed 76 → 107) and changes 4 of the top 10 — South East Jazz
+  Festival, ZeeZout, Indische Buurt Festival, the Hockey World Cup final.
+- **KNOWN, AND NOT FIXED — the ★ score floor still decides who LEADS.** 50 of 76 feed picks carry a
+  floor of 8 against a realistic judge ceiling of 7, so fresh picks now get INTO the deck but sit
+  under the whole incumbent block. The fix is a boost (`judgeScore + 2`) rather than a floor, but the
+  judge only scores LIVE picks — canon has no `judgeScore` and a naive boost would demote the entire
+  hand-curated library. Needs a canon baseline first. See `docs/pipeline-freshness.md` Part III.
+- `tests/airlock.test.ts` rewritten to the new invariant (it encoded the dead law and would have gone
+  red on the next cron, blocking the content run outright). **318 tests.**
+
 ## [V.11.2 · pipeline] — 2026-08-29 — NEW THIS WEEK NOW MEANS THIS WEEK
 Three weeks without a curation session and the `New this week` filter was still serving weeks-old
 content. The suspicion was that the bucket backfills when it runs dry. It doesn't — the truth was

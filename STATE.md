@@ -5,7 +5,7 @@ FIRST in a new chat. For strategy + backlog see `docs/backlog.md`; for the pipel
 `docs/pipeline-architecture.md` + `docs/source-map.md`; for **who may write to the deck vs to a personal
 profile** (board / Tune / airlock — read before touching either) see `docs/curation-surfaces.md`; for the
 **board roadmap** (auto-compile tracks) see `docs/board-roadmap.md`; for full **version history** see
-`CHANGELOG.md` (current to app **V.11.2** / board V.9.44) and the **git log / tags**. Onboarding:
+`CHANGELOG.md` (current to app **V.11.3** / board V.9.44) and the **git log / tags**. Onboarding:
 `CLAUDE.md`. App lives in `/app` (Vite + React + TS, run with `bun`); ships to **Cloudflare Pages**
 (`wkndr.xyz` + `app.wkndr.xyz`) **and** GitHub Pages (legacy, keeps old share links alive)._
 
@@ -27,6 +27,36 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
 > sessions update (today it's on load).
 
 ## Live right now
+- **V.11.3 — AUTO IS THE DEFAULT (2026-08-29).** The airlock, inverted. V.11.2 fixed what picks were
+  LABELLED; this fixes which picks there ARE. Ness after three untouched weeks: the app should
+  auto-populate fresh every week, vetted against the sources, with the board as the adjustment layer
+  on top. **It was built on the opposite law.** `approvalCheck` was an ALLOW-LIST — a live pick
+  shipped only if it matched something he'd already approved — so zero curation meant zero new
+  content, structurally. The crawl was never the problem: 2026-08-27 pulled **227 picks, 95 genuinely
+  new, and published 25**; the feed carried 90% → 83% → **99%** week over week and Kaap Amsterdam led
+  four Saturdays running.
+  - **`publishCheck` (scripts/lib/pipeline.ts) — block-list + junk floor.** Vetoes/rests still kill;
+    what survives ships if it clears the judge OR if Ness called it. Approval still admits, it just
+    no longer has to. **`JUDGE_FLOOR` = 5**, env-tunable (`WKNDR_JUDGE_FLOOR`), measured against the
+    real airlock: 31 of 78 held picks publish, bottom 47 cut.
+  - **`Pick.judgeScore`** — the bar needs a score approvals don't write. `editorScore` is the RANKING
+    score (★ floors it to 8, 👑 sets 10); `judgeScore` is the judge's own verdict, never overwritten.
+    All 25 published live picks were ★-floored — **not one earned its score** — so gating on
+    editorScore would have been circular.
+  - **Crowns expire weekly** (`crownsActive` + `corpus.topPicksWeekend`). Same law as weekly.json's
+    slate, which always expired correctly; topPicks never did, so 31 July's crowns still led on 29
+    Aug. Fails closed — a compile that forgets the stamp ships INERT crowns and logs it. **Every
+    compile that sets 👑 must stamp `topPicksWeekend` with the Saturday it is for.**
+  - **Carry-forward is now a time-critical rescue** (must be dated this weekend), not the weekly
+    resurrection of every undated evergreen ★.
+  - **restamp publishes through the same bar** so the fast path can't demote what Thursday shipped.
+  - **`docs/curation-surfaces.md` carries a dated doctrine revision** — the 1:1 airlock law is
+    retired, §5 (only Ness writes to the corpus) is untouched. Read it before "restoring" the airlock.
+  - **⚠️ REMAINING FREEZER — the ★ score floor decides who LEADS.** 50 of 76 picks carry a floor of 8
+    against a judge ceiling of ~7, so fresh picks now get INTO the deck but sit below the whole
+    incumbent block. Fix is a boost (`judgeScore + 2`) not a floor — blocked on canon having no
+    judgeScore at all (a naive boost demotes the whole hand-curated library). `docs/pipeline-freshness.md`
+    Part III. **318 tests.**
 - **V.11.2 — NEW THIS WEEK NOW MEANS THIS WEEK (2026-08-29).** The freshness fix. `New this week`
   was serving weeks-old content after a quiet stretch, and the cause was NOT backfill — **the `new`
   label had no expiry at all.** `freshness` is a bare enum written by whoever touched the record last
