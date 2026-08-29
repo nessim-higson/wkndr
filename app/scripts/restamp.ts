@@ -29,6 +29,7 @@ import { rxOf, titleLooseMatch, tokKey, upcomingWeekend, weekendModes, stampServ
 import { curatedImage } from './curated'
 import { heroPicks } from './heroes'
 import { whenIsPast, whenLooksBroken } from '../src/lib/when'
+import { effectiveFreshness } from '../src/lib/freshness'
 import type { Pick } from '../src/types'
 
 const CITY = process.argv.find((a) => a.startsWith('--city='))?.split('=')[1] ?? 'amsterdam'
@@ -142,6 +143,11 @@ if (picks.length < 20) { console.error(`✖ restamp abstained: only ${picks.leng
 // curated image pins apply on the fast-path too — an img-url verdict (board → curated.ts) lands
 // in ~90s instead of waiting for Thursday's image pass. Wrapped like every card image.
 for (const p of picks) { const c = curatedImage(p.title); if (c) p.image = toPortrait(c) }
+
+// FRESHNESS DECAY — a restamp republishes the feed, so re-derive the `new` claim against firstSeen
+// (src/lib/freshness.ts). Without it a Tuesday compile would re-publish Thursday's labels verbatim
+// and hold the bucket open for another cycle; the fast-path would quietly out-live the slow one.
+for (const p of picks) p.freshness = effectiveFreshness(p)
 
 // re-stamp the projected serve order — verdicts just moved cards, the board must see the real front
 picks = stampServeOrder(picks, await weekendModes())   // per-day: a Sunday pick stamped by Sunday

@@ -79,3 +79,134 @@ Keeps the keyless RSS + canon floor as backup. Contained change to `scripts/adap
 - ✅ Cron Monday → Thursday.
 - ◻ Web-search-grounded extraction — **recommended next; awaiting go (tiny recurring cost).**
 - ◻ JSON-LD / smarter slice / gig feed — follow-ons.
+
+---
+
+# Part II — why "New this week" was never about this week
+
+_2026-08-28. Audit + fix, from the freshness/auto-curation handoff brief. Part I above is about
+the pipeline not SEEING fresh events. This part is about the app mislabelling what it has._
+
+## The complaint
+
+Three weeks without a curation session, and the "This weekend" tab's **New this week** filter
+still served content weeks old. Suspected cause in the brief: the bucket backfills with
+next-newest content when it runs dry.
+
+## What was actually happening
+
+**Not backfill.** Two separate mechanisms, both worse than backfill because both are silent.
+
+### 1. The bucket could not empty
+
+`New this week` is `p.freshness === 'new'` — a bare enum written onto the record by whoever
+touched it last, with nothing anywhere that ever took it back:
+
+| Where `'new'` is stamped | Taken back by | Result |
+|---|---|---|
+| `src/data/picks.ts` (canon, hand-authored) | nothing | `east-beach`, `de-pimpelmees` — `'new'` since the day they were typed |
+| `scripts/adapters/scouted.ts` (every scouted find, unconditionally) | nothing | `web-scout-two-story` — undated ("Now open · daytime"), so immortal |
+| `scripts/adapters/llm.ts` / `websearch.ts` (model's own tag) | `refresh.ts` date rule | only when the pick has a parseable date |
+| `src/lib/overrides.ts` (every Drop Box paste) | nothing | immortal |
+
+`refresh.ts` DOES correct freshness from real dates — but the loop opens with
+`if (!isLive(p) || !p.when) continue`, so it skips canon entirely and skips anything undated.
+Those are exactly the three picks in the bucket. **On 2026-08-28 all three members of
+"New this week" were structurally incapable of leaving it.**
+
+Freshness was a property of when Ness last edited a file, not a property of the world — exactly
+the brief's diagnosis, and the cause is narrower than expected: not that curation and freshness
+are fused, but that the `new` label has **no expiry at all**.
+
+### 2. The "backfill" was the same three cards on a loop
+
+The adaptive canon RESERVE (`App.tsx` `shown`) only runs on the UNFILTERED browse branch — a
+freshness-filtered deck never backfills. But `refresh()` (the "Shuffle for more" link) cleared
+`swiped` whenever `deck.length <= max(3, shown.length * 0.25)` **without checking
+`filterActive`**. A three-pick bucket is "nearly done" on arrival, so every Shuffle re-dealt the
+same three. Reads exactly like a thin bucket being padded out.
+
+## The fix (shipped)
+
+**`src/lib/freshness.ts`** — one rule, one place:
+
+- `freshness: 'new'` stays a CLAIM ABOUT THE WORLD. Only a source, a scout or a human makes it.
+- **`Pick.firstSeen`** (new field) is OUR RECORD of when the claim started — an ISO date stamped
+  by `refresh.ts` the first run a title appears, then carried forward untouched forever.
+- `effectiveFreshness(p)` honours the claim only while the record supports it (`NEW_DAYS = 10`:
+  one weekly cycle plus slack for a late cron). Lapsed → falls back to what the DATES say,
+  `weekend` if it still carries one, `always` if it doesn't.
+- **Demote-only, never promote.** "First seen by our crawler" ≠ "new in Amsterdam"; a weekly
+  refresh meets dozens of titles for the first time, and promoting on `firstSeen` would flood the
+  bucket with the merely-newly-crawled.
+- **Fails closed.** No `firstSeen` = no claim. Absence of evidence is the whole reason the old
+  bucket never emptied.
+
+Applied in three places, deliberately not one: `refresh.ts` (the published record is honest for
+every consumer — /geo, the poster, the board), `restamp.ts` (the fast path must not out-live the
+slow one), and `App.tsx` at read time — **so the label decays on the calendar rather than on the
+cron.** A refresh that silently stops can no longer freeze the bucket.
+
+Also: `refresh()` now refuses to re-deal inside a filter. In a filter, "more" can only honestly
+mean "more that match"; when there is none, the deck runs out and the empty state says so.
+
+Guarded by `tests/freshness.test.ts` (13 cases, including the two immortal canon picks by name).
+
+## The honest empty state
+
+**Answering open question 3: it needs no design, because the bucket is never offered empty.**
+`WHEN_FILTERS` already ends in `.filter((o) => o.count > 0)` — the same law `/geo` uses for
+districts ("districts that hold nothing under the current filters are dropped, not shown as 0").
+An empty freshness bucket removes its own pill. Verified live: the When sheet now reads
+Any time 76 · This weekend 9 · Evergreen all 67 / classics 20 / bespoke 24, with **no New this
+week** — because there genuinely isn't any. A user who swipes an almost-empty bucket dry still
+lands on the existing `stack-empty` ("That's everything in this filter" + Clear filters).
+
+## The transition, and the trap inside it
+
+Every pick in the feed predates `firstSeen`, so the first run has to decide what to do with 78
+unstamped records. Three cases, and the middle one is the whole design:
+
+| Case | Stamp | Why |
+|---|---|---|
+| recorded in last week's feed | carry it forward untouched | the record, once made, never moves |
+| in last week's feed, unrecorded (legacy) | **none** | we never saw it arrive |
+| not in last week's feed | today | this is the run it arrived |
+
+The trap was the middle row. The obvious backstop — credit legacy picks with the prior feed's
+`generatedAt`, "the oldest date we can prove" — is wrong in the direction that matters: that date
+is a LOWER BOUND on a pick's age, not its arrival. Applying it to the 2026-09-03 run would have
+put `east-beach` and `de-pimpelmees` at 14 days old, inside a 10-day window, and handed both
+immortals one more week of New. A fix that reproduces the bug seven days later.
+
+Leaving them unstamped instead lets the fail-closed rule answer honestly: whatever a legacy pick
+claims, it is demonstrably not new TO US. Dry-run against the live feed confirms it — 78 legacy
+picks stay undated and silent, and a genuinely new arrival is the only thing that claims New.
+Stamping today was never an option either: that declares the entire feed new on day one.
+
+## What the brief asked for that already exists
+
+Worth recording, because three Workstream-1 tasks are already true:
+
+- **"Anchor this weekend to the upcoming weekend computed at request time."** Already the case.
+  `upcomingWeekend()` in the pipeline, `whenIsPast` / `whenLooksBroken` as runtime guards on
+  every load, `whenWeekendDays` for per-day weather. Nothing is anchored to its creation weekend.
+- **"Add an auto-expiry job, Sunday 23:59."** Already effectively done, and better than a cron:
+  `App.tsx cityPicks` drops past-dated picks at READ time, so expiry needs nobody to show up. The
+  genuine gap was undated picks, which is what `firstSeen` now closes for the `new` claim.
+- **"Evergreen venues return to the pool with a cooldown."** Shipped as `corpus.rested
+  {match, until, note}` (board V.9.26), with a real return date from the board — see
+  `docs/board-roadmap.md` Track B.
+- **Explicit card states** (`candidate → approved → scheduled → surfaced → retired`) mostly exist
+  under other names: `pending.<city>.json` (candidate) → `approvalCheck` (approved) →
+  `picks.<city>.json` (surfaced) → `rested` / `eventVeto` (retired), with the airlock demoting
+  both directions. That is a naming and documentation gap, not a build.
+
+## Status
+- ✅ `firstSeen` stamped + carried forward (`refresh.ts`), airlock included.
+- ✅ `new` expires against it at build AND read time (`lib/freshness.ts`).
+- ✅ No re-deal inside a filtered deck.
+- ✅ Empty freshness bucket is never offered (existing count>0 law).
+- ◻ `scouted.ts` still stamps `'new'` unconditionally, and two canon entries still hardcode it.
+  Harmless now — the rule neutralises them — but the claims are still untrue at the source.
+- ◻ Buzz/velocity scoring (Workstream 2) and ingest automation (Workstream 3) — unstarted.

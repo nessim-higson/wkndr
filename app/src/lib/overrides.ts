@@ -77,7 +77,7 @@ export async function postOverrides(city: string, ov: CurateOverrides): Promise<
  *  pasted it by hand — so it sits outside that check rather than sneaking past it.
  *  `when` is left empty: a social post rarely states its own date, and when.ts treats an empty
  *  string as evergreen (neither past nor broken), so the pick survives the runtime date guard. */
-function buildAdded(a: AddedPick, i: number): Pick {
+function buildAdded(a: AddedPick, i: number, firstSeen: string): Pick {
   return {
     id: `drop-${i}-${tokKey(a.title).replace(/\s+/g, '-').slice(0, 40)}`,
     title: a.title,
@@ -88,6 +88,11 @@ function buildAdded(a: AddedPick, i: number): Pick {
     // pick share one poster treatment and defeated the deck's category de-clustering.
     category: (CATEGORIES.has(a.category ?? '') ? a.category : 'out') as Pick['category'],
     freshness: 'new',
+    // A drop IS new — Ness pasted it seconds ago — but 'new' now decays against a first-seen date
+    // (lib/freshness.ts) and an unstamped one would expire on arrival. The round's generatedAt is
+    // exactly right: applyOverrides only runs when it MATCHES the live feed, so a drop can never
+    // carry a date from a feed it doesn't belong to.
+    firstSeen,
     outdoor: false,
     kid: false,
     price: '',
@@ -129,7 +134,7 @@ export function applyOverrides(picks: Pick[], ov: CurateOverrides | null, genera
     const k = tokKey(a.title)
     if (!a.title || !a.link || killed.has(k) || seen.has(k)) continue
     seen.add(k)
-    extra.push(buildAdded(a, extra.length))
+    extra.push(buildAdded(a, extra.length, generatedAt.slice(0, 10)))
   }
 
   return [...kept, ...extra].map((p) => {

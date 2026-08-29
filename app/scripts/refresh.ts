@@ -21,6 +21,7 @@ import { CITIES, type City } from '../src/data/cities'
 import type { Pick } from '../src/types'
 import { dedupe, balanceByCategory, isGoodImage, isPortraitImage, imageBroken, urlLooksNonPhoto, imageIsCardworthy, fetchEventImage, toPortrait, wikiImage, webImageCandidates, verifyImageForEvent, pexelsImage, whenBeforeWeekend, upcomingWeekend, weekendMode, weekendModes, stampServeOrder, linkOk, mapLimit, rxOf, titleKey, titleLooseMatch, tokKey, approvalCheck, type TasteCorpus, type WeeklySlate } from './lib/pipeline'
 import { fixWhen, latestDateOf, whenActiveBy, whenIsPast, whenLooksBroken } from '../src/lib/when'
+import { effectiveFreshness, NEW_DAYS } from '../src/lib/freshness'
 import { songkickAdapter } from './adapters/songkick'
 import { llmExtract } from './adapters/llm'
 import { websearchExtract } from './adapters/websearch'
@@ -64,10 +65,18 @@ async function buildCity(city: City) {
   // genuinely NEW this week. Returning users should see fresh content first, not the same deck.
   let seenLastWeek = new Set<string>()
   let priorPicks: Pick[] = []
+  // titleKey → the date we first met that title, carried forward from the prior feed. ONLY a date
+  // that feed actually RECORDED is carried: a legacy pick from before firstSeen existed is left
+  // unstamped rather than credited with the prior feed's build date. That date is a lower bound on
+  // its age, not its arrival — using it would hand every immortal 'new' one more week of newness,
+  // which is the bug, seven days later. Unstamped picks fail closed in effectiveFreshness, and
+  // that is the right answer: whatever they claim, they are demonstrably not new TO US.
+  const firstSeenOf = new Map<string, string>()
   try {
     const prior = await Bun.file(`${OUT_DIR}/picks.${city.key}.json`).json()
     priorPicks = prior.picks ?? []
     seenLastWeek = new Set<string>((prior.picks ?? []).map((p: Pick) => titleKey(p.title)))
+    for (const p of priorPicks) if (p.firstSeen) firstSeenOf.set(titleKey(p.title), p.firstSeen)
     console.log(`  novelty:  ${seenLastWeek.size} titles seen last week (new ones will lead)`)
   } catch { /* first run / no prior feed */ }
 
@@ -715,6 +724,37 @@ async function buildCity(city: City) {
     if (before !== picks.length) console.log(`  broken:   dropped ${before - picks.length} malformed date range(s) at the gate`)
   }
 
+  // FIRST SEEN — stamp the one fact that makes "New this week" mean this week. `freshness: 'new'`
+  // is a claim (a source's, a scout's, a canon author's) and nothing ever took it back, so the
+  // bucket aged into a lie: two canon picks have carried 'new' since the day they were typed. Now
+  // every pick gets the date we FIRST met its title, carried forward untouched once set, and
+  // effectiveFreshness() honours the claim only while that date is recent (src/lib/freshness.ts).
+  //
+  // The backstop matters as much as the stamp: a title already in last week's feed with no
+  // firstSeen inherits that feed's generatedAt, NOT today. Without it the first run after this
+  // change would stamp all ~78 picks with today's date and declare the entire feed new — the exact
+  // failure we're removing, dressed as a fix.
+  // Stamps the AIRLOCK too, not just the feed: pendingOut is a disjoint slice of the same crawl,
+  // and restamp.ts promotes out of it mid-week. An unstamped promotion would arrive with a `new`
+  // claim and no record behind it, which expires on contact — the airlock would quietly launder
+  // fresh finds into stale ones.
+  //
+  // Three cases, and the middle one is the whole transition:
+  //   recorded last week      → carry that date forward, untouched, forever
+  //   in last week's feed but unrecorded (legacy) → leave ABSENT; we never saw it arrive
+  //   not in last week's feed → today; this is the run it arrived
+  {
+    const today = new Date().toISOString().slice(0, 10)
+    for (const p of [...picks, ...pendingOut]) {
+      const k = titleKey(p.title)
+      p.firstSeen = firstSeenOf.get(k) ?? (seenLastWeek.has(k) ? undefined : today)
+      p.freshness = effectiveFreshness(p)
+    }
+    const arrived = picks.filter((p) => p.firstSeen === today).length
+    const legacy = picks.filter((p) => !p.firstSeen).length
+    console.log(`  seen:     ${arrived} first seen today · ${legacy} undated legacy · ${picks.filter((p) => p.freshness === 'new').length} claim New (≤${NEW_DAYS}d)`)
+  }
+
   // PUBLISH GATE — refuse to ship a BROKEN feed. A quiet/thin weekend is NOT broken (it just warns); only the
   // things that would actually embarrass us hard-fail. On failure we ABSTAIN — exit(1) WITHOUT writing — so the
   // last-good feed keeps serving and the failed Actions run emails Ness. A one-line HEALTH summary always lands
@@ -802,7 +842,7 @@ async function buildCity(city: City) {
         return true
       })
       .slice(0, 120)
-      .map((p) => ({ id: p.id, title: p.title, venue: p.venue, area: p.area, when: p.when, category: p.category, image: p.image, blurb: p.blurb, source: p.source, link: p.link, buzz: p.buzz, weatherFit: p.weatherFit, freshness: p.freshness, outdoor: p.outdoor, kid: p.kid, price: p.price, why: p.why, editorScore: p.editorScore }))
+      .map((p) => ({ id: p.id, title: p.title, venue: p.venue, area: p.area, when: p.when, category: p.category, image: p.image, blurb: p.blurb, source: p.source, link: p.link, buzz: p.buzz, weatherFit: p.weatherFit, freshness: p.freshness, firstSeen: p.firstSeen, outdoor: p.outdoor, kid: p.kid, price: p.price, why: p.why, editorScore: p.editorScore }))
     await Bun.write(`${OUT_DIR}/candidates.${city.key}.json`, JSON.stringify({ generatedAt: feed.generatedAt, count: cands.length, candidates: cands }, null, 2))
     console.log(`  → wrote candidates.${city.key}.json (${cands.length} bench events for the Curation Board)`)
   }

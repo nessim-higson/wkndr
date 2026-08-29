@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { AnimatePresence, MotionConfig, motion } from 'framer-motion'
-import { Shuffle, Clock, ChevronDown, LayoutGrid, Star, ArrowUpRight, LocateFixed, Info, RotateCw, RotateCcw, X, Heart, Navigation } from 'lucide-react'
+import { Shuffle, Clock, LayoutGrid, Star, ArrowUpRight, LocateFixed, Info, RotateCw, RotateCcw, X, Heart, Navigation } from 'lucide-react'
 
 // subtle haptic on commit/save (Android/Chrome; iOS Safari ignores navigator.vibrate)
 const haptic = (ms = 10) => { try { navigator.vibrate?.(ms) } catch { /* unsupported */ } }
@@ -78,6 +78,7 @@ const TINT_PRESETS = [
 ]
 import { CATEGORY_LABEL, type Category } from './types'
 import { fixWhen, whenDayGroup, whenSortKey, whenTime, whenIsPast, whenLooksBroken, upcomingWeekendEnd } from './lib/when'
+import { effectiveFreshness } from './lib/freshness'
 import { confirmLink, inShared } from './lib/share'
 import { fetchRound, relayOn, resolveSentRound, roundReady, sentRounds } from './lib/relay'
 import { sanePicks } from './lib/feed'
@@ -310,6 +311,11 @@ export default function App() {
         // NORMALIZE first — a malformed feed pick (missing weatherFit etc.) must degrade, never crash the
         // app: V.7.11 shipped five bench-promoted picks without weatherFit and white-screened the deck.
         .map((p) => ({ ...p, outdoor: p.outdoor ?? false, kid: p.kid ?? false, price: p.price ?? '', why: p.why ?? '', freshness: p.freshness ?? ('weekend' as const), weatherFit: Array.isArray(p.weatherFit) && p.weatherFit.length ? p.weatherFit : (['HOT', 'WARM', 'COOL', 'COLD_WET', 'VOLATILE'] as Mode[]) }))
+        // EXPIRE THE `new` CLAIM AT READ TIME (lib/freshness.ts). The pipeline stamps the same rule
+        // into the published feed, but doing it again here is the point, not a duplicate: the label
+        // then decays on the calendar rather than on the cron. A refresh that silently stops no
+        // longer freezes "New this week" — the bucket empties on its own and the pill disappears.
+        .map((p) => ({ ...p, freshness: effectiveFreshness(p) }))
         .map((p) => (p.top || topRx.some((rx) => rx.test(p.title)) ? { ...p, top: true } : p))
         .map((p) => (p.when ? { ...p, when: fixWhen(p.when) } : p))
         .filter((p) => !whenIsPast(p.when))
@@ -646,7 +652,14 @@ export default function App() {
   function refresh() {
     setSeed((s) => s + 1)
     setDealKey((k) => k + 1)
-    const nearlyDone = deck.length <= Math.max(3, Math.round(shown.length * 0.25))
+    // NEVER re-deal inside a FILTER. The bottomless reshuffle is a browse-mode promise (see the
+    // effect above, which already checks filterActive) — but this path didn't check, and a bucket
+    // small enough to be "nearly done" on arrival re-dealt on every Shuffle. "New this week" holds
+    // three picks, so `nearlyDone` was true from the first tap: the same three came back forever
+    // and read as the feed backfilling a thin bucket with more of the same. In a filter, "more"
+    // can only honestly mean "more that match" — when there is no more, the deck runs out and the
+    // empty state says so.
+    const nearlyDone = !filterActive && deck.length <= Math.max(3, Math.round(shown.length * 0.25))
     if (nearlyDone) { setSwiped(new Set()); flash('Starting fresh') }
     else flash('More for you')
   }
@@ -1178,14 +1191,17 @@ export default function App() {
             Order matches the sentence the app already speaks: when → what → where. */}
         {filter === 'all' && !intro && !moreLike && (
           <div className="filterstrip" role="group" aria-label="Filter the deck">
-            <button className={`filter-trigger${whens.length > 0 ? ' on' : ''}`} onClick={() => setWhenOpen(true)}>
-              <Clock className="ft-icon" size={13} strokeWidth={2.2} /> {whenSummary}<ChevronDown className="ft-caret" size={13} strokeWidth={2.2} />
+            {/* No caret: the strip is flush to the nav's width (App.css .filterstrip) and three
+                chips only fit inside it without one. `aria-haspopup` keeps the "this opens a
+                chooser" fact for screen readers, which is all the caret was carrying. */}
+            <button className={`filter-trigger${whens.length > 0 ? ' on' : ''}`} aria-haspopup="dialog" onClick={() => setWhenOpen(true)}>
+              <Clock className="ft-icon" size={13} strokeWidth={2.2} /> {whenSummary}
             </button>
-            <button className={`filter-trigger${cats.length > 0 ? ' on' : ''}`} onClick={() => setFilterOpen(true)}>
-              <LayoutGrid className="ft-icon" size={13} strokeWidth={2.2} /> {catSummary}<ChevronDown className="ft-caret" size={13} strokeWidth={2.2} />
+            <button className={`filter-trigger${cats.length > 0 ? ' on' : ''}`} aria-haspopup="dialog" onClick={() => setFilterOpen(true)}>
+              <LayoutGrid className="ft-icon" size={13} strokeWidth={2.2} /> {catSummary}
             </button>
-            <button className={`filter-trigger${wheres.length > 0 || nearMe ? ' on' : ''}`} onClick={() => setWhereOpen(true)}>
-              <Navigation className="ft-icon" size={13} strokeWidth={2.2} /> {whereSummary}<ChevronDown className="ft-caret" size={13} strokeWidth={2.2} />
+            <button className={`filter-trigger${wheres.length > 0 || nearMe ? ' on' : ''}`} aria-haspopup="dialog" onClick={() => setWhereOpen(true)}>
+              <Navigation className="ft-icon" size={13} strokeWidth={2.2} /> {whereSummary}
             </button>
           </div>
         )}

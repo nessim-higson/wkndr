@@ -14,6 +14,63 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.11.2 · pipeline] — 2026-08-29 — NEW THIS WEEK NOW MEANS THIS WEEK
+Three weeks without a curation session and the `New this week` filter was still serving weeks-old
+content. The suspicion was that the bucket backfills when it runs dry. It doesn't — the truth was
+worse, and quieter: **the `new` label had no expiry at all.** `freshness` was a bare enum written by
+whoever touched the record last, and nothing anywhere ever took it back. On 2026-08-28 all three
+picks in the bucket were structurally incapable of leaving it: `east-beach` and `de-pimpelmees` are
+CANON, tagged `'new'` since the day they were typed, and `web-scout-two-story` is a scouted find
+(`scouted.ts` stamps `'new'` unconditionally) with no date. `refresh.ts` does derive freshness from
+real dates — but that loop opens `if (!isLive(p) || !p.when) continue`, so it skips canon entirely
+and skips anything undated. Exactly those three. Freshness was a property of when Ness last edited a
+file, not of the world.
+- **`src/lib/freshness.ts` — the claim, and the record.** `freshness: 'new'` stays a CLAIM ABOUT THE
+  WORLD (only a source, a scout or a human makes it; we never invent one). New **`Pick.firstSeen`**
+  is OUR RECORD of when the claim started — stamped the first run a title appears, then carried
+  forward untouched forever. `effectiveFreshness()` honours the claim only while the record supports
+  it (`NEW_DAYS = 10` — one weekly cycle plus slack for a late cron), then falls back to what the
+  DATES say: `weekend` if the pick still carries one, `always` if it doesn't.
+- **Demote-only, never promote.** "First seen by our crawler" ≠ "new in Amsterdam", and a weekly
+  refresh meets dozens of titles for the first time — promoting on `firstSeen` would flood the bucket
+  with the merely-newly-crawled and drain the word. **Fails closed:** no record = no claim. Absence of
+  evidence is the whole reason the old bucket never emptied.
+- **Applied in three places, deliberately not one.** `refresh.ts` + `restamp.ts` (the published record
+  is honest for every consumer — /geo, the poster, the board — and the fast path can't out-live the
+  slow one) AND `App.tsx` at ingestion, **so the label decays on the CALENDAR rather than on the
+  cron.** A refresh that silently stops can no longer freeze the bucket. That is the whole point:
+  the weekend ships whether or not anyone shows up.
+- **The transition, and the trap inside it.** All 78 existing picks predate `firstSeen`. The obvious
+  backstop — credit them with the prior feed's `generatedAt`, "the oldest date we can prove" — is
+  wrong in the direction that matters: that date bounds a pick's AGE, not its arrival, and it would
+  have put both immortals inside the 10-day window and handed them one more week of New. A fix that
+  reproduces the bug seven days later. Legacy picks are left UNSTAMPED instead and fail closed:
+  whatever they claim, they are demonstrably not new to us. Stamping today was never an option — that
+  declares the entire feed new on day one. The airlock (`pendingOut`) is stamped too, or `restamp`'s
+  mid-week promotions would arrive with a claim and no record behind it, expiring on contact.
+- **The "backfill" was a recycle loop.** The adaptive canon RESERVE only runs on the UNFILTERED browse
+  branch, so a freshness-filtered deck never backfilled. But `refresh()` (the "Shuffle for more" link)
+  cleared `swiped` whenever `deck.length <= max(3, shown.length * 0.25)` **without checking
+  `filterActive`** — and a three-pick bucket is "nearly done" on arrival, so every Shuffle re-dealt
+  the same three forever. Reads exactly like a thin bucket being padded out. In a filter, "more" can
+  only honestly mean "more that match".
+- **The honest empty state needed no design.** `WHEN_FILTERS` already ends `.filter(o => o.count > 0)`
+  — the same law /geo uses for districts. An empty bucket removes its own pill rather than offering a
+  label that lies. Live: the When sheet now reads Any time 76 · This weekend 9 · Evergreen 67/20/24,
+  with no New this week, because there genuinely isn't any.
+- **THE FILTER STRIP IS FLUSH TO THE NAV.** Measured, the strip was never offset — it sat dead centre
+  (`centreOffset 0.00px`) and 27px wider, i.e. 13.5px of overhang per side: the near-miss zone the
+  `fit-content` rewrite existed to escape, with the active pill's orange glow reading as a leftward
+  shift on top. It now shares the nav's `--module-w` with `space-between`, so the outer chips sit ON
+  the capsule's edges and the slack is spent in the middle — flush at 0.00px on desktop and on a
+  375px phone, and it holds whatever the labels say. **The cost, paid deliberately:** three chips only
+  fit inside 340px without the carets. The axis ICON survives (it says WHICH control this is); the
+  caret only said "this opens", true of all three and already implied by a pill showing a value —
+  `aria-haspopup` keeps that fact for screen readers. Chip gaps went 4px → 16px.
+- Guarded by **`tests/freshness.test.ts`** (boundary inclusive, fails-closed on absent/unparseable
+  records, pass-through for every other bucket, and the two immortal canon picks by name).
+  **309 tests.** Full audit + what the brief asked for that already exists: `docs/pipeline-freshness.md` Part II.
+
 ## [board V.9.44 · worker · pipeline] — 2026-08-16 — THE WRITE GATE (+ honest buzz counts)
 The PFD audit's scariest finding, confirmed and closed: every `wkndr-curate` POST was open to the
 internet. The fast-lane write could reorder or kill the live deck; the `added` array could INJECT

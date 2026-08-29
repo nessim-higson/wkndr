@@ -1,11 +1,11 @@
 # WKNDR — STATE (catch-me-up snapshot)
 
-_Living "where are we right now" doc — a **snapshot, not a history**. **Updated 2026-08-06.** Read this
+_Living "where are we right now" doc — a **snapshot, not a history**. **Updated 2026-08-29.** Read this
 FIRST in a new chat. For strategy + backlog see `docs/backlog.md`; for the pipeline architecture see
 `docs/pipeline-architecture.md` + `docs/source-map.md`; for **who may write to the deck vs to a personal
 profile** (board / Tune / airlock — read before touching either) see `docs/curation-surfaces.md`; for the
 **board roadmap** (auto-compile tracks) see `docs/board-roadmap.md`; for full **version history** see
-`CHANGELOG.md` (current to app **V.11** / board V.9.44) and the **git log / tags**. Onboarding:
+`CHANGELOG.md` (current to app **V.11.2** / board V.9.44) and the **git log / tags**. Onboarding:
 `CLAUDE.md`. App lives in `/app` (Vite + React + TS, run with `bun`); ships to **Cloudflare Pages**
 (`wkndr.xyz` + `app.wkndr.xyz`) **and** GitHub Pages (legacy, keeps old share links alive)._
 
@@ -27,6 +27,45 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
 > sessions update (today it's on load).
 
 ## Live right now
+- **V.11.2 — NEW THIS WEEK NOW MEANS THIS WEEK (2026-08-29).** The freshness fix. `New this week`
+  was serving weeks-old content after a quiet stretch, and the cause was NOT backfill — **the `new`
+  label had no expiry at all.** `freshness` is a bare enum written by whoever touched the record last
+  and nothing ever took it back, so all three picks in the bucket were immortal: `east-beach` +
+  `de-pimpelmees` are CANON tagged `'new'` since the day they were typed, `web-scout-two-story` is a
+  scouted find (`scouted.ts` stamps `'new'` unconditionally) with no date — and `refresh.ts`'s
+  date-derived correction opens `if (!isLive(p) || !p.when) continue`, skipping canon and the undated
+  entirely. Exactly those three.
+  - **`src/lib/freshness.ts` splits the CLAIM from the RECORD.** `freshness: 'new'` stays a claim
+    about the world (only a source/scout/human makes one). New **`Pick.firstSeen`** is our record of
+    when it started — stamped the first run a title appears, carried forward untouched forever.
+    `effectiveFreshness()` honours the claim for `NEW_DAYS = 10`, then falls back to the DATES:
+    `weekend` if the pick still has one, `always` if not. **Demote-only** (crawled-first-time ≠
+    new-in-Amsterdam, and a weekly refresh meets dozens of first-time titles) and **fails closed**
+    (no record = no claim — absence of evidence is why the old bucket never emptied).
+  - **Applied at BUILD and at READ time, deliberately.** `refresh.ts` + `restamp.ts` keep the
+    published record honest for every consumer (/geo, the poster, the board); `App.tsx` re-derives at
+    ingestion so **the label decays on the CALENDAR, not on the cron** — a refresh that silently
+    stops can no longer freeze the bucket. The weekend ships whether or not anyone shows up.
+  - **The transition trap.** Legacy picks (all 78) predate `firstSeen`. Crediting them with the prior
+    feed's `generatedAt` looks like the honest backstop but bounds their AGE, not their arrival — it
+    would have put both immortals inside the window and handed them one more week of New. They are
+    left UNSTAMPED and fail closed. Stamping today would declare the whole feed new. The airlock
+    (`pendingOut`) is stamped too, or restamp's mid-week promotions expire on contact.
+  - **The "backfill" was a recycle loop:** `refresh()` cleared `swiped` when the deck was nearly done
+    WITHOUT checking `filterActive`, and a 3-pick bucket is nearly-done on arrival — every Shuffle
+    re-dealt the same three. In a filter, "more" now only means "more that match".
+  - **Empty state needed no design** — `WHEN_FILTERS` already drops a `count === 0` option, the same
+    law /geo uses for districts. The When sheet now reads Any time 76 · This weekend 9 · Evergreen
+    67/20/24, with no New this week, because there genuinely isn't any.
+  - **THE FILTER STRIP IS FLUSH TO THE NAV.** It was never offset — measured dead centre and 27px
+    wider (13.5px of overhang per side, the near-miss zone, with the active pill's glow reading as a
+    leftward shift). Now shares `--module-w` with `space-between`: outer chips ON the capsule's edges,
+    0.00px on desktop and on a 375px phone. **Cost: the carets.** Three chips only fit inside 340px
+    without them; the axis ICON survives (it says which control), `aria-haspopup` carries "this
+    opens" for screen readers. To reverse, widen `--module-w` to ~380px instead.
+  - Full audit — including **three Workstream-1 tasks that were already built** (request-time weekend
+    anchoring, read-time expiry, the `corpus.rested` cooldown) — in `docs/pipeline-freshness.md`
+    **Part II**. Guarded by `tests/freshness.test.ts`; **309 tests**.
 - **V.11 — WHERE COMES TO THE FACE (2026-08-03).** The whole-version roll. Two changes, one
   thesis: **the filters people never found are now ON the deck, and one of them is location.**
   - **THE FILTER STRIP.** `When × What × Where` moved OUT of the ≡ menu onto the face

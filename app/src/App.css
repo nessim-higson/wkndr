@@ -462,24 +462,29 @@
    deck is the product. The strip owns this slot now, so the undo pill lives at the BOTTOM
    (see .undo-anchor) — they used to collide here.
 
-   GEOMETRY — it sizes to its own content, centred. The history is the argument: full-bleed
+   GEOMETRY — the strip is EXACTLY the nav's width and its outer edges sit FLUSH with the
+   capsule's, so the two read as one stacked pair. The history is the argument: full-bleed
    (chips stranded in the desktop left margin) → tracking .stack-deck (~34px wider than the
-   nav, which read as a near-miss) → pinned to the nav's --module-w (matched, but 340px is too
-   tight for three chips once the default label became "This weekend", so the carets had to
-   go). `fit-content` ends the tug-of-war: the strip is exactly as wide as the chips need, so
-   it can't be a near-miss against anything, and there is no magic number to keep in sync.
-   Capped at 100% so a phone contains it and it scrolls instead of overflowing the page.
+   nav, which read as a near-miss) → `fit-content` (centred and ~27px wider — measured dead
+   centre, but 13.5px of overhang per side is the near-miss zone all over again: too little
+   to read as intent, too much to read as aligned). Flush ends it: same `--module-w`, one
+   number, nothing to keep in sync. `space-between` puts the outer chips ON the edges and
+   spends the slack in the middle, so the alignment holds whatever the labels say.
+   THE COST, paid deliberately: three chips only fit inside 340px without the carets
+   (icon + label + caret + padding measured 367px). The axis ICON is what survives — it says
+   WHICH control this is; the caret only said "this opens", which was true of all three and
+   is already implied by a pill showing a value. Capped at 100% so a phone contains it and it
+   scrolls instead of overflowing the page (on overflow `space-between` degrades to
+   flex-start, so the first chip stays reachable — no `safe center` needed).
    No horizontal padding of its own — .app already pads 20px, and more double-inset it. */
 .filterstrip {
   display: flex;
-  gap: 4px;
-  width: fit-content;
+  gap: 4px;                     /* a MINIMUM — space-between grows it to fill --module-w */
+  width: var(--module-w);
   max-width: 100%;
   margin: 13px auto 2px;        /* +5px of air under the nav module */
   padding-bottom: 2px;
-  /* `safe` keeps the chips centred when they fit and falls back to flex-start when they
-     overflow — plain `center` would clip the first chip out of reach on a narrow phone. */
-  justify-content: safe center;
+  justify-content: space-between;
   overflow-x: auto;
   scrollbar-width: none;
   -ms-overflow-style: none;
@@ -488,16 +493,10 @@
 /* Compact metrics — the chips are subordinate chrome under the nav. Roomy enough on desktop
    that the strip lands ~20px wider than the nav: clearly wider by intent, not a near-miss. */
 .filterstrip .filter-trigger { font-size: 12px; padding: 7px 10px; gap: 5px; }
-.filterstrip .ft-caret { margin-left: -1px; }
-/* PHONES have no room to spare: three chips with icons AND carets measure ~361px against the
-   ~350px a 390px handset actually offers, which clipped `Anywhere` — the control V.11 exists
-   to surface. Shave the padding here only (desktop keeps its air) so the common phones fit on
-   one line. Genuinely narrow handsets still scroll, with `safe center` keeping the first chip
-   reachable. */
-@media (max-width: 719px) {
-  .filterstrip .filter-trigger { padding: 7px 8px; }
-  .filterstrip { gap: 3px; }
-}
+/* No phone override any more. Caretless chips measure ~305px against the 340px the strip now
+   owns, so the common handsets (390px → 350px of content) fit on one line with room for a
+   "+1" summary to grow into. Genuinely narrow handsets scroll, and space-between degrades to
+   flex-start there, so the first chip stays reachable. */
 /* ACTIVE = ORANGE, everywhere. On/off used to be signalled by an ink-or-paper swap that
    changed meaning with the surface (dark chip on the light menu, light chip on the dark
    field) — so "on" looked like a different thing in each place. One accent says it once. */
@@ -554,7 +553,6 @@
 /* more-like mode (V.9.3) — the deck is bent around one pick; the ✕ is the way back */
 .ctx-bar.morelike { border-color: rgba(255, 120, 70, 0.5); box-shadow: 0 12px 32px rgba(255, 77, 31, 0.14), 0 0 0 1px rgba(255, 120, 70, 0.22); }
 .ctx-bar.morelike > span b { font-weight: 700; }
-.ft-caret { opacity: 0.6; font-size: 11px; }
 
 /* ===== main ===== */
 .main {

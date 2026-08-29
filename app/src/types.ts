@@ -47,6 +47,11 @@ export interface Pick {
   verify?: boolean     // true = detail (venue/time) needs confirming before relying
   status?: Status      // live availability/scarcity from the crawl
   buzz?: number        // how many independent sources flagged it (the "what's talked about" signal)
+  firstSeen?: string   // ISO date (YYYY-MM-DD) the pipeline FIRST saw this title in a feed, carried
+                       // forward untouched every run after that. `freshness` is a claim about the
+                       // WORLD; this is our record of when the claim started, and a `new` is
+                       // honoured only while the record still supports it (lib/freshness.ts).
+                       // Absent = we have no record of it arriving, so it cannot claim to be new.
   editorScore?: number // 0..10 editorial quality from the build-time judge (scripts/adapters/editor.ts);
                        // a term in rankPicks so "best" actually ranks. Live picks only; undefined → 0.
   popularity?: number  // real-draw signal from structured sources (e.g. Resident Advisor "attending"
