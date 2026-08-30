@@ -125,7 +125,10 @@ export function weatherPill(p: Pick, live?: Mode): { text: string; perfect: bool
 export interface CardSignal { text: string; tone: 'accent' | 'red' | 'green' | 'dim'; glow?: boolean }
 export function cardSignal(p: Pick, live?: Mode): CardSignal | null {
   if (p.top) return { text: 'Top pick', tone: 'accent', glow: true }   // Ness's escalation outranks everything
-  if (weatherPill(p, live).perfect) return { text: 'Perfect this weekend', tone: 'accent', glow: true }
+  // Name the WEATHER when the weather is the reason (Ness, rainy Sunday 2026-08-30: "the cards
+  // should have some indication of best for this rainy day"). A generic "Perfect this weekend"
+  // asks to be trusted; "Perfect for a rainy day" explains itself.
+  if (weatherPill(p, live).perfect) return { text: live === 'COLD_WET' ? 'Perfect for a rainy day' : 'Perfect this weekend', tone: 'accent', glow: true }
   if (p.status) {
     const tone = p.status === 'final-week' ? 'red' : p.status === 'free' ? 'green' : p.status === 'sold-out' ? 'dim' : 'accent'
     return { text: STATUS_LABEL[p.status], tone }

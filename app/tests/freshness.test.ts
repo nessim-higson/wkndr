@@ -50,15 +50,27 @@ describe('effectiveFreshness — fails CLOSED', () => {
   })
 })
 
-describe('effectiveFreshness — everything else passes through', () => {
-  // `weekend` / `ending` are already derived from real dates in the pipeline and `always` is a
-  // standing fact; only the `new` claim has no natural expiry, so only `new` is touched.
-  for (const f of ['weekend', 'always', 'ending'] as const) {
-    it(`leaves \`${f}\` alone, firstSeen or not`, () => {
-      expect(effectiveFreshness(pick({ freshness: f }), NOW)).toBe(f)
-      expect(effectiveFreshness(pick({ freshness: f, firstSeen: daysBefore(400) }), NOW)).toBe(f)
+describe('effectiveFreshness — dated claims pass through, undated ones re-file', () => {
+  // "This weekend" is a claim that requires an actual DATE (the evergreen leak, 2026-08-30):
+  // dated `weekend`/`ending` pass through untouched; undated ones re-file as `always` — a
+  // standing venue is not this weekend's news however the extractor tagged it.
+  for (const f of ['weekend', 'ending'] as const) {
+    it(`leaves a DATED \`${f}\` alone, firstSeen or not`, () => {
+      expect(effectiveFreshness(pick({ freshness: f, when: 'Sat 4 Jul · 20:00' }), NOW)).toBe(f)
+      expect(effectiveFreshness(pick({ freshness: f, when: 'Sat 4 Jul', firstSeen: daysBefore(400) }), NOW)).toBe(f)
+    })
+    it(`re-files an UNDATED \`${f}\` as always`, () => {
+      expect(effectiveFreshness(pick({ freshness: f, when: 'Daily · 11:00–23:00' }), NOW)).toBe('always')
+      expect(effectiveFreshness(pick({ freshness: f, when: '' }), NOW)).toBe('always')
     })
   }
+  it('leaves `always` alone', () => {
+    expect(effectiveFreshness(pick({ freshness: 'always' }), NOW)).toBe('always')
+  })
+  it('the leak, by name: Foodhallen "Daily" tagged weekend is NOT a weekend find', () => {
+    // the real card that led the This-weekend deck as if it were the week's news
+    expect(effectiveFreshness(pick({ id: 'llm-foodhallen', title: 'Foodhallen', when: 'Daily · 11:00–23:00', freshness: 'weekend' }), NOW)).toBe('always')
+  })
 })
 
 describe('the two immortal canon picks (the actual regression)', () => {

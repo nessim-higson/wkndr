@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { AnimatePresence, MotionConfig, motion } from 'framer-motion'
-import { Shuffle, Clock, LayoutGrid, Star, ArrowUpRight, LocateFixed, Info, RotateCw, RotateCcw, X, Heart, Navigation } from 'lucide-react'
+import { Shuffle, Clock, CloudRain, LayoutGrid, Star, ArrowUpRight, LocateFixed, Info, RotateCw, RotateCcw, X, Heart, Navigation } from 'lucide-react'
 
 // subtle haptic on commit/save (Android/Chrome; iOS Safari ignores navigator.vibrate)
 const haptic = (ms = 10) => { try { navigator.vibrate?.(ms) } catch { /* unsupported */ } }
@@ -923,17 +923,22 @@ export default function App() {
                   </span>
                   {/* a SPLIT weekend shows both days — one number would hide the whole point
                       ("26° this weekend" when Sunday is 17° and wet is a lie of omission) */}
+                  {/* RAIN SAYS SO (2026-08-30, Ness on a 100%-pop drizzle Sunday: "the header
+                      should have some indication"): a droplet beside any wet day. The temp's mode
+                      COLOUR always encoded this, but a colour is a code you have to already know —
+                      the icon says it in one glance. Mode-driven, not pop-driven, so the header
+                      and the ambient field can never tell different stories about the same sky. */}
                   {weekend?.split && weekend.days.length > 1 ? (
                     <span className="tb-temp tb-temp-split">
                       {weekend.days.map((d, i) => (
                         <span key={d.key}>
                           {i > 0 && <span className="tb-temp-sep" aria-hidden> · </span>}
-                          <span style={{ color: TEMP_TINT[d.mode] }}>{d.label} {d.hi}°</span>
+                          <span style={{ color: TEMP_TINT[d.mode] }}>{d.label} {d.hi}°{d.mode === 'COLD_WET' && <CloudRain className="tb-rain" size={11} strokeWidth={2.4} aria-label="rain" />}</span>
                         </span>
                       ))}
                     </span>
                   ) : (
-                    <span className="tb-temp" style={{ color: TEMP_TINT[mode] }}>{wx.temp}°</span>
+                    <span className="tb-temp" style={{ color: TEMP_TINT[mode] }}>{wx.temp}°{live && mode === 'COLD_WET' && <CloudRain className="tb-rain" size={12} strokeWidth={2.4} aria-label="rain" />}</span>
                   )}
                 </div>
               </div>

@@ -1,11 +1,11 @@
 # WKNDR — STATE (catch-me-up snapshot)
 
-_Living "where are we right now" doc — a **snapshot, not a history**. **Updated 2026-08-29.** Read this
+_Living "where are we right now" doc — a **snapshot, not a history**. **Updated 2026-08-30.** Read this
 FIRST in a new chat. For strategy + backlog see `docs/backlog.md`; for the pipeline architecture see
 `docs/pipeline-architecture.md` + `docs/source-map.md`; for **who may write to the deck vs to a personal
 profile** (board / Tune / airlock — read before touching either) see `docs/curation-surfaces.md`; for the
 **board roadmap** (auto-compile tracks) see `docs/board-roadmap.md`; for full **version history** see
-`CHANGELOG.md` (current to app **V.11.6** / board V.9.45) and the **git log / tags**. Onboarding:
+`CHANGELOG.md` (current to app **V.11.7** / board V.9.46) and the **git log / tags**. Onboarding:
 `CLAUDE.md`. App lives in `/app` (Vite + React + TS, run with `bun`); ships to **Cloudflare Pages**
 (`wkndr.xyz` + `app.wkndr.xyz`) **and** GitHub Pages (legacy, keeps old share links alive)._
 
@@ -27,6 +27,19 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
 > sessions update (today it's on load).
 
 ## Live right now
+- **V.11.7 — RAIN SAYS SO + THE EVERGREEN SHELF (2026-08-30).** Field feedback on a 20°/100%-pop
+  drizzle Sunday. (1) `classify`: **pop ≥ 80 → COLD_WET at any temperature** (was VOLATILE for
+  warm rain — the "sun then storms" field over an actually-raining sky); COLD_WET's copy is now
+  **"Rainy"** — the temp beside it carries the cold/mild nuance. Board's inline `cls` mirror
+  updated in lockstep — KEEP THEM IN SYNC. (2) Header shows a **droplet** beside any wet day's
+  temp; the card peak pill reads **"Perfect for a rainy day"** when the live mode is wet.
+  (3) **The evergreen leak:** `effectiveFreshness` now re-files UNDATED 'weekend'/'ending' as
+  'always' — "this weekend" is a claim that requires a date (Foodhallen "Daily" was serving as a
+  weekend find forever). One rule, three surfaces (refresh/restamp/app). (4) **Board V.9.46:**
+  Simple's tail splits into "Up next — this weekend" vs **"The evergreen shelf"** (live ratio:
+  20 vs 64 — the mix that read as stale). Same PILE underneath; Submit unchanged. Restamped on
+  ship (105→93, weekend 28→17). A pre-ship board session may hold a stale localStorage pile —
+  **↺ Reset to the system's order** fixes it in one tap. **341 tests.**
 - **V.11.6 — THE SCORED INBOX (2026-08-30, Workstream 2).** The daily poll's candidates now arrive
   scored and ordered: `scripts/lib/score.ts` (novelty-decay top-weighted + buzz + RA draw capped
   below novelty + dated/weekend, × corpus-affinity MULTIPLIER), weights in `taste/weights.json`,

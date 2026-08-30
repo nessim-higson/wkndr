@@ -279,6 +279,8 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 <div class="cathead" id="poolhead">Swap in a card<span class="d">Tap + to drop a pick into your 10 (it bumps #10 out). This weekend's picks, best first.</span></div>
 <div id="poolbar"><input id="poolfilter" type="search" spellcheck="false" autocomplete="off" placeholder="Type to filter — title, venue, day…" aria-label="Filter the Up next list"><span id="poolfc"></span></div>
 <div id="pool"></div>
+<div class="cathead" id="evershelfhead" hidden>The evergreen shelf</div>
+<div id="evershelf"></div>
 <div id="cancelbox"></div>
 </div>
 
@@ -693,7 +695,7 @@ Promise.all([
     const sunD=new Date(WKEND),satD=new Date(sunD.getFullYear(),sunD.getMonth(),sunD.getDate()-1);
     let i=om.daily.time.indexOf(iso(satD));               // the weekend's Saturday…
     if(i<0)i=om.daily.time.indexOf(iso(sunD));            // …or, on a Sunday board, what's left of it
-    const cls=(hi,wet,swing)=>hi<10?'COLD_WET':wet>65?(hi<16?'COLD_WET':'VOLATILE'):hi>=24?'HOT':swing>=9?'VOLATILE':hi>=16?'WARM':hi>=10?'COOL':'WARM';
+    const cls=(hi,wet,swing)=>hi<10?'COLD_WET':wet>=80?'COLD_WET':wet>65?(hi<16?'COLD_WET':'VOLATILE'):hi>=24?'HOT':swing>=9?'VOLATILE':hi>=16?'WARM':hi>=10?'COOL':'WARM';
     if(i>=0){const ks=[i,i+1].filter(k=>k<om.daily.time.length);
       const hi=Math.max(...ks.map(k=>om.daily.temperature_2m_max[k])),
             wet=Math.max(...ks.map(k=>om.daily.precipitation_probability_max[k])),
@@ -869,10 +871,12 @@ Promise.all([
     // didn't mean. ↑ and ✕ (the verbs you filter FOR) stay live.
     const pf=document.getElementById('poolfilter'),pfc=document.getElementById('poolfc');
     const applyFilter=()=>{if(!pf)return;const q=pf.value.trim().toLowerCase();
-      pool.classList.toggle('filtering',!!q);
-      let n=0;const total=pool.children.length;
-      [...pool.children].forEach(el=>{const hit=!q||(el.dataset.hay||'').includes(q);el.style.display=hit?'':'none';if(hit)n++});
-      if(pfc)pfc.textContent=q?n+' of '+total+' shown':'';
+      // the shelf filters with the pool — a query must not silently hide its evergreen matches
+      const shelf=document.getElementById('evershelf');
+      pool.classList.toggle('filtering',!!q);if(shelf)shelf.classList.toggle('filtering',!!q);
+      let n=0;const rows=[...pool.children,...(shelf?[...shelf.children]:[])];
+      rows.forEach(el=>{const hit=!q||(el.dataset.hay||'').includes(q);el.style.display=hit?'':'none';if(hit)n++});
+      if(pfc)pfc.textContent=q?n+' of '+rows.length+' shown':'';
     };
     if(pf)pf.addEventListener('input',applyFilter);
     const sub=p=>[p.venue,p.when].filter(Boolean).join(' · ');
@@ -922,14 +926,28 @@ Promise.all([
       el.querySelector(tail?'.opr':'.orm').addEventListener('click',()=>tail?promote(p.title):demote(p.title));
       el.querySelector('.okill').addEventListener('click',()=>killNow(p));   // gone immediately → the shelf
       return el;};
+    // EVERGREEN IS ITS OWN SHELF (Ness, 2026-08-30: "the evergreen is just that — solid any
+    // weekend, weather dependent — I don't need it mixed in with weekend finds"). The Top 10
+    // stays exactly what he ordered (his hand outranks any taxonomy), but the auto-ranked tail
+    // splits: UP NEXT carries the week's actual finds; the shelf below carries the standing
+    // venues. Same PILE array underneath — promote/demote/kill all still work from the shelf —
+    // so drag semantics and the Submit payload change not at all. Evergreen = published 'always',
+    // or a weekend/ending tag with no parseable date (the leak rule, mirrored from
+    // lib/freshness.ts until a restamp bakes it into the data).
+    const isEver=p=>p.freshness==='always'||((p.freshness==='weekend'||p.freshness==='ending')&&!datesOf(p.when||'').length);
+    const evershelfHead=document.getElementById('evershelfhead'),evershelf=document.getElementById('evershelf');
     renderOpen=function(){
       const dead=deadTitles();
       const order=PILE.map(pick).filter(p=>p&&!dead.has(p.title));   // a cancel — here or in Advanced — is gone from the deck
-      const top=order.slice(0,MAX),tail=order.slice(MAX);
+      const top=order.slice(0,MAX),rest=order.slice(MAX);
+      const tail=rest.filter(p=>!isEver(p)),ever=rest.filter(isEver);
       openHead.innerHTML='Your top '+top.length+' — the cards that open the deck<span class="d">Drag ⠿ to reorder · − to send one down · ✕ to cancel it on the spot (say why later, below) · Submit sends it live.</span>';
-      poolHead.innerHTML='Up next · '+tail.length+'<span class="d">The rest of the deck your viewers see, in the system’s order. It auto-ranks until you touch it — drag ⠿ to reorder, ↑ to pull one into your Top 10, ✕ to cancel on the spot. Be as hawkish as you like.</span>';
+      poolHead.innerHTML='Up next — this weekend · '+tail.length+'<span class="d">The week\'s actual finds, in the system\'s order. Drag ⠿ to reorder, ↑ to pull one into your Top 10, ✕ to cancel. Be as hawkish as you like.</span>';
+      evershelfHead.hidden=!ever.length;
+      evershelfHead.innerHTML='The evergreen shelf · '+ever.length+'<span class="d">Solid any weekend, weather permitting — your standing library, kept OUT of the weekend finds. Still in the deck (the endless browse rotates them); ↑ pulls one into your Top 10 when it\'s that kind of weekend.</span>';
       openList.innerHTML='';top.forEach((p,i)=>openList.appendChild(row(p,i,false)));openDrag(openList,'top');
       pool.innerHTML='';tail.forEach((p,i)=>pool.appendChild(row(p,i+MAX,true)));openDrag(pool,'tail');
+      evershelf.innerHTML='';ever.forEach((p,i)=>evershelf.appendChild(row(p,i+MAX+tail.length,true)));
       applyFilter();   // a re-render must not silently drop an active filter
     };
     renderOpen();renderCancelled();

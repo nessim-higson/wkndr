@@ -104,9 +104,11 @@ export const MODE_META: Record<Mode, ModeMeta> = {
     grade: { tint: '#5f9d92', a: 0.12 },   // crisp teal
   },
   COLD_WET: {
-    label: 'Cold & wet',
-    cond: 'COLD · WET · an indoor day',
-    phrase: 'Grey and wet through the afternoon. Today is an indoor day, well spent.',
+    // "Rainy", not "Cold & wet": since decisive rain routes here at ANY temperature, the label
+    // must not claim cold on a 20° drizzle day — the temp beside it already says how cold it is.
+    label: 'Rainy',
+    cond: 'WET · an indoor day',
+    phrase: 'Wet through the afternoon. Today is an indoor day, well spent.',
     field: { text: '#eef2f7', c1: '#6c7e9c', c2: '#313f5e', c3: '#121a2e', glow: '#9fb2cc' },
     grade: { tint: '#66799a', a: 0.16 },   // blue-grey — the grey-day cast, strongest of the five
   },
@@ -121,15 +123,20 @@ export const MODE_META: Record<Mode, ModeMeta> = {
 
 /**
  * Rule-based classifier (thresholds from engine/weather-engine.ts).
- * Temperature gates the cold bucket — "wet" alone never means "cold". A warm rainy
- * day is changeable (VOLATILE: "keep a rain layer in the bag"), not COLD_WET.
+ * DECISIVE RAIN LEADS (2026-08-30, Ness on a 20°/100% drizzle Sunday: "the background is not
+ * showing me it's raining"): pop ≥ 80 is not a can't-decide day — it IS raining, whatever the
+ * temperature, and the plan is indoors. The old rule ("wet alone never means cold") parked warm
+ * rain in VOLATILE, whose whole story is "sun then storms" — wrong on a day with no sun coming.
+ * The mode's COPY carries the nuance now (COLD_WET reads "Rainy", the temp beside it says how
+ * cold); a mild-wet borderline (65–80) stays VOLATILE, which is honest — it might clear up.
  * HEAT leads the swing rule: hot climates swing 9–10° between night and day EVERY day
  * (New Orleans in June: 33°/23°), and that's just a hot day, not a volatile one —
  * the old swing-first rule painted a 33° header on a stormy purple field.
  */
 export function classify(high: number, precipProb: number, swing: number): Mode {
   if (high < 10) return 'COLD_WET'                                  // genuinely cold
-  if (precipProb > 65) return high < 16 ? 'COLD_WET' : 'VOLATILE'   // wet: cold→cold&wet, warm→changeable
+  if (precipProb >= 80) return 'COLD_WET'                           // decisively wet — rain IS the weather
+  if (precipProb > 65) return high < 16 ? 'COLD_WET' : 'VOLATILE'   // might rain: cold→wet, mild→changeable
   if (high >= 24) return 'HOT'                                      // heat leads — see note above
   if (swing >= 9) return 'VOLATILE'                                 // a true can't-decide day
   if (high >= 16) return 'WARM'

@@ -14,6 +14,36 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.11.7 · app + board V.9.46] — 2026-08-30 — RAIN SAYS SO (+ the evergreen shelf)
+Ness, opening the app on a 20°/100%-pop drizzle Sunday: the board's Top 10 reads stale, evergreen
+is mixed into the weekend finds, and — the founding promise — "the background is not showing me
+it's raining." Three complaints, one investigation, four fixes.
+- **DECISIVE RAIN LEADS — `classify` (+ the board's inline mirror).** pop ≥ 80 → COLD_WET at ANY
+  temperature. The old rule ("wet alone never means cold") parked warm rain in VOLATILE, whose
+  whole story is "sun then storms" — wrong on a day with no sun coming, and it painted the
+  changeable purple field over an actually-raining sky. **COLD_WET's copy is now "Rainy"** (not
+  "Cold & wet" — the temp beside it says how cold); the blue-grey rain field was always right.
+  Verified live: today classifies COLD_WET, the field reads rain, and the deck leads indoor.
+- **THE HEADER SAYS RAIN.** A droplet beside any wet day's temp (split weekends: per day). The
+  temp's mode colour always encoded this — but a colour is a code you have to already know.
+- **THE CARD NAMES THE WEATHER.** The peak pill on a rainy day reads "Perfect for a rainy day"
+  instead of the generic "Perfect this weekend" — the weather-brain explaining itself.
+- **THE EVERGREEN LEAK — `effectiveFreshness` grows the missing rule:** "This weekend" is a claim
+  that requires an actual DATE. Undated standing venues (Foodhallen "Daily · 11:00–23:00", Two
+  Story "Now open") kept the extractor's 'weekend' guess forever — the pipeline's date-derived
+  correction skips what it can't date — so the eternal Amsterdam sat mixed into the week's finds
+  and the deck read stale even when the events were fresh. Undated weekend/ending → 'always'.
+  One rule, three surfaces (refresh, restamp, app read-time), zero extra wiring.
+- **THE EVERGREEN SHELF — board V.9.46.** The Simple view's auto-ranked tail splits: "Up next —
+  this weekend" (the week's actual finds) and "The evergreen shelf" (standing venues, ↑ still
+  pulls one into the Top 10 when it's that kind of weekend). Live ratio the mix was hiding:
+  **20 weekend finds vs 64 evergreen.** Same PILE underneath — drag, promote, kill and the Submit
+  payload unchanged; the search filter sweeps the shelf too.
+- **Restamped on ship:** 105 → 93 (Sunday drops Friday's cards), weekend 28 → 17 (the leak,
+  drained), serve order re-ranked under the honest rain mode. If a board session earlier today
+  froze a stale pile order in localStorage, **↺ Reset to the system's order** is the one-tap fix.
+  **341 tests.**
+
 ## [V.11.6 · pipeline + board] — 2026-08-30 — THE SCORED INBOX (Workstream 2: buzz ranking)
 Candidates now arrive **already scored and ordered** — the brief's target flow, step 2 — and the
 board grew the surface to rule on them.

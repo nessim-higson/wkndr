@@ -53,6 +53,16 @@ export function seenAgeDays(p: Pick, now: Date = new Date()): number | null {
  *  fact. A `new` with no record of arriving CANNOT be new: absence of evidence is the whole
  *  reason the old bucket never emptied, so it fails closed. */
 export function effectiveFreshness(p: Pick, now: Date = new Date()): Freshness {
+  // THE EVERGREEN LEAK (2026-08-30): "This weekend" is a claim that requires an actual DATE.
+  // Undated standing venues (Foodhallen "Daily · 11:00–23:00", Two Story "Now open") kept
+  // whatever freshness the extractor guessed — usually 'weekend' — because the pipeline's
+  // date-derived correction skips anything it can't date. So the default This-weekend deck
+  // served the eternal Amsterdam mixed in with the week's actual events, which reads as stale
+  // even when the events ARE fresh (Ness: "the evergreen is just that — solid any weekend,
+  // weather dependent — I don't need it mixed in with weekend finds"). Undated 'weekend' and
+  // 'ending' claims re-file as 'always'; they still serve, under the Evergreen chips and the
+  // endless browse rotation, which is where a standing venue belongs.
+  if ((p.freshness === 'weekend' || p.freshness === 'ending') && !latestDateOf(p.when, now)) return 'always'
   if (p.freshness !== 'new') return p.freshness
   const age = seenAgeDays(p, now)
   if (age !== null && age <= NEW_DAYS) return p.freshness

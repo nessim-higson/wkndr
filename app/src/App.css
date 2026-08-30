@@ -73,6 +73,8 @@
    so they step down a little and each keeps its OWN day's colour */
 .tb-temp-split { font-size: 13.5px; white-space: nowrap; }
 .tb-temp-split .tb-temp-sep { opacity: 0.4; font-weight: 400; }
+/* the rain droplet rides its day's temp, in that day's mode colour (inherited) */
+.tb-rain { display: inline-block; vertical-align: -1px; margin-left: 3px; }
 
 .tb-icon {
   position: relative;
