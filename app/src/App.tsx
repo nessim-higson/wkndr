@@ -164,14 +164,40 @@ const FIELD_OPTS: { key: Look; label: string }[] = [
 // the seeded looks expose a "Randomize" button (A Gradient is a continuous shader — no seed)
 const SEEDED_FIELDS: Look[] = ['auras', 'riso', 'forms']
 
+// LAST-KNOWN WEATHER (2026-08-30, Ness: "when I reload the app, I see a flash of the old
+// background"): the boot default was DEMO.HOT, so every reload painted the amber heat field for
+// the second or two the forecast took — on a rainy day, a flash of sunshine that called the whole
+// weather-brain into question. goLive() now caches its result; the next boot opens ON the last
+// real weather and the fetch only ever needs to correct it, which it almost never visibly does.
+// 12h cap: weather a day old is a guess again — past it, fall back to a SEASON guess rather than
+// HOT (the one default that is wrong most dramatically most often in Amsterdam).
+const WX_CACHE_KEY = 'wkndr.lastwx.v1'
+interface CachedWx { mode: Mode; wx: Wx; ts: number }
+function seasonMode(): Mode {
+  const m = new Date().getMonth()   // Amsterdam seasons, coarse: Jun–Aug warm, the rest cool
+  return m >= 5 && m <= 7 ? 'WARM' : 'COOL'
+}
+function lastKnownWx(): { mode: Mode; wx: Wx } {
+  try {
+    const c = JSON.parse(localStorage.getItem(WX_CACHE_KEY) || '') as CachedWx
+    if (c && c.mode in DEMO && c.wx && Date.now() - c.ts < 12 * 36e5) return { mode: c.mode, wx: c.wx }
+  } catch { /* first visit / cleared storage */ }
+  const m = seasonMode()
+  return { mode: m, wx: DEMO[m] }
+}
+function rememberWx(mode: Mode, wx: Wx) {
+  try { localStorage.setItem(WX_CACHE_KEY, JSON.stringify({ mode, wx, ts: Date.now() } satisfies CachedWx)) } catch { /* private mode */ }
+}
+
 export default function App() {
-  const [mode, setMode] = useState<Mode>('HOT')
+  const [boot] = useState(lastKnownWx)   // read ONCE — a re-render must not re-read storage
+  const [mode, setMode] = useState<Mode>(boot.mode)
   // one view in the MVP — the Stack. (Fan/List live behind ?dev=1.) A shared-link recipient
   // goes through the match overlay, then lands on the full Stack (never boxed into the set).
   // EXCEPTION: the boomerang RETURN leg (m=1) opens straight into the LIST — the confirmed plans
   // you both picked read as an agenda you'd act on, not a deck to swipe through again.
   const [view, setView] = useState<View>(SHARED_CONFIRM ? 'list' : 'stack')
-  const [wx, setWx] = useState<Wx>(DEMO.HOT)
+  const [wx, setWx] = useState<Wx>(boot.wx)
   // the weekend split apart into its two days — null until a real forecast lands, and null is
   // the honest state: the demo/what-if pills carry one representative figure, not two real days,
   // so they keep the single-mode ranking rather than inventing a Saturday and a Sunday.
@@ -845,8 +871,10 @@ export default function App() {
       })
       setMode(m)
       setWeekend(weekendFrom(days, m))
-      setWx({ temp: hi, hi, lo, city: placeName, label })
+      const nextWx = { temp: hi, hi, lo, city: placeName, label }
+      setWx(nextWx)
       setLive(true)
+      rememberWx(m, nextWx)   // the next reload boots on THIS sky — no more amber flash in the rain
     } catch { /* keep current */ }
     finally { setLocating(false) }
   }

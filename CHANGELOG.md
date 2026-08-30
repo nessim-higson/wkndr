@@ -14,6 +14,16 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.11.8 · app] — 2026-08-30 — NO FLASH OF THE WRONG SKY
+Reloading painted DEMO.HOT's amber field for the second or two the forecast took — on a rainy
+day, a flash of sunshine that called the whole weather-brain into question (Ness caught it within
+minutes of V.11.7 going live). `goLive()` now caches its result (`wkndr.lastwx.v1`); the next
+boot opens ON the last real weather via the state initializer — synchronous, before first paint —
+and the fetch only ever corrects it. 12h cap: stale weather is a guess again, and past it the
+fallback is a SEASON guess (Jun–Aug warm, else cool), never HOT — the one default that is wrong
+most dramatically most often in Amsterdam. What-if preview pills deliberately don't write the
+cache: only a real forecast may claim to be the sky.
+
 ## [V.11.7 · app + board V.9.46] — 2026-08-30 — RAIN SAYS SO (+ the evergreen shelf)
 Ness, opening the app on a 20°/100%-pop drizzle Sunday: the board's Top 10 reads stale, evergreen
 is mixed into the weekend finds, and — the founding promise — "the background is not showing me
