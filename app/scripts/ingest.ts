@@ -19,7 +19,9 @@
  */
 import { CITIES, type City } from '../src/data/cities'
 import type { Pick } from '../src/types'
-import { dedupe, titleKey, tokKey } from './lib/pipeline'
+import { dedupe, rxOf, titleKey, tokKey } from './lib/pipeline'
+import { loadWeights, starredVocabulary, scoreInbox } from './lib/score'
+import corpus from './taste/corpus.json'
 import { fixWhen, whenIsPast, whenLooksBroken } from '../src/lib/when'
 import { mergeSightings, pruneRegistry, buildInbox, appendRun, type SeenRegistry, type HealthFile } from './lib/ingest'
 import { rssExtract } from './adapters/rss'
@@ -50,6 +52,17 @@ async function ingestCity(city: City) {
     .map((p) => (p.when ? { ...p, when: fixWhen(p.when) } : p))
     .filter((p) => !whenIsPast(p.when) && !whenLooksBroken(p.when))
   pool = dedupe(pool)   // cross-source fold — corroboration counts as buzz here exactly as in refresh
+  // NESS'S KILLS HOLD HERE TOO — without this, a vetoed event re-entered the inbox every morning
+  // and a rested one haunted it through its rest. Same matchers, same semantics as refresh.ts.
+  {
+    const today0 = new Date().toISOString().slice(0, 10)
+    const veto = (corpus.eventVeto as string[]).map(rxOf)
+    const rested = ((corpus as { rested?: { match: string; until: string }[] }).rested ?? [])
+      .filter((r) => r.until > today0).map((r) => rxOf(r.match))
+    const before = pool.length
+    pool = pool.filter((p) => !veto.some((rx) => rx.test(p.title)) && !rested.some((rx) => rx.test(p.title)))
+    if (before !== pool.length) console.log(`  taste:    ${before - pool.length} vetoed/rested drops held out of the inbox`)
+  }
   for (const [name, picks] of Object.entries(bySource)) console.log(`  ${name.padEnd(18)} ${picks.length}`)
 
   // THE SEEN REGISTRY — merge today's sightings (min-date rule), prune the tail.
@@ -68,7 +81,14 @@ async function ingestCity(city: City) {
   )
   // tokKey too: the drop box and the board match on tokKey — a retitled twin must not re-inbox
   const knownTok = new Set([...(feed.picks ?? []), ...(pending.pending ?? [])].map((p) => tokKey(p.title)))
-  const inbox = buildInbox(pool, reg, known, titleKey, today).filter((p) => !knownTok.has(tokKey(p.title)))
+  // SCORE + ORDER (Workstream 2) — candidates arrive already scored and ordered. The score is
+  // stamped WITH its receipt (scoreWhy) so the board's card can show why a number is what it is.
+  const weights = loadWeights()
+  const vocab = starredVocabulary(corpus as Parameters<typeof starredVocabulary>[0])
+  const inbox = buildInbox(pool, reg, known, titleKey, today)
+    .filter((p) => !knownTok.has(tokKey(p.title)))
+    .map((p) => { const s = scoreInbox(p, vocab, weights, today); return { ...p, inboxScore: s.score, scoreWhy: s.why } })
+    .sort((a, b) => (b.inboxScore ?? 0) - (a.inboxScore ?? 0))
   await Bun.write(`${OUT_DIR}/inbox.${city.key}.json`, JSON.stringify(
     { generatedAt: new Date().toISOString(), count: inbox.length, inbox }, null, 1))
 

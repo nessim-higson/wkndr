@@ -5,7 +5,7 @@ FIRST in a new chat. For strategy + backlog see `docs/backlog.md`; for the pipel
 `docs/pipeline-architecture.md` + `docs/source-map.md`; for **who may write to the deck vs to a personal
 profile** (board / Tune / airlock — read before touching either) see `docs/curation-surfaces.md`; for the
 **board roadmap** (auto-compile tracks) see `docs/board-roadmap.md`; for full **version history** see
-`CHANGELOG.md` (current to app **V.11.5** / board V.9.44) and the **git log / tags**. Onboarding:
+`CHANGELOG.md` (current to app **V.11.6** / board V.9.45) and the **git log / tags**. Onboarding:
 `CLAUDE.md`. App lives in `/app` (Vite + React + TS, run with `bun`); ships to **Cloudflare Pages**
 (`wkndr.xyz` + `app.wkndr.xyz`) **and** GitHub Pages (legacy, keeps old share links alive)._
 
@@ -27,6 +27,18 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
 > sessions update (today it's on load).
 
 ## Live right now
+- **V.11.6 — THE SCORED INBOX (2026-08-30, Workstream 2).** The daily poll's candidates now arrive
+  scored and ordered: `scripts/lib/score.ts` (novelty-decay top-weighted + buzz + RA draw capped
+  below novelty + dated/weekend, × corpus-affinity MULTIPLIER), weights in `taste/weights.json`,
+  env-overridable via `WKNDR_WEIGHTS` (JSON blob, no commit needed). Every pick carries
+  `inboxScore` + `scoreWhy` (the receipt). Board (V.9.45): **"Fresh from the sources"** section in
+  NEW FINDS — inbox cards through the standard `addCard`, so ★/✕/👑/+CANON ride Submit unchanged
+  (★ teaches the corpus → Thursday admits+boosts; ✕ vetoes for good). Fixed on the way: ingest now
+  applies `eventVeto`/`rested` (10 of 31 first-inbox items were already-killed events re-entering
+  daily) + RSS numeric-entity decode. **Engagement velocity deliberately NOT in the score** — no
+  data source until Meta business_discovery; layer it in with the watchlist poller. The brief's
+  force-rank + zero-input guarantees already existed (WEEKEND PILE `pilePos`; V.11.3 publish bar) —
+  mapped in `docs/ingest.md`. **338 tests.**
 - **V.11.5 — THE DAILY POLL (2026-08-29, Workstream 3).** Ingest now runs DAILY (`ingest.yml`
   05:30 UTC → `scripts/ingest.ts`): keyless only (new RSS floor: Het Parool PS + Subbacultcha +
   Amsterdam Foodie, all live-tested; + I amsterdam + RA), zero API spend, never touches the served

@@ -1,0 +1,11 @@
+{
+  "_": "INBOX SCORE WEIGHTS (Workstream 2) — the composite score that orders the candidate inbox, scripts/lib/score.ts. Config, not constants (the brief's own requirement): tune here, or override the whole block without any commit via the WKNDR_WEIGHTS env var / repo variable (a JSON object, deep-merged over this file — e.g. {\"novelty\":4}). The brief's law is encoded in the defaults: novelty and corroboration OUTWEIGH raw volume, otherwise the same five famous venues win every week.",
+  "novelty": 3,
+  "noveltyDays": 10,
+  "corroboration": 1.5,
+  "corroborationCap": 4,
+  "realDraw": 2.5,
+  "dated": 2,
+  "weekendBonus": 2,
+  "affinity": 0.3
+}

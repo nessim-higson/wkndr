@@ -67,6 +67,36 @@ The genuinely async workload arrives with the business_discovery poller — whic
 worker's cron, not in the UI, so the queue question dissolves there. Revisit only if the drop
 path ever grows a multi-URL batch paste.
 
+## The inbox score (Workstream 2, 2026-08-30)
+
+Candidates arrive **already scored and ordered** (`scripts/lib/score.ts`, weights in
+`scripts/taste/weights.json`, overridable without a commit via `WKNDR_WEIGHTS`). Terms, and the
+honest mapping from the brief's proposed inputs:
+
+| Brief's input | Shipped as | Note |
+|---|---|---|
+| novelty (first-time-seen) | `firstSeen` decay, top-weighted | fails closed: no record, no novelty |
+| mention recency | `buzz` (cross-source corroboration) + arrival recency | dedupe's credit-union |
+| engagement velocity | **not yet** | needs the IG business_discovery poller — layers in with the watchlist |
+| swipe affinity | corpus token-overlap as a **multiplier** | amplifies signal, never creates it |
+
+Plus a `dated` term: a parseable real date separates events from article-shaped RSS items, with a
+bonus for active-by-Sunday. RA's attending count ships as `realDraw`, capped **below** novelty +
+one corroborating source — the brief's law, encoded: novelty and corroboration above raw volume,
+or the same five famous venues win every week.
+
+**Open question 2 answered:** launch = the composite minus velocity, because velocity is the one
+input with no data source yet. Every shipped term is backed by a signal that exists today.
+
+Each pick carries `inboxScore` + `scoreWhy` (the receipt: "seen today · 2 sources · on this
+weekend · taste: museum") so the number can be argued with on the board card itself. The board's
+**Fresh from the sources** section (NEW FINDS tab) renders them score-descending with full verdict
+controls — a ★ teaches the corpus so Thursday's crawl admits and boosts the real event; a ✕
+vetoes it out of the inbox and the pipeline for good. The rest of the brief's Workstream 2 already
+existed under other names: the force-rank drag is the WEEKEND PILE (`pilePos`, manual, distinct
+from computed `servePos`), and "zero manual input still ships a full ordered set" is V.11.3's
+publish bar.
+
 ## Adding a source later
 
 1. Live-test the feed first (`curl` it — this file's table is the precedent; don't wire hopes).

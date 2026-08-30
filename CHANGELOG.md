@@ -14,6 +14,34 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.11.6 · pipeline + board] — 2026-08-30 — THE SCORED INBOX (Workstream 2: buzz ranking)
+Candidates now arrive **already scored and ordered** — the brief's target flow, step 2 — and the
+board grew the surface to rule on them.
+- **`scripts/lib/score.ts` + `taste/weights.json`** — the composite: novelty (firstSeen decay,
+  top-weighted, fails closed) + corroboration (buzz) + real draw (RA attending, log-capped BELOW
+  novelty + one source — the brief's law: volume never beats novelty) + dated/weekend topicality,
+  all × a taste-affinity MULTIPLIER (corpus token overlap — amplifies signal, never creates it: a
+  zero-signal pick stays at zero whatever it's named). Weights are CONFIG (the brief's requirement):
+  `taste/weights.json`, overridable with no commit via `WKNDR_WEIGHTS`. **Open question 2 answered:
+  launch = composite minus engagement velocity** — the one input with no data source until the IG
+  business_discovery poller lands; every shipped term is backed by a signal that exists today.
+- **Every score carries its receipt.** `scoreWhy` ("seen today · on this weekend · taste: museum")
+  rides the pick and renders on the card — a number you can argue with, not an oracle.
+- **THE BOARD: "Fresh from the sources"** (NEW FINDS tab, after the airlock) — the inbox rendered
+  score-descending through the SAME `addCard` machinery as everything else, so ★/👑/✕/+CANON ride
+  Submit with zero new plumbing. A ★ teaches the corpus (Thursday's crawl then admits + boosts the
+  real event); a ✕ vetoes it out of inbox and pipeline for good. `FRESH · 7.7` badge carries the score.
+- **Ness's kills now hold in the inbox** — ingest never read `eventVeto`/`rested`, so a killed
+  event re-entered the inbox every morning: **10 of the first inbox's 31 items were things he had
+  already killed.** Same matchers as refresh.ts now run in the daily poll.
+- **RSS entity decode fixed** — numeric entities (`&#038;`) survived into card titles verbatim and
+  `&amp;` became a hole in the word; proper dec/hex/named decoding in the adapter.
+- The rest of Workstream 2 already existed under other names, now written down (`docs/ingest.md`):
+  force-rank = the draggable WEEKEND PILE (`pilePos`, manual, distinct from computed `servePos`);
+  "zero manual input still ships a full ordered set" = V.11.3's publish bar. Guarded by
+  **`tests/score.test.ts`** (the novelty-beats-volume law, affinity-as-multiplier, config
+  round-trip, fails-closed). **338 tests.**
+
 ## [V.11.5 · pipeline + board] — 2026-08-29 — THE DAILY POLL (Workstream 3: ingest)
 The brief's ingest workstream, built on what the live-fetch test proved rather than what the
 source list hoped. **The roster's rss lane was EMPTY for Amsterdam** — "rss: 0 feeds → 0 picks"

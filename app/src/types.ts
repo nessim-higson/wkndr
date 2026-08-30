@@ -60,6 +60,10 @@ export interface Pick {
                        // a term in rankPicks so "best" actually ranks. Live picks only; undefined → 0.
   popularity?: number  // real-draw signal from structured sources (e.g. Resident Advisor "attending"
                        // count); a log-scaled term in rankPicks. Structured-source picks only; undefined → 0.
+  inboxScore?: number  // Workstream 2: the composite candidate score (scripts/lib/score.ts) —
+                       // orders the board's inbox. Inbox picks only; never read by the app's deck.
+  scoreWhy?: string    // the score's own receipt ("seen today · 2 sources · on this weekend"),
+                       // shown on the board card so the number can be argued with.
   tier?: 'classic' | 'bespoke'   // evergreen only: well-known staple vs cooler/curated find (browse filter)
   top?: boolean        // Ness's TOP escalation (Curation Board 👑 → corpus.topPicks): leads the served
                        // deck ahead of everything and carries the "Top pick" pill. Stamped by the

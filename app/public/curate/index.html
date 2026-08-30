@@ -557,16 +557,17 @@ Promise.all([
  jf('../data/canon.amsterdam.json',{canon:[]}),
  jf('../data/trending.amsterdam.json',{trending:[]}),
  jf('../data/pending.amsterdam.json',{pending:[]}),
+ jf('../data/inbox.amsterdam.json',{inbox:[]}),
  // THE LENS forecast — the same keyless open-meteo call the pipeline's weekendMode() makes (raw
  // fetch: jf would append a second "?"). Fails soft → null → the lens goes dated-only.
  fetch('https://api.open-meteo.com/v1/forecast?latitude=52.37&longitude=4.9&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Europe%2FAmsterdam&forecast_days=7').then(r=>r.ok?r.json():null).catch(()=>null)
-]).then(([d,c,v,cc,lib,tr,pd,om])=>{
+]).then(([d,c,v,cc,lib,tr,pd,ib,om])=>{
   baked=v.byTitle||{};
   feedKey='wkndr.curate.'+(d.generatedAt||'x');
   feedGeneratedAt=d.generatedAt||'';
   restore();
   // `let` (not const): the ALREADY-OVER cull below rewrites these once the date helpers exist.
-  let bench=(c.candidates||[]),canonC=(cc.candidates||[]),canon=(lib.canon||[]),trending=(tr.trending||[]),pending=(pd.pending||[]);
+  let bench=(c.candidates||[]),canonC=(cc.candidates||[]),canon=(lib.canon||[]),trending=(tr.trending||[]),pending=(pd.pending||[]),inbox=(ib.inbox||[]);
   // BOARD_V is hardcoded — bump it whenever this file changes. GitHub Pages caches this HTML for
   // 10 min (max-age=600), so a just-shipped board fix can lag in an open tab; the eyebrow makes
   // stale-board-vs-fresh-data visible at a glance (2026-07-12: an old tab's tier-mirror pile read
@@ -639,7 +640,7 @@ Promise.all([
   // reported in the header so a thin board reads as "last weekend rolled off", not "data missing". ———
   let culled=0;
   const cull=rows=>{const keep=(rows||[]).filter(servable);culled+=(rows||[]).length-keep.length;return keep};
-  d.picks=cull(d.picks);pending=cull(pending);trending=cull(trending);bench=cull(bench);canonC=cull(canonC);canon=cull(canon);
+  d.picks=cull(d.picks);pending=cull(pending);trending=cull(trending);bench=cull(bench);canonC=cull(canonC);canon=cull(canon);inbox=cull(inbox);
   if(culled){const n=document.getElementById('overnote');
     n.style.display='';
     n.innerHTML='<b>'+culled+' pick'+(culled===1?'':'s')+' already over</b> — dropped from the board. '
@@ -784,6 +785,17 @@ Promise.all([
     const g=document.createElement('div');g.className='grid';nw.appendChild(g);
     air.keep.forEach(p=>addCard(p,g,'new',0,true));
   }
+  // ——— THE SCORED INBOX (Workstream 2) — the daily poll's fresh finds, already scored and
+  // ordered (scripts/lib/score.ts: novelty + corroboration + real draw + dated, × taste
+  // affinity — the receipt rides each card). These are PRE-crawl candidates: not judged, mostly
+  // unimaged. A ★ teaches the corpus (Thursday's crawl then admits + boosts the real event);
+  // ✕ vetoes it out of the inbox AND the pipeline for good. Same verdict machinery as any card. ———
+  const ib2=fresh(inbox);
+  if(ib2.keep.length){
+    const h=document.createElement('div');h.className='cathead hot';h.innerHTML='Fresh from the sources · '+ib2.keep.length+'<span class="d">The daily poll\'s finds, scored — novelty × corroboration × your taste. ★ teaches · ✕ vetoes.'+(ib2.hidden?' · '+ib2.hidden+' hidden (shown above)':'')+'</span>';nw.appendChild(h);
+    const g=document.createElement('div');g.className='grid';nw.appendChild(g);
+    ib2.keep.forEach(p=>addCard({...p,id:'inbox-'+p.title.toLowerCase().replace(/[^a-z0-9]+/g,'-').slice(0,48)},g,'inbox',0,false));
+  }
   // ——— then trending → bench → canon candidates (each hides twins shown in ANY earlier section) ———
   const tr2=fresh(trending);
   if(tr2.keep.length){
@@ -804,7 +816,7 @@ Promise.all([
     cc2.keep.forEach(p=>addCard({...p,id:'canon-cand-'+p.title.toLowerCase().replace(/[^a-z0-9]+/g,'-')},g,'new',0,true));
   }
   document.getElementById('nrot').textContent='('+((d.picks||[]).length+canon.length)+')';
-  document.getElementById('nnew').textContent='('+(pending.length+trending.length+bench.length+canonC.length)+')';
+  document.getElementById('nnew').textContent='('+(pending.length+trending.length+bench.length+canonC.length+inbox.length)+')';
   const tabs=document.getElementById('tabs');tabs.hidden=false;
   tabs.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
     tabs.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===t));
@@ -997,6 +1009,7 @@ function addCard(p,g,tag,pos,probe){
     :tag==='lens'?'<span class="badge lens">LENS'+(p._summer?' · SUMMER RUN':'')+(pos?' · PILE #'+pos:'')+'</span>'
     :tag==='appr'?'<span class="badge appr">✓'+(bk&&bk.stars?' ★'+bk.stars:'')+' APPROVED</span>'
     :bk?'<span class="badge saved">★'+(bk.stars||'·')+' SAVED</span>'
+    :tag==='inbox'?'<span class="badge new">FRESH'+(p.inboxScore!=null?' · '+p.inboxScore:'')+'</span>'
     :tag==='new'?'<span class="badge new">NEW</span>':'';
   const title=p.link?'<a href="'+p.link+'" target="_blank" rel="noopener">'+p.title+'<span class="ext">↗</span></a>':p.title;
   // WHY IT'S HERE — a plain line so no section needs decoding. Keyed off the card's role (tag).
@@ -1004,6 +1017,7 @@ function addCard(p,g,tag,pos,probe){
         ?'In season right now — an open-air pick that fits this weekend’s weather.'
         :'Dated for THIS weekend and fits the forecast — your testers see these first.')
     :tag==='pile'?'In the opening deck your testers swipe first. Drag ⠿ to set the order.'
+    :tag==='inbox'?'Fresh from the daily poll — not crawled or judged yet. ★ teaches your corpus so Thursday admits and boosts it; ✕ vetoes it for good.'
     :tag==='new'?'A new find — NOT live yet. Tap <b>↑ Top 10</b> to drop it straight into your deck (Simple view); ✕ to pass.'
     :tag==='appr'?'Approved for your permanent library — always in rotation. ✕ retires it.'
     :'';
@@ -1014,7 +1028,7 @@ function addCard(p,g,tag,pos,probe){
     +(why?'<div class="why">'+why+'</div>':'')
     +'<h3>'+title+buzzTag(p)+'</h3>'
     +'<div class="sub">'+(p.venue||'')+' · '+(p.when||'')+'</div>'
-    +'<div class="src">'+(srcNames(p).join(' · ')||p.tier||'')+(p.editorScore!=null?' · judge '+p.editorScore:'')+'</div>'
+    +'<div class="src">'+(srcNames(p).join(' · ')||p.tier||'')+(p.editorScore!=null?' · judge '+p.editorScore:'')+(p.scoreWhy?' · '+p.scoreWhy:'')+'</div>'
     +'<div class="stars">'+[1,2,3,4,5].map(n=>'<button class="star" data-n="'+n+'" aria-label="'+n+' stars">★</button>').join('')+'</div>'
     +'<div class="row"><button class="b imgup">IMG ✓</button><button class="b imgdn">IMG ✗</button><button class="b canon">+CANON</button><button class="b topb" title="Escalate: leads the deck with a Top pick pill">👑 TOP</button><button class="b leadb" title="Promote into your Top 10 (Simple view)">↑ Top 10</button><button class="b laterb" title="This weekend only: sinks to the back of the pile (not a kill)">▼ LATER</button></div>'
     +'<input class="inp note" placeholder="note — why / what&#39;s off / bad link">'
