@@ -291,7 +291,12 @@ const UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (
 // A card image must be a real PHOTO, not a logo/favicon/placeholder/share-graphic.
 // We reject by URL shape AND by real pixel dimensions, so a blown-up 100×100 logo
 // (e.g. a site's facebook.png) can never reach a card again.
-const MIN_DIM = 700                 // shortest side ≥ this — a 1200-tall card upscales smaller sources to blur
+// 500, not 700 (V.11.9): the RENDER-AWARE 1.6× cap below is the real floor — a 600×900 organiser flyer
+// upscales 1.33× to the 800×1200 card and reads clean, and the board's LOW RES flag uses the same
+// 1.6× line. The 700 floor predates the cap and was rejecting the organiser's own flyers; under the
+// old law each became a bank borrow, under the new one a blank (12 per run). Landscape mush still
+// fails: 1200×720 → 1.67×. Tune here; the cap stays.
+const MIN_DIM = 500
 const ASPECT_RANGE: [number, number] = [0.42, 2.6]   // not a banner strip, not a square icon
 const LOGO_URL = /logo|favicon|icon|sprite|placeholder|wordmark|social[-_]?shar|sharing[-_]?image|og[-_]?default|default[-_]?(og|share)|avatar|thumbnail|pictogram|picotogram|badge|emblem/i
 

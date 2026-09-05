@@ -400,18 +400,25 @@ async function buildCity(city: City) {
     // a reseller submits the same photo to several Feed Factory listings; two venue-matched picks at the
     // same hall would wear the same facade). Keep the first (feed order = best-ranked); the later live
     // twin goes without — an honest blank, not a borrowed photo.
-    // CANON FIRST: a place's own card always keeps its own photo — a venue-borrow ("Ed van der Elsken"
-    // wearing the Rijksmuseum) yields to the Rijksmuseum card when both are in the feed, whichever
-    // dedupe happened to order first. Among live picks, feed order (best-ranked) wins.
+    // CANON FIRST, and a VENUE-BORROW MAY SHARE WITH ITS OWNER: the rule exists for the generic classes
+    // (a reseller's one photo on five listings, two web picks on the same blog image). "Concertgebouw
+    // Open" wearing the Concertgebouw while the Royal Concertgebouw canon card also carries it is not
+    // that — both are the Concertgebouw, and the second live run blanked the open day for it. So: a
+    // place's own card always keeps its photo; a venue-borrow may share with THAT card; two live cards
+    // may still never share (two Melkweg nights: the better-ranked keeps the facade).
     {
-      const used = new Set<string>()
+      const owner = new Map<string, 'canon' | 'live'>()
       let dupes = 0
       for (const p of [...picks.filter((p) => !isLive(p)), ...picks.filter(isLive)]) {
         if (!p.image) continue
-        if (used.has(p.image)) { if (isLive(p)) { p.image = undefined; p.imageWhy = undefined; dupes++ } continue }
-        used.add(p.image)
+        const o = owner.get(p.image)
+        if (o) {
+          if (isLive(p) && !(o === 'canon' && p.imageWhy === 'venue')) { p.image = undefined; p.imageWhy = undefined; dupes++ }
+          continue
+        }
+        owner.set(p.image, isLive(p) ? 'live' : 'canon')
       }
-      if (dupes) console.log(`  unique:   ${dupes} duplicate card photos → the later card goes without (a place's own card keeps its photo)`)
+      if (dupes) console.log(`  unique:   ${dupes} duplicate card photos → the later card goes without (a place's own card keeps its photo; its own event may share it)`)
     }
 
     // FINAL VALIDATION — fetch EVERY published image (live + canon) and DROP any DEFINITIVELY broken one

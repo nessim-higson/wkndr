@@ -163,8 +163,10 @@ export async function upgradeViaIamsterdam(p: Pick): Promise<Pick | 'off-weekend
   try {
     // its own link first when that is an event page, then the sitemap's best few — walked in order,
     // because a matched page can lack Event JSON-LD (a concert sub-page) or name a different event
-    const urls = [...new Set([...(p.link && isEventPage(p.link) ? [p.link] : []), ...matchEventLocs(p.title, await iamsEventsSitemap())])]
+    const own = p.link && isEventPage(p.link) ? p.link : null
+    const urls = [...new Set([...(own ? [own] : []), ...matchEventLocs(p.title, await iamsEventsSitemap())])]
     let r: ReturnType<typeof parseEventPage> = null
+    let via: string | null = null
     for (const url of urls) {
       const html = await get(url)
       if (!html) continue
@@ -172,11 +174,15 @@ export async function upgradeViaIamsterdam(p: Pick): Promise<Pick | 'off-weekend
       if (!cand) continue
       // the page must be about THIS event — a slug match is a lead, the organiser's own name is the proof
       if (!titlesAgree(p.title, cand.pick.title) && !titlesAgree(cand.pick.title, p.title)) continue
-      r = cand
+      // a SITEMAP match whose dates miss the weekend may be a different run of the same name (last
+      // year's World Press Photo page) — keep looking for one that spans it; only the pick's OWN
+      // link is authoritative enough to drop on
+      if (!cand.spansWeekend && url !== own) continue
+      r = cand; via = url
       break
     }
     if (!r) return null
-    if (!r.spansWeekend) return 'off-weekend'
+    if (!r.spansWeekend) return via === own ? 'off-weekend' : null
     const s = r.pick
     const credit = unionCredits('I amsterdam', p.source)
     return {
