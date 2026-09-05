@@ -51,7 +51,69 @@
   opacity: var(--card-grain, 0.09);
 }
 
-/* poster fallback — no real photo: a category-tinted gradient + the category set large */
+/* ── THE NO-PHOTO FACE (V.11.9) ───────────────────────────────────────────────
+   No photo → no borrowed photo. The card becomes a typographic poster on the live
+   weather field: the field's own three stops, pulled dark enough for white type,
+   the house grain over it (same var as the photo cards, so the two faces breathe
+   together), and the title as the hero line in the display voice. Reads as a
+   designed object in the same system, never as a broken image. */
+.card--nophoto { background-color: #1c1a22; }
+.np-ground {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(120% 80% at 90% 0%, color-mix(in srgb, var(--field-glow, #ffd166) 22%, transparent) 0%, transparent 60%),
+    linear-gradient(160deg,
+      color-mix(in srgb, var(--field-1, #ff9a3d) 62%, #0e0d12) 0%,
+      color-mix(in srgb, var(--field-2, #c2310e) 70%, #0e0d12) 55%,
+      color-mix(in srgb, var(--field-3, #5a1606) 86%, #0e0d12) 100%);
+  transition: background 0.8s ease;
+}
+.card--nophoto .card-grain { opacity: calc(var(--card-grain, 0.09) * 1.6); }
+.np-hero {
+  position: absolute;
+  left: 0; right: 0;
+  top: 27%;               /* clear of the when stamp + signal pill, high on the face like a poster */
+  z-index: 2;
+  padding: 0 22px;
+  color: #fff;
+}
+.np-cat {
+  display: block;
+  margin-bottom: 12px;
+  font-size: var(--fs-cap);
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.72);
+}
+.np-title {
+  font-family: var(--font-display);
+  font-size: clamp(32px, 9.5vw, 46px);
+  font-weight: 600;
+  line-height: 0.98;
+  letter-spacing: -0.028em;
+  overflow-wrap: anywhere;
+  hyphens: auto;
+  display: -webkit-box;
+  -webkit-line-clamp: 6;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.25);
+}
+.np-venue {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.28);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  color: rgba(255, 255, 255, 0.86);
+}
+
+/* poster tints — the small THUMBS (list rows, itinerary, share sheet, match game) still key a
+   missing image by category; the full card face above replaced the old category-label poster */
 .poster { background-color: #2a2540; }
 .poster--live    { background: linear-gradient(145deg, #5a4b8c, #241d44); }
 .poster--art     { background: linear-gradient(145deg, #b9613a, #5e2a1c); }

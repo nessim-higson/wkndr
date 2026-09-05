@@ -1,11 +1,11 @@
 # WKNDR — STATE (catch-me-up snapshot)
 
-_Living "where are we right now" doc — a **snapshot, not a history**. **Updated 2026-08-30.** Read this
+_Living "where are we right now" doc — a **snapshot, not a history**. **Updated 2026-09-05.** Read this
 FIRST in a new chat. For strategy + backlog see `docs/backlog.md`; for the pipeline architecture see
 `docs/pipeline-architecture.md` + `docs/source-map.md`; for **who may write to the deck vs to a personal
 profile** (board / Tune / airlock — read before touching either) see `docs/curation-surfaces.md`; for the
 **board roadmap** (auto-compile tracks) see `docs/board-roadmap.md`; for full **version history** see
-`CHANGELOG.md` (current to app **V.11.8** / board V.9.46) and the **git log / tags**. Onboarding:
+`CHANGELOG.md` (current to app **V.11.9** / board V.9.47) and the **git log / tags**. Onboarding:
 `CLAUDE.md`. App lives in `/app` (Vite + React + TS, run with `bun`); ships to **Cloudflare Pages**
 (`wkndr.xyz` + `app.wkndr.xyz`) **and** GitHub Pages (legacy, keeps old share links alive)._
 
@@ -27,6 +27,26 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
 > sessions update (today it's on load).
 
 ## Live right now
+- **V.11.9 — HONEST IMAGES (2026-09-05, board V.9.47).** Ness back after three heads-down weeks:
+  "the images are still an issue" — a tattoo convention wearing the Bloemenmarkt, Concertgebouw Open
+  wearing Haarlem. Traced: NOT scraping errors — the **category-bank fallback working as designed**
+  ("every live card carries a photograph… a missing key never blanks a card"), keyed by category, so a
+  mis-filed web-search pick drew a market stall and an empty `live` pool drew a day-trip. **9/53 live
+  cards (17%) wore a photo not of the event.** The tattoo convention's own event page (linked from the
+  card) had two real flyers. New law, all shipped: (1) **the bank + Pexels are RETIRED** from the live
+  chain — a blank is allowed; (2) **structured upgrade on contact** — every keyless pick is offered to
+  I amsterdam's own record via its link or the **events sitemap** (`upgradeViaIamsterdam`, keyless);
+  (3) **venue match** — the canon photo of the SAME venue is the one honest borrow (`venueMatchImage`;
+  performers only when the title names the hall); (4) **`Pick.imageWhy` receipt** on every live pick +
+  a board chip + a NO PHOTO YET tile; (5) **the no-photo card face** — typographic poster on the
+  weather field (Clash hero line); (6) blanks rank −2, never open the deck (`holdBackImageless`,
+  first 5 pictured, human calls exempt), **`NO_PHOTO_CAP` = 3** on merit per refresh (rest → airlock;
+  restamp mirrors); gate fails only if >50% of the crawl lost its photo, warns >25%, health line shows
+  `no-photo N`; (7) **web_search demoted** to 3 facets + uncorroborated index-only-link picks dropped
+  (open item #1 since July, done). `PEXELS_API_KEY` no longer read. **365 tests.** First feed under the
+  law = the refresh triggered on ship day; `tests/images.test.ts`'s feed audit arms on it.
+  **WHAT STILL NEEDS NESS:** the Instagram route (Meta dev app + WKNDR IG Business account) and the
+  watchlist handles — the one source the machine cannot read without him. Everything else runs alone.
 - **V.11.8 — NO FLASH OF THE WRONG SKY (2026-08-30).** Boot seeds mode+wx from the `wkndr.lastwx.v1` cache (written by goLive, 12h cap, season-guess fallback — never HOT) so a reload opens on the last real weather instead of flashing the amber demo field. What-if pills don't write it.
 - **V.11.7 — RAIN SAYS SO + THE EVERGREEN SHELF (2026-08-30).** Field feedback on a 20°/100%-pop
   drizzle Sunday. (1) `classify`: **pop ≥ 80 → COLD_WET at any temperature** (was VOLATILE for
@@ -454,7 +474,7 @@ itinerary/.ics export all parse `when` strings through that one module.
 ## Pipeline ops
 - Cron **Thu 13:00 UTC** + on-demand (`gh workflow run refresh.yml`). ~$1–2/run. Dispatch race caveat
   still applies (confirm `headSha` matches after a fresh push).
-- **Keys set:** `ANTHROPIC_API_KEY`, `PEXELS_API_KEY`, `ANTHROPIC_JUDGE_MODEL`. **Pending:**
+- **Keys set:** `ANTHROPIC_API_KEY`, `ANTHROPIC_JUDGE_MODEL` (`PEXELS_API_KEY` retired V.11.9 — no longer read). **Pending:**
   `SERPER_API_KEY` (Google-Images candidates, wired + dormant), `HEALTHCHECK_URL` (ping, wired + dormant).
   **Declined for now:** Ticketmaster (Ness: variety > ticketing spine).
 - **Last good feed: 2026-07-04** — 72 picks, 49 live, 9/9 categories; 4 👑 TOP escalated to deck-lead,
@@ -482,7 +502,9 @@ organ-concert veto REVERSED (community-authentic wins). The pipeline stamps `top
 GUARANTEES topped/led picks into the feed (pull-back from prePool/canon if the balancer cut them).
 
 ## Open items / next
-1. **Phase 2 — demote web_search** to 2–3 serendipity facets once a few more runs look healthy.
+1. ~~Phase 2 — demote web_search~~ **DONE 2026-09-05 (V.11.9)** — 3 facets + index-only-link drop. Next
+   on images: watch the first two `receipts:` census lines in the refresh log; if `web` dominates over
+   `event-page`/`organiser`, raise the sitemap matcher's reach before loosening anything else.
 2. **Thin slices:** eat/drink/shop fresh sources — re-run the (stubbed) research sweeps for food/community
    feeds and venue ICS calendars.
 3. **"Talked about" pill** — make the buzz up-level visible on the card face, not just the ranking.

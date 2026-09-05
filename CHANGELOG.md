@@ -5,7 +5,7 @@ Format loosely follows [Keep a Changelog](https://keepachangelog.com/). The vers
 shown in the app's "What's feeding this" sheet matches the latest tag here.
 
 ## [Unreleased]
-- (next up — Phase 2: demote web_search to 2–3 serendipity facets · eat/drink/shop fresh sources ·
+- (next up — eat/drink/shop fresh sources · Instagram watchlist handles (Ness) + Meta business_discovery ·
   "Talked about" pill on the card face · add SERPER_API_KEY + HEALTHCHECK_URL secrets · city #2 (an EU
   city, not NOLA as-is) once Amsterdam is locked)
 
@@ -13,6 +13,59 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > footer; `bun run bump`). Whole versions are git tags (`v1.0.0`, `v2.0`, `v3.0`, `v4.0`, `v4.10`,
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
+
+## [V.11.9 · app + board] — 2026-09-05 — HONEST IMAGES
+Ness, back after three heads-down weeks, on the first Thursday the pipeline ran alone under V.11.3's
+auto-by-default law: "the images are still an issue" — a tattoo convention wearing the Bloemenmarkt's
+tulip stalls, "Concertgebouw Open" wearing Haarlem's canal. Neither was a scrape gone wrong. Both were
+the **category-bank fallback working exactly as designed**: "every live card carries a photograph… a
+missing key never blanks a card" made the bank load-bearing, and the bank is keyed by CATEGORY — so a
+web-search pick Haiku filed as `market` got a market, and a `live` pick (every live canon entry is a
+landmark, so its pool was empty) fell into the all-canon pool and drew a day-trip. Census of the
+2026-09-03 feed: **9 of 53 live cards (17%) wore a photo that was not of the event** — a Peder
+Mannerfelt set on a cheese shop, Zuiver Wijnen on the Conservatorium Hotel. A plausible wrong photo is
+the one failure a stranger can't spot; only someone who knows the event can. The rub: the tattoo
+convention's own event page — the link already on the card — carried two real flyers.
+- **THE LAW.** A live card's photo is OF the event (or of its venue), or the card has none. The
+  category bank and Pexels themed stock are **retired from the live chain** (`refresh.ts` image pass
+  rewritten; `PEXELS_API_KEY` dropped from `refresh.yml`). Every step stamps a receipt.
+- **STRUCTURED UPGRADE ON CONTACT** (`adapters/iamsterdam.ts` `upgradeViaIamsterdam`, before dedupe).
+  Every keyless live pick is offered to I amsterdam's own record: its link when that is an event page,
+  else the **events sitemap** (~2,900 locs, keyless, fetched once) matched by title
+  (`matchEventLoc` + `titlesAgree` — the slug is the lead, the organiser's name is the proof). A hit
+  replaces the guessed category, paraphrased date and missing image with the organiser's, and re-ids
+  the pick `web-iams-` so dedupe folds it onto the crawl's twin. Organiser dates that say "not this
+  weekend" DROP the pick. Verified live: every index-linked 2026-09-03 pick resolves.
+- **VENUE MATCH — the one honest borrow** (`venueMatchImage`). A pick AT a canon place wears that
+  place's photo (Concertgebouw Open ← the Concertgebouw). The old LANDMARK rule guarded against the
+  wrong-landmark class by forbidding the landmark for everyone, itself included; now the landmark is
+  exactly what its own event gets. A PERFORMER card wears the hall only when the title names it
+  (imageRules: "never a stand-in"); a short one-word place name is evidence on the venue field only.
+- **`Pick.imageWhy` — THE IMAGE RECEIPT.** `organiser` / `event-page` / `portrait` / `web` / `venue`
+  / `curated` / `none`, stamped on every live pick; the run log prints the census. **Board V.9.47:**
+  the receipt as a chip on the card photo; a card with no photo renders a typographic NO PHOTO YET
+  tile instead of an empty `<img>`; the bench now carries honest blanks (pictured first).
+- **THE NO-PHOTO FACE** (`Card.tsx` + `Card.css`). No photo → no borrowed photo: the card is a
+  DESIGNED object — the live weather field pulled dark as its ground, the house grain, the title as the
+  poster's hero line in Clash Display with the venue beneath. One idea per face; no "no photo"
+  apology on the card (the board carries that).
+- **A BLANK RANKS DOWN AND NEVER OPENS THE DECK.** `rankPicks` −2 (`NO_PHOTO_PENALTY`, inside the
+  weather tier); `orderServed` → `holdBackImageless`: the first five are pictured, a held card deals
+  right behind them, a human call (pile/👑/▲) keeps its slot. `stampServeOrder` runs the same code, so
+  the board's pile mirrors it. **`NO_PHOTO_CAP` = 3** (env `WKNDR_NO_PHOTO_CAP`): imageless picks
+  publish on merit only up to the cap (best judge first), the rest wait in the airlock for a ★;
+  restamp mirrors the cap. The publish gate no longer fails on an imageless live pick — it fails when
+  MOST of the crawl lost its photo (the image pass broke) and warns above a quarter, read BEFORE the
+  cap so the cap can't hide an outage behind a thin feed. Health line now carries `no-photo N`.
+- **web_search DEMOTED** — open item #1 since 2026-07-01, finally. Facets 4 → 3 (the festivals/markets
+  facet retired: I amsterdam's `festivals` namespace crawls it, and it minted the worst-imaged,
+  worst-categorised slice — the tattoo convention was its). An **uncorroborated web-search pick whose
+  only link is a listing index** (`linkIsIndex`) is dropped after the upgrade has had its chance:
+  its date was never read off an event page, and "open at" dead-ends. buzz ≥ 2 keeps it.
+- **365 tests** (+24, `tests/images.test.ts`): the sitemap matcher against real locs, the venue rule's
+  wrong-landmark and "Silent movies night ≠ The Movies" classes, the penalty and the hold-back, and a
+  feed audit (every live pick carries a receipt that matches its photo; no two cards share one) that
+  arms itself on the first feed built under the law.
 
 ## [V.11.8 · app] — 2026-08-30 — NO FLASH OF THE WRONG SKY
 Reloading painted DEMO.HOT's amber field for the second or two the forecast took — on a rainy

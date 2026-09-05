@@ -3,7 +3,7 @@
 // Plain Bun TypeScript, no app/React imports beyond the Pick type, the shared date brain
 // (src/lib/when.ts) and the shared serve pipeline (src/weather/modes.ts — classify +
 // rankPicks/diversify/orderServed, so build-time projections use the app's OWN code).
-import type { Mode, Pick } from '../../src/types'
+import type { Category, Mode, Pick } from '../../src/types'
 import { latestDateOf } from '../../src/lib/when'
 import { classify, rankPicks, diversify, orderServed } from '../../src/weather/modes'
 import corpus from '../taste/corpus.json'
@@ -35,7 +35,7 @@ export const titleKey = (s: string) =>
 // under 2 meaningful tokens so short names can't over-merge.
 const TOK_STOP = new Set(['the', 'a', 'an', 'de', 'het', 'een', 'at', 'in', 'on', 'of', 'and', 'en', 'bij', 'to', 'met', 'with', 'w', 'amsterdam', 'festival', 'back'])
 export const tokKey = (s: string): string => {
-  const toks = s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
+  const toks = s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
     .replace(/\b(19|20)\d{2}\b/g, '')
     .replace(/[^a-z0-9 ]/g, ' ')
     .split(/\s+/).filter((x) => x && !TOK_STOP.has(x))
@@ -58,7 +58,7 @@ export const rxOf = (s: string): RegExp => {
 // loses positions (R4 stamped 7/10). Two stages: normalized containment either way, else a
 // token-overlap vote (≥75% of the smaller token set shared, min 2 tokens — tokKey's stoplist).
 export function titleLooseMatch(feedTitle: string, entry: string): boolean {
-  const norm = (s: string) => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
+  const norm = (s: string) => s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
     .replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim()
   const a = norm(feedTitle), b = norm(entry)
   if (!a || !b) return false
@@ -811,4 +811,131 @@ export async function mapLimit<T, R>(items: T[], limit: number, fn: (item: T, i:
   }
   await Promise.all(Array.from({ length: Math.min(limit, items.length) }, worker))
   return out
+}
+
+// ─── HONEST IMAGES (V.11.9) ───────────────────────────────────────────────────
+// The law: a live card's photo is OF the event (or of its venue), or the card has none. The
+// category bank + themed stock are retired from the live image chain — a market stall on a tattoo
+// convention (2026-09-03) was the bank working exactly as designed: a fallback that always
+// "succeeds" has an invisible failure mode, and only someone who knows the event can spot it.
+
+/** How many imageless live picks may PUBLISH on judge merit alone per refresh; the rest wait
+ *  in the airlock for a human call (a ★ still admits one — restamp mirrors this). A deck is
+ *  endless, so an honest blank at the back costs little; ten of them read as a broken run. */
+export const NO_PHOTO_CAP = Number(process.env.WKNDR_NO_PHOTO_CAP ?? 3)
+
+// A LISTING INDEX rather than a specific event page — the class that dead-ends "open at", starves
+// the og:image pass, and (on a web-search pick) means the date was never read off an event page.
+const INDEX_LEAF = /^(whats-on|whats-on-amsterdam(-[a-z]+)?|agenda|uitagenda|events?|calendar|weekend-guide|weekendtips|weekend|annual-event-calendar|gratis-deze-maand|this-weekend|this-week|tips|search|festivals|exhibitions|concerts|theatre|nightlife|shopping|markets|all|home|index(\.html?)?)$/i
+export function linkIsIndex(url: string): boolean {
+  let u: URL
+  try { u = new URL(url) } catch { return true }
+  const segs = u.pathname.replace(/\/+$/, '').split('/').filter(Boolean)
+  if (segs.length <= 1) return true
+  if (INDEX_LEAF.test(segs[segs.length - 1])) return true
+  return segs.length === 2 && /^(en|nl|uit|de|fr)$/i.test(segs[0])   // a bare language/section root
+}
+
+/** I amsterdam calendar namespace (EN + NL paths) → WKNDR category. null = not a calendar URL. */
+export function iamsCategoryFromPath(url: string): Category | null {
+  const m = url.match(/\/(?:calendar|agenda)\/([a-z-]+)\//i)
+  if (!m) return null
+  const map: Record<string, Category> = {
+    exhibitions: 'art', tentoonstellingen: 'art',
+    festivals: 'out',
+    'concerts-and-music': 'live', 'concerten-en-muziek': 'live',
+    'theatre-and-stage': 'stage', 'theater-en-podium': 'stage',
+    'eating-and-drinking': 'eat', 'eten-en-drinken': 'eat',
+    nightlife: 'drink', uitgaan: 'drink',
+    shopping: 'shop', winkelen: 'shop',
+    'attractions-and-sights': 'daytrip', 'attracties-en-bezienswaardigheden': 'daytrip',
+    markets: 'market', markten: 'market',
+  }
+  return map[m[1].toLowerCase()] ?? null
+}
+
+// Significant title tokens for slug matching: lowercase ASCII, years and connectives dropped.
+// Deliberately NOT tokKey's stoplist — "festival" is a real slug token ("amsterdam-wine-festival").
+const SLUG_STOP = new Set(['the', 'a', 'an', 'de', 'het', 'een', 'at', 'in', 'on', 'of', 'and', 'en', 'bij', 'to', 'met', 'with', 'w', 'voor', 'van', 'amsterdam', 'edition', 'editie'])
+export function titleTokens(title: string): string[] {
+  return [...new Set(title.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/\b(19|20)\d{2}\b/g, ' ').replace(/[^a-z0-9]+/g, ' ').split(/\s+/)
+    .filter((t) => t && !SLUG_STOP.has(t)))]
+}
+
+/** THE SITEMAP RESCUE — find the I amsterdam event pages that name THIS title among the events
+ *  sitemap's locs (~2,900, keyless). A web-search pick that cites I amsterdam but links a listing
+ *  index ("Concertgebouw Open" → /whats-on/weekend-guide) is one hop from the organiser's real
+ *  page — exact dates, a real category, a Feed Factory flyer. Match = enough of the title's
+ *  tokens appear in the slug (all-but-one on short titles; 60% on long ones; a lone token only
+ *  when it is distinctive, ≥7 chars). Ranked: more hits first; then a slug that STARTS with the
+ *  title (the event itself, "concertgebouw-open-gratis-…", over a sub-event named after it,
+ *  "umut-veysel-demirtas-concertgebouw-open"); then the fewest EXTRA tokens (the event over its
+ *  "guided tour of…"); then the English twin. Returns the best few — the caller walks them, since a
+ *  matched page can lack Event JSON-LD (a concert sub-page) and the next one is usually right. */
+export function matchEventLocs(title: string, locs: string[], limit = 3): string[] {
+  const toks = titleTokens(title)
+  if (!toks.length) return []
+  const need = toks.length === 1 ? (toks[0].length >= 7 ? 1 : 2) : Math.max(2, Math.ceil(toks.length * 0.6))
+  const joined = toks.join('-')
+  const ranked: { loc: string; hit: number; prefix: number; extra: number; en: number }[] = []
+  for (const loc of locs) {
+    if (/\/business\//.test(loc)) continue
+    const slug = (loc.replace(/\/+$/, '').split('/').pop() ?? '').toLowerCase()
+    const st = new Set(slug.split('-').filter(Boolean))
+    const hit = toks.filter((t) => st.has(t)).length
+    if (hit < need) continue
+    ranked.push({ loc, hit, prefix: slug.startsWith(joined) ? 1 : 0, extra: st.size - hit, en: /\/en\//.test(loc) ? 1 : 0 })
+  }
+  ranked.sort((a, b) => b.hit - a.hit || b.prefix - a.prefix || a.extra - b.extra || b.en - a.en)
+  return ranked.slice(0, limit).map((r) => r.loc)
+}
+export function matchEventLoc(title: string, locs: string[]): string | null {
+  return matchEventLocs(title, locs, 1)[0] ?? null
+}
+
+/** Does a fetched event's own name agree with the title we matched it from? Same overlap rule. */
+export function titlesAgree(a: string, b: string): boolean {
+  const ta = titleTokens(a), tb = new Set(titleTokens(b))
+  if (!ta.length || !tb.size) return false
+  const hit = ta.filter((t) => tb.has(t)).length
+  const need = ta.length === 1 ? 1 : Math.max(2, Math.ceil(Math.min(ta.length, tb.size) * 0.6))
+  return hit >= need
+}
+
+// VENUE MATCH — the one honest borrow. A pick AT a canon place may wear that place's photo: the
+// Concertgebouw's front on "Concertgebouw Open" is true; on a Bostheater card it is the
+// wrong-landmark class (the old bank's LANDMARK rule guarded against exactly that — by forbidding
+// the landmark for everyone, including itself). Two doors, both word-bounded:
+//   · the FULL place name (leading The/Het/De/Royal stripped) on the pick's venue or title
+//   · a distinctive CORE token (≥8 chars, not a generic venue word) on the venue
+// For a PERFORMER category (live/stage) the title itself must name the place — a venue-led event
+// ("Concertgebouw Open", "Paradiso 55") — never an act's card wearing the hall (corpus imageRules:
+// "never a stand-in, never another venue").
+const PLACE_STOP = /^(amsterdam|various|centrum|noord|zuid|west|oost|the web|i amsterdam|your little black book|online|tba|tbd)$/i
+const GENERIC_CORE = /^(openluchttheater|theater|theatre|schouwburg|museum|museums|market|markt|festival|park|garden|tuin|hallen|kerk|church|cinema|bioscoop|gallery|galerie|brouwerij|brewery|restaurant|hotel|terras|terrace|strand|beach|pavilion|paviljoen|centrum|center|centre|library|bibliotheek|stadium|stadion|square|plein|street|straat|amsterdamse|amsterdam|international|nationaal|national)$/i
+const normPlace = (s: string) => s.split(/\s+[—–-]\s+/)[0].replace(/^(the|het|de|een|royal|koninklijke?)\s+/i, '').trim()
+export function venueMatchImage(
+  p: { title: string; venue?: string; category?: string },
+  places: { name: string; image: string }[],
+): { image: string; place: string } | null {
+  const venue = normPlace(p.venue ?? '')
+  const perf = p.category === 'live' || p.category === 'stage'
+  let best: { image: string; place: string; len: number } | null = null
+  for (const pl of places) {
+    const name = normPlace(pl.name)
+    if (name.length < 5 || PLACE_STOP.test(name) || !pl.image) continue
+    const full = rxOf(name)
+    const core = name.split(/\s+/).filter((t) => t.length >= 8 && !GENERIC_CORE.test(t)).sort((a, b) => b.length - a.length)[0]
+    const coreRx = core ? rxOf(core) : null
+    // a short ONE-WORD place name ("Movies", "Pllek") is only evidence on the VENUE field — inside a
+    // title it is just a word ("Silent movies night" is not at The Movies)
+    const nameIsDistinct = /\s/.test(name) || name.length >= 8
+    const onVenue = !!venue && !PLACE_STOP.test(venue) && (full.test(venue) || (!!coreRx && coreRx.test(venue)))
+    const onTitle = (nameIsDistinct && full.test(p.title)) || (!!coreRx && coreRx.test(p.title))
+    if (!onVenue && !onTitle) continue
+    if (perf && !onTitle) continue
+    if (!best || name.length > best.len) best = { image: pl.image, place: name, len: name.length }
+  }
+  return best ? { image: best.image, place: best.place } : null
 }

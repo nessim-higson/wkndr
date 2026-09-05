@@ -25,7 +25,7 @@
  */
 import corpus from './taste/corpus.json'
 import weekly from './taste/weekly.json'
-import { rxOf, titleLooseMatch, tokKey, upcomingWeekend, crownsActive, publishCheck, STAR_BOOST, weekendModes, stampServeOrder, toPortrait, approvalCheck, type TasteCorpus, type WeeklySlate } from './lib/pipeline'
+import { rxOf, titleLooseMatch, tokKey, upcomingWeekend, crownsActive, publishCheck, STAR_BOOST, NO_PHOTO_CAP, weekendModes, stampServeOrder, toPortrait, approvalCheck, type TasteCorpus, type WeeklySlate } from './lib/pipeline'
 import { curatedImage } from './curated'
 import { heroPicks } from './heroes'
 import { whenIsPast, whenLooksBroken } from '../src/lib/when'
@@ -75,10 +75,17 @@ if (pendingFile) {
   // leave the airlock either way (their event is already in the deck).
   const inFeedIds = new Set(picks.map((p) => p.id))
   const inFeedToks = new Set(picks.map((p) => tokKey(p.title)).filter(Boolean))
+  // THE NO-PHOTO CAP, mirrored (V.11.9): refresh publishes at most NO_PHOTO_CAP imageless live picks
+  // on judge merit and holds the rest here — so this door must not let them all straight back in
+  // on the next restamp. An imageless pick promotes on merit only while the feed is under the cap;
+  // an explicit call (★/👑/▲/pile) always admits — if Ness picked it, photo or not, it ships.
+  let noPhotoLive = picks.filter((p) => isLive(p) && !p.image).length
   for (const p of (pendingFile.pending ?? []).filter(tasteOk)) {
     if (!canPublish(p)) { pendingKeep.push(p); continue }
+    if (!p.image && !isApproved(p) && noPhotoLive >= NO_PHOTO_CAP) { pendingKeep.push(p); continue }
     const tk = tokKey(p.title)
     if (inFeedIds.has(p.id) || (tk && inFeedToks.has(tk))) continue
+    if (!p.image) noPhotoLive++
     // MATERIALIZE the migration on the way through the door: a legacy pending pick (pre-judgeScore)
     // carries its judge verdict only in editorScore — sound there, nothing ever floored an unapproved
     // pick. Stamp it as judgeScore now or the published feed fails its own airlock audit (the test

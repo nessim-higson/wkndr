@@ -209,6 +209,11 @@ const EVERGREEN_FLOOR = 0.5
 // a seasonal "All summer" venue stays evergreen, no bonus. Sized with the other sub-terms (buzz
 // caps 4, editor 5): decisive inside the tier, never enough to cross the +10 weather boundary.
 const SUN_BONUS = 3
+// THE NO-PHOTO PENALTY (V.11.9): a card with no photo is an honest blank — the pipeline no longer
+// borrows a category-bank or stock photo to fill it — and it ranks BELOW a pictured peer of equal
+// merit. Sized like the other sub-terms (buzz caps 4, editor 5): decisive inside the weather tier,
+// never enough to cross the +10 weather boundary. Pairs with holdBackImageless (the deck's front).
+const NO_PHOTO_PENALTY = 2
 export function rankPicks(picks: Pick[], mode: ModeSpec, taste?: Taste, seed = 0, near?: Origin | null): Pick[] {
   const end = upcomingWeekendEnd()
   const fri = new Date(end.getFullYear(), end.getMonth(), end.getDate() - 2)   // the weekend's Friday, 00:00
@@ -245,6 +250,7 @@ export function rankPicks(picks: Pick[], mode: ModeSpec, taste?: Taste, seed = 0
   const score = (p: Pick) =>
     (modesFor(p).some((m) => p.weatherFit.includes(m)) ? 10 : 0) + freshBoost(p) + buzzBoost(p) + popBoost(p) + sunBonus(p)
     + (p.editorScore ?? 0) * EDITOR_W
+    - (p.image ? 0 : NO_PHOTO_PENALTY)
     + (taste ? tasteScore(p, taste) : 0) + (seed ? jitter(p.id, seed) * 3.5 : 0)
     // NEAR ME (V.11): only when the user has asked for it AND we know where they are. A weight,
     // never a filter — see lib/geo.ts nearScore. Capped under the +10 weather term so weather
@@ -321,7 +327,7 @@ export function orderServed(arr: Pick[], end: Date = upcomingWeekendEnd()): Pick
   const active = (p: Pick) => whenActiveBy(p.when, end)
   const opens = (p: Pick) => !!p.top && active(p)
   const mid = (p: Pick) => !opens(p) && active(p)
-  return [
+  return holdBackImageless([
     ...hand,
     ...rest.filter(opens),
     ...rest.filter((p) => mid(p) && p.lead),
@@ -329,5 +335,26 @@ export function orderServed(arr: Pick[], end: Date = upcomingWeekendEnd()): Pick
     ...rest.filter((p) => mid(p) && !p.lead && p.later),
     ...rest.filter((p) => !active(p) && p.top),
     ...rest.filter((p) => !active(p) && !p.top),
-  ]
+  ])
+}
+
+/**
+ * THE FRONT IS ALWAYS PICTURED (V.11.9). A no-photo card never opens the deck on its own merit:
+ * any imageless card that would land in the first FRONT_PICTURED slots is held and dealt just
+ * behind them, in its original order. A HUMAN call overrides — a card in the hand pile, a 👑 or a
+ * ▲ keeps its slot, photo or not (if Ness put it there, it opens). Stable otherwise. No-op when
+ * nothing in the list is pictured (fixtures; a feed whose image pass never ran).
+ */
+const FRONT_PICTURED = 5
+export function holdBackImageless(list: Pick[], n = FRONT_PICTURED): Pick[] {
+  if (!list.some((p) => p.image)) return list
+  const pinned = (p: Pick) => p.pilePos != null || !!p.top || !!p.lead
+  const out: Pick[] = []
+  const held: Pick[] = []
+  for (const p of list) {
+    if (out.length < n && !p.image && !pinned(p)) { held.push(p); continue }
+    out.push(p)
+    if (out.length === n && held.length) { out.push(...held); held.length = 0 }
+  }
+  return held.length ? [...out, ...held] : out
 }

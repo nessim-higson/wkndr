@@ -19,7 +19,7 @@
  */
 import { CITIES, type City } from '../src/data/cities'
 import type { Pick } from '../src/types'
-import { dedupe, balanceByCategory, isGoodImage, isPortraitImage, imageBroken, urlLooksNonPhoto, imageIsCardworthy, fetchEventImage, toPortrait, wikiImage, webImageCandidates, verifyImageForEvent, pexelsImage, whenBeforeWeekend, upcomingWeekend, weekendMode, weekendModes, stampServeOrder, publishCheck, crownsActive, JUDGE_FLOOR, STAR_BOOST, linkOk, mapLimit, rxOf, titleKey, titleLooseMatch, tokKey, approvalCheck, type TasteCorpus, type WeeklySlate } from './lib/pipeline'
+import { dedupe, balanceByCategory, isGoodImage, isPortraitImage, imageBroken, urlLooksNonPhoto, imageIsCardworthy, fetchEventImage, toPortrait, wikiImage, webImageCandidates, verifyImageForEvent, venueMatchImage, linkIsIndex, NO_PHOTO_CAP, whenBeforeWeekend, upcomingWeekend, weekendMode, weekendModes, stampServeOrder, publishCheck, crownsActive, JUDGE_FLOOR, STAR_BOOST, linkOk, mapLimit, rxOf, titleKey, titleLooseMatch, tokKey, approvalCheck, type TasteCorpus, type WeeklySlate } from './lib/pipeline'
 import { fixWhen, latestDateOf, whenActiveBy, whenIsPast, whenLooksBroken } from '../src/lib/when'
 import { effectiveFreshness, NEW_DAYS } from '../src/lib/freshness'
 import { mergeSightings, pruneRegistry, appendRun, type SeenRegistry, type HealthFile } from './lib/ingest'
@@ -28,7 +28,7 @@ import { llmExtract } from './adapters/llm'
 import { websearchExtract } from './adapters/websearch'
 import { editorialScores } from './adapters/editor'
 import { raExtract } from './adapters/ra'
-import { iamsterdamExtract } from './adapters/iamsterdam'
+import { iamsterdamExtract, upgradeViaIamsterdam } from './adapters/iamsterdam'
 import { lbbExtract } from './adapters/lbb'
 import { scoutedExtract } from './adapters/scouted'
 import { curatedImage } from './curated'
@@ -151,6 +151,28 @@ async function buildCity(city: City) {
   }
   console.log(`  canon:    ${canon.length} bundled picks (floor)`)
 
+  // STRUCTURED UPGRADE ON CONTACT (V.11.9) — before dedupe, every KEYLESS live pick (web-search, LLM
+  // scrape, RSS) is offered to I amsterdam's own record: its link when that is an event page, else the
+  // events sitemap matched by title (keyless, ~2,900 locs, fetched once). A hit replaces Haiku's guessed
+  // category, paraphrased date and missing image with the organiser's — and re-ids the pick `web-iams-`,
+  // so dedupe folds it onto the crawl's twin by stable id and the image pass trusts its flyer. A page
+  // whose dates say "not this weekend" DROPS the pick: the keyless claim was wrong. The 2026-09-03 feed
+  // shipped a tattoo convention filed as `market` wearing the Bloemenmarkt, while its own event page
+  // (linked from the card!) carried two real flyers.
+  {
+    const keyless = fromRoster.filter((p) => /^(web|llm|rss)-/.test(p.id) && !/^web-(iams|ra|lbb|scout)-/.test(p.id))
+    let up = 0, off = 0
+    const offIds = new Set<string>()
+    const who: string[] = []
+    await mapLimit(keyless, 4, async (p) => {
+      const r = await upgradeViaIamsterdam(p)
+      if (r === 'off-weekend') { offIds.add(p.id); off++ }
+      else if (r) { if (who.length < 8) who.push(p.title.slice(0, 26)); Object.assign(p, r); up++ }
+    })
+    if (off) for (let i = fromRoster.length - 1; i >= 0; i--) if (offIds.has(fromRoster[i].id)) fromRoster.splice(i, 1)
+    if (up || off) console.log(`  upgrade:  ${up} keyless picks → I amsterdam's own record (dates · category · flyer)${off ? ` · ${off} dropped: organiser says not this weekend` : ''}${who.length ? ` (${who.join(' · ')})` : ''}`)
+  }
+
   // DEDUPE (sets buzz = distinct sources) — roster first so live picks win the merge over canon.
   let picks = dedupe([...fromRoster, ...canon])
   // EVERY live-adapter id prefix must be listed (llm/web + rss/songkick): a missed prefix means those
@@ -220,91 +242,84 @@ async function buildCity(city: City) {
     if (fixed) console.log(`  links:    ${fixed} dead LLM links → source URL`)
   }
 
-  // PHOTO-FIRST IMAGE PASS. Every live pick must end up with a real, RELEVANT photo or it's dropped
-  // (no category-gradient posters, no generic page-hero fallbacks). Three sources, in order:
-  //   1. the page photo the LLM matched to this item (validate it),
-  //   2. else the og:image of the pick's OWN link (a Songkick concert page's og = the artist),
-  //   3. then drop any image reused across ≥2 live picks (a shared listing banner = generic).
-  // Curated canon (all imaged) is the floor, so the deck stays full.
+  // INDEX-ONLY WEB-SEARCH PICKS (V.11.9) — an UNCORROBORATED web-search pick whose only link is a
+  // listing index (/whats-on, /weekend-guide, /annual-event-calendar…): its date was never read off
+  // an event page, it has no organiser image, and "open at" dead-ends. The upgrade above already
+  // rescued everything I amsterdam could name; what remains is the lowest-trust object in the pool.
+  // A second source vouching for it (buzz ≥ 2) keeps it — corroboration is evidence, a link is not.
+  {
+    const websearch = (p: Pick) => /^web-/.test(p.id) && !/^web-(iams|ra|lbb|scout|hero)-/.test(p.id)
+    const before = picks.length
+    const gone = picks.filter((p) => websearch(p) && (p.buzz ?? 1) < 2 && (!p.link || linkIsIndex(p.link)))
+    picks = picks.filter((p) => !gone.includes(p))
+    if (before !== picks.length) console.log(`  trust:    dropped ${before - picks.length} uncorroborated web-search picks with index-only links (${gone.slice(0, 5).map((p) => p.title.slice(0, 24)).join(' · ')}${gone.length > 5 ? ' …' : ''})`)
+  }
+
+  // THE IMAGE PASS — HONEST IMAGES (V.11.9). A live card's photo is OF the event (or of its venue),
+  // or the card has none. The chain, in order, each step stamping its receipt (`imageWhy`):
+  //   organiser  — a structured source's own upload (iams / RA / LBB / scout), sanity-screened
+  //   event-page — og:image / JSON-LD off the pick's OWN link, vision-verified
+  //   portrait   — a named act's Wikipedia portrait, vision-verified
+  //   web        — an open-web candidate, vision-verified against the event
+  //   venue      — the canon photo of the SAME venue (a venue-led event) — the one honest borrow
+  //   curated    — a hand pin (scripts/curated.ts), applied last, always wins
+  //   none       — nothing honest found: the card ships its typographic face (Card.tsx)
+  // RETIRED HERE, deliberately: the category-bank borrow and Pexels themed stock. Both produced a real
+  // photograph of a DIFFERENT place — the 2026-09-03 feed had a tattoo convention wearing the
+  // Bloemenmarkt and a Concertgebouw open day wearing Haarlem, 9 of 53 live cards — and a plausible
+  // wrong photo is the one failure a stranger can't spot; only someone who knows the event can. The
+  // old law ("every live card carries a photograph") made the bank load-bearing; the new law is that a
+  // blank is allowed and RANKED DOWN (modes.ts NO_PHOTO_PENALTY + holdBackImageless, the NO_PHOTO_CAP
+  // below). Canon is hand-imaged → never re-judged, never borrowed FROM except by its own venue.
   if (!SKIP_IMAGES) {
     const live = picks.filter(isLive)
-    // TRUSTED IMAGES — structured sources (I amsterdam, RA) ship the ORGANISER'S real per-event image (a film
-    // poster, a flyer — often already portrait + hi-res, ideal for the card). Re-processing them was the
-    // sabotage: the resolution floor nulled them and the gather/vision-QA replaced them with SCRAPED junk
-    // (Agatha's Almanac's poster → a wide EYE-building sky-crop). So we TRUST these images: skip the null/gather/
-    // shared-dedup/vision-QA and just portrait-wrap them. Only the dead-URL sweep still applies (→ bank if 404).
-    // (lbb images are LBB's own editorial photos, matched to the event by the extractor — trusted like
-    //  iams/RA organiser images, and screened by the same sanity pass below. NOTE: lbb picks stay
-    //  TITLE-keyed in dedupe on purpose, so an LBB event that iams also lists FOLDS in → buzz.)
+    for (const p of live) p.imageWhy = undefined                     // every receipt is earned THIS run
     const trustedImg = (p: Pick) => /^web-(iams|ra|lbb|scout)-/.test(p.id) && !!p.image
     const PERFORMER = new Set(['live', 'stage'])
-    // EVERY imageless live pick now gathers candidates and is VISION-VERIFIED — including generic web
-    // events (festival/market/garden-days). They get their OWN event page's image (schema.org Event
-    // JSON-LD → og, via fetchEventImage), which is the organizer's per-event photo, plus open-web hits;
-    // the vision verifier (below) rejects the wrong-subject class ("Open Garden Days" → a Pride photo),
-    // so only a genuine fit lands. isGoodImage already blocks the I amsterdam "Canal Parade" civic hero.
+    const visionOn = !!process.env.ANTHROPIC_API_KEY
 
-    // THEMED-PHOTO BANK — the hand-authored canon is fully imaged with curated, proven,
-    // category-tagged PHOTOGRAPHS. Borrow them, by category, as the final fallback so an imageless
-    // live pick renders a real, category-appropriate photo (a market stall, a gig crowd, a gallery)
-    // instead of a flat text-on-colour poster. This is the reliable image source for generic web
-    // events (festivals/markets/garden-days) that have no trustworthy per-event photo — atmospheric
-    // and always on-theme, never a wrong subject (the Pride-on-garden-days class of error). Chosen
-    // deterministically by id so a given event keeps the same photo run-to-run.
-    // ONLY evergreen canon feeds the bank. The dated-gig canon entries carry a SPECIFIC ARTIST'S photo
-    // (FKA twigs' Songkick portrait) — borrowing one as a "themed fallback" put a recognizable different
-    // artist's face on an unrelated act's card ("Kay Slice" wearing FKA twigs). Evergreen canon is places
-    // and atmospheres (venues, markets, museums) — safe to borrow; a person's face never is.
-    // …and never a NAMED-VENUE facade: borrowing the Concertgebouw's front for a Bostheater card is the
-    // wrong-landmark class — instantly false to any local. Landmark canon keeps its image for ITSELF only.
-    const LANDMARK_CANON = /paradiso|melkweg|concertgebouw|rijksmuseum|stedelijk|sexyland|garage-noord|foam|eye|moco|nemo|hart|huis-marseille/i
-    const bank: Record<string, string[]> = {}
-    for (const p of city.picks) if (p.image && p.image.startsWith('http') && p.freshness === 'always' && !LANDMARK_CANON.test(p.id)) (bank[p.category] ??= []).push(p.image)
-    const bankPool = [...new Set(Object.values(bank).flat())]
-    const idHash = (s: string) => { let h = 0; for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0; return Math.abs(h) }
-    const themedPhoto = (p: Pick) => { const pool = bank[p.category]?.length ? bank[p.category] : bankPool; return pool.length ? pool[idHash(p.id) % pool.length] : undefined }
-    // A bank photo that ACTUALLY LOADS — scans the category pool (then all canon) from the deterministic
-    // index, skipping any dead entry, so a fallback can never itself blank. Returns a wsrv-wrapped URL.
-    const workingBankPhoto = async (p: Pick, used?: Set<string>): Promise<string | undefined> => {
-      const pool = bank[p.category]?.length ? bank[p.category] : bankPool
-      for (let i = 0; i < pool.length; i++) {
-        const wrapped = toPortrait(pool[(idHash(p.id) + i) % pool.length])
-        if (used?.has(wrapped)) continue               // caller is de-duplicating — never hand out a repeat
-        if (!(await imageBroken(wrapped))) return wrapped
-      }
-      return undefined
+    // THE VENUE BOOK — the canon's evergreen PLACES (hand-imaged). Venue-match borrows from these
+    // only; both the title and a distinct venue string are names for the place.
+    const places: { name: string; image: string }[] = []
+    for (const c of city.picks) {
+      if (c.freshness !== 'always' || !c.image || !c.image.startsWith('http')) continue
+      places.push({ name: c.title, image: c.image })
+      if (c.venue && c.venue !== c.title) places.push({ name: c.venue, image: c.image })
     }
 
     // TRUST, BUT SCREEN FOR THE LOGO CLASS — organisers sometimes upload their LOGO/wordmark instead of a
     // photo ("LOGO___WORDMARK_square_black.webp" → a solid-black card). Trusted images stay untouched on
     // SUBJECT (no re-scraping — that was the old sabotage), but two sanity screens apply: (1) keyless URL
     // smell test (logo/wordmark/stock in the filename), (2) a narrow vision check that rejects ONLY
-    // logos/flat graphics/blank frames while KEEPING real posters (the Agatha class). Rejects → bank photo.
+    // logos/flat graphics/blank frames while KEEPING real posters (the Agatha class). A reject now simply
+    // DROPS the image — the pick re-enters the gather below like any imageless one (was: → bank).
     {
       let sane = 0
       await mapLimit(live.filter(trustedImg), 3, async (p) => {
         // isGoodImage = logo/stock URL smell + REAL pixel dims (≥700 shortest side — a low-res organiser
         // upload upscaled to the 1200-tall card is mush: the Amsterdamse Bos class) + sane aspect.
         const bad = !(await isGoodImage(p.image!)) || !(await imageIsCardworthy(p.image!))
-        if (bad) { const fb = await workingBankPhoto(p); p.image = fb; if (fb) sane++ }
+        if (bad) { p.image = undefined; sane++ } else p.imageWhy = 'organiser'
       })
-      if (sane) console.log(`  sanity:   ${sane} organiser logos/blank frames → bank photo`)
+      if (sane) console.log(`  sanity:   ${sane} organiser logos/blank frames dropped → re-gathered below`)
     }
-
-    await mapLimit(live.filter((p) => p.image && !trustedImg(p)), 5, async (p) => { if (!(await isGoodImage(p.image!))) p.image = undefined })
+    // an untrusted image that ARRIVED with the pick (the LLM lane's matched page photo) must at least be
+    // a real photo of card-worthy size; its SUBJECT is judged by the vision QA at the end of the pass
+    await mapLimit(live.filter((p) => p.image && !trustedImg(p)), 5, async (p) => {
+      if (!(await isGoodImage(p.image!))) p.image = undefined
+      else p.imageWhy = 'event-page'
+    })
 
     // CANDIDATE-GATHER + VISION VERIFY — the agentic image step. For every imageless live pick we
-    // gather real-photo CANDIDATES (open-web image search by name; + the act's Wikipedia portrait for
-    // performers; + the event page's og:image for non-performer scraped picks), then a Claude VISION
-    // call LOOKS at them and picks the one that genuinely depicts the event — or rejects them all, so
-    // a wrong subject never lands (Celeste → a Japan travel blog, "Open Garden Days" → a Pride parade).
-    // Whatever it can't verify falls through to Pexels themed stock → bank. With no ANTHROPIC_API_KEY
-    // it degrades to the old behaviour (top-ranked candidate, unverified).
+    // gather real-photo CANDIDATES (the event page's own og:image / JSON-LD image FIRST; the act's
+    // Wikipedia portrait for performers; open-web image search by name), then a Claude VISION call
+    // LOOKS at them and picks the one that genuinely depicts the event — or rejects them all, so a
+    // wrong subject never lands (Celeste → a Japan travel blog, "Open Garden Days" → a Pride parade).
+    // What it can't verify stays imageless. With no ANTHROPIC_API_KEY it degrades to the old behaviour
+    // (top-ranked candidate, unverified).
     const CAT_HINT: Record<string, string> = { eat: 'restaurant', drink: 'bar', art: 'exhibition', market: 'market', daytrip: '', out: '' }
     const ACT_HINT: Record<string, string> = { live: 'live music', stage: 'theatre' }
     const actName = (p: Pick) => p.title.split(/\s*[:–—]\s*/)[0].split(/\s+(?:and|&|\+|x|w\/|ft\.?|feat\.?|with|presents)\s+/i)[0].trim()
-
-    const visionOn = !!process.env.ANTHROPIC_API_KEY
 
     // PERFORMER PORTRAITS — for a named live/stage act, a tall Wikipedia portrait crops to the portrait
     // card FAR better than a wide concert/og shot, which the smart-crop severs (it chases the stage lights,
@@ -317,7 +332,7 @@ async function buildCity(city: City) {
       const wk = await wikiImage(actName(p))
       if (!wk || !(await isPortraitImage(wk))) return
       const use = visionOn ? !!(await verifyImageForEvent([wk], p, city.name)) : !p.image
-      if (use) { p.image = wk; portraits++ }
+      if (use) { p.image = wk; p.imageWhy = 'portrait'; portraits++ }
     })
     if (portraits) console.log(`  portrait: ${portraits} performer cards → verified Wikipedia portrait`)
 
@@ -335,51 +350,43 @@ async function buildCity(city: City) {
       // downloadable (Wikimedia doesn't hotlink-block), so it survives the verifier's 4-candidate
       // download cap even when web hits are on strict hosts (Billboard/Rolling Stone 403 our fetch).
       const cands: string[] = []
-      if (perf) { const wk = await wikiImage(actName(p)); if (wk && (await isGoodImage(wk))) cands.push(wk) }
+      let wiki: string | null = null, og: string | null = null
+      if (perf) { wiki = await wikiImage(actName(p)); if (wiki && (await isGoodImage(wiki))) cands.push(wiki); else wiki = null }
       // ORGANISER FIRST: the event page's own image leads the candidate list — when it and a web hit both
       // "fit", vision tie-breaks toward the honest source (a Hamburg guide's japanese-food photo "fits" a
       // japanese restaurant; only the restaurant's OWN photo is true). Web hits fill in behind it.
-      if (p.link) { const og = await fetchEventImage(p.link); if (og) cands.push(og) }
+      if (p.link) { og = await fetchEventImage(p.link); if (og) cands.push(og) }
       cands.push(...await webImageCandidates(q, 5))
       if (!cands.length) return
       const best = visionOn ? await verifyImageForEvent(cands, p, city.name) : cands[0]
-      if (best) { p.image = best; visGot++ } else if (visionOn) visRej++
+      if (best) { p.image = best; p.imageWhy = best === og ? 'event-page' : best === wiki ? 'portrait' : 'web'; visGot++ }
+      else if (visionOn) visRej++
     })
-    console.log(`  vision:   +${visGot} live picks imaged via verified search${visRej ? ` · ${visRej} rejected → themed stock` : ''}`)
+    console.log(`  vision:   +${visGot} live picks imaged via verified search${visRej ? ` · ${visRej} rejected → no photo` : ''}`)
 
     const seen = new Map<string, number>()
     for (const p of live) if (p.image && !trustedImg(p)) seen.set(p.image, (seen.get(p.image) || 0) + 1)
-    for (const p of live) if (p.image && !trustedImg(p) && (seen.get(p.image) || 0) > 1) p.image = undefined   // shared hero = generic
+    for (const p of live) if (p.image && !trustedImg(p) && (seen.get(p.image) || 0) > 1) { p.image = undefined; p.imageWhy = undefined }   // shared hero = generic
 
-    // THEMED STOCK (Pexels) — the vivid, on-theme layer. For every pick still imageless (generic web
-    // events, or a performer the og/web/wiki passes missed) query Pexels by the event's OWN theme,
-    // with a category-hint fallback so a too-niche title still resolves. Vibrant + relevant + never a
-    // wrong civic subject — this is what replaces the dull/mismatched canon-borrow. Skipped with no
-    // PEXELS_API_KEY (the bank below then carries it, so a missing key never blanks a card).
-    const PEX_HINT: Record<string, string> = { art: 'art exhibition gallery', live: 'concert crowd lights', stage: 'theatre stage performance', eat: 'restaurant plated food', drink: 'bar cocktails', market: 'open air market stalls', out: 'people outdoors park summer', daytrip: 'dutch landscape countryside' }
-    const idHash2 = (s: string) => { let h = 0; for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0; return Math.abs(h) }
-    const pexQuery = (p: Pick) => `${p.title.split(/\s*[:–—|·]\s*/)[0].replace(/\b(19|20)\d{2}\b/g, '').replace(/\b(editie|edition|vol\.?|#?\d+(st|nd|rd|th)?)\b/gi, '').trim()} ${PEX_HINT[p.category] ?? ''}`.replace(/\s+/g, ' ').trim()
-    if (process.env.PEXELS_API_KEY) {
-      let pexGot = 0
-      await mapLimit(live.filter((p) => !p.image), 3, async (p) => {
-        const salt = idHash2(p.id)
-        const img = (await pexelsImage(pexQuery(p), salt)) || (await pexelsImage(PEX_HINT[p.category] ?? p.category, salt))
-        if (img) { p.image = img; pexGot++ }
-      })
-      if (pexGot) console.log(`  pexels:   +${pexGot} live picks imaged via themed stock`)
+    // VENUE MATCH — the one honest borrow (replaces Pexels themed stock + the category bank). A pick AT a
+    // canon place wears that place's photo: true for "Concertgebouw Open" at Het Concertgebouw, and only
+    // for a PERFORMER card when the title itself names the place (a venue-led night, not an act wearing
+    // the hall — corpus imageRules: "never a stand-in, never another venue"). See venueMatchImage.
+    {
+      let venued = 0
+      const who: string[] = []
+      for (const p of live) {
+        if (p.image) continue
+        const m = venueMatchImage(p, places)
+        if (m) { p.image = m.image; p.imageWhy = 'venue'; venued++; if (who.length < 6) who.push(`${p.title.slice(0, 26)} ← ${m.place}`) }
+      }
+      if (venued) console.log(`  venue:    +${venued} imageless picks → their own venue's canon photo (${who.join(' · ')})`)
     }
 
-    // BANK FILL — anything still imageless (generic web events, or a pick that just lost a shared
-    // hero) gets a real category photo from the canon bank. Runs AFTER the dedup so these curated
-    // borrows are never stripped. Result: every live card carries a photograph, none are text-on-colour.
-    let banked = 0
-    for (const p of live) if (!p.image) { const img = await workingBankPhoto(p); if (img) { p.image = img; banked++ } }
-    if (banked) console.log(`  bank:     +${banked} imageless live picks → themed canon photo`)
-
     // CURATED OVERRIDES — hand-pinned images for hero/recurring events the auto-pipeline gets wrong, applied
-    // LAST so they always win (and rescue an event that would otherwise be dropped imageless). See curated.ts.
+    // LAST so they always win (and rescue an event that would otherwise ship without a photo). See curated.ts.
     let curated = 0
-    for (const p of live) { const c = curatedImage(p.title); if (c) { p.image = c; curated++ } }
+    for (const p of live) { const c = curatedImage(p.title); if (c) { p.image = c; p.imageWhy = 'curated'; curated++ } }
     if (curated) console.log(`  curated:  ${curated} hero events → hand-pinned image`)
 
     // PORTRAIT NORMALIZE — reshape EVERY photo (live AND canon) to a tall portrait via the wsrv.nl proxy.
@@ -390,57 +397,53 @@ async function buildCity(city: City) {
     for (const p of picks) if (p.image) p.image = toPortrait(p.image)
 
     // NO TWO CARDS SHARE A PHOTO — final dedup on the FINAL urls, across ALL live picks (trusted included:
-    // a reseller submits the same photo to several Feed Factory listings, and two web-search picks can land
-    // on the same blog image — "Love on the Canals" and "Rembrandt & Life" shipped identical STRAAT shots).
-    // Keep the first (feed order = best-ranked), re-image the rest from the bank, never repeating a photo.
+    // a reseller submits the same photo to several Feed Factory listings; two venue-matched picks at the
+    // same hall would wear the same facade). Keep the first (feed order = best-ranked); the later live
+    // twin goes without — an honest blank, not a borrowed photo.
     {
       const used = new Set<string>()
       let dupes = 0
       for (const p of picks) {
         if (!p.image) continue
-        if (used.has(p.image)) {
-          if (isLive(p)) { const fb = await workingBankPhoto(p, used); if (fb) { p.image = fb; dupes++ } else { p.image = undefined } }
-        }
-        if (p.image) used.add(p.image)
+        if (used.has(p.image)) { if (isLive(p)) { p.image = undefined; p.imageWhy = undefined; dupes++ } continue }
+        used.add(p.image)
       }
-      if (dupes) console.log(`  unique:   ${dupes} duplicate card photos → distinct bank photos`)
+      if (dupes) console.log(`  unique:   ${dupes} duplicate card photos → the later card goes without`)
     }
 
-    // FINAL VALIDATION — fetch EVERY published image (live + canon) and replace any DEFINITIVELY broken one
-    // (a dead source, a wsrv 4xx, a 404 — the things that blank a card) with a bank photo that actually
-    // loads. This is the guarantee that the feed never ships a blank card; a transient 429/timeout is kept.
-    let revived = 0, lost = 0
-    await mapLimit(picks.filter((p) => p.image), 6, async (p) => {
-      if (await imageBroken(p.image!)) { const fb = await workingBankPhoto(p); if (fb) { p.image = fb; revived++ } else { p.image = undefined; lost++ } }
-    })
-    if (revived || lost) console.log(`  validate: ${revived} broken images → working bank photo${lost ? ` · ${lost} unfixable` : ''}`)
+    // FINAL VALIDATION — fetch EVERY published image (live + canon) and DROP any DEFINITIVELY broken one
+    // (a dead source, a wsrv 4xx, a 404 — the things that blank a card). No replacement from anywhere: a
+    // live pick ships its typographic face; a CANON loss is logged by name so the URL gets fixed in
+    // src/data. A transient 429/timeout is kept (imageBroken is conservative).
+    {
+      let lost = 0
+      const gone: string[] = []
+      await mapLimit(picks.filter((p) => p.image), 6, async (p) => {
+        if (await imageBroken(p.image!)) { p.image = undefined; p.imageWhy = undefined; lost++; if (!isLive(p)) gone.push(p.title) }
+      })
+      if (lost) console.log(`  validate: ${lost} broken images dropped${gone.length ? ` · CANON lost: ${gone.join(', ')} — fix the URL in src/data` : ''}`)
+    }
 
-    // VISION QA — the image arm of the publish gate, and the end of image whack-a-mole. Look at EVERY live
-    // pick's FINAL (portrait-wrapped) image and confirm with Claude vision that it's a real photo that
-    // genuinely suits the event. Anything blank / grey-placeholder / watermarked / a poster / a wrong subject
-    // is swapped for a bank photo that ALSO passes the same check — so a bad image can't reach a card whatever
-    // the failure mode (a class the HTTP-level checks above can't catch). Canon is hand-curated → trusted, not
+    // VISION QA — the image arm of the publish gate. Look at every live pick's FINAL (portrait-wrapped)
+    // image and confirm with Claude vision that it's a real photo that genuinely suits the event. Anything
+    // blank / watermarked / a wrong subject is DROPPED — not swapped for a bank photo that "also passes".
+    // Organiser uploads (trusted on subject), venue borrows and hand pins (both human-verified) are not
     // re-judged. Needs ANTHROPIC_API_KEY; never-throws; ~cents/run (one Haiku vision call per live pick).
     if (visionOn) {
       let qa = 0
-      await mapLimit(live.filter((p) => p.image && !trustedImg(p)), 3, async (p) => {
-        if (await verifyImageForEvent([p.image!], p, city.name)) return   // vision confirms it fits → keep
-        // rejected — try bank photos until one both loads AND passes vision (else leave it for the safety net)
-        const pool = bank[p.category]?.length ? bank[p.category] : bankPool
-        for (let i = 0; i < Math.min(pool.length, 4); i++) {
-          const cand = toPortrait(pool[(idHash(p.id) + i) % pool.length])
-          if (!(await imageBroken(cand)) && (await verifyImageForEvent([cand], p, city.name))) { p.image = cand; qa++; return }
-        }
-        // no vision-approved bank photo — fall back to any loading bank photo rather than blank
-        const fb = await workingBankPhoto(p); if (fb) { p.image = fb; qa++ }
+      await mapLimit(live.filter((p) => p.image && !trustedImg(p) && p.imageWhy !== 'venue' && p.imageWhy !== 'curated'), 3, async (p) => {
+        if (await verifyImageForEvent([p.image!], p, city.name)) return
+        p.image = undefined; p.imageWhy = undefined; qa++
       })
-      if (qa) console.log(`  vision-qa: ${qa} bad final images → vetted bank photo`)
+      if (qa) console.log(`  vision-qa: ${qa} final images rejected → no photo`)
     }
 
-    // safety net: with the bank, no live pick should be imageless; drop any that somehow still is.
-    const before = picks.length
-    picks = picks.filter((p) => !isLive(p) || p.image)
-    console.log(`  images:   ${live.filter((p) => p.image).length}/${live.length} live imaged${before !== picks.length ? ` · dropped ${before - picks.length} imageless` : ''}`)
+    // THE RECEIPT — every live pick carries one; 'none' is the honest blank the board and the app read.
+    for (const p of live) { if (!p.image) p.imageWhy = 'none'; else if (!p.imageWhy) p.imageWhy = trustedImg(p) ? 'organiser' : 'web' }
+    const census: Record<string, number> = {}
+    for (const p of live) census[p.imageWhy!] = (census[p.imageWhy!] ?? 0) + 1
+    const imaged = live.filter((p) => p.image).length
+    console.log(`  images:   ${imaged}/${live.length} live imaged · ${live.length - imaged} honest blanks (no bank, no stock) · receipts: ${Object.entries(census).map(([k, v]) => `${k} ${v}`).join(' · ')}`)
   }
   // belt-and-suspenders: any remaining http:// image (e.g. an old canon URL) → https, else it's a
   // mixed-content blank card on the https site.
@@ -733,6 +736,7 @@ async function buildCity(city: City) {
   // Queue order is Ness's explicit requirement — topical first, weather-related if possible:
   // (a) dated THIS weekend, (b) fits the weekend-forecast mode, (c) judge score, (d) buzz.
   let pendingOut: Pick[] = []
+  let noPhotoShare = 0, liveBeforeCap = 0
   {
     // THE BAR, INVERTED (2026-08-29). This gate used to be an ALLOW-LIST: a live pick published only
     // if it matched something Ness had already approved on the board. That made the app structurally
@@ -757,6 +761,24 @@ async function buildCity(city: City) {
     const mode = await weekendMode()
     const topical = (p: Pick) => (datedThisWeekend(p) ? 1 : 0)
     const wx = (p: Pick) => (mode && Array.isArray(p.weatherFit) && p.weatherFit.includes(mode) ? 1 : 0)
+    // THE NO-PHOTO CAP (V.11.9) — imageless picks that cleared the bar publish on merit only up to
+    // NO_PHOTO_CAP (best judge first, dated-this-weekend breaking ties); the rest wait in the airlock
+    // for a human call (an approval is exempt — if Ness called it, it ships, photo or not; restamp
+    // mirrors this). The share BEFORE the cap is what the publish gate reads: if MOST of the crawl
+    // lost its photo, the image pass broke and the run must abstain rather than ship a 3-card deck.
+    {
+      const noPhoto = picks.filter((p) => isLive(p) && !p.image)
+      liveBeforeCap = picks.filter(isLive).length
+      noPhotoShare = liveBeforeCap ? noPhoto.length / liveBeforeCap : 0
+      const onMerit = noPhoto.filter((p) => !isApproved(p))
+        .sort((a, b) => (b.judgeScore ?? 0) - (a.judgeScore ?? 0) || topical(b) - topical(a))
+      const overflow = new Set(onMerit.slice(NO_PHOTO_CAP).map((p) => p.id))
+      if (overflow.size) {
+        pendingOut.push(...picks.filter((p) => overflow.has(p.id)))
+        picks = picks.filter((p) => !overflow.has(p.id))
+      }
+      if (noPhoto.length) console.log(`  no-photo: ${noPhoto.length} live picks without a photo (${Math.round(noPhotoShare * 100)}% of ${liveBeforeCap}) · ${Math.min(onMerit.length, NO_PHOTO_CAP)} publish on merit (cap ${NO_PHOTO_CAP}) · ${noPhoto.length - onMerit.length} on approval · ${overflow.size} → airlock`)
+    }
     pendingOut.sort((a, b) =>
       topical(b) - topical(a) ||
       wx(b) - wx(a) ||
@@ -837,13 +859,17 @@ async function buildCity(city: City) {
     if (malformed.length) fail.push(`${malformed.length} schema-broken picks`)
     if (past.length) fail.push(`${past.length} past-dated`)
     if (httpImg.length) fail.push(`${httpImg.length} http (mixed-content) images`)
-    if (imagelessLive.length) fail.push(`${imagelessLive.length} imageless live`)
+    // (V.11.9) a card without a photo is HONEST, not broken — the gate no longer fails on one. What IS
+    // broken: an image pass that lost MOST of the crawl (keys/network down) — abstain rather than ship a
+    // deck of blanks. Read at the pre-cap share, or the cap would hide the outage behind a thin feed.
+    if (liveBeforeCap >= 8 && noPhotoShare > 0.5) fail.push(`${Math.round(noPhotoShare * 100)}% of ${liveBeforeCap} live picks imageless — image pass broken?`)
     if (heroesMissing.length) fail.push(`heroes missing: ${heroesMissing.map((h) => titleKey(h.title)).join(', ')}`)
     const warn: string[] = []
     if (liveN < 8) warn.push(`thin live feed (${liveN})`)
+    if (noPhotoShare > 0.25) warn.push(`${Math.round(noPhotoShare * 100)}% of the crawl imageless before the cap`)
 
     const tag = fail.length ? '❌ BROKEN' : warn.length ? '⚠️ OK' : '✅ HEALTHY'
-    const health = `${tag} · ${city.label} · ${picks.length} picks (${liveN} live · ${catN}/9 cats)${warn.length ? ' · warn: ' + warn.join(', ') : ''}${fail.length ? ' · FAIL: ' + fail.join(', ') : ''}`
+    const health = `${tag} · ${city.label} · ${picks.length} picks (${liveN} live · ${catN}/9 cats · ${imagelessLive.length} no-photo)${warn.length ? ' · warn: ' + warn.join(', ') : ''}${fail.length ? ' · FAIL: ' + fail.join(', ') : ''}`
     console.log(`\n  ${health}`)
     if (process.env.GITHUB_STEP_SUMMARY) {
       try { const f = Bun.file(process.env.GITHUB_STEP_SUMMARY); const prev = (await f.exists()) ? await f.text() : ''; await Bun.write(process.env.GITHUB_STEP_SUMMARY, `${prev}- ${health}\n`) } catch { /* summary is best-effort */ }
@@ -879,8 +905,8 @@ async function buildCity(city: City) {
     for (const a of health.alerts) console.log(`  ⚠ ingest: ${a.detail}`)
   }
 
-  // CANDIDATES — the imaged, date-valid live events that lost a slot to the caps (never junk: they passed
-  // every screen). The Curation Board deals these in as replacements when Ness KILLS a card. Excluded:
+  // CANDIDATES — the date-valid live events that lost a slot to the caps (never junk: they passed every
+  // screen; pictured ones first, honest blanks behind them). The Curation Board deals these in as replacements when Ness KILLS a card. Excluded:
   // anything published OR in the airlock (a pending card must not double-show on the bench), and
   // title-twins of published picks (the semantic-dedup class).
   {
@@ -891,7 +917,7 @@ async function buildCity(city: City) {
     const benchToks = new Set<string>()   // no word-order twins WITHIN the bench either
     const cands = prePool
       .filter((p) => {
-        if (pubIds.has(p.id) || !p.image || whenIsPast(p.when)) return false
+        if (pubIds.has(p.id) || whenIsPast(p.when)) return false   // V.11.9: imageless allowed (sorted last)
         const k = titleKey(p.title)
         if (pubKeys.has(k)) return false
         // near-match twins of published cards stay off the bench (killing "Festival TREK" must not deal
@@ -915,8 +941,9 @@ async function buildCity(city: City) {
         }
         return true
       })
+      .sort((a, b) => Number(!!b.image) - Number(!!a.image))   // stable: pictured first, rank order within
       .slice(0, 120)
-      .map((p) => ({ id: p.id, title: p.title, venue: p.venue, area: p.area, when: p.when, category: p.category, image: p.image, blurb: p.blurb, source: p.source, link: p.link, buzz: p.buzz, weatherFit: p.weatherFit, freshness: p.freshness, firstSeen: p.firstSeen, outdoor: p.outdoor, kid: p.kid, price: p.price, why: p.why, editorScore: p.editorScore }))
+      .map((p) => ({ id: p.id, title: p.title, venue: p.venue, area: p.area, when: p.when, category: p.category, image: p.image, imageWhy: p.imageWhy, blurb: p.blurb, source: p.source, link: p.link, buzz: p.buzz, weatherFit: p.weatherFit, freshness: p.freshness, firstSeen: p.firstSeen, outdoor: p.outdoor, kid: p.kid, price: p.price, why: p.why, editorScore: p.editorScore }))
     await Bun.write(`${OUT_DIR}/candidates.${city.key}.json`, JSON.stringify({ generatedAt: feed.generatedAt, count: cands.length, candidates: cands }, null, 2))
     console.log(`  → wrote candidates.${city.key}.json (${cands.length} bench events for the Curation Board)`)
   }

@@ -22,6 +22,17 @@ export type Status = 'sold-out' | 'selling-fast' | 'final-week' | 'free'
 
 export type SwipeDir = 'like' | 'nope' | 'save' | 'skip'
 
+// Where a live pick's image came from — the provenance vocabulary (V.11.9). Every value is a
+// photo OF the event/venue or an explicit absence; there is no "themed" value on purpose.
+export type ImageWhy =
+  | 'organiser'   // the organiser's own upload (I amsterdam / RA / LBB / scout), sanity-screened
+  | 'event-page'  // og:image / JSON-LD off the pick's OWN link, vision-verified
+  | 'portrait'    // the act's Wikipedia portrait, vision-verified
+  | 'web'         // an open-web candidate, vision-verified against the event
+  | 'venue'       // borrowed from the canon entry for the SAME venue (a venue-led event)
+  | 'curated'     // hand-pinned in scripts/curated.ts
+  | 'none'        // no honest image found — the typographic face ships
+
 export interface Pick {
   id: string
   title: string
@@ -33,7 +44,13 @@ export interface Pick {
   outdoor: boolean
   kid: boolean
   price: string
-  image?: string       // real og:image; when absent the card renders a typographic poster
+  image?: string       // a photo OF THE EVENT (or of its venue) — never a stand-in. Absent = the
+                       // card renders the typographic no-photo face (V.11.9: an honest blank beats
+                       // a plausible wrong photo; the category bank + themed stock are retired).
+  imageWhy?: ImageWhy  // THE IMAGE RECEIPT (V.11.9) — where the photo came from, stamped by the
+                       // pipeline on every live pick (canon is hand-imaged, unstamped). The board
+                       // renders it as a chip so a wrong-photo class is a 2-minute glance, not a
+                       // hunt. 'none' = no honest image was found; the card says so by design.
   blurb: string
   why: string          // "why this fits you / now" reasoning
   source: string       // publication credited (signal + link model)

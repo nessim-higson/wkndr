@@ -54,16 +54,23 @@ const GEO: Record<string, { city: string; region?: string; country: string; time
 // source WITHOUT an adapter (Volkskrant) + the two thinnest slices (new eat/drink openings —
 // the backlog's known gap — and big outdoor one-offs). The retired facets stay below, commented,
 // for one-line re-enable if a deterministic adapter breaks.
+// V.11.9 (2026-09-05) — down to THREE. The festivals/markets facet was retired: I amsterdam's
+// `festivals` namespace crawls it deterministically, and the facet's own output was the worst-imaged,
+// worst-categorised slice of the feed (a tattoo convention filed as `market`, index-only links). What
+// stays is exactly what has NO deterministic adapter: Volkskrant, the eat/drink openings gap, big-screen
+// sport. Every web-search pick is now also UPGRADED on contact when I amsterdam serves its event page
+// (adapters/iamsterdam.ts `upgradeViaIamsterdam`) and DROPPED if uncorroborated with an index-only link.
 const FACETS = [
   "de Volkskrant (volkskrant.nl) — this weekend's cultural agenda: concerts, theatre, art, film",
   'notable new restaurant & bar openings, food festivals and tastings',
-  'festivals, street fairs, markets and big free or outdoor events',
   // THE BIG-SCREEN facet (Ness, 2026-07-12: "where are the world cup watching picks??" — the
   // 2026 World Cup final is Sun 19 Jul and the pipeline had NOTHING): public viewings, watch
   // parties, fan zones + big-screen sport generally. Evergreen phrasing — after the Cup it keeps
   // catching finals-class sport (F1, Euros, tennis) and big outdoor screening one-offs.
   'big-screen sport: World Cup 2026 public viewing, watch parties and fan zones (bars, breweries, outdoor screens), plus other major sport screenings',
 ]
+// retired 2026-09-05 (I amsterdam `festivals` crawls it; produced the wrong-photo/wrong-category class):
+//   'festivals, street fairs, markets and big free or outdoor events',
 // retired 2026-07-10 (deterministic coverage / low unique yield):
 //   "Your Little Black Book (yourlittleblackbook.me) — its Amsterdam weekend agenda / weekend tips for this weekend",
 //   "I amsterdam (iamsterdam.com/whats-on) — festivals, exhibitions and events on this weekend",

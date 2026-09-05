@@ -36,7 +36,14 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 .badge.appr{background:var(--green)}
 .badge.pile{background:var(--accent)}
 .badge.lens{background:#2b6cb0}
-.lowres{position:absolute;bottom:10px;left:10px;background:#c33;color:#fff;font-family:var(--sans);font-size:9px;font-weight:700;letter-spacing:.06em;padding:3px 8px;border-radius:999px}
+.lowres{position:absolute;top:36px;left:10px;background:#c33;color:#fff;font-family:var(--sans);font-size:9px;font-weight:700;letter-spacing:.06em;padding:3px 8px;border-radius:999px}
+/* V.11.9 — THE IMAGE RECEIPT. Where the card's photo came from (pipeline `imageWhy`): green = of the
+   event, amber = the venue's own canon photo, blue = hand-pinned. A card with NO photo renders the
+   typographic tile — the pipeline no longer borrows a bank/stock photo, so "no photo" is now a state
+   you can see here instead of a wrong photo you can't. */
+.imgwhy{position:absolute;bottom:10px;left:10px;color:#fff;font-family:var(--sans);font-size:9px;font-weight:700;letter-spacing:.06em;padding:3px 8px;border-radius:999px;background:#2f6f4f}
+.imgwhy.venue{background:#a5741c}.imgwhy.curated{background:#2b6cb0}.imgwhy.web{background:#4f7a2f}
+.card>.noimg{width:112px;flex:none;align-self:stretch;display:flex;align-items:flex-end;padding:10px;background:linear-gradient(165deg,#3a3350,#17141f);color:rgba(255,255,255,.78);font-family:var(--sans);font-size:9px;font-weight:700;letter-spacing:.1em;line-height:1.35}
 .card img{cursor:zoom-in}
 #veil{position:fixed;inset:0;z-index:60;display:none;place-items:center;background:rgba(6,5,4,.94);backdrop-filter:blur(8px);cursor:zoom-out;padding:20px}
 #veil.on{display:grid}
@@ -255,7 +262,7 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 <body>
 <div class="wrap">
 <header>
-<p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD V.9.42</p>
+<p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD V.9.47</p>
 <h1>Your weekend<span class="dot">.</span></h1>
 <div id="modetoggle"><button class="on" data-mode="simple">Simple</button><button data-mode="advanced">Advanced</button></div>
 <div id="overnote" style="display:none"></div>
@@ -1017,6 +1024,9 @@ Promise.all([
   }
 }).catch(e=>{document.getElementById('board').textContent='Could not load the feed: '+e});
 
+// the image receipt chip (pipeline `imageWhy`, V.11.9) — a wrong-photo class is a glance, not a hunt
+const IMGWHY={organiser:'ORGANISER PHOTO','event-page':'EVENT PAGE',portrait:'PORTRAIT ✓',web:'WEB ✓',venue:'VENUE PHOTO',curated:'PINNED'};
+function imgWhyTag(p){const w=p.imageWhy;return w&&IMGWHY[w]&&p.image?'<span class="imgwhy '+w+'">'+IMGWHY[w]+'</span>':''}
 function addCard(p,g,tag,pos,probe){
   SEEN.set(vkey(p),p);   // so the cancelled shelf can still draw it after it has left every list
   const el=document.createElement('div');el.className='card';el.dataset.id=p.id+(tag==='pile'?'::pile':tag==='lens'?'::lens':'');el.dataset.vk=vkey(p);
@@ -1041,7 +1051,8 @@ function addCard(p,g,tag,pos,probe){
     :'';
   el.innerHTML=badge
     +'<button class="kill" title="Kill">✕</button>'
-    +'<img loading="lazy" src="'+(p.image||'')+'" alt="">'
+    +(p.image?'<img loading="lazy" src="'+p.image+'" alt="">':'<div class="noimg">NO PHOTO<br>YET</div>')
+    +imgWhyTag(p)
     +'<div class="meta">'
     +(why?'<div class="why">'+why+'</div>':'')
     +'<h3>'+title+buzzTag(p)+'</h3>'
@@ -1085,7 +1096,7 @@ function addCard(p,g,tag,pos,probe){
     if(!was)b.classList.add('on');
     get().img=was?undefined:(up?'good':'bad');update();
   }));
-  el.querySelector('img').addEventListener('click',()=>{if(p.image)focusImg(p)});
+  {const im=el.querySelector('img');if(im)im.addEventListener('click',()=>{if(p.image)focusImg(p)})}
   el.querySelector('.note').addEventListener('change',e=>{get().note=e.target.value.trim()||undefined;update()});
   el.querySelector('.better').addEventListener('change',e=>{get().betterImage=e.target.value.trim()||undefined;update()});
   if(v){if(v.stars)paint(v.stars);if(v.img)el.querySelector(v.img==='good'?'.imgup':'.imgdn').classList.add('on');
