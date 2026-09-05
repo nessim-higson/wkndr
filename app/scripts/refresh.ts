@@ -400,15 +400,18 @@ async function buildCity(city: City) {
     // a reseller submits the same photo to several Feed Factory listings; two venue-matched picks at the
     // same hall would wear the same facade). Keep the first (feed order = best-ranked); the later live
     // twin goes without — an honest blank, not a borrowed photo.
+    // CANON FIRST: a place's own card always keeps its own photo — a venue-borrow ("Ed van der Elsken"
+    // wearing the Rijksmuseum) yields to the Rijksmuseum card when both are in the feed, whichever
+    // dedupe happened to order first. Among live picks, feed order (best-ranked) wins.
     {
       const used = new Set<string>()
       let dupes = 0
-      for (const p of picks) {
+      for (const p of [...picks.filter((p) => !isLive(p)), ...picks.filter(isLive)]) {
         if (!p.image) continue
         if (used.has(p.image)) { if (isLive(p)) { p.image = undefined; p.imageWhy = undefined; dupes++ } continue }
         used.add(p.image)
       }
-      if (dupes) console.log(`  unique:   ${dupes} duplicate card photos → the later card goes without`)
+      if (dupes) console.log(`  unique:   ${dupes} duplicate card photos → the later card goes without (a place's own card keeps its photo)`)
     }
 
     // FINAL VALIDATION — fetch EVERY published image (live + canon) and DROP any DEFINITIVELY broken one
@@ -460,7 +463,7 @@ async function buildCity(city: City) {
     const present = new Set(picks.map((p) => titleKey(p.title)))
     const inject = heroPicks(city.key)
       .filter((h) => !whenIsPast(h.when) && !whenBeforeWeekend(h.when) && !present.has(titleKey(h.title)))
-      .map((h) => ({ ...h, when: fixWhen(h.when), image: h.image ? toPortrait(h.image) : h.image }))
+      .map((h) => ({ ...h, when: fixWhen(h.when), image: h.image ? toPortrait(h.image) : h.image, imageWhy: (h.image ? 'curated' : 'none') as Pick['imageWhy'] }))
     if (inject.length) { picks = [...inject, ...picks]; console.log(`  heroes:   +${inject.length} guaranteed (${inject.map((h) => h.id.replace('web-hero-', '')).join(', ')})`) }
   }
 
@@ -735,6 +738,25 @@ async function buildCity(city: City) {
   // NEW FINDS tab. A star/👑/pile there promotes it into the feed via restamp's fast-path.
   // Queue order is Ness's explicit requirement — topical first, weather-related if possible:
   // (a) dated THIS weekend, (b) fits the weekend-forecast mode, (c) judge score, (d) buzz.
+  // HONEST CARRY (V.11.9) — picks that re-entered AFTER the image pass (the starred carry-forward from
+  // the PRIOR feed, 👑/▲ pull-backs) skipped it: their photo is last week's, chosen under last week's
+  // law — possibly a bank borrow — and they carry no receipt (the first live run shipped "DKMNTL at
+  // BRET" that way). A structured source's own image is still its own image; anything else without an
+  // honest receipt goes blank. One choke point, so no future door can leak an unreceipted photo.
+  {
+    const HONEST = new Set<string>(['organiser', 'event-page', 'portrait', 'web', 'venue', 'curated'])
+    let stripped = 0, relabelled = 0
+    for (const p of picks) {
+      if (!isLive(p)) continue
+      if (p.image && !HONEST.has(p.imageWhy ?? '')) {
+        if (/^web-(iams|ra|lbb|scout)-/.test(p.id)) { p.imageWhy = 'organiser'; relabelled++ }
+        else { p.image = undefined; stripped++ }
+      }
+      if (!p.image) p.imageWhy = 'none'
+    }
+    if (stripped || relabelled) console.log(`  carry:    ${relabelled} re-entered structured picks keep their organiser photo · ${stripped} unreceipted photos dropped`)
+  }
+
   let pendingOut: Pick[] = []
   let noPhotoShare = 0, liveBeforeCap = 0
   {

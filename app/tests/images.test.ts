@@ -110,7 +110,13 @@ describe('venueMatchImage — the one honest borrow', () => {
     { name: 'Het Amsterdamse Bos', image: 'https://c/bos.jpg' },
     { name: 'Pllek — waterfront hang', image: 'https://c/pllek.jpg' },
     { name: 'The Movies', image: 'https://c/movies.jpg' },
+    { name: 'The American Book Center', image: 'https://c/abc.jpg' },
   ]
+  it('a core token never bridges from a TITLE (the first live run: "American Myth Memory" ≠ the bookshop)', () => {
+    expect(venueMatchImage({ title: 'American Myth Memory – David Levinthal', venue: 'Huis Marseille', category: 'art' }, places)).toBeNull()
+    // …while the same core token on the VENUE field still stands for the place
+    expect(venueMatchImage({ title: 'Poetry night', venue: 'American Book Center', category: 'shop' }, places)?.image).toBe('https://c/abc.jpg')
+  })
   it('the Concertgebouw open day wears the Concertgebouw (the 2026-09-03 Haarlem card)', () => {
     const m = venueMatchImage({ title: 'Concertgebouw Open', venue: 'Het Concertgebouw', category: 'live' }, places)
     expect(m?.image).toBe('https://c/concertgebouw.jpg')

@@ -928,11 +928,14 @@ export function venueMatchImage(
     const full = rxOf(name)
     const core = name.split(/\s+/).filter((t) => t.length >= 8 && !GENERIC_CORE.test(t)).sort((a, b) => b.length - a.length)[0]
     const coreRx = core ? rxOf(core) : null
-    // a short ONE-WORD place name ("Movies", "Pllek") is only evidence on the VENUE field — inside a
-    // title it is just a word ("Silent movies night" is not at The Movies)
+    // The TITLE door takes the FULL name only, and only a distinct one: a short one-word place ("Movies",
+    // "Pllek") is just a word inside a title ("Silent movies night" is not at The Movies), and a core
+    // token is worse — "American" from The American Book Center put the bookshop's photo on David
+    // Levinthal's "American Myth Memory" show on the first live run (2026-09-05). The core token is
+    // evidence on the VENUE field alone, where it stands for the place ("Het Concertgebouw").
     const nameIsDistinct = /\s/.test(name) || name.length >= 8
     const onVenue = !!venue && !PLACE_STOP.test(venue) && (full.test(venue) || (!!coreRx && coreRx.test(venue)))
-    const onTitle = (nameIsDistinct && full.test(p.title)) || (!!coreRx && coreRx.test(p.title))
+    const onTitle = nameIsDistinct && full.test(p.title)
     if (!onVenue && !onTitle) continue
     if (perf && !onTitle) continue
     if (!best || name.length > best.len) best = { image: pl.image, place: name, len: name.length }
