@@ -505,6 +505,13 @@ GUARANTEES topped/led picks into the feed (pull-back from prePool/canon if the b
 1. ~~Phase 2 — demote web_search~~ **DONE 2026-09-05 (V.11.9)** — 3 facets + index-only-link drop. Next
    on images: watch the first two `receipts:` census lines in the refresh log; if `web` dominates over
    `event-page`/`organiser`, raise the sitemap matcher's reach before loosening anything else.
+1b. **From the first two live runs under the law (2026-09-05):** (a) `src/data/picks.lostin.ts` **Mata
+   Hari** image URL is dead (redlightinfo.nl 404) — the card ships blank until a new photo is pinned;
+   (b) the I amsterdam `festivals` listing crawl (`PER_CAT` 12, listing order) MISSED the same-weekend
+   Tattoo Convention once the web-search facet that used to catch it was retired — next: seed the crawl
+   from the events sitemap's `<lastmod>`-recent locs so dated one-offs can't fall off the cap;
+   (c) the crawl's honest imageless share was 33% before the cap (12 organiser images failed the
+   ≥700px floor) — watch whether the floor is too strict for Feed Factory flyers before touching it.
 2. **Thin slices:** eat/drink/shop fresh sources — re-run the (stubbed) research sweeps for food/community
    feeds and venue ICS calendars.
 3. **"Talked about" pill** — make the buzz up-level visible on the card face, not just the ranking.
