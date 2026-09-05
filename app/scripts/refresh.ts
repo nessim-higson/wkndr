@@ -19,7 +19,7 @@
  */
 import { CITIES, type City } from '../src/data/cities'
 import type { Pick } from '../src/types'
-import { dedupe, balanceByCategory, isGoodImage, isPortraitImage, imageBroken, urlLooksNonPhoto, imageIsCardworthy, fetchEventImage, toPortrait, wikiImage, webImageCandidates, verifyImageForEvent, venueMatchImage, linkIsIndex, NO_PHOTO_CAP, whenBeforeWeekend, upcomingWeekend, weekendMode, weekendModes, stampServeOrder, publishCheck, crownsActive, JUDGE_FLOOR, STAR_BOOST, linkOk, mapLimit, rxOf, titleKey, titleLooseMatch, tokKey, approvalCheck, type TasteCorpus, type WeeklySlate } from './lib/pipeline'
+import { dedupe, balanceByCategory, isGoodImage, isPortraitImage, imageBroken, urlLooksNonPhoto, imageIsCardworthy, fetchEventImage, toPortrait, wikiImage, webImageCandidates, verifyImageForEvent, venueMatchImage, venueBook, linkIsIndex, NO_PHOTO_CAP, whenBeforeWeekend, upcomingWeekend, weekendMode, weekendModes, stampServeOrder, publishCheck, crownsActive, JUDGE_FLOOR, STAR_BOOST, linkOk, mapLimit, rxOf, titleKey, titleLooseMatch, tokKey, approvalCheck, type TasteCorpus, type WeeklySlate } from './lib/pipeline'
 import { fixWhen, latestDateOf, whenActiveBy, whenIsPast, whenLooksBroken } from '../src/lib/when'
 import { effectiveFreshness, NEW_DAYS } from '../src/lib/freshness'
 import { mergeSightings, pruneRegistry, appendRun, type SeenRegistry, type HealthFile } from './lib/ingest'
@@ -278,14 +278,9 @@ async function buildCity(city: City) {
     const PERFORMER = new Set(['live', 'stage'])
     const visionOn = !!process.env.ANTHROPIC_API_KEY
 
-    // THE VENUE BOOK — the canon's evergreen PLACES (hand-imaged). Venue-match borrows from these
-    // only; both the title and a distinct venue string are names for the place.
-    const places: { name: string; image: string }[] = []
-    for (const c of city.picks) {
-      if (c.freshness !== 'always' || !c.image || !c.image.startsWith('http')) continue
-      places.push({ name: c.title, image: c.image })
-      if (c.venue && c.venue !== c.title) places.push({ name: c.venue, image: c.image })
-    }
+    // THE VENUE BOOK — the canon's evergreen, PLACE-shaped entries (hand-imaged); venue-match borrows
+    // from these only. Event-shaped canon titles are excluded — see venueBook in lib/pipeline.
+    const places = venueBook(city.picks)
 
     // TRUST, BUT SCREEN FOR THE LOGO CLASS — organisers sometimes upload their LOGO/wordmark instead of a
     // photo ("LOGO___WORDMARK_square_black.webp" → a solid-black card). Trusted images stay untouched on

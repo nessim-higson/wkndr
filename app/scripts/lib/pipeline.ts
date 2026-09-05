@@ -920,6 +920,24 @@ export function titlesAgree(a: string, b: string): boolean {
 const PLACE_STOP = /^(amsterdam|various|centrum|noord|zuid|west|oost|the web|i amsterdam|your little black book|online|tba|tbd)$/i
 const GENERIC_CORE = /^(openluchttheater|theater|theatre|schouwburg|museum|museums|market|markt|festival|park|garden|tuin|hallen|kerk|church|cinema|bioscoop|gallery|galerie|brouwerij|brewery|restaurant|hotel|terras|terrace|strand|beach|pavilion|paviljoen|centrum|center|centre|library|bibliotheek|stadium|stadion|square|plein|street|straat|amsterdamse|amsterdam|international|nationaal|national)$/i
 const normPlace = (s: string) => s.split(/\s+[—–-]\s+/)[0].replace(/^(the|het|de|een|royal|koninklijke?)\s+/i, '').trim()
+
+/** THE VENUE BOOK — which canon entries may lend their photo as "the place". Evergreen, imaged, and
+ *  PLACE-shaped: an entry titled like an event ("Danh Vo at the Stedelijk", "Kwaku: opening weekend")
+ *  carries a photo of THAT show, not of the building — the third live run (2026-09-05) put Danh Vo's
+ *  work on a Kho Liang Ie exhibition through exactly that entry, because its title contains
+ *  "Stedelijk" and out-lengthed the real "Stedelijk Museum" entry. A descriptor dash ("Pllek —
+ *  waterfront hang") is fine — normPlace strips it. Both the title and a distinct venue string name
+ *  the place. */
+export function venueBook(canon: { title: string; venue?: string; image?: string; freshness?: string }[]): { name: string; image: string }[] {
+  const out: { name: string; image: string }[] = []
+  for (const c of canon) {
+    if (c.freshness !== 'always' || !c.image || !c.image.startsWith('http')) continue
+    if (/\s(at|@|bij|in het|in de)\s|:/i.test(c.title)) continue   // event-shaped: the photo is of the show
+    out.push({ name: c.title, image: c.image })
+    if (c.venue && c.venue !== c.title) out.push({ name: c.venue, image: c.image })
+  }
+  return out
+}
 export function venueMatchImage(
   p: { title: string; venue?: string; category?: string },
   places: { name: string; image: string }[],

@@ -5,7 +5,7 @@
 // guess) wearing the Bloemenmarkt's photo, and "Concertgebouw Open" wearing Haarlem — the category-bank
 // fallback working exactly as designed. 9 of 53 live cards showed a photo that was not of the event.
 import { describe, it, expect } from 'bun:test'
-import { linkIsIndex, iamsCategoryFromPath, matchEventLoc, matchEventLocs, titlesAgree, titleTokens, venueMatchImage, NO_PHOTO_CAP } from '../scripts/lib/pipeline'
+import { linkIsIndex, iamsCategoryFromPath, matchEventLoc, matchEventLocs, titlesAgree, titleTokens, venueMatchImage, venueBook, NO_PHOTO_CAP } from '../scripts/lib/pipeline'
 import { rankPicks, holdBackImageless, orderServed } from '../src/weather/modes'
 import type { Pick, ImageWhy } from '../src/types'
 import feed from '../public/data/picks.amsterdam.json'
@@ -138,6 +138,24 @@ describe('venueMatchImage — the one honest borrow', () => {
   })
   it('a generic venue string never matches anything', () => {
     expect(venueMatchImage({ title: 'Some festival', venue: 'Amsterdam', category: 'out' }, places)).toBeNull()
+  })
+})
+
+describe('venueBook — only PLACE-shaped canon may lend its photo', () => {
+  const canon = [
+    { title: 'Stedelijk Museum', image: 'https://c/stedelijk.jpg', freshness: 'always' },
+    { title: 'Danh Vo at the Stedelijk', venue: 'Stedelijk Museum', image: 'https://c/danhvo.jpg', freshness: 'always' },   // the third live run's stand-in
+    { title: 'Pllek — waterfront hang', image: 'https://c/pllek.jpg', freshness: 'always' },
+    { title: 'De Baanderij', venue: 'De Baanderij (ex-IJ-Kantine)', image: 'https://c/baanderij.jpg', freshness: 'always' },
+    { title: 'Jordana + Tōth', venue: 'Paradiso', image: 'https://c/jordana.jpg', freshness: 'weekend' },   // a dated gig: an artist's photo
+  ]
+  it('drops event-shaped titles and dated entries, keeps places (title + distinct venue string)', () => {
+    const names = venueBook(canon).map((p) => p.name)
+    expect(names).toEqual(['Stedelijk Museum', 'Pllek — waterfront hang', 'De Baanderij', 'De Baanderij (ex-IJ-Kantine)'])
+  })
+  it('so an exhibition at the Stedelijk wears the MUSEUM, never another show', () => {
+    const m = venueMatchImage({ title: 'Kho Liang Ie – Mid-Century Modernist', venue: 'Stedelijk Museum Amsterdam', category: 'art' }, venueBook(canon))
+    expect(m?.image).toBe('https://c/stedelijk.jpg')
   })
 })
 
