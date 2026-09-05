@@ -1,23 +1,23 @@
 {
- "generatedAt": "2026-09-04T09:50:17.397Z",
- "count": 16,
+ "generatedAt": "2026-09-05T09:12:40.155Z",
+ "count": 18,
  "inbox": [
   {
-   "id": "web-ra-2528578",
-   "title": "Club Corner Friday Disco & House",
-   "venue": "Grand Café Heineken Hoek",
-   "area": "",
-   "when": "Fri 4 Sep · 21:00",
-   "category": "live",
+   "id": "web-iams-theater-auditie-degasten-seizoen-26-27",
+   "title": "Theater auditie: DEGASTEN seizoen 26/27",
+   "venue": "Podium Mozaïek",
+   "area": "Bos en Lommerweg 191",
+   "when": "Sat 5 Sep · 10:30",
+   "category": "stage",
    "freshness": "weekend",
    "outdoor": false,
    "kid": false,
-   "price": "",
-   "image": "https://images.ra.co/d4a8224bec13606289cf99b5da0d697d3c5d873c.jpg",
-   "blurb": "Club night at Grand Café Heineken Hoek.",
-   "why": "On Resident Advisor",
-   "source": "Resident Advisor",
-   "link": "https://ra.co/events/2528578",
+   "price": "free",
+   "image": "https://app.thefeedfactory.nl/api/assets/6a3d35e13dea964c0f7cad14/AUDITIEDAG_c_Kiriko_Mechanicus.webp",
+   "blurb": "ABOUT THE AUDITION \n During a year at DEGASTEN, you will develop your own skills: from physical acting to improvisation, from exploring to writing to creating. ",
+   "why": "On I amsterdam",
+   "source": "I amsterdam",
+   "link": "https://www.iamsterdam.com/en/whats-on/calendar/theatre-and-stage/stage/theater-auditie-degasten-seizoen-26-27",
    "weatherFit": [
     "HOT",
     "WARM",
@@ -25,9 +25,10 @@
     "COLD_WET",
     "VOLATILE"
    ],
-   "firstSeen": "2026-09-04",
-   "inboxScore": 8.4,
-   "scoreWhy": "seen today · on this weekend · taste: club café"
+   "verify": false,
+   "firstSeen": "2026-09-05",
+   "inboxScore": 7.7,
+   "scoreWhy": "seen today · on this weekend · taste: podium"
   },
   {
    "id": "web-iams-amsterdam-fringe-festival-slug-xiao-chuyue",
@@ -54,8 +55,8 @@
    ],
    "verify": false,
    "firstSeen": "2026-09-04",
-   "inboxScore": 7.7,
-   "scoreWhy": "seen today · on this weekend · taste: festival"
+   "inboxScore": 7.4,
+   "scoreWhy": "seen 1d ago · on this weekend · taste: festival"
   },
   {
    "id": "web-iams-concertgebouw-open-gratis-miniconcerten-voor-iedereen",
@@ -82,25 +83,25 @@
    ],
    "verify": false,
    "firstSeen": "2026-09-04",
-   "inboxScore": 7.7,
-   "scoreWhy": "seen today · on this weekend · taste: open"
+   "inboxScore": 7.4,
+   "scoreWhy": "seen 1d ago · on this weekend · taste: open"
   },
   {
-   "id": "web-iams-ace-in-the-hole",
-   "title": "Ace in the Hole",
+   "id": "web-iams-peau-dane-re-release",
+   "title": "Peau d'âne (re-release)",
    "venue": "LAB111",
    "area": "Arie Biemondstraat 111",
-   "when": "Until Wed 16 Sep",
+   "when": "Until Tue 15 Sep",
    "category": "stage",
    "freshness": "weekend",
    "outdoor": false,
    "kid": false,
    "price": "from €13",
-   "image": "https://app.thefeedfactory.nl/api/assets/6a8e648049087946d0475bb0/https___culturekit-assets.imgix.net_1_assets_7ce290b1-4cf9-464c-82fd-a2277599a19d.webp",
-   "blurb": "Kirk Douglas as an unscrupulous journalist\n In Ace in the Hole, Kirk Douglas plays the ambitious journalist Chuck Tatum. After a series of failures, he lands a ",
+   "image": "https://app.thefeedfactory.nl/api/assets/6a618420ac040b771f5f9e64/https___culturekit-assets.imgix.net_1_assets_7caa5ad0-c200-485c-a388-f9e66a3e3306.webp",
+   "blurb": "A fairy tale with irony and color\n Director Jacques Demy adapted Charles Perrault's classic fairy tale into an imaginative musical. A king promises his dying qu",
    "why": "On I amsterdam",
    "source": "I amsterdam",
-   "link": "https://www.iamsterdam.com/en/whats-on/calendar/festivals/events/ace-in-the-hole",
+   "link": "https://www.iamsterdam.com/en/whats-on/calendar/festivals/events/peau-dane-re-release",
    "weatherFit": [
     "HOT",
     "WARM",
@@ -109,26 +110,26 @@
     "VOLATILE"
    ],
    "verify": false,
-   "firstSeen": "2026-09-04",
+   "firstSeen": "2026-09-05",
    "inboxScore": 7,
    "scoreWhy": "seen today · on this weekend"
   },
   {
-   "id": "web-iams-the-great-dictator",
-   "title": "The Great Dictator",
-   "venue": "LAB111",
-   "area": "Arie Biemondstraat 111",
-   "when": "Until Mon 14 Sep",
-   "category": "stage",
+   "id": "web-iams-the-brazilian-guitar-by-duo-atlantico-feat-maripepa-contreras-teatro-munganga",
+   "title": "The Brazilian guitar, by Duo Atlantico feat. Maripepa Contreras - Teatro Munganga",
+   "venue": "Teatro Munganga",
+   "area": "Schinkelhavenstraat 27hs",
+   "when": "Sat 5 Sep · 20:00",
+   "category": "live",
    "freshness": "weekend",
    "outdoor": false,
    "kid": false,
-   "price": "from €13",
-   "image": "https://app.thefeedfactory.nl/api/assets/6a696bcbf698026fb19a4c69/https___culturekit-assets.imgix.net_1_assets_523a68d3-74b1-4383-870a-2ad089cbfb8f.webp",
-   "blurb": "A satirical classic about a dark time\n In The Great Dictator , Charles Chaplin plays two roles simultaneously: a poor Jewish barber from a ghetto and dictator A",
+   "price": "from €17.7",
+   "image": "https://app.thefeedfactory.nl/api/assets/6a75d94067daef09863b01d5/Duo-Atlantico-Maripepa.webp",
+   "blurb": "A Brazilian guitar experience\n Duo Atlântico, featuring the talented Rogério Bicudo and Daniel Montes, pays tribute to the acoustic guitar. These musicians from",
    "why": "On I amsterdam",
    "source": "I amsterdam",
-   "link": "https://www.iamsterdam.com/en/whats-on/calendar/festivals/events/the-great-dictator",
+   "link": "https://www.iamsterdam.com/en/whats-on/calendar/concerts-and-music/concerts/the-brazilian-guitar-by-duo-atlantico-feat-maripepa-contreras-teatro-munganga",
    "weatherFit": [
     "HOT",
     "WARM",
@@ -137,9 +138,37 @@
     "VOLATILE"
    ],
    "verify": false,
-   "firstSeen": "2026-09-04",
+   "firstSeen": "2026-09-05",
    "inboxScore": 7,
    "scoreWhy": "seen today · on this weekend"
+  },
+  {
+   "id": "web-iams-wild-flutes-on-the-run",
+   "title": "Wild Flutes on the Run",
+   "venue": "Splendor Amsterdam",
+   "area": "Nieuwe Uilenburgerstraat 116",
+   "when": "Sat 5 Sep · 20:00",
+   "category": "live",
+   "freshness": "weekend",
+   "outdoor": false,
+   "kid": false,
+   "price": "from €5",
+   "image": "https://app.thefeedfactory.nl/api/assets/6a32097a09e4a23d1666896b/260905-Anne-LaBerge-Splendor-Amsterdam-f306.webp",
+   "blurb": "New sound worlds on specially designed flutes\n Robert Dick, Ned McGowan, and Anne La Berge take the stage together. These talented flutists play specially desig",
+   "why": "On I amsterdam",
+   "source": "I amsterdam",
+   "link": "https://www.iamsterdam.com/en/whats-on/calendar/concerts-and-music/concerts/wild-flutes-on-the-run",
+   "weatherFit": [
+    "HOT",
+    "WARM",
+    "COOL",
+    "COLD_WET",
+    "VOLATILE"
+   ],
+   "verify": false,
+   "firstSeen": "2026-09-03",
+   "inboxScore": 7,
+   "scoreWhy": "seen 2d ago · on this weekend · taste: wild"
   },
   {
    "id": "web-iams-hongaarse-rhapsodie",
@@ -166,8 +195,8 @@
    ],
    "verify": false,
    "firstSeen": "2026-09-04",
-   "inboxScore": 7,
-   "scoreWhy": "seen today · on this weekend"
+   "inboxScore": 6.7,
+   "scoreWhy": "seen 1d ago · on this weekend"
   },
   {
    "id": "web-iams-cheeky-monday",
@@ -194,8 +223,8 @@
    ],
    "verify": false,
    "firstSeen": "2026-08-29",
-   "inboxScore": 5.2,
-   "scoreWhy": "seen 6d ago · on this weekend"
+   "inboxScore": 4.9,
+   "scoreWhy": "seen 7d ago · on this weekend"
   },
   {
    "id": "web-iams-techno-tuesday",
@@ -222,8 +251,8 @@
    ],
    "verify": false,
    "firstSeen": "2026-08-29",
-   "inboxScore": 5.2,
-   "scoreWhy": "seen 6d ago · on this weekend"
+   "inboxScore": 4.9,
+   "scoreWhy": "seen 7d ago · on this weekend"
   },
   {
    "id": "web-iams-scala-productie-delicates",
@@ -250,15 +279,15 @@
    ],
    "verify": false,
    "firstSeen": "2026-08-29",
-   "inboxScore": 5.2,
-   "scoreWhy": "seen 6d ago · on this weekend"
+   "inboxScore": 4.9,
+   "scoreWhy": "seen 7d ago · on this weekend"
   },
   {
    "id": "web-iams-jurassic-park-4k-restoration",
    "title": "Jurassic Park (4K Restoration)",
    "venue": "LAB111",
    "area": "Arie Biemondstraat 111",
-   "when": "Fri 4 – Wed 9 Sep",
+   "when": "Sat 5 – Wed 9 Sep",
    "category": "stage",
    "freshness": "weekend",
    "outdoor": false,
@@ -278,8 +307,8 @@
    ],
    "verify": false,
    "firstSeen": "2026-08-29",
-   "inboxScore": 5.2,
-   "scoreWhy": "seen 6d ago · on this weekend"
+   "inboxScore": 4.9,
+   "scoreWhy": "seen 7d ago · on this weekend"
   },
   {
    "id": "web-iams-rico-weeland-curated-mysteries",
@@ -306,8 +335,8 @@
    ],
    "verify": false,
    "firstSeen": "2026-08-29",
-   "inboxScore": 5.2,
-   "scoreWhy": "seen 6d ago · on this weekend"
+   "inboxScore": 4.9,
+   "scoreWhy": "seen 7d ago · on this weekend"
   },
   {
    "id": "web-iams-les-parapluies-de-cherbourg-4k-restoration",
@@ -334,12 +363,12 @@
    ],
    "verify": false,
    "firstSeen": "2026-08-29",
-   "inboxScore": 5.2,
-   "scoreWhy": "seen 6d ago · on this weekend"
+   "inboxScore": 4.9,
+   "scoreWhy": "seen 7d ago · on this weekend"
   },
   {
-   "id": "rss-het-parool-ps-jonge-maker-sytze-bouma-over-drag-me-2-roxy-door",
-   "title": "Jonge Maker Sytze Bouma over Drag Me [2] RoXY: ‘Door me in een glitterjurk te hijsen, gaan",
+   "id": "rss-het-parool-ps-amsterdam-heeft-het-klimaat-van-zuid-frankrijk-v",
+   "title": "Amsterdam heeft het klimaat van Zuid-Frankrijk: vijgen, kiwi’s en olijven groeien uit de s",
    "venue": "Het Parool PS",
    "area": "",
    "when": "This weekend",
@@ -351,7 +380,7 @@
    "blurb": "Featured this week by Het Parool PS.",
    "why": "In this week's Het Parool PS",
    "source": "Het Parool PS",
-   "link": "https://www.parool.nl/ps/jonge-maker-sytze-bouma-over-drag-me-2-roxy-door-me-in-een-glitterjurk-te-hijsen-gaan-er-kanten-van-mij-aan-die-anders-slapen~bc760168/",
+   "link": "https://www.parool.nl/ps/amsterdam-heeft-het-klimaat-van-zuid-frankrijk-vijgen-kiwi-s-en-olijven-groeien-uit-de-stoep~b16de9c6/",
    "weatherFit": [
     "HOT",
     "WARM",
@@ -360,13 +389,13 @@
     "VOLATILE"
    ],
    "verify": true,
-   "firstSeen": "2026-09-04",
+   "firstSeen": "2026-09-05",
    "inboxScore": 3.3,
-   "scoreWhy": "seen today · taste: maker"
+   "scoreWhy": "seen today · taste: zuid"
   },
   {
-   "id": "rss-het-parool-ps-kristien-62-en-felice-22-alles-aan-mij-vond-je-i",
-   "title": "Kristien (62) en Felice (22): ‘Alles aan mij vond je in die tijd stom, maar ondertussen ja",
+   "id": "rss-het-parool-ps-het-amsterdam-van-radio-dj-joost-swinkels-alles-",
+   "title": "Het Amsterdam van radio-dj Joost Swinkels: ‘Alles gaat hier veel vroeger dicht dan in Eind",
    "venue": "Het Parool PS",
    "area": "",
    "when": "This weekend",
@@ -378,7 +407,7 @@
    "blurb": "Featured this week by Het Parool PS.",
    "why": "In this week's Het Parool PS",
    "source": "Het Parool PS",
-   "link": "https://www.parool.nl/ps/kristien-62-en-felice-22-alles-aan-mij-vond-je-in-die-tijd-stom-maar-ondertussen-jatte-je-mijn-hele-kast-leeg~baca27b24/",
+   "link": "https://www.parool.nl/ps/het-amsterdam-van-radio-dj-joost-swinkels-alles-gaat-hier-veel-vroeger-dicht-dan-in-eindhoven-zo-raar~b046dc06/",
    "weatherFit": [
     "HOT",
     "WARM",
@@ -387,13 +416,13 @@
     "VOLATILE"
    ],
    "verify": true,
-   "firstSeen": "2026-09-04",
+   "firstSeen": "2026-09-05",
    "inboxScore": 3,
    "scoreWhy": "seen today"
   },
   {
-   "id": "rss-het-parool-ps-merel-pauw-31-en-haar-alter-ego-elmer-ik-vind-he",
-   "title": "Merel Pauw (31) en haar alter ego Elmer: ‘Ik vind het nog steeds ontroerend dat er voor mi",
+   "id": "rss-het-parool-ps-anna-is-verrast-door-de-liefde-van-kaketoe-glory",
+   "title": "Anna is verrast door de liefde van kaketoe Glory (1): ‘Hij wil altijd op mijn schouder zit",
    "venue": "Het Parool PS",
    "area": "",
    "when": "This weekend",
@@ -405,7 +434,7 @@
    "blurb": "Featured this week by Het Parool PS.",
    "why": "In this week's Het Parool PS",
    "source": "Het Parool PS",
-   "link": "https://www.parool.nl/ps/merel-pauw-31-en-haar-alter-ego-elmer-ik-vind-het-nog-steeds-ontroerend-dat-er-voor-mij-zo-n-groot-publiek-is~b5a40c37/",
+   "link": "https://www.parool.nl/ps/anna-is-verrast-door-de-liefde-van-kaketoe-glory-1-hij-wil-altijd-op-mijn-schouder-zitten-en-zich-met-alles-bemoeien~b9915b68/",
    "weatherFit": [
     "HOT",
     "WARM",
@@ -414,13 +443,13 @@
     "VOLATILE"
    ],
    "verify": true,
-   "firstSeen": "2026-09-04",
+   "firstSeen": "2026-09-05",
    "inboxScore": 3,
    "scoreWhy": "seen today"
   },
   {
-   "id": "rss-het-parool-ps-mode-van-afgedankte-banken-en-festivalbanners-de",
-   "title": "Mode van afgedankte banken en festivalbanners: deze opkomende ontwerpers breken fashionbar",
+   "id": "rss-het-parool-ps-heb-je-dit-kunstwerk-van-streetart-frankey-al-ge",
+   "title": "Heb je dit kunstwerk van Streetart Frankey al gespot?",
    "venue": "Het Parool PS",
    "area": "",
    "when": "This weekend",
@@ -432,7 +461,7 @@
    "blurb": "Featured this week by Het Parool PS.",
    "why": "In this week's Het Parool PS",
    "source": "Het Parool PS",
-   "link": "https://www.parool.nl/ps/mode-van-afgedankte-banken-en-festivalbanners-deze-opkomende-ontwerpers-breken-fashionbarrieres~b43d6074/",
+   "link": "https://www.parool.nl/ps/heb-je-dit-kunstwerk-van-streetart-frankey-al-gespot~bf683f1d/",
    "weatherFit": [
     "HOT",
     "WARM",
@@ -441,7 +470,34 @@
     "VOLATILE"
    ],
    "verify": true,
-   "firstSeen": "2026-09-04",
+   "firstSeen": "2026-09-05",
+   "inboxScore": 3,
+   "scoreWhy": "seen today"
+  },
+  {
+   "id": "rss-het-parool-ps-joris-bijdendijk-helpt-in-de-keuken-zo-maak-je-n",
+   "title": "Joris Bijdendijk helpt in de keuken: zo maak je niet schiftende aioli",
+   "venue": "Het Parool PS",
+   "area": "",
+   "when": "This weekend",
+   "category": "out",
+   "freshness": "weekend",
+   "outdoor": false,
+   "kid": false,
+   "price": "",
+   "blurb": "Featured this week by Het Parool PS.",
+   "why": "In this week's Het Parool PS",
+   "source": "Het Parool PS",
+   "link": "https://www.parool.nl/ps/joris-bijdendijk-helpt-in-de-keuken-zo-maak-je-niet-schiftende-aioli~b8ccefee/",
+   "weatherFit": [
+    "HOT",
+    "WARM",
+    "COOL",
+    "COLD_WET",
+    "VOLATILE"
+   ],
+   "verify": true,
+   "firstSeen": "2026-09-05",
    "inboxScore": 3,
    "scoreWhy": "seen today"
   }
