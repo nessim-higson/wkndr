@@ -56,6 +56,14 @@ export const ORIGIN_PRESETS = {
 // [needle, lat, lon, northOfIJ?]. Matched against "venue | title", lowercased + de-accented.
 // Needles must be ≥4 chars (short ones collide — "as", "bak" go in GAZ_EXACT instead).
 const GAZ: [string, number, number, 1?][] = [
+  // V.11.10 (2026-09-06): the venues the first honest-images feeds carried that the gazetteer didn't
+  // know — the coverage test dipped to 58% and blocked the cron. Theatres, museums, the Stopera.
+  ['frascati', 52.3712, 4.8952], ['bellevue', 52.3638, 4.8815], ['splendor', 52.3696, 4.9059],
+  ['national opera', 52.3676, 4.9013], ['nationale opera', 52.3676, 4.9013], ['stopera', 52.3676, 4.9013],
+  ['city archives', 52.3648, 4.8912], ['stadsarchief', 52.3648, 4.8912], ['wereldmuseum', 52.3626, 4.9218],
+  ['grachtenmuseum', 52.3679, 4.8863], ['internationaal theater', 52.3642, 4.8820], ['stadsschouwburg', 52.3642, 4.8820],
+  ['amstelpark', 52.3323, 4.8940], ['luther museum', 52.3652, 4.9085], ['roode remise', 52.3838, 4.8823],
+  ['foodwalk', 52.3778, 4.8843], ['marineterrein', 52.3727, 4.9165], ['bret', 52.3893, 4.8385],
   ['nieuwe kerk', 52.3736, 4.8925], ['mandelapark', 52.3163, 4.9569],
   ['scheepvaart', 52.3714, 4.9147], ['maritime museum', 52.3714, 4.9147],
   ["h'art", 52.3653, 4.9024], ['hart museum', 52.3653, 4.9024], ['hermitage', 52.3653, 4.9024],
