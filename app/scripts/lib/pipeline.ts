@@ -803,39 +803,69 @@ export async function imageIsCardworthy(url: string): Promise<boolean> {
 // (live and canon) gets one, cached by raw url in data/focal.<city>.json so it's read ONCE, ever.
 // Drives the server crop (toPortrait a=focal) and the card's background-position. Null on any failure
 // (the crop falls back to saliency / the centre-weighted default) — never throws. ~cents per new image.
+// The first live pass (2026-09-06) read 133 and lost 52 — 185 vision calls at concurrency 3 with no
+// backoff; the losses are almost certainly rate limits. So: retry 429/529/overloaded with a growing
+// pause, and report WHY a read failed (`focalFailures`) so the run log can say "52 without: 49 rate-
+// limited" instead of just "52 without". A failed read is not cached → it is retried next run.
+export const focalFailures: Record<string, number> = {}
+const noteFail = (why: string) => { focalFailures[why] = (focalFailures[why] ?? 0) + 1 }
 export async function imageFocalPoint(url: string): Promise<[number, number] | null> {
   const key = process.env.ANTHROPIC_API_KEY
   const model = process.env.ANTHROPIC_MODEL || 'claude-haiku-4-5'
   if (!key) return null
+  let mt = '', b64 = ''
   try {
     const r = await fetch(url, { headers: { 'user-agent': UA }, signal: AbortSignal.timeout(10000) })
-    const mt = (r.headers.get('content-type') || '').split(';')[0].trim()
-    if (!r.ok || !/^image\/(jpeg|png|webp|gif)$/.test(mt)) return null
+    mt = (r.headers.get('content-type') || '').split(';')[0].trim()
+    if (!r.ok || !/^image\/(jpeg|png|webp|gif)$/.test(mt)) { noteFail(r.ok ? `type ${mt || '?'}` : `fetch ${r.status}`); return null }
     const buf = Buffer.from(await r.arrayBuffer())
-    if (buf.length < 2000 || buf.length > 5_000_000) return null
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'x-api-key': key, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },
-      body: JSON.stringify({
-        model, max_tokens: 40,
-        messages: [{ role: 'user', content: [
-          { type: 'image', source: { type: 'base64', media_type: mt, data: buf.toString('base64') } },
-          { type: 'text', text:
-            'This photo will be cropped to fit cards of different shapes (a tall phone card, a wide desktop ' +
-            'card). Give the ONE point the crop must keep centred: a person\'s face if there is one, else the ' +
-            'main subject or the centre of the action; for a designed poster, its visual centre. ' +
-            'Reply ONLY JSON: {"x": <0-1 fraction of width from the left>, "y": <0-1 fraction of height from the top>}.' },
-        ] }],
-      }),
-    }).then((x) => x.json())
-    const text = Array.isArray(res?.content) ? res.content.filter((b: { type?: string }) => b?.type === 'text').map((b: { text?: string }) => b.text).join('') : ''
-    const x = Number(text.match(/"x"\s*:\s*([0-9.]+)/)?.[1]), y = Number(text.match(/"y"\s*:\s*([0-9.]+)/)?.[1])
-    if (!Number.isFinite(x) || !Number.isFinite(y)) return null
-    const clamp = (v: number) => Math.min(0.98, Math.max(0.02, v))
-    return [clamp(x), clamp(y)]
-  } catch {
-    return null
+    if (buf.length < 2000 || buf.length > 5_000_000) { noteFail(buf.length < 2000 ? 'tiny' : 'over 5MB'); return null }
+    b64 = buf.toString('base64')
+  } catch { noteFail('fetch'); return null }
+  const body = JSON.stringify({
+    model, max_tokens: 40,
+    messages: [{ role: 'user', content: [
+      { type: 'image', source: { type: 'base64', media_type: mt, data: b64 } },
+      { type: 'text', text:
+        'This photo will be cropped to fit cards of different shapes (a tall phone card, a wide desktop ' +
+        'card), and the crop must keep the SUBJECT. First name the subject in a few words — a person\'s ' +
+        'face if there is one, else the main subject or the centre of the action; for a designed poster, ' +
+        'its key image or title. Then give its BOUNDING BOX as fractions of the image (0 = left/top, ' +
+        '1 = right/bottom). Be precise about where it actually sits — most subjects are NOT centred. ' +
+        'Reply ONLY JSON: {"subject": "<words>", "box": [x0, y0, x1, y1]}.' },
+    ] }],
+  })
+  for (let attempt = 0; attempt < 4; attempt++) {
+    try {
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'x-api-key': key, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },
+        body,
+        signal: AbortSignal.timeout(30000),
+      }).then((x) => x.json())
+      const et = res?.error?.type as string | undefined
+      if (et === 'rate_limit_error' || et === 'overloaded_error' || et === 'api_error') {
+        if (attempt < 3) { await sleep(4000 * (attempt + 1) + Math.random() * 1500); continue }
+        noteFail(et); return null
+      }
+      if (res?.error) { noteFail(`api ${et ?? '?'}`); return null }
+      const text = Array.isArray(res?.content) ? res.content.filter((b: { type?: string }) => b?.type === 'text').map((b: { text?: string }) => b.text).join('') : ''
+      // a box, not a point: the first pass asked for "the point" and got 0.5/0.5 for 96 of 133 images.
+      // The centre of a named subject's box is a real localisation; the box also survives a model
+      // that answers in percentages (values > 1 are read as percent).
+      const m = text.match(/"box"\s*:\s*\[\s*([0-9.]+)\s*,\s*([0-9.]+)\s*,\s*([0-9.]+)\s*,\s*([0-9.]+)\s*\]/)
+      if (!m) { noteFail('parse'); return null }
+      let [x0, y0, x1, y1] = m.slice(1, 5).map(Number)
+      if ([x0, y0, x1, y1].some((v) => !Number.isFinite(v))) { noteFail('parse'); return null }
+      if (Math.max(x0, y0, x1, y1) > 1.5) { x0 /= 100; y0 /= 100; x1 /= 100; y1 /= 100 }
+      const clamp = (v: number) => Math.min(0.98, Math.max(0.02, v))
+      return [clamp((x0 + x1) / 2), clamp((y0 + y1) / 2)]
+    } catch {
+      if (attempt < 3) { await sleep(3000 * (attempt + 1)); continue }
+      noteFail('network'); return null
+    }
   }
+  return null
 }
 
 // THEMED STOCK (Pexels) — vivid, licensed photography keyed to the event's theme. The fix for the

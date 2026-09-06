@@ -19,7 +19,7 @@
  */
 import { CITIES, type City } from '../src/data/cities'
 import type { Pick } from '../src/types'
-import { dedupe, balanceByCategory, isGoodImage, isPortraitImage, imageBroken, urlLooksNonPhoto, imageIsCardworthy, fetchEventImage, toPortrait, wikiImage, webImageCandidates, verifyImageForEvent, venueMatchImage, venueBook, linkIsIndex, imageFocalPoint, originalOf, NO_PHOTO_CAP, whenBeforeWeekend, upcomingWeekend, weekendMode, weekendModes, stampServeOrder, publishCheck, crownsActive, JUDGE_FLOOR, STAR_BOOST, linkOk, mapLimit, rxOf, titleKey, titleLooseMatch, tokKey, approvalCheck, type TasteCorpus, type WeeklySlate } from './lib/pipeline'
+import { dedupe, balanceByCategory, isGoodImage, isPortraitImage, imageBroken, urlLooksNonPhoto, imageIsCardworthy, fetchEventImage, toPortrait, wikiImage, webImageCandidates, verifyImageForEvent, venueMatchImage, venueBook, linkIsIndex, imageFocalPoint, focalFailures, originalOf, NO_PHOTO_CAP, whenBeforeWeekend, upcomingWeekend, weekendMode, weekendModes, stampServeOrder, publishCheck, crownsActive, JUDGE_FLOOR, STAR_BOOST, linkOk, mapLimit, rxOf, titleKey, titleLooseMatch, tokKey, approvalCheck, type TasteCorpus, type WeeklySlate } from './lib/pipeline'
 import { fixWhen, latestDateOf, whenActiveBy, whenIsPast, whenLooksBroken } from '../src/lib/when'
 import { effectiveFreshness, NEW_DAYS } from '../src/lib/freshness'
 import { mergeSightings, pruneRegistry, appendRun, type SeenRegistry, type HealthFile } from './lib/ingest'
@@ -399,7 +399,9 @@ async function buildCity(city: City) {
       const focalPath = `${OUT_DIR}/focal.${city.key}.json`
       const cache: Record<string, [number, number]> = await Bun.file(focalPath).json().catch(() => ({}))
       let hit = 0, read = 0
-      await mapLimit(picks.filter((p) => p.image && !p.imageFocal), 3, async (p) => {
+      // concurrency 2 (was 3): ~185 vision calls on the first pass tripped the rate limit; each
+      // read is one-time, so a slower first pass is fine and later runs only read new images
+      await mapLimit(picks.filter((p) => p.image && !p.imageFocal), 2, async (p) => {
         const raw = originalOf(p.image!)
         if (cache[raw]) { p.imageFocal = cache[raw]; hit++; return }
         if (!visionOn) return
@@ -407,7 +409,12 @@ async function buildCity(city: City) {
         if (f) { p.imageFocal = f; cache[raw] = f; read++ }
       })
       if (read) await Bun.write(focalPath, JSON.stringify(cache, null, 0))
-      console.log(`  focal:    ${hit} cached · ${read} newly read${read ? ' (cache written)' : ''} · ${picks.filter((p) => p.image && !p.imageFocal).length} without`)
+      const fails = Object.entries(focalFailures).map(([k, v]) => `${k} ${v}`).join(', ')
+      // a read that lands dead-centre carries no information (the default is 50/40 anyway) — if MOST
+      // reads do, the model is guessing, not looking, and the prompt needs work, not the cache
+      const withF = picks.filter((p) => p.imageFocal)
+      const centred = withF.filter((p) => Math.abs(p.imageFocal![0] - 0.5) < 0.06 && Math.abs(p.imageFocal![1] - 0.5) < 0.06).length
+      console.log(`  focal:    ${hit} cached · ${read} newly read${read ? ' (cache written)' : ''} · ${picks.filter((p) => p.image && !p.imageFocal).length} without${fails ? ` (${fails})` : ''} · ${centred}/${withF.length} dead-centre`)
     }
     for (const p of picks) if (p.image) p.image = toPortrait(p.image, 800, 1200, p.imageFocal)
 
