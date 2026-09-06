@@ -813,17 +813,29 @@ export async function imageFocalPoint(url: string): Promise<[number, number] | n
   const key = process.env.ANTHROPIC_API_KEY
   const model = process.env.ANTHROPIC_MODEL || 'claude-haiku-4-5'
   if (!key) return null
+  // Read the image THROUGH wsrv, resized to ≤1200px JPEG: a raw organiser file can be 6000px / 8MB /
+  // AVIF (run 5: "over 5MB 6 · avif 1 · api invalid_request 26"), and the vision API wants ≤5MB and
+  // a mainstream format. Fractions don't care about pixels, so the point read off the small render
+  // is the point on the original. wsrv also absorbs the host's rate limits (run 5: "fetch 429 11").
+  const small = `https://images.weserv.nl/?url=${encodeURIComponent(url)}&w=1200&h=1200&fit=inside&output=jpg`
   let mt = '', b64 = ''
-  try {
-    const r = await fetch(url, { headers: { 'user-agent': UA }, signal: AbortSignal.timeout(10000) })
-    mt = (r.headers.get('content-type') || '').split(';')[0].trim()
-    if (!r.ok || !/^image\/(jpeg|png|webp|gif)$/.test(mt)) { noteFail(r.ok ? `type ${mt || '?'}` : `fetch ${r.status}`); return null }
-    const buf = Buffer.from(await r.arrayBuffer())
-    if (buf.length < 2000 || buf.length > 5_000_000) { noteFail(buf.length < 2000 ? 'tiny' : 'over 5MB'); return null }
-    b64 = buf.toString('base64')
-  } catch { noteFail('fetch'); return null }
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      const r = await fetch(small, { headers: { 'user-agent': UA }, signal: AbortSignal.timeout(15000) })
+      if (r.status === 429 || r.status >= 500) { if (attempt < 2) { await sleep(3000 * (attempt + 1)); continue } noteFail(`fetch ${r.status}`); return null }
+      mt = (r.headers.get('content-type') || '').split(';')[0].trim()
+      if (!r.ok || !/^image\/(jpeg|png|webp|gif)$/.test(mt)) { noteFail(r.ok ? `type ${mt || '?'}` : `fetch ${r.status}`); return null }
+      const buf = Buffer.from(await r.arrayBuffer())
+      if (buf.length < 2000 || buf.length > 4_500_000) { noteFail(buf.length < 2000 ? 'tiny' : 'over 4.5MB'); return null }
+      b64 = buf.toString('base64')
+      break
+    } catch { if (attempt < 2) { await sleep(2000 * (attempt + 1)); continue } noteFail('fetch'); return null }
+  }
+  if (!b64) { noteFail('fetch'); return null }
   const body = JSON.stringify({
-    model, max_tokens: 40,
+    // 120, not 40: the subject phrase comes BEFORE the box, and 40 tokens cut the array short
+    // ("parse 64" on run 5 was truncation, not the model)
+    model, max_tokens: 120,
     messages: [{ role: 'user', content: [
       { type: 'image', source: { type: 'base64', media_type: mt, data: b64 } },
       { type: 'text', text:
