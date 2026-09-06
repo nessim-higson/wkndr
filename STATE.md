@@ -1,11 +1,11 @@
 # WKNDR — STATE (catch-me-up snapshot)
 
-_Living "where are we right now" doc — a **snapshot, not a history**. **Updated 2026-09-05.** Read this
+_Living "where are we right now" doc — a **snapshot, not a history**. **Updated 2026-09-06.** Read this
 FIRST in a new chat. For strategy + backlog see `docs/backlog.md`; for the pipeline architecture see
 `docs/pipeline-architecture.md` + `docs/source-map.md`; for **who may write to the deck vs to a personal
 profile** (board / Tune / airlock — read before touching either) see `docs/curation-surfaces.md`; for the
 **board roadmap** (auto-compile tracks) see `docs/board-roadmap.md`; for full **version history** see
-`CHANGELOG.md` (current to app **V.11.9** / board V.9.47) and the **git log / tags**. Onboarding:
+`CHANGELOG.md` (current to app **V.11.10** / board V.9.47) and the **git log / tags**. Onboarding:
 `CLAUDE.md`. App lives in `/app` (Vite + React + TS, run with `bun`); ships to **Cloudflare Pages**
 (`wkndr.xyz` + `app.wkndr.xyz`) **and** GitHub Pages (legacy, keeps old share links alive)._
 
@@ -27,6 +27,16 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
 > sessions update (today it's on load).
 
 ## Live right now
+- **V.11.10 — THE END IS THE END (2026-09-06).** Ness's first pass through V.11.9 on Sunday. (1) The
+  browse deck no longer recycles: **the wings** (`lib/wings.ts` = bench + judge-≥5 airlock, fetched
+  lazily, dealt ONCE) are the honest "more"; then the empty state counts what you saw and **Start over
+  is a button** — Shuffle never clears declines; declines are scoped to the week. (2) **The crop:**
+  `Pick.imageFocal` (vision, once per image, cached in `data/focal.<city>.json`, canon included) drives
+  the phone's server crop and the desktop card paints the UNCROPPED source with one CSS `cover`
+  positioned on it (`lib/image.ts cardImageOf`) — the desktop card is near-square and was double-
+  cropping the 800×1200 portrait render. (3) **RA upgrade on contact** (`upgradeViaRa`, by event id —
+  flyer/time/attending) + **carry re-gathers instead of stripping** — both for "DKMNTL at BRET".
+  **380 tests.** First feed with focal points = the refresh dispatched on ship day.
 - **V.11.9 — HONEST IMAGES (2026-09-05, board V.9.47).** Ness back after three heads-down weeks:
   "the images are still an issue" — a tattoo convention wearing the Bloemenmarkt, Concertgebouw Open
   wearing Haarlem. Traced: NOT scraping errors — the **category-bank fallback working as designed**

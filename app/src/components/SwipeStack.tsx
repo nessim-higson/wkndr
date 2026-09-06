@@ -305,7 +305,7 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
 })
 
 export function SwipeStack({
-  picks, temp, tempOf, mode, onSwipe, onOpen, onRefresh, filterLabel, onClearFilter, onSeeList, nudge, keysActive, escape,
+  picks, temp, tempOf, mode, onSwipe, onOpen, onRefresh, onStartOver, total, filterLabel, onClearFilter, onSeeList, nudge, keysActive, escape,
 }: {
   picks: Pick[]
   temp?: number
@@ -316,6 +316,8 @@ export function SwipeStack({
   onSwipe: (p: Pick, dir: SwipeDir) => void
   onOpen?: (p: Pick, origin?: DOMRect) => void
   onRefresh?: () => void
+  onStartOver?: () => void   // V.11.10: the deck ends honestly; starting over is YOUR call, never automatic
+  total?: number             // how many you've been through (the end-state count)
   filterLabel?: string | null
   onClearFilter?: () => void
   onSeeList?: () => void
@@ -381,7 +383,7 @@ export function SwipeStack({
             ? escape.note
             : filterLabel
               ? 'Clear the filters for the full set, or check back as the week refreshes.'
-              : 'You’ve seen every pick. Fresh ones land each week — run through again, or browse the full list.'}
+              : `You’ve been through ${total ? `all ${total}` : 'every pick'} — nothing was dealt twice. Fresh picks land Thursday.`}
         </span>
         <div className="stack-empty-actions">
           {/* THE EVERGREEN ESCAPE (V.11). Filtering to a district AND a date empties most of
@@ -396,7 +398,11 @@ export function SwipeStack({
             <button className={`stack-btn${escape ? '' : ' primary'}`} onClick={onClearFilter}>Clear filters</button>
           )}
           {onSeeList && <button className="stack-btn" onClick={onSeeList}>See all in List</button>}
-          {onRefresh && <button className="stack-btn" onClick={onRefresh}>Refresh</button>}
+          {/* THE END IS THE END (V.11.10). The deck used to recycle here on its own — clear your
+              declines, re-deal the same cards, call it "More for you". Now the wings have already
+              been dealt (App), and what's left is an honest count and a choice you make. */}
+          {!filterLabel && onStartOver && <button className="stack-btn" onClick={onStartOver}>Start over</button>}
+          {filterLabel && onRefresh && <button className="stack-btn" onClick={onRefresh}>Refresh</button>}
         </div>
       </div>
     )

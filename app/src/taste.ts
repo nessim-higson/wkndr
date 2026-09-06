@@ -119,9 +119,19 @@ export function persistTaste(t: Taste) {
 // cards you already declined (the "seeing all cards again from the first one" bug). Saved
 // (★) picks already survived reloads; declines didn't, so the deck reset on every refresh.
 // Same device-local, no-backend contract as saved.
+// …and scoped to the WEEK (V.11.10): the deck no longer recycles on its own, so a decline now holds
+// until the pool is genuinely exhausted — which means it must not hold forever. Live ids change with
+// each Thursday feed anyway; canon is the library, and a "no" to Foodhallen in July shouldn't hide
+// it in September. New week → clean slate. (Legacy bare-array records load as this week's.)
+const WEEK_NOW = () => Math.floor(Date.now() / 6.048e8)
 export function loadSwiped(): Set<string> {
-  try { return new Set(JSON.parse(localStorage.getItem(KEY_SWIPED) || '[]')) } catch { return new Set() }
+  try {
+    const raw = JSON.parse(localStorage.getItem(KEY_SWIPED) || '[]')
+    if (Array.isArray(raw)) return new Set(raw)
+    if (raw && typeof raw === 'object' && raw.w === WEEK_NOW() && Array.isArray(raw.ids)) return new Set(raw.ids)
+    return new Set()
+  } catch { return new Set() }
 }
 export function persistSwiped(s: Set<string>) {
-  try { localStorage.setItem(KEY_SWIPED, JSON.stringify([...s])) } catch { /* ignore */ }
+  try { localStorage.setItem(KEY_SWIPED, JSON.stringify({ w: WEEK_NOW(), ids: [...s] })) } catch { /* ignore */ }
 }

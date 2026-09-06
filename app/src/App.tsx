@@ -83,6 +83,8 @@ import { confirmLink, inShared } from './lib/share'
 import { fetchRound, relayOn, resolveSentRound, roundReady, sentRounds } from './lib/relay'
 import { sanePicks } from './lib/feed'
 import { fetchOverrides, applyOverrides } from './lib/overrides'
+import { mergeWings, fetchWings } from './lib/wings'
+import { cardImageOf } from './lib/image'
 import { initMetrics, track } from './lib/metrics'
 import { FEEDBACK_FORM } from './components/Feedback'
 import {
@@ -324,7 +326,14 @@ export default function App() {
   // when present, else the bundled snapshot. Lets refreshed content flow in with no rebuild.
   // Dates are normalized HERE (once) so every surface — cards, saves dock, fan, detail, share —
   // shows a weekday that actually matches the date (the feed's can be wrong/stale).
-  const rawPicks = feeds[city.key]?.picks ?? city.picks
+  const feedPicks = feeds[city.key]?.picks ?? city.picks
+  // THE WINGS (V.11.10, lib/wings.ts): the bench + the merit part of the airlock, dealt in ONCE when
+  // you've been through the weekend's set — instead of the deck quietly clearing your declines and
+  // re-dealing the same cards. Fetched lazily, merged behind the feed, ranked like everything else.
+  const [wings, setWings] = useState<Pick[] | null>(null)   // null = not fetched yet
+  const [wingsDealt, setWingsDealt] = useState(false)
+  const wingsFlight = useRef(false)
+  const rawPicks = useMemo(() => (wingsDealt && wings?.length ? [...feedPicks, ...wings] : feedPicks), [feedPicks, wings, wingsDealt])
   // TOP escalations (Ness's board 👑, shipped as feed.topMatches): the pipeline stamps live picks,
   // but CANON picks never pass through it — stamp them here at ingestion. Word-ish match, lowercase.
   const topMatches = feeds[city.key]?.topMatches
@@ -455,7 +464,7 @@ export default function App() {
   // Warm the image cache for the active city (during the intro) so a card's photo is
   // already loaded before it's revealed — no pop-in / flash as cards come forward.
   useEffect(() => {
-    cityPicks.forEach((p) => { if (p.image) { const im = new Image(); im.src = p.image } })
+    cityPicks.forEach((p) => { if (p.image) { const im = new Image(); im.src = cardImageOf(p.image) } })   // the face's render, not the thumb's
   }, [cityPicks])
 
   // Load the active city's live forecast on boot — weather is a fact, not a toggle.
@@ -661,33 +670,44 @@ export default function App() {
       .sort((a, b) => a.order - b.order)
   }, [savedPicks])
 
-  // Bottomless: in the unfiltered Stack, never dead-end — when you've swiped through the pool
-  // it reshuffles and keeps serving. (Placeholder for the live pipeline that feeds new finds.)
-  useEffect(() => {
-    if (view !== 'stack' || filterActive || deck.length > 0 || shown.length === 0) return
-    const t = setTimeout(() => {
-      setSwiped(new Set()); setSeed((s) => s + 1); setDealKey((k) => k + 1)
-      flash(moreLike ? `More like ${moreLike.title}` : 'More for you')
-    }, 380)
-    return () => clearTimeout(t)
-  }, [view, filterActive, deck.length, shown.length, moreLike])
+  // DEAL THE WINGS — once. Returns whether anything new joined the pool. Single-flight; a second
+  // call while the fetch is out is a no-op, and once dealt (even to nothing) it never re-fetches.
+  async function dealWings(): Promise<boolean> {
+    if (wingsDealt || wingsFlight.current) return false
+    wingsFlight.current = true
+    const { bench, pending } = await fetchWings(import.meta.env.BASE_URL, city.key)
+    const more = mergeWings(feedPicks, bench, pending)
+    setWings(more); setWingsDealt(true)
+    if (more.length) { setSeed((s) => s + 1); setDealKey((k) => k + 1); flash(`From the wings — ${more.length} more`) }
+    return more.length > 0
+  }
 
-  // "Show me more" / Shuffle: bump the seed so the ranking JITTERS — different picks lead,
-  // not the same high-scorers. Keep what you've already seen hidden so "more" really is more;
-  // only start the pool over once you've been through most of it.
+  // THE END OF THE POOL (V.11.10). This used to be "bottomless": swipe past everything and the deck
+  // cleared your declines and re-dealt the same cards under "More for you" — the reshuffle Ness
+  // called out on 2026-09-06. Now the ONLY thing that happens automatically is the wings being
+  // dealt in, once. After that the deck ends, the empty state says how many you saw, and starting
+  // over is a button you press. (Filters keep their own empty state, unchanged.)
+  useEffect(() => {
+    if (view !== 'stack' || filterActive || deck.length > 0 || shown.length === 0 || wingsDealt) return
+    const t = setTimeout(() => { void dealWings() }, 380)
+    return () => clearTimeout(t)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [view, filterActive, deck.length, shown.length, wingsDealt])
+
+  // "Show me more" / Shuffle: bump the seed so the ranking JITTERS — different picks lead, not
+  // the same high-scorers. What you've swiped past stays hidden, always: Shuffle never clears
+  // your declines. Near the end of the set it deals the wings in instead.
   function refresh() {
     setSeed((s) => s + 1)
     setDealKey((k) => k + 1)
-    // NEVER re-deal inside a FILTER. The bottomless reshuffle is a browse-mode promise (see the
-    // effect above, which already checks filterActive) — but this path didn't check, and a bucket
-    // small enough to be "nearly done" on arrival re-dealt on every Shuffle. "New this week" holds
-    // three picks, so `nearlyDone` was true from the first tap: the same three came back forever
-    // and read as the feed backfilling a thin bucket with more of the same. In a filter, "more"
-    // can only honestly mean "more that match" — when there is no more, the deck runs out and the
-    // empty state says so.
     const nearlyDone = !filterActive && deck.length <= Math.max(3, Math.round(shown.length * 0.25))
-    if (nearlyDone) { setSwiped(new Set()); flash('Starting fresh') }
+    if (nearlyDone && !wingsDealt) { void dealWings().then((got) => { if (!got) flash('That’s nearly everything') }) }
     else flash('More for you')
+  }
+  // STARTING OVER is yours to choose — the empty state's button, never a side effect.
+  function startOver() {
+    setSwiped(new Set()); setSeed((s) => s + 1); setDealKey((k) => k + 1)
+    flash('Starting over')
   }
 
   function handleStackSwipe(p: Pick, dir: SwipeDir) {
@@ -1314,6 +1334,8 @@ export default function App() {
                 nudge={!intro}
                 onOpen={openDetail}
                 onRefresh={refresh}
+                onStartOver={startOver}
+                total={shown.length}
                 filterLabel={filterActive ? 'this filter' : null}
                 /* clears to the WIDEST pool (Any time), not back to the weekend default —
                    this button exists to escape an empty deck, so it must genuinely widen */

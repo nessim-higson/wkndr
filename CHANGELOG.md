@@ -14,6 +14,36 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.11.10 · app] — 2026-09-06 — THE END IS THE END (+ the crop, + two rescues)
+Ness, first pass through V.11.9 on a Sunday: "when I go through the cards and don't like anything, it
+reshuffles the deck with the same cards" · "Dekmantel × BRET had a great card — now it's gone" · "the
+landing image is very obtuse and abstract, then the detail image is much better." Three findings, three
+fixes.
+- **THE DECK ENDS HONESTLY.** The browse stack was "bottomless" by RECYCLING: swipe past the set and
+  `refresh()`/the empty-deck effect quietly cleared your declines and re-dealt the same cards under
+  "More for you". Now the only automatic thing is **the wings** (`lib/wings.ts`): the bench
+  (`candidates.<city>.json` — passed every screen, lost a slot to the caps) plus the merit part of the
+  airlock (judge ≥ 5, held only by the no-photo cap), fetched lazily and dealt in ONCE behind the feed
+  ("From the wings — N more"). After that the empty state says how many you saw and **Start over is a
+  button**. Shuffle never clears declines. Declines are now scoped to the WEEK (`taste.ts`) — live ids
+  roll with the feed anyway, and a July "no" to Foodhallen shouldn't hide it in September.
+- **THE CROP.** The desktop card is `min(52vw,560px) × ≤70vh` — nearly square — and every image was a
+  wsrv 800×1200 saliency crop painted into it with `cover`: a crop of a crop (the detail sheet already
+  re-derived a 3:2 from the original, which is why it looked right). Now **`Pick.imageFocal`** — the
+  subject's position, read once by vision per image (`imageFocalPoint`, cached in
+  `data/focal.<city>.json`, canon included) — drives the phone's server crop (`toPortrait a=focal`)
+  and the card face paints the UNCROPPED source (`cardImageOf`, fit=inside ≤1600) with one CSS
+  `cover` positioned on the point (`lib/image.ts`). Thumbs keep the portrait render. Default position
+  50% 40% when no point is known.
+- **DEKMANTEL × BRET, twice.** (1) **RA upgrade on contact** (`adapters/ra.ts upgradeViaRa`): a keyless
+  pick linking an ra.co event page is re-fetched BY ID through RA's GraphQL — flyer, exact start, venue,
+  attending — and re-id'd `web-ra-<id>` so dedupe folds it onto the listing twin. RA's event pages
+  are JS shells, so the og:image pass could never see this. (2) **Carry re-gathers, never strips**:
+  an unreceipted carried photo is re-judged like a fresh one (event page first, then the carried
+  image itself, vision-verified); last week BRET's own venue shot was honest and got stripped for
+  lacking a receipt.
+- **380 tests** (+11: `tests/wings.test.ts`, focal crop, RA id).
+
 ## [V.11.9 · app + board] — 2026-09-05 — HONEST IMAGES
 Ness, back after three heads-down weeks, on the first Thursday the pipeline ran alone under V.11.3's
 auto-by-default law: "the images are still an issue" — a tattoo convention wearing the Bloemenmarkt's

@@ -5,7 +5,7 @@
 // guess) wearing the Bloemenmarkt's photo, and "Concertgebouw Open" wearing Haarlem — the category-bank
 // fallback working exactly as designed. 9 of 53 live cards showed a photo that was not of the event.
 import { describe, it, expect } from 'bun:test'
-import { linkIsIndex, iamsCategoryFromPath, matchEventLoc, matchEventLocs, titlesAgree, titleTokens, venueMatchImage, venueBook, NO_PHOTO_CAP } from '../scripts/lib/pipeline'
+import { linkIsIndex, iamsCategoryFromPath, matchEventLoc, matchEventLocs, titlesAgree, titleTokens, venueMatchImage, venueBook, NO_PHOTO_CAP, toPortrait, raEventIdOf, originalOf } from '../scripts/lib/pipeline'
 import { rankPicks, holdBackImageless, orderServed } from '../src/weather/modes'
 import type { Pick, ImageWhy } from '../src/types'
 import feed from '../public/data/picks.amsterdam.json'
@@ -217,5 +217,29 @@ describe('the published feed keeps the law', () => {
     // the cap plus explicit human calls (a ★ admits a blank) — a generous ceiling; the point is that a
     // runaway image pass (most of the deck blank) shows up RED here, not on a phone
     expect(blanks).toBeLessThanOrEqual(Math.max(NO_PHOTO_CAP + 6, Math.ceil(live.length * 0.25)))
+  })
+})
+
+describe('the crop (V.11.10) — a focal point beats a saliency guess', () => {
+  it('toPortrait crops on the focal point when one is known, saliency otherwise', () => {
+    const raw = 'https://app.thefeedfactory.nl/api/assets/x/fringe.webp'
+    expect(toPortrait(raw)).toContain('a=attention')
+    const f = toPortrait(raw, 800, 1200, [0.2, 0.35])
+    expect(f).toContain('a=focal&fpx=0.200&fpy=0.350')
+    expect(f).not.toContain('attention')
+    expect(originalOf(f)).toBe(raw)
+  })
+  it('never re-wraps a render', () => {
+    const once = toPortrait('https://x.example/a.jpg', 800, 1200, [0.5, 0.5])
+    expect(toPortrait(once, 800, 1200, [0.1, 0.1])).toBe(once)
+  })
+})
+
+describe('raEventIdOf — the RA upgrade key', () => {
+  it('reads the id off every ra.co event link shape', () => {
+    expect(raEventIdOf('https://nl.ra.co/events/2495711')).toBe('2495711')
+    expect(raEventIdOf('https://ra.co/events/2495711?utm=x')).toBe('2495711')
+    expect(raEventIdOf('https://ra.co/events/nl/amsterdam')).toBeNull()
+    expect(raEventIdOf('https://www.iamsterdam.com/en/whats-on')).toBeNull()
   })
 })

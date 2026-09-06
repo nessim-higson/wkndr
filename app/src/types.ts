@@ -47,6 +47,11 @@ export interface Pick {
   image?: string       // a photo OF THE EVENT (or of its venue) — never a stand-in. Absent = the
                        // card renders the typographic no-photo face (V.11.9: an honest blank beats
                        // a plausible wrong photo; the category bank + themed stock are retired).
+  imageFocal?: [number, number]  // THE FOCAL POINT (V.11.10) — where the photo's subject sits, as
+                       // fractions of width/height (0–1), read once by vision and cached. The server
+                       // crop centres on it (wsrv a=focal) and the card positions the uncropped
+                       // source by it (background-position), so a wide desktop card and a tall phone
+                       // card both keep the subject. Absent = centre-weighted default (50% 40%).
   imageWhy?: ImageWhy  // THE IMAGE RECEIPT (V.11.9) — where the photo came from, stamped by the
                        // pipeline on every live pick (canon is hand-imaged, unstamped). The board
                        // renders it as a chip so a wrong-photo class is a 2-minute glance, not a

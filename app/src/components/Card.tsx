@@ -1,6 +1,7 @@
 import { Maximize2, Clock } from 'lucide-react'
 import type { Pick, Mode } from '../types'
 import { CATEGORY_LABEL, cardSignal } from '../types'
+import { cardImageOf, focalPosition } from '../lib/image'
 import './Card.css'
 
 /** The stack card FRONT — image-led and deliberately quiet: the WHEN stamp (day/time +
@@ -19,7 +20,10 @@ export function Card({ pick, temp, mode }: { pick: Pick; temp?: number; mode?: M
   return (
     <article
       className={`card${nophoto ? ' card--nophoto' : ''}`}
-      style={pick.image ? { backgroundImage: `url(${pick.image})` } : undefined}
+      // THE CROP (V.11.10): the uncropped source, ONE `cover` crop done here, positioned on the focal
+      // point — so the wide desktop card and the tall phone card both keep the subject (the portrait
+      // render painted into a near-square box was a crop of a crop: the Fringe dancer became a red blob)
+      style={pick.image ? { backgroundImage: `url(${cardImageOf(pick.image)})`, backgroundPosition: focalPosition(pick) } : undefined}
     >
       {nophoto && <div className="np-ground" aria-hidden />}
       {pick.image && <div className="card-grade" aria-hidden />}

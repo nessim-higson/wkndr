@@ -568,12 +568,30 @@ export async function fetchEventImage(url: string, timeoutMs = 8000): Promise<st
 // thin band. CDN-cached, free, no key; wsrv fetches server-side, so it can also rescue some hotlink-blocked
 // images. Tradeoff: routes images through a third-party CDN — trivially reverted; the caller applies it to
 // LIVE picks only (canon photos are hand-curated). Verified: a landscape source → a true 800×1200 JPEG.
-export function toPortrait(url: string, w = 800, h = 1200): string {
+export function toPortrait(url: string, w = 800, h = 1200, focal?: [number, number] | null): string {
   if (!url || !url.startsWith('https://') || /images\.weserv\.nl/i.test(url)) return url
   // &default=<original> — if wsrv can't fetch the source at RENDER time (intermittent upstream failure),
   // it redirects the browser to the raw image instead of serving its grey error gradient. Uncropped
   // original beats a grey card; build-time checks can't catch a render-time flake.
-  return `https://images.weserv.nl/?url=${encodeURIComponent(url)}&w=${w}&h=${h}&fit=cover&a=attention&output=jpg&default=${encodeURIComponent(url)}`
+  // THE CROP (V.11.10): a known focal point beats libvips' saliency guess — `a=attention` chose the
+  // bright bridge over the dancer on the Fringe card. fpx/fpy are 0–1 fractions.
+  const crop = focal ? `a=focal&fpx=${focal[0].toFixed(3)}&fpy=${focal[1].toFixed(3)}` : 'a=attention'
+  return `https://images.weserv.nl/?url=${encodeURIComponent(url)}&w=${w}&h=${h}&fit=cover&${crop}&output=jpg&default=${encodeURIComponent(url)}`
+}
+
+/** The raw source behind a wsrv render (or the url itself). Mirror of the app's lib/image originalOf. */
+export function originalOf(src: string): string {
+  try {
+    const u = new URL(src)
+    if (u.hostname === 'images.weserv.nl') { const raw = u.searchParams.get('url'); if (raw) return raw }
+  } catch { /* not a URL */ }
+  return src
+}
+
+/** A Resident Advisor event id from any ra.co event link (nl.ra.co, /events/123, ?query). */
+export function raEventIdOf(url: string): string | null {
+  const m = (url || '').match(/(?:^|[./])ra\.co\/events\/(\d{4,9})(?:[/?#]|$)/i)
+  return m ? m[1] : null
 }
 
 // WEB-SEARCH image fallback via Wikipedia: search for the entity (artist / film / show /
@@ -778,6 +796,45 @@ export async function imageIsCardworthy(url: string): Promise<boolean> {
     return !/"keep"\s*:\s*false/.test(text)
   } catch {
     return true
+  }
+}
+
+// THE FOCAL POINT (V.11.10) — one look, one pair of numbers: where the subject sits. Every card image
+// (live and canon) gets one, cached by raw url in data/focal.<city>.json so it's read ONCE, ever.
+// Drives the server crop (toPortrait a=focal) and the card's background-position. Null on any failure
+// (the crop falls back to saliency / the centre-weighted default) — never throws. ~cents per new image.
+export async function imageFocalPoint(url: string): Promise<[number, number] | null> {
+  const key = process.env.ANTHROPIC_API_KEY
+  const model = process.env.ANTHROPIC_MODEL || 'claude-haiku-4-5'
+  if (!key) return null
+  try {
+    const r = await fetch(url, { headers: { 'user-agent': UA }, signal: AbortSignal.timeout(10000) })
+    const mt = (r.headers.get('content-type') || '').split(';')[0].trim()
+    if (!r.ok || !/^image\/(jpeg|png|webp|gif)$/.test(mt)) return null
+    const buf = Buffer.from(await r.arrayBuffer())
+    if (buf.length < 2000 || buf.length > 5_000_000) return null
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'x-api-key': key, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },
+      body: JSON.stringify({
+        model, max_tokens: 40,
+        messages: [{ role: 'user', content: [
+          { type: 'image', source: { type: 'base64', media_type: mt, data: buf.toString('base64') } },
+          { type: 'text', text:
+            'This photo will be cropped to fit cards of different shapes (a tall phone card, a wide desktop ' +
+            'card). Give the ONE point the crop must keep centred: a person\'s face if there is one, else the ' +
+            'main subject or the centre of the action; for a designed poster, its visual centre. ' +
+            'Reply ONLY JSON: {"x": <0-1 fraction of width from the left>, "y": <0-1 fraction of height from the top>}.' },
+        ] }],
+      }),
+    }).then((x) => x.json())
+    const text = Array.isArray(res?.content) ? res.content.filter((b: { type?: string }) => b?.type === 'text').map((b: { text?: string }) => b.text).join('') : ''
+    const x = Number(text.match(/"x"\s*:\s*([0-9.]+)/)?.[1]), y = Number(text.match(/"y"\s*:\s*([0-9.]+)/)?.[1])
+    if (!Number.isFinite(x) || !Number.isFinite(y)) return null
+    const clamp = (v: number) => Math.min(0.98, Math.max(0.02, v))
+    return [clamp(x), clamp(y)]
+  } catch {
+    return null
   }
 }
 

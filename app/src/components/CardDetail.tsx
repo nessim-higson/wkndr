@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { headerImageOf, originalOf } from '../lib/image'
 import { AnimatePresence, motion, useDragControls } from 'framer-motion'
 import { X, Star, ArrowUpRight, Check, Maximize2, Sparkles } from 'lucide-react'
 import type { Pick } from '../types'
@@ -37,27 +38,7 @@ const MUSIC = new Set<Pick['category']>(['live'])
 // Every card image is a PRE-CROPPED 800×1200 wsrv render — the tall card's crop is baked into the
 // URL, so the sheet never shows the whole photo. The FOCUS view unwraps the proxy's `url=` param to
 // present the ORIGINAL, uncropped (falls back to the rendered crop if the raw host blocks hotlinking).
-function originalOf(src: string): string {
-  try {
-    const u = new URL(src)
-    if (u.hostname === 'images.weserv.nl') {
-      const raw = u.searchParams.get('url')
-      if (raw) return decodeURIComponent(raw)
-    }
-  } catch { /* not a URL we understand — use as-is */ }
-  return src
-}
-
-// The sheet's header is 3/2 LANDSCAPE — feeding it the card's 800×1200 PORTRAIT render was a crop OF
-// a crop (the middle ~44% of an already-cropped frame: "the crop is too tight"). Re-derive a 3/2
-// render from the ORIGINAL instead: same wsrv pipeline (server-side fetch, saliency crop, hotlink-
-// proof), right aspect, single crop.
-function headerImageOf(src: string): string {
-  const orig = originalOf(src)
-  if (orig === src) return src            // not a wsrv render — use as-is
-  const enc = encodeURIComponent(orig)
-  return `https://images.weserv.nl/?url=${enc}&w=1200&h=800&fit=cover&a=attention&output=jpg&default=${enc}`
-}
+// originalOf / headerImageOf moved to lib/image.ts (V.11.10) — shared with the card face, focal-aware.
 
 /** Full detail for a pick. Opens by EXPANDING OUT of the card that was tapped (App Store
  *  style) — `origin` is that card's on-screen rect; absent → a centred grow. Swipe the
@@ -167,7 +148,7 @@ export function CardDetail({
               ><X size={20} strokeWidth={2.6} /></button>
               <motion.div
                 className={`detail-img${pick.image ? '' : ` poster poster--${pick.category}`}`}
-                style={{ ...(pick.image ? { backgroundImage: `url(${headerImageOf(pick.image)})` } : {}), touchAction: 'none' }}
+                style={{ ...(pick.image ? { backgroundImage: `url(${headerImageOf(pick.image, pick.imageFocal)})` } : {}), touchAction: 'none' }}
                 onPointerDown={(e) => dragControls.start(e)}
                 initial={{ scale: pick.image ? 1.06 : 1 }} animate={{ scale: 1 }}
                 transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}

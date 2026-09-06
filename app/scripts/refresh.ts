@@ -19,7 +19,7 @@
  */
 import { CITIES, type City } from '../src/data/cities'
 import type { Pick } from '../src/types'
-import { dedupe, balanceByCategory, isGoodImage, isPortraitImage, imageBroken, urlLooksNonPhoto, imageIsCardworthy, fetchEventImage, toPortrait, wikiImage, webImageCandidates, verifyImageForEvent, venueMatchImage, venueBook, linkIsIndex, NO_PHOTO_CAP, whenBeforeWeekend, upcomingWeekend, weekendMode, weekendModes, stampServeOrder, publishCheck, crownsActive, JUDGE_FLOOR, STAR_BOOST, linkOk, mapLimit, rxOf, titleKey, titleLooseMatch, tokKey, approvalCheck, type TasteCorpus, type WeeklySlate } from './lib/pipeline'
+import { dedupe, balanceByCategory, isGoodImage, isPortraitImage, imageBroken, urlLooksNonPhoto, imageIsCardworthy, fetchEventImage, toPortrait, wikiImage, webImageCandidates, verifyImageForEvent, venueMatchImage, venueBook, linkIsIndex, imageFocalPoint, originalOf, NO_PHOTO_CAP, whenBeforeWeekend, upcomingWeekend, weekendMode, weekendModes, stampServeOrder, publishCheck, crownsActive, JUDGE_FLOOR, STAR_BOOST, linkOk, mapLimit, rxOf, titleKey, titleLooseMatch, tokKey, approvalCheck, type TasteCorpus, type WeeklySlate } from './lib/pipeline'
 import { fixWhen, latestDateOf, whenActiveBy, whenIsPast, whenLooksBroken } from '../src/lib/when'
 import { effectiveFreshness, NEW_DAYS } from '../src/lib/freshness'
 import { mergeSightings, pruneRegistry, appendRun, type SeenRegistry, type HealthFile } from './lib/ingest'
@@ -27,7 +27,7 @@ import { songkickAdapter } from './adapters/songkick'
 import { llmExtract } from './adapters/llm'
 import { websearchExtract } from './adapters/websearch'
 import { editorialScores } from './adapters/editor'
-import { raExtract } from './adapters/ra'
+import { raExtract, upgradeViaRa } from './adapters/ra'
 import { iamsterdamExtract, upgradeViaIamsterdam } from './adapters/iamsterdam'
 import { lbbExtract } from './adapters/lbb'
 import { scoutedExtract } from './adapters/scouted'
@@ -165,12 +165,13 @@ async function buildCity(city: City) {
     const offIds = new Set<string>()
     const who: string[] = []
     await mapLimit(keyless, 4, async (p) => {
-      const r = await upgradeViaIamsterdam(p)
+      // RA first (an ra.co event link is unambiguous — one id, one flyer), then I amsterdam by link/sitemap
+      const r = (await upgradeViaRa(p)) ?? (await upgradeViaIamsterdam(p))
       if (r === 'off-weekend') { offIds.add(p.id); off++ }
       else if (r) { if (who.length < 8) who.push(p.title.slice(0, 26)); Object.assign(p, r); up++ }
     })
     if (off) for (let i = fromRoster.length - 1; i >= 0; i--) if (offIds.has(fromRoster[i].id)) fromRoster.splice(i, 1)
-    if (up || off) console.log(`  upgrade:  ${up} keyless picks → I amsterdam's own record (dates · category · flyer)${off ? ` · ${off} dropped: organiser says not this weekend` : ''}${who.length ? ` (${who.join(' · ')})` : ''}`)
+    if (up || off) console.log(`  upgrade:  ${up} keyless picks → the organiser's own record (RA / I amsterdam: dates · category · flyer)${off ? ` · ${off} dropped: organiser says not this weekend` : ''}${who.length ? ` (${who.join(' · ')})` : ''}`)
   }
 
   // DEDUPE (sets buzz = distinct sources) — roster first so live picks win the merge over canon.
@@ -389,7 +390,26 @@ async function buildCity(city: City) {
     // cropping to a band; (2) wsrv fetches SERVER-SIDE, so a canon image on a hotlink-protected or
     // rate-limited host (pinterest, linkedin, Wikimedia 429…) can no longer BLANK in the user's browser —
     // it always loads from wsrv's CDN. Idempotent (skips already-wrapped). Heroes are wrapped on injection.
-    for (const p of picks) if (p.image) p.image = toPortrait(p.image)
+    // THE FOCAL POINT (V.11.10) — every image on a card, live or canon, gets one: where the subject
+    // sits, read once by vision and cached by raw url (data/focal.<city>.json), so the phone's server
+    // crop and the desktop card's CSS positioning both keep the dancer instead of the bridge. A cache
+    // miss with no key stays unset (saliency crop / centre-weighted default). Canon images that are
+    // already hand-wrapped keep their url; the app positions them by the focal point instead.
+    {
+      const focalPath = `${OUT_DIR}/focal.${city.key}.json`
+      const cache: Record<string, [number, number]> = await Bun.file(focalPath).json().catch(() => ({}))
+      let hit = 0, read = 0
+      await mapLimit(picks.filter((p) => p.image && !p.imageFocal), 3, async (p) => {
+        const raw = originalOf(p.image!)
+        if (cache[raw]) { p.imageFocal = cache[raw]; hit++; return }
+        if (!visionOn) return
+        const f = await imageFocalPoint(raw)
+        if (f) { p.imageFocal = f; cache[raw] = f; read++ }
+      })
+      if (read) await Bun.write(focalPath, JSON.stringify(cache, null, 0))
+      console.log(`  focal:    ${hit} cached · ${read} newly read${read ? ' (cache written)' : ''} · ${picks.filter((p) => p.image && !p.imageFocal).length} without`)
+    }
+    for (const p of picks) if (p.image) p.image = toPortrait(p.image, 800, 1200, p.imageFocal)
 
     // NO TWO CARDS SHARE A PHOTO — final dedup on the FINAL urls, across ALL live picks (trusted included:
     // a reseller submits the same photo to several Feed Factory listings; two venue-matched picks at the
@@ -745,18 +765,38 @@ async function buildCity(city: City) {
   // law — possibly a bank borrow — and they carry no receipt (the first live run shipped "DKMNTL at
   // BRET" that way). A structured source's own image is still its own image; anything else without an
   // honest receipt goes blank. One choke point, so no future door can leak an unreceipted photo.
+  // V.11.10: RE-GATHER, don't strip. The first pass stripped "DKMNTL at BRET" — last week's photo was
+  // BRET's own venue shot, perfectly honest, just unreceipted. Now an unreceipted keyless image is
+  // re-judged the way a fresh one would be: the event page's own image first (vision-verified), then
+  // the carried photo itself put in front of vision; only what fails both goes blank.
   {
     const HONEST = new Set<string>(['organiser', 'event-page', 'portrait', 'web', 'venue', 'curated'])
-    let stripped = 0, relabelled = 0
-    for (const p of picks) {
-      if (!isLive(p)) continue
-      if (p.image && !HONEST.has(p.imageWhy ?? '')) {
-        if (/^web-(iams|ra|lbb|scout)-/.test(p.id)) { p.imageWhy = 'organiser'; relabelled++ }
-        else { p.image = undefined; stripped++ }
-      }
-      if (!p.image) p.imageWhy = 'none'
-    }
-    if (stripped || relabelled) console.log(`  carry:    ${relabelled} re-entered structured picks keep their organiser photo · ${stripped} unreceipted photos dropped`)
+    const visionOn = !!process.env.ANTHROPIC_API_KEY
+    let stripped = 0, relabelled = 0, regathered = 0
+    // a carried KEYLESS pick never met the upgrade block (that runs on the fresh crawl, before dedupe):
+    // offer it the organiser's record here too — DKMNTL at BRET carries an ra.co link and RA serves
+    // its flyer by id. A new id that collides with a pick already in the feed = a twin: drop the carry.
+    let upgraded = 0
+    const twins = new Set<string>()
+    await mapLimit(picks.filter((p) => isLive(p) && !/^web-(iams|ra|lbb|scout|hero)-/.test(p.id) && !HONEST.has(p.imageWhy ?? '')), 3, async (p) => {
+      const r = (await upgradeViaRa(p)) ?? (await upgradeViaIamsterdam(p))
+      if (!r || r === 'off-weekend') return
+      if (picks.some((q) => q !== p && q.id === r.id)) { twins.add(p.id); return }
+      Object.assign(p, r)
+      if (p.image) { p.image = toPortrait(p.image); p.imageWhy = 'organiser'; upgraded++ }
+    })
+    if (twins.size) picks = picks.filter((p) => !twins.has(p.id))
+    await mapLimit(picks.filter((p) => isLive(p) && p.image && !HONEST.has(p.imageWhy ?? '')), 3, async (p) => {
+      if (/^web-(iams|ra|lbb|scout)-/.test(p.id)) { p.imageWhy = 'organiser'; relabelled++; return }
+      const carried = originalOf(p.image!)
+      const og = p.link ? await fetchEventImage(p.link) : null
+      const cands = [...new Set([og, carried].filter((u): u is string => !!u && u.startsWith('https://')))]
+      const best = visionOn ? (cands.length ? await verifyImageForEvent(cands, p, city.name) : null) : (og ?? null)
+      if (best) { p.image = toPortrait(best); p.imageWhy = best === og ? 'event-page' : 'web'; regathered++ }
+      else { p.image = undefined; stripped++ }
+    })
+    for (const p of picks) if (isLive(p) && !p.image) p.imageWhy = 'none'
+    if (stripped || relabelled || regathered || upgraded || twins.size) console.log(`  carry:    ${upgraded} carried picks → organiser record · ${relabelled} keep their organiser photo · ${regathered} re-verified · ${stripped} dropped${twins.size ? ` · ${twins.size} twins removed` : ''}`)
   }
 
   let pendingOut: Pick[] = []
