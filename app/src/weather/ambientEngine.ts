@@ -9,7 +9,7 @@
 import type { Mode } from '../types'
 import { MODE_META } from './modes'
 
-export type Look =
+export type Look = 'verb'
   | 'off'
   // the ported prototype looks — each rendered by its own LookRenderer (see looks/)
   | 'auras' | 'riso' | 'forms' | 'agradient'

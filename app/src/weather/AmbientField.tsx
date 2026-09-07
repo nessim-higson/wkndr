@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import type { Mode } from '../types'
 import { WeatherField } from './WeatherField'
-import { MODE_META } from './modes'
+import { VerbRenderer } from './looks/verb'
+import { MODE_META, type WeekendWx } from './modes'
 import { FieldEngine, type Look, type FieldStats } from './ambientEngine'
 import type { LookParam, LookRenderer } from './looks/types'
 import { AurasRenderer } from './looks/auras'
@@ -24,19 +25,20 @@ function baseGradient(mode: Mode): string {
 
 // the four ported looks, each rendered by its own pluggable LookRenderer (own canvas)
 const RENDERERS: Partial<Record<Look, () => LookRenderer>> = {
+  verb: () => new VerbRenderer(),
   auras: () => new AurasRenderer(),
   riso: () => new RisoRenderer(),
   forms: () => new FormsRenderer(),
   agradient: () => new AGradientRenderer(),
 }
 
-const LOOKS: Look[] = ['off', 'silk', 'auras', 'riso', 'forms', 'agradient']
+const LOOKS: Look[] = ['verb', 'off', 'silk', 'auras', 'riso', 'forms', 'agradient']
 const LOOK_LABEL: Record<Look, string> = {
-  off: 'CSS', silk: 'Silk', auras: 'Auras', riso: 'Riso', forms: 'Forms', agradient: 'A Gradient',
+  verb: 'Field is a verb', off: 'CSS', silk: 'Silk', auras: 'Auras', riso: 'Riso', forms: 'Forms', agradient: 'A Gradient',
   dunes: 'Dunes', ink: 'Ink', rings: 'Rings', dots: 'Dots',                                  // legacy
   aura: 'Aura', warp: 'Warp', aurora: 'Aurora', mesh: 'Mesh', metaball: 'Metaball',          // legacy
 }
-const DEV = import.meta.env.DEV
+const DEV = new URLSearchParams(window.location.search).has('dev')
 
 /**
  * Drop-in for <WeatherField>. Renders a generative ambient field behind everything,
@@ -50,7 +52,7 @@ const SEEDED: Look[] = ['auras', 'riso', 'forms']
 // the last-rolled seed sticks per look, so a favourite composition survives reload
 const seedKey = (l: Look) => `wkndr.field.seed.${l}`
 
-export function AmbientField({ mode, look, onLookChange, rerollNonce }: { mode: Mode; look: Look; onLookChange?: (l: Look) => void; rerollNonce?: number }) {
+export function AmbientField({ mode, look, onLookChange, rerollNonce, weekend }: { weekend?: WeekendWx | null; mode: Mode; look: Look; onLookChange?: (l: Look) => void; rerollNonce?: number }) {
   const [stats, setStats] = useState<FieldStats | null>(null)
   const [params, setParams] = useState<LookParam[] | null>(null)   // dev knobs of the active look
   const [seed, setSeed] = useState<number | null>(null)
@@ -90,6 +92,7 @@ export function AmbientField({ mode, look, onLookChange, rerollNonce }: { mode: 
     const renderer = RENDERERS[look]!()
     rendererRef.current = renderer
     renderer.mount(containerRef.current, mode)
+    renderer.setWeekend?.(weekend)
     const stored = Number(localStorage.getItem(seedKey(look)))
     if (stored && renderer.setSeed) renderer.setSeed(stored)   // restore the locked favourite
     setSeed(renderer.getSeed?.() ?? null)
@@ -115,7 +118,8 @@ export function AmbientField({ mode, look, onLookChange, rerollNonce }: { mode: 
   useEffect(() => {
     engineRef.current?.setMode(mode)
     rendererRef.current?.setMode(mode)
-  }, [mode])
+    rendererRef.current?.setWeekend?.(weekend)
+  }, [mode, weekend])
 
   // reroll the seeded composition when the nonce bumps (driven by the settings-bar Randomize)
   useEffect(() => {
@@ -136,7 +140,8 @@ export function AmbientField({ mode, look, onLookChange, rerollNonce }: { mode: 
       )}
 
       {DEV && (
-        <div className="field-dev">
+        <details className="field-dev">
+          <summary>Field controls</summary>
           <div className="field-dev-looks">
             {LOOKS.map((l) => (
               <button key={l} className={l === look ? 'on' : ''} onClick={() => onLookChange?.(l)}>{LOOK_LABEL[l]}</button>
@@ -168,7 +173,7 @@ export function AmbientField({ mode, look, onLookChange, rerollNonce }: { mode: 
               : look === 'silk' ? (stats ? `${stats.fps} fps · ${stats.ms}ms/frame · ${stats.res} buf` : '…')
               : [fps != null ? `${fps} fps` : null, seed != null ? `seed ${seed}` : null].filter(Boolean).join(' · ') || LOOK_LABEL[look]}
           </div>
-        </div>
+        </details>
       )}
     </>
   )

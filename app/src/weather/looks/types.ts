@@ -1,3 +1,4 @@
+import type { WeekendWx } from '../modes'
 import type { Mode } from '../../types'
 
 // A pluggable ambient-field renderer. Each look owns its OWN canvas (appended into
@@ -8,6 +9,7 @@ export interface LookRenderer {
   mount(host: HTMLElement, mode: Mode): void
   /** recolor/recompose to the new weather */
   setMode(mode: Mode): void
+  setWeekend?(weekend?: WeekendWx | null): void
   /** refit to host size */
   resize(): void
   /** cancel RAF, remove canvas, free GL */
