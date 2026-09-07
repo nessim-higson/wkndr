@@ -83,6 +83,7 @@ These were each tried the other way and reverted; the reasons are in `STATE.md` 
 | Intro / first run | `Intro.tsx`, `Calibrate.tsx` | The opening beat and the taste-calibration round. |
 | Filters | the `.filterstrip` in `App.tsx`, `FilterSheet` | When × What × Where, on the face. |
 | Saves → plan → share | `Itinerary.tsx`, `ShareSheet.tsx`, `MatchGame.tsx` | The boomerang: link → partner swipes → overlap slams. |
+| The Curation Board | `app/public/curate/index.html` (vanilla, static), `components/Triage.tsx` | Ness's instrument. Write-gated worker (never enter the key); Submit payload is a contract with the compile. See `docs/variations/004-*`. |
 
 The data contract is `app/src/types.ts` (`Pick`). A variation may add optional fields it derives at
 runtime; it may not require pipeline changes to render.
