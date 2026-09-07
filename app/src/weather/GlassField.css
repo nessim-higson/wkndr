@@ -1,0 +1,36 @@
+/* Weather-glass variation, 2026-09. The weather owns the BACKGROUND; the photo
+   remains an honest clear window onto the event. No texture layer above .app. */
+.glass-field { pointer-events: none; background: linear-gradient(165deg, #b6d4e3, #edf0eb 55%, #e8d9b9); }
+.glass-field[data-scene='overcast'] { background: linear-gradient(155deg, #c5cfce, #edf0eb 47%, #9eafb3); }
+.glass-field[data-scene='rain'] { background: linear-gradient(155deg, #c5d8e1, #b9cbd5 40%, #8199ac); }
+.glass-field[data-scene='mist'] { background: linear-gradient(150deg, #edf0e9, #dce3dc 50%, #bacac7); }
+.glass-field[data-scene='snow'] { background: linear-gradient(165deg, #a9c4d4, #e5eceb 55%, #cadce7); }
+.glass-field[data-scene='storm'] { background: linear-gradient(145deg, #263b4c, #526474 50%, #1d3143); }
+.glass-field[data-scene='mixed'] { background: linear-gradient(145deg, #dce8e6, #b7cedd 45%, #d8c3a4); }
+.glass-field[data-scene='evening'] { background: linear-gradient(165deg, #0e202e, #22364a 65%, #54463c); }
+.glass-light { position: absolute; width: 72vmax; height: 72vmax; right: -30vmax; top: -34vmax; background: radial-gradient(circle, #fffefa 0 5%, #fff5dce6 10%, #f7d9a657 31%, transparent 62%); filter: blur(12px); }
+.glass-field:is([data-scene='rain'],[data-scene='overcast'],[data-scene='mist'],[data-scene='snow']) .glass-light { opacity: .25; filter: blur(48px); }
+.glass-field[data-scene='storm'] .glass-light { opacity: .08; }
+.glass-field[data-scene='evening'] .glass-light { top: auto; bottom: -35vmax; background: radial-gradient(circle, #e8b87885, #b8834340 30%, transparent 63%); }
+.glass-cloud { position: absolute; width: 90vmax; height: 38vmax; border-radius: 50%; background: radial-gradient(ellipse, #ffffff9c, #f1f3ee4f 38%, transparent 69%); filter: blur(34px); }
+.glass-cloud-one { top: -20vmax; left: -28vmax; transform: rotate(-12deg); }
+.glass-cloud-two { bottom: -21vmax; right: -20vmax; transform: rotate(14deg); opacity: .68; }
+.glass-field[data-scene='storm'] .glass-cloud { background: radial-gradient(ellipse, #0c1e33b0, transparent 69%); }
+.glass-field[data-scene='evening'] .glass-cloud { opacity: .04; }
+.glass-haze { position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 48%, #fff7 0, transparent 68%); opacity: .18; }
+.glass-field[data-scene='mist'] .glass-haze { opacity: .8; }
+.glass-rain, .glass-snow { position: absolute; inset: 0; overflow: hidden; }
+.glass-drop { position: absolute; border-radius: 48% 52% 47% 53% / 42% 47% 58% 57%; background: radial-gradient(ellipse at 28% 22%, #ffffffe8 0 7%, transparent 30%), linear-gradient(135deg, #d6ebf345, #6c879233 46%, #eff8fa70); border: 1px solid #edf7fb7a; box-shadow: inset .6px 1px 1px #fff9, inset -1px -1px 1.5px #47667580, 0 1.5px 2px #28455642; }
+.glass-drop-trail::before { content: ''; position: absolute; width: 1px; height: 60px; bottom: 80%; left: 50%; background: linear-gradient(transparent, #f4fbfd80); transform: rotate(3deg); transform-origin: bottom; }
+.glass-field[data-scene='mist'] .glass-drop { transform: scale(.45); opacity: .45; }
+.glass-field[data-scene='mist'] .glass-drop-trail::before { display: none; }
+.glass-snow i { position: absolute; background: #fff; border-radius: 50%; opacity: .8; box-shadow: 0 0 4px #fff8; }
+/* Static by default. Only compositor transforms move; no perpetual canvas, no JS
+   frame loop, no animated blur. Hidden tabs and Reduce Motion pause the atmosphere. */
+.glass-field[data-moving='true'] .glass-cloud { animation: glass-drift 48s ease-in-out infinite alternate; }
+.glass-field[data-moving='true']:not([data-scene='mist']) .glass-drop-trail { animation: glass-run var(--duration) var(--delay) ease-in infinite; }
+.glass-field[data-moving='true'] .glass-snow i { animation: glass-snow var(--duration) var(--delay) linear infinite; }
+@keyframes glass-drift { to { transform: translate3d(4vw, 3vh, 0); } }
+@keyframes glass-run { 0%, 65% { translate: 0 0; } 96%, 100% { translate: 8px 160px; opacity: 0; } }
+@keyframes glass-snow { to { translate: 26px 100vh; } }
+@media (prefers-reduced-motion: reduce) { .glass-field *, .glass-field *::before { animation: none !important; } }

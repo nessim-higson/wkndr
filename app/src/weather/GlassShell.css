@@ -1,0 +1,67 @@
+/* Scope the supporting shell to this look. Switching back to Auras is a genuine
+   comparison; none of these rules changes sheets, ranking or the card crop. */
+html[data-field='glass'] { --glass-ink: #24333c; --glass-muted: #465862; }
+html[data-field='glass']:is([data-glass-scene='evening'], [data-glass-scene='storm']) { --glass-ink: #f3f6f7; --glass-muted: #d1dce1; }
+html[data-field='glass'] body::after { display: none; } /* no film overlay on the photos */
+.app--glass {
+  --field-text: var(--glass-ink);
+  --module-surface: #f5f7f3f5;
+  --card-grade: 0;
+  --card-grain: 0;
+  --tint-x: 0;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: max(var(--sp-6), env(safe-area-inset-top)) var(--sp-6) max(var(--sp-4), env(safe-area-inset-bottom));
+  --module-w: min(400px, 100%);
+}
+.app--glass::before {
+  content: ''; position: absolute; inset: var(--sp-2); z-index: -1; pointer-events: none;
+  border-radius: 36px;
+  border: 1px solid #ffffff8c;
+  background: linear-gradient(135deg, #fff1, transparent 55%, #fff1);
+  box-shadow: inset 0 1px 0 #fffa, 0 18px 60px -30px #21394635;
+}
+.app--glass .topbar-module { width: var(--module-w); border-radius: 24px; background: #f5f7f3d9; box-shadow: 0 4px 18px -12px #20364245; }
+.app--glass .topbar-module:is(.open,.peeking) { border-radius: 24px 24px 0 0; }
+.app--glass .topbar-row { padding: var(--sp-3) var(--sp-4); }
+.app--glass .tb-brand { font-size: var(--fs-2xl); }
+.app--glass .tb-saves.has { background: #e3e9e7; color: #2b424b; }
+.app--glass .filterstrip { margin-top: var(--sp-4); }
+.app--glass .filter-trigger { color: var(--glass-ink); background: #ffffff40; border: 1px solid #ffffffa8; }
+.app--glass .filter-trigger.on { background: #f5f7f3e8; color: #24333c; border-color: #ffffffd9; box-shadow: inset 0 -2px 0 #b55535; }
+.app--glass .main { margin-top: var(--sp-4); }
+.app--glass .main-stack .stack-wrap { padding-top: var(--sp-4); padding-bottom: 0; }
+.app--glass .stack-deck { width: min(400px, 100%); max-height: 620px; }
+.app--glass .card, .app--glass .card-face { border-radius: 26px; }
+.app--glass .card { box-shadow: 0 18px 40px -12px #20364259, 0 0 0 1px #ffffff85; }
+.app--glass .card-scrim { background: linear-gradient(180deg, #0002, transparent 25%, transparent 48%, #0005 72%, #000c); }
+.app--glass .card-title { font-size: var(--fs-3xl); }
+.app--glass .stack-actions { gap: var(--sp-6); margin-top: var(--sp-8); margin-bottom: var(--sp-6); }
+.app--glass .act { color: #263b43; background: #f6f9f1bd; border: 1px solid #ffffffb8; box-shadow: inset 0 1px 0 #fffd, 0 6px 18px -8px #334f6b4d; }
+.app--glass .act svg { width: 24px; height: 24px; stroke-width: 1.5; }
+.app--glass .act-label { opacity: 1; font-size: var(--fs-xs); font-weight: 500; }
+.app--glass .stack-more { margin-top: var(--sp-2); font-size: var(--fs-xs); opacity: 1; color: var(--glass-muted); }
+.glass-brief { flex: 0 0 auto; width: min(400px, 100%); margin: var(--sp-4) auto 0; padding: var(--sp-3) var(--sp-4); color: var(--glass-ink); background: #edf3f04d; border-radius: 16px; }
+.glass-brief p { font-size: var(--fs-base); line-height: 1.4; font-weight: 500; text-wrap: pretty; }
+.glass-brief button { display: inline-flex; align-items: center; gap: var(--sp-2); min-height: 36px; font-size: var(--fs-sm); color: var(--glass-ink); }
+.glass-forecast-backdrop { position: fixed; inset: 0; z-index: 380; display: grid; place-items: center; padding: var(--sp-4); background: #0c1c3055; backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+.glass-forecast { background: #f4f6f2; color: #24333c; border: 1px solid #fff; border-radius: 28px; width: min(440px,100%); padding: var(--sp-6); max-height: calc(100dvh - 32px); overflow-y: auto; box-shadow: 0 24px 80px #081c3440; }
+.glass-forecast-head { display: flex; align-items: center; gap: var(--sp-4); justify-content: space-between; }
+.glass-forecast h2 { font-size: var(--fs-xl); letter-spacing: -.02em; }
+.glass-forecast-head button { min-height: 44px; padding: 0 var(--sp-3); font-size: var(--fs-sm); background: #e3eae7; border-radius: 24px; }
+.glass-forecast-date { font-size: var(--fs-sm); margin: var(--sp-2) 0 var(--sp-6); }
+.glass-days > div { display: flex; justify-content: space-between; padding: var(--sp-4) 0; border-top: 1px solid #d3dddb; font-size: var(--fs-md); }
+.glass-days dd { text-align: right; }
+.glass-days dd span { display: block; font-size: var(--fs-sm); margin-top: var(--sp-1); color: #465862; }
+.glass-forecast-note { font-size: var(--fs-sm); line-height: 1.5; color: #465862; margin-top: var(--sp-3); }
+.glass-study { border-top: 1px solid #d3dddb; margin-top: var(--sp-6); padding-top: var(--sp-6); }
+.glass-study > label:first-child { display: block; font-size: var(--fs-base); font-weight: 500; margin-bottom: var(--sp-2); }
+.glass-study select { width: 100%; min-height: 44px; border: 1px solid #becbc7; border-radius: 12px; background: #fff; color: #24333c; font: inherit; font-size: var(--fs-md); padding: var(--sp-2) var(--sp-3); }
+.glass-motion { display: flex; align-items: center; gap: var(--sp-3); min-height: 44px; margin-top: var(--sp-4); font-size: var(--fs-base); }
+.glass-motion input { width: 18px; height: 18px; accent-color: #456870; }
+/* Reserve the existing feedback button's lane on phones. */
+@media(max-width:480px) { .glass-brief { width: calc(100% - 48px); margin-left: var(--sp-12); margin-right: 0; } }
+@media(min-width:720px) { .app--glass { height: calc(100dvh - 32px); margin-top: var(--sp-4); } }
+@media(max-width:380px) { .app--glass { padding-left: var(--sp-4); padding-right: var(--sp-4); } .app--glass .topbar-row { gap: var(--sp-2); padding: var(--sp-2); } .app--glass .tb-brandblock { gap: var(--sp-2); } .app--glass .tb-brand { font-size: var(--fs-xl); } }
+@media(max-height:720px) { .app--glass { padding-top: max(var(--sp-3),env(safe-area-inset-top)); padding-bottom: max(var(--sp-2),env(safe-area-inset-bottom)); } .app--glass .topbar-row { padding-top: var(--sp-2); padding-bottom: var(--sp-2); } .app--glass .filterstrip { margin-top: var(--sp-2); } .app--glass .main { margin-top: var(--sp-2); } .app--glass .main-stack .stack-wrap { padding-top: var(--sp-2); } .app--glass .stack-actions { margin-top: var(--sp-6); } .glass-brief { margin-top: var(--sp-2); padding-top: var(--sp-2); padding-bottom: 0; } }
+@media(max-height:500px) { html[data-field='glass'] body { overflow-y: auto; } .app--glass { min-height: 620px; } }

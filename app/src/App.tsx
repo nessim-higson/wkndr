@@ -8,6 +8,9 @@ import type { Mode, Pick, SwipeDir } from './types'
 import { MODES, MODE_META, classify, applyMode, rankPicks, diversify, orderServed, moreLikeOrder, weekendFrom, modeSpecOf, tempForPick, type DayWx, type WeekendWx } from './weather/modes'
 import { CITIES, DEFAULT_CITY, cityByKey, cityByName, nearestCity, type City } from './data/cities'
 import { AmbientField } from './weather/AmbientField'
+import { GlassField } from './weather/GlassField'
+import { GlassForecast } from './weather/GlassForecast'
+import { glassScene, glassSummary, GLASS_LABELS, type GlassScene } from './weather/glass'
 import type { Look } from './weather/ambientEngine'
 import { APP_VERSION } from './version'
 import { SwipeStack } from './components/SwipeStack'
@@ -93,6 +96,7 @@ import {
   loadSwiped, persistSwiped, KEY_SWIPED,
 } from './taste'
 import './App.css'
+import './weather/GlassShell.css'
 
 // `filter` is now just the top-level MODE (browse / saved / shared). The category + when axes are
 // MULTI-SELECT sets layered on top — tick several and they combine (a union).
@@ -118,7 +122,7 @@ const INITIAL_CITY: City =
 type View = 'stack' | 'list' | 'fan'
 // `temp` is the headline number; `label` is the window it describes ("This weekend" / a
 // preview). The live forecast describes the COMING WEEKEND, not the current hour.
-interface Wx { temp: number; hi: number; lo: number; city: string; label?: string }
+interface Wx { temp: number; hi: number; lo: number; city: string; label?: string; pop?: number }
 
 // Pick the upcoming weekend (Sat+Sun) out of a daily forecast's date list. If today is the
 // weekend, use today onward. Returns the indices into the daily arrays + a human label.
@@ -157,6 +161,7 @@ const DEMO: Record<Mode, Wx> = {
 // the ambient field looks the user can switch between (persisted to localStorage).
 // V2: a fresh set of five — flip through them to judge.
 const FIELD_OPTS: { key: Look; label: string }[] = [
+  { key: 'glass', label: 'Glass' },
   { key: 'silk', label: 'Silk' },
   { key: 'auras', label: 'Auras' },
   { key: 'riso', label: 'Riso' },
@@ -286,14 +291,23 @@ export default function App() {
   const [whenOpen, setWhenOpen] = useState(false)          // When sheet
   const [whereOpen, setWhereOpen] = useState(false)        // Where sheet (V.11)
   const [look, setLook] = useState<Look>(() => {       // ambient field (validated)
-    // The MVP ships ONE canonical look (Auras). Only honour a stored/switched look inside ?dev=1;
-    // otherwise a look picked during a dev session (Riso's grid+arcs, Forms, Silk) would leak
-    // into the single-look live app. Non-dev always renders Auras, and the persist effect below
-    // self-heals any stale stored value back to 'auras'.
-    if (!DEVUI) return 'auras'
+    // This branch explores Glass. Production's Auras remains available in the dev
+    // switcher, so the same real deck can be compared without changing its ranking.
+    if (!DEVUI) return 'glass'
     const s = localStorage.getItem('wkndr.field') as Look
-    return FIELD_OPTS.some((o) => o.key === s) ? s : 'auras'
+    return FIELD_OPTS.some((o) => o.key === s) ? s : 'glass'
   })
+  const [glassPreview, setGlassPreview] = useState<GlassScene | null>(null)
+  const [glassMoving, setGlassMoving] = useState(false)
+  const [glassForecastOpen, setGlassForecastOpen] = useState(false)
+  const glassActive = look === 'glass'
+  const glassWeather = glassPreview ?? glassScene(mode, wx.pop)
+  useEffect(() => {
+    document.documentElement.dataset.field = glassActive ? 'glass' : 'original'
+    document.documentElement.dataset.glassScene = glassWeather
+    return () => { delete document.documentElement.dataset.field; delete document.documentElement.dataset.glassScene }
+  }, [glassActive, glassWeather])
+
   const [fieldReroll, setFieldReroll] = useState(0)   // bump → reroll the seeded field's composition
   const [tintX, setTintX] = useState(() => {          // card-grade weather-tint strength
     // like `look`: only honour a stored value inside ?dev=1 — a strength picked while
@@ -892,7 +906,7 @@ export default function App() {
       })
       setMode(m)
       setWeekend(weekendFrom(days, m))
-      const nextWx = { temp: hi, hi, lo, city: placeName, label }
+      const nextWx = { temp: hi, hi, lo, city: placeName, label, pop: pp }
       setWx(nextWx)
       setLive(true)
       rememberWx(m, nextWx)   // the next reload boots on THIS sky — no more amber flash in the rain
@@ -904,7 +918,9 @@ export default function App() {
     // reducedMotion="user": every framer transform/layout animation (detail expand, sheet
     // slides, ctx bars) collapses to a crossfade for prefers-reduced-motion users
     <MotionConfig reducedMotion="user">
-      <AmbientField mode={mode} look={look} onLookChange={setLook} rerollNonce={fieldReroll} />
+      {glassActive
+        ? <GlassField scene={glassWeather} moving={glassMoving} />
+        : <AmbientField mode={mode} look={look} onLookChange={setLook} rerollNonce={fieldReroll} />}
 
       <AnimatePresence>
         {intro && <Intro
@@ -933,7 +949,7 @@ export default function App() {
       </AnimatePresence>
 
       <motion.div
-        className="app"
+        className={`app${glassActive ? ' app--glass' : ''}`}
         initial={false}
         /* opacity only — NO transform: a transform here would make .app the containing block
            for position:fixed children (the fan stage, overlays), offsetting them by the
@@ -1344,7 +1360,7 @@ export default function App() {
                 onSeeList={() => setView('list')}
                 escape={evergreenEscape}
                 /* the deck owns ←/→ only while nothing sits above it */
-                keysActive={!intro && !detail && !shareOpen && !barOpen && !savesOpen && !matching && !inputsOpen && !filterOpen && !whenOpen && !whereOpen && !calibrating && !triaging && !checkpoint}
+                keysActive={!intro && !detail && !shareOpen && !barOpen && !savesOpen && !matching && !inputsOpen && !filterOpen && !whenOpen && !whereOpen && !calibrating && !triaging && !checkpoint && !glassForecastOpen}
               />
             </motion.div>
           ) : view === 'fan' ? (
@@ -1369,7 +1385,16 @@ export default function App() {
             </motion.div>
           )}
         </main>
+        {glassActive && view === 'stack' && !intro && <section className="glass-brief" aria-label="Weekend weather">
+          <p aria-live="polite">{glassPreview
+            ? `Appearance preview · ${GLASS_LABELS[glassPreview]}`
+            : glassSummary(mode, weekend, live, wx.pop)}</p>
+          <button onClick={() => setGlassForecastOpen(true)}>View forecast <span aria-hidden="true">→</span></button>
+        </section>}
       </motion.div>
+      {glassActive && <GlassForecast open={glassForecastOpen} onClose={() => setGlassForecastOpen(false)}
+        weekend={weekend} live={live} label={wx.label} preview={glassPreview} onPreview={setGlassPreview}
+        moving={glassMoving} onMoving={setGlassMoving} />}
 
       {toast && (
         <div className={`toast${toast.save ? ' toast--save' : ''}`}>
