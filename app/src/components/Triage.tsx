@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { dataUrl } from '../lib/data'
 import { X } from 'lucide-react'
 import type { Pick, SwipeDir } from '../types'
 import { SwipeStack } from './SwipeStack'
@@ -72,7 +73,7 @@ export function Triage({ cityKey, onClose }: {
   // priority, and it's the same order the board's NEW FINDS tab shows.
   useEffect(() => {
     let live = true
-    fetch(`${import.meta.env.BASE_URL}data/pending.${cityKey}.json?t=${Date.now()}`)
+    fetch(`${dataUrl(`pending.${cityKey}.json`)}?t=${Date.now()}`)
       .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
       .then((d) => {
         if (!live) return

@@ -85,6 +85,7 @@ import { sanePicks } from './lib/feed'
 import { fetchOverrides, applyOverrides } from './lib/overrides'
 import { mergeWings, fetchWings } from './lib/wings'
 import { cardImageOf } from './lib/image'
+import { dataBase, dataUrl } from './lib/data'
 import { initMetrics, track } from './lib/metrics'
 import { FEEDBACK_FORM } from './components/Feedback'
 import {
@@ -435,7 +436,7 @@ export default function App() {
     if (fetchedFeeds.current.has(key)) return
     fetchedFeeds.current.add(key)   // single-flight guard while the fetch is out…
     Promise.all([
-      fetch(`${import.meta.env.BASE_URL}data/picks.${key}.json`).then((r) => (r.ok ? r.json() : null)),
+      fetch(dataUrl(`picks.${key}.json`)).then((r) => (r.ok ? r.json() : null)),
       fetchOverrides(key),
     ])
       .then(([j, ov]) => {
@@ -675,7 +676,7 @@ export default function App() {
   async function dealWings(): Promise<boolean> {
     if (wingsDealt || wingsFlight.current) return false
     wingsFlight.current = true
-    const { bench, pending } = await fetchWings(import.meta.env.BASE_URL, city.key)
+    const { bench, pending } = await fetchWings(dataBase(), city.key)
     const more = mergeWings(feedPicks, bench, pending)
     setWings(more); setWingsDealt(true)
     if (more.length) { setSeed((s) => s + 1); setDealKey((k) => k + 1); flash(`From the wings — ${more.length} more`) }

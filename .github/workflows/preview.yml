@@ -1,0 +1,53 @@
+name: Preview (branch)
+
+# THE PROTOTYPE PROTOCOL (see AGENTS.md, docs/variations/README.md). Every `codex/**` or `proto/**`
+# branch gets its own Cloudflare Pages preview at https://<slug>.wkndr-app.pages.dev — the branch
+# name slugified (`/` → `-`, lowercase). Production (app.wkndr.xyz) deploys from `main` only
+# (deploy.yml); a preview can never touch it: Pages treats every non-production branch as a
+# preview deployment, aliased by branch.
+#
+# The preview is built against the LIVE feed (VITE_DATA_ORIGIN → app.wkndr.xyz, CORS opened by
+# app/public/_headers), so a variation always shows this week's real cards, however old the
+# branch's own data files are. Same gate as the cron: a red suite or a type error = no preview.
+on:
+  push:
+    branches: ['codex/**', 'proto/**']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: preview-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: oven-sh/setup-bun@v2
+      - name: Install deps
+        run: cd app && bun install --frozen-lockfile
+      - name: Logic tests + types
+        run: cd app && bun test tests && bunx tsc -b
+      - name: Build app (domain target, live feed)
+        env:
+          VITE_DATA_ORIGIN: https://app.wkndr.xyz/
+        run: cd app && bun run build:domain
+      - name: Branch slug
+        id: slug
+        run: echo "slug=$(echo '${{ github.ref_name }}' | tr '/' '-' | tr 'A-Z' 'a-z' | tr -c 'a-z0-9-\n' '-' | cut -c1-28 | sed 's/-*$//')" >> "$GITHUB_OUTPUT"
+      - name: Deploy preview
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy app/dist --project-name=wkndr-app --branch=${{ steps.slug.outputs.slug }}
+      - name: Preview URL
+        run: |
+          echo "### Preview — \`${{ github.ref_name }}\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "https://${{ steps.slug.outputs.slug }}.wkndr-app.pages.dev" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "Built against the live feed at app.wkndr.xyz. Share links minted here point at production." >> "$GITHUB_STEP_SUMMARY"
