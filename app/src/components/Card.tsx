@@ -55,6 +55,7 @@ export function Card({ pick, temp, mode }: { pick: Pick; temp?: number; mode?: M
       ) : (
         <div className="card-body">
           <h2 className="card-title">{pick.title}</h2>
+          <p className="glass-card-caption">{[pick.venue, pick.price].filter(Boolean).join(' · ')}</p>
         </div>
       )}
     </article>

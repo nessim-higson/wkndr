@@ -5,6 +5,7 @@ import { weekendFrom } from '../src/weather/modes'
 describe('Glass reads the daily forecast, not imagined conditions', () => {
   test('decisive precipitation wins over a warm cached mode', () => {
     expect(glassScene('WARM', 95)).toBe('rain')
+    expect(glassScene('WARM', 45)).toBe('mixed')
   })
   test('cold but dry does not paint rain', () => {
     expect(glassScene('COLD_WET', 5)).toBe('overcast')

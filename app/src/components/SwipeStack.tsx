@@ -1,5 +1,5 @@
 import {
-  forwardRef, useEffect, useImperativeHandle, useLayoutEffect, useMemo, useRef,
+  type ReactNode, forwardRef, useEffect, useImperativeHandle, useLayoutEffect, useMemo, useRef,
 } from 'react'
 import {
   motion, useMotionValue, useTransform, animate,
@@ -39,6 +39,7 @@ interface CardHandle {
 
 interface SwipeCardProps {
   pick: Pick
+  tidy?: boolean
   interactive: boolean
   depth: number // 0 = top
   dealIn: boolean // true → fly onto the deck (initial build); false → just fade (a card cycling in)
@@ -60,11 +61,11 @@ function hashUnit(s: string): number {
 }
 
 const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
-  { pick, interactive, depth, dealIn, progress, temp, mode, onSwipe, onOpen, onCycle }, ref,
+  { pick, tidy, interactive, depth, dealIn, progress, temp, mode, onSwipe, onOpen, onCycle }, ref,
 ) {
   // a touch of deterministic imperfection per card — the stack looks hand-laid, not machined
-  const skew = useMemo(() => hashUnit(pick.id) * 2.8, [pick.id])        // ±2.8° resting tilt
-  const restX = useMemo(() => hashUnit(`${pick.id}x`) * 7, [pick.id])   // ±7px resting nudge
+  const skew = useMemo(() => tidy ? 0 : hashUnit(pick.id) * 2.8, [pick.id, tidy])        // ±2.8° resting tilt
+  const restX = useMemo(() => tidy ? 0 : hashUnit(`${pick.id}x`) * 7, [pick.id, tidy])   // ±7px resting nudge
 
   const x = useMotionValue(0)
   const y = useMotionValue(0)
@@ -138,8 +139,8 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
   // does (occluded behind it) until they advance forward — so the incoming card is never seen
   // to "insert", it just gets uncovered as the stack moves up.
   const eff = useTransform(progress, (p) => Math.min(VISIBLE_DEPTH, Math.max(0, depth - p)))
-  const slotScale = useTransform(eff, (d) => 1 - d * STEP_SCALE)
-  const slotY = useTransform([eff, enterY], ([d, ey]: number[]) => d * STEP_Y + ey)
+  const slotScale = useTransform(eff, (d) => 1 - d * (tidy ? .008 : STEP_SCALE))
+  const slotY = useTransform([eff, enterY], ([d, ey]: number[]) => d * (tidy ? 4 : STEP_Y) + ey)
   // resting imperfection scales with depth: the TOP card stays nearly square; deeper cards tilt/offset more
   const slotRot = useTransform([eff, enterRotExtra], ([d, ex]: number[]) => skew * Math.min(1, d) + ex)
   const slotX = useTransform(eff, (d) => restX * Math.min(1, d))
@@ -305,7 +306,7 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
 })
 
 export function SwipeStack({
-  picks, temp, tempOf, mode, onSwipe, onOpen, onRefresh, onStartOver, total, filterLabel, onClearFilter, onSeeList, nudge, keysActive, escape,
+  picks, temp, tempOf, mode, onSwipe, onOpen, onRefresh, onStartOver, total, filterLabel, onClearFilter, onSeeList, nudge, keysActive, escape, weatherBrief,
 }: {
   picks: Pick[]
   temp?: number
@@ -325,6 +326,7 @@ export function SwipeStack({
    *  evergreen escape in the empty state. Named and counted, so it's an offer, not an apology. */
   escape?: { label: string; note: string; onTake: () => void }
   nudge?: boolean   // arm the one-time first-run swipe hint (fires once per device, ever)
+  weatherBrief?: ReactNode
   keysActive?: boolean  // App says when the deck owns the keyboard (no overlay/menu open)
 }) {
   const topRef = useRef<CardHandle>(null)
@@ -416,6 +418,7 @@ export function SwipeStack({
             key={p.id}
             ref={i === 0 ? topRef : undefined}
             pick={p}
+            tidy={!!weatherBrief}
             depth={i}
             dealIn={firstDeal.current}
             interactive={i === 0}
@@ -433,6 +436,7 @@ export function SwipeStack({
         {visible[0] ? `${visible[0].title} — ${visible[0].venue}, ${visible[0].when}` : ''}
       </div>
 
+      {weatherBrief}
       <div className="stack-actions">
         <button className="act act-nope" onClick={() => topRef.current?.fling('nope')} aria-label="Skip">
           <X size={22} strokeWidth={2.5} />

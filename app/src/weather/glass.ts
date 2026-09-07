@@ -15,7 +15,7 @@ export const GLASS_LABELS: Record<GlassScene, string> = {
 export function glassScene(mode: Mode, pop?: number): GlassScene {
   if (pop != null && Number.isFinite(pop) && pop >= 80) return 'rain'
   if (mode === 'COLD_WET') return pop != null && pop < 40 ? 'overcast' : 'rain'
-  if (mode === 'VOLATILE') return 'mixed'
+  if (mode === 'VOLATILE' || (pop != null && Number.isFinite(pop) && pop >= 40)) return 'mixed'
   return mode === 'COOL' ? 'overcast' : 'sunny'
 }
 

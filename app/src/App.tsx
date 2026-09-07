@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { AnimatePresence, MotionConfig, motion } from 'framer-motion'
-import { Shuffle, Clock, CloudRain, LayoutGrid, Star, ArrowUpRight, LocateFixed, Info, RotateCw, RotateCcw, X, Heart, Navigation } from 'lucide-react'
+import { Shuffle, Clock, CloudRain, Sun, Cloud, Moon, Snowflake, LayoutGrid, Star, ArrowUpRight, LocateFixed, Info, RotateCw, RotateCcw, X, Heart, Navigation } from 'lucide-react'
 
 // subtle haptic on commit/save (Android/Chrome; iOS Safari ignores navigator.vibrate)
 const haptic = (ms = 10) => { try { navigator.vibrate?.(ms) } catch { /* unsupported */ } }
@@ -302,6 +302,7 @@ export default function App() {
   const [glassForecastOpen, setGlassForecastOpen] = useState(false)
   const glassActive = look === 'glass'
   const glassWeather = glassPreview ?? glassScene(mode, wx.pop)
+  const GlassWeatherIcon = glassWeather === 'sunny' ? Sun : glassWeather === 'evening' ? Moon : glassWeather === 'snow' ? Snowflake : ['rain', 'mixed', 'storm'].includes(glassWeather) ? CloudRain : Cloud
   useEffect(() => {
     document.documentElement.dataset.field = glassActive ? 'glass' : 'original'
     document.documentElement.dataset.glassScene = glassWeather
@@ -981,6 +982,7 @@ export default function App() {
             >
               <div className="tb-brandblock">
                 <div className="tb-brand"><span className={`tb-dot${locating ? ' pulsing' : ''}`} aria-hidden />WKNDR</div>
+                {glassActive && <span className="glass-city">Amsterdam</span>}
                 <span className="tb-divider" aria-hidden />
                 <div className="tb-wx">
                   <span className="tb-when">
@@ -1360,6 +1362,11 @@ export default function App() {
                 onSeeList={() => setView('list')}
                 escape={evergreenEscape}
                 /* the deck owns ←/→ only while nothing sits above it */
+                weatherBrief={glassActive && !intro ? <button className="glass-brief" aria-label="View forecast" onClick={() => setGlassForecastOpen(true)}>
+                  <GlassWeatherIcon size={22} strokeWidth={1.3} aria-hidden />
+                  <span>{glassPreview ? `Appearance preview · ${GLASS_LABELS[glassPreview]}` : glassSummary(mode, weekend, live, wx.pop)}</span>
+                  <span className="glass-brief-arrow" aria-hidden>↗</span>
+                </button> : undefined}
                 keysActive={!intro && !detail && !shareOpen && !barOpen && !savesOpen && !matching && !inputsOpen && !filterOpen && !whenOpen && !whereOpen && !calibrating && !triaging && !checkpoint && !glassForecastOpen}
               />
             </motion.div>
@@ -1385,12 +1392,7 @@ export default function App() {
             </motion.div>
           )}
         </main>
-        {glassActive && view === 'stack' && !intro && <section className="glass-brief" aria-label="Weekend weather">
-          <p aria-live="polite">{glassPreview
-            ? `Appearance preview · ${GLASS_LABELS[glassPreview]}`
-            : glassSummary(mode, weekend, live, wx.pop)}</p>
-          <button onClick={() => setGlassForecastOpen(true)}>View forecast <span aria-hidden="true">→</span></button>
-        </section>}
+
       </motion.div>
       {glassActive && <GlassForecast open={glassForecastOpen} onClose={() => setGlassForecastOpen(false)}
         weekend={weekend} live={live} label={wx.label} preview={glassPreview} onPreview={setGlassPreview}
