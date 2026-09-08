@@ -1,0 +1,8 @@
+body:has(.np-study) { overflow: auto; height: auto; background: #d2d5ce; }
+.np-study { padding: 24px; color: #20221f; }
+.np-study > h1 { font-size: 27px; } .np-study > p { margin: 12px 0 32px; }
+.np-study section { margin-bottom: 48px; }
+.np-study section > h2 { font-size: 16px; margin-bottom: 16px; }
+.np-study-pair { display: flex; gap: 32px; align-items: flex-start; flex-wrap: wrap; }
+.np-study-tall { width: 340px; height: 580px; flex-shrink: 0; }
+.np-study-square { width: 560px; height: 500px; flex-shrink: 0; }

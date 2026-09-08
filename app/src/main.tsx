@@ -2,6 +2,7 @@ import './devRafPump'   // FIRST: dev-only hidden-tab rAF pump (see the module's
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App'
+import { NoPhotoStudy } from './components/NoPhotoStudy'
 import { ErrorBoundary } from './components/ErrorBoundary'
 import { openCurateDoor } from './curateDoor'
 import './index.css'
@@ -13,7 +14,7 @@ openCurateDoor()
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <ErrorBoundary>
-      <App />
+      {new URLSearchParams(location.search).has('dev') && new URLSearchParams(location.search).has('face-study') ? <NoPhotoStudy /> : <App />}
     </ErrorBoundary>
   </React.StrictMode>,
 )

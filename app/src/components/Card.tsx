@@ -1,8 +1,9 @@
 import { Maximize2, Clock } from 'lucide-react'
 import type { Pick, Mode } from '../types'
-import { CATEGORY_LABEL, cardSignal } from '../types'
+import { cardSignal } from '../types'
 import { cardImageOf, focalPosition } from '../lib/image'
 import './Card.css'
+import { NoPhotoFace } from './NoPhotoFace'
 
 /** The stack card FRONT — image-led and deliberately quiet: the WHEN stamp (day/time +
  *  forecast temp on outdoor picks), AT MOST one signal pill (cardSignal: live weather peak
@@ -45,13 +46,7 @@ export function Card({ pick, temp, mode }: { pick: Pick; temp?: number; mode?: M
       <span className="card-expand" aria-hidden><Maximize2 size={14} strokeWidth={2.6} /></span>
 
       {nophoto ? (
-        <div className="np-hero">
-          <span className="np-cat">{CATEGORY_LABEL[pick.category]}</span>
-          <h2 className="np-title display">{pick.title}</h2>
-          {(pick.venue || pick.area) && (
-            <p className="np-venue">{[pick.venue, pick.area].filter(Boolean).join(' · ')}</p>
-          )}
-        </div>
+        <NoPhotoFace pick={pick} />
       ) : (
         <div className="card-body">
           <h2 className="card-title">{pick.title}</h2>
