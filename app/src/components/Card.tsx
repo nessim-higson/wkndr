@@ -9,7 +9,7 @@ import { NoPhotoFace } from './NoPhotoFace'
  *  forecast temp on outdoor picks), AT MOST one signal pill (cardSignal: live weather peak
  *  > scarcity > new/ending), and the title over the bottom scrim. Everything else — static
  *  weather affinity, kids, trending, category — lives on the detail (tap to expand). */
-export function Card({ pick, temp, mode }: { pick: Pick; temp?: number; mode?: Mode }) {
+export function Card({ pick, temp, mode, underlay }: { pick: Pick; temp?: number; mode?: Mode; underlay?: Pick }) {
   const sig = cardSignal(pick, mode)
   // THE NO-PHOTO FACE (V.11.9). The pipeline no longer fills a missing photo with a category-bank
   // or stock image — a plausible wrong photo was the one failure a stranger can't spot — so a card
@@ -27,6 +27,8 @@ export function Card({ pick, temp, mode }: { pick: Pick; temp?: number; mode?: M
       style={pick.image ? { backgroundImage: `url(${cardImageOf(pick.image)})`, backgroundPosition: focalPosition(pick) } : undefined}
     >
       {nophoto && <div className="np-ground" aria-hidden />}
+      {nophoto && underlay?.image && <div className="np-transmitted" aria-hidden style={{ backgroundImage: `url(${cardImageOf(underlay.image)})`, backgroundPosition: focalPosition(underlay) }} />}
+      {nophoto && <div className="np-material-mark" aria-hidden />}
       {pick.image && <div className="card-grade" aria-hidden />}
       {pick.image && <div className="card-tint" aria-hidden />}
       <div className="card-grain" aria-hidden />

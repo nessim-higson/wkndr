@@ -1,8 +1,19 @@
-body:has(.np-study) { overflow: auto; height: auto; background: #d2d5ce; }
-.np-study { padding: 24px; color: #20221f; }
-.np-study > h1 { font-size: 27px; } .np-study > p { margin: 12px 0 32px; }
-.np-study section { margin-bottom: 48px; }
-.np-study section > h2 { font-size: 16px; margin-bottom: 16px; }
-.np-study-pair { display: flex; gap: 32px; align-items: flex-start; flex-wrap: wrap; }
-.np-study-tall { width: 340px; height: 580px; flex-shrink: 0; }
-.np-study-square { width: 560px; height: 500px; flex-shrink: 0; }
+body:has(.np-app-study) { overflow:auto; background:radial-gradient(ellipse at 90% 20%,#e5e9e8,transparent 60%),linear-gradient(145deg,#839cae,#c3cdd0 60%,#c0b7a4); }
+.np-app-study { width:min(440px,calc(100% - 16px)); height:max(820px,calc(100dvh - 32px)); max-height:980px; margin:16px auto; padding:24px; display:flex; flex-direction:column; color:#26353e; border:1px solid #fff8; border-radius:32px; background:#ffffff20; box-shadow:inset 0 1px 1px #fff8,0 20px 50px #24384d20; }
+.np-app-study header { display:flex; align-items:center; justify-content:space-between; padding:4px 8px 20px; }
+.np-app-study header strong { font-size:27px; letter-spacing:-.04em; } .np-app-study header strong span { color:#ff6036; margin-left:6px; }
+.np-app-study header p { font-size:13px; margin-top:4px; }
+.np-study-saves { display:flex; gap:8px; align-items:center; }
+.np-study-filters { display:flex; align-items:center; justify-content:space-between; padding:0 8px 20px; font-size:13px; }
+.np-study-deck { flex:1; min-height:0; }
+.np-study-deck .stack-wrap { padding:0; }
+.np-study-deck .stack-deck { width:100%; max-height:none; }
+.np-study-deck .stack-actions { margin:32px 0 24px; gap:64px; }
+.np-study-deck .act { background:#ffffff40; color:#26353e; border:1px solid #fff8; }
+.np-study-deck .act-label { opacity:1; color:#26353e; }
+.np-study-tools { margin-top:8px; text-align:center; font-size:11px; line-height:1.5; }
+.np-study-tools button { min-height:44px; font-size:13px; text-decoration:underline; text-underline-offset:4px; }
+.np-study-tools p { margin-top:4px; } .np-study-tools a { display:inline-block; padding:8px; }
+@media(max-width:600px) { body:has(.np-app-study) .face-controls { top:12px; bottom:auto; } .np-app-study { margin-top:140px; } }
+@media(max-width:600px) { .np-app-study { height:max(680px,calc(100dvh - 160px)); } }
+@media(max-width:600px) { body:has(.np-app-study) .face-controls { position:absolute; } }

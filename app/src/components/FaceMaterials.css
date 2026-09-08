@@ -1,0 +1,37 @@
+.face-controls { position:fixed; z-index:1000; right:12px; bottom:12px; max-width:calc(100vw - 24px); background:#f5f5efeF; color:#232c30; border:1px solid #fff9; border-radius:16px; padding:12px; font-size:13px; box-shadow:0 8px 25px #0002; }
+.face-controls summary { cursor:pointer; } .face-controls label { display:grid; gap:8px; padding-top:12px; } .face-controls select { min-height:44px; border:1px solid #aab4b4; border-radius:8px; padding:8px; font:inherit; background:#fff; color:#232c30; }
+.np-transmitted,.np-material-mark { display:none; pointer-events:none; }
+html[data-face] .np-stub { background:transparent; border-top:0; }
+html[data-face] .np-stub::before,html[data-face] .np-stub::after { display:none; }
+html[data-face] .np-title { font-family:var(--font-body); font-weight:500; letter-spacing:-.045em; }
+html[data-face] .np-venue { font-size:var(--fs-sm); font-weight:400; letter-spacing:0; }
+html[data-face^='emboss'] .np-imprint { color:#ece9df; text-shadow:1px 1px 1px #fff,-1px -1px 2px #7d7c7266; font-family:var(--font-body); font-weight:700; }
+html[data-face='emboss-graphite'] .np-ground { background:linear-gradient(130deg,#3a3c3e,#202528); }
+html[data-face='emboss-graphite'] .np-hero { color:#f2f4ef; }
+html[data-face='emboss-graphite'] .np-imprint { color:#292d30; text-shadow:1px 1px 1px #616467,-1px -1px 2px #000; }
+html[data-face='emboss-mineral'] .np-ground { background:linear-gradient(125deg,#e4e8dc,#c5ccbf); }
+html[data-face='emboss-mineral'] .np-imprint { color:#ccd3c5; }
+html[data-face^='weather'] .np-ground { background:linear-gradient(135deg,#46627b,#142a3e); }
+html[data-face^='weather'] .np-hero { color:#f5f7f8; justify-content:flex-end; }
+html[data-face^='weather'] .np-imprint,html[data-face^='glass'] .np-imprint { display:none; }
+html[data-face^='weather'] .np-title,html[data-face^='glass'] .np-title { font-size:clamp(27px,10cqw,46px); }
+html[data-face^='weather'] .np-material-mark { display:block; position:absolute; width:72%; height:45%; right:3%; top:12%; opacity:.65; }
+html[data-face='weather-solar'] .np-material-mark { background:repeating-radial-gradient(circle at 60% 55%,transparent 0 22px,#ccdeec24 23px,#09182455 25px,transparent 27px 43px); border-radius:50%; }
+html[data-face='weather-rain'] .np-material-mark { background:repeating-linear-gradient(115deg,transparent 0 30px,#d9e6ef66 31px,#09152288 33px,transparent 35px 61px); mask-image:linear-gradient(#000,transparent); }
+html[data-face='weather-cloud'] .np-ground { background:linear-gradient(150deg,#e5edf1,#aebfcd); }
+html[data-face='weather-cloud'] .np-hero { color:#243039; }
+html[data-face='weather-cloud'] .np-material-mark { border-radius:48% 55% 0 0; box-shadow:0 -1px 1px #fff,0 -22px 0 -1px #cad8e1,0 -23px 1px #fff8,0 -45px 0 -1px #bdcdd7; top:28%; height:30%; }
+/* A low-frequency projection of the actual next card: coloured light, never a
+   substitute event photograph. The source follows deck order, including swipes. */
+html[data-face^='glass'] .card--nophoto { background:#b9c8cc; }
+html[data-face^='glass'] .np-transmitted { display:block; position:absolute; inset:-25%; background-size:cover; filter:blur(44px) saturate(.8); opacity:.32; }
+html[data-face^='glass'] .np-ground { background:linear-gradient(125deg,#f4f4edee,#dce7eddd); }
+html[data-face^='glass'] .np-material-mark { display:block; position:absolute; inset:0; border:1px solid #fffd; border-radius:inherit; box-shadow:inset 0 0 4px 2px #fff8,inset 0 -2px 8px #eec48344; background:linear-gradient(132deg,transparent 25%,#ffffff28 38%,transparent 43%,transparent 65%,#ffffff35 67%,transparent 71%); }
+html[data-face^='glass'] .np-hero { justify-content:flex-end; color:#152730; text-shadow:0 1px 10px #fff5; }
+html[data-face='glass-smoked'] .np-ground { background:linear-gradient(135deg,#344955,#162633); }
+html[data-face='glass-smoked'] .np-hero { color:#f5f8fa; text-shadow:0 1px 8px #0005; }
+html[data-face='glass-smoked'] .np-transmitted { opacity:.22; }
+html[data-face='glass-frosted'] .np-ground { background:linear-gradient(135deg,#d0e8f3,#adcde0); }
+html:is([data-face='glass-smoked'],[data-face='emboss-graphite'],[data-face='weather-solar'],[data-face='weather-rain']) .card--nophoto .card-expand { color:white; background:#fff1; border-color:#fff5; }
+@container (max-height:430px) { html[data-face^='glass'] .np-title,html[data-face^='weather'] .np-title { font-size:32px; } }
+@container (max-height:300px) { html[data-face^='glass'] .np-title,html[data-face^='weather'] .np-title { font-size:22px; } }

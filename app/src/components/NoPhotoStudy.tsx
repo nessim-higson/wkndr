@@ -1,25 +1,44 @@
 import { useEffect, useState } from 'react'
+import { Star, SlidersHorizontal } from 'lucide-react'
 import type { Pick } from '../types'
-import { Card } from './Card'
+import { SwipeStack } from './SwipeStack'
+import { FaceControls } from './FaceControls'
+import { whenIsPast } from '../lib/when'
 import { applyMode } from '../weather/modes'
 import './NoPhotoStudy.css'
 
-// Review surface only: real blanks from the same feed; the named stress fixture is
-// explicitly separate and never enters the ranked deck or saved picks.
+/** Isolated interaction study. Real feed records; no fixture enters the real deck. */
 export function NoPhotoStudy() {
   const [picks, setPicks] = useState<Pick[]>([])
+  const [front, setFront] = useState(0)
+  const [behind, setBehind] = useState(0)
+  const [saved, setSaved] = useState(0)
+  const [error, setError] = useState(false)
   useEffect(() => {
     applyMode('COOL')
     const controller = new AbortController()
     fetch(`${import.meta.env.VITE_DATA_ORIGIN || import.meta.env.BASE_URL}data/picks.amsterdam.json`, { signal: controller.signal })
-      .then(r => r.json()).then(data => setPicks(data.picks.filter((p: Pick) => !p.image)))
-      .catch(() => {})
+      .then(r => { if (!r.ok) throw new Error('Feed unavailable'); return r.json() })
+      .then(data => setPicks(data.picks.filter((p: Pick) => !whenIsPast(p.when)))).catch(e => { if (e.name !== 'AbortError') setError(true) })
     return () => controller.abort()
   }, [])
-  const selected = ['web-lbb-liefde-op-de-grachten-30-jaar-canal-parade', 'web-lbb-larissa-sansour-rogue-agents-of-history', 'web-iams-museum-market'].map(id => picks.find(p => p.id === id)).filter((p): p is Pick => !!p)
-  const fixture = selected[0] && { ...selected[0], title: 'Nederlands Theater Festival & Amsterdam Fringe Festival', venue: 'Festival venues', price: '', area: '', id: 'type-stress', when: 'Typography study' }
-  return <main className="np-study"><h1>The no-photo face</h1><p>Three real feed blanks · portrait and near-square · title 46px. Stress fixture labelled separately.</p>
-    {[...selected, ...(fixture ? [fixture] : [])].map(p => <section key={p.id}><h2>{p.id === 'type-stress' ? 'Typography stress fixture — not a live listing' : p.title}</h2><div className="np-study-pair"><div className="np-study-tall"><Card pick={p} /></div><div className="np-study-square"><Card pick={p} /></div></div></section>)}
-    {!selected.length && <p>Loading live blanks…</p>}
-  </main>
+  const blanks = picks.filter(p => !p.image)
+  const photos = picks.filter(p => p.image)
+  const current = blanks[front % (blanks.length || 1)]
+  const underneath = photos[behind % (photos.length || 1)]
+  const next = photos[(behind + 1) % (photos.length || 1)]
+  return <>
+    <main className="np-app-study">
+      <header><div><strong>WKNDR<span>•</span></strong><p>Amsterdam</p></div><span className="np-study-saves"><Star size={20} /> {saved}</span></header>
+      <div className="np-study-filters"><span>This weekend</span><span>All interests</span><SlidersHorizontal size={18} /></div>
+      <div className="np-study-deck">{current && underneath && <SwipeStack picks={[current, underneath, ...(next ? [next] : [])]} keysActive={false} onSwipe={(_,dir) => { if(dir === 'save' || dir === 'like') setSaved(n=>n+1); setFront(n=>n+1) }} />}</div>
+      <div className="np-study-tools">
+        <button onClick={() => setBehind(n=>n+1)}>Change card underneath ↻</button>
+        <p>{underneath ? `Underneath: ${underneath.title}` : error ? 'Feed unavailable. Reload to try again.' : 'Loading the live feed…'}</p>
+        <p>Material study · saves stay in this preview</p>
+        <a href="?">Open the full app →</a>
+      </div>
+    </main>
+    <FaceControls />
+  </>
 }

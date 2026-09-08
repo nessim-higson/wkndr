@@ -38,6 +38,7 @@ interface CardHandle {
 }
 
 interface SwipeCardProps {
+  underlay?: Pick
   pick: Pick
   interactive: boolean
   depth: number // 0 = top
@@ -60,7 +61,7 @@ function hashUnit(s: string): number {
 }
 
 const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
-  { pick, interactive, depth, dealIn, progress, temp, mode, onSwipe, onOpen, onCycle }, ref,
+  { pick, underlay, interactive, depth, dealIn, progress, temp, mode, onSwipe, onOpen, onCycle }, ref,
 ) {
   // a touch of deterministic imperfection per card — the stack looks hand-laid, not machined
   const skew = useMemo(() => hashUnit(pick.id) * 2.8, [pick.id])        // ±2.8° resting tilt
@@ -298,7 +299,7 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
             </motion.div>
           </>
         )}
-        <Card pick={pick} temp={temp} mode={mode} />
+        <Card pick={pick} underlay={underlay} temp={temp} mode={mode} />
       </motion.div>
     </motion.div>
   )
@@ -416,6 +417,7 @@ export function SwipeStack({
             key={p.id}
             ref={i === 0 ? topRef : undefined}
             pick={p}
+            underlay={visible[i + 1]}
             depth={i}
             dealIn={firstDeal.current}
             interactive={i === 0}
