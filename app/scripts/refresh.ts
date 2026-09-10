@@ -239,6 +239,10 @@ async function buildCity(city: City) {
     let demoted = 0
     for (const p of picks) {
       if (!isLive(p) || !p.when) continue
+      // a weekend-guide feature is THIS weekend's news whatever its run length — Yayoi Kusama opened
+      // on Friday and runs to January; filing it "always good" hid the newest thing in the city from
+      // the default This-weekend view (2026-09-10)
+      if (p.guide) continue
       const latest = latestDateOf(p.when, now)
       if (!latest) continue
       const daysOut = (latest.getTime() - now.getTime()) / 864e5

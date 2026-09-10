@@ -17,19 +17,19 @@
 // are trimmed to a short blurb, the source credited, the link out is the guide's link or the
 // organiser's page. Never throws.
 import type { Pick, Category } from '../../src/types'
-import { deriveWeatherFit, matchEventLocs, titlesAgree, iamsCategoryFromPath, raEventIdOf } from '../lib/pipeline'
+import { deriveWeatherFit, matchEventLocs, titlesAgree, iamsCategoryFromPath, raEventIdOf, mapLimit } from '../lib/pipeline'
 import { iamsEventsSitemap, parseEventPage } from './iamsterdam'
 import { upgradeViaRa } from './ra'
 
 export const IAMS_GUIDE_URL = 'https://www.iamsterdam.com/en/whats-on/weekend-guide'
 export const LBB_TIPS_URL = 'https://www.yourlittleblackbook.me/en/weekendtips-amsterdam/'
 const UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36'
-const get = (url: string) => fetch(url, { headers: { 'user-agent': UA }, signal: AbortSignal.timeout(20000) })
+const get = (url: string) => fetch(url, { headers: { 'user-agent': UA }, signal: AbortSignal.timeout(12000) })
   .then((r) => (r.ok && !/\/event-gone\b/.test(r.url) ? r.text() : '')).catch(() => '')
 
 export type GuideItem = {
   title: string; section: string; text: string; link: string; image?: string
-  category: Category; kid: boolean; when: string; freshness: 'weekend' | 'always'
+  category: Category; kid: boolean; when: string; freshness: 'new' | 'weekend' | 'always'
 }
 
 const ENT: Record<string, string> = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ', hellip: '…', ndash: '–', mdash: '—', rsquo: '’', lsquo: '‘', rdquo: '”', ldquo: '“' }
@@ -153,7 +153,7 @@ export function parseLbbWeekendTips(html: string): GuideItem[] {
       section = t; kid = /kid|child|famil/i.test(t)
       category = kid ? 'out' : /market/i.test(t) ? 'market' : /hotspot|restaurant|food|eat/i.test(t) ? 'eat' : /exhibition|museum|art/i.test(t) ? 'art' : 'out'
       // ➊ "Open this week: major Yayoi Kusama exhibition at the Stedelijk" — the heading IS the item
-      if (/^open this week:/i.test(t)) item(t.replace(/^open this week:\s*/i, '').replace(/^(a |the )?major\s+/i, ''), block, /exhibition|museum|expo/i.test(t) ? 'art' : category, false, section)
+      if (/^open this week:/i.test(t)) { item(t.replace(/^open this week:\s*/i, '').replace(/^(a |the )?major\s+/i, ''), block, /exhibition|museum|expo/i.test(t) ? 'art' : category, false, section); out[out.length - 1].freshness = 'new' as never }
       // ➎ the kids list — one <li> per tip; the tip names itself before the first colon or " | venue"
       if (kid) for (const li of block.matchAll(/<li[^>]*>([\s\S]*?)<\/li>/g)) {
         const body = text(li[1])
@@ -188,12 +188,13 @@ const isIamsEventPage = (u: string) => /iamsterdam\.com\/(?:en\/whats-on\/calend
 export function titleVariants(title: string): string[] {
   const cut = title.split(/\s+(?:at|in|@)\s+|:\s+/i)[0].trim()
   const bare = cut.replace(/\b(exhibition|expo|show|festival|market|markt|party|edition|the|a|an|major|new)\b/gi, ' ').replace(/\s+/g, ' ').trim()
-  return [...new Set([title, cut, bare].filter((t) => t.length >= 4))]
+  // ≥ 8 chars, ≥ 2 tokens: "Amstel 1" or "Sunday" would match half the sitemap and cost a fetch each
+  return [...new Set([title, cut, bare].filter((t) => t.length >= 8 && t.trim().split(/\s+/).length >= 2))]
 }
 async function organiserRecord(item: GuideItem): Promise<{ pick: Pick; url: string } | null> {
   const own = isIamsEventPage(item.link) ? item.link : null
   const locs = await iamsEventsSitemap()
-  const urls = [...new Set([...(own ? [own] : []), ...titleVariants(item.title).flatMap((t) => matchEventLocs(t, locs, 2))])]
+  const urls = [...new Set([...(own ? [own] : []), ...titleVariants(item.title).flatMap((t) => matchEventLocs(t, locs, 2))])].slice(0, 4)
   for (const url of urls) {
     const html = await get(url)
     if (!html) continue
@@ -212,7 +213,9 @@ function toPick(item: GuideItem, guide: string, source: string, idPrefix: string
     // I amsterdam's guide title always (editorial English — "Open Monuments Day", "Pearls of the City" —
     // what Ness recognises and what the weekly pile names); for LBB the shorter, cleaner of the two
     const title = guide.startsWith('I amsterdam') || /\/uit\//.test(rec.url) ? item.title : (s.title.length <= item.title.length ? s.title : item.title)
-    return { ...s, title, blurb: blurb || s.blurb, why, kid: item.kid || s.kid, source, guide, verify: false }
+    // the guide's claim rides the organiser's record: "Open this week" is `new`, a recurring market `always`
+    const freshness = item.freshness === 'new' ? 'new' : item.freshness === 'always' ? 'always' : s.freshness
+    return { ...s, title, freshness, blurb: blurb || s.blurb, why, kid: item.kid || s.kid, source, guide, verify: false }
   }
   return {
     id: `${idPrefix}-${slug(item.title)}`,
@@ -241,12 +244,7 @@ export async function iamsGuideExtract(cityKey: string): Promise<Pick[]> {
   if (cityKey !== 'amsterdam') return []
   try {
     const items = parseIamsGuide(await get(IAMS_GUIDE_URL))
-    const out: Pick[] = []
-    for (const it of items) {
-      const rec = await organiserRecord(it)
-      out.push(toPick(it, 'I amsterdam weekend guide', 'I amsterdam', 'web-guide-iams', "In I amsterdam's weekend guide", rec))
-    }
-    return out
+    return await mapLimit(items, 4, async (it) => toPick(it, 'I amsterdam weekend guide', 'I amsterdam', 'web-guide-iams', "In I amsterdam's weekend guide", await organiserRecord(it)))
   } catch { return [] }
 }
 
@@ -255,14 +253,12 @@ export async function lbbWeekendTipsExtract(cityKey: string): Promise<Pick[]> {
   if (cityKey !== 'amsterdam') return []
   try {
     const items = parseLbbWeekendTips(await get(LBB_TIPS_URL))
-    const out: Pick[] = []
-    for (const it of items) {
-      let rec = await organiserRecord(it)
+    return await mapLimit(items, 4, async (it) => {
+      const rec = await organiserRecord(it)
       let pick = toPick(it, 'LBB weekendtips', 'Your Little Black Book', 'web-lbb-tips', "One of LBB's weekend tips", rec)
       if (!rec && raEventIdOf(it.link)) { const r = await upgradeViaRa(pick); if (r && r !== 'off-weekend') pick = { ...r, guide: 'LBB weekendtips', why: pick.why } }
-      out.push(pick)
-    }
-    return out
+      return pick
+    })
   } catch { return [] }
 }
 

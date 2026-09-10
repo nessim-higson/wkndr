@@ -216,7 +216,9 @@ describe('the published feed keeps the law', () => {
     const blanks = live.filter((p) => !p.image).length
     // the cap plus explicit human calls (a ★ admits a blank) — a generous ceiling; the point is that a
     // runaway image pass (most of the deck blank) shows up RED here, not on a phone
-    expect(blanks).toBeLessThanOrEqual(Math.max(NO_PHOTO_CAP + 6, Math.ceil(live.length * 0.25)))
+    // V.11.11: the weekend guides admit imageless editorial items (a market, a block party) on
+    // approval — a third of the live feed can honestly be blank. The line is the gate's own: half.
+    expect(blanks).toBeLessThanOrEqual(Math.max(NO_PHOTO_CAP + 6, Math.ceil(live.length * 0.5)))
   })
 })
 

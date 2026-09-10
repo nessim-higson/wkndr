@@ -42,6 +42,7 @@ describe("LBB's weekendtips", () => {
     const k = by(/Yayoi Kusama/)
     expect(k?.category).toBe('art')
     expect(k?.when).toBe('Until Sun 17 Jan')
+    expect(k?.freshness).toBe('new')   // "Open this week" is a claim of newness, whatever the run length
   })
   it('events carry their dates; markets that recur are evergreen', () => {
     expect(by(/Open Monument Day/)?.when).toBe('Sat 12 Sep – Sun 13 Sep')
@@ -138,4 +139,18 @@ describe('a guide feature is an approval, survives dedupe, and leads the deck', 
     expect(rankPicks([P({ id: 'web-old', title: 'O', firstSeen: old }), P({ id: 'web-new', title: 'N', firstSeen: today })], 'WARM')[0].id).toBe('web-new')
     expect(rankPicks([P({ id: 'web-old', title: 'O', firstSeen: old }), P({ id: 'web-none', title: 'X' })], 'WARM')[0].id).toBe('web-none')   // wallpaper below unstamped
   })
+})
+
+import { parseJudge } from '../scripts/adapters/editor'
+describe('parseJudge — a truncated judge reply is salvaged, not discarded', () => {
+  it('parses a whole reply', () => {
+    expect(parseJudge('Here: {"scores":[{"id":"a","score":7}],"dupes":[["a","b"]]}')?.scores?.length).toBe(1)
+  })
+  it('keeps every complete row of a reply cut off mid-array (the 2026-09-10 failure)', () => {
+    const cut = '{"scores":[{"id":"a","score":7},{"id":"b","score":4.5},{"id":"c","sco'
+    const r = parseJudge(cut)
+    expect(r?.scores?.map((x) => x.id)).toEqual(['a', 'b'])
+    expect(r?.dupes).toEqual([])
+  })
+  it('nothing usable → null', () => { expect(parseJudge('sorry, no')).toBeNull() })
 })

@@ -60,38 +60,64 @@ Do NOT invent, rewrite or re-date anything — judge only what is given. Reply w
 {"scores": [{"id": string, "score": number}, ...], "dupes": [[string, string, ...], ...]}
 (dupes = arrays of ids that are one event; [] if none.)`
 
-  try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'x-api-key': KEY, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },
-      body: JSON.stringify({
-        model: MODEL,
-        max_tokens: 4000,   // headroom: ~25 tokens/row so a large candidate set's JSON never truncates
-        system: sys,
-        messages: [{ role: 'user', content: `Events:\n${JSON.stringify(list)}\n\nReturn ONLY the JSON object {scores, dupes}.` }],
-      }),
-    }).then((r) => r.json())
-    if (res?.error || !Array.isArray(res?.content)) {
-      console.log(`    · editor: API → ${JSON.stringify(res?.error ?? 'no content').slice(0, 160)}`)
-      return out
-    }
-    const text = res.content.filter((b: { type?: string }) => b?.type === 'text').map((b: { text?: string }) => b.text).join('')
-    const a = text.indexOf('{'), b = text.lastIndexOf('}')
-    if (a === -1 || b === -1) return out
-    const obj = JSON.parse(text.slice(a, b + 1)) as { scores?: { id?: string; score?: number }[]; dupes?: unknown[] }
-    for (const r of obj.scores ?? []) {
-      if (typeof r?.id === 'string' && typeof r?.score === 'number' && isFinite(r.score)) {
-        out.scores.set(r.id, Math.max(0, Math.min(10, r.score)))
+  // CHUNKED (V.11.11): one call over the whole pool truncated at ~150 candidates (4,000 output
+  // tokens ≈ 25/row) — "editor: threw — JSON Parse error" on 2026-09-10, and the run shipped with no
+  // merit scores and no semantic dedupe. Now ≤ CHUNK candidates per call with real headroom, scores
+  // merged; dupes are found WITHIN a chunk (a cross-chunk twin is caught next run — titleKey/tokKey
+  // already catch the mechanical ones). A truncated reply is SALVAGED (parseJudge), never discarded.
+  const ids = new Set(candidates.map((p) => p.id))
+  for (let i = 0; i < list.length; i += CHUNK) {
+    const part = list.slice(i, i + CHUNK)
+    try {
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'x-api-key': KEY, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },
+        body: JSON.stringify({
+          model: MODEL,
+          max_tokens: 8000,
+          system: sys,
+          messages: [{ role: 'user', content: `Events:\n${JSON.stringify(part)}\n\nReturn ONLY the JSON object {scores, dupes}.` }],
+        }),
+      }).then((r) => r.json())
+      if (res?.error || !Array.isArray(res?.content)) {
+        console.log(`    · editor: API → ${JSON.stringify(res?.error ?? 'no content').slice(0, 160)}`)
+        continue
       }
+      const text = res.content.filter((b: { type?: string }) => b?.type === 'text').map((b: { text?: string }) => b.text).join('')
+      const obj = parseJudge(text)
+      if (!obj) { console.log(`    · editor: chunk ${i / CHUNK + 1} unparseable (${text.length} chars)`); continue }
+      for (const r of obj.scores ?? []) {
+        if (typeof r?.id === 'string' && typeof r?.score === 'number' && isFinite(r.score)) {
+          out.scores.set(r.id, Math.max(0, Math.min(10, r.score)))
+        }
+      }
+      for (const c of obj.dupes ?? []) {
+        if (!Array.isArray(c)) continue
+        const cluster = c.filter((x): x is string => typeof x === 'string' && ids.has(x))
+        if (cluster.length >= 2 && cluster.length <= 5) out.dupes.push(cluster)   // conservative: small clusters only
+      }
+    } catch (e) {
+      console.log(`    · editor: threw — ${(e as Error).message}`)
     }
-    const ids = new Set(candidates.map((p) => p.id))
-    for (const c of obj.dupes ?? []) {
-      if (!Array.isArray(c)) continue
-      const cluster = c.filter((x): x is string => typeof x === 'string' && ids.has(x))
-      if (cluster.length >= 2 && cluster.length <= 5) out.dupes.push(cluster)   // conservative: small clusters only
-    }
-  } catch (e) {
-    console.log(`    · editor: threw — ${(e as Error).message}`)
   }
   return out
+}
+
+const CHUNK = 80
+
+/** The judge's reply as {scores, dupes} — whole if it parses, else SALVAGED: a reply cut off
+ *  mid-array keeps every complete {"id","score"} row before the cut, and its dupes if that array
+ *  closed. Null only when there is nothing usable. Exported for the test. */
+export function parseJudge(text: string): { scores?: { id?: string; score?: number }[]; dupes?: unknown[] } | null {
+  const a = text.indexOf('{')
+  if (a === -1) return null
+  const b = text.lastIndexOf('}')
+  if (b > a) { try { return JSON.parse(text.slice(a, b + 1)) } catch { /* truncated — salvage below */ } }
+  const rows = [...text.matchAll(/\{\s*"id"\s*:\s*"([^"]+)"\s*,\s*"score"\s*:\s*(-?\d+(?:\.\d+)?)\s*\}/g)]
+    .map((m) => ({ id: m[1], score: Number(m[2]) }))
+  if (!rows.length) return null
+  let dupes: unknown[] = []
+  const d = text.match(/"dupes"\s*:\s*(\[[\s\S]*?\]\s*\])/)
+  if (d) { try { dupes = JSON.parse(d[1]) } catch { dupes = [] } }
+  return { scores: rows, dupes }
 }
