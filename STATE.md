@@ -30,23 +30,16 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
 > sessions update (today it's on load).
 
 ## Live right now
-- **THE PROTOTYPE PROTOCOL — VARIATIONS WITH CODEX (2026-09-07 →).** Ness is running design
-  variations with Codex. Shipped on `main`: **`AGENTS.md`** (the agent manual: run/test/build, what
-  is law, the seam map, how Ness judges), **`.github/workflows/preview.yml`** (every `codex/**` /
-  `proto/**` branch → `https://<slug>.wkndr-app.pages.dev`, gated by the same tests as the cron;
-  production stays `main`-only), **`VITE_DATA_ORIGIN`** (`app/src/lib/data.ts` + CORS via
-  `app/public/_headers`) so previews read the LIVE feed from app.wkndr.xyz, and **four briefs** in
-  `docs/variations/` (001 the field is a verb · 002 the no-photo face · 003 the opening beat · 004
-  the two-minute board — 004 starts with an audit doc). **In flight (open PRs, judge on the phone):**
-  #30 `codex/field-is-a-verb` (001 — a canvas look `looks/verb.ts`: rain streaks, heat ripple, a
-  volatile front; split weekend Sat-left/Sun-right; Auras stays default) ·
-  #31 `codex/no-photo-face` (002 — nine material studies: F1–3 blind-embossed paper, B1–3 weather
-  relief, E1–3 luminous glass with real backdrop transparency over the next card; title-derived
-  emboss marks) · #29 `codex/weather-glass` (Codex's own, off-brief: forecast-led glass field behind
-  clear cards + a three-screen shell restyle — bigger scope than a seam). 003 and 004 not started.
-  Rules that hold on every prototype branch: no version bump, no STATE/CHANGELOG edits, no
-  `app/public/data`, `app/scripts`, taste corpus, `.github`, workers; graduation = rebase + `bun run
-  bump` + the entries + merge.
+- **THE PROTOTYPE PROTOCOL (2026-09-07 →).** Design variations run on `codex/**` / `proto/**`
+  branches with their own preview URLs; `main` is production and this document describes `main`
+  ONLY. Shipped here: **`AGENTS.md`** (the agent manual), **`.github/workflows/preview.yml`**
+  (branch → `https://<slug>.wkndr-app.pages.dev`, gated by the same tests as the cron),
+  **`VITE_DATA_ORIGIN`** (`app/src/lib/data.ts` + CORS via `app/public/_headers`) so previews read
+  the live feed, and the briefs in `docs/variations/`. **What is in flight lives in the PRs and
+  nowhere else** — `gh pr list`, judged on the preview, reviewed in PR comments. Nothing unmerged is
+  described in this file, in `CHANGELOG.md`, or in a session memory; a variation enters the record
+  the day it graduates (rebase + `bun run bump` + its entries + merge). The one exception is the
+  reason a variation was closed, which goes to `docs/variations/README.md` § Outcomes.
 - **V.11.10 — THE END IS THE END (2026-09-06).** Ness's first pass through V.11.9 on Sunday. (1) The
   browse deck no longer recycles: **the wings** (`lib/wings.ts` = bench + judge-≥5 airlock, fetched
   lazily, dealt ONCE) are the honest "more"; then the empty state counts what you saw and **Start over
@@ -562,12 +555,10 @@ organ-concert veto REVERSED (community-authentic wins). The pipeline stamps `top
 GUARANTEES topped/led picks into the feed (pull-back from prePool/canon if the balancer cut them).
 
 ## Open items / next
-0. **Variations in flight — judge, don't merge:** PRs #30 (001), #31 (002), #29 (weather-glass,
-   off-brief). Each has a preview URL in its description; judge on the phone against the live feed.
-   Outcomes per `docs/variations/README.md`: graduate (rebase + bump + entries + merge) · informs
-   (note here, delete branch) · rejected (close with the reason). 003 (the opening beat) and 004 (the
-   two-minute board — audit first) are written and unstarted. **Do not refactor the board on `main`**
-   while 004 is the intended path.
+0. **Variations:** `gh pr list` is the only record of what is in flight — not this file. Judge on
+   the preview, on the phone; review in the PR. Briefs 003 (the opening beat) and 004 (the two-minute
+   board — audit first) are written and unstarted. **Do not refactor the board on `main`** while 004
+   is the intended path.
 1. ~~Phase 2 — demote web_search~~ **DONE 2026-09-05 (V.11.9)** — 3 facets + index-only-link drop. Next
    on images: watch the first two `receipts:` census lines in the refresh log; if `web` dominates over
    `event-page`/`organiser`, raise the sitemap matcher's reach before loosening anything else.

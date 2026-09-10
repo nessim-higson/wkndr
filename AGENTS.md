@@ -51,6 +51,15 @@ Sandbox setup (Codex cloud / any fresh box): `curl -fsSL https://bun.sh/install 
    exists (often with the date and the field failure that caused it) — keep that voice, and read
    the comment before changing the code beneath it.
 
+## The two worlds
+
+`main` is production; a variation branch is a question. **Neither describes the other.** A branch
+never edits `main`'s record (rule 4 above). And `main`'s record — `STATE.md`, `CHANGELOG.md`, any
+session memory — never describes unmerged work: the PR is the record until graduation, the preview is
+the artefact, review happens in PR comments. Do not check a `codex/**` branch out in the `main`
+worktree; review with `gh pr diff` and the preview URL, or work in a separate worktree. Full rule in
+`docs/variations/README.md` § The two worlds.
+
 ## What is LAW (don't re-litigate on a prototype branch)
 
 These were each tried the other way and reverted; the reasons are in `STATE.md` / `CHANGELOG.md`.
