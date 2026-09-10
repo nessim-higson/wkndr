@@ -1,6 +1,6 @@
 .face-controls { position:fixed; z-index:1000; right:12px; bottom:12px; max-width:calc(100vw - 24px); background:#f5f5efeF; color:#232c30; border:1px solid #fff9; border-radius:16px; padding:12px; font-size:13px; box-shadow:0 8px 25px #0002; }
 .face-controls summary { cursor:pointer; } .face-controls label { display:grid; gap:8px; padding-top:12px; } .face-controls select { min-height:44px; border:1px solid #aab4b4; border-radius:8px; padding:8px; font:inherit; background:#fff; color:#232c30; }
-.np-transmitted,.np-material-mark { display:none; pointer-events:none; }
+.np-material-mark { display:none; pointer-events:none; }
 html[data-face] .np-stub { background:transparent; border-top:0; }
 html[data-face] .np-stub::before,html[data-face] .np-stub::after { display:none; }
 html[data-face] .np-title { font-family:var(--font-body); font-weight:500; letter-spacing:-.045em; }
@@ -21,17 +21,31 @@ html[data-face='weather-rain'] .np-material-mark { background:repeating-linear-g
 html[data-face='weather-cloud'] .np-ground { background:linear-gradient(150deg,#e5edf1,#aebfcd); }
 html[data-face='weather-cloud'] .np-hero { color:#243039; }
 html[data-face='weather-cloud'] .np-material-mark { border-radius:48% 55% 0 0; box-shadow:0 -1px 1px #fff,0 -22px 0 -1px #cad8e1,0 -23px 1px #fff8,0 -45px 0 -1px #bdcdd7; top:28%; height:30%; }
-/* A low-frequency projection of the actual next card: coloured light, never a
-   substitute event photograph. The source follows deck order, including swipes. */
-html[data-face^='glass'] .card--nophoto { background:#b9c8cc; }
-html[data-face^='glass'] .np-transmitted { display:block; position:absolute; inset:-25%; background-size:cover; filter:blur(32px) saturate(.9); opacity:.58; }
+/* The moving face samples the real deck behind it, rather than carrying a copy
+   of the next photograph. Removing will-change:opacity on glass slots lets the
+   backdrop reach sibling cards; opacity is still animated during deal-in/exit. */
+html[data-face^='glass'] .swipe-card-slot:has(.card--nophoto) { will-change:transform; }
+html[data-face^='glass'] .card--nophoto { background:#dce5e7; }
 html[data-face^='glass'] .np-ground { background:linear-gradient(125deg,#f4f4edee,#dce7eddd); }
 html[data-face^='glass'] .np-material-mark { display:block; position:absolute; inset:0; border:1px solid #fffd; border-radius:inherit; box-shadow:inset 0 0 4px 2px #fff8,inset 0 -2px 8px #eec48344; background:linear-gradient(132deg,transparent 25%,#ffffff28 38%,transparent 43%,transparent 65%,#ffffff35 67%,transparent 71%); }
 html[data-face^='glass'] .np-hero { justify-content:flex-end; color:#152730; text-shadow:0 1px 10px #fff5; }
 html[data-face='glass-smoked'] .np-ground { background:linear-gradient(135deg,#344955,#162633); }
 html[data-face='glass-smoked'] .np-hero { color:#f5f8fa; text-shadow:0 1px 8px #0005; }
-html[data-face='glass-smoked'] .np-transmitted { opacity:.48; }
 html[data-face='glass-frosted'] .np-ground { background:linear-gradient(135deg,#d0e8f3,#adcde0); }
 html:is([data-face='glass-smoked'],[data-face='emboss-graphite'],[data-face='weather-solar'],[data-face='weather-rain']) .card--nophoto .card-expand { color:white; background:#fff1; border-color:#fff5; }
 @container (max-height:430px) { html[data-face^='glass'] .np-title,html[data-face^='weather'] .np-title { font-size:32px; } }
 @container (max-height:300px) { html[data-face^='glass'] .np-title,html[data-face^='weather'] .np-title { font-size:22px; } }
+
+@supports ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))) {
+  html[data-face^='glass'] .card--nophoto {
+    background:transparent;
+    -webkit-backdrop-filter:blur(8px) saturate(.9);
+    backdrop-filter:blur(8px) saturate(.9);
+  }
+  /* A denser lower veil keeps the foreground title separate from the next card's
+     lettering. The upper window stays open enough to read spatial movement. */
+  html[data-face^='glass'] .np-ground { background:linear-gradient(180deg,#f1f4ed26 0%,#e4eded33 38%,#e4ededcc 78%,#e4ededeb); }
+  html[data-face='glass-smoked'] .np-ground { background:linear-gradient(180deg,#16263338 0%,#16263344 38%,#162633d9 78%,#162633eb); }
+  html[data-face='glass-frosted'] .card--nophoto { -webkit-backdrop-filter:blur(14px) saturate(.8); backdrop-filter:blur(14px) saturate(.8); }
+  html[data-face='glass-frosted'] .np-ground { background:linear-gradient(180deg,#d0e8f340 0%,#d0e8f34d 38%,#c5e0efcc 78%,#c5e0efeb); }
+}
