@@ -201,8 +201,9 @@ describe('dedupe — a keyless twin folds into its structured record at 10 key c
     expect(out[0].id).toBe('web-iams-yayoi-kusama')
     expect(out[0].buzz).toBe(3)
   })
-  it('two KEYLESS events sharing a 10–11-char start still do not collapse (PASS 2 keeps 12)', () => {
-    const out = dedupe([P({ id: 'web-a-x', title: 'Sunday Jazz' }), P({ id: 'web-b-y', title: 'Sunday Jazz Brunch Special' })])
+  it('a shorter shared start still does not collapse two keyless events', () => {
+    // PASS 2 measures the 't:'-prefixed key (≥12 = 10 bare chars); "jazznight" is 9
+    const out = dedupe([P({ id: 'web-a-x', title: 'Jazz Night' }), P({ id: 'web-b-y', title: 'Jazz Night Special Edition' })])
     expect(out.length).toBe(2)
   })
 })
