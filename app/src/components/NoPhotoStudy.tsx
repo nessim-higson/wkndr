@@ -7,9 +7,16 @@ import { whenIsPast } from '../lib/when'
 import { applyMode } from '../weather/modes'
 import './NoPhotoStudy.css'
 
+const referenceTitles: Pick[] = ['Museum Market', 'Nederlands Theater Festival & Amsterdam Fringe Festival'].map((title, i) => ({
+  id: `reference-title-${i}`, title, venue: '', area: 'Amsterdam', when: 'This weekend',
+  category: i === 0 ? 'market' : 'stage', freshness: 'always', outdoor: false, kid: false,
+  price: '', blurb: '', why: '', source: 'Visual study', link: '', weatherFit: [],
+}))
+
 /** Isolated interaction study. Real feed records; no fixture enters the real deck. */
 export function NoPhotoStudy() {
   const [picks, setPicks] = useState<Pick[]>([])
+  const [reference, setReference] = useState(false)
   const [front, setFront] = useState(0)
   const [behind, setBehind] = useState(0)
   const [saved, setSaved] = useState(0)
@@ -22,7 +29,7 @@ export function NoPhotoStudy() {
       .then(data => setPicks(data.picks.filter((p: Pick) => !whenIsPast(p.when)))).catch(e => { if (e.name !== 'AbortError') setError(true) })
     return () => controller.abort()
   }, [])
-  const blanks = picks.filter(p => !p.image)
+  const blanks = reference ? referenceTitles : picks.filter(p => !p.image)
   const photos = picks.filter(p => p.image)
   const current = blanks[front % (blanks.length || 1)]
   const underneath = photos[behind % (photos.length || 1)]
@@ -33,9 +40,10 @@ export function NoPhotoStudy() {
       <div className="np-study-filters"><span>This weekend</span><span>All interests</span><SlidersHorizontal size={18} /></div>
       <div className="np-study-deck">{current && underneath && <SwipeStack picks={[current, underneath, ...(next ? [next] : [])]} keysActive={false} onSwipe={(_,dir) => { if(dir === 'save' || dir === 'like') setSaved(n=>n+1); setFront(n=>n+1) }} />}</div>
       <div className="np-study-tools">
+        <label>Cards <select aria-label="Study cards" value={reference ? 'reference' : 'live'} onChange={e => { setReference(e.target.value === 'reference'); setFront(0) }}><option value="live">Live feed</option><option value="reference">Reference titles</option></select></label>
         <button onClick={() => setBehind(n=>n+1)}>Change card underneath ↻</button>
         <p>{underneath ? `Underneath: ${underneath.title}` : error ? 'Feed unavailable. Reload to try again.' : 'Loading the live feed…'}</p>
-        <p>Material study · saves stay in this preview</p>
+        <p>{reference ? 'Reference title study · illustrative metadata' : 'Material study · saves stay in this preview'}</p>
         <a href="?">Open the full app →</a>
       </div>
     </main>

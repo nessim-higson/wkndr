@@ -17,3 +17,6 @@ body:has(.np-app-study) { overflow:auto; background:radial-gradient(ellipse at 9
 @media(max-width:600px) { body:has(.np-app-study) .face-controls { top:12px; bottom:auto; } .np-app-study { margin-top:140px; } }
 @media(max-width:600px) { .np-app-study { height:max(680px,calc(100dvh - 160px)); } }
 @media(max-width:600px) { body:has(.np-app-study) .face-controls { position:absolute; } }
+
+.np-study-tools label { display:block; margin:4px 0; }
+.np-study-tools select { font:inherit; color:inherit; padding:6px; margin-left:8px; border:1px solid #ffffff80; border-radius:6px; background:#ffffff50; }

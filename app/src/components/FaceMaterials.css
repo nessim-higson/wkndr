@@ -49,3 +49,40 @@ html:is([data-face='glass-smoked'],[data-face='emboss-graphite'],[data-face='wea
   html[data-face='glass-frosted'] .card--nophoto { -webkit-backdrop-filter:blur(14px) saturate(.8); backdrop-filter:blur(14px) saturate(.8); }
   html[data-face='glass-frosted'] .np-ground { background:linear-gradient(180deg,#d0e8f340 0%,#d0e8f34d 38%,#c5e0efcc 78%,#c5e0efeb); }
 }
+
+/* Every card gets one stable, quiet optical signature, independent of tint. */
+html[data-face^='glass'] [data-glass-mark='ribbon'] .np-material-mark {
+  background:linear-gradient(var(--glass-angle),transparent 12%,#ffffff08 22%,#ffffff2b 29%,transparent 30%,transparent 62%,#ffffff20 65%,transparent 67%);
+}
+html[data-face^='glass'] [data-glass-mark='arc'] .np-material-mark {
+  background:radial-gradient(ellipse at var(--glass-offset) -30%,transparent 0 54%,#ffffff30 54.4%,#ffffff0b 56%,transparent 60%);
+}
+html[data-face^='glass'] [data-glass-mark='edge'] .np-material-mark {
+  background:linear-gradient(var(--glass-angle),#ffffff20,transparent 17%,transparent 78%,#ffffff28 79%,transparent 82%);
+  box-shadow:inset 1px 0 2px #fff9,inset -1px 0 4px #fff5;
+}
+/* Blind emboss: bold ink above, oversized uninked title mark below. SVG scales
+   to the space left by a long title instead of cropping the pressed letters. */
+html[data-face^='emboss'] .card--nophoto { --emboss-paper:#ece9e1; --emboss-light:#ffffffdd; --emboss-shadow:#69665b66; border:1px solid #ffffffb3; }
+html[data-face^='emboss'] .np-ground { background:linear-gradient(125deg,#f5f2ec,var(--emboss-paper)); }
+html[data-face^='emboss'] .np-title { font-weight:700; letter-spacing:-.055em; font-size:clamp(30px,11.8cqw,46px); line-height:.99; }
+html[data-face^='emboss'] [data-title-length='short'] .np-title { font-size:clamp(38px,16cqw,78px); }
+html[data-face^='emboss'] .np-imprint { display:block; padding:8px 0; color:var(--emboss-paper); text-shadow:none; }
+html[data-face^='emboss'] .np-imprint svg { width:100%; height:100%; overflow:visible; fill:currentColor; filter:drop-shadow(1px 1px .6px var(--emboss-light)) drop-shadow(-1px -1.2px 1px var(--emboss-shadow)); }
+html[data-face^='emboss'] .np-imprint text { font:800 120px 'Helvetica Neue',sans-serif; letter-spacing:-9px; }
+html[data-face^='emboss'] .np-imprint .np-imprint-amp text { font:400 144px Georgia,serif; letter-spacing:-6px; }
+html[data-face='emboss-graphite'] .card--nophoto { --emboss-paper:#292d30; --emboss-light:#65696c; --emboss-shadow:#000a; border-color:#ffffff30; }
+html[data-face='emboss-graphite'] .np-ground { background:linear-gradient(125deg,#3a3c3e,var(--emboss-paper)); }
+html[data-face='emboss-mineral'] .card--nophoto { --emboss-paper:#d3d8cb; }
+html[data-face='emboss-mineral'] .np-ground { background:linear-gradient(125deg,#e8ecdf,var(--emboss-paper)); }
+html[data-face^='emboss'] .card-grain { opacity:.17; background-size:95px 95px; }
+@container (max-height:430px) {
+  html[data-face^='emboss'] .np-hero { inset-block-start:80px; }
+  html[data-face^='emboss'] .np-title { font-size:clamp(26px,8.3cqw,40px); }
+  html[data-face^='emboss'] [data-title-length='short'] .np-title { font-size:clamp(34px,12cqw,58px); }
+  html[data-face^='emboss'] .np-cat { margin-bottom:8px; }
+}
+html[data-face^='emboss'] [data-title-length='short'] .np-title { max-width:9ch; }
+@container (max-height:430px) { html[data-face^='emboss'] [data-title-length='short'] .np-title { font-size:clamp(38px,15cqw,58px); } }
+html[data-face^='emboss'] .np-title { hyphens:none; text-wrap:wrap; }
+html[data-face^='emboss'] .np-imprint .np-imprint-amp text { font-size:168px; }

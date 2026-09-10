@@ -1,3 +1,5 @@
+import type { CSSProperties } from 'react'
+import { glassSignature } from '../lib/card-material'
 import { Maximize2, Clock } from 'lucide-react'
 import type { Pick, Mode } from '../types'
 import { cardSignal } from '../types'
@@ -18,13 +20,15 @@ export function Card({ pick, temp, mode }: { pick: Pick; temp?: number; mode?: M
   // venue beneath it. One idea per face: the event, typographically. No "no photo" apology on the
   // card — the board carries that receipt (imageWhy).
   const nophoto = !pick.image
+  const glass = glassSignature(pick.id)
   return (
     <article
       className={`card${nophoto ? ' card--nophoto' : ''}`}
+      data-glass-mark={nophoto ? glass.pattern : undefined}
       // THE CROP (V.11.10): the uncropped source, ONE `cover` crop done here, positioned on the focal
       // point — so the wide desktop card and the tall phone card both keep the subject (the portrait
       // render painted into a near-square box was a crop of a crop: the Fringe dancer became a red blob)
-      style={pick.image ? { backgroundImage: `url(${cardImageOf(pick.image)})`, backgroundPosition: focalPosition(pick) } : undefined}
+      style={pick.image ? { backgroundImage: `url(${cardImageOf(pick.image)})`, backgroundPosition: focalPosition(pick) } : { '--glass-angle': `${glass.angle}deg`, '--glass-offset': `${glass.offset}%` } as CSSProperties}
     >
       {nophoto && <div className="np-ground" aria-hidden />}
       {nophoto && <div className="np-material-mark" aria-hidden />}
