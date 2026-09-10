@@ -50,7 +50,15 @@ my eyes." Three causes, none of them the taste engine:
   you."); GUIDE / NEW / WEEK n chips on every card so wallpaper is visible as wallpaper. The deeper
   overhaul stays with brief 004.
 - `titlesAgree` no longer lets a shared genre word pass ("Phono Lake Festival" ≠ "Reggae Lake
-  Festival"; "Open House X TF" = "Open Huis X TF" still). **397 tests.**
+  Festival"; "Open House X TF" = "Open Huis X TF" still).
+- **Found by the first two live runs, fixed the same morning:** the judge's single call truncated
+  at ~150 candidates ("JSON Parse error" → no merit scores, no semantic dedupe) → **chunked, ≤80
+  per call, a cut-off reply salvaged row by row** (`parseJudge`); a guide feature is never demoted
+  to "always" by run length (Kusama runs to January and was hidden from *This weekend*); LBB's
+  "Open this week" claims `new`; a keyless twin folds onto its structured record at **10** key chars
+  (four Kusama cards shipped — "yayoikusama" is 11); guide resolution runs in parallel with a floor
+  on title variants (the variant search had gone quadratic); the feed audit's blank ceiling is the
+  gate's own 50%. **402 tests.**
 
 ## [V.11.10 · app] — 2026-09-06 — THE END IS THE END (+ the crop, + two rescues)
 Ness, first pass through V.11.9 on a Sunday: "when I go through the cards and don't like anything, it
