@@ -251,7 +251,9 @@ export function dedupe(picks: Pick[]): Pick[] {
     let s = struct.get(k)
     // near-match fold: "World Press Photo EXHIBITION 2026" (keyless) must fold into "World Press
     // Photo 2026" (structured) — same prefix rule PASS 2 uses among keyless picks (≥12 chars).
-    if (!s) for (const [sk, sp] of struct) { if ((sk.length >= 12 && k.startsWith(sk)) || (k.length >= 12 && sk.startsWith(k))) { s = sp; break } }
+    // ≥ 10 key chars here (PASS 2 keeps 12): a keyless twin folding INTO a structured record is the safe
+    // direction — the organiser's facts win — and "yayoikusama" is 11. Four Kusama cards, 2026-09-10.
+    if (!s) for (const [sk, sp] of struct) { if ((sk.length >= 10 && k.startsWith(sk)) || (k.length >= 10 && sk.startsWith(k))) { s = sp; break } }
     if (s) {
       const u = unionCredits(s.source, p.source)
       s.source = u.source

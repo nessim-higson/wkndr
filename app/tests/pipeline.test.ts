@@ -189,3 +189,20 @@ describe('stampServeOrder — the board reads the deck, not a mirror', () => {
     expect(out[0].servePos).toBe(1)
   })
 })
+
+describe('dedupe — a keyless twin folds into its structured record at 10 key chars (V.11.11)', () => {
+  it('"Yayoi Kusama Exhibition Opening" folds onto the organiser\'s "Yayoi Kusama"', () => {
+    const out = dedupe([
+      P({ id: 'web-iams-yayoi-kusama', title: 'Yayoi Kusama', source: 'I amsterdam', image: 'https://i/k.jpg' }),
+      P({ id: 'web-lbb-yayoi-kusama-exhibition-opening', title: 'Yayoi Kusama Exhibition Opening', source: 'Your Little Black Book' }),
+      P({ id: 'web-x-yayoi-kusama-exhibition-opens', title: 'Yayoi Kusama Exhibition Opens', source: 'Het Parool' }),
+    ])
+    expect(out.length).toBe(1)
+    expect(out[0].id).toBe('web-iams-yayoi-kusama')
+    expect(out[0].buzz).toBe(3)
+  })
+  it('two KEYLESS events sharing a 10–11-char start still do not collapse (PASS 2 keeps 12)', () => {
+    const out = dedupe([P({ id: 'web-a-x', title: 'Sunday Jazz' }), P({ id: 'web-b-y', title: 'Sunday Jazz Brunch Special' })])
+    expect(out.length).toBe(2)
+  })
+})
