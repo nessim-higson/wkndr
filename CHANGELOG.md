@@ -14,6 +14,44 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.11.11 · app + board V.9.48] — 2026-09-10 — FRESH LEADS (the weekend guides, read as guides)
+Ness, Thursday morning, after opening I amsterdam's weekend guide and LBB's weekendtips himself:
+"a TON of new fresh things to do this weekend … I'm constantly disappointed by how stale WKNDR
+feels when I open it. Week over week. I thought we changed things so that things update without
+my eyes." Three causes, none of them the taste engine:
+- **The Sunday build.** Seven ship-day runs on 5–6 Sep rebuilt the feed for the weekend that was
+  ending; from Monday the app served that build minus its past-dated cards — the long-runs, four
+  days straight, until Thursday's cron. → **A Monday 10:00 UTC cron** (`refresh.yml`): the first
+  build FOR the coming weekend, refreshed Thursday with the late-week guides. `refresh.ts` warns
+  when a manual dispatch would build for a weekend that is ending.
+- **Neither guide was read as a guide.** I amsterdam's page is an index the crawl never opened;
+  LBB's went through a Haiku extraction capped at ten of eighty-nine. → **`adapters/guides.ts`**:
+  both pages parsed deterministically (headings, the paragraph under each, the first link, the
+  first image — no LLM, no key), every item resolved to the organiser's record when I amsterdam
+  serves one (event page by link, else the events sitemap by title and its variants), the two
+  guides folded onto each other (`foldGuides`, the pile's loose match), dates read off the prose
+  (`whenFromText`), recurring markets evergreen, the kids list per tip. **`Pick.guide`** = the
+  editorial feature: an approval at the publish bar, exempt from the source/category/no-photo
+  caps, unioned through dedupe, "Weekend guide" as the card's pill. Tests run on the real pages of
+  10/11 Sep as fixtures.
+- **Nothing in the served ranking rewarded new.** Weather-fit and editorial score decided the
+  front; a fifth-week card ranked like a first-week one. → `rankPicks`: **GUIDE_BOOST 3 ·
+  NEW_BOOST 2** (firstSeen ≤ 7d; half to 14d) · **ONEOFF_BOOST 1.5** (a card whose last date falls
+  inside the weekend, not an "Until 17 Jan" run) · **wallpaper −1.5** (live, seen > 3 weeks, not a
+  one-off). All inside the weather tier. `firstSeen` is stamped BEFORE the projected serve order
+  so the board's pile sees it too.
+- **This weekend's slate** (`weekly.json`, 2026-09-12): the guides' ten — Yayoi Kusama · Open
+  Monuments Day · Read My World · Phono Lake Festival · Pearls of the City · Side to Side · Open
+  House X TF at Meervaart · @ H'ART: Vintage Market · Biennale Pakhuis Wilhelmina · Kwaku Downtown —
+  his explicit call; from now on the guides lead by ranking without a slate.
+- **The board says what it is** (V.9.48): "Simple / Advanced" → **"This weekend / Everything"**; a
+  fresh line under the title ("Built automatically Thu 10 Sep at 10:07 · 46 live cards · 32 new this
+  week · 24 from the weekend guides · rebuilds every Monday and Thursday. Nothing here waits for
+  you."); GUIDE / NEW / WEEK n chips on every card so wallpaper is visible as wallpaper. The deeper
+  overhaul stays with brief 004.
+- `titlesAgree` no longer lets a shared genre word pass ("Phono Lake Festival" ≠ "Reggae Lake
+  Festival"; "Open House X TF" = "Open Huis X TF" still). **397 tests.**
+
 ## [V.11.10 · app] — 2026-09-06 — THE END IS THE END (+ the crop, + two rescues)
 Ness, first pass through V.11.9 on a Sunday: "when I go through the cards and don't like anything, it
 reshuffles the deck with the same cards" · "Dekmantel × BRET had a great card — now it's gone" · "the

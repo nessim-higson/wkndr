@@ -5,7 +5,7 @@ FIRST in a new chat. For strategy + backlog see `docs/backlog.md`; for the pipel
 `docs/pipeline-architecture.md` + `docs/source-map.md`; for **who may write to the deck vs to a personal
 profile** (board / Tune / airlock — read before touching either) see `docs/curation-surfaces.md`; for the
 **board roadmap** (auto-compile tracks) see `docs/board-roadmap.md`; for full **version history** see
-`CHANGELOG.md` (current to app **V.11.10** / board V.9.47) and the **git log / tags**. Onboarding:
+`CHANGELOG.md` (current to app **V.11.11** / board V.9.48) and the **git log / tags**. Onboarding:
 `CLAUDE.md`; for any coding agent (Codex included) **`AGENTS.md`** is the working manual and
 `docs/variations/` the prototype protocol + the open briefs. App lives in `/app` (Vite + React + TS, run with `bun`); ships to **Cloudflare Pages**
 (`wkndr.xyz` + `app.wkndr.xyz`) **and** GitHub Pages (legacy, keeps old share links alive)._
@@ -30,6 +30,17 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
 > sessions update (today it's on load).
 
 ## Live right now
+- **V.11.11 — FRESH LEADS (2026-09-10, board V.9.48).** Ness: "constantly disappointed by how stale
+  WKNDR feels — week over week." Three structural causes, fixed: (1) **the Sunday build** — the
+  7 ship-day runs rebuilt the feed for the ending weekend, so Mon–Thu served leftovers → **a Monday
+  cron** joins Thursday's; (2) **the weekend guides weren't read as guides** → `adapters/guides.ts`
+  parses I amsterdam's weekend guide + LBB's weekendtips deterministically (no LLM), resolves each
+  item to the organiser's record, folds the two guides; **`Pick.guide`** = approved at the bar,
+  cap-exempt, +3 in the deck, "Weekend guide" pill; (3) **no novelty in the served order** →
+  `rankPicks` NEW/one-off/wallpaper terms, `firstSeen` stamped before the serve order. This
+  weekend's `weekly.json` slate = the guides' ten (his call). Board: "This weekend / Everything",
+  the fresh line, GUIDE/NEW/WEEK chips. **397 tests.** The law that follows: **the front of the deck
+  is what the city's guides say this weekend is, newest first; nothing in it needs Ness.**
 - **THE PROTOTYPE PROTOCOL (2026-09-07 →).** Design variations run on `codex/**` / `proto/**`
   branches with their own preview URLs; `main` is production and this document describes `main`
   ONLY. Shipped here: **`AGENTS.md`** (the agent manual), **`.github/workflows/preview.yml`**
@@ -520,7 +531,7 @@ line carries `no-photo N`. Health line lands in `$GITHUB_STEP_SUMMARY` (the Acti
 itinerary/.ics export all parse `when` strings through that one module.
 
 ## Pipeline ops
-- Cron **Thu 10:00 UTC** (delay-compensated so the feed is live by ~15:00 Amsterdam) + on-demand
+- Crons **Mon + Thu 10:00 UTC** (Monday = the first build FOR the coming weekend, V.11.11; Thursday catches the late-week guides; delay-compensated so the feed is live by ~15:00 Amsterdam) + on-demand
   (`gh workflow run refresh.yml`, ~11 min, ~$1–2/run — seven runs on 5–6 Sep while the image law
   landed). Daily poll `ingest.yml` 05:30 UTC (keyless, never touches the served feed). Dispatch race
   caveat still applies (confirm `headSha` matches after a fresh push). Env knobs, no commit needed:
