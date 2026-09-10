@@ -214,6 +214,21 @@ const SUN_BONUS = 3
 // merit. Sized like the other sub-terms (buzz caps 4, editor 5): decisive inside the weather tier,
 // never enough to cross the +10 weather boundary. Pairs with holdBackImageless (the deck's front).
 const NO_PHOTO_PENALTY = 2
+// FRESH LEADS (V.11.11). Ness, 2026-09-10: "I'm constantly disappointed by how stale WKNDR feels
+// when I open it — week over week." The served order had no term for NEW: a card in its fifth
+// week ranked exactly like one that arrived today, and the two editorial weekend guides weren't in
+// the pool at all. Three terms, all inside the weather tier (weather stays the thesis):
+//   GUIDE_BOOST    — the city's weekend guide named it this week (`guide`)
+//   NEW_BOOST      — first seen ≤ 7 days ago (half of it up to 14); a live pick first seen more
+//                    than three weeks ago that is NOT a this-weekend one-off is wallpaper: −1.5
+//   ONEOFF_BOOST   — dated to END this weekend (a Saturday thing, not an "Until 17 Jan" run)
+const GUIDE_BOOST = 3
+const NEW_BOOST = 2
+const WALLPAPER_PENALTY = 1.5
+const ONEOFF_BOOST = 1.5
+const NEW_DAYS = 7
+const WALLPAPER_DAYS = 21
+const isLiveId = (id: string) => /^(web|llm|rss|sk)-/.test(id)
 export function rankPicks(picks: Pick[], mode: ModeSpec, taste?: Taste, seed = 0, near?: Origin | null): Pick[] {
   const end = upcomingWeekendEnd()
   const fri = new Date(end.getFullYear(), end.getMonth(), end.getDate() - 2)   // the weekend's Friday, 00:00
@@ -247,10 +262,27 @@ export function rankPicks(picks: Pick[], mode: ModeSpec, taste?: Taste, seed = 0
   // real-draw signal (e.g. RA "attending") on a log curve so 50 vs 500 separates but a mega-event can't run
   // away — a within-tier sub-term capped ~2.5, like buzz. Only picks that carry popularity get the bump.
   const popBoost = (p: Pick) => (p.popularity ? Math.min(2.5, Math.log10(p.popularity + 1)) : 0)
+  const nowMs = Date.now()
+  // a one-off: its LAST date falls inside this weekend (Friday run-up → Sunday) — not a run that
+  // merely spans it. latestDateOf parses `when`; a "Daily"/"Every Saturday" has no latest date.
+  const oneOff = (p: Pick) => {
+    const latest = latestDateOf(p.when)
+    return !!latest && latest.getTime() >= fri.getTime() && latest.getTime() <= end.getTime()
+  }
+  const novelty = (p: Pick) => {
+    if (!p.firstSeen) return 0
+    const age = (nowMs - Date.parse(p.firstSeen)) / 864e5
+    if (!Number.isFinite(age)) return 0
+    if (age <= NEW_DAYS) return NEW_BOOST
+    if (age <= NEW_DAYS * 2) return NEW_BOOST / 2
+    if (age > WALLPAPER_DAYS && isLiveId(p.id) && !oneOff(p)) return -WALLPAPER_PENALTY
+    return 0
+  }
   const score = (p: Pick) =>
     (modesFor(p).some((m) => p.weatherFit.includes(m)) ? 10 : 0) + freshBoost(p) + buzzBoost(p) + popBoost(p) + sunBonus(p)
     + (p.editorScore ?? 0) * EDITOR_W
     - (p.image ? 0 : NO_PHOTO_PENALTY)
+    + (p.guide ? GUIDE_BOOST : 0) + novelty(p) + (oneOff(p) ? ONEOFF_BOOST : 0)
     + (taste ? tasteScore(p, taste) : 0) + (seed ? jitter(p.id, seed) * 3.5 : 0)
     // NEAR ME (V.11): only when the user has asked for it AND we know where they are. A weight,
     // never a filter — see lib/geo.ts nearScore. Capped under the +10 weather term so weather

@@ -14,6 +14,9 @@ name: Refresh content
 on:
   schedule:
     - cron: '0 10 * * 4'     # Thursday 10:00 UTC — delay-compensated so the feed is LIVE by 15:00 Amsterdam
+    - cron: '0 10 * * 1'     # Monday 10:00 UTC (V.11.11) — the first build FOR the coming weekend. Without it,
+                             # Mon–Thu served Thursday's feed for the weekend that had just ended, minus its
+                             # past-dated cards: the same long-runs four days running (Ness, 2026-09-10).
   workflow_dispatch:
 
 permissions:

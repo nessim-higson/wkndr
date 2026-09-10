@@ -136,14 +136,14 @@ export const STAR_BOOST = Number(process.env.WKNDR_STAR_BOOST ?? 2)
  *  gating on it would be circular — approved picks clearing a bar their own approval had set. */
 export function publishCheck(
   corpus: TasteCorpus, weekly: WeeklySlate, heroTitles: string[], now: Date = new Date(),
-): (p: { title: string; buzz?: number; judgeScore?: number }) => boolean {
+): (p: { title: string; buzz?: number; judgeScore?: number; guide?: string }) => boolean {
   const approved = approvalCheck(corpus, weekly, heroTitles, now)
   return (p) => (p.judgeScore ?? 0) >= JUDGE_FLOOR || approved(p)
 }
 
 export function approvalCheck(
   corpus: TasteCorpus, weekly: WeeklySlate, heroTitles: string[], now: Date = new Date(),
-): (p: { title: string; buzz?: number }) => boolean {
+): (p: { title: string; buzz?: number; guide?: string }) => boolean {
   const rx: RegExp[] = [
     ...corpus.starredKeeps.map((k) => rxOf(k.match)),
     ...corpus.topPicks.map(rxOf),
@@ -156,6 +156,7 @@ export function approvalCheck(
     : []
   const heroKeys = new Set(heroTitles.map(titleKey))
   return (p) =>
+    !!p.guide ||                      // V.11.11: the city's weekend guides ARE the taste signal
     (p.buzz ?? 1) >= 3 ||
     heroKeys.has(titleKey(p.title)) ||
     rx.some((r) => r.test(p.title)) ||
@@ -194,7 +195,10 @@ export function dedupe(picks: Pick[]): Pick[] {
     // keep the strongest draw signal through the merge — the {...richer} spread would otherwise drop it
     // when the richer record is the one WITHOUT a popularity count (e.g. a web-search dup of an RA night).
     const popularity = Math.max(a.popularity ?? 0, b.popularity ?? 0) || undefined
-    return { ...a, ...richer, source, buzz, popularity }
+    // an editorial feature survives the merge whichever record is richer (V.11.11) — two guides
+    // naming the same event read as one line, and count as corroboration through `source`
+    const guide = [...new Set([a.guide, b.guide].flatMap((g) => (g ? g.split(' · ') : [])))].join(' · ') || undefined
+    return { ...a, ...richer, source, buzz, popularity, guide }
   }
 
   // Structured sources (I amsterdam, RA) carry a STABLE per-event id (a slug), so two similarly-titled but
@@ -253,6 +257,8 @@ export function dedupe(picks: Pick[]): Pick[] {
       s.source = u.source
       s.buzz = u.buzz
       s.popularity = Math.max(s.popularity ?? 0, p.popularity ?? 0) || undefined
+      const guide = [...new Set([s.guide, p.guide].flatMap((g) => (g ? g.split(' · ') : [])))].join(' · ')
+      if (guide) s.guide = guide
     } else kept.push(p)
   }
   return kept
@@ -999,12 +1005,22 @@ export function matchEventLoc(title: string, locs: string[]): string | null {
 }
 
 /** Does a fetched event's own name agree with the title we matched it from? Same overlap rule. */
+const GENERIC_TOKEN = /^(festival|market|markt|amsterdam|museum|day|dag|night|nacht|party|open|weekend|summer|zomer|winter|editie|edition|international|edition|concert|show|tour|exhibition|tentoonstelling)$/
+const stem = (t: string) => t.replace(/(ies)$/, 'y').replace(/(?<=[a-z]{3})e?s$/, '')
 export function titlesAgree(a: string, b: string): boolean {
-  const ta = titleTokens(a), tb = new Set(titleTokens(b))
+  const ta = titleTokens(a).map(stem), tbl = titleTokens(b).map(stem), tb = new Set(tbl)
   if (!ta.length || !tb.size) return false
   const hit = ta.filter((t) => tb.has(t)).length
   const need = ta.length === 1 ? 1 : Math.max(2, Math.ceil(Math.min(ta.length, tb.size) * 0.6))
-  return hit >= need
+  if (hit < need) return false
+  // the overlap rule alone lets "Phono Lake Festival" agree with "Reggae Lake Festival" (lake +
+  // festival). When each title's FIRST distinctive word is missing from the other, they are two
+  // events sharing a venue or a genre, not one event in two languages ("Open House X TF" ↔ "Open
+  // Huis X TF" still agrees: "house" is missing from one side, but "meervaart" is on both).
+  const distinct = (ts: string[]) => ts.find((t) => t.length >= 5 && !GENERIC_TOKEN.test(t))
+  const da = distinct(ta), db = distinct(tbl)
+  if (da && db && da !== db && !tb.has(da) && !new Set(ta).has(db)) return false
+  return true
 }
 
 // VENUE MATCH — the one honest borrow. A pick AT a canon place may wear that place's photo: the

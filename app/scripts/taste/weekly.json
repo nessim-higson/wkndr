@@ -1,31 +1,30 @@
 {
   "_": "WEEKLY SLATE — Ness's ephemeral this-weekend-only controls from the Curation Board (▲ LEAD / ▼ LATER / dragged PILE-ORDER). Applies ONLY while `weekend` matches the pipeline's upcoming Saturday (YYYY-MM-DD): a stale file is silently ignored, so weekend calls can never drag into the next week. LEAD = guaranteed into the feed + opens the deck (just under 👑 TOPs) + editorScore floor 9. LATER = stays in the feed but sinks to the back of the pile (NOT a kill). PILE = the hand-dragged opening order from the board (ordered titles) — stamped as pilePos; the app deals those cards first, in exactly this order, above every other tier. Permanent taste lives in corpus.json; this file is the week's front page.",
-  "weekend": "2026-08-01",
+  "weekend": "2026-09-12",
   "lead": [
-    "Chefs in het Bos",
-    "Horta: Spanish Restaurant Opening"
+    "Yayoi Kusama",
+    "Open Monuments Day",
+    "Read My World",
+    "Phono Lake Festival",
+    "Pearls of the City",
+    "Side to Side",
+    "Open House X TF at Meervaart",
+    "@ H'ART: Vintage Market",
+    "Biennale Pakhuis Wilhelmina",
+    "Kwaku Downtown"
   ],
   "later": [],
   "pile": [
-    "Canal Parade",
-    "Kwaku Summer Festival",
-    "Dekmantel Festival 2026 - Friday",
-    "Kaap Amsterdam",
-    "VriendenLoterij Summer Concerts",
-    "Pluk de Nacht Film Festival",
-    "Cinema Culinair",
-    "Horta: Spanish Restaurant Opening",
-    "Chefs in het Bos",
-    "Mokumboot: sloepje huren",
-    "BOPS x KIKI - WorldPride Amsterdam",
-    "American Identities",
-    "Two Story",
-    "Hortus Botanicus",
-    "HOMOMONUMENT X BRET AFTERHOURS (18+)",
-    "Ekō – Japan in twee beeldverhalen",
-    "The Little Big Things",
-    "American Myth Memory – David Levinthal",
-    "ARTIS Royal Zoo",
-    "The Jollof Club West-African restaurant"
-  ]
+    "Yayoi Kusama",
+    "Open Monuments Day",
+    "Read My World",
+    "Phono Lake Festival",
+    "Pearls of the City",
+    "Side to Side",
+    "Open House X TF at Meervaart",
+    "@ H'ART: Vintage Market",
+    "Biennale Pakhuis Wilhelmina",
+    "Kwaku Downtown"
+  ],
+  "_2026-09-12": "Ness, 2026-09-10, after reading both weekend guides himself: 'I want all of this moved into the curation tool and put at the top of my top ten.' The ten are the guides' own picks for 11–13 Sep (Kusama = LBB ➊; the rest = I amsterdam's weekend guide). From this week the guides are crawled every run (adapters/guides.ts) and lead the deck by ranking (modes.ts GUIDE_BOOST); this hand slate is the explicit call for THIS weekend and expires with it."
 }

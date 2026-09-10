@@ -125,6 +125,7 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 .ocard .opr:hover{background:var(--accent);color:#fff}
 .ocard.isnew{border-color:var(--ink)}
 .ocard .newtag{font-size:9px;font-weight:800;color:#fff;background:var(--ink);padding:1px 5px;border-radius:999px;margin-left:6px;vertical-align:2px}
+.gtag{background:#2f6f4f}.wtag{background:#8a8a82}
 /* BUZZ — evidence, not status, so it reads quieter than NEW's solid ink: tinted, outlined, ignorable
    until you're looking for it. Shared selector — the same tag serves Simple rows and Advanced cards. */
 .buzztag{display:inline-block;font-size:9px;font-weight:800;color:#4a463e;background:#eee9df;border:1px solid #e0dace;padding:1px 5px;border-radius:999px;margin-left:6px;vertical-align:2px;letter-spacing:.04em;white-space:nowrap;cursor:help}
@@ -264,12 +265,13 @@ header p{color:#4a463e;max-width:66ch;line-height:1.5;margin:10px 0 0;font-size:
 <header>
 <p class="eyebrow" id="eyebrow">WKNDR · CURATION BOARD V.9.47</p>
 <h1>Your weekend<span class="dot">.</span></h1>
-<div id="modetoggle"><button class="on" data-mode="simple">Simple</button><button data-mode="advanced">Advanced</button></div>
+<p id="freshline" class="simplelede">Loading the feed…</p>
+<div id="modetoggle"><button class="on" data-mode="simple">This weekend</button><button data-mode="advanced">Everything</button></div>
 <div id="overnote" style="display:none"></div>
 </header>
 
 <div id="simple">
-<p class="simplelede"><b>The 10 cards that open the deck</b> — exactly what your testers see first this weekend. Drag to reorder, swap any card in or out, <b>✕</b> to cancel one — it comes off straight away and waits on the <b>Cancelled</b> shelf below, where you can say why whenever you like. Then hit <b>Submit</b>.</p>
+<p class="simplelede"><b>The deck, as it will be dealt</b> — built by the pipeline, not by you: the two weekend guides first (I amsterdam · LBB), then the crawl, ranked for the forecast with new-this-week ahead of wallpaper. It ships whether or not you touch it. Drag ⠿ to reorder, <b>✕</b> to cancel (it comes off straight away and waits on the <b>Cancelled</b> shelf), ★ to teach the corpus. Then hit <b>Submit</b> — your calls ride on top of the automatic order.</p>
 <div id="dropbox">
 <p class="dlab">Drop a link</p>
 <div class="drow">
@@ -427,6 +429,8 @@ function wireReasons(el,p,onFix,onKill){
 // fold count can exceed the number of distinct names the pick kept.
 const srcNames=p=>[...new Map(String(p.source||'').split(/[·\/]/).map(s=>s.trim()).filter(Boolean)
   .map(s=>[s.toLowerCase(),s])).values()];   // some picks carry a doubled source string ("A · B / A · B")
+// freshness receipts (V.9.48): GUIDE = a weekend guide named it · NEW = first seen ≤7d · WEEK n = seen n weeks running (the wallpaper Ness is tired of)
+function freshTag(p){const out=[];if(p.guide)out.push('<span class="newtag gtag" title="'+p.guide+'">GUIDE</span>');if(p.firstSeen){const w=(Date.now()-Date.parse(p.firstSeen))/6.048e8;if(w<=1)out.push('<span class="newtag">NEW</span>');else if(w>=2)out.push('<span class="newtag wtag">WEEK '+Math.ceil(w)+'</span>')}return out.join('')}
 const buzzTag=p=>{const n=p.buzz||0;if(n<2)return'';
   const names=srcNames(p);
   // The count and the NAMES can legitimately disagree — `buzz` counts folded records, `source` keeps a
@@ -581,8 +585,12 @@ Promise.all([
   // 10 min (max-age=600), so a just-shipped board fix can lag in an open tab; the eyebrow makes
   // stale-board-vs-fresh-data visible at a glance (2026-07-12: an old tab's tier-mirror pile read
   // as "the board is wrong" when it was just cached).
-  const BOARD_V='V.9.44';
+  const BOARD_V='V.9.48';
   document.getElementById('eyebrow').textContent='WKNDR · CURATION BOARD '+BOARD_V+' · FEED '+(d.generatedAt||'').slice(0,16).replace('T',' · ');
+  // THE FRESH LINE (V.9.48) — the board says what it is: an automatic deck, when it was built, how
+  // much of it is new, how much the weekend guides put there. Ness, 2026-09-10: "if this is
+  // self-driving without me, it should auto update every week" — it does; this is where it says so.
+  {const now=Date.now();const live=(d.picks||[]).filter(p=>/^(web|llm|rss|sk)-/.test(p.id));const fresh=live.filter(p=>p.firstSeen&&(now-Date.parse(p.firstSeen))/864e5<=7).length;const guided=live.filter(p=>p.guide).length;const built=(d.generatedAt||'').slice(0,16).replace('T',' at ');const el=document.getElementById('freshline');if(el)el.innerHTML='<b>Built automatically</b> '+built+' · '+live.length+' live cards · <b>'+fresh+' new this week</b> · <b>'+guided+' from the weekend guides</b> · rebuilds every Monday and Thursday. Nothing here waits for you.'}
   const board=document.getElementById('board');board.innerHTML='';
   const rot=document.createElement('div');rot.id='tab-rot';board.appendChild(rot);
   const nw=document.createElement('div');nw.id='tab-new';nw.style.display='none';board.appendChild(nw);
@@ -926,7 +934,7 @@ Promise.all([
       el.dataset.hay=(p.title+' '+(p.venue||'')+' '+(p.when||'')).toLowerCase();   // the filter's haystack
       el.innerHTML='<span class="num">'+(i+1)+'</span><span class="ogrip" title="Drag to reorder">⠿</span>'
         +'<img loading="lazy" src="'+(p.image||'')+'" alt="">'
-        +'<div class="ot"><h4>'+(p.link?'<a href="'+p.link+'" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;border-bottom:1px solid rgba(27,26,23,.25)">'+p.title+'</a>':p.title)+(isExtra(p.title)?' <span class="newtag">NEW</span>':'')+buzzTag(p)+'</h4><div class="os">'+sub(p)+'</div></div>'
+        +'<div class="ot"><h4>'+(p.link?'<a href="'+p.link+'" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;border-bottom:1px solid rgba(27,26,23,.25)">'+p.title+'</a>':p.title)+(isExtra(p.title)?' <span class="newtag">NEW</span>':'')+buzzTag(p)+freshTag(p)+'</h4><div class="os">'+sub(p)+'</div></div>'
         +(tail?'<button class="opr" title="Promote into your Top 10">↑</button>':'<button class="orm" title="Send down to Up next">−</button>')
         +'<button class="okill" title="Cancel — off the board now, say why later">✕</button>'
         +(v.flag?'<div class="ostate">✓ flagged — '+(REASON_LABEL[v.reason]||v.reason)+' · stays live until it\'s fixed</div>':'');
@@ -1055,7 +1063,7 @@ function addCard(p,g,tag,pos,probe){
     +imgWhyTag(p)
     +'<div class="meta">'
     +(why?'<div class="why">'+why+'</div>':'')
-    +'<h3>'+title+buzzTag(p)+'</h3>'
+    +'<h3>'+title+buzzTag(p)+freshTag(p)+'</h3>'
     +'<div class="sub">'+(p.venue||'')+' · '+(p.when||'')+'</div>'
     +'<div class="src">'+(srcNames(p).join(' · ')||p.tier||'')+(p.editorScore!=null?' · judge '+p.editorScore:'')+(p.scoreWhy?' · '+p.scoreWhy:'')+'</div>'
     +'<div class="stars">'+[1,2,3,4,5].map(n=>'<button class="star" data-n="'+n+'" aria-label="'+n+' stars">★</button>').join('')+'</div>'
