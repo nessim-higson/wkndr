@@ -1,5 +1,5 @@
 import {
-  forwardRef, useEffect, useImperativeHandle, useLayoutEffect, useMemo, useRef,
+  type ReactNode, forwardRef, useEffect, useImperativeHandle, useLayoutEffect, useMemo, useRef,
 } from 'react'
 import {
   motion, useMotionValue, useTransform, animate,
@@ -305,9 +305,10 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
 })
 
 export function SwipeStack({
-  picks, temp, tempOf, mode, onSwipe, onOpen, onRefresh, onStartOver, total, filterLabel, onClearFilter, onSeeList, nudge, keysActive, escape,
+  picks, temp, tempOf, mode, context, onSwipe, onOpen, onRefresh, onStartOver, total, filterLabel, onClearFilter, onSeeList, nudge, keysActive, escape,
 }: {
   picks: Pick[]
+  context?: ReactNode
   temp?: number
   /** per-pick temperature — on a split weekend a Saturday card and a Sunday card show DIFFERENT
    *  numbers. Falls back to `temp` when absent (uniform weekend, or no live forecast yet). */
@@ -433,6 +434,7 @@ export function SwipeStack({
         {visible[0] ? `${visible[0].title} — ${visible[0].venue}, ${visible[0].when}` : ''}
       </div>
 
+      {context}
       <div className="stack-actions">
         <button className="act act-nope" onClick={() => topRef.current?.fling('nope')} aria-label="Skip">
           <X size={22} strokeWidth={2.5} />

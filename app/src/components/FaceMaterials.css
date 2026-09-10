@@ -1,0 +1,105 @@
+.face-controls { position:fixed; z-index:1000; right:12px; bottom:12px; max-width:calc(100vw - 24px); background:#f5f5efeF; color:#232c30; border:1px solid #fff9; border-radius:16px; padding:12px; font-size:13px; box-shadow:0 8px 25px #0002; }
+.face-controls summary { cursor:pointer; } .face-controls label { display:grid; gap:8px; padding-top:12px; } .face-controls select { min-height:44px; border:1px solid #aab4b4; border-radius:8px; padding:8px; font:inherit; background:#fff; color:#232c30; }
+.np-material-mark { display:none; pointer-events:none; }
+html[data-face] .np-stub { background:transparent; border-top:0; }
+html[data-face] .np-stub::before,html[data-face] .np-stub::after { display:none; }
+html[data-face] .np-title { font-family:var(--font-body); font-weight:500; letter-spacing:-.045em; }
+html[data-face] .np-venue { font-size:var(--fs-sm); font-weight:400; letter-spacing:0; }
+html[data-face^='emboss'] .np-imprint { color:#ece9df; text-shadow:1px 1px 1px #fff,-1px -1px 2px #7d7c7266; font-family:var(--font-body); font-weight:700; }
+html[data-face='emboss-graphite'] .np-ground { background:linear-gradient(130deg,#3a3c3e,#202528); }
+html[data-face='emboss-graphite'] .np-hero { color:#f2f4ef; }
+html[data-face='emboss-graphite'] .np-imprint { color:#292d30; text-shadow:1px 1px 1px #616467,-1px -1px 2px #000; }
+html[data-face='emboss-mineral'] .np-ground { background:linear-gradient(125deg,#e4e8dc,#c5ccbf); }
+html[data-face='emboss-mineral'] .np-imprint { color:#ccd3c5; }
+html[data-face^='weather'] .np-ground { background:linear-gradient(135deg,#46627b,#142a3e); }
+html[data-face^='weather'] .np-hero { color:#f5f7f8; justify-content:flex-end; }
+html[data-face^='weather'] .np-imprint,html[data-face^='glass'] .np-imprint { display:none; }
+html[data-face^='weather'] .np-title,html[data-face^='glass'] .np-title { font-size:clamp(27px,10cqw,46px); }
+html[data-face^='weather'] .np-material-mark { display:block; position:absolute; width:72%; height:45%; right:3%; top:12%; opacity:.65; }
+html[data-face='weather-solar'] .np-material-mark { background:repeating-radial-gradient(circle at 60% 55%,transparent 0 22px,#ccdeec24 23px,#09182455 25px,transparent 27px 43px); border-radius:50%; }
+html[data-face='weather-rain'] .np-material-mark { background:repeating-linear-gradient(115deg,transparent 0 30px,#d9e6ef66 31px,#09152288 33px,transparent 35px 61px); mask-image:linear-gradient(#000,transparent); }
+html[data-face='weather-cloud'] .np-ground { background:linear-gradient(150deg,#e5edf1,#aebfcd); }
+html[data-face='weather-cloud'] .np-hero { color:#243039; }
+html[data-face='weather-cloud'] .np-material-mark { border-radius:48% 55% 0 0; box-shadow:0 -1px 1px #fff,0 -22px 0 -1px #cad8e1,0 -23px 1px #fff8,0 -45px 0 -1px #bdcdd7; top:28%; height:30%; }
+/* The moving face samples the real deck behind it, rather than carrying a copy
+   of the next photograph. Removing will-change:opacity on glass slots lets the
+   backdrop reach sibling cards; opacity is still animated during deal-in/exit. */
+html[data-face^='glass'] .swipe-card-slot:has(.card--nophoto) { will-change:transform; }
+html[data-face^='glass'] .card--nophoto { background:#dce5e7; }
+html[data-face^='glass'] .np-ground { background:linear-gradient(125deg,#f4f4edee,#dce7eddd); }
+html[data-face^='glass'] .np-material-mark { display:block; position:absolute; inset:0; border:1px solid #fffd; border-radius:inherit; box-shadow:inset 0 0 4px 2px #fff8,inset 0 -2px 8px #eec48344; background:linear-gradient(132deg,transparent 25%,#ffffff28 38%,transparent 43%,transparent 65%,#ffffff35 67%,transparent 71%); }
+html[data-face^='glass'] .np-hero { justify-content:flex-end; color:#152730; text-shadow:0 1px 10px #fff5; }
+html[data-face='glass-smoked'] .np-ground { background:linear-gradient(135deg,#344955,#162633); }
+html[data-face='glass-smoked'] .np-hero { color:#f5f8fa; text-shadow:0 1px 8px #0005; }
+html[data-face='glass-frosted'] .np-ground { background:linear-gradient(135deg,#d0e8f3,#adcde0); }
+html:is([data-face='glass-smoked'],[data-face='emboss-graphite'],[data-face='weather-solar'],[data-face='weather-rain']) .card--nophoto .card-expand { color:white; background:#fff1; border-color:#fff5; }
+@container (max-height:430px) { html[data-face^='glass'] .np-title,html[data-face^='weather'] .np-title { font-size:32px; } }
+@container (max-height:300px) { html[data-face^='glass'] .np-title,html[data-face^='weather'] .np-title { font-size:22px; } }
+
+@supports ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))) {
+  html[data-face^='glass'] .card--nophoto {
+    background:transparent;
+    -webkit-backdrop-filter:blur(8px) saturate(.9);
+    backdrop-filter:blur(8px) saturate(.9);
+  }
+  /* A denser lower veil keeps the foreground title separate from the next card's
+     lettering. The upper window stays open enough to read spatial movement. */
+  html[data-face^='glass'] .np-ground { background:linear-gradient(180deg,#f1f4ed26 0%,#e4eded33 38%,#e4ededcc 78%,#e4ededeb); }
+  html[data-face='glass-smoked'] .np-ground { background:linear-gradient(180deg,#16263338 0%,#16263344 38%,#162633d9 78%,#162633eb); }
+  html[data-face='glass-frosted'] .card--nophoto { -webkit-backdrop-filter:blur(14px) saturate(.8); backdrop-filter:blur(14px) saturate(.8); }
+  html[data-face='glass-frosted'] .np-ground { background:linear-gradient(180deg,#d0e8f340 0%,#d0e8f34d 38%,#c5e0efcc 78%,#c5e0efeb); }
+}
+
+/* Every card gets one stable, quiet optical signature, independent of tint. */
+html[data-face^='glass']:not([data-glass-override]) [data-glass-mark='ribbon'] .np-material-mark,
+html[data-face^='glass'][data-glass-override='ribbon'] .np-material-mark {
+  background:linear-gradient(var(--glass-angle),transparent 12%,#ffffff08 22%,#ffffff2b 29%,transparent 30%,transparent 62%,#ffffff20 65%,transparent 67%);
+}
+html[data-face^='glass']:not([data-glass-override]) [data-glass-mark='arc'] .np-material-mark,
+html[data-face^='glass'][data-glass-override='arc'] .np-material-mark {
+  background:radial-gradient(ellipse at var(--glass-offset) -30%,transparent 0 54%,#ffffff30 54.4%,#ffffff0b 56%,transparent 60%);
+}
+html[data-face^='glass']:not([data-glass-override]) [data-glass-mark='edge'] .np-material-mark,
+html[data-face^='glass'][data-glass-override='edge'] .np-material-mark {
+  background:linear-gradient(var(--glass-angle),#ffffff20,transparent 17%,transparent 78%,#ffffff28 79%,transparent 82%);
+  box-shadow:inset 1px 0 2px #fff9,inset -1px 0 4px #fff5;
+}
+/* Blind emboss: bold ink above, oversized uninked title mark below. SVG scales
+   to the space left by a long title instead of cropping the pressed letters. */
+html[data-face^='emboss'] .card--nophoto { --emboss-paper:#ece9e1; --emboss-light:#ffffffdd; --emboss-shadow:#69665b66; border:1px solid #ffffffb3; }
+html[data-face^='emboss'] .np-ground { background:linear-gradient(125deg,#f5f2ec,var(--emboss-paper)); }
+html[data-face^='emboss'] .np-title { font-weight:700; letter-spacing:-.055em; font-size:clamp(30px,11.8cqw,46px); line-height:.99; }
+html[data-face^='emboss'] [data-title-length='short'] .np-title { font-size:clamp(38px,16cqw,78px); }
+html[data-face^='emboss'] .np-imprint { display:block; padding:8px 0; color:var(--emboss-paper); text-shadow:none; }
+html[data-face^='emboss'] .np-imprint svg { width:100%; height:100%; overflow:visible; fill:currentColor; filter:drop-shadow(1px 1px .6px var(--emboss-light)) drop-shadow(-1px -1.2px 1px var(--emboss-shadow)); }
+html[data-face^='emboss'] .np-imprint text { font:800 120px 'Helvetica Neue',sans-serif; letter-spacing:-9px; }
+html[data-face^='emboss'] .np-imprint .np-imprint-amp text { font:400 144px Georgia,serif; letter-spacing:-6px; }
+html[data-face='emboss-graphite'] .card--nophoto { --emboss-paper:#292d30; --emboss-light:#65696c; --emboss-shadow:#000a; border-color:#ffffff30; }
+html[data-face='emboss-graphite'] .np-ground { background:linear-gradient(125deg,#3a3c3e,var(--emboss-paper)); }
+html[data-face='emboss-mineral'] .card--nophoto { --emboss-paper:#d3d8cb; }
+html[data-face='emboss-mineral'] .np-ground { background:linear-gradient(125deg,#e8ecdf,var(--emboss-paper)); }
+html[data-face^='emboss'] .card-grain { opacity:.17; background-size:95px 95px; }
+@container (max-height:430px) {
+  html[data-face^='emboss'] .np-hero { inset-block-start:80px; }
+  html[data-face^='emboss'] .np-title { font-size:clamp(26px,8.3cqw,40px); }
+  html[data-face^='emboss'] [data-title-length='short'] .np-title { font-size:clamp(34px,12cqw,58px); }
+  html[data-face^='emboss'] .np-cat { margin-bottom:8px; }
+}
+html[data-face^='emboss'] [data-title-length='short'] .np-title { max-width:9ch; }
+@container (max-height:430px) { html[data-face^='emboss'] [data-title-length='short'] .np-title { font-size:clamp(38px,15cqw,58px); } }
+html[data-face^='emboss'] .np-title { hyphens:none; text-wrap:wrap; }
+html[data-face^='emboss'] .np-imprint .np-imprint-amp text { font-size:168px; }
+
+html[data-face^='glass']:not([data-glass-override]) [data-glass-mark='fluted'] .np-material-mark,
+html[data-face^='glass'][data-glass-override='fluted'] .np-material-mark {
+  background:repeating-linear-gradient(90deg,transparent 0 17px,#ffffff25 19px,#ffffff08 23px,transparent 28px);
+  mask-image:linear-gradient(#000 0%,#000b 45%,transparent 77%);
+}
+html[data-face^='glass']:not([data-glass-override]) [data-glass-mark='prism'] .np-material-mark,
+html[data-face^='glass'][data-glass-override='prism'] .np-material-mark {
+  background:conic-gradient(from 30deg at 85% 12%,transparent,#b6e6ff28 12%,transparent 16%,#fff4 28%,transparent 33%,#ffd4b922 60%,transparent 65%);
+}
+html[data-face^='glass']:not([data-glass-override]) [data-glass-mark='halo'] .np-material-mark,
+html[data-face^='glass'][data-glass-override='halo'] .np-material-mark {
+  background:radial-gradient(ellipse at 10% 10%,transparent 18%,#ffffff08 22%,#ffffff45 24%,#ffffff12 28%,transparent 33%);
+}
