@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-09-10T10:48:42.059Z",
-  "count": 6,
+  "generatedAt": "2026-09-10T10:57:55.766Z",
+  "count": 8,
   "candidates": [
     {
-      "id": "web-lbb-world-press-photo-exhibition-2026",
-      "title": "World Press Photo Exhibition 2026",
-      "venue": "De Nieuwe Kerk",
-      "area": "Amsterdam",
-      "when": "Until Sun 27 Sep",
-      "category": "art",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.nieuwekerk.nl%2Fwp-content%2Fuploads%2F2026%2F02%2F2026-04-23_De-Nieuwe-Kerk_World-Press-Photo-2026__Tomek-Dersu-Aaron_1967.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.550&output=jpg&default=https%3A%2F%2Fwww.nieuwekerk.nl%2Fwp-content%2Fuploads%2F2026%2F02%2F2026-04-23_De-Nieuwe-Kerk_World-Press-Photo-2026__Tomek-Dersu-Aaron_1967.jpg",
-      "imageWhy": "curated",
-      "blurb": "Annual award-winning photojournalism exhibition showcasing powerful global stories captured by world photographers.",
-      "source": "Your Little Black Book",
-      "link": "https://duckduckgo.com/?q=World%20Press%20Photo%20Exhibition%202026%20De%20Nieuwe%20Kerk%20Amsterdam",
+      "id": "web-scout-marocaine",
+      "title": "Marocaine",
+      "venue": "Marocaine (former 't Stuivertje)",
+      "area": "Hazenstraat, Jordaan",
+      "when": "Now open · dinner",
+      "category": "eat",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fmarocaine.nl%2Fwp-content%2Fuploads%2F2026%2F01%2FWhatsApp-Image-2026-01-26-at-15.01.49-1024x768.jpeg&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.500&output=jpg&default=https%3A%2F%2Fmarocaine.nl%2Fwp-content%2Fuploads%2F2026%2F01%2FWhatsApp-Image-2026-01-26-at-15.01.49-1024x768.jpeg",
+      "imageWhy": "organiser",
+      "blurb": "Chef Rachid El Mouhandiz, who scored a 9- in Het Parool, turns his Jordaan spot into a full ode to Moroccan cooking.",
+      "source": "Fresh find",
+      "link": "https://marocaine.nl/",
       "weatherFit": [
         "HOT",
         "WARM",
@@ -21,35 +21,11 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "freshness": "weekend",
+      "freshness": "new",
       "outdoor": false,
       "kid": false,
-      "price": "",
-      "why": "Award-winning photojournalism",
-      "editorScore": 6
-    },
-    {
-      "id": "web-scout-flight-golf",
-      "title": "Flight Golf",
-      "venue": "Flight Golf",
-      "area": "NDSM-werf, Noord",
-      "when": "Now open",
-      "category": "out",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fcdn.prod.website-files.com%2F68ee4e2d030a44cd00bb13ac%2F6a2bb2b11c8981adf38d1997_DSC_5031.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.625&output=jpg&default=https%3A%2F%2Fcdn.prod.website-files.com%2F68ee4e2d030a44cd00bb13ac%2F6a2bb2b11c8981adf38d1997_DSC_5031.jpg",
-      "imageWhy": "event-page",
-      "blurb": "A golf clubhouse for people who don't own polos — simulators, cocktails and design-led interiors on the NDSM wharf.",
-      "source": "Fresh find",
-      "link": "https://www.flightgolf.nl/",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL"
-      ],
-      "freshness": "new",
-      "outdoor": true,
-      "kid": false,
       "price": "€€",
-      "why": "Golf, redesigned for non-golfers"
+      "why": "Parool-9 chef goes full Moroccan"
     },
     {
       "id": "web-lbb-tips-pure-market",
@@ -75,16 +51,16 @@
       "editorScore": 5
     },
     {
-      "id": "web-lbb-summer-h-art-vintage-market-workshops",
-      "title": "Summer @ H'ART Vintage Market & Workshops",
+      "id": "web-lbb-summer-h-art-vintage-market-festival",
+      "title": "Summer @ H'ART Vintage Market & Festival",
       "venue": "H'ART Museum",
-      "area": "Amsterdam-Centrum",
-      "when": "Sat 12 Sep · 11:00-16:30",
+      "area": "Amstel 51",
+      "when": "Sat 12 Sep · 11:00–16:30",
       "category": "market",
       "imageWhy": "none",
-      "blurb": "Final summer edition with Block Market vintage finds, upcycling workshop, food, drinks and live music by Stokers.",
+      "blurb": "Final edition with Block Market vintage finds, food, live music, upcycling workshop and evening performance by Stokers.",
       "source": "Your Little Black Book",
-      "link": "https://duckduckgo.com/?q=Summer%20%40%20H'ART%20Vintage%20Market%20%26%20Workshops%20H'ART%20Museum%20Amsterdam",
+      "link": "https://duckduckgo.com/?q=Summer%20%40%20H'ART%20Vintage%20Market%20%26%20Festival%20H'ART%20Museum%20Amsterdam",
       "weatherFit": [
         "HOT",
         "WARM",
@@ -93,8 +69,8 @@
       "freshness": "weekend",
       "outdoor": true,
       "kid": true,
-      "price": "free (workshop reservation req",
-      "why": "Last chance for summer courtyard market experience",
+      "price": "Free entry",
+      "why": "Last chance for summer festival vibe",
       "editorScore": 7
     },
     {
@@ -118,7 +94,80 @@
       "kid": false,
       "price": "",
       "why": "One of LBB's weekend tips",
-      "editorScore": 4
+      "editorScore": 5
+    },
+    {
+      "id": "web-lbb-tips-cafe-binnenvisser-x-hector-s-london",
+      "title": "Café Binnenvisser x Hector's London",
+      "venue": "Your Little Black Book",
+      "area": "",
+      "when": "Sun 13 Sep",
+      "category": "eat",
+      "imageWhy": "none",
+      "blurb": "You'll want to add this tip straight to your schedule for this Sunday. London wine bar Hector's is taking over Café Binnenvisser for a British Sunday lunch that",
+      "source": "Your Little Black Book",
+      "link": "https://binnenvisser.nl/events",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "freshness": "weekend",
+      "outdoor": false,
+      "kid": false,
+      "price": "",
+      "why": "One of LBB's weekend tips",
+      "editorScore": 6
+    },
+    {
+      "id": "web-lbb-tips-end-of-summer-blockparty-at-yellow-house",
+      "title": "End of Summer Blockparty at Yellow House",
+      "venue": "Your Little Black Book",
+      "area": "",
+      "when": "Sun 13 Sep",
+      "category": "out",
+      "imageWhy": "none",
+      "blurb": "Dance outside one last time before we truly wrap up the summer. On Sunday, September 13, YUSU is organizing an End of Summer Blockparty at Yellow House in Amste",
+      "source": "Your Little Black Book",
+      "link": "https://www.yourlittleblackbook.me/en/weekendtips-amsterdam/",
+      "buzz": 1,
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL"
+      ],
+      "freshness": "weekend",
+      "outdoor": true,
+      "kid": false,
+      "price": "free",
+      "why": "One of LBB's weekend tips",
+      "editorScore": 5
+    },
+    {
+      "id": "rss-het-parool-ps-modemanifestatie-van-the-patchwork-family-genomi",
+      "title": "Modemanifestatie van The Patchwork Family genomineerd voor de Amsterdamprijs: ‘We kijken v",
+      "venue": "Het Parool PS",
+      "area": "",
+      "when": "This weekend",
+      "category": "out",
+      "imageWhy": "none",
+      "blurb": "Featured this week by Het Parool PS.",
+      "source": "Het Parool PS",
+      "link": "https://www.parool.nl/ps/modemanifestatie-van-the-patchwork-family-genomineerd-voor-de-amsterdamprijs-we-kijken-vooral-naar-hoe-we-de-kracht-van-mode-kunnen-gebruiken~bea2b2ec/",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "freshness": "weekend",
+      "outdoor": false,
+      "kid": false,
+      "price": "",
+      "why": "In this week's Het Parool PS"
     },
     {
       "id": "rss-het-parool-ps-ook-na-hun-break-up-zijn-anneloes-en-david-nog-v",
