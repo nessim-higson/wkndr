@@ -83,3 +83,7 @@
 }
 
 .field-dev-stats { text-align: right; font-variant-numeric: tabular-nums; color: rgba(255, 255, 255, 0.55); }
+
+/* The opt-in study controls must fit a phone as well as the renderer does. */
+.field-dev { max-width: calc(100vw - 20px); }
+.field-dev-looks { flex-wrap: wrap; }

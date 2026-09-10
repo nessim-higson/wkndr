@@ -157,6 +157,7 @@ const DEMO: Record<Mode, Wx> = {
 // the ambient field looks the user can switch between (persisted to localStorage).
 // V2: a fresh set of five — flip through them to judge.
 const FIELD_OPTS: { key: Look; label: string }[] = [
+  { key: 'verb', label: 'Field is a verb' },
   { key: 'silk', label: 'Silk' },
   { key: 'auras', label: 'Auras' },
   { key: 'riso', label: 'Riso' },
@@ -904,7 +905,7 @@ export default function App() {
     // reducedMotion="user": every framer transform/layout animation (detail expand, sheet
     // slides, ctx bars) collapses to a crossfade for prefers-reduced-motion users
     <MotionConfig reducedMotion="user">
-      <AmbientField mode={mode} look={look} onLookChange={setLook} rerollNonce={fieldReroll} />
+      <AmbientField weekend={weekend} mode={mode} look={look} onLookChange={setLook} rerollNonce={fieldReroll} />
 
       <AnimatePresence>
         {intro && <Intro
