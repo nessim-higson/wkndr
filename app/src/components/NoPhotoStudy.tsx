@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react'
-import { Star, SlidersHorizontal } from 'lucide-react'
+import { Star, Cloud, Sun, Moon, CloudRain, CloudLightning, CloudFog, Snowflake } from 'lucide-react'
 import type { Pick } from '../types'
 import { SwipeStack } from './SwipeStack'
-import { FaceControls } from './FaceControls'
+import { FaceControls, FACE_VARIANTS, CURRENT_VARIANTS } from './FaceControls'
 import { whenIsPast } from '../lib/when'
 import { applyMode } from '../weather/modes'
 import './NoPhotoStudy.css'
+import './CurrentMaterials.css'
+import { useCurrentWeather } from './useCurrentWeather'
 
 const referenceTitles: Pick[] = ['Museum Market', 'Nederlands Theater Festival & Amsterdam Fringe Festival'].map((title, i) => ({
   id: `reference-title-${i}`, title, venue: '', area: 'Amsterdam', when: 'This weekend',
@@ -15,6 +17,10 @@ const referenceTitles: Pick[] = ['Museum Market', 'Nederlands Theater Festival &
 
 /** Isolated interaction study. Real feed records; no fixture enters the real deck. */
 export function NoPhotoStudy() {
+  const [variant,setVariant] = useState('glass-opal')
+  const weatherSet = variant.startsWith('weather-current')
+  const { reading, loading } = useCurrentWeather()
+  const WeatherIcon = reading ? {clear:Sun,night:Moon,cloud:Cloud,fog:CloudFog,rain:CloudRain,snow:Snowflake,storm:CloudLightning}[reading.sky] : Cloud
   const [picks, setPicks] = useState<Pick[]>([])
   const [reference, setReference] = useState(false)
   const [front, setFront] = useState(0)
@@ -35,18 +41,19 @@ export function NoPhotoStudy() {
   const underneath = photos[behind % (photos.length || 1)]
   const next = photos[(behind + 1) % (photos.length || 1)]
   return <>
-    <main className="np-app-study">
+    <nav className="material-set-switch" aria-label="Compare card sets"><button aria-pressed={!weatherSet} onClick={()=>setVariant('glass-opal')}>Transparent glass</button><button aria-pressed={weatherSet} onClick={()=>setVariant('weather-current')}>Weather now</button></nav>
+    <main className="np-app-study" data-current-weather={reading?.sky ?? 'unknown'}>
       <header><div><strong>WKNDR<span>•</span></strong><p>Amsterdam</p></div><span className="np-study-saves"><Star size={20} /> {saved}</span></header>
-      <div className="np-study-filters"><span>This weekend</span><span>All interests</span><SlidersHorizontal size={18} /></div>
-      <div className="np-study-deck">{current && underneath && <SwipeStack picks={[current, underneath, ...(next ? [next] : [])]} keysActive={false} onSwipe={(_,dir) => { if(dir === 'save' || dir === 'like') setSaved(n=>n+1); setFront(n=>n+1) }} />}</div>
+      <div className="np-study-filters"><span>Amsterdam discoveries</span><span>{weatherSet ? 'Weather-responsive surfaces' : 'Luminous glass surfaces'}</span></div>
+      <div className="np-study-deck">{current && underneath && <SwipeStack picks={[current, underneath, ...(next ? [next] : [])]} keysActive={false} context={<div className="current-weather-strip" aria-live="polite"><WeatherIcon size={20}/><div><span>{reading ? `${Math.round(reading.temperature)}° · ${reading.label}` : loading ? 'Checking current weather…' : 'Current weather unavailable'}</span><small>{reading ? `Amsterdam estimate · ${new Date(reading.time).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',timeZone:'Europe/Amsterdam'})}` : 'Neutral material until a fresh reading arrives'}</small></div></div>} onSwipe={(_,dir) => { if(dir === 'save' || dir === 'like') setSaved(n=>n+1); setFront(n=>n+1) }} />}</div>
       <div className="np-study-tools">
         <label>Cards <select aria-label="Study cards" value={reference ? 'reference' : 'live'} onChange={e => { setReference(e.target.value === 'reference'); setFront(0) }}><option value="live">Live feed</option><option value="reference">Reference titles</option></select></label>
         <button onClick={() => setBehind(n=>n+1)}>Change card underneath ↻</button>
         <p>{underneath ? `Underneath: ${underneath.title}` : error ? 'Feed unavailable. Reload to try again.' : 'Loading the live feed…'}</p>
         <p>{reference ? 'Reference title study · illustrative metadata' : 'Material study · saves stay in this preview'}</p>
-        <a href="?">Open the full app →</a>
+        <a href="?">Open the full app →</a><a href="https://open-meteo.com/en/docs" target="_blank" rel="noreferrer">Weather source · 15-minute model estimate</a>
       </div>
     </main>
-    <FaceControls />
+    <FaceControls value={variant} onChange={setVariant} options={weatherSet ? CURRENT_VARIANTS : FACE_VARIANTS.filter(([key])=>key.startsWith('glass'))} />
   </>
 }

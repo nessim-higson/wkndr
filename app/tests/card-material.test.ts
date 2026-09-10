@@ -1,9 +1,9 @@
 import { expect, test } from 'bun:test'
 import { glassSignature, titleMark } from '../src/lib/card-material'
 
-test('optical signatures are stable, bounded, and offer all three highlight families', () => {
+test('optical signatures are stable, bounded, and offer all six highlight families', () => {
   const samples = Array.from({ length: 50 }, (_, i) => glassSignature(`event-${i}`))
-  expect(new Set(samples.map(s => s.pattern)).size).toBe(3)
+  expect(new Set(samples.map(s => s.pattern)).size).toBe(6)
   for (let i = 0; i < samples.length; i++) {
     expect(samples[i]).toEqual(glassSignature(`event-${i}`))
     expect(samples[i].angle).toBeGreaterThanOrEqual(118)

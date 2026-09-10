@@ -51,13 +51,16 @@ html:is([data-face='glass-smoked'],[data-face='emboss-graphite'],[data-face='wea
 }
 
 /* Every card gets one stable, quiet optical signature, independent of tint. */
-html[data-face^='glass'] [data-glass-mark='ribbon'] .np-material-mark {
+html[data-face^='glass']:not([data-glass-override]) [data-glass-mark='ribbon'] .np-material-mark,
+html[data-face^='glass'][data-glass-override='ribbon'] .np-material-mark {
   background:linear-gradient(var(--glass-angle),transparent 12%,#ffffff08 22%,#ffffff2b 29%,transparent 30%,transparent 62%,#ffffff20 65%,transparent 67%);
 }
-html[data-face^='glass'] [data-glass-mark='arc'] .np-material-mark {
+html[data-face^='glass']:not([data-glass-override]) [data-glass-mark='arc'] .np-material-mark,
+html[data-face^='glass'][data-glass-override='arc'] .np-material-mark {
   background:radial-gradient(ellipse at var(--glass-offset) -30%,transparent 0 54%,#ffffff30 54.4%,#ffffff0b 56%,transparent 60%);
 }
-html[data-face^='glass'] [data-glass-mark='edge'] .np-material-mark {
+html[data-face^='glass']:not([data-glass-override]) [data-glass-mark='edge'] .np-material-mark,
+html[data-face^='glass'][data-glass-override='edge'] .np-material-mark {
   background:linear-gradient(var(--glass-angle),#ffffff20,transparent 17%,transparent 78%,#ffffff28 79%,transparent 82%);
   box-shadow:inset 1px 0 2px #fff9,inset -1px 0 4px #fff5;
 }
@@ -86,3 +89,17 @@ html[data-face^='emboss'] [data-title-length='short'] .np-title { max-width:9ch;
 @container (max-height:430px) { html[data-face^='emboss'] [data-title-length='short'] .np-title { font-size:clamp(38px,15cqw,58px); } }
 html[data-face^='emboss'] .np-title { hyphens:none; text-wrap:wrap; }
 html[data-face^='emboss'] .np-imprint .np-imprint-amp text { font-size:168px; }
+
+html[data-face^='glass']:not([data-glass-override]) [data-glass-mark='fluted'] .np-material-mark,
+html[data-face^='glass'][data-glass-override='fluted'] .np-material-mark {
+  background:repeating-linear-gradient(90deg,transparent 0 17px,#ffffff25 19px,#ffffff08 23px,transparent 28px);
+  mask-image:linear-gradient(#000 0%,#000b 45%,transparent 77%);
+}
+html[data-face^='glass']:not([data-glass-override]) [data-glass-mark='prism'] .np-material-mark,
+html[data-face^='glass'][data-glass-override='prism'] .np-material-mark {
+  background:conic-gradient(from 30deg at 85% 12%,transparent,#b6e6ff28 12%,transparent 16%,#fff4 28%,transparent 33%,#ffd4b922 60%,transparent 65%);
+}
+html[data-face^='glass']:not([data-glass-override]) [data-glass-mark='halo'] .np-material-mark,
+html[data-face^='glass'][data-glass-override='halo'] .np-material-mark {
+  background:radial-gradient(ellipse at 10% 10%,transparent 18%,#ffffff08 22%,#ffffff45 24%,#ffffff12 28%,transparent 33%);
+}
