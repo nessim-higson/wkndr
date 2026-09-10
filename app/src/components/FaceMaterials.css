@@ -24,13 +24,13 @@ html[data-face='weather-cloud'] .np-material-mark { border-radius:48% 55% 0 0; b
 /* A low-frequency projection of the actual next card: coloured light, never a
    substitute event photograph. The source follows deck order, including swipes. */
 html[data-face^='glass'] .card--nophoto { background:#b9c8cc; }
-html[data-face^='glass'] .np-transmitted { display:block; position:absolute; inset:-25%; background-size:cover; filter:blur(44px) saturate(.8); opacity:.32; }
+html[data-face^='glass'] .np-transmitted { display:block; position:absolute; inset:-25%; background-size:cover; filter:blur(32px) saturate(.9); opacity:.58; }
 html[data-face^='glass'] .np-ground { background:linear-gradient(125deg,#f4f4edee,#dce7eddd); }
 html[data-face^='glass'] .np-material-mark { display:block; position:absolute; inset:0; border:1px solid #fffd; border-radius:inherit; box-shadow:inset 0 0 4px 2px #fff8,inset 0 -2px 8px #eec48344; background:linear-gradient(132deg,transparent 25%,#ffffff28 38%,transparent 43%,transparent 65%,#ffffff35 67%,transparent 71%); }
 html[data-face^='glass'] .np-hero { justify-content:flex-end; color:#152730; text-shadow:0 1px 10px #fff5; }
 html[data-face='glass-smoked'] .np-ground { background:linear-gradient(135deg,#344955,#162633); }
 html[data-face='glass-smoked'] .np-hero { color:#f5f8fa; text-shadow:0 1px 8px #0005; }
-html[data-face='glass-smoked'] .np-transmitted { opacity:.22; }
+html[data-face='glass-smoked'] .np-transmitted { opacity:.48; }
 html[data-face='glass-frosted'] .np-ground { background:linear-gradient(135deg,#d0e8f3,#adcde0); }
 html:is([data-face='glass-smoked'],[data-face='emboss-graphite'],[data-face='weather-solar'],[data-face='weather-rain']) .card--nophoto .card-expand { color:white; background:#fff1; border-color:#fff5; }
 @container (max-height:430px) { html[data-face^='glass'] .np-title,html[data-face^='weather'] .np-title { font-size:32px; } }
