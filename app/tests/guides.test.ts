@@ -42,7 +42,7 @@ describe("LBB's weekendtips", () => {
     const k = by(/Yayoi Kusama/)
     expect(k?.category).toBe('art')
     expect(k?.when).toBe('Until Sun 17 Jan')
-    expect(k?.freshness).toBe('new')   // "Open this week" is a claim of newness, whatever the run length
+    expect(k?.freshness).toBe('weekend')   // a weekend-guide item is THIS weekend's (the default view) — never filed away as `new` or `always`
   })
   it('events carry their dates; markets that recur are evergreen', () => {
     expect(by(/Open Monument Day/)?.when).toBe('Sat 12 Sep – Sun 13 Sep')

@@ -153,7 +153,10 @@ export function parseLbbWeekendTips(html: string): GuideItem[] {
       section = t; kid = /kid|child|famil/i.test(t)
       category = kid ? 'out' : /market/i.test(t) ? 'market' : /hotspot|restaurant|food|eat/i.test(t) ? 'eat' : /exhibition|museum|art/i.test(t) ? 'art' : 'out'
       // ➊ "Open this week: major Yayoi Kusama exhibition at the Stedelijk" — the heading IS the item
-      if (/^open this week:/i.test(t)) { item(t.replace(/^open this week:\s*/i, '').replace(/^(a |the )?major\s+/i, ''), block, /exhibition|museum|expo/i.test(t) ? 'art' : category, false, section); out[out.length - 1].freshness = 'new' as never }
+      // NOT `freshness: 'new'` — the app's default This-weekend view is strictly freshness === 'weekend',
+      // so a `new` claim would file the newest thing in the city under a chip nobody opens (Kusama,
+      // 2026-09-10, live for an hour). The NEW boost in rankPicks reads firstSeen, not the claim.
+      if (/^open this week:/i.test(t)) item(t.replace(/^open this week:\s*/i, '').replace(/^(a |the )?major\s+/i, ''), block, /exhibition|museum|expo/i.test(t) ? 'art' : category, false, section)
       // ➎ the kids list — one <li> per tip; the tip names itself before the first colon or " | venue"
       if (kid) for (const li of block.matchAll(/<li[^>]*>([\s\S]*?)<\/li>/g)) {
         const body = text(li[1])
