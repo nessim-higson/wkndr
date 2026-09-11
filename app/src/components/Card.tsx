@@ -1,8 +1,11 @@
+import type { CSSProperties } from 'react'
+import { glassSignature } from '../lib/card-material'
 import { Maximize2, Clock } from 'lucide-react'
 import type { Pick, Mode } from '../types'
-import { CATEGORY_LABEL, cardSignal } from '../types'
+import { cardSignal } from '../types'
 import { cardImageOf, focalPosition } from '../lib/image'
 import './Card.css'
+import { NoPhotoFace } from './NoPhotoFace'
 
 /** The stack card FRONT — image-led and deliberately quiet: the WHEN stamp (day/time +
  *  forecast temp on outdoor picks), AT MOST one signal pill (cardSignal: live weather peak
@@ -17,15 +20,18 @@ export function Card({ pick, temp, mode }: { pick: Pick; temp?: number; mode?: M
   // venue beneath it. One idea per face: the event, typographically. No "no photo" apology on the
   // card — the board carries that receipt (imageWhy).
   const nophoto = !pick.image
+  const glass = glassSignature(pick.id)
   return (
     <article
       className={`card${nophoto ? ' card--nophoto' : ''}`}
+      data-glass-mark={nophoto ? glass.pattern : undefined}
       // THE CROP (V.11.10): the uncropped source, ONE `cover` crop done here, positioned on the focal
       // point — so the wide desktop card and the tall phone card both keep the subject (the portrait
       // render painted into a near-square box was a crop of a crop: the Fringe dancer became a red blob)
-      style={pick.image ? { backgroundImage: `url(${cardImageOf(pick.image)})`, backgroundPosition: focalPosition(pick) } : undefined}
+      style={pick.image ? { backgroundImage: `url(${cardImageOf(pick.image)})`, backgroundPosition: focalPosition(pick) } : { '--glass-angle': `${glass.angle}deg`, '--glass-offset': `${glass.offset}%` } as CSSProperties}
     >
       {nophoto && <div className="np-ground" aria-hidden />}
+      {nophoto && <div className="np-material-mark" aria-hidden />}
       {pick.image && <div className="card-grade" aria-hidden />}
       {pick.image && <div className="card-tint" aria-hidden />}
       <div className="card-grain" aria-hidden />
@@ -45,13 +51,7 @@ export function Card({ pick, temp, mode }: { pick: Pick; temp?: number; mode?: M
       <span className="card-expand" aria-hidden><Maximize2 size={14} strokeWidth={2.6} /></span>
 
       {nophoto ? (
-        <div className="np-hero">
-          <span className="np-cat">{CATEGORY_LABEL[pick.category]}</span>
-          <h2 className="np-title display">{pick.title}</h2>
-          {(pick.venue || pick.area) && (
-            <p className="np-venue">{[pick.venue, pick.area].filter(Boolean).join(' · ')}</p>
-          )}
-        </div>
+        <NoPhotoFace pick={pick} />
       ) : (
         <div className="card-body">
           <h2 className="card-title">{pick.title}</h2>

@@ -1,3 +1,5 @@
+import { useCurrentWeather } from './components/useCurrentWeather'
+import './components/FaceMaterials.css'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { AnimatePresence, MotionConfig, motion } from 'framer-motion'
 import { Shuffle, Clock, CloudRain, Sun, Cloud, Moon, Snowflake, LayoutGrid, Star, ArrowUpRight, LocateFixed, Info, RotateCw, RotateCcw, X, Heart, Navigation } from 'lucide-react'
@@ -10,7 +12,7 @@ import { CITIES, DEFAULT_CITY, cityByKey, cityByName, nearestCity, type City } f
 import { AmbientField } from './weather/AmbientField'
 import { GlassField } from './weather/GlassField'
 import { GlassForecast } from './weather/GlassForecast'
-import { glassScene, glassSummary, GLASS_LABELS, type GlassScene } from './weather/glass'
+import { GLASS_LABELS, type GlassScene } from './weather/glass'
 import type { Look } from './weather/ambientEngine'
 import { APP_VERSION } from './version'
 import { SwipeStack } from './components/SwipeStack'
@@ -297,11 +299,22 @@ export default function App() {
     const s = localStorage.getItem('wkndr.field') as Look
     return FIELD_OPTS.some((o) => o.key === s) ? s : 'glass'
   })
+  const { reading: currentReading } = useCurrentWeather()
+  const [glassShell,setGlassShell] = useState(()=>new URLSearchParams(location.search).get('shell') === 'floating' ? 'floating' : 'open')
+  const [glassFace,setGlassFace] = useState('glass-opal')
+  const [glassFinish,setGlassFinish] = useState('auto')
+  useEffect(()=> {
+    document.documentElement.dataset.shell=glassShell
+    document.documentElement.dataset.face=glassFace
+    if(glassFinish === 'auto') delete document.documentElement.dataset.glassOverride
+    else document.documentElement.dataset.glassOverride=glassFinish
+    return ()=> { delete document.documentElement.dataset.shell; delete document.documentElement.dataset.face; delete document.documentElement.dataset.glassOverride }
+  },[glassShell,glassFace,glassFinish])
   const [glassPreview, setGlassPreview] = useState<GlassScene | null>(null)
   const [glassMoving, setGlassMoving] = useState(false)
   const [glassForecastOpen, setGlassForecastOpen] = useState(false)
   const glassActive = look === 'glass'
-  const glassWeather = glassPreview ?? glassScene(mode, wx.pop)
+  const glassWeather: GlassScene = glassPreview ?? (currentReading ? { clear:'sunny',night:'evening',cloud:'overcast',fog:'mist',rain:'rain',snow:'snow',storm:'storm' }[currentReading.sky] as GlassScene : 'overcast')
   const GlassWeatherIcon = glassWeather === 'sunny' ? Sun : glassWeather === 'evening' ? Moon : glassWeather === 'snow' ? Snowflake : ['rain', 'mixed', 'storm'].includes(glassWeather) ? CloudRain : Cloud
   useEffect(() => {
     document.documentElement.dataset.field = glassActive ? 'glass' : 'original'
@@ -1364,7 +1377,7 @@ export default function App() {
                 /* the deck owns ←/→ only while nothing sits above it */
                 weatherBrief={glassActive && !intro ? <button className="glass-brief" aria-label="View forecast" onClick={() => setGlassForecastOpen(true)}>
                   <GlassWeatherIcon size={22} strokeWidth={1.3} aria-hidden />
-                  <span>{glassPreview ? `Appearance preview · ${GLASS_LABELS[glassPreview]}` : glassSummary(mode, weekend, live, wx.pop)}</span>
+                  <span>{glassPreview ? `Appearance preview · ${GLASS_LABELS[glassPreview]}` : currentReading ? `${Math.round(currentReading.temperature)}° · ${currentReading.label} · Amsterdam ${new Date(currentReading.time).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',timeZone:'Europe/Amsterdam'})}` : 'Current weather unavailable · neutral background'}</span>
                   <span className="glass-brief-arrow" aria-hidden>↗</span>
                 </button> : undefined}
                 keysActive={!intro && !detail && !shareOpen && !barOpen && !savesOpen && !matching && !inputsOpen && !filterOpen && !whenOpen && !whereOpen && !calibrating && !triaging && !checkpoint && !glassForecastOpen}
@@ -1396,7 +1409,7 @@ export default function App() {
       </motion.div>
       {glassActive && <GlassForecast open={glassForecastOpen} onClose={() => setGlassForecastOpen(false)}
         weekend={weekend} live={live} label={wx.label} preview={glassPreview} onPreview={setGlassPreview}
-        moving={glassMoving} onMoving={setGlassMoving} />}
+        moving={glassMoving} onMoving={setGlassMoving} shell={glassShell} onShell={setGlassShell} face={glassFace} onFace={setGlassFace} finish={glassFinish} onFinish={setGlassFinish} />}
 
       {toast && (
         <div className={`toast${toast.save ? ' toast--save' : ''}`}>
