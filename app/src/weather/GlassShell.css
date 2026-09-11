@@ -14,13 +14,8 @@ html[data-field='glass'] body::after { display: none; } /* no film overlay on th
   padding: max(var(--sp-6), env(safe-area-inset-top)) var(--sp-6) max(var(--sp-4), env(safe-area-inset-bottom));
   --module-w: min(400px, 100%);
 }
-.app--glass::before {
-  content: ''; position: absolute; inset: var(--sp-2); z-index: -1; pointer-events: none;
-  border-radius: 36px;
-  border: 1px solid #ffffff8c;
-  background: linear-gradient(135deg, #fff1, transparent 55%, #fff1);
-  box-shadow: inset 0 1px 0 #fffa, 0 18px 60px -30px #21394635;
-}
+.app--glass::before { display: none; }
+
 .app--glass .topbar-module { width: var(--module-w); border-radius: 24px; background: #f5f7f3d9; box-shadow: 0 4px 18px -12px #20364245; }
 .app--glass .topbar-module:is(.open,.peeking) { border-radius: 24px 24px 0 0; }
 .app--glass .topbar-row { padding: var(--sp-3) var(--sp-4); }
@@ -113,3 +108,23 @@ html[data-shell='floating'] .app--glass .card { border-radius:30px; }
 .glass-study label { display:block; font-size:14px; margin:12px 0; }
 .glass-study label select { margin-top:6px; }
 .app--glass .swipe-card-slot:has(.card--nophoto) { will-change:transform; }
+
+/* Keep the masthead together, with current weather beside its city identity. */
+.app--glass .topbar-row { gap: var(--sp-3); padding-inline: var(--sp-2); }
+.app--glass .tb-brandblock { flex: 0 0 auto; }
+.glass-header-weather { display: flex; align-items: center; gap: var(--sp-2); min-width: 0; min-height: 44px; margin-right: auto; text-align: left; color: inherit; font-size: var(--fs-xs); line-height: 1.3; }
+.glass-header-weather > svg { flex-shrink: 0; }
+.glass-header-weather small { display: block; margin-top: var(--sp-1); font-size: var(--fs-xs); opacity: .75; }
+.glass-header-weather:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; border-radius: 8px; }
+.app--glass .filterstrip { width: fit-content; justify-content: center; gap: var(--sp-1); }
+.app--glass .filterstrip .filter-trigger { flex: 0 0 auto; min-height: 44px; }
+@media (max-width: 380px) {
+  .app--glass .topbar-row { gap: var(--sp-2); padding-inline: 0; }
+  .app--glass .tb-brand { font-size: var(--fs-xl); }
+  .glass-header-weather { gap: var(--sp-1); }
+  .glass-header-weather > svg { width: 18px; }
+  .app--glass .tb-saves { padding-inline: var(--sp-2); }
+}
+
+/* Leave room for the layered deck now the weather summary lives in the header. */
+.app--glass .stack-actions { margin-top: var(--sp-8); }

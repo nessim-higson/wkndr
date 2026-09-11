@@ -1023,6 +1023,17 @@ export default function App() {
                 </div>
               </div>
 
+              {glassActive && <button type="button" className="glass-header-weather"
+                aria-label="View forecast and interface settings"
+                title={currentReading && !glassPreview ? `Amsterdam · ${new Date(currentReading.time).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Amsterdam' })}` : undefined}
+                onClick={(e) => { e.stopPropagation(); setGlassForecastOpen(true) }}
+                onKeyDown={(e) => e.stopPropagation()}>
+                <GlassWeatherIcon size={22} strokeWidth={1.3} aria-hidden />
+                <span>{glassPreview ? GLASS_LABELS[glassPreview] : currentReading ? `${Math.round(currentReading.temperature)}° · ${currentReading.label}` : 'Weather unavailable'}
+                  <small>{glassPreview ? 'Appearance preview' : 'Amsterdam · now'}</small>
+                </span>
+              </button>}
+
               <div className="tb-actions">
                 <button
                   type="button"
@@ -1375,11 +1386,6 @@ export default function App() {
                 onSeeList={() => setView('list')}
                 escape={evergreenEscape}
                 /* the deck owns ←/→ only while nothing sits above it */
-                weatherBrief={glassActive && !intro ? <button className="glass-brief" aria-label="View forecast" onClick={() => setGlassForecastOpen(true)}>
-                  <GlassWeatherIcon size={22} strokeWidth={1.3} aria-hidden />
-                  <span>{glassPreview ? `Appearance preview · ${GLASS_LABELS[glassPreview]}` : currentReading ? `${Math.round(currentReading.temperature)}° · ${currentReading.label} · Amsterdam ${new Date(currentReading.time).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',timeZone:'Europe/Amsterdam'})}` : 'Current weather unavailable · neutral background'}</span>
-                  <span className="glass-brief-arrow" aria-hidden>↗</span>
-                </button> : undefined}
                 keysActive={!intro && !detail && !shareOpen && !barOpen && !savesOpen && !matching && !inputsOpen && !filterOpen && !whenOpen && !whereOpen && !calibrating && !triaging && !checkpoint && !glassForecastOpen}
               />
             </motion.div>
