@@ -30,6 +30,7 @@ import { curatedImage } from './curated'
 import { heroPicks } from './heroes'
 import { whenIsPast, whenLooksBroken } from '../src/lib/when'
 import { effectiveFreshness } from '../src/lib/freshness'
+import { emitLetter } from './lib/letter'
 import type { Pick } from '../src/types'
 
 const CITY = process.argv.find((a) => a.startsWith('--city='))?.split('=')[1] ?? 'amsterdam'
@@ -183,6 +184,12 @@ await Bun.write(path, JSON.stringify(feed, null, 1))
 if (pendingFile) {
   // generatedAt preserved — the airlock belongs to the round it was crawled in
   await Bun.write(pendPath, JSON.stringify({ generatedAt: pendingFile.generatedAt, count: pendingKeep.length, pending: pendingKeep }, null, 2))
+}
+// THE LETTER (V.11.12) — a restamp republishes the feed, so the board's letter is rewritten from the
+// same picks (the fast path must never leave the letter describing a deck that no longer exists).
+{
+  const letter = await emitLetter(OUT_DIR, CITY, { generatedAt: feed.generatedAt, picks, pending: pendingFile ? pendingKeep : [] })
+  if (letter) console.log(`  → letter.${CITY}.json rewritten (front ${letter.counts.front} · +${letter.changes.in.length} −${letter.changes.out.length} ~${letter.changes.moved.length})`)
 }
 console.log(`✓ restamped ${CITY}: ${before} → ${picks.length} picks · tops ${picks.filter((p) => p.top).length} · pile ${picks.filter((p) => p.pilePos).length}` +
   `${pendingFile ? ` · airlock: +${promoted} promoted · ${demoted} demoted · ${pendingKeep.length} pending` : ''}` +

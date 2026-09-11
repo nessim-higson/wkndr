@@ -18,7 +18,7 @@ import { describe, it, expect } from 'bun:test'
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 
-const BOARD = join(import.meta.dir, '../public/curate/index.html')
+const BOARD = join(import.meta.dir, '../public/curate/legacy/index.html')   // V.11.12: the studio grid is parked at /curate/legacy/; the letter board carries no mirror to audit
 const html = readFileSync(BOARD, 'utf8')
 
 function slice(start: string, end: string): string {

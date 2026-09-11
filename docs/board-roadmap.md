@@ -1,5 +1,13 @@
 # Curation Board — roadmap (scoped 2026-07-23)
 
+> **2026-09-11 — THE LETTER (V.11.12).** The board is now a renderer of `data/letter.<city>.json`,
+> which the pipeline writes at the end of every run (`scripts/lib/letter.ts`): the front with its
+> why-lines, in/out/moved since the last letter, the doubts, one health sentence. Track A (the
+> fast lane) and Track B (the reason → kind routing) are unchanged — they are exactly what the
+> letter's **Reply** speaks, deltas only. The studio grid this document describes is parked at
+> `/curate/legacy/`. What is still only there: the drop box, 👑 TOP, +CANON, the better-image URL.
+
+
 Where the board is headed after V.9.19. Two linked tracks. Ness's asks, verbatim:
 1. "How do I know a cancel (bad image / wrong link) is getting ingested?" → **shipped V.9.19** (status panel).
 2. "Scope auto-compile" so my calls apply without a human compile step.

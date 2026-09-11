@@ -92,7 +92,7 @@ These were each tried the other way and reverted; the reasons are in `STATE.md` 
 | Intro / first run | `Intro.tsx`, `Calibrate.tsx` | The opening beat and the taste-calibration round. |
 | Filters | the `.filterstrip` in `App.tsx`, `FilterSheet` | When × What × Where, on the face. |
 | Saves → plan → share | `Itinerary.tsx`, `ShareSheet.tsx`, `MatchGame.tsx` | The boomerang: link → partner swipes → overlap slams. |
-| The Curation Board | `app/public/curate/index.html` (vanilla, static), `components/Triage.tsx` | Ness's instrument. Write-gated worker (never enter the key); Submit payload is a contract with the compile. See `docs/variations/004-*`. |
+| The Curation Board | `app/public/curate/index.html` (the letter — vanilla, static, a RENDERER of `data/letter.<city>.json`, which `app/scripts/lib/letter.ts` writes on every run); the old grid at `app/public/curate/legacy/`; `components/Triage.tsx` (dev) | Ness's instrument. The board may read the letter and nothing else — no inline date/lens/title-key mirrors (`tests/letter-board.test.ts`). Write-gated worker (never enter the key); the Reply payload is a contract with the compile. See `docs/variations/004-*`. |
 
 The data contract is `app/src/types.ts` (`Pick`). A variation may add optional fields it derives at
 runtime; it may not require pipeline changes to render.

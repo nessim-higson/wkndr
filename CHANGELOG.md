@@ -14,6 +14,41 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.11.12 · app + board V.10] — 2026-09-11 — THE LETTER (the board becomes a renderer)
+Ness, Thursday, on the curation tool: "Simple versus Advanced — is it confusing?" It was, and the
+layout was not the reason. The board was built for the 1:1 airlock, when nothing shipped without him,
+so it had to show him EVERYTHING and let him assemble the week by hand; under auto-by-default
+(V.11.3) his job is review. Two takes were written; this is the first, built the same day.
+- **The pipeline writes the board's content.** `scripts/lib/letter.ts` → `data/letter.<city>.json`,
+  at the end of every refresh AND restamp (`bun run letter` rebuilds it from disk; `--prev=<an older
+  picks.json>` lends a first baseline). In it: **the front** — the deck's projected opening hand
+  (the stamped `servePos`, through the app's default *This weekend* lens) with ONE why-line per card
+  built from the facts `rankPicks` scores ("your #3 · both weekend guides · new this week · Sat");
+  **what changed** since the previous letter (in / out, with the reason a card left: past, held,
+  benched, dropped / moved from → to); **the doubts** — no-photo cards, venue borrows, the top five
+  of the airlock with the fact that holds each, title pairs the dedupe was not sure about; **one
+  health sentence** and the next build time. The letter it overwrites is the baseline, so one
+  file is the whole memory.
+- **The board renders it and nothing else.** `public/curate/index.html` rewritten (1,511 → 522
+  lines): no date brain, no weekend lens, no title-key mirror — the drift class STATE.md recorded is
+  gone by construction, and `tests/letter-board.test.ts` forbids the mirrors from returning. One
+  column, phone-first; one search box over the front, the shelf, the door and the bench; the same
+  three verbs everywhere — **★** (teaches; on a held card, admits), **✕** with the SAME eight reasons
+  and kinds, **⠿** drag (pointer events, thumbs work) or ▲▼ on the front, **↑ Front** anywhere;
+  every ruled row says where the call lands (*live in seconds* vs *on the next build*). **Reply** =
+  deltas only, on the same two channels (worker fast lane + the GitHub issue; payload lines
+  byte-compatible: `PILE-ORDER |`, `KILL`, `REST:<date>`, `why:<reason>`); an untouched front sends
+  an EMPTY pile, so the deck keeps its own order (`lib/overrides.ts`). Simple/Advanced is gone; the
+  Formspree mail is retired; doing nothing is a stated, valid reply.
+- **The old grid is parked at `/curate/legacy/`** (banner, data paths re-rooted, same Submit, same
+  key) for what the letter does not carry yet: the drop box for Instagram links, 👑 TOP, +CANON, the
+  better-image URL. `?curate2026!` opens the letter on every screen width; Triage no longer
+  auto-opens on a phone (still behind `?dev=1`). `docs/board-roadmap.md` Track A/B unchanged — the
+  letter's Reply speaks exactly those two contracts.
+- First letter written against the 6 Sep feed as its baseline: front = the guides' ten, +46 in /
+  −18 out / 5 moved. It surfaced two things on its own: a guide item wearing I amsterdam's article
+  headline as its title (open item), and 14 imageless live cards. **433 tests** (+31).
+
 ## [V.11.11 · app + board V.9.48] — 2026-09-10 — FRESH LEADS (the weekend guides, read as guides)
 Ness, Thursday morning, after opening I amsterdam's weekend guide and LBB's weekendtips himself:
 "a TON of new fresh things to do this weekend … I'm constantly disappointed by how stale WKNDR

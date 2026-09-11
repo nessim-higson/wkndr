@@ -225,10 +225,10 @@ export default function App() {
   const [dealKey, setDealKey] = useState(0)      // bump → stack re-deals (refresh signal)
   const [matching, setMatching] = useState(false)   // match-mode overlay
   const [calibrating, setCalibrating] = useState(false)   // "Tune WKNDR" micro-deck (dev prototype)
-  // Airlock triage deck — the board's notebook (dev prototype). Opens on mount when we
-  // came through ?curate2026! on a narrow screen: a wide screen would already have left
-  // for the board (curateDoor.ts), so reaching here with the flag set means "phone".
-  const [triaging, setTriaging] = useState(CURATE_DOOR)
+  // Airlock triage deck — the board's notebook (dev prototype). Reached from the ?dev=1 menu
+  // only: since V.11.12 the curate door opens the letter (/curate/) on every screen width, so
+  // this no longer auto-opens on a phone (curateDoor.ts).
+  const [triaging, setTriaging] = useState(false)
   const matchLaunched = useRef(false)
   const matchingRef = useRef(false)                 // read by the relay poll (its effect mounts once)
   const [detail, setDetail] = useState<Pick | null>(null)  // open card detail

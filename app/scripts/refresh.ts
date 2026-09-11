@@ -23,6 +23,7 @@ import { dedupe, balanceByCategory, isGoodImage, isPortraitImage, imageBroken, u
 import { fixWhen, latestDateOf, whenActiveBy, whenIsPast, whenLooksBroken } from '../src/lib/when'
 import { effectiveFreshness, NEW_DAYS } from '../src/lib/freshness'
 import { mergeSightings, pruneRegistry, appendRun, type SeenRegistry, type HealthFile } from './lib/ingest'
+import { emitLetter } from './lib/letter'
 import { songkickAdapter } from './adapters/songkick'
 import { llmExtract } from './adapters/llm'
 import { websearchExtract } from './adapters/websearch'
@@ -1042,6 +1043,14 @@ async function buildCity(city: City) {
       .map((p) => ({ id: p.id, title: p.title, venue: p.venue, area: p.area, when: p.when, category: p.category, image: p.image, imageWhy: p.imageWhy, blurb: p.blurb, source: p.source, link: p.link, buzz: p.buzz, weatherFit: p.weatherFit, freshness: p.freshness, firstSeen: p.firstSeen, outdoor: p.outdoor, kid: p.kid, price: p.price, why: p.why, editorScore: p.editorScore }))
     await Bun.write(`${OUT_DIR}/candidates.${city.key}.json`, JSON.stringify({ generatedAt: feed.generatedAt, count: cands.length, candidates: cands }, null, 2))
     console.log(`  → wrote candidates.${city.key}.json (${cands.length} bench events for the Curation Board)`)
+  }
+
+  // THE LETTER (V.11.12) — the board's content, written by the run that knows it. Last on purpose:
+  // it reads the bench + ingest health this run just wrote, and the letter it overwrites is the
+  // baseline for "what changed". Best-effort — a letter can never fail a publish.
+  {
+    const letter = await emitLetter(OUT_DIR, city.key, { generatedAt: feed.generatedAt, picks, pending: pendingOut })
+    if (letter) console.log(`  → wrote letter.${city.key}.json (front ${letter.counts.front} · +${letter.changes.in.length} −${letter.changes.out.length} ~${letter.changes.moved.length} since ${letter.changes.since ? letter.changes.since.slice(0, 16) : 'never'} · ${letter.health.tag})`)
   }
 }
 

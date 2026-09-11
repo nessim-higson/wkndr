@@ -1,11 +1,11 @@
 # WKNDR — STATE (catch-me-up snapshot)
 
-_Living "where are we right now" doc — a **snapshot, not a history**. **Updated 2026-09-10.** Read this
+_Living "where are we right now" doc — a **snapshot, not a history**. **Updated 2026-09-11.** Read this
 FIRST in a new chat. For strategy + backlog see `docs/backlog.md`; for the pipeline architecture see
 `docs/pipeline-architecture.md` + `docs/source-map.md`; for **who may write to the deck vs to a personal
 profile** (board / Tune / airlock — read before touching either) see `docs/curation-surfaces.md`; for the
 **board roadmap** (auto-compile tracks) see `docs/board-roadmap.md`; for full **version history** see
-`CHANGELOG.md` (current to app **V.11.11** / board V.9.48) and the **git log / tags**. Onboarding:
+`CHANGELOG.md` (current to app **V.11.12** / board V.10) and the **git log / tags**. Onboarding:
 `CLAUDE.md`; for any coding agent (Codex included) **`AGENTS.md`** is the working manual and
 `docs/variations/` the prototype protocol + the open briefs. App lives in `/app` (Vite + React + TS, run with `bun`); ships to **Cloudflare Pages**
 (`wkndr.xyz` + `app.wkndr.xyz`) **and** GitHub Pages (legacy, keeps old share links alive)._
@@ -30,6 +30,21 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
 > sessions update (today it's on load).
 
 ## Live right now
+- **V.11.12 — THE LETTER (2026-09-11, board V.10).** The Curation Board is now a RENDERER. The
+  pipeline writes **`data/letter.<city>.json`** at the end of every refresh and restamp
+  (`scripts/lib/letter.ts`; `bun run letter` rebuilds it from disk): the front as the deck will deal
+  it (stamped `servePos` through the app's default *This weekend* lens) with one why-line per card;
+  in / out / moved since the previous letter; the doubts (no photo, venue borrows, the airlock's top
+  five with the hold reason, twin suspects); one health sentence; the next build time.
+  `public/curate/index.html` (522 lines) reads that file and nothing else — **no date brain, no lens,
+  no title-key mirror** (`tests/letter-board.test.ts` forbids them). Verbs: ★ / ✕ (the same eight
+  reasons → kinds) / ⠿ + ▲▼ on the front / ↑ Front anywhere; **Reply** sends deltas only on the same
+  two channels (fast-lane worker + GitHub issue, payload byte-compatible; an untouched front sends an
+  empty pile). Simple/Advanced gone; Formspree retired. **The old grid is parked at `/curate/legacy/`**
+  (drop box, 👑, +CANON, image URL still live there). `?curate2026!` → the letter on any width.
+  **433 tests.** The law that follows: **the board shows what changed and what the run is unsure of;
+  doing nothing is a valid reply.** Take 2 ("taste as a dial" — the corpus as a living document
+  inside the app) is written up in the 2026-09-11 session and unstarted.
 - **V.11.11 — FRESH LEADS (2026-09-10, board V.9.48).** Ness: "constantly disappointed by how stale
   WKNDR feels — week over week." Three structural causes, fixed: (1) **the Sunday build** — the
   7 ship-day runs rebuilt the feed for the ending weekend, so Mon–Thu served leftovers → **a Monday
@@ -567,9 +582,23 @@ GUARANTEES topped/led picks into the feed (pull-back from prePool/canon if the b
 
 ## Open items / next
 0. **Variations:** `gh pr list` is the only record of what is in flight — not this file. Judge on
-   the preview, on the phone; review in the PR. Briefs 003 (the opening beat) and 004 (the two-minute
-   board — audit first) are written and unstarted. **Do not refactor the board on `main`** while 004
-   is the intended path.
+   the preview, on the phone; review in the PR. Brief 003 (the opening beat) is written and
+   unstarted. Brief 004's audit landed on `main` as **the letter (V.11.12)**; the brief is re-aimed
+   at a look-and-feel pass on the letter (read only `letter.json`, keep the reply contract) or at
+   Take 2 — "taste as a dial", the corpus as a living document inside the app (a new brief when
+   Ness wants it). **The legacy grid retires when the letter carries the drop box.**
+0b. **Seen in the first letter (2026-09-11):** (a) a guide item folded onto its crawled twin keeps the
+   crawl's title — "Side to Side strijkt neer in de Amsterdamse Houthavens: hoe de dansscene
+   ontstond" is I amsterdam's article headline; the guide's own title ("Side to Side") should win
+   the display title when `dedupe` unions `guide` (`adapters/guides.ts` / `pipeline.ts` merge);
+   (b) 14 of 61 live cards imageless (the front is fully pictured) — the cap holds, the letter's
+   "No photo" lane is where to glance; (c) the `weekly.json` lead "Yayoi Kusama" also matched
+   "Sandberg x Schilo: 5-course pop-up dinner inspired by Yayoi Kusama" (rxOf is a substring match)
+   — a lead should match by titleLooseMatch like the pile does; (d) "Open Monumentendag Amsterdam
+   (40th Edition)" ships beside "Open Monuments Day" — the Dutch/English twin the dedupe cannot see
+   (the letter lists both; a ✕ duplicate merges them); (e) a guides item ships with the venue
+   string "Noordermarkt 1, Amsterdam Dates: Every Monday and Saturday m" — the LBB kids/market
+   heuristic swallowed the dates line into `venue`.
 1. ~~Phase 2 — demote web_search~~ **DONE 2026-09-05 (V.11.9)** — 3 facets + index-only-link drop. Next
    on images: watch the first two `receipts:` census lines in the refresh log; if `web` dominates over
    `event-page`/`organiser`, raise the sitemap matcher's reach before loosening anything else.

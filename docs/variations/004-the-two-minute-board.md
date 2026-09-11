@@ -1,5 +1,18 @@
 # 004 — The two-minute board (the curate tool)
 
+> **Status 2026-09-11 — Part 1 landed on `main`.** The audit was done in-session and shipped as
+> **the letter** (app V.11.12, board V.10): the pipeline writes `data/letter.<city>.json` (the front
+> with why-lines, in/out/moved, the doubts, the health sentence) and `app/public/curate/index.html`
+> renders it and nothing else. The old grid is parked at `app/public/curate/legacy/`. What this
+> brief can still be: **(a) a look-and-feel variation of the letter** — same constraints as below,
+> plus: read only `letter.json`, no inline mirrors (`tests/letter-board.test.ts` is the gate), keep
+> the Reply contract; or **(b) Take 2, "taste as a dial"** — the corpus (rules, anchors, vetoes,
+> rests, the judge floor, the guide boost) as a living document inside the app, with the deck's own
+> `SwipeStack` as a live preview that re-ranks as the dials move. (b) is a React route, not a
+> static file, and needs its own brief when Ness calls for it. The text below is the original
+> brief, kept as the record of the question.
+
+
 **Branch** `codex/two-minute-board` · **Seam** the Curation Board (`app/public/curate/index.html`
 — ~1,500 lines of vanilla HTML/JS, no build step, served static; board V.9.47)
 

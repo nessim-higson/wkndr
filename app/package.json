@@ -12,7 +12,8 @@
     "test": "bun test tests",
     "bump": "bun run scripts/bump.ts",
     "poster": "bun run scripts/poster.ts",
-    "ingest": "bun run scripts/ingest.ts"
+    "ingest": "bun run scripts/ingest.ts",
+    "letter": "bun run scripts/letter.ts"
   },
   "dependencies": {
     "framer-motion": "^11.15.0",
