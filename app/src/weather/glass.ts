@@ -4,8 +4,8 @@ import type { WeekendWx } from './modes'
 export const GLASS_SCENES = ['sunny', 'overcast', 'rain', 'mist', 'snow', 'storm', 'mixed', 'evening'] as const
 export type GlassScene = typeof GLASS_SCENES[number]
 export const GLASS_LABELS: Record<GlassScene, string> = {
-  sunny: 'Sunlight', overcast: 'Overcast', rain: 'Rain', mist: 'Morning dew',
-  snow: 'Snow', storm: 'Storm', mixed: 'Sun + showers', evening: 'Evening',
+  sunny: 'Open sky', overcast: 'Overcast', rain: 'Rain', mist: 'Soft fog',
+  snow: 'Snow', storm: 'Storm', mixed: 'Passing front', evening: 'Evening',
 }
 
 /** 2026-09: this is a material study, not a new classifier. A cold, dry day also

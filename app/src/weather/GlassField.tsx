@@ -20,9 +20,10 @@ export function GlassField({ scene, moving }: { scene: GlassScene; moving: boole
     document.addEventListener('visibilitychange', update)
     return () => document.removeEventListener('visibilitychange', update)
   }, [])
-  const wet = ['rain', 'storm', 'mixed', 'mist'].includes(scene)
+  const wet = ['rain', 'storm'].includes(scene)
   const count = scene === 'storm' ? 96 : scene === 'rain' ? 72 : scene === 'mist' ? 36 : 24
   return <div className="field glass-field" data-scene={scene} data-moving={moving && visible} aria-hidden="true">
+    <div className="glass-sky" />
     <div className="glass-light" />
     <div className="glass-cloud glass-cloud-one" />
     <div className="glass-cloud glass-cloud-two" />

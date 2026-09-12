@@ -47,3 +47,21 @@
 .glass-drop { border-color: #f1fbffd9; box-shadow: inset 1px 1.5px 1px #fffd, inset -1.5px -2px 2px #294759b3, 0 2px 3px #17384c70; }
 .glass-drop-trail::before { width: 2px; height: 90px; background: linear-gradient(transparent, #f4fbfdb3); }
 .glass-field[data-scene='mist'] .glass-cloud { filter: blur(44px); }
+
+/* Photographic atmosphere is illustrative; live codes select the scene, never a claim
+   that this exact cloud is overhead. Only the active scene's CSS image is loaded. */
+.glass-sky { position: absolute; inset: -2%; background-position: center; background-size: cover; background-image: url('../assets/atmosphere/overcast.webp'); }
+.glass-field[data-scene='sunny'] .glass-sky { background-image: url('../assets/atmosphere/open-sky.webp'); background-position: 65% center; }
+.glass-field[data-scene='mixed'] .glass-sky { background-image: url('../assets/atmosphere/passing-front.webp'); }
+.glass-field[data-scene='rain'] .glass-sky { filter: brightness(.72) saturate(.7) blur(2px); }
+.glass-field[data-scene='storm'] .glass-sky { filter: brightness(.38) saturate(.8); }
+.glass-field[data-scene='mist'] .glass-sky { filter: blur(18px) saturate(.3); opacity: .23; }
+.glass-field[data-scene='snow'] .glass-sky { filter: brightness(1.25) saturate(.3) blur(3px); opacity: .75; }
+.glass-field[data-scene='evening'] .glass-sky { background-image: url('../assets/atmosphere/open-sky.webp'); background-position: left bottom; filter: brightness(.2) saturate(.6); opacity: .5; }
+.glass-field .glass-light, .glass-field .glass-cloud { display: none; }
+.glass-field .glass-haze { opacity: .12; background: linear-gradient(#071a3033, transparent 25%, transparent 72%, #071a301a); }
+.glass-field[data-scene='mist'] .glass-haze { background: linear-gradient(120deg,#eff2edaa,#e5efee77); opacity: .8; }
+.glass-field[data-scene='evening']::after { content:''; position:absolute; width:26px; height:26px; top:17%; right:18%; border-radius:50%; box-shadow:6px 3px 0 1px #ecf4ee; transform:rotate(-20deg); }
+.glass-field[data-moving='true'] .glass-sky { animation: sky-breathe 55s ease-in-out infinite alternate; }
+@keyframes sky-breathe { to { transform: scale(1.045) translate3d(-.6%,.5%,0); } }
+@media(prefers-reduced-motion:reduce) { .glass-field[data-moving='true'] .glass-sky { animation:none; } }
