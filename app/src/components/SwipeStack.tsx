@@ -1,5 +1,5 @@
 import {
-  type ReactNode, forwardRef, useEffect, useImperativeHandle, useLayoutEffect, useMemo, useRef,
+  type ReactNode, forwardRef, useEffect, useImperativeHandle, useLayoutEffect, useMemo, useRef, useState,
 } from 'react'
 import {
   motion, useMotionValue, useTransform, animate,
@@ -63,6 +63,9 @@ function hashUnit(s: string): number {
 const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
   { pick, tidy, interactive, depth, dealIn, progress, temp, mode, onSwipe, onOpen, onCycle }, ref,
 ) {
+  // the glass face reveals the deck beneath it WHILE it moves (FaceMaterials.css .is-dragging):
+  // at rest the pane is frosted enough that the next title never reads through this one
+  const [dragging, setDragging] = useState(false)
   // a touch of deterministic imperfection per card — the stack looks hand-laid, not machined
   const skew = useMemo(() => tidy ? 0 : hashUnit(pick.id) * 2.8, [pick.id, tidy])        // ±2.8° resting tilt
   const restX = useMemo(() => tidy ? 0 : hashUnit(`${pick.id}x`) * 7, [pick.id, tidy])   // ±7px resting nudge
@@ -240,6 +243,7 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
     progress.set(Math.min(1, Math.hypot(info.offset.x, info.offset.y) / PROGRESS_REF))
   }
   function onDragEnd(_e: unknown, info: PanInfo) {
+    setDragging(false)
     const { offset, velocity } = info
     if (offset.x > THRESHOLD || velocity.x > VELOCITY) return fling('like', info)
     if (offset.x < -THRESHOLD || velocity.x < -VELOCITY) return fling('nope', info)
@@ -256,7 +260,7 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
     // SLOT — owns the stack position (depth scale + offset). Animates smoothly when a
     // card is promoted, so it never fights the drag offset (which lives on the inner).
     <motion.div
-      className="swipe-card-slot"
+      className={`swipe-card-slot${dragging ? ' is-dragging' : ''}`}
       style={{ zIndex: 10 - depth, scale: slotScale, x: slotX, y: slotY, rotate: slotRot, opacity: slotOpacity, pointerEvents: interactive ? 'auto' : 'none' }}
     >
       {/* INNER — only the top card is draggable; x/y/rotate start at 0 every time.
@@ -271,7 +275,7 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
                                   inertia would otherwise coast the card and fight it → the snap */
         onPointerDown={interactive ? capturePoint : undefined}
         onTapStart={interactive ? () => { dragged.current = false } : undefined}
-        onDragStart={interactive ? () => { dragged.current = true } : undefined}
+        onDragStart={interactive ? () => { dragged.current = true; setDragging(true) } : undefined}
         onDrag={interactive ? onDrag : undefined}
         onDragEnd={interactive ? onDragEnd : undefined}
         onTap={interactive ? () => { if (!dragged.current) onOpen?.(pick, cardRef.current?.getBoundingClientRect()) } : undefined}

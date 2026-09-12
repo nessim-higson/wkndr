@@ -177,11 +177,13 @@ html[data-field='glass']:is([data-glass-scene='rain'],[data-glass-scene='storm']
 .atmosphere-swatch { display:block; height:46px; border-radius:8px; margin-bottom:6px; background:center/cover url('../assets/atmosphere/overcast.webp'); }
 .atmosphere-option[data-scene='sunny'] .atmosphere-swatch { background-image:url('../assets/atmosphere/open-sky.webp'); }
 .atmosphere-option[data-scene='mixed'] .atmosphere-swatch { background-image:url('../assets/atmosphere/passing-front.webp'); }
-.atmosphere-option[data-scene='rain'] .atmosphere-swatch { background-image:repeating-linear-gradient(105deg,transparent 0 9px,#fff9 10px,transparent 11px 17px),url('../assets/atmosphere/overcast.webp'); filter:brightness(.7); }
-.atmosphere-option[data-scene='storm'] .atmosphere-swatch { filter:brightness(.35); }
-.atmosphere-option[data-scene='mist'] .atmosphere-swatch { background:linear-gradient(130deg,#e6eeeb,#b6c9cb); }
-.atmosphere-option[data-scene='snow'] .atmosphere-swatch { background-image:radial-gradient(circle,#fff 0 1px,transparent 2px),linear-gradient(#adc2cf,#e7eceb); background-size:12px 14px,cover; }
-.atmosphere-option[data-scene='evening'] .atmosphere-swatch { background:radial-gradient(circle at 75% 25%,#e2eced 0 3px,transparent 4px),linear-gradient(#102038,#3b5269); }
+/* the swatches are the plates themselves now (2026-09-12) — a swatch that faked rain with stripes
+   promised something the pane did not draw */
+.atmosphere-option[data-scene='rain'] .atmosphere-swatch { background-image:url('../assets/atmosphere/rain.webp'); }
+.atmosphere-option[data-scene='storm'] .atmosphere-swatch { background-image:url('../assets/atmosphere/storm.webp'); }
+.atmosphere-option[data-scene='mist'] .atmosphere-swatch { background-image:url('../assets/atmosphere/fog.webp'); }
+.atmosphere-option[data-scene='snow'] .atmosphere-swatch { background-image:url('../assets/atmosphere/snow.webp'); }
+.atmosphere-option[data-scene='evening'] .atmosphere-swatch { background-image:url('../assets/atmosphere/evening.webp'); }
 html[data-shell='floating'] .app--glass .filterstrip .filter-trigger { border:0; border-radius:0; background:transparent; box-shadow:none; }
 .app--glass .filterstrip .filter-trigger::after { content:''; width:5px; height:5px; margin-left:3px; margin-top:-3px; border-right:1px solid currentColor; border-bottom:1px solid currentColor; transform:rotate(45deg); }
 html[data-field='glass'][data-face^='glass'] .np-imprint svg { fill:currentColor; }

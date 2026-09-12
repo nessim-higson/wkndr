@@ -65,3 +65,9 @@
 .glass-field[data-moving='true'] .glass-sky { animation: sky-breathe 55s ease-in-out infinite alternate; }
 @keyframes sky-breathe { to { transform: scale(1.045) translate3d(-.6%,.5%,0); } }
 @media(prefers-reduced-motion:reduce) { .glass-field[data-moving='true'] .glass-sky { animation:none; } }
+
+/* THE PANE (WebGL2). The canvas is prepended into the field, under the haze. The CSS sky and
+   the CSS beads are not rendered while it is live; the haze stays for legibility. */
+.glass-field[data-pane='gl'] .wet-glass { position: absolute; inset: 0; width: 100%; height: 100%; }
+.glass-field[data-pane='gl'] .glass-haze { opacity: .55; }
+html[data-field='glass'][data-glass-scene='mist'] .glass-field[data-pane='gl'] .glass-haze { opacity: .35; }
