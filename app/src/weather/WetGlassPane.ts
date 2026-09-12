@@ -1,18 +1,18 @@
 // WET GLASS — the renderer (see wetglass.ts for the recipes and the why).
 //
-// One full-screen triangle, one fragment shader, one texture (the plate). Everything on the pane
-// is procedural and grid-based: each grid cell may hold one bead, placed and sized by a hash of
-// the cell id + the session seed, so no per-fragment loop over N drops — a fragment evaluates the
-// cell it is in for each of two bead grids, one trail grid and two snow grids. A bead REFRACTS the
-// plate: the fragment samples the plate offset by the bead's surface normal (inverted, as a real
-// bead does), so a bead over a bright cloud lenses the cloud — that, not a highlight, is what
-// reads as water. Condensation is a mip-biased sample of the plate (a real blur at the cost of
-// one texture fetch) plus a milky cast; beads and trails cut through it.
+// One full-screen triangle, one fragment shader, two textures: the PLATE (the sky) and the DROP
+// MAP (a macro photograph of real droplets on a pane, high-passed into R = signed relief and
+// G = coverage — see scripts in the 2026-09-12 session, the maps ship pre-baked). The water is not
+// drawn: the shader bends the sky by the relief's slope (refraction), shades it by the relief
+// itself (the photo's own rims and highlights), and clears the condensation where the drops are.
+// Real drops are irregular, clustered and mostly tiny; the photograph carries that for free, which
+// is exactly what the first, procedural cut of this file could not.
 //
-// Static by default: with motion off the frame is drawn ONCE (and on resize / scene change) at a
-// frozen time, and the RAF loop is never started. Motion on: beads drift down their cell with the
-// hash-eased fall from Steinrucken's "Heartfelt", capped at 30 fps with the same FrameCap the
-// other looks use, paused when the tab is hidden, and never under prefers-reduced-motion.
+// Static by default: with motion off the frame is drawn ONCE (and on resize / scene change), and
+// the RAF loop is never started. Motion on: the SKY breathes (a slow zoom and drift, ~30 s), the
+// water stays put — a pane of drops all sliding together is the other way to look fake — capped
+// at 30 fps with the FrameCap the other looks use, paused when the tab is hidden, never under
+// prefers-reduced-motion. Snow is the one thing still drawn: flakes in the air, never on the pane.
 import { FrameCap } from './looks/types'
 import type { WetRecipe } from './wetglass'
 
@@ -24,63 +24,24 @@ const FRAG = `#version 300 es
 precision highp float;
 out vec4 o;
 uniform vec2 u_res;      // backing px
-uniform float u_px;      // backing px per CSS px — cells are sized in CSS px so a bead is a bead on every screen
+uniform float u_px;      // backing px per CSS px — the map is laid out in CSS px so a drop is a drop on every screen
 uniform float u_time;
 uniform float u_seed;
 uniform sampler2D u_tex;
 uniform vec2 u_texSize;
-uniform float u_drops, u_trails, u_fog, u_snow, u_dim;
+uniform sampler2D u_map;
+uniform vec2 u_mapSize;
+uniform float u_wet, u_mapScale, u_fog, u_snow, u_dim, u_motion;
 uniform vec3 u_tint;
 
 vec3 N13(float p){ vec3 p3 = fract(vec3(p) * vec3(.1031, .11369, .13787)); p3 += dot(p3, p3.yzx + 19.19);
   return fract(vec3((p3.x + p3.y) * p3.z, (p3.x + p3.z) * p3.y, (p3.y + p3.z) * p3.x)); }
 
 // cover-map: the plate fills the canvas, anchored a little above centre (a sky reads from its band)
-vec2 coverUV(vec2 uv){
+vec2 coverUV(vec2 uv, float zoom){
   float sa = u_res.x / u_res.y, ta = u_texSize.x / u_texSize.y;
   vec2 s = sa > ta ? vec2(1., ta / sa) : vec2(sa / ta, 1.);
-  return (uv - .5) * s + vec2(.5, .46);
-}
-
-// ONE BEAD GRID. p in CSS px. cellW × cellW*tall px cells; returns mask, refraction normal, rim, spec, trail mask.
-// A bead never leaves its cell (radius ≤ .17 of the cell width, centre within ±.3), so one cell is enough.
-struct Bead { float m; vec2 n; float rim; float spec; float trail; };
-Bead beads(vec2 p, float cellW, float tall, float density, float trailShare, float t, float layer){
-  Bead b; b.m = 0.; b.n = vec2(0.); b.rim = 0.; b.spec = 0.; b.trail = 0.;
-  vec2 cell = vec2(cellW, cellW * tall);
-  vec2 id = floor(p / cell);
-  vec2 f = fract(p / cell) - .5;
-  vec3 h = N13(id.x * 35.2 + id.y * 2376.1 + layer * 91.7 + u_seed);
-  if (h.z > density) return b;                      // an empty cell
-  float r = mix(.07, .17, h.y * h.y);               // radius in cell widths — many small, few large
-  float speed = .12 + h.x * .18;
-  float ty = fract(h.y + t * speed);                // 0..1 down the cell (t frozen → the hash alone)
-  float x = (h.x - .5) * .6 + sin(ty * 12.566) * .04 * (1. - h.y);
-  float y = (.5 - ty) * (tall - 2. * r) * .95;       // in cell-width units, top → bottom
-  vec2 dp = (f * vec2(1., tall) - vec2(x, y)) / r;   // bead space: unit circle = the bead
-  dp.y *= .9;                                        // beads sit a touch wider than tall
-  float d = length(dp);
-  float m = smoothstep(1., .86, d);
-  b.m = m;
-  b.n = dp * sqrt(max(0., 1. - d * d));              // the cap's normal — strongest at the rim
-  b.rim = smoothstep(.62, .97, d) * m;
-  // the lit side of the rim (upper-left) catches the sky; the far side goes dark — this contrast
-  // is what makes a bead read on a flat grey sky, where the lens alone has nothing to bend
-  b.spec = smoothstep(.34, 0., length(dp - vec2(-.42, .40))) * m + smoothstep(.2, .9, d) * m * max(0., dot(normalize(dp + 1e-4), vec2(-.7, .7))) * .35;
-  // THE TRAIL — a share of beads have run: a streak of small beads above, along the fall line
-  if (h.x < trailShare) {
-    vec2 tp = f * vec2(1., tall) - vec2((h.x - .5) * .6, 0.);
-    float above = step(y + r, tp.y);                 // only above the bead
-    float lane = smoothstep(.09, .0, abs(tp.x - sin(tp.y * 3.1) * .03));
-    vec2 tf = fract(vec2(tp.x, tp.y * 3.2)) - .5;    // a column of little beads
-    float td = length(tf * vec2(6., 2.2));
-    float tm = smoothstep(1., .5, td) * above * lane;
-    b.trail = max(b.trail, tm * .9);
-    b.m = max(b.m, tm * .55);
-    b.n += (tf * vec2(6., 2.2)) * tm * .5;
-    b.rim = max(b.rim, tm * .3);
-  }
-  return b;
+  return (uv - .5) * s / zoom + vec2(.5, .46);
 }
 
 // SNOW — flakes in the air, in front of the plate
@@ -98,24 +59,32 @@ void main(){
   vec2 uv = gl_FragCoord.xy / u_res;
   vec2 p = gl_FragCoord.xy / u_px;                   // CSS px, y up
   float t = u_time;
-  Bead A = beads(p, 58., 2.4, u_drops * .55, u_trails * .55, t, 1.);   // the big beads
-  Bead B = beads(p, 24., 1.7, u_drops * .8,  u_trails * .25, t, 2.);   // the fine beads
-  float m = max(A.m, B.m);
-  vec2 n = A.m > B.m ? A.n : B.n;
-  float rim = max(A.rim, B.rim), spec = max(A.spec, B.spec), trail = max(A.trail, B.trail);
+  // the sky breathes only with motion on: a slow zoom and drift, nothing a still frame would miss
+  float breath = u_motion * (.5 + .5 * sin(t * .09));
+  vec2 cuv = coverUV(uv, 1. + .025 * breath) + u_motion * vec2(.004 * sin(t * .07), .003 * cos(t * .05));
 
-  vec2 cuv = coverUV(uv);
-  // the pane: condensation is a real blur of the plate (mip bias) plus a milky cast, cleared by trails
-  float fog = u_fog * (1. - trail * .85);
-  vec3 pane = texture(u_tex, cuv, 3.2 * fog).rgb;
+  // THE WATER — the drop map in CSS px, mirrored at its edges; the seed slides the window so
+  // tomorrow's pane is a different patch of the same photograph
+  vec2 muv = (p + vec2(u_seed * 3.7, u_seed * 1.3)) / vec2(u_mapScale, u_mapScale * u_mapSize.y / u_mapSize.x);
+  vec2 e = 1.5 / u_mapSize;
+  vec3 m0 = texture(u_map, muv).rgb;
+  vec3 mx1 = texture(u_map, muv + vec2(e.x, 0.)).rgb, mx0 = texture(u_map, muv - vec2(e.x, 0.)).rgb;
+  vec3 my1 = texture(u_map, muv + vec2(0., e.y)).rgb, my0 = texture(u_map, muv - vec2(0., e.y)).rgb;
+  float relief = (m0.r - .5) * 2.;                  // −1..1, the photo's own rims and highlights
+  vec2 gR = vec2(mx1.r - mx0.r, my1.r - my0.r);     // the relief's slope: sharp, at the rims
+  vec2 gC = vec2(mx1.g - mx0.g, my1.g - my0.g);     // the coverage's slope: a soft dome per drop, so the
+                                                     // WHOLE interior lenses the sky, not just the edge
+  float cover = m0.g * u_wet;
+  vec2 bend = (gR * .14 + gC * .45) * u_wet;         // slope → refraction, in plate uv
+
+  // the pane: condensation is a real blur of the plate (mip bias) plus a milky cast, cleared where the water sits
+  float fog = u_fog * (1. - cover * .9);
+  vec3 pane = texture(u_tex, cuv + bend, 3.2 * fog).rgb;
   pane = mix(pane, mix(pane, u_tint, .35), fog);
-  // the bead: the plate lensed through the cap — inverted and magnified, like a real drop
-  vec2 px = 1. / u_res;
-  vec3 lens = texture(u_tex, cuv - n * px * 84. * u_px * (A.m > B.m ? 1. : .55), 0.).rgb;
-  lens = lens * (1.02 + .1 * (1. - length(n)));      // a bead gathers light
-  vec3 col = mix(pane, lens, m);
-  col *= 1. - rim * .42;                              // the dark rim of the cap
-  col += spec * .6;                                   // one highlight, upper-left, and the lit rim
+  // the photo's shading, asymmetric: highlights carry the water, the dark side is kept quiet — a
+  // drop's interior photographs dark against a studio wall, and against a sky that reads as a stain
+  vec3 col = pane * (1. + (relief > 0. ? relief * .8 : relief * .3) * u_wet);
+
   // snow, in the air
   if (u_snow > 0.) {
     float s = max(flakes(p, 46., t, 1.), flakes(p, 110., t * .7, 2.) * .8);
@@ -146,7 +115,9 @@ export class WetGlassPane {
   private prog!: WebGLProgram
   private u: Record<string, WebGLUniformLocation | null> = {}
   private tex: WebGLTexture | null = null
+  private map: WebGLTexture | null = null
   private texSize: [number, number] = [1, 1]
+  private mapSize: [number, number] = [1, 1]
   private recipe!: WetRecipe
   private seed = 0
   private moving = false
@@ -155,6 +126,7 @@ export class WetGlassPane {
   private t0 = performance.now()
   private cap = new FrameCap()
   private plateToken = 0
+  private mapToken = 0
   private lost = false
 
   mount(host: HTMLElement, recipe: WetRecipe, seed: number, moving: boolean) {
@@ -170,12 +142,25 @@ export class WetGlassPane {
     if (!gl) throw new Error('no webgl2')
     this.gl = gl
     this.c.addEventListener('webglcontextlost', (e) => { e.preventDefault(); this.lost = true; cancelAnimationFrame(this.raf) })
-    this.c.addEventListener('webglcontextrestored', () => { this.lost = false; this.setup(); this.loadPlate(this.recipe.plate); this.kick() })
+    this.c.addEventListener('webglcontextrestored', () => { this.lost = false; this.setup(); this.loadPlate(this.recipe.plate); this.loadMap(this.recipe.map); this.kick() })
     this.setup()
     this.resize()
     this.loadPlate(recipe.plate)
+    this.loadMap(recipe.map)
     this.setMoving(moving)
     document.addEventListener('visibilitychange', this.onVis)
+  }
+
+  private blank(unit: number, rgb: [number, number, number], wrap: number): WebGLTexture {
+    const gl = this.gl
+    const t = gl.createTexture()!
+    gl.activeTexture(gl.TEXTURE0 + unit)
+    gl.bindTexture(gl.TEXTURE_2D, t)
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, 1, 1, 0, gl.RGB, gl.UNSIGNED_BYTE, new Uint8Array(rgb))
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, wrap)
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, wrap)
+    return t
   }
 
   private setup() {
@@ -187,16 +172,26 @@ export class WetGlassPane {
     if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) throw new Error(`wet glass link: ${gl.getProgramInfoLog(prog) ?? '?'}`)
     gl.useProgram(prog)
     this.prog = prog
-    for (const k of ['u_res', 'u_px', 'u_time', 'u_seed', 'u_tex', 'u_texSize', 'u_drops', 'u_trails', 'u_fog', 'u_snow', 'u_dim', 'u_tint'])
+    for (const k of ['u_res', 'u_px', 'u_time', 'u_seed', 'u_tex', 'u_texSize', 'u_map', 'u_mapSize', 'u_wet', 'u_mapScale', 'u_fog', 'u_snow', 'u_dim', 'u_motion', 'u_tint'])
       this.u[k] = gl.getUniformLocation(prog, k)
-    // a 1×1 placeholder so the first frame is a flat pane, never a black one
-    this.tex = gl.createTexture()
-    gl.bindTexture(gl.TEXTURE_2D, this.tex)
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, 1, 1, 0, gl.RGB, gl.UNSIGNED_BYTE, new Uint8Array([214, 222, 226]))
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
+    // placeholders so the first frame is a flat pane, never a black one: a pale sky, a dry map
+    this.tex = this.blank(0, [214, 222, 226], gl.CLAMP_TO_EDGE)
+    this.map = this.blank(1, [128, 0, 0], gl.MIRRORED_REPEAT)
     gl.uniform1i(this.u.u_tex, 0)
+    gl.uniform1i(this.u.u_map, 1)
+  }
+
+  private upload(unit: number, tex: WebGLTexture | null, img: HTMLImageElement, wrap: number) {
+    const gl = this.gl
+    gl.activeTexture(gl.TEXTURE0 + unit)
+    gl.bindTexture(gl.TEXTURE_2D, tex)
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true)
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, img)
+    gl.generateMipmap(gl.TEXTURE_2D)
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR)
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, wrap)
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, wrap)
   }
 
   /** Swap the plate. Decoded off-thread; a stale load (the scene changed again) is dropped. */
@@ -206,13 +201,7 @@ export class WetGlassPane {
     img.decoding = 'async'
     img.onload = () => {
       if (token !== this.plateToken || this.lost) return
-      const gl = this.gl
-      gl.bindTexture(gl.TEXTURE_2D, this.tex)
-      gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true)
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, img)
-      gl.generateMipmap(gl.TEXTURE_2D)
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR)
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
+      this.upload(0, this.tex, img, this.gl.CLAMP_TO_EDGE)
       this.texSize = [img.naturalWidth, img.naturalHeight]
       this.c.dataset.plate = 'ready'
       this.draw()
@@ -220,12 +209,37 @@ export class WetGlassPane {
     img.src = url
   }
 
+  /** Swap the drop map; a dry scene keeps the 1×1 neutral map (and u_wet is 0 anyway). */
+  private loadMap(url: string | null) {
+    const token = ++this.mapToken
+    if (!url) {
+      const gl = this.gl
+      gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, this.map)
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, 1, 1, 0, gl.RGB, gl.UNSIGNED_BYTE, new Uint8Array([128, 0, 0]))
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
+      this.mapSize = [1, 1]
+      this.draw()
+      return
+    }
+    const img = new Image()
+    img.decoding = 'async'
+    img.onload = () => {
+      if (token !== this.mapToken || this.lost) return
+      this.upload(1, this.map, img, this.gl.MIRRORED_REPEAT)
+      this.mapSize = [img.naturalWidth, img.naturalHeight]
+      this.draw()
+    }
+    img.src = url
+  }
+
   setRecipe(recipe: WetRecipe, seed?: number) {
     const plateChanged = recipe.plate !== this.recipe.plate
+    const mapChanged = recipe.map !== this.recipe.map
     this.recipe = recipe
     if (seed != null) this.seed = seed
     if (plateChanged) this.loadPlate(recipe.plate)
-    else this.draw()
+    if (mapChanged) this.loadMap(recipe.map)
+    if (!plateChanged && !mapChanged) this.draw()
   }
 
   setMoving(moving: boolean) {
@@ -271,11 +285,13 @@ export class WetGlassPane {
     gl.uniform1f(this.u.u_time, time)
     gl.uniform1f(this.u.u_seed, this.seed)
     gl.uniform2f(this.u.u_texSize, this.texSize[0], this.texSize[1])
-    gl.uniform1f(this.u.u_drops, r.drops)
-    gl.uniform1f(this.u.u_trails, r.trails)
+    gl.uniform2f(this.u.u_mapSize, this.mapSize[0], this.mapSize[1])
+    gl.uniform1f(this.u.u_wet, r.map ? r.wet : 0)
+    gl.uniform1f(this.u.u_mapScale, r.mapScale)
     gl.uniform1f(this.u.u_fog, r.fog)
     gl.uniform1f(this.u.u_snow, r.snow)
     gl.uniform1f(this.u.u_dim, r.dim)
+    gl.uniform1f(this.u.u_motion, this.moving ? 1 : 0)
     gl.uniform3f(this.u.u_tint, r.tint[0], r.tint[1], r.tint[2])
     gl.drawArrays(gl.TRIANGLES, 0, 3)
   }
@@ -285,7 +301,7 @@ export class WetGlassPane {
   destroy() {
     cancelAnimationFrame(this.raf)
     document.removeEventListener('visibilitychange', this.onVis)
-    this.plateToken++
+    this.plateToken++; this.mapToken++
     try { this.gl.getExtension('WEBGL_lose_context')?.loseContext() } catch { /* already gone */ }
     this.c.remove()
   }

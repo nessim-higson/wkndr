@@ -156,11 +156,10 @@ html[data-shell='floating'] .app--glass .topbar-module:is(.open,.peeking) .topba
 .app--glass .act-save { color:#253844; }
 .app--glass .stack-more { margin-top:0; padding:4px 12px; }
 .app--glass .stack-actions { margin-bottom:8px; }
-/* Glass poster typography shares the reference's top title and pressed large mark. */
+/* Glass poster typography: the title at the top, the venue stub at the foot. The pressed large mark
+   is gone (Ness, 2026-09-12: "remove the big type on the card") — FaceMaterials.css keeps it hidden. */
 html[data-field='glass'][data-face^='glass'] .np-hero { inset-block-start:0; justify-content:flex-start; padding-top:72px; }
 html[data-field='glass'][data-face^='glass'] .np-title { font-weight:650; line-height:.98; letter-spacing:-.055em; }
-html[data-field='glass'][data-face^='glass'] .np-imprint { display:block; flex:1; min-height:0; color:#e8f3f329; filter:drop-shadow(1px 1px 0 #ffffffa0) drop-shadow(-1px -1px 0 #29475740); }
-html[data-field='glass'][data-face^='glass'] .np-imprint svg { width:100%; height:100%; max-height:230px; }
 html[data-field='glass'][data-face^='glass'] .np-stub { margin-top:auto; }
 html[data-field='glass'][data-face^='glass'] .np-cat { display:none; }
 @media(max-width:380px) { html[data-shell='floating'] .app--glass .topbar-row { padding-inline:8px; } .app--glass .tb-actions { gap:0; } }
@@ -186,8 +185,5 @@ html[data-field='glass']:is([data-glass-scene='rain'],[data-glass-scene='storm']
 .atmosphere-option[data-scene='evening'] .atmosphere-swatch { background-image:url('../assets/atmosphere/evening.webp'); }
 html[data-shell='floating'] .app--glass .filterstrip .filter-trigger { border:0; border-radius:0; background:transparent; box-shadow:none; }
 .app--glass .filterstrip .filter-trigger::after { content:''; width:5px; height:5px; margin-left:3px; margin-top:-3px; border-right:1px solid currentColor; border-bottom:1px solid currentColor; transform:rotate(45deg); }
-html[data-field='glass'][data-face^='glass'] .np-imprint svg { fill:currentColor; }
-html[data-field='glass'][data-face^='glass'] .np-imprint text { font:800 110px 'Helvetica Neue',sans-serif; letter-spacing:-8px; }
-html[data-field='glass'][data-face^='glass'] .np-imprint .np-imprint-amp text { font:400 140px Georgia,serif; }
 html[data-field='glass'][data-face^='glass'] .np-venue { color:inherit; opacity:1; }
 html[data-field='glass'][data-face^='glass'] .np-material-mark { border-color:#ffffff80; box-shadow:inset 0 1px 2px #ffffff80,inset 0 -1px 3px #ffffff30; }
