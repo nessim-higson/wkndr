@@ -10,7 +10,7 @@ import type { Mode } from '../types'
 import { MODE_META } from './modes'
 
 export type Look =
-  | 'off'
+  | 'off' | 'glass'
   // the ported prototype looks — each rendered by its own LookRenderer (see looks/)
   | 'auras' | 'riso' | 'forms' | 'agradient'
   // the fresh V2 set — five that feel distinctly different from each other

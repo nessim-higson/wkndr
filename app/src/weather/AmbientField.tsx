@@ -32,7 +32,7 @@ const RENDERERS: Partial<Record<Look, () => LookRenderer>> = {
 
 const LOOKS: Look[] = ['off', 'silk', 'auras', 'riso', 'forms', 'agradient']
 const LOOK_LABEL: Record<Look, string> = {
-  off: 'CSS', silk: 'Silk', auras: 'Auras', riso: 'Riso', forms: 'Forms', agradient: 'A Gradient',
+  glass: 'Glass', off: 'CSS', silk: 'Silk', auras: 'Auras', riso: 'Riso', forms: 'Forms', agradient: 'A Gradient',
   dunes: 'Dunes', ink: 'Ink', rings: 'Rings', dots: 'Dots',                                  // legacy
   aura: 'Aura', warp: 'Warp', aurora: 'Aurora', mesh: 'Mesh', metaball: 'Metaball',          // legacy
 }

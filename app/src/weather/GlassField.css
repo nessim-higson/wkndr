@@ -1,0 +1,73 @@
+/* Weather-glass variation, 2026-09. The weather owns the BACKGROUND; the photo
+   remains an honest clear window onto the event. No texture layer above .app. */
+.glass-field { pointer-events: none; background: linear-gradient(165deg, #b6d4e3, #edf0eb 55%, #e8d9b9); }
+.glass-field[data-scene='overcast'] { background: linear-gradient(155deg, #c5cfce, #edf0eb 47%, #9eafb3); }
+.glass-field[data-scene='rain'] { background: linear-gradient(155deg, #c5d8e1, #b9cbd5 40%, #8199ac); }
+.glass-field[data-scene='mist'] { background: linear-gradient(150deg, #edf0e9, #dce3dc 50%, #bacac7); }
+.glass-field[data-scene='snow'] { background: linear-gradient(165deg, #a9c4d4, #e5eceb 55%, #cadce7); }
+.glass-field[data-scene='storm'] { background: linear-gradient(145deg, #263b4c, #526474 50%, #1d3143); }
+.glass-field[data-scene='mixed'] { background: linear-gradient(145deg, #dce8e6, #b7cedd 45%, #d8c3a4); }
+.glass-field[data-scene='evening'] { background: linear-gradient(165deg, #0e202e, #22364a 65%, #54463c); }
+.glass-light { position: absolute; width: 72vmax; height: 72vmax; right: -30vmax; top: -34vmax; background: radial-gradient(circle, #fffefa 0 5%, #fff5dce6 10%, #f7d9a657 31%, transparent 62%); filter: blur(12px); }
+.glass-field:is([data-scene='rain'],[data-scene='overcast'],[data-scene='mist'],[data-scene='snow']) .glass-light { opacity: .25; filter: blur(48px); }
+.glass-field[data-scene='storm'] .glass-light { opacity: .08; }
+.glass-field[data-scene='evening'] .glass-light { top: auto; bottom: -35vmax; background: radial-gradient(circle, #e8b87885, #b8834340 30%, transparent 63%); }
+.glass-cloud { position: absolute; width: 90vmax; height: 38vmax; border-radius: 50%; background: radial-gradient(ellipse, #ffffff9c, #f1f3ee4f 38%, transparent 69%); filter: blur(34px); }
+.glass-cloud-one { top: -20vmax; left: -28vmax; transform: rotate(-12deg); }
+.glass-cloud-two { bottom: -21vmax; right: -20vmax; transform: rotate(14deg); opacity: .68; }
+.glass-field[data-scene='storm'] .glass-cloud { background: radial-gradient(ellipse, #0c1e33b0, transparent 69%); }
+.glass-field[data-scene='evening'] .glass-cloud { opacity: .04; }
+.glass-haze { position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 48%, #fff7 0, transparent 68%); opacity: .18; }
+.glass-field[data-scene='mist'] .glass-haze { opacity: .8; }
+.glass-rain, .glass-snow { position: absolute; inset: 0; overflow: hidden; }
+.glass-drop { position: absolute; border-radius: 48% 52% 47% 53% / 42% 47% 58% 57%; background: radial-gradient(ellipse at 28% 22%, #ffffffe8 0 7%, transparent 30%), linear-gradient(135deg, #d6ebf345, #6c879233 46%, #eff8fa70); border: 1px solid #edf7fb7a; box-shadow: inset .6px 1px 1px #fff9, inset -1px -1px 1.5px #47667580, 0 1.5px 2px #28455642; }
+.glass-drop-trail::before { content: ''; position: absolute; width: 1px; height: 60px; bottom: 80%; left: 50%; background: linear-gradient(transparent, #f4fbfd80); transform: rotate(3deg); transform-origin: bottom; }
+.glass-field[data-scene='mist'] .glass-drop { transform: scale(.45); opacity: .45; }
+.glass-field[data-scene='mist'] .glass-drop-trail::before { display: none; }
+.glass-snow i { position: absolute; background: #fff; border-radius: 50%; opacity: .8; box-shadow: 0 0 4px #fff8; }
+/* Static by default. Only compositor transforms move; no perpetual canvas, no JS
+   frame loop, no animated blur. Hidden tabs and Reduce Motion pause the atmosphere. */
+.glass-field[data-moving='true'] .glass-cloud { animation: glass-drift 48s ease-in-out infinite alternate; }
+.glass-field[data-moving='true']:not([data-scene='mist']) .glass-drop-trail { animation: glass-run var(--duration) var(--delay) ease-in infinite; }
+.glass-field[data-moving='true'] .glass-snow i { animation: glass-snow var(--duration) var(--delay) linear infinite; }
+@keyframes glass-drift { to { transform: translate3d(4vw, 3vh, 0); } }
+@keyframes glass-run { 0%, 65% { translate: 0 0; } 96%, 100% { translate: 8px 160px; opacity: 0; } }
+@keyframes glass-snow { to { translate: 26px 100vh; } }
+@media (prefers-reduced-motion: reduce) { .glass-field *, .glass-field *::before { animation: none !important; } }
+
+/* Readable weather silhouettes, even with motion off: a sun, cloud banks and wet glass. */
+.glass-field[data-scene='sunny'] { background: linear-gradient(165deg, #75b6df, #bad8e7 58%, #e7dfc8); }
+.glass-field:is([data-scene='sunny'],[data-scene='mixed']) .glass-light { width: 48vmax; height: 48vmax; top: -12vmax; right: -8vmax; filter: blur(2px); background: radial-gradient(circle, #fffef3 0 8%, #fff4cae6 9%, #ffe9b55c 15%, transparent 58%); }
+.glass-cloud-one { top: 3vh; left: -18vmax; }
+.glass-cloud-two { bottom: 7vh; right: -24vmax; }
+.glass-field:not([data-scene='evening']) .glass-cloud { height: 44vmax; filter: blur(18px); background: radial-gradient(ellipse at 30% 45%, #ffffffb8, #eef4f281 25%, transparent 62%); }
+.glass-field:is([data-scene='rain'],[data-scene='overcast']) .glass-cloud { background: radial-gradient(ellipse at 35% 45%, #455d7285, #71859555 35%, transparent 67%); }
+.glass-field[data-scene='storm'] .glass-cloud { background: radial-gradient(ellipse at 35% 45%, #091c31cf, #24394c99 35%, transparent 67%); }
+.glass-field[data-scene='rain'] { background: linear-gradient(155deg, #829dae, #b0c7d3 48%, #5f7f96); }
+.glass-drop { border-color: #f1fbffd9; box-shadow: inset 1px 1.5px 1px #fffd, inset -1.5px -2px 2px #294759b3, 0 2px 3px #17384c70; }
+.glass-drop-trail::before { width: 2px; height: 90px; background: linear-gradient(transparent, #f4fbfdb3); }
+.glass-field[data-scene='mist'] .glass-cloud { filter: blur(44px); }
+
+/* Photographic atmosphere is illustrative; live codes select the scene, never a claim
+   that this exact cloud is overhead. Only the active scene's CSS image is loaded. */
+.glass-sky { position: absolute; inset: -2%; background-position: center; background-size: cover; background-image: url('../assets/atmosphere/overcast.webp'); }
+.glass-field[data-scene='sunny'] .glass-sky { background-image: url('../assets/atmosphere/open-sky.webp'); background-position: 65% center; }
+.glass-field[data-scene='mixed'] .glass-sky { background-image: url('../assets/atmosphere/passing-front.webp'); }
+.glass-field[data-scene='rain'] .glass-sky { filter: brightness(.72) saturate(.7) blur(2px); }
+.glass-field[data-scene='storm'] .glass-sky { filter: brightness(.38) saturate(.8); }
+.glass-field[data-scene='mist'] .glass-sky { filter: blur(18px) saturate(.3); opacity: .23; }
+.glass-field[data-scene='snow'] .glass-sky { filter: brightness(1.25) saturate(.3) blur(3px); opacity: .75; }
+.glass-field[data-scene='evening'] .glass-sky { background-image: url('../assets/atmosphere/open-sky.webp'); background-position: left bottom; filter: brightness(.2) saturate(.6); opacity: .5; }
+.glass-field .glass-light, .glass-field .glass-cloud { display: none; }
+.glass-field .glass-haze { opacity: .12; background: linear-gradient(#071a3033, transparent 25%, transparent 72%, #071a301a); }
+.glass-field[data-scene='mist'] .glass-haze { background: linear-gradient(120deg,#eff2edaa,#e5efee77); opacity: .8; }
+.glass-field[data-scene='evening']::after { content:''; position:absolute; width:26px; height:26px; top:17%; right:18%; border-radius:50%; box-shadow:6px 3px 0 1px #ecf4ee; transform:rotate(-20deg); }
+.glass-field[data-moving='true'] .glass-sky { animation: sky-breathe 55s ease-in-out infinite alternate; }
+@keyframes sky-breathe { to { transform: scale(1.045) translate3d(-.6%,.5%,0); } }
+@media(prefers-reduced-motion:reduce) { .glass-field[data-moving='true'] .glass-sky { animation:none; } }
+
+/* THE PANE (WebGL2). The canvas is prepended into the field, under the haze. The CSS sky and
+   the CSS beads are not rendered while it is live; the haze stays for legibility. */
+.glass-field[data-pane='gl'] .wet-glass { position: absolute; inset: 0; width: 100%; height: 100%; }
+.glass-field[data-pane='gl'] .glass-haze { opacity: .55; }
+html[data-field='glass'][data-glass-scene='mist'] .glass-field[data-pane='gl'] .glass-haze { opacity: .35; }
