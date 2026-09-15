@@ -1,0 +1,189 @@
+/* Scope the supporting shell to this look. Switching back to Auras is a genuine
+   comparison; none of these rules changes sheets, ranking or the card crop. */
+html[data-field='glass'] { --glass-ink: #24333c; --glass-muted: #465862; }
+html[data-field='glass']:is([data-glass-scene='evening'], [data-glass-scene='storm']) { --glass-ink: #f3f6f7; --glass-muted: #d1dce1; }
+html[data-field='glass'] body::after { display: none; } /* no film overlay on the photos */
+.app--glass {
+  --field-text: var(--glass-ink);
+  --module-surface: #f5f7f3f5;
+  --card-grade: 0;
+  --card-grain: 0;
+  --tint-x: 0;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: max(var(--sp-6), env(safe-area-inset-top)) var(--sp-6) max(var(--sp-4), env(safe-area-inset-bottom));
+  --module-w: min(400px, 100%);
+}
+.app--glass::before { display: none; }
+
+.app--glass .topbar-module { width: var(--module-w); border-radius: 24px; background: #f5f7f3d9; box-shadow: 0 4px 18px -12px #20364245; }
+.app--glass .topbar-module:is(.open,.peeking) { border-radius: 24px 24px 0 0; }
+.app--glass .topbar-row { padding: var(--sp-3) var(--sp-4); }
+.app--glass .tb-brand { font-size: var(--fs-2xl); }
+.app--glass .tb-saves.has { background: #e3e9e7; color: #2b424b; }
+.app--glass .filterstrip { margin-top: var(--sp-4); }
+.app--glass .filter-trigger { color: var(--glass-ink); background: #ffffff40; border: 1px solid #ffffffa8; }
+.app--glass .filter-trigger.on { background: #f5f7f3e8; color: #24333c; border-color: #ffffffd9; box-shadow: inset 0 -2px 0 #b55535; }
+.app--glass .main { margin-top: var(--sp-4); }
+.app--glass .main-stack .stack-wrap { padding-top: var(--sp-4); padding-bottom: 0; }
+.app--glass .stack-deck { width: min(400px, 100%); max-height: 620px; }
+.app--glass .card, .app--glass .card-face { border-radius: 26px; }
+.app--glass .card { box-shadow: 0 18px 40px -12px #20364259, 0 0 0 1px #ffffff85; }
+.app--glass .card-scrim { background: linear-gradient(180deg, #0002, transparent 25%, transparent 48%, #0005 72%, #000c); }
+.app--glass .card-title { font-size: var(--fs-3xl); }
+.app--glass .stack-actions { gap: var(--sp-6); margin-top: var(--sp-8); margin-bottom: var(--sp-6); }
+.app--glass .act { color: #263b43; background: #f6f9f1bd; border: 1px solid #ffffffb8; box-shadow: inset 0 1px 0 #fffd, 0 6px 18px -8px #334f6b4d; }
+.app--glass .act svg { width: 24px; height: 24px; stroke-width: 1.5; }
+.app--glass .act-label { opacity: 1; font-size: var(--fs-xs); font-weight: 500; }
+.app--glass .stack-more { margin-top: var(--sp-2); font-size: var(--fs-xs); opacity: 1; color: var(--glass-muted); }
+.glass-card-caption { display: none; }
+.app--glass .glass-card-caption { display: block; font-size: var(--fs-sm); font-weight: 400; line-height: 1.4; margin-top: var(--sp-1); }
+.glass-brief { display: flex; align-items: center; justify-content: center; gap: var(--sp-3); flex: 0 0 auto; width: 100%; margin: var(--sp-6) auto 0; padding: var(--sp-2) var(--sp-3); min-height: 44px; color: var(--glass-ink); text-align: left; font-size: var(--fs-sm); line-height: 1.4; }
+.glass-brief > svg { flex-shrink: 0; }
+.glass-brief-arrow { opacity: .65; }
+.glass-forecast-backdrop { position: fixed; inset: 0; z-index: 380; display: grid; place-items: center; padding: var(--sp-4); background: #0c1c3055; backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+.glass-forecast { background: #f4f6f2; color: #24333c; border: 1px solid #fff; border-radius: 28px; width: min(440px,100%); padding: var(--sp-6); max-height: calc(100dvh - 32px); overflow-y: auto; box-shadow: 0 24px 80px #081c3440; }
+.glass-forecast-head { display: flex; align-items: center; gap: var(--sp-4); justify-content: space-between; }
+.glass-forecast h2 { font-size: var(--fs-xl); letter-spacing: -.02em; }
+.glass-forecast-head button { min-height: 44px; padding: 0 var(--sp-3); font-size: var(--fs-sm); background: #e3eae7; border-radius: 24px; }
+.glass-forecast-date { font-size: var(--fs-sm); margin: var(--sp-2) 0 var(--sp-6); }
+.glass-days > div { display: flex; justify-content: space-between; padding: var(--sp-4) 0; border-top: 1px solid #d3dddb; font-size: var(--fs-md); }
+.glass-days dd { text-align: right; }
+.glass-days dd span { display: block; font-size: var(--fs-sm); margin-top: var(--sp-1); color: #465862; }
+.glass-forecast-note { font-size: var(--fs-sm); line-height: 1.5; color: #465862; margin-top: var(--sp-3); }
+.glass-study { border-top: 1px solid #d3dddb; margin-top: var(--sp-6); padding-top: var(--sp-6); }
+.glass-study > label:first-child { display: block; font-size: var(--fs-base); font-weight: 500; margin-bottom: var(--sp-2); }
+.glass-study select { width: 100%; min-height: 44px; border: 1px solid #becbc7; border-radius: 12px; background: #fff; color: #24333c; font: inherit; font-size: var(--fs-md); padding: var(--sp-2) var(--sp-3); }
+.glass-motion { display: flex; align-items: center; gap: var(--sp-3); min-height: 44px; margin-top: var(--sp-4); font-size: var(--fs-base); }
+.glass-motion input { width: 18px; height: 18px; accent-color: #456870; }
+
+/* Reference proportions: a single glass enclosure, an open masthead and a tall photo. */
+.app--glass { max-width: 480px; --module-w: 100%; padding: var(--sp-6) var(--sp-6) var(--sp-6); }
+.app--glass::before { inset: var(--sp-2); border-radius: 32px; background: linear-gradient(130deg,#ffffff38,#ffffff0c); }
+.app--glass .topbar-module { background: transparent; border-color: transparent; box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
+.app--glass .topbar-module:is(.open,.peeking) { background: #f5f7f3; color: #24333c; }
+.app--glass .topbar-row { padding: var(--sp-3); color: var(--glass-ink); }
+.app--glass .topbar-module:is(.open,.peeking) .topbar-row { color: #24333c; }
+.app--glass .tb-brandblock { flex-direction: column; align-items: flex-start; gap: var(--sp-1); }
+.app--glass .tb-brand { font-family: var(--font-body); font-size: var(--fs-2xl); letter-spacing: -.04em; }
+.app--glass .tb-dot { order: 2; align-self: flex-start; margin-top: var(--sp-1); }
+.glass-city { font-size: var(--fs-sm); font-weight: 400; }
+.app--glass .tb-divider, .app--glass .tb-wx { display: none; }
+.app--glass .tb-icon { color: inherit; }
+.app--glass .tb-saves, .app--glass .tb-saves.has { height: 44px; padding: 0 var(--sp-3); border: 1px solid #ffffff55; background: #8c97931a; color: inherit; }
+.app--glass .tb-saves svg { fill: none; stroke-width: 1.5; width: 20px; height: 20px; }
+.app--glass .filterstrip { margin: var(--sp-3) auto 0; }
+.app--glass .filter-trigger, .app--glass .filter-trigger.on { background: transparent; border: 0; border-radius: 0; box-shadow: none; color: var(--glass-ink); backdrop-filter: none; padding: var(--sp-3) var(--sp-2); font-weight: 400; }
+.app--glass .filter-trigger + .filter-trigger { border-left: 1px solid #7c85852b; }
+.app--glass .filter-trigger.on { text-decoration: underline; text-underline-offset: 6px; text-decoration-color: #b5764b; }
+.app--glass .main { margin-top: var(--sp-2); }
+.app--glass .main-stack .stack-wrap { padding-top: 0; padding-bottom: 0; }
+.app--glass .stack-deck { width: 100%; max-height: 620px; }
+.app--glass .card, .app--glass .card-face { border-radius: 24px; }
+.app--glass .card-body { padding: var(--sp-4) var(--sp-4) var(--sp-6); }
+.app--glass .card-title { font-size: var(--fs-2xl); font-weight: 500; letter-spacing: -.025em; }
+.app--glass .card-when { border-radius: 8px; font-size: var(--fs-xs); font-weight: 400; }
+.app--glass .card-when > svg { display: none; }
+.app--glass .card-expand { width: 40px; height: 40px; border: 1px solid #fff7; background: #ffffff12; }
+.app--glass .card-expand svg { width: 20px; height: 20px; stroke-width: 1.4; }
+.app--glass .stack-actions { gap: var(--sp-16); margin-top: var(--sp-3); margin-bottom: var(--sp-6); }
+.app--glass .act { width: 56px; height: 56px; background: #ffffff12; color: var(--glass-ink); box-shadow: 0 3px 5px #15202c15; }
+.app--glass .act-save { color: #ac711f; }
+.app--glass .act-label { color: var(--glass-ink); font-weight: 400; }
+.app--glass .stack-more { padding: var(--sp-3) var(--sp-8); margin-top: var(--sp-2); }
+html[data-field='glass']:is([data-glass-scene='evening'],[data-glass-scene='storm']) .app--glass::before { background: linear-gradient(145deg,#03101cca,#17202b66); border-color: #ffffff40; }
+html[data-field='glass']:is([data-glass-scene='evening'],[data-glass-scene='storm']) .act-save { color: #fff; }
+@media(min-width:720px) { .app--glass { height: calc(100dvh - 32px); max-height: 1000px; margin-top: var(--sp-4); } }
+@media(max-width:380px) { .app--glass { padding-left: var(--sp-4); padding-right: var(--sp-4); } .app--glass .filter-trigger { font-size: var(--fs-xs); padding-left: var(--sp-1); padding-right: var(--sp-1); } }
+@media(max-height:720px) { .app--glass { padding-top: var(--sp-3); padding-bottom: var(--sp-3); } .app--glass .topbar-row { padding-top: var(--sp-1); padding-bottom: var(--sp-1); } .app--glass .filterstrip { margin-top: var(--sp-1); } .glass-brief { margin-top: var(--sp-4); padding-top: var(--sp-1); padding-bottom: var(--sp-1); } .app--glass .stack-actions { margin-top: var(--sp-2); } }
+@media(max-height:580px) { html[data-field='glass'] body { overflow-y: auto; } .app--glass { min-height: 660px; } }
+/* The two simplified layouts share the real filters, saves and detail flow. */
+html[data-shell='floating'] .app--glass::before { display:none; }
+html[data-shell='floating'] .app--glass .topbar-module { border:1px solid #ffffffb0; background:#f5f7f3ce; border-radius:26px; box-shadow:0 12px 35px #18354618; }
+html[data-shell='floating'] .app--glass .topbar-row { color:#24333c; padding:16px; }
+html[data-shell='floating'] .app--glass .filterstrip { margin-top:20px; margin-bottom:12px; }
+html[data-shell='floating'] .app--glass .filter-trigger { border:1px solid #ffffff60; border-radius:24px; background:#ffffff28; }
+html[data-shell='floating'] .app--glass .filter-trigger + .filter-trigger { border-left:1px solid #ffffff60; }
+html[data-shell='floating'] .app--glass .card { border-radius:30px; }
+.glass-study label { display:block; font-size:14px; margin:12px 0; }
+.glass-study label select { margin-top:6px; }
+.app--glass .swipe-card-slot:has(.card--nophoto) { will-change:transform; }
+
+/* Keep the masthead together, with current weather beside its city identity. */
+.app--glass .topbar-row { gap: var(--sp-3); padding-inline: var(--sp-2); }
+.app--glass .tb-brandblock { flex: 0 0 auto; }
+.glass-header-weather { display: flex; align-items: center; gap: var(--sp-2); min-width: 0; min-height: 44px; margin-right: auto; text-align: left; color: inherit; font-size: var(--fs-xs); line-height: 1.3; }
+.glass-header-weather > svg { flex-shrink: 0; }
+.glass-header-weather small { display: block; margin-top: var(--sp-1); font-size: var(--fs-xs); opacity: .75; }
+.glass-header-weather:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; border-radius: 8px; }
+.app--glass .filterstrip { width: fit-content; justify-content: center; gap: var(--sp-1); }
+.app--glass .filterstrip .filter-trigger { flex: 0 0 auto; min-height: 44px; }
+@media (max-width: 380px) {
+  .app--glass .topbar-row { gap: var(--sp-2); padding-inline: 0; }
+  .app--glass .tb-brand { font-size: var(--fs-xl); }
+  .glass-header-weather { gap: var(--sp-1); }
+  .glass-header-weather > svg { width: 18px; }
+  .app--glass .tb-saves { padding-inline: var(--sp-2); }
+}
+
+/* Leave room for the layered deck now the weather summary lives in the header. */
+.app--glass .stack-actions { margin-top: var(--sp-8); }
+
+/* Reference pass: compact secondary navigation and two deliberately quiet mastheads. */
+html[data-field='glass'] { --glass-ink:#172a35; --glass-muted:#304752; }
+html[data-field='glass']:is([data-glass-scene='rain'],[data-glass-scene='storm'],[data-glass-scene='mixed'],[data-glass-scene='evening']) { --glass-ink:#f7fafb; --glass-muted:#e2ebf0; }
+.app--glass { max-width:480px; }
+.app--glass .topbar-row { padding:12px 8px; }
+.app--glass .tb-brand { font-weight:700; letter-spacing:-.055em; }
+.app--glass .tb-actions { gap:8px; }
+.app--glass .tb-saves,.app--glass .tb-saves.has { background:transparent; border:0; padding:0 8px; }
+.app--glass .filterstrip { margin-top:8px; margin-bottom:0; overflow:visible; }
+.app--glass .filterstrip .filter-trigger { font-size:12px; padding:8px 10px; gap:5px; border:0; background:transparent; border-radius:0; }
+.app--glass .filterstrip .filter-trigger > svg:first-child { display:none; }
+.app--glass .filter-trigger.on { text-decoration:none; }
+.app--glass .filter-trigger:hover { background:#ffffff18; border-radius:12px; }
+html[data-shell='floating'] .app--glass .topbar-module { background:#e9f3f333; border:1px solid #ffffff66; border-radius:22px; backdrop-filter:blur(22px) saturate(1.15); -webkit-backdrop-filter:blur(22px) saturate(1.15); box-shadow:inset 0 1px 0 #ffffff66,0 8px 24px #10253714; }
+html[data-shell='floating'] .app--glass .topbar-row { color:var(--glass-ink); padding:12px 16px; }
+html[data-shell='floating'] .app--glass .filterstrip { margin-top:8px; margin-bottom:0; }
+.app--glass .topbar-module:is(.open,.peeking) { background:#f4f7f4; }
+html[data-shell='floating'] .app--glass .topbar-module:is(.open,.peeking) .topbar-row { color:#24333c; }
+.glass-header-weather { font-size:12px; }
+.glass-header-weather small { font-size:10px; letter-spacing:.01em; }
+.glass-settings-link { flex-shrink:0; align-self:center; color:var(--glass-muted); font-size:11px; min-height:44px; padding:10px 16px; border-radius:16px; }
+.glass-settings-link:hover { background:#ffffff24; }
+.glass-settings-link:focus-visible { outline:2px solid var(--glass-ink); }
+.app--glass .act { background:#f3f8f7b3; color:#253844; border:1px solid #ffffffb3; box-shadow:inset 0 1px 0 #fff8,0 5px 16px #12283b18; }
+.app--glass .act-save { color:#253844; }
+.app--glass .stack-more { margin-top:0; padding:4px 12px; }
+.app--glass .stack-actions { margin-bottom:8px; }
+/* Glass poster typography: the title at the top, the venue stub at the foot. The pressed large mark
+   is gone (Ness, 2026-09-12: "remove the big type on the card") — FaceMaterials.css keeps it hidden. */
+html[data-field='glass'][data-face^='glass'] .np-hero { inset-block-start:0; justify-content:flex-start; padding-top:72px; }
+html[data-field='glass'][data-face^='glass'] .np-title { font-weight:650; line-height:.98; letter-spacing:-.055em; }
+html[data-field='glass'][data-face^='glass'] .np-stub { margin-top:auto; }
+html[data-field='glass'][data-face^='glass'] .np-cat { display:none; }
+@media(max-width:380px) { html[data-shell='floating'] .app--glass .topbar-row { padding-inline:8px; } .app--glass .tb-actions { gap:0; } }
+@media(max-height:740px) { .app--glass .stack-actions { margin-top:24px; } .glass-settings-link { min-height:36px; padding-block:6px; } }
+
+.app--glass .stack-actions { margin-bottom:24px; }
+.glass-settings-link { color:var(--glass-ink); }
+html[data-field='glass'][data-glass-scene='overcast'] .glass-haze { opacity:1; background:linear-gradient(#f2f6f3b3,transparent 33%,transparent 65%,#edf3f2b3); }
+html[data-field='glass']:is([data-glass-scene='rain'],[data-glass-scene='storm'],[data-glass-scene='mixed'],[data-glass-scene='evening']) .glass-haze { opacity:1; background:linear-gradient(#0b1d3866,transparent 30%,transparent 65%,#0b1d3866); }
+
+.atmosphere-options { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; margin-top:16px; }
+.atmosphere-option { text-align:left; font-size:10px; line-height:1.3; padding:4px; border:1px solid transparent; border-radius:12px; }
+.atmosphere-option[aria-pressed='true'] { border-color:#406676; background:#dce7e6; }
+.atmosphere-swatch { display:block; height:46px; border-radius:8px; margin-bottom:6px; background:center/cover url('../assets/atmosphere/overcast.webp'); }
+.atmosphere-option[data-scene='sunny'] .atmosphere-swatch { background-image:url('../assets/atmosphere/open-sky.webp'); }
+.atmosphere-option[data-scene='mixed'] .atmosphere-swatch { background-image:url('../assets/atmosphere/passing-front.webp'); }
+/* the swatches are the plates themselves now (2026-09-12) — a swatch that faked rain with stripes
+   promised something the pane did not draw */
+.atmosphere-option[data-scene='rain'] .atmosphere-swatch { background-image:url('../assets/atmosphere/rain.webp'); }
+.atmosphere-option[data-scene='storm'] .atmosphere-swatch { background-image:url('../assets/atmosphere/storm.webp'); }
+.atmosphere-option[data-scene='mist'] .atmosphere-swatch { background-image:url('../assets/atmosphere/fog.webp'); }
+.atmosphere-option[data-scene='snow'] .atmosphere-swatch { background-image:url('../assets/atmosphere/snow.webp'); }
+.atmosphere-option[data-scene='evening'] .atmosphere-swatch { background-image:url('../assets/atmosphere/evening.webp'); }
+html[data-shell='floating'] .app--glass .filterstrip .filter-trigger { border:0; border-radius:0; background:transparent; box-shadow:none; }
+.app--glass .filterstrip .filter-trigger::after { content:''; width:5px; height:5px; margin-left:3px; margin-top:-3px; border-right:1px solid currentColor; border-bottom:1px solid currentColor; transform:rotate(45deg); }
+html[data-field='glass'][data-face^='glass'] .np-venue { color:inherit; opacity:1; }
+html[data-field='glass'][data-face^='glass'] .np-material-mark { border-color:#ffffff80; box-shadow:inset 0 1px 2px #ffffff80,inset 0 -1px 3px #ffffff30; }
