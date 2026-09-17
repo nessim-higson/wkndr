@@ -1,6 +1,6 @@
 {
- "generatedAt": "2026-09-16T10:09:37.418Z",
- "count": 12,
+ "generatedAt": "2026-09-17T10:13:58.857Z",
+ "count": 11,
  "inbox": [
   {
    "id": "web-ra-2537447",
@@ -15,7 +15,7 @@
    "price": "",
    "image": "https://images.ra.co/e84daff000ba8a9a33257fc7eea6582baefc9c68.jpg",
    "blurb": "Prunk, Cici Daze, Simon Kidzoo at Shelter Amsterdam.",
-   "why": "On Resident Advisor",
+   "why": "113 going on RA",
    "source": "Resident Advisor",
    "link": "https://ra.co/events/2537447",
    "weatherFit": [
@@ -25,10 +25,10 @@
     "COLD_WET",
     "VOLATILE"
    ],
-   "popularity": 14,
+   "popularity": 113,
    "firstSeen": "2026-09-16",
-   "inboxScore": 9,
-   "scoreWhy": "seen today · 14 going · on this weekend · taste: night"
+   "inboxScore": 9.6,
+   "scoreWhy": "seen 1d ago · 113 going · on this weekend · taste: night"
   },
   {
    "id": "web-ra-2538484",
@@ -53,9 +53,10 @@
     "COLD_WET",
     "VOLATILE"
    ],
+   "popularity": 4,
    "firstSeen": "2026-09-16",
-   "inboxScore": 7.7,
-   "scoreWhy": "seen today · on this weekend · taste: noord"
+   "inboxScore": 8.1,
+   "scoreWhy": "seen 1d ago · 4 going · on this weekend · taste: noord"
   },
   {
    "id": "web-iams-10-years-muze-van-zuid-vrijhaven-voor-muziek",
@@ -80,15 +81,15 @@
    ],
    "verify": false,
    "firstSeen": "2026-09-16",
-   "inboxScore": 7.7,
-   "scoreWhy": "seen today · on this weekend · taste: zuid"
+   "inboxScore": 7.4,
+   "scoreWhy": "seen 1d ago · on this weekend · taste: zuid"
   },
   {
    "id": "web-iams-concertgebouworkest-and-klaus-makela-berlioz-symphonie-fantastique",
    "title": "Concertgebouworkest & Klaus Mäkelä: Berlioz' Symphonie fantastique",
    "venue": "The Royal Concertgebouw Amsterdam",
    "area": "Concertgebouwplein 10",
-   "when": "Wed 16 – Sun 20 Sep",
+   "when": "Thu 17 – Sun 20 Sep",
    "category": "live",
    "freshness": "weekend",
    "outdoor": false,
@@ -108,8 +109,8 @@
    ],
    "verify": false,
    "firstSeen": "2026-09-16",
-   "inboxScore": 7,
-   "scoreWhy": "seen today · on this weekend"
+   "inboxScore": 6.7,
+   "scoreWhy": "seen 1d ago · on this weekend"
   },
   {
    "id": "web-iams-she-was-born-for-happiness-veronika-abdul-visocka-frascati-producties",
@@ -136,12 +137,12 @@
    ],
    "verify": false,
    "firstSeen": "2026-09-16",
-   "inboxScore": 7,
-   "scoreWhy": "seen today · on this weekend"
+   "inboxScore": 6.7,
+   "scoreWhy": "seen 1d ago · on this weekend"
   },
   {
-   "id": "rss-het-parool-ps-amsterdamse-kunstenaar-maakte-bewegend-spookhuis",
-   "title": "Amsterdamse kunstenaar maakte bewegend spookhuis voor kermis- én museumliefhebbers: ‘Je be",
+   "id": "rss-het-parool-ps-casting-director-michiel-van-maaren-scout-elke-w",
+   "title": "Casting director Michiel van Maaren scout elke week een schoonheid op straat: ‘Ik ben onde",
    "venue": "Het Parool PS",
    "area": "",
    "when": "This weekend",
@@ -153,7 +154,7 @@
    "blurb": "Featured this week by Het Parool PS.",
    "why": "In this week's Het Parool PS",
    "source": "Het Parool PS",
-   "link": "https://www.parool.nl/kunst-media/amsterdamse-kunstenaar-maakte-bewegend-spookhuis-voor-kermis-en-museumliefhebbers-je-bent-hier-zelf-het-actiefiguurtje~b80ae7c7/",
+   "link": "https://www.parool.nl/ps/casting-director-michiel-van-maaren-scout-elke-week-een-schoonheid-op-straat-ik-ben-ondersteboven-van-sofie-s-ogen-wauw~b9b342a7/",
    "weatherFit": [
     "HOT",
     "WARM",
@@ -162,13 +163,13 @@
     "VOLATILE"
    ],
    "verify": true,
-   "firstSeen": "2026-09-16",
+   "firstSeen": "2026-09-17",
    "inboxScore": 3.3,
-   "scoreWhy": "seen today · taste: amsterdamse"
+   "scoreWhy": "seen today · taste: straat"
   },
   {
-   "id": "rss-het-parool-ps-beurzen-nap-en-unfair-zijn-niet-van-het-type-kun",
-   "title": "Beurzen NAP+ en Unfair zijn niet van het type kunst voor boven de bank, wel van het grote ",
+   "id": "rss-het-parool-ps-rowyda-32-had-het-woningnetsysteem-door-en-werd-",
+   "title": "Rowyda (32) had het Woningnetsysteem door en werd steeds ingeloot: ‘Na de bezichtiging kre",
    "venue": "Het Parool PS",
    "area": "",
    "when": "This weekend",
@@ -180,7 +181,7 @@
    "blurb": "Featured this week by Het Parool PS.",
    "why": "In this week's Het Parool PS",
    "source": "Het Parool PS",
-   "link": "https://www.parool.nl/ps/beurzen-nap-en-unfair-zijn-niet-van-het-type-kunst-voor-boven-de-bank-wel-van-het-grote-gebaar-maar-groot-worden-is-niet-de-bedoeling~bf49eb2e/",
+   "link": "https://www.parool.nl/amsterdam/rowyda-32-had-het-woningnetsysteem-door-en-werd-steeds-ingeloot-na-de-bezichtiging-kreeg-ik-een-mail-gefeliciteerd-je-bent-nummer-een~b9b4307c/",
    "weatherFit": [
     "HOT",
     "WARM",
@@ -189,67 +190,13 @@
     "VOLATILE"
    ],
    "verify": true,
-   "firstSeen": "2026-09-16",
-   "inboxScore": 3.3,
-   "scoreWhy": "seen today · taste: bank"
-  },
-  {
-   "id": "rss-het-parool-ps-keerthana-kunnath-laat-zien-hoe-vrouwelijke-body",
-   "title": "Keerthana Kunnath laat zien hoe vrouwelijke bodybuilders uit Zuid-India tegen de norm inga",
-   "venue": "Het Parool PS",
-   "area": "",
-   "when": "This weekend",
-   "category": "out",
-   "freshness": "weekend",
-   "outdoor": false,
-   "kid": false,
-   "price": "",
-   "blurb": "Featured this week by Het Parool PS.",
-   "why": "In this week's Het Parool PS",
-   "source": "Het Parool PS",
-   "link": "https://www.parool.nl/ps/keerthana-kunnath-laat-zien-hoe-vrouwelijke-bodybuilders-uit-zuid-india-tegen-de-norm-ingaan~b92d259f/",
-   "weatherFit": [
-    "HOT",
-    "WARM",
-    "COOL",
-    "COLD_WET",
-    "VOLATILE"
-   ],
-   "verify": true,
-   "firstSeen": "2026-09-16",
-   "inboxScore": 3.3,
-   "scoreWhy": "seen today · taste: zuid"
-  },
-  {
-   "id": "rss-het-parool-ps-ernst-52-en-jerrel-61-zoenden-voor-het-eerst-in-",
-   "title": "Ernst (52) en Jerrel (61) zoenden voor het eerst in de iT: ‘Het was de eerste keer dat een",
-   "venue": "Het Parool PS",
-   "area": "",
-   "when": "This weekend",
-   "category": "out",
-   "freshness": "weekend",
-   "outdoor": false,
-   "kid": false,
-   "price": "",
-   "blurb": "Featured this week by Het Parool PS.",
-   "why": "In this week's Het Parool PS",
-   "source": "Het Parool PS",
-   "link": "https://www.parool.nl/ps/ernst-52-en-jerrel-61-zoenden-voor-het-eerst-in-de-it-het-was-de-eerste-keer-dat-een-man-honderd-procent-voor-mij-ging~bee88c6b/",
-   "weatherFit": [
-    "HOT",
-    "WARM",
-    "COOL",
-    "COLD_WET",
-    "VOLATILE"
-   ],
-   "verify": true,
-   "firstSeen": "2026-09-16",
+   "firstSeen": "2026-09-17",
    "inboxScore": 3,
    "scoreWhy": "seen today"
   },
   {
-   "id": "rss-het-parool-ps-rapper-massih-hutak-34-schreef-zijn-debuutroman-",
-   "title": "Rapper Massih Hutak (34) schreef zijn debuutroman over een bokswedstrijd en Amsterdam-Noor",
+   "id": "rss-het-parool-ps-recensie-fauda-met-het-oog-op-de-gazaoorlog-is-h",
+   "title": "Recensie Fauda: met het oog op de Gazaoorlog is het vijfde seizoen moeilijker te verteren",
    "venue": "Het Parool PS",
    "area": "",
    "when": "This weekend",
@@ -261,7 +208,7 @@
    "blurb": "Featured this week by Het Parool PS.",
    "why": "In this week's Het Parool PS",
    "source": "Het Parool PS",
-   "link": "https://www.parool.nl/ps/rapper-massih-hutak-34-schreef-zijn-debuutroman-over-een-bokswedstrijd-en-amsterdam-noord-dit-is-mijn-thuis~ba5be0f4/",
+   "link": "https://www.parool.nl/ps/recensie-fauda-met-het-oog-op-de-gazaoorlog-is-het-vijfde-seizoen-moeilijker-te-verteren~b7802b04/",
    "weatherFit": [
     "HOT",
     "WARM",
@@ -270,7 +217,61 @@
     "VOLATILE"
    ],
    "verify": true,
-   "firstSeen": "2026-09-16",
+   "firstSeen": "2026-09-17",
+   "inboxScore": 3,
+   "scoreWhy": "seen today"
+  },
+  {
+   "id": "rss-het-parool-ps-geen-nieuwe-informatie-maar-de-vele-gerechtelijk",
+   "title": "Geen nieuwe informatie, maar de vele gerechtelijke dwalingen chronologisch achter elkaar m",
+   "venue": "Het Parool PS",
+   "area": "",
+   "when": "This weekend",
+   "category": "out",
+   "freshness": "weekend",
+   "outdoor": false,
+   "kid": false,
+   "price": "",
+   "blurb": "Featured this week by Het Parool PS.",
+   "why": "In this week's Het Parool PS",
+   "source": "Het Parool PS",
+   "link": "https://www.parool.nl/ps/geen-nieuwe-informatie-maar-de-vele-gerechtelijke-dwalingen-chronologisch-achter-elkaar-maken-de-documentaire-diabolical-the-epstein-files-schokkend-genoeg~bf2c8bb2/",
+   "weatherFit": [
+    "HOT",
+    "WARM",
+    "COOL",
+    "COLD_WET",
+    "VOLATILE"
+   ],
+   "verify": true,
+   "firstSeen": "2026-09-17",
+   "inboxScore": 3,
+   "scoreWhy": "seen today"
+  },
+  {
+   "id": "rss-het-parool-ps-theatervoorstelling-doekje-voor-het-bloeden-is-g",
+   "title": "Theatervoorstelling Doekje voor het bloeden is genomineerd voor de Amsterdamprijs: ‘Dit is",
+   "venue": "Het Parool PS",
+   "area": "",
+   "when": "This weekend",
+   "category": "out",
+   "freshness": "weekend",
+   "outdoor": false,
+   "kid": false,
+   "price": "",
+   "blurb": "Featured this week by Het Parool PS.",
+   "why": "In this week's Het Parool PS",
+   "source": "Het Parool PS",
+   "link": "https://www.parool.nl/ps/theatervoorstelling-doekje-voor-het-bloeden-is-genomineerd-voor-de-amsterdamprijs-dit-is-een-productie-die-diepgeworteld-is-in-de-stad~b679e2d5/",
+   "weatherFit": [
+    "HOT",
+    "WARM",
+    "COOL",
+    "COLD_WET",
+    "VOLATILE"
+   ],
+   "verify": true,
+   "firstSeen": "2026-09-17",
    "inboxScore": 3,
    "scoreWhy": "seen today"
   },
@@ -298,35 +299,8 @@
    ],
    "verify": true,
    "firstSeen": "2026-09-16",
-   "inboxScore": 3,
-   "scoreWhy": "seen today"
-  },
-  {
-   "id": "rss-het-parool-ps-hier-drink-je-de-beste-bubble-tea-van-amsterdam-",
-   "title": "Hier drink je de beste bubble tea van Amsterdam volgens Emma de Thouars",
-   "venue": "Het Parool PS",
-   "area": "",
-   "when": "This weekend",
-   "category": "out",
-   "freshness": "weekend",
-   "outdoor": false,
-   "kid": false,
-   "price": "",
-   "blurb": "Featured this week by Het Parool PS.",
-   "why": "In this week's Het Parool PS",
-   "source": "Het Parool PS",
-   "link": "https://www.parool.nl/amsterdam/hier-drink-je-de-beste-bubble-tea-van-amsterdam-volgens-emma-de-thouars~b4cecd48/",
-   "weatherFit": [
-    "HOT",
-    "WARM",
-    "COOL",
-    "COLD_WET",
-    "VOLATILE"
-   ],
-   "verify": true,
-   "firstSeen": "2026-09-16",
-   "inboxScore": 3,
-   "scoreWhy": "seen today"
+   "inboxScore": 2.7,
+   "scoreWhy": "seen 1d ago"
   }
  ]
 }
