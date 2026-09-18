@@ -40,8 +40,8 @@ export function GlassForecast({ glassOnly, onGlassOnly, settings = false, open, 
         </select>
         <div className="atmosphere-options" aria-label="Background previews">{GLASS_SCENES.map(s => <button key={s} className="atmosphere-option" data-scene={s} aria-pressed={preview === s} onClick={() => onPreview(s)}><span className="atmosphere-swatch" aria-hidden /><span>{GLASS_LABELS[s]}</span></button>)}</div>
         <p className="glass-forecast-note">Background follows a timestamped current Amsterdam model estimate. Other choices are appearance previews only. Cards stay ranked for the weekend forecast.</p>
-        <label className="glass-motion"><input type="checkbox" checked={moving} onChange={e => onMoving(e.target.checked)} />Animate weather gently</label>
-        <p className="glass-forecast-note">Stays still when Reduce Motion is enabled.</p>
+        <label className="glass-motion"><input type="checkbox" checked={moving} onChange={e => onMoving(e.target.checked)} />The sky moves</label>
+        <p className="glass-forecast-note">Clouds drift, the light breathes; the water stays put. Off when Reduce Motion is on, or with ?motion=0.</p>
       </div>}
     </div>
   </div>

@@ -37,11 +37,15 @@ uniform vec3 u_tint;
 vec3 N13(float p){ vec3 p3 = fract(vec3(p) * vec3(.1031, .11369, .13787)); p3 += dot(p3, p3.yzx + 19.19);
   return fract(vec3((p3.x + p3.y) * p3.z, (p3.x + p3.z) * p3.y, (p3.y + p3.z) * p3.x)); }
 
-// cover-map: the plate fills the canvas, anchored a little above centre (a sky reads from its band)
-vec2 coverUV(vec2 uv, float zoom){
+// cover-map: the plate fills the canvas, anchored a little above centre (a sky reads from its band).
+// drift pans the crop inside the plate's SLACK — the part of the plate the crop does not show —
+// so the sky moves without ever showing an edge: a portrait plate on a phone has room sideways,
+// a landscape window has room up and down. Zoom adds a little slack of its own.
+vec2 coverUV(vec2 uv, float zoom, vec2 drift){
   float sa = u_res.x / u_res.y, ta = u_texSize.x / u_texSize.y;
   vec2 s = sa > ta ? vec2(1., ta / sa) : vec2(sa / ta, 1.);
-  return (uv - .5) * s / zoom + vec2(.5, .46);
+  vec2 slack = max(vec2(0.), (1. - s / zoom) * .5);
+  return (uv - .5) * s / zoom + vec2(.5, .46) + drift * slack * vec2(.9, .6);
 }
 
 // SNOW — flakes in the air, in front of the plate
@@ -59,9 +63,12 @@ void main(){
   vec2 uv = gl_FragCoord.xy / u_res;
   vec2 p = gl_FragCoord.xy / u_px;                   // CSS px, y up
   float t = u_time;
-  // the sky breathes only with motion on: a slow zoom and drift, nothing a still frame would miss
+  // THE SKY MOVES (motion on): the clouds drift across the window — a slow pan through the crop's
+  // slack, about a minute edge to edge — the plate breathes (a 3% zoom over ~70 s) and the light
+  // sweeps slowly. Nothing a still frame would miss; nothing that touches the water.
   float breath = u_motion * (.5 + .5 * sin(t * .09));
-  vec2 cuv = coverUV(uv, 1. + .025 * breath) + u_motion * vec2(.004 * sin(t * .07), .003 * cos(t * .05));
+  vec2 drift = u_motion * vec2(sin(t * .105), .5 * sin(t * .071 + 1.3));
+  vec2 cuv = coverUV(uv, 1. + .03 * breath, drift);
 
   // THE WATER — the drop map in CSS px, mirrored at its edges; the seed slides the window so
   // tomorrow's pane is a different patch of the same photograph
@@ -78,7 +85,7 @@ void main(){
   vec2 bend = (gR * .14 + gC * .45) * u_wet;         // slope → refraction, in plate uv
 
   // the pane: condensation is a real blur of the plate (mip bias) plus a milky cast, cleared where the water sits
-  float fog = u_fog * (1. - cover * .9);
+  float fog = u_fog * (1. - cover * .9) * (1. + .1 * u_motion * sin(t * .13));   // condensation breathes too
   vec3 pane = texture(u_tex, cuv + bend, 3.2 * fog).rgb;
   pane = mix(pane, mix(pane, u_tint, .35), fog);
   // the photo's shading, asymmetric: highlights carry the water, the dark side is kept quiet — a
@@ -90,8 +97,8 @@ void main(){
     float s = max(flakes(p, 46., t, 1.), flakes(p, 110., t * .7, 2.) * .8);
     col = mix(col, vec3(.97, .98, 1.), s * u_snow * .8);
   }
-  // the scene's light, and a breath of vignette top and bottom
-  col *= u_dim;
+  // the scene's light (with motion, a slow sweep of it across the pane), and a breath of vignette
+  col *= u_dim * (1. + .035 * u_motion * sin(t * .17 + uv.y * 2.4 + uv.x * .8));
   col *= 1. - .14 * smoothstep(.5, 1., abs(uv.y - .5) * 2.);
   o = vec4(col, 1.);
 }`
