@@ -154,7 +154,11 @@ html[data-shell='floating'] .app--glass .filterstrip { margin-top:8px; margin-bo
 .app--glass .stack-actions { margin-bottom:8px; }
 /* Glass poster typography: the title at the top, the venue stub at the foot. The pressed large mark
    is gone (Ness, 2026-09-12: "remove the big type on the card") — FaceMaterials.css keeps it hidden. */
-html[data-field='glass'][data-face^='glass'] .np-hero { inset-block-start:0; justify-content:flex-start; padding-top:72px; }
+html[data-field='glass'][data-face^='glass'] .np-hero { inset-block-start:0; justify-content:flex-start; padding-top:84px; }
+/* the orange signal pill ("Perfect this weekend" / "Weekend guide") sits under the when-stamp; the
+   title starts below BOTH (Ness, 2026-09-18: "it's really close to the type — bring the type down") */
+html[data-field='glass'][data-face^='glass'] .card--nophoto:has(.card-signal) .np-hero { padding-top:124px; }
+@container (max-height:430px) { html[data-field='glass'][data-face^='glass'] .card--nophoto:has(.card-signal) .np-hero { padding-top:104px; } }
 html[data-field='glass'][data-face^='glass'] .np-title { font-weight:650; line-height:.98; letter-spacing:-.055em; }
 html[data-field='glass'][data-face^='glass'] .np-stub { margin-top:auto; }
 html[data-field='glass'][data-face^='glass'] .np-cat { display:none; }
