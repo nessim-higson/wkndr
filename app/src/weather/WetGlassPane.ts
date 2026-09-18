@@ -34,6 +34,11 @@ uniform vec2 u_mapSize;
 uniform float u_wet, u_mapScale, u_fog, u_snow, u_dim, u_motion;
 uniform vec3 u_tint;
 
+// value noise for the cloud veil: large soft cells, four octaves, drifting at their own pace
+float H21(vec2 p){ p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
+float VN(vec2 p){ vec2 i = floor(p), f = fract(p); f = f * f * (3. - 2. * f);
+  return mix(mix(H21(i), H21(i + vec2(1., 0.)), f.x), mix(H21(i + vec2(0., 1.)), H21(i + vec2(1., 1.)), f.x), f.y); }
+float veil(vec2 p, float t){ float v = 0., a = .5; for (int i = 0; i < 4; i++) { v += a * VN(p + vec2(t * .018 * (1. + float(i) * .25), t * .004)); p = p * 2.03 + 7.1; a *= .5; } return v; }
 vec3 N13(float p){ vec3 p3 = fract(vec3(p) * vec3(.1031, .11369, .13787)); p3 += dot(p3, p3.yzx + 19.19);
   return fract(vec3((p3.x + p3.y) * p3.z, (p3.x + p3.z) * p3.y, (p3.y + p3.z) * p3.x)); }
 
@@ -66,8 +71,8 @@ void main(){
   // THE SKY MOVES (motion on): the clouds drift across the window — a slow pan through the crop's
   // slack, about a minute edge to edge — the plate breathes (a 3% zoom over ~70 s) and the light
   // sweeps slowly. Nothing a still frame would miss; nothing that touches the water.
-  float breath = u_motion * (.5 + .5 * sin(t * .09));
-  vec2 drift = u_motion * vec2(sin(t * .105), .5 * sin(t * .071 + 1.3));
+  float breath = u_motion * (.5 + .5 * sin(t * .055));
+  vec2 drift = u_motion * vec2(sin(t * .045), .5 * sin(t * .031 + 1.3));   // ~2 min edge to edge
   vec2 cuv = coverUV(uv, 1. + .03 * breath, drift);
 
   // THE WATER — the drop map in CSS px, mirrored at its edges; the seed slides the window so
@@ -85,7 +90,7 @@ void main(){
   vec2 bend = (gR * .14 + gC * .45) * u_wet;         // slope → refraction, in plate uv
 
   // the pane: condensation is a real blur of the plate (mip bias) plus a milky cast, cleared where the water sits
-  float fog = u_fog * (1. - cover * .9) * (1. + .1 * u_motion * sin(t * .13));   // condensation breathes too
+  float fog = u_fog * (1. - cover * .9) * (1. + .1 * u_motion * sin(t * .07));   // condensation breathes too
   vec3 pane = texture(u_tex, cuv + bend, 3.2 * fog).rgb;
   pane = mix(pane, mix(pane, u_tint, .35), fog);
   // the photo's shading, asymmetric: highlights carry the water, the dark side is kept quiet — a
@@ -97,8 +102,14 @@ void main(){
     float s = max(flakes(p, 46., t, 1.), flakes(p, 110., t * .7, 2.) * .8);
     col = mix(col, vec3(.97, .98, 1.), s * u_snow * .8);
   }
+  // THE CLOUD VEIL: soft shadows of clouds passing over the pane — large, slow, a tenth of the light.
+  // This is what reads as movement on a flat overcast plate, where a pan of white on white shows
+  // nothing. Frozen with motion off (a fixed, faint mottling); drifting at its own pace with it on.
+  float sa = u_res.x / u_res.y;
+  float cv = veil(vec2(uv.x * sa, uv.y) * 2.2 + u_seed * .1, t) - .5;
+  col *= 1. + .11 * cv;
   // the scene's light (with motion, a slow sweep of it across the pane), and a breath of vignette
-  col *= u_dim * (1. + .035 * u_motion * sin(t * .17 + uv.y * 2.4 + uv.x * .8));
+  col *= u_dim * (1. + .035 * u_motion * sin(t * .09 + uv.y * 2.4 + uv.x * .8));
   col *= 1. - .14 * smoothstep(.5, 1., abs(uv.y - .5) * 2.);
   o = vec4(col, 1.);
 }`

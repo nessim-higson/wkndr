@@ -42,6 +42,7 @@ export function GlassField({ scene, moving }: { scene: GlassScene; moving: boole
       pane.mount(hostRef.current, WET_RECIPES[scene], seedForNow(), moving)
     } catch { pane?.destroy(); return }   // a context that fails to create → the CSS pane stays
     paneRef.current = pane
+    ;(window as Window & { __wkndrPane?: WetGlassPane }).__wkndrPane = pane   // a handle for judging: __wkndrPane.fps()
     const fit = () => pane!.resize()
     window.addEventListener('resize', fit)
     return () => { window.removeEventListener('resize', fit); pane!.destroy(); paneRef.current = null }
