@@ -15,16 +15,13 @@
 export const CURATED_IMAGES: { match: RegExp; image: string; note: string }[] = [
   // FOAM REOPENS (2026-09-18) — foam.org sits behind a Vercel bot checkpoint, so the image pass finds
   // nothing on the organiser's own site; I amsterdam carries the organiser records with Foam's key
-  // visuals. Pinned so the LBB "reopens" card and Hailun Ma stop shipping blank.
+  // visuals. ONE pin, on the crawl's own reopening card: a second card wearing the same photograph
+  // breaks the one-photo-per-card law (tests/images.test.ts), and Hailun Ma's scouted record carries
+  // her own image.
   {
-    match: /\bhailun ma\b/i,
-    image: 'https://app.thefeedfactory.nl/api/assets/6a4b7fdeccd3f061147dd425/Hometown_2028_C_Hailun_Ma.webp',
-    note: 'Hometown (2028) © Hailun Ma — Foam’s key visual via I amsterdam’s event record',
-  },
-  {
-    match: /\bnadav kander\b|\bfoam\b.*\breopen|\bfoam photography museum\b/i,
+    match: /\bfoam photography museum\b/i,
     image: 'https://app.thefeedfactory.nl/api/assets/6a9ebf475c8f415856d08d3a/Yibin_I_Sichuan_Province_China_2007_C_Nadav_Kander-cropped.webp',
-    note: 'Yibin I, Sichuan (2007) © Nadav Kander — the reopening’s lead show; also carries the crawl’s reopening cards (LBB’s Friday one, I amsterdam’s weekend one)',
+    note: 'Yibin I, Sichuan (2007) © Nadav Kander — the reopening’s lead show, via I amsterdam’s event record',
   },
   {
     match: /\bbruno mars\b/i,

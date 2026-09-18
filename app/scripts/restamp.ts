@@ -25,7 +25,7 @@
  */
 import corpus from './taste/corpus.json'
 import weekly from './taste/weekly.json'
-import { rxOf, titleLooseMatch, tokKey, upcomingWeekend, crownsActive, publishCheck, STAR_BOOST, NO_PHOTO_CAP, weekendModes, stampServeOrder, toPortrait, approvalCheck, pickByTitle, markThisWeekend, type TasteCorpus, type WeeklySlate } from './lib/pipeline'
+import { rxOf, titleLooseMatch, tokKey, upcomingWeekend, crownsActive, publishCheck, STAR_BOOST, NO_PHOTO_CAP, weekendModes, stampServeOrder, toPortrait, originalOf, approvalCheck, pickByTitle, markThisWeekend, type TasteCorpus, type WeeklySlate } from './lib/pipeline'
 import { curatedImage } from './curated'
 import { heroPicks } from './heroes'
 import { whenIsPast, whenLooksBroken } from '../src/lib/when'
@@ -168,12 +168,34 @@ if (picks.length < 20) { console.error(`✖ restamp abstained: only ${picks.leng
 
 // curated image pins apply on the fast-path too — an img-url verdict (board → curated.ts) lands
 // in ~90s instead of waiting for Thursday's image pass. Wrapped like every card image.
-for (const p of picks) { const c = curatedImage(p.title); if (c) p.image = toPortrait(c) }
+for (const p of picks) { const c = curatedImage(p.title); if (c) { p.image = toPortrait(c); p.imageWhy = 'curated' } }   // the receipt follows the pin (2026-09-18: a pinned card shipped with a 'none' receipt)
 
 // FRESHNESS DECAY — a restamp republishes the feed, so re-derive the `new` claim against firstSeen
 // (src/lib/freshness.ts). Without it a Tuesday compile would re-publish Thursday's labels verbatim
 // and hold the bucket open for another cycle; the fast-path would quietly out-live the slow one.
 for (const p of picks) p.freshness = effectiveFreshness(p)
+
+// NO TWO CARDS SHARE A PHOTO — mirrored from refresh.ts (2026-09-18: a pin applied here put the
+// same photograph on two live cards, and the fast path had no pass to catch it). Canon first; a
+// venue-borrow may share its owner's photo; among live cards the hand pile keeps, then the better
+// serve position keeps, and the later twin goes without — an honest blank, not a borrowed photo.
+{
+  const isLiveP = (p: Pick) => ['llm-', 'web-', 'rss-', 'sk-'].some((pre) => p.id.startsWith(pre))
+  const rank = (p: Pick) => (p.pilePos ?? 99) * 10000 + (p.servePos ?? 9999)
+  const owner = new Map<string, 'canon' | 'live'>()
+  let dupes = 0
+  for (const p of [...picks.filter((p) => !isLiveP(p)), ...picks.filter(isLiveP).sort((a, b) => rank(a) - rank(b))]) {
+    if (!p.image) continue
+    const k = originalOf(p.image)
+    const o = owner.get(k)
+    if (o) {
+      if (isLiveP(p) && !(o === 'canon' && p.imageWhy === 'venue')) { p.image = undefined; p.imageWhy = 'none'; dupes++ }
+      continue
+    }
+    owner.set(k, isLiveP(p) ? 'live' : 'canon')
+  }
+  if (dupes) console.log(`  unique:   ${dupes} duplicate card photos → the later card goes without`)
+}
 
 // re-stamp the projected serve order — verdicts just moved cards, the board must see the real front
 picks = stampServeOrder(picks, await weekendModes())   // per-day: a Sunday pick stamped by Sunday
