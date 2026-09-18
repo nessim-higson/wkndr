@@ -3,10 +3,11 @@ import { useDialogA11y } from '../lib/useDialogA11y'
 import { GLASS_LABELS, GLASS_SCENES, type GlassScene } from './glass'
 import type { WeekendWx } from './modes'
 
-export function GlassForecast({ glassOnly, onGlassOnly, settings = false, open, onClose, weekend, live, label, preview, onPreview, moving, onMoving, shell, onShell, face, onFace, finish, onFinish }: {
+export function GlassForecast({ glassOnly, onGlassOnly, settings = false, open, onClose, weekend, live, label, preview, onPreview, moving, onMoving, shell, onShell, face, onFace, finish, onFinish, menu, onMenu }: {
   glassOnly: boolean; onGlassOnly: (v: boolean) => void;
   settings?: boolean;
   shell:string; onShell:(v:string)=>void; face:string; onFace:(v:string)=>void; finish:string; onFinish:(v:string)=>void;
+  menu:string; onMenu:(v:string)=>void;
   open: boolean; onClose: () => void; weekend: WeekendWx | null; live: boolean; label?: string;
   preview: GlassScene | null; onPreview: (scene: GlassScene | null) => void;
   moving: boolean; onMoving: (moving: boolean) => void;
@@ -18,6 +19,7 @@ export function GlassForecast({ glassOnly, onGlassOnly, settings = false, open, 
       <div className="glass-forecast-head"><h2 id="glass-forecast-title">{settings ? 'Prototype settings' : 'Weekend forecast'}</h2><button onClick={onClose}>Done</button></div>
       {settings && <div className="glass-study">
         <label>Interface<select value={shell} onChange={e=>onShell(e.target.value)}><option value="open">A · Open header</option><option value="floating">B · Floating glass</option></select></label>
+        <label>Menu material<select value={menu} onChange={e=>onMenu(e.target.value)}><option value="clear">Clear glass</option><option value="frosted">Frosted glass</option><option value="smoked">Smoked glass</option></select></label>
         <label className="glass-motion"><input type="checkbox" checked={glassOnly} onChange={e => onGlassOnly(e.target.checked)} />Show only cards without photos</label>
         <p className="glass-forecast-note">Compare the glass using real events that have no photograph. Turn off to return to the full deck.</p>
         <label>No-photo material<select value={face} onChange={e=>onFace(e.target.value)}><option value="glass-opal">Opal glass</option><option value="glass-smoked">Smoked glass</option><option value="glass-frosted">Frosted glass</option><option value="emboss-ivory">Blind emboss</option></select></label>

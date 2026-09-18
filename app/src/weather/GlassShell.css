@@ -61,9 +61,7 @@ html[data-field='glass'] body::after { display: none; } /* no film overlay on th
 .app--glass { max-width: 480px; --module-w: 100%; padding: var(--sp-6) var(--sp-6) var(--sp-6); }
 .app--glass::before { inset: var(--sp-2); border-radius: 32px; background: linear-gradient(130deg,#ffffff38,#ffffff0c); }
 .app--glass .topbar-module { background: transparent; border-color: transparent; box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
-.app--glass .topbar-module:is(.open,.peeking) { background: #f5f7f3; color: #24333c; }
 .app--glass .topbar-row { padding: var(--sp-3); color: var(--glass-ink); }
-.app--glass .topbar-module:is(.open,.peeking) .topbar-row { color: #24333c; }
 .app--glass .tb-brandblock { flex-direction: column; align-items: flex-start; gap: var(--sp-1); }
 .app--glass .tb-brand { font-family: var(--font-body); font-size: var(--fs-2xl); letter-spacing: -.04em; }
 .app--glass .tb-dot { order: 2; align-self: flex-start; margin-top: var(--sp-1); }
@@ -145,8 +143,6 @@ html[data-field='glass']:is([data-glass-scene='rain'],[data-glass-scene='storm']
 html[data-shell='floating'] .app--glass .topbar-module { background:#e9f3f333; border:1px solid #ffffff66; border-radius:22px; backdrop-filter:blur(22px) saturate(1.15); -webkit-backdrop-filter:blur(22px) saturate(1.15); box-shadow:inset 0 1px 0 #ffffff66,0 8px 24px #10253714; }
 html[data-shell='floating'] .app--glass .topbar-row { color:var(--glass-ink); padding:12px 16px; }
 html[data-shell='floating'] .app--glass .filterstrip { margin-top:8px; margin-bottom:0; }
-.app--glass .topbar-module:is(.open,.peeking) { background:#f4f7f4; }
-html[data-shell='floating'] .app--glass .topbar-module:is(.open,.peeking) .topbar-row { color:#24333c; }
 .glass-header-weather { font-size:12px; }
 .glass-header-weather small { font-size:10px; letter-spacing:.01em; }
 .glass-settings-link { flex-shrink:0; align-self:center; color:var(--glass-muted); font-size:11px; min-height:44px; padding:10px 16px; border-radius:16px; }
@@ -187,3 +183,64 @@ html[data-shell='floating'] .app--glass .filterstrip .filter-trigger { border:0;
 .app--glass .filterstrip .filter-trigger::after { content:''; width:5px; height:5px; margin-left:3px; margin-top:-3px; border-right:1px solid currentColor; border-bottom:1px solid currentColor; transform:rotate(45deg); }
 html[data-field='glass'][data-face^='glass'] .np-venue { color:inherit; opacity:1; }
 html[data-field='glass'][data-face^='glass'] .np-material-mark { border-color:#ffffff80; box-shadow:inset 0 1px 2px #ffffff80,inset 0 -1px 3px #ffffff30; }
+
+/* ═══ THE GLASS MENU (2026-09-18) ═══════════════════════════════════════════════════════════
+   Ness: "when I click the hamburger, can the animation be more seamless? I'd be curious to see
+   it transparent or more glassy." The old open state cut from a transparent masthead to a solid
+   cream card in one frame — the module's background, its ink and the panel all flipped at once
+   while only the panel's height was animated. Now the masthead and the panel are ONE material —
+   `--pane` tinted glass over the sky — and the material, the ink and the shadow all ease over the
+   same curve as the reveal. Three materials to compare, in Prototype settings (html[data-menu]):
+     clear    — the sky shows through; a light tint on light scenes, a dark one on dark scenes
+     frosted  — the default: readable at a glance, still glass
+     smoked   — always dark, white ink; the night pane
+   The ink follows the material: dark scenes and smoked glass get white controls. */
+html[data-field='glass'] { --pane: #f5f7f3; --pane-a: .58; --pane-blur: 26px; --pane-ink: #172a35; --pane-line: #ffffff66; }
+html[data-field='glass']:is([data-glass-scene='rain'],[data-glass-scene='storm'],[data-glass-scene='mixed'],[data-glass-scene='evening']) { --pane: #101c2a; --pane-a: .5; --pane-ink: #f4f7f9; --pane-line: #ffffff33; }
+html[data-field='glass'][data-menu='clear'] { --pane-a: .16; --pane-blur: 9px; }
+html[data-field='glass'][data-menu='clear']:is([data-glass-scene='rain'],[data-glass-scene='storm'],[data-glass-scene='mixed'],[data-glass-scene='evening']) { --pane-a: .2; }
+html[data-field='glass'][data-menu='smoked'] { --pane: #070d14; --pane-a: .74; --pane-blur: 22px; --pane-ink: #f4f7f9; --pane-line: #ffffff2e; }
+
+.app--glass .topbar-module {
+  transition: background-color .38s cubic-bezier(.22,1,.36,1), color .38s cubic-bezier(.22,1,.36,1), border-color .38s cubic-bezier(.22,1,.36,1), box-shadow .38s cubic-bezier(.22,1,.36,1), border-radius .3s cubic-bezier(.22,1,.36,1);
+}
+.app--glass .topbar-module:is(.open,.peeking) {
+  background: color-mix(in srgb, var(--pane) calc(var(--pane-a) * 100%), transparent);
+  -webkit-backdrop-filter: blur(var(--pane-blur)) saturate(1.2); backdrop-filter: blur(var(--pane-blur)) saturate(1.2);
+  border: 1px solid var(--pane-line); border-bottom-color: transparent;
+  box-shadow: 0 24px 60px -20px #0a1a2a66, inset 0 1px 0 #ffffff33;
+  color: var(--pane-ink);
+}
+.app--glass .topbar-module:is(.open,.peeking) .topbar-row { color: var(--pane-ink); }
+.app--glass .tb-panel {
+  background: color-mix(in srgb, var(--pane) calc(var(--pane-a) * 100%), transparent);
+  -webkit-backdrop-filter: blur(var(--pane-blur)) saturate(1.2); backdrop-filter: blur(var(--pane-blur)) saturate(1.2);
+  border: 1px solid var(--pane-line); border-top: 1px solid color-mix(in srgb, var(--pane-ink) 10%, transparent);
+  box-shadow: 0 30px 70px -18px #0a1a2a66;
+  color: var(--pane-ink);
+  transition: grid-template-rows .46s cubic-bezier(.22,1,.36,1), opacity .3s ease, background-color .38s cubic-bezier(.22,1,.36,1);
+}
+.app--glass .tb-panel-inner { transition: opacity .3s ease .06s; }
+/* the controls inside read in the pane's ink, whichever way the glass leans */
+.app--glass .topbar-module .bar-group { border-bottom-color: color-mix(in srgb, var(--pane-ink) 12%, transparent); }
+.app--glass .topbar-module :is(.bar-label, .bar-foot, .bar-hint) { color: var(--pane-ink); }
+.app--glass .topbar-module .bar-pill { color: var(--pane-ink); background: color-mix(in srgb, var(--pane-ink) 8%, transparent); border-color: color-mix(in srgb, var(--pane-ink) 18%, transparent); }
+.app--glass .topbar-module .bar-pill:hover { background: color-mix(in srgb, var(--pane-ink) 14%, transparent); }
+.app--glass .topbar-module .bar-pill.on, .app--glass .topbar-module .bar-pill--match { color: #fff; background: var(--accent); border-color: var(--accent); }
+.app--glass .topbar-module :is(.toggle, .mode-pills, .field-pills) { background: color-mix(in srgb, var(--pane-ink) 7%, transparent); border-color: color-mix(in srgb, var(--pane-ink) 14%, transparent); }
+.app--glass .topbar-module :is(.toggle button, .mode-pills button, .field-pills button) { color: var(--pane-ink); }
+.app--glass .topbar-module :is(.toggle button.on, .mode-pills button.on) { background: var(--pane-ink); color: color-mix(in srgb, var(--pane) 92%, #fff); }
+.app--glass .topbar-module .bar-slider::-webkit-slider-runnable-track { background: color-mix(in srgb, var(--pane-ink) 18%, transparent); }
+.app--glass .topbar-module .bar-slider::-webkit-slider-thumb { background: var(--pane-ink); border-color: transparent; }
+.app--glass .topbar-module .bar-slider::-moz-range-track { background: color-mix(in srgb, var(--pane-ink) 18%, transparent); }
+.app--glass .topbar-module .bar-slider::-moz-range-thumb { background: var(--pane-ink); border-color: transparent; }
+.app--glass .topbar-module .tb-icon { color: inherit; }
+.app--glass .topbar-module .tb-icon:hover { background: color-mix(in srgb, var(--pane-ink) 8%, transparent); }
+
+
+/* DESKTOP: the column is capped at 1000px, and on a tall screen it hugged the top with half a
+   sky of nothing beneath the buttons (Ness, 2026-09-18: "the cards sit higher up on the page").
+   Centre the whole column in the viewport once the viewport is taller than the column. */
+@media (min-width: 720px) {
+  .app--glass { margin-top: max(var(--sp-4), calc((100dvh - min(calc(100dvh - 32px), 1000px)) / 2)); }
+}

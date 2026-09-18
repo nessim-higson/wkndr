@@ -303,14 +303,16 @@ export default function App() {
   const [glassShell,setGlassShell] = useState(()=>new URLSearchParams(location.search).get('shell') === 'floating' ? 'floating' : 'open')
   const [glassFace,setGlassFace] = useState('glass-opal')
   const [glassFinish,setGlassFinish] = useState('auto')
+  const [glassMenu,setGlassMenu] = useState(()=>new URLSearchParams(location.search).get('menu') ?? 'frosted')
   const [glassOnly,setGlassOnly] = useState(() => new URLSearchParams(location.search).get('cards') === 'glass')
   useEffect(()=> {
     document.documentElement.dataset.shell=glassShell
     document.documentElement.dataset.face=glassFace
+    document.documentElement.dataset.menu=glassMenu
     if(glassFinish === 'auto') delete document.documentElement.dataset.glassOverride
     else document.documentElement.dataset.glassOverride=glassFinish
-    return ()=> { delete document.documentElement.dataset.shell; delete document.documentElement.dataset.face; delete document.documentElement.dataset.glassOverride }
-  },[glassShell,glassFace,glassFinish])
+    return ()=> { delete document.documentElement.dataset.shell; delete document.documentElement.dataset.face; delete document.documentElement.dataset.menu; delete document.documentElement.dataset.glassOverride }
+  },[glassShell,glassFace,glassFinish,glassMenu])
   const [glassPreview, setGlassPreview] = useState<GlassScene | null>(() => { const scene = new URLSearchParams(location.search).get('scene'); return GLASS_SCENES.find(s => s === scene) ?? null })
   const [glassMoving, setGlassMoving] = useState(false)
   const [glassForecastOpen, setGlassForecastOpen] = useState(false)
@@ -1052,15 +1054,13 @@ export default function App() {
                   className={`tb-icon tb-menu${barOpen ? ' on' : ''}${!barOpen && filterActive ? ' dot' : ''}`}
                   aria-hidden
                 >
-                  {barOpen ? (
-                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                      <line x1="5" y1="5" x2="15" y2="15" /><line x1="15" y1="5" x2="5" y2="15" />
-                    </svg>
-                  ) : (
-                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                      <line x1="3" y1="7" x2="17" y2="7" /><line x1="3" y1="13" x2="17" y2="13" />
-                    </svg>
-                  )}
+                  {/* both glyphs stay mounted; App.css crossfades + turns them (the swap used to be a hard cut) */}
+                  <svg className="ico-lines" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <line x1="3" y1="7" x2="17" y2="7" /><line x1="3" y1="13" x2="17" y2="13" />
+                  </svg>
+                  <svg className="ico-x" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <line x1="5" y1="5" x2="15" y2="15" /><line x1="15" y1="5" x2="5" y2="15" />
+                  </svg>
                 </span>
               </div>
             </div>
@@ -1417,7 +1417,7 @@ export default function App() {
       </motion.div>
       {glassActive && <GlassForecast glassOnly={glassOnly} onGlassOnly={setGlassOnly} settings={glassSettingsOpen} open={glassForecastOpen || glassSettingsOpen} onClose={() => { setGlassForecastOpen(false); setGlassSettingsOpen(false) }}
         weekend={weekend} live={live} label={wx.label} preview={glassPreview} onPreview={setGlassPreview}
-        moving={glassMoving} onMoving={setGlassMoving} shell={glassShell} onShell={setGlassShell} face={glassFace} onFace={setGlassFace} finish={glassFinish} onFinish={setGlassFinish} />}
+        moving={glassMoving} onMoving={setGlassMoving} shell={glassShell} onShell={setGlassShell} face={glassFace} onFace={setGlassFace} finish={glassFinish} onFinish={setGlassFinish} menu={glassMenu} onMenu={setGlassMenu} />}
 
       {toast && (
         <div className={`toast${toast.save ? ' toast--save' : ''}`}>
