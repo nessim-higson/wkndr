@@ -13,6 +13,19 @@
 // stable core of the name ("bruno mars", not the year/tour suffix) so it survives the event being re-listed.
 
 export const CURATED_IMAGES: { match: RegExp; image: string; note: string }[] = [
+  // FOAM REOPENS (2026-09-18) — foam.org sits behind a Vercel bot checkpoint, so the image pass finds
+  // nothing on the organiser's own site; I amsterdam carries the organiser records with Foam's key
+  // visuals. Pinned so the LBB "reopens" card and Hailun Ma stop shipping blank.
+  {
+    match: /\bhailun ma\b/i,
+    image: 'https://app.thefeedfactory.nl/api/assets/6a4b7fdeccd3f061147dd425/Hometown_2028_C_Hailun_Ma.webp',
+    note: 'Hometown (2028) © Hailun Ma — Foam’s key visual via I amsterdam’s event record',
+  },
+  {
+    match: /\bnadav kander\b|\bfoam reopens\b/i,
+    image: 'https://app.thefeedfactory.nl/api/assets/6a9ebf475c8f415856d08d3a/Yibin_I_Sichuan_Province_China_2007_C_Nadav_Kander-cropped.webp',
+    note: 'Yibin I, Sichuan (2007) © Nadav Kander — the reopening’s lead show; also carries LBB’s Friday "Foam reopens" card',
+  },
   {
     match: /\bbruno mars\b/i,
     image: 'https://i.wfolio.com/x/uZ-vrbqj2EegGiEP2PkuXsznqV8gaoGg/cNtZ_MSjbOEP2eLU2__oPeAAQGn0NK35/yXhfxlFmzf7IvhdXN8iX4vDLlxP5xcQj/zZ_QPu5Xm6ghtzaTGdROz0Rerda5lFNq/vxJ3owfZMHQBHB-EggWsoA.jpg',
