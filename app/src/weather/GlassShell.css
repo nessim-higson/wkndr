@@ -32,7 +32,7 @@ html[data-field='glass'] body::after { display: none; } /* no film overlay on th
 .app--glass .card-scrim { background: linear-gradient(180deg, #0002, transparent 25%, transparent 48%, #0005 72%, #000c); }
 .app--glass .card-title { font-size: var(--fs-3xl); }
 .app--glass .stack-actions { gap: var(--sp-6); margin-top: var(--sp-8); margin-bottom: var(--sp-6); }
-.app--glass .act { color: #263b43; background: #f6f9f1bd; border: 1px solid #ffffffb8; box-shadow: inset 0 1px 0 #fffd, 0 6px 18px -8px #334f6b4d; }
+.app--glass .act { color: #263b43; background: #f6f9f1bd; border: 1px solid transparent; box-shadow: 0 6px 18px -8px #334f6b4d; }
 .app--glass .act svg { width: 24px; height: 24px; stroke-width: 1.5; }
 .app--glass .act-label { opacity: 1; font-size: var(--fs-xs); font-weight: 500; }
 .app--glass .stack-more { margin-top: var(--sp-2); font-size: var(--fs-xs); opacity: 1; color: var(--glass-muted); }
@@ -82,7 +82,7 @@ html[data-field='glass'] body::after { display: none; } /* no film overlay on th
 .app--glass .card-title { font-size: var(--fs-2xl); font-weight: 500; letter-spacing: -.025em; }
 .app--glass .card-when { border-radius: 8px; font-size: var(--fs-xs); font-weight: 400; }
 .app--glass .card-when > svg { display: none; }
-.app--glass .card-expand { width: 40px; height: 40px; border: 1px solid #fff7; background: #ffffff12; }
+.app--glass .card-expand { width: 40px; height: 40px; border: 1px solid transparent; background: #ffffff1f; }
 .app--glass .card-expand svg { width: 20px; height: 20px; stroke-width: 1.4; }
 .app--glass .stack-actions { gap: var(--sp-16); margin-top: var(--sp-3); margin-bottom: var(--sp-6); }
 .app--glass .act { width: 56px; height: 56px; background: #ffffff12; color: var(--glass-ink); box-shadow: 0 3px 5px #15202c15; }
@@ -140,7 +140,7 @@ html[data-field='glass']:is([data-glass-scene='rain'],[data-glass-scene='storm']
 .app--glass .filterstrip .filter-trigger > svg:first-child { display:none; }
 .app--glass .filter-trigger.on { text-decoration:none; }
 .app--glass .filter-trigger:hover { background:#ffffff18; border-radius:12px; }
-html[data-shell='floating'] .app--glass .topbar-module { background:#e9f3f333; border:1px solid #ffffff66; border-radius:22px; backdrop-filter:blur(22px) saturate(1.15); -webkit-backdrop-filter:blur(22px) saturate(1.15); box-shadow:inset 0 1px 0 #ffffff66,0 8px 24px #10253714; }
+html[data-shell='floating'] .app--glass .topbar-module { background:#e9f3f333; border:1px solid transparent; border-radius:22px; backdrop-filter:blur(22px) saturate(1.15); -webkit-backdrop-filter:blur(22px) saturate(1.15); box-shadow:0 8px 24px #10253714; }
 html[data-shell='floating'] .app--glass .topbar-row { color:var(--glass-ink); padding:12px 16px; }
 html[data-shell='floating'] .app--glass .filterstrip { margin-top:8px; margin-bottom:0; }
 .glass-header-weather { font-size:12px; }
@@ -148,7 +148,7 @@ html[data-shell='floating'] .app--glass .filterstrip { margin-top:8px; margin-bo
 .glass-settings-link { flex-shrink:0; align-self:center; color:var(--glass-muted); font-size:11px; min-height:44px; padding:10px 16px; border-radius:16px; }
 .glass-settings-link:hover { background:#ffffff24; }
 .glass-settings-link:focus-visible { outline:2px solid var(--glass-ink); }
-.app--glass .act { background:#f3f8f7b3; color:#253844; border:1px solid #ffffffb3; box-shadow:inset 0 1px 0 #fff8,0 5px 16px #12283b18; }
+.app--glass .act { background:#f3f8f7b3; color:#253844; border:1px solid transparent; box-shadow:0 5px 16px #12283b18; }
 .app--glass .act-save { color:#253844; }
 .app--glass .stack-more { margin-top:0; padding:4px 12px; }
 .app--glass .stack-actions { margin-bottom:8px; }
@@ -186,7 +186,7 @@ html[data-field='glass']:is([data-glass-scene='rain'],[data-glass-scene='storm']
 html[data-shell='floating'] .app--glass .filterstrip .filter-trigger { border:0; border-radius:0; background:transparent; box-shadow:none; }
 .app--glass .filterstrip .filter-trigger::after { content:''; width:5px; height:5px; margin-left:3px; margin-top:-3px; border-right:1px solid currentColor; border-bottom:1px solid currentColor; transform:rotate(45deg); }
 html[data-field='glass'][data-face^='glass'] .np-venue { color:inherit; opacity:1; }
-html[data-field='glass'][data-face^='glass'] .np-material-mark { border-color:#ffffff80; box-shadow:inset 0 1px 2px #ffffff80,inset 0 -1px 3px #ffffff30; }
+html[data-field='glass'][data-face^='glass'] .np-material-mark { border-color:transparent; box-shadow:none; }   /* no rim on the glass faces either */
 
 /* ═══ THE GLASS MENU (2026-09-18) ═══════════════════════════════════════════════════════════
    Ness: "when I click the hamburger, can the animation be more seamless? I'd be curious to see
@@ -211,15 +211,15 @@ html[data-field='glass'][data-menu='smoked'] { --pane: #070d14; --pane-a: .74; -
 .app--glass .topbar-module:is(.open,.peeking) {
   background: color-mix(in srgb, var(--pane) calc(var(--pane-a) * 100%), transparent);
   -webkit-backdrop-filter: blur(var(--pane-blur)) saturate(1.2); backdrop-filter: blur(var(--pane-blur)) saturate(1.2);
-  border: 1px solid var(--pane-line); border-bottom-color: transparent;
-  box-shadow: 0 24px 60px -20px #0a1a2a66, inset 0 1px 0 #ffffff33;
+  border: 1px solid transparent;
+  box-shadow: 0 24px 60px -20px #0a1a2a66;
   color: var(--pane-ink);
 }
 .app--glass .topbar-module:is(.open,.peeking) .topbar-row { color: var(--pane-ink); }
 .app--glass .tb-panel {
   background: color-mix(in srgb, var(--pane) calc(var(--pane-a) * 100%), transparent);
   -webkit-backdrop-filter: blur(var(--pane-blur)) saturate(1.2); backdrop-filter: blur(var(--pane-blur)) saturate(1.2);
-  border: 1px solid var(--pane-line); border-top: 1px solid color-mix(in srgb, var(--pane-ink) 10%, transparent);
+  border: 1px solid transparent; border-top: 1px solid color-mix(in srgb, var(--pane-ink) 10%, transparent);
   box-shadow: 0 30px 70px -18px #0a1a2a66;
   color: var(--pane-ink);
   transition: grid-template-rows .46s cubic-bezier(.22,1,.36,1), opacity .3s ease, background-color .38s cubic-bezier(.22,1,.36,1);
@@ -257,18 +257,18 @@ html[data-field='glass'][data-menu='smoked'] { --pane: #070d14; --pane-a: .74; -
 html[data-field='glass'] :is(.sheet, .detail, .share, .itin-sheet, .glass-forecast, .stack-empty, .fs, .chk-card) {
   background: color-mix(in srgb, #f6f8f4 58%, transparent);
   -webkit-backdrop-filter: blur(20px) saturate(1.2); backdrop-filter: blur(20px) saturate(1.2);
-  border: 1px solid #ffffff99;
-  box-shadow: 0 30px 80px -24px #0a1a2a73, inset 0 1px 0 #ffffffb3;
+  border: 1px solid transparent;
+  box-shadow: 0 30px 80px -24px #0a1a2a73;
 }
 html[data-field='glass'] :is(.sheet-backdrop, .detail-backdrop, .share-backdrop, .glass-forecast-backdrop, .fs-backdrop, .chk-veil) {
   background: #0b1d3833; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
 }
-html[data-field='glass'] .toast { background: color-mix(in srgb, #0d1722 70%, transparent); color: #f4f7f9; -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px); border: 1px solid #ffffff2e; }
+html[data-field='glass'] .toast { background: color-mix(in srgb, #0d1722 70%, transparent); color: #f4f7f9; -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px); border: 0; }
 html[data-field='glass'] .toast--save { background: color-mix(in srgb, var(--accent) 88%, transparent); }
 .app--glass .act { -webkit-backdrop-filter: blur(14px) saturate(1.1); backdrop-filter: blur(14px) saturate(1.1); background: #f3f8f78c; }
 .app--glass .stack-more, .app--glass .glass-settings-link { -webkit-backdrop-filter: none; backdrop-filter: none; }
 /* the photo cards: a glass rim and a frosted foot, so the photograph sits IN glass rather than on paper */
-.app--glass .card { box-shadow: 0 18px 40px -12px #20364259, inset 0 0 0 1px #ffffff66, inset 0 1px 0 #ffffffa6; }
+.app--glass .card { box-shadow: 0 18px 40px -12px #20364259; }   /* 2026-09-18, Ness: "the stroke on the cards — necessary?" No. */
 .app--glass .card-body { -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); background: linear-gradient(180deg, transparent, #0b1d3855 40%, #0b1d3899); border-bottom-left-radius: inherit; border-bottom-right-radius: inherit; }
 
 /* ═══ THE NAV OPENS LIKE A THING WITH WEIGHT ═════════════════════════════════════════════════
@@ -320,7 +320,7 @@ html[data-field='glass'] .cal-veil { background: color-mix(in srgb, #f6f8f4 72%,
 .app--glass .saves-panel {
   background: color-mix(in srgb, var(--pane) calc(var(--pane-a) * 100%), transparent);
   -webkit-backdrop-filter: blur(var(--pane-blur)) saturate(1.2); backdrop-filter: blur(var(--pane-blur)) saturate(1.2);
-  border: 1px solid var(--pane-line); border-top: 1px solid color-mix(in srgb, var(--pane-ink) 10%, transparent);
+  border: 1px solid transparent; border-top: 1px solid color-mix(in srgb, var(--pane-ink) 10%, transparent);
   box-shadow: 0 30px 70px -18px #0a1a2a66;
   color: var(--pane-ink);
 }
