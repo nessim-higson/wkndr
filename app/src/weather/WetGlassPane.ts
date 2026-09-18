@@ -8,11 +8,13 @@
 // Real drops are irregular, clustered and mostly tiny; the photograph carries that for free, which
 // is exactly what the first, procedural cut of this file could not.
 //
-// Static by default: with motion off the frame is drawn ONCE (and on resize / scene change), and
-// the RAF loop is never started. Motion on: the SKY breathes (a slow zoom and drift, ~30 s), the
-// water stays put — a pane of drops all sliding together is the other way to look fake — capped
-// at 30 fps with the FrameCap the other looks use, paused when the tab is hidden, never under
-// prefers-reduced-motion. Snow is the one thing still drawn: flakes in the air, never on the pane.
+// With motion off the frame is drawn ONCE (and on resize / scene change), and the RAF loop is
+// never started. Motion on (the default on the glass build): the SKY moves — clouds drift, a veil
+// of cloud shadow passes, the plate breathes — the water stays put (a pane of drops all sliding
+// together is the other way to look fake), capped at 30 fps with the FrameCap the other looks use.
+// The browser stops animation frames in a hidden tab, so the background costs nothing; the OS's
+// Reduce Motion is honoured by App.tsx (?motion=1 overrides it). Snow is the one thing still
+// drawn: flakes in the air, never on the pane.
 import { FrameCap } from './looks/types'
 import type { WetRecipe } from './wetglass'
 
@@ -263,11 +265,14 @@ export class WetGlassPane {
     this.kick()
   }
 
-  /** start the loop if it should run, else draw the still frame */
+  /** start the loop if it should run, else draw the still frame. No document.hidden gate: embedded
+   *  webviews (the Claude desktop pane, some in-app browsers) report hidden while plainly on screen,
+   *  and that gate froze the sky there (2026-09-18). A truly hidden tab gets no animation frames
+   *  from the browser anyway, so the loop costs nothing in the background. */
   private kick() {
     cancelAnimationFrame(this.raf)
     if (this.lost) return
-    if (this.moving && !document.hidden) {
+    if (this.moving) {
       this.cap.reset()
       const loop = (now: number) => {
         this.raf = requestAnimationFrame(loop)

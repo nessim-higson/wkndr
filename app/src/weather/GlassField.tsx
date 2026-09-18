@@ -22,16 +22,9 @@ const DROPS = Array.from({ length: 96 }, (_, i) => ({
  *  recipe says (wetglass.ts). The CSS layers below are the fallback for a device without
  *  WebGL2, kept exactly as the branch first shipped them. */
 export function GlassField({ scene, moving }: { scene: GlassScene; moving: boolean }) {
-  const [visible, setVisible] = useState(() => !document.hidden)
   const [gl] = useState(() => wetGlassSupported())
   const hostRef = useRef<HTMLDivElement>(null)
   const paneRef = useRef<WetGlassPane | null>(null)
-
-  useEffect(() => {
-    const update = () => setVisible(!document.hidden)
-    document.addEventListener('visibilitychange', update)
-    return () => document.removeEventListener('visibilitychange', update)
-  }, [])
 
   // mount the pane once; scene + motion changes are pushed into it, never remounted
   useEffect(() => {
@@ -54,7 +47,7 @@ export function GlassField({ scene, moving }: { scene: GlassScene; moving: boole
   const live = gl && !!paneRef.current
   const wet = ['rain', 'storm'].includes(scene)
   const count = scene === 'storm' ? 96 : scene === 'rain' ? 72 : scene === 'mist' ? 36 : 24
-  return <div ref={hostRef} className="field glass-field" data-scene={scene} data-moving={moving && visible} data-pane={gl ? 'gl' : 'css'} aria-hidden="true">
+  return <div ref={hostRef} className="field glass-field" data-scene={scene} data-moving={moving} data-pane={gl ? 'gl' : 'css'} aria-hidden="true">
     {!gl && <div className="glass-sky" />}
     <div className="glass-light" />
     <div className="glass-cloud glass-cloud-one" />
