@@ -254,7 +254,7 @@ html[data-field='glass'][data-menu='smoked'] { --pane: #070d14; --pane-a: .74; -
    content-heavy ones (detail, inputs, share, itinerary, forecast/settings, saves, the end state)
    take a LIGHT frosted glass whatever the scene — their body copy is dark ink and must stay
    readable — with the sky and the deck showing through the frost. The toast takes dark glass. */
-html[data-field='glass'] :is(.sheet, .detail, .share, .itin-sheet, .saves-panel, .glass-forecast, .stack-empty, .fs, .chk-card) {
+html[data-field='glass'] :is(.sheet, .detail, .share, .itin-sheet, .glass-forecast, .stack-empty, .fs, .chk-card) {
   background: color-mix(in srgb, #f6f8f4 58%, transparent);
   -webkit-backdrop-filter: blur(20px) saturate(1.2); backdrop-filter: blur(20px) saturate(1.2);
   border: 1px solid #ffffff99;
@@ -312,3 +312,25 @@ html[data-daylight='night'] .glass-field::after, html[data-daylight='dusk'] .gla
 
 /* the calibration veil is a full-screen module too: glass, firmer than a sheet since its copy sits on the deck */
 html[data-field='glass'] .cal-veil { background: color-mix(in srgb, #f6f8f4 72%, transparent); -webkit-backdrop-filter: blur(24px) saturate(1.15); backdrop-filter: blur(24px) saturate(1.15); }
+
+/* ═══ THE SAVES PEEK WEARS THE MENU'S GLASS (2026-09-18) ═══════════════════════════════════════
+   Ness: "when I click on favorites it needs to mimic the main navigation transparency." It drops
+   from the same module, so it is the same pane — --pane at --pane-a behind --pane-blur — and its
+   ink follows the material: dark on the light pane, white on the dark one. */
+.app--glass .saves-panel {
+  background: color-mix(in srgb, var(--pane) calc(var(--pane-a) * 100%), transparent);
+  -webkit-backdrop-filter: blur(var(--pane-blur)) saturate(1.2); backdrop-filter: blur(var(--pane-blur)) saturate(1.2);
+  border: 1px solid var(--pane-line); border-top: 1px solid color-mix(in srgb, var(--pane-ink) 10%, transparent);
+  box-shadow: 0 30px 70px -18px #0a1a2a66;
+  color: var(--pane-ink);
+}
+.app--glass .saves-panel :is(.sv-title, .sv-name, .sv-sub, .sv-cat, .sv-empty, .sv-thumb-cat) { color: var(--pane-ink); }
+.app--glass .saves-panel :is(.sv-when, .sv-time, .sv-group-label) { color: color-mix(in srgb, var(--accent) 70%, var(--pane-ink)); }
+.app--glass .saves-panel .sv-time::before { color: var(--pane-ink); }
+.app--glass .saves-panel .sv-group-label { background: linear-gradient(color-mix(in srgb, var(--pane) 88%, transparent) 72%, transparent); }
+.app--glass .saves-panel .sv-rowmain:hover { background: color-mix(in srgb, var(--pane-ink) 8%, transparent); }
+.app--glass .saves-panel .sv-rowmain:active { background: color-mix(in srgb, var(--pane-ink) 14%, transparent); }
+.app--glass .saves-panel .sv-remove { color: color-mix(in srgb, var(--pane-ink) 55%, transparent); }
+.app--glass .saves-panel .sv-open { color: var(--pane-ink); background: color-mix(in srgb, var(--pane-ink) 8%, transparent); border-color: color-mix(in srgb, var(--pane-ink) 18%, transparent); }
+.app--glass .saves-panel .sv-open:hover { background: color-mix(in srgb, var(--pane-ink) 14%, transparent); }
+.app--glass .saves-panel .sv-thumb { background-color: color-mix(in srgb, var(--pane-ink) 12%, transparent); }
