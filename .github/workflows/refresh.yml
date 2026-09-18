@@ -37,6 +37,8 @@ jobs:
         run: cd app && bun install --frozen-lockfile
       - name: Logic tests   # date parsing / dedupe / ranking regression guard — a red suite means
         run: cd app && bun test tests   # no content run: last-good keeps serving + the failure emails Ness
+      - name: Type-check the scripts   # scripts sit outside tsc -b; a free identifier killed a run twice on 2026-09-18
+        run: cd app && bun run check:scripts
       - name: Run pipeline
         env:
           # add these as repo secrets to turn the live pull on:
