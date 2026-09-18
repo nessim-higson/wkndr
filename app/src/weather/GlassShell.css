@@ -248,3 +248,49 @@ html[data-field='glass'][data-menu='smoked'] { --pane: #070d14; --pane-a: .74; -
 @media (min-width: 720px) {
   .app--glass { margin-top: max(var(--sp-4), calc((100dvh - min(calc(100dvh - 32px), 1000px)) / 2)); }
 }
+
+/* ═══ EVERY PANEL IS GLASS (2026-09-18) ══════════════════════════════════════════════════════════
+   Ness: "can all of the UI cards have the transparency please." The sheets were paper. The
+   content-heavy ones (detail, inputs, share, itinerary, forecast/settings, saves, the end state)
+   take a LIGHT frosted glass whatever the scene — their body copy is dark ink and must stay
+   readable — with the sky and the deck showing through the frost. The toast takes dark glass. */
+html[data-field='glass'] :is(.sheet, .detail, .share, .itin-sheet, .saves-panel, .glass-forecast, .stack-empty) {
+  background: color-mix(in srgb, #f6f8f4 76%, transparent);
+  -webkit-backdrop-filter: blur(28px) saturate(1.15); backdrop-filter: blur(28px) saturate(1.15);
+  border: 1px solid #ffffff99;
+  box-shadow: 0 30px 80px -24px #0a1a2a73, inset 0 1px 0 #ffffffb3;
+}
+html[data-field='glass'] :is(.sheet-backdrop, .detail-backdrop, .share-backdrop, .glass-forecast-backdrop) {
+  background: #0b1d3833; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+}
+html[data-field='glass'] .toast { background: color-mix(in srgb, #0d1722 70%, transparent); color: #f4f7f9; -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px); border: 1px solid #ffffff2e; }
+html[data-field='glass'] .toast--save { background: color-mix(in srgb, var(--accent) 88%, transparent); }
+.app--glass .act { -webkit-backdrop-filter: blur(14px) saturate(1.1); backdrop-filter: blur(14px) saturate(1.1); background: #f3f8f78c; }
+.app--glass .stack-more, .app--glass .glass-settings-link { -webkit-backdrop-filter: none; backdrop-filter: none; }
+/* the photo cards: a glass rim and a frosted foot, so the photograph sits IN glass rather than on paper */
+.app--glass .card { box-shadow: 0 18px 40px -12px #20364259, inset 0 0 0 1px #ffffff66, inset 0 1px 0 #ffffffa6; }
+.app--glass .card-body { -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); background: linear-gradient(180deg, transparent, #0b1d3855 40%, #0b1d3899); border-bottom-left-radius: inherit; border-bottom-right-radius: inherit; }
+
+/* ═══ THE NAV OPENS LIKE A THING WITH WEIGHT ═════════════════════════════════════════════════
+   The wordmark steps in from the corner as the panel opens (it sat 8px from a 24px radius), and
+   the groups inside arrive one after another instead of appearing as a block. */
+.app--glass .topbar-row { transition: padding .46s cubic-bezier(.22,1,.36,1), color .38s cubic-bezier(.22,1,.36,1); }
+.app--glass .topbar-module:is(.open,.peeking) .topbar-row { padding-left: 22px; padding-right: 14px; }
+html[data-shell='floating'] .app--glass .topbar-module:is(.open,.peeking) .topbar-row { padding-left: 26px; padding-right: 18px; }
+.app--glass .tb-panel { transition: grid-template-rows .54s cubic-bezier(.32,.72,0,1), opacity .32s ease, background-color .38s cubic-bezier(.22,1,.36,1); }
+.app--glass .tb-panel-inner { padding-left: 22px; padding-right: 22px; }
+.app--glass .tb-panel .bar-group { opacity: 0; transform: translateY(-10px); transition: opacity .34s ease, transform .56s cubic-bezier(.22,1,.36,1); }
+.app--glass .tb-panel.open .bar-group { opacity: 1; transform: none; }
+.app--glass .tb-panel.open .bar-group:nth-child(1) { transition-delay: .04s; }
+.app--glass .tb-panel.open .bar-group:nth-child(2) { transition-delay: .09s; }
+.app--glass .tb-panel.open .bar-group:nth-child(3) { transition-delay: .14s; }
+.app--glass .tb-panel.open .bar-group:nth-child(4) { transition-delay: .19s; }
+.app--glass .tb-panel.open .bar-group:nth-child(5) { transition-delay: .24s; }
+.app--glass .tb-panel.open .bar-group:nth-child(n+6) { transition-delay: .28s; }
+.app--glass .tb-panel .bar-foot { opacity: 0; transition: opacity .3s ease; }
+.app--glass .tb-panel.open .bar-foot { opacity: 1; transition-delay: .3s; }
+@media (prefers-reduced-motion: reduce) {
+  .app--glass .tb-panel .bar-group { transform: none; transition: opacity .2s ease; }
+  .app--glass .topbar-row { transition: none; }
+}
+
