@@ -153,7 +153,7 @@ if ((weekly.weekend as string) === satKey) {
   }
   const missed: string[] = []
   ;((weekly as { pile?: string[] }).pile ?? []).forEach((t, i) => {
-    const hit = picks.find((p) => titleLooseMatch(p.title, t))
+    const hit = pickByTitle(picks, t)
     if (hit) hit.pilePos = i + 1
     else missed.push(t)
   })

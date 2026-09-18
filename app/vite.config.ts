@@ -31,7 +31,9 @@ export default defineConfig(({ command }) => {
   const domain = process.env.WKNDR_DEPLOY === 'domain'
   const ogOrigin = domain ? DOMAIN_ORIGIN : PAGES_ORIGIN
   return {
-    base: command === 'build' ? (domain ? '/' : '/wkndr/') : '/',
+    // WKNDR_BASE mounts a build under a sub-path (deploy.yml builds the weather-glass variation at
+    // /v2/ beside production so the two can be compared on one domain); otherwise the two targets.
+    base: process.env.WKNDR_BASE ?? (command === 'build' ? (domain ? '/' : '/wkndr/') : '/'),
     define: {
       // share.ts stamps links with this when set; '' ⇒ fall back to the live location, so the
       // GH Pages build keeps emitting Pages links and dev keeps emitting localhost links.

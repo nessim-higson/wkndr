@@ -772,7 +772,7 @@ async function buildCity(city: City) {
       let po = 0
       const missed: string[] = []
       pileList.forEach((t, i) => {
-        const hit = picks.find((p) => titleLooseMatch(p.title, t))
+        const hit = pickByTitle(picks, t)
         if (hit) { hit.pilePos = i + 1; po++ } else missed.push(t)
       })
       if (l || d || po) console.log(`  slate:    ${l} ▲ lead this weekend · ${d} ▼ pushed later${po ? ` · pile order hand-set (${po}/${pileList.length})` : ''}${missed.length ? ` · pile UNMATCHED: ${missed.join(' | ')}` : ''}`)

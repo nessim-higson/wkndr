@@ -69,6 +69,16 @@ export function titleLooseMatch(feedTitle: string, entry: string): boolean {
   return shared >= 2 && shared >= Math.min(ta.size, tb.size) * 0.75
 }
 
+/** Which published pick a pile/lead title means. EXACT first (case-, space- and accent-blind), the
+ *  loose match second: "Yayoi Kusama" must land on the Stedelijk show, not on "Sandberg x Schilo:
+ *  5-course pop-up dinner inspired by Yayoi Kusama", which the loose containment rule also accepts
+ *  and which `find` happened to meet first (2026-09-18). */
+export function pickByTitle<T extends { title: string }>(picks: T[], entry: string): T | undefined {
+  const norm = (x: string) => x.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, ' ').trim()
+  const e = norm(entry)
+  return picks.find((p) => norm(p.title) === e) ?? picks.find((p) => titleLooseMatch(p.title, entry))
+}
+
 // ─── THE AIRLOCK — approval matching ─────────────────────────────────────────
 // Ness's decision (2026-07-10): the live deck is 1:1 with his Curation Board approvals. This
 // builds the ONE predicate that refresh.ts (the publish split), restamp.ts (promote/demote)

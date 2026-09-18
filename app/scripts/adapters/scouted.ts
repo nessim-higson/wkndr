@@ -27,7 +27,7 @@ export function scoutedExtract(cityKey: string): Pick[] {
       category,
       freshness: 'new',
       outdoor,
-      kid: false,
+      kid: f.kid === 'yes',   // the kids lens is a cross-cut; a scouted find says so with kid: "yes"
       price: String(f.price ?? '').slice(0, 30),
       image: typeof f.image === 'string' && f.image.startsWith('http') ? f.image : undefined,
       blurb: String(f.blurb ?? '').slice(0, 160),
