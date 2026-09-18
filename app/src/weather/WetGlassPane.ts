@@ -128,7 +128,6 @@ export class WetGlassPane {
   private recipe!: WetRecipe
   private seed = 0
   private moving = false
-  private reduced = false
   private raf = 0
   private t0 = performance.now()
   private cap = new FrameCap()
@@ -140,7 +139,6 @@ export class WetGlassPane {
     this.host = host
     this.recipe = recipe
     this.seed = seed
-    this.reduced = matchMedia('(prefers-reduced-motion: reduce)').matches
     this.c = document.createElement('canvas')
     this.c.className = 'wet-glass'
     this.c.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;display:block'
@@ -250,7 +248,7 @@ export class WetGlassPane {
   }
 
   setMoving(moving: boolean) {
-    this.moving = moving && !this.reduced
+    this.moving = moving   // App.tsx has already applied prefers-reduced-motion (and the ?motion= override)
     this.kick()
   }
 
@@ -268,12 +266,14 @@ export class WetGlassPane {
     } else this.draw()
   }
 
-  private onVis = () => this.kick()
+  /** A tab that opened in the background measured 0×0 at mount and would keep a 1×1 pane until a
+   *  window resize; re-measure whenever we come back into view, then resume or redraw. */
+  private onVis = () => { this.resize(); this.kick() }
 
   resize() {
     const dpr = Math.min(window.devicePixelRatio || 1, DPR_CAP) * SCALE
-    const w = Math.max(1, Math.round(this.host.clientWidth * dpr))
-    const h = Math.max(1, Math.round(this.host.clientHeight * dpr))
+    const w = Math.max(1, Math.round((this.host.clientWidth || window.innerWidth) * dpr))
+    const h = Math.max(1, Math.round((this.host.clientHeight || window.innerHeight) * dpr))
     if (this.c.width !== w || this.c.height !== h) {
       this.c.width = w; this.c.height = h
       this.gl.viewport(0, 0, w, h)

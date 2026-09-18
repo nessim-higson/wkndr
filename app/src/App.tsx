@@ -317,8 +317,12 @@ export default function App() {
   // THE SKY MOVES BY DEFAULT on the glass build (Ness, 2026-09-18: "can we have that background
   // move?") — unless the OS asks for reduced motion, or ?motion=0. Prototype settings keeps the
   // opt-out. The pane caps itself at 30 fps and stops when the tab is hidden.
-  const [glassMoving, setGlassMoving] = useState(() =>
-    new URLSearchParams(location.search).get('motion') !== '0' && !matchMedia('(prefers-reduced-motion: reduce)').matches)
+  const [glassMoving, setGlassMoving] = useState(() => {
+    const m = new URLSearchParams(location.search).get('motion')
+    if (m === '0') return false
+    if (m === '1') return true   // force it, to judge the effect on a machine with Reduce Motion on
+    return !matchMedia('(prefers-reduced-motion: reduce)').matches
+  })
   const [glassForecastOpen, setGlassForecastOpen] = useState(false)
   const [glassSettingsOpen, setGlassSettingsOpen] = useState(false)
   const glassActive = look === 'glass'
