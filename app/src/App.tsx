@@ -13,6 +13,8 @@ import { AmbientField } from './weather/AmbientField'
 import { GlassField } from './weather/GlassField'
 import { GlassForecast } from './weather/GlassForecast'
 import { GLASS_LABELS, GLASS_SCENES, type GlassScene } from './weather/glass'
+import { PHASES, type Phase } from './weather/daylight'
+import { useDaylight } from './components/useDaylight'
 import type { Look } from './weather/ambientEngine'
 import { APP_VERSION } from './version'
 import { SwipeStack } from './components/SwipeStack'
@@ -326,8 +328,7 @@ export default function App() {
   const [glassForecastOpen, setGlassForecastOpen] = useState(false)
   const [glassSettingsOpen, setGlassSettingsOpen] = useState(false)
   const glassActive = look === 'glass'
-  const glassWeather: GlassScene = glassPreview ?? (currentReading ? { clear:'sunny',night:'evening',cloud:'overcast',fog:'mist',rain:'rain',snow:'snow',storm:'storm' }[currentReading.sky] as GlassScene : 'overcast')
-  const GlassWeatherIcon = glassWeather === 'sunny' ? Sun : glassWeather === 'evening' ? Moon : glassWeather === 'snow' ? Snowflake : glassWeather === 'mixed' ? CloudSun : ['rain', 'storm'].includes(glassWeather) ? CloudRain : Cloud
+  const glassWeather: GlassScene = glassPreview ?? (currentReading ? { clear:'sunny',night:'sunny',cloud:'overcast',fog:'mist',rain:'rain',snow:'snow',storm:'storm' }[currentReading.sky] as GlassScene : 'overcast')
   useEffect(() => {
     document.documentElement.dataset.field = glassActive ? 'glass' : 'original'
     document.documentElement.dataset.glassScene = glassWeather
@@ -360,6 +361,17 @@ export default function App() {
     return s === 'flux' ? 'flux' : 'wheel'
   })
   const [city, setCity] = useState<City>(INITIAL_CITY)   // which city's feed is active
+  // THE SUN (2026-09-18, Ness: "the condition of the weather is relative to the time of day"): the
+  // pane is graded by where the sun is over the active city, re-read every minute (daylight.ts).
+  // A clear night is a clear sky at night — the moon plate comes from the hour, not the weather code.
+  // ?sun=golden|dusk|night|dawn|day holds a phase for judging; ?at=19:40 holds a clock time, today.
+  const [sunPreview, setSunPreview] = useState<Phase | null>(() => { const s = new URLSearchParams(location.search).get('sun'); return PHASES.find((p) => p === s) ?? null })
+  const [clockAt] = useState(() => new URLSearchParams(location.search).get('at'))
+  const daylight = useDaylight(city.lat, city.lon, sunPreview, clockAt)
+  useEffect(() => { document.documentElement.dataset.daylight = daylight.phase; return () => { delete document.documentElement.dataset.daylight } }, [daylight.phase])
+  const moonOut = glassWeather === 'evening' || (glassWeather === 'sunny' && ['night', 'dusk', 'dawn'].includes(daylight.phase))
+  const GlassWeatherIcon = moonOut ? Moon : glassWeather === 'sunny' ? Sun : glassWeather === 'snow' ? Snowflake : glassWeather === 'mixed' ? CloudSun : ['rain', 'storm'].includes(glassWeather) ? CloudRain : Cloud
+  const sunLabel = { day: 'now', golden: 'golden hour', dusk: 'dusk', dawn: 'dawn', night: 'night' }[daylight.phase] + (sunPreview || clockAt ? ' · preview' : '')
   const [feeds, setFeeds] = useState<Record<string, { picks: Pick[]; generatedAt: string; checkedAt?: string; topMatches?: string[] }>>({})
   const fetchedFeeds = useRef<Set<string>>(new Set())
 
@@ -945,7 +957,7 @@ export default function App() {
     // slides, ctx bars) collapses to a crossfade for prefers-reduced-motion users
     <MotionConfig reducedMotion="user">
       {glassActive
-        ? <GlassField scene={glassWeather} moving={glassMoving} />
+        ? <GlassField scene={glassWeather} daylight={daylight} moving={glassMoving} />
         : <AmbientField mode={mode} look={look} onLookChange={setLook} rerollNonce={fieldReroll} />}
 
       <AnimatePresence>
@@ -1042,7 +1054,7 @@ export default function App() {
                 onKeyDown={(e) => e.stopPropagation()}>
                 <GlassWeatherIcon size={22} strokeWidth={1.3} aria-hidden />
                 <span>{glassPreview ? GLASS_LABELS[glassPreview] : currentReading ? `${Math.round(currentReading.temperature)}° · ${currentReading.label}` : 'Weather unavailable'}
-                  <small>{glassPreview ? 'Appearance preview' : 'Amsterdam · now'}</small>
+                  <small>{glassPreview ? 'Appearance preview' : `${city.label} · ${sunLabel}`}</small>
                 </span>
               </button>}
 
@@ -1425,7 +1437,7 @@ export default function App() {
       </motion.div>
       {glassActive && <GlassForecast glassOnly={glassOnly} onGlassOnly={setGlassOnly} settings={glassSettingsOpen} open={glassForecastOpen || glassSettingsOpen} onClose={() => { setGlassForecastOpen(false); setGlassSettingsOpen(false) }}
         weekend={weekend} live={live} label={wx.label} preview={glassPreview} onPreview={setGlassPreview}
-        moving={glassMoving} onMoving={setGlassMoving} shell={glassShell} onShell={setGlassShell} face={glassFace} onFace={setGlassFace} finish={glassFinish} onFinish={setGlassFinish} menu={glassMenu} onMenu={setGlassMenu} />}
+        moving={glassMoving} onMoving={setGlassMoving} sun={sunPreview} onSun={setSunPreview} shell={glassShell} onShell={setGlassShell} face={glassFace} onFace={setGlassFace} finish={glassFinish} onFinish={setGlassFinish} menu={glassMenu} onMenu={setGlassMenu} />}
 
       {toast && (
         <div className={`toast${toast.save ? ' toast--save' : ''}`}>

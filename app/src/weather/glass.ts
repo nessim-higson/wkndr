@@ -5,7 +5,7 @@ export const GLASS_SCENES = ['sunny', 'overcast', 'rain', 'mist', 'snow', 'storm
 export type GlassScene = typeof GLASS_SCENES[number]
 export const GLASS_LABELS: Record<GlassScene, string> = {
   sunny: 'Open sky', overcast: 'Overcast', rain: 'Rain', mist: 'Soft fog',
-  snow: 'Snow', storm: 'Storm', mixed: 'Passing front', evening: 'Evening',
+  snow: 'Snow', storm: 'Storm', mixed: 'Passing front', evening: 'Clear night',
 }
 
 /** 2026-09: this is a material study, not a new classifier. A cold, dry day also

@@ -2,8 +2,9 @@ import { GLASS_PATTERNS } from '../lib/card-material'
 import { useDialogA11y } from '../lib/useDialogA11y'
 import { GLASS_LABELS, GLASS_SCENES, type GlassScene } from './glass'
 import type { WeekendWx } from './modes'
+import { PHASES, PHASE_LABELS, type Phase } from './daylight'
 
-export function GlassForecast({ glassOnly, onGlassOnly, settings = false, open, onClose, weekend, live, label, preview, onPreview, moving, onMoving, shell, onShell, face, onFace, finish, onFinish, menu, onMenu }: {
+export function GlassForecast({ glassOnly, onGlassOnly, settings = false, sun = null, onSun, open, onClose, weekend, live, label, preview, onPreview, moving, onMoving, shell, onShell, face, onFace, finish, onFinish, menu, onMenu }: {
   glassOnly: boolean; onGlassOnly: (v: boolean) => void;
   settings?: boolean;
   shell:string; onShell:(v:string)=>void; face:string; onFace:(v:string)=>void; finish:string; onFinish:(v:string)=>void;
@@ -11,6 +12,7 @@ export function GlassForecast({ glassOnly, onGlassOnly, settings = false, open, 
   open: boolean; onClose: () => void; weekend: WeekendWx | null; live: boolean; label?: string;
   preview: GlassScene | null; onPreview: (scene: GlassScene | null) => void;
   moving: boolean; onMoving: (moving: boolean) => void;
+  sun?: Phase | null; onSun?: (phase: Phase | null) => void;
 }) {
   const ref = useDialogA11y<HTMLDivElement>(open, onClose)
   if (!open) return null
@@ -40,8 +42,14 @@ export function GlassForecast({ glassOnly, onGlassOnly, settings = false, open, 
         </select>
         <div className="atmosphere-options" aria-label="Background previews">{GLASS_SCENES.map(s => <button key={s} className="atmosphere-option" data-scene={s} aria-pressed={preview === s} onClick={() => onPreview(s)}><span className="atmosphere-swatch" aria-hidden /><span>{GLASS_LABELS[s]}</span></button>)}</div>
         <p className="glass-forecast-note">Background follows a timestamped current Amsterdam model estimate. Other choices are appearance previews only. Cards stay ranked for the weekend forecast.</p>
+        <label htmlFor="glass-sun">Time of day</label>
+        <select id="glass-sun" value={sun ?? 'now'} onChange={e => onSun?.(e.target.value === 'now' ? null : e.target.value as Phase)}>
+          <option value="now">Now — the sun where it is</option>
+          {PHASES.map(p => <option key={p} value={p}>{PHASE_LABELS[p]}</option>)}
+        </select>
+        <p className="glass-forecast-note">The sun grades every sky by its real altitude over the city: rain at night is dark rain, still raining. A clear sky changes plate with the hour — golden hour, dusk, a moon.</p>
         <label className="glass-motion"><input type="checkbox" checked={moving} onChange={e => onMoving(e.target.checked)} />The sky moves</label>
-        <p className="glass-forecast-note">Clouds drift, the light breathes; the water stays put. Off when Reduce Motion is on, or with ?motion=0.</p>
+        <p className="glass-forecast-note">Clouds drift, the light breathes, and a few drops let go and run. Off when Reduce Motion is on, or with ?motion=0.</p>
       </div>}
     </div>
   </div>

@@ -12,20 +12,34 @@
 // the shader bends the sky by the relief's slope and shades it by the relief itself. Ness on the
 // first, procedural cut (2026-09-12): "the rain drops on the pane look MEGA fake" — same circle,
 // same highlight, on a grid. Real drops are irregular, clustered, mostly tiny; a photograph has
-// all of that for free. Static by default; motion is opt-in and moves the SKY (a slow breath),
-// never the water — a pane of drops all sliding together is the other way to look fake.
+// all of that for free.
+//
+// MOTION (2026-09-18, on by default on the glass build): the sky drifts and breathes, and now the
+// water moves too — Ness: "the motion on the water, is that achievable?" — as RUNNERS: a few drops
+// at a time let go and run down the pane, wobbling, leaving a trail that dries behind them. The
+// photographed beads stay put (a pane of drops all sliding together is the other way to look fake);
+// only the runners move, each on its own clock. `run` is how many.
+//
+// TIME OF DAY (2026-09-18, Ness: "the condition of the weather is relative to the time of day"):
+// the sun GRADES every plate — see daylight.ts — so rain at night is dark rain, and only a clear
+// sky swaps plates with the hour: open sky by day, the golden plate with the sun low, the dusk
+// plate with its afterglow and moon, the night plate. `plateFor` picks; `gradeOn` neutralises the
+// grade for a plate that already IS its hour (the golden plate needs no warming).
 //
 // Honesty, unchanged from the branch: plates are illustrative skies, never a claim that THIS cloud
 // is overhead; the live weather code picks the scene, the scene picks the plate and the wetness.
 import type { GlassScene } from './glass'
+import type { Daylight, Phase } from './daylight'
 import openSky from '../assets/atmosphere/open-sky.webp'
+import goldenSky from '../assets/atmosphere/golden.webp'
+import duskSky from '../assets/atmosphere/dusk.webp'
+import nightSky from '../assets/atmosphere/night.webp'
 import overcast from '../assets/atmosphere/overcast.webp'
 import passingFront from '../assets/atmosphere/passing-front.webp'
 import rainSky from '../assets/atmosphere/rain.webp'
 import stormSky from '../assets/atmosphere/storm.webp'
 import fogSky from '../assets/atmosphere/fog.webp'
 import snowSky from '../assets/atmosphere/snow.webp'
-import eveningSky from '../assets/atmosphere/evening.webp'
 import dropsFine from '../assets/atmosphere/drops-fine.webp'
 import dropsRain from '../assets/atmosphere/drops-rain.webp'
 import dropsHeavy from '../assets/atmosphere/drops-heavy.webp'
@@ -33,12 +47,16 @@ import dropsHeavy from '../assets/atmosphere/drops-heavy.webp'
 export interface WetRecipe {
   /** the photographic plate behind the glass */
   plate: string
+  /** a clear sky is a different sky at a different hour: the plates that replace `plate` by phase */
+  byPhase?: Partial<Record<Phase, string>>
   /** the drop map (R = signed relief, G = coverage), or null for a dry pane */
   map: string | null
   /** 0..1 — how strongly the map bends and shades the sky */
   wet: number
   /** CSS px the map spans across — smaller = finer drops (the photographs hold drops 2–6% of their width) */
   mapScale: number
+  /** 0..1 — how many drops let go and run down the pane (motion on); 0 = the water stays put */
+  run: number
   /** 0..1 — condensation: a blur of the plate + a milky cast the drops cut through */
   fog: number
   /** 0..1 — flakes in the air (drawn in front of the plate, never on the glass) */
@@ -49,15 +67,34 @@ export interface WetRecipe {
   tint: [number, number, number]
 }
 
+const CLEAR_BY_PHASE: Partial<Record<Phase, string>> = { golden: goldenSky, dusk: duskSky, dawn: duskSky, night: nightSky }
+
 export const WET_RECIPES: Record<GlassScene, WetRecipe> = {
-  sunny:    { plate: openSky,      map: null,       wet: 0,   mapScale: 700, fog: 0,    snow: 0, dim: 1,    tint: [.93, .96, 1] },
-  overcast: { plate: overcast,     map: null,       wet: 0,   mapScale: 700, fog: .12,  snow: 0, dim: .96,  tint: [.9, .92, .93] },
-  mist:     { plate: fogSky,       map: dropsFine,  wet: .35, mapScale: 620, fog: .9,   snow: 0, dim: 1.02, tint: [.94, .95, .94] },
-  rain:     { plate: rainSky,      map: dropsRain,  wet: 1,   mapScale: 760, fog: .34,  snow: 0, dim: .88,  tint: [.78, .84, .9] },
-  storm:    { plate: stormSky,     map: dropsHeavy, wet: 1,   mapScale: 720, fog: .3,   snow: 0, dim: .86,  tint: [.62, .7, .8] },
-  mixed:    { plate: passingFront, map: dropsFine,  wet: .6,  mapScale: 680, fog: .14,  snow: 0, dim: .95,  tint: [.86, .9, .95] },
-  snow:     { plate: snowSky,      map: dropsFine,  wet: .3,  mapScale: 600, fog: .45,  snow: 1, dim: 1.02, tint: [.95, .96, .98] },
-  evening:  { plate: eveningSky,   map: null,       wet: 0,   mapScale: 700, fog: .06,  snow: 0, dim: .92,  tint: [.5, .55, .7] },
+  sunny:    { plate: openSky, byPhase: CLEAR_BY_PHASE, map: null, wet: 0, mapScale: 700, run: 0,   fog: 0,   snow: 0, dim: 1,    tint: [.93, .96, 1] },
+  overcast: { plate: overcast,     map: null,       wet: 0,   mapScale: 700, run: 0,   fog: .12,  snow: 0, dim: .96,  tint: [.9, .92, .93] },
+  mist:     { plate: fogSky,       map: dropsFine,  wet: .35, mapScale: 620, run: 0,   fog: .9,   snow: 0, dim: 1.02, tint: [.94, .95, .94] },
+  rain:     { plate: rainSky,      map: dropsRain,  wet: 1,   mapScale: 760, run: .9,  fog: .34,  snow: 0, dim: .88,  tint: [.78, .84, .9] },
+  storm:    { plate: stormSky,     map: dropsHeavy, wet: 1,   mapScale: 720, run: 1,   fog: .3,   snow: 0, dim: .86,  tint: [.62, .7, .8] },
+  mixed:    { plate: passingFront, map: dropsFine,  wet: .6,  mapScale: 680, run: .45, fog: .14,  snow: 0, dim: .95,  tint: [.86, .9, .95] },
+  snow:     { plate: snowSky,      map: dropsFine,  wet: .3,  mapScale: 600, run: .2,  fog: .45,  snow: 1, dim: 1.02, tint: [.95, .96, .98] },
+  evening:  { plate: nightSky,     map: null,       wet: 0,   mapScale: 700, run: 0,   fog: .06,  snow: 0, dim: .96,  tint: [.5, .55, .7] },
+}
+
+/** The recipe a scene renders at this hour, and whether the plate is NATIVE to the hour (picked
+ *  for it, so the grade must not double it). The moon plate of the 'evening' preview is native at
+ *  any hour: it is already a night. */
+export function plateFor(scene: GlassScene, phase: Phase): { recipe: WetRecipe; native: boolean } {
+  const base = WET_RECIPES[scene]
+  const swap = base.byPhase?.[phase]
+  if (swap) return { recipe: { ...base, plate: swap }, native: true }
+  return { recipe: base, native: scene === 'evening' }
+}
+
+/** The grade the pane applies. A native plate keeps its own light and colour (a touch darker deep
+ *  into the night); every other plate takes the sun in full. */
+export function gradeOn(d: Daylight, native: boolean): Daylight {
+  if (!native) return d
+  return { ...d, light: .7 + .3 * d.light, gold: 0, dusk: 0, night: 0 }
 }
 
 /** Where on the drop map the pane looks. Stable for a SESSION (no reshuffle on a swipe or a save)

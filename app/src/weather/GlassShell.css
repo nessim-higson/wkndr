@@ -182,7 +182,7 @@ html[data-field='glass']:is([data-glass-scene='rain'],[data-glass-scene='storm']
 .atmosphere-option[data-scene='storm'] .atmosphere-swatch { background-image:url('../assets/atmosphere/storm.webp'); }
 .atmosphere-option[data-scene='mist'] .atmosphere-swatch { background-image:url('../assets/atmosphere/fog.webp'); }
 .atmosphere-option[data-scene='snow'] .atmosphere-swatch { background-image:url('../assets/atmosphere/snow.webp'); }
-.atmosphere-option[data-scene='evening'] .atmosphere-swatch { background-image:url('../assets/atmosphere/evening.webp'); }
+.atmosphere-option[data-scene='evening'] .atmosphere-swatch { background-image:url('../assets/atmosphere/night.webp'); }
 html[data-shell='floating'] .app--glass .filterstrip .filter-trigger { border:0; border-radius:0; background:transparent; box-shadow:none; }
 .app--glass .filterstrip .filter-trigger::after { content:''; width:5px; height:5px; margin-left:3px; margin-top:-3px; border-right:1px solid currentColor; border-bottom:1px solid currentColor; transform:rotate(45deg); }
 html[data-field='glass'][data-face^='glass'] .np-venue { color:inherit; opacity:1; }
@@ -200,9 +200,9 @@ html[data-field='glass'][data-face^='glass'] .np-material-mark { border-color:#f
      smoked   — always dark, white ink; the night pane
    The ink follows the material: dark scenes and smoked glass get white controls. */
 html[data-field='glass'] { --pane: #f5f7f3; --pane-a: .58; --pane-blur: 26px; --pane-ink: #172a35; --pane-line: #ffffff66; }
-html[data-field='glass']:is([data-glass-scene='rain'],[data-glass-scene='storm'],[data-glass-scene='mixed'],[data-glass-scene='evening']) { --pane: #101c2a; --pane-a: .5; --pane-ink: #f4f7f9; --pane-line: #ffffff33; }
+html[data-field='glass']:is([data-glass-scene='rain'],[data-glass-scene='storm'],[data-glass-scene='mixed'],[data-glass-scene='evening'],[data-daylight='night'],[data-daylight='dusk'],[data-daylight='dawn']) { --pane: #101c2a; --pane-a: .5; --pane-ink: #f4f7f9; --pane-line: #ffffff33; }
 html[data-field='glass'][data-menu='clear'] { --pane-a: .16; --pane-blur: 9px; }
-html[data-field='glass'][data-menu='clear']:is([data-glass-scene='rain'],[data-glass-scene='storm'],[data-glass-scene='mixed'],[data-glass-scene='evening']) { --pane-a: .2; }
+html[data-field='glass'][data-menu='clear']:is([data-glass-scene='rain'],[data-glass-scene='storm'],[data-glass-scene='mixed'],[data-glass-scene='evening'],[data-daylight='night'],[data-daylight='dusk'],[data-daylight='dawn']) { --pane-a: .2; }
 html[data-field='glass'][data-menu='smoked'] { --pane: #070d14; --pane-a: .74; --pane-blur: 22px; --pane-ink: #f4f7f9; --pane-line: #ffffff2e; }
 
 .app--glass .topbar-module {
@@ -255,8 +255,8 @@ html[data-field='glass'][data-menu='smoked'] { --pane: #070d14; --pane-a: .74; -
    take a LIGHT frosted glass whatever the scene — their body copy is dark ink and must stay
    readable — with the sky and the deck showing through the frost. The toast takes dark glass. */
 html[data-field='glass'] :is(.sheet, .detail, .share, .itin-sheet, .saves-panel, .glass-forecast, .stack-empty) {
-  background: color-mix(in srgb, #f6f8f4 76%, transparent);
-  -webkit-backdrop-filter: blur(28px) saturate(1.15); backdrop-filter: blur(28px) saturate(1.15);
+  background: color-mix(in srgb, #f6f8f4 58%, transparent);
+  -webkit-backdrop-filter: blur(20px) saturate(1.2); backdrop-filter: blur(20px) saturate(1.2);
   border: 1px solid #ffffff99;
   box-shadow: 0 30px 80px -24px #0a1a2a73, inset 0 1px 0 #ffffffb3;
 }
@@ -294,3 +294,18 @@ html[data-shell='floating'] .app--glass .topbar-module:is(.open,.peeking) .topba
   .app--glass .topbar-row { transition: none; }
 }
 
+
+/* ═══ THE STAR TURNS ORANGE (2026-09-18) ══════════════════════════════════════════════════════
+   Ness: "the star up top should turn orange once things are selected." The live app does this;
+   the branch had painted it back to grey glass. Once there is a save, the counter is the accent. */
+.app--glass .tb-saves.has, .app--glass .tb-saves.has:hover { background: var(--accent); color: #fff; border-color: transparent; padding: 0 11px 0 9px; }
+.app--glass .tb-saves.has svg { fill: currentColor; stroke: currentColor; }
+.app--glass .topbar-module:is(.open,.peeking) .tb-saves.has { color: #fff; }
+
+/* THE DARK HOURS: with the sun down the header ink is white, and a bright moon or afterglow can sit
+   right behind the wordmark. A soft shade over the top band of the pane keeps the ink readable on
+   any plate — it fades out by the deck, so the sky is untouched where it shows. */
+html[data-daylight='night'] .glass-field::after, html[data-daylight='dusk'] .glass-field::after, html[data-daylight='dawn'] .glass-field::after {
+  content: ''; position: absolute; inset: 0 0 auto 0; height: 200px; pointer-events: none;
+  background: linear-gradient(180deg, #050b1499, #050b1440 55%, transparent);
+}

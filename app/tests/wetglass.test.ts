@@ -3,7 +3,8 @@
 // inside the ranges the shader expects, a dry sky is actually dry, and the bead layout is stable
 // for a session but not for a lifetime.
 import { describe, it, expect } from 'bun:test'
-import { WET_RECIPES, seedForNow } from '../src/weather/wetglass'
+import { WET_RECIPES, seedForNow, plateFor, gradeOn } from '../src/weather/wetglass'
+import { gradeFor } from '../src/weather/daylight'
 import { GLASS_SCENES } from '../src/weather/glass'
 
 describe('wet glass recipes', () => {
@@ -43,5 +44,33 @@ describe('the bead layout seed', () => {
     expect(a).toBe(b)
     expect(seedForNow(new Date(2026, 8, 13, 14, 5))).not.toBe(a)
     expect(a).toBeGreaterThanOrEqual(0); expect(a).toBeLessThan(1000)
+  })
+})
+
+describe('the hour', () => {
+  it('a clear sky swaps plates with the sun; every other sky keeps its plate and takes the grade', () => {
+    const day = plateFor('sunny', 'day'), gold = plateFor('sunny', 'golden'), night = plateFor('sunny', 'night')
+    expect(day.native).toBe(false); expect(gold.native).toBe(true); expect(night.native).toBe(true)
+    expect(gold.recipe.plate).not.toBe(day.recipe.plate)
+    expect(night.recipe.plate).not.toBe(gold.recipe.plate)
+    expect(plateFor('sunny', 'dusk').recipe.plate).toBe(plateFor('sunny', 'dawn').recipe.plate)
+    for (const s of GLASS_SCENES) if (s !== 'sunny' && s !== 'evening') {
+      expect(plateFor(s, 'night').recipe.plate).toBe(WET_RECIPES[s].plate)
+      expect(plateFor(s, 'night').native).toBe(false)
+    }
+    expect(plateFor('evening', 'day').native).toBe(true)   // the moon plate is a night whatever the clock says
+  })
+  it('rain at night is dark rain: the grade keeps the water and drops the light', () => {
+    const n = gradeFor(-20)
+    expect(gradeOn(n, false)).toEqual(n)
+    const native = gradeOn(n, true)
+    expect(native.gold + native.dusk + native.night).toBe(0)
+    expect(native.light).toBeGreaterThan(n.light)
+    expect(plateFor('rain', 'night').recipe.wet).toBe(1)
+  })
+  it('only wet scenes run, and the fog never does', () => {
+    for (const s of GLASS_SCENES) { const r = WET_RECIPES[s]; if (r.wet === 0) expect(r.run).toBe(0); expect(r.run).toBeLessThanOrEqual(1) }
+    expect(WET_RECIPES.rain.run).toBeGreaterThan(.5)
+    expect(WET_RECIPES.mist.run).toBe(0)
   })
 })

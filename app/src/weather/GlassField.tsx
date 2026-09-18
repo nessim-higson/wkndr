@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import type { GlassScene } from './glass'
-import { WET_RECIPES, seedForNow, wetGlassSupported } from './wetglass'
+import type { Daylight } from './daylight'
+import { plateFor, gradeOn, seedForNow, wetGlassSupported } from './wetglass'
 import { WetGlassPane } from './WetGlassPane'
 import './GlassField.css'
 
@@ -18,21 +19,24 @@ const DROPS = Array.from({ length: 96 }, (_, i) => ({
  *  every droplet, even mid-drag — no measured masks, no rain painted onto photos.
  *
  *  THE PANE (2026-09-12): on WebGL2 the sky is drawn THROUGH wet glass by WetGlassPane.ts —
- *  the plate, lensed by beads, softened by condensation, with trails and flakes as the
- *  recipe says (wetglass.ts). The CSS layers below are the fallback for a device without
- *  WebGL2, kept exactly as the branch first shipped them. */
-export function GlassField({ scene, moving }: { scene: GlassScene; moving: boolean }) {
+ *  the plate, lensed by beads, softened by condensation, with runners and flakes as the
+ *  recipe says (wetglass.ts) — and graded by the sun (daylight.ts). The CSS layers below are
+ *  the fallback for a device without WebGL2, kept exactly as the branch first shipped them. */
+export function GlassField({ scene, daylight, moving }: { scene: GlassScene; daylight: Daylight; moving: boolean }) {
   const [gl] = useState(() => wetGlassSupported())
   const hostRef = useRef<HTMLDivElement>(null)
   const paneRef = useRef<WetGlassPane | null>(null)
+  // the plate for this scene at this hour (a clear sky swaps plates), and the grade on it
+  const { recipe, native } = useMemo(() => plateFor(scene, daylight.phase), [scene, daylight.phase])
+  const grade = useMemo(() => gradeOn(daylight, native), [daylight, native])
 
-  // mount the pane once; scene + motion changes are pushed into it, never remounted
+  // mount the pane once; scene, sun and motion changes are pushed into it, never remounted
   useEffect(() => {
     if (!gl || !hostRef.current) return
     let pane: WetGlassPane | null = null
     try {
       pane = new WetGlassPane()
-      pane.mount(hostRef.current, WET_RECIPES[scene], seedForNow(), moving)
+      pane.mount(hostRef.current, recipe, grade, seedForNow(), moving)
     } catch { pane?.destroy(); return }   // a context that fails to create → the CSS pane stays
     paneRef.current = pane
     ;(window as Window & { __wkndrPane?: WetGlassPane }).__wkndrPane = pane   // a handle for judging: __wkndrPane.fps()
@@ -41,13 +45,14 @@ export function GlassField({ scene, moving }: { scene: GlassScene; moving: boole
     return () => { window.removeEventListener('resize', fit); pane!.destroy(); paneRef.current = null }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gl])
-  useEffect(() => { paneRef.current?.setRecipe(WET_RECIPES[scene]) }, [scene])
+  useEffect(() => { paneRef.current?.setRecipe(recipe) }, [recipe])
+  useEffect(() => { paneRef.current?.setGrade(grade) }, [grade])
   useEffect(() => { paneRef.current?.setMoving(moving) }, [moving])
 
   const live = gl && !!paneRef.current
   const wet = ['rain', 'storm'].includes(scene)
   const count = scene === 'storm' ? 96 : scene === 'rain' ? 72 : scene === 'mist' ? 36 : 24
-  return <div ref={hostRef} className="field glass-field" data-scene={scene} data-moving={moving} data-pane={gl ? 'gl' : 'css'} aria-hidden="true">
+  return <div ref={hostRef} className="field glass-field" data-scene={scene} data-daylight={daylight.phase} data-moving={moving} data-pane={gl ? 'gl' : 'css'} aria-hidden="true">
     {!gl && <div className="glass-sky" />}
     <div className="glass-light" />
     <div className="glass-cloud glass-cloud-one" />
