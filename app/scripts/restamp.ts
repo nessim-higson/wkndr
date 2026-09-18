@@ -25,7 +25,7 @@
  */
 import corpus from './taste/corpus.json'
 import weekly from './taste/weekly.json'
-import { rxOf, titleLooseMatch, tokKey, upcomingWeekend, crownsActive, publishCheck, STAR_BOOST, NO_PHOTO_CAP, weekendModes, stampServeOrder, toPortrait, approvalCheck, pickByTitle, type TasteCorpus, type WeeklySlate } from './lib/pipeline'
+import { rxOf, titleLooseMatch, tokKey, upcomingWeekend, crownsActive, publishCheck, STAR_BOOST, NO_PHOTO_CAP, weekendModes, stampServeOrder, toPortrait, approvalCheck, pickByTitle, markThisWeekend, type TasteCorpus, type WeeklySlate } from './lib/pipeline'
 import { curatedImage } from './curated'
 import { heroPicks } from './heroes'
 import { whenIsPast, whenLooksBroken } from '../src/lib/when'
@@ -148,13 +148,13 @@ const satKey = `${sat.getFullYear()}-${String(sat.getMonth() + 1).padStart(2, '0
 if ((weekly.weekend as string) === satKey) {
   const leads = (weekly.lead as string[]).map(rxOf), laters = (weekly.later as string[]).map(rxOf)
   for (const p of picks) {
-    if (leads.some((rx) => rx.test(p.title))) { p.lead = true; p.editorScore = Math.max(p.editorScore ?? 0, 9) }
+    if (leads.some((rx) => rx.test(p.title))) { p.lead = true; markThisWeekend(p); p.editorScore = Math.max(p.editorScore ?? 0, 9) }
     else if (laters.some((rx) => rx.test(p.title))) p.later = true
   }
   const missed: string[] = []
   ;((weekly as { pile?: string[] }).pile ?? []).forEach((t, i) => {
     const hit = pickByTitle(picks, t)
-    if (hit) hit.pilePos = i + 1
+    if (hit) { hit.pilePos = i + 1; markThisWeekend(hit) }
     else missed.push(t)
   })
   if (missed.length) console.log(`  pile UNMATCHED: ${missed.join(' | ')}`)

@@ -69,6 +69,16 @@ export function titleLooseMatch(feedTitle: string, entry: string): boolean {
   return shared >= 2 && shared >= Math.min(ta.size, tb.size) * 0.75
 }
 
+/** A hand call on a card — ▲ lead or a pile slot — is a call about THIS weekend, so the card is
+ *  filed under the This-weekend lens the default deck opens on. Without this (2026-09-18) the pile's
+ *  #1 (Foam, filed `new`) and #3 (Kusama, filed `always`) were dealt first by orderServed and shown
+ *  to nobody: DEFAULT_WHENS is ['weekend'], and both sat outside it. effectiveFreshness keeps
+ *  'weekend' on any card with a real date, which every piled card has. */
+export function markThisWeekend<T extends { freshness: string }>(p: T): T {
+  p.freshness = 'weekend'   // 'new' too: it is outside the default lens as well; novelty lives in firstSeen, not here
+  return p
+}
+
 /** Which published pick a pile/lead title means. EXACT first (case-, space- and accent-blind), the
  *  loose match second: "Yayoi Kusama" must land on the Stedelijk show, not on "Sandberg x Schilo:
  *  5-course pop-up dinner inspired by Yayoi Kusama", which the loose containment rule also accepts

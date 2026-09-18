@@ -22,7 +22,7 @@ export const CURATED_IMAGES: { match: RegExp; image: string; note: string }[] = 
     note: 'Hometown (2028) © Hailun Ma — Foam’s key visual via I amsterdam’s event record',
   },
   {
-    match: /\bnadav kander\b|\bfoam\b.*\breopen/i,
+    match: /\bnadav kander\b|\bfoam\b.*\breopen|\bfoam photography museum\b/i,
     image: 'https://app.thefeedfactory.nl/api/assets/6a9ebf475c8f415856d08d3a/Yibin_I_Sichuan_Province_China_2007_C_Nadav_Kander-cropped.webp',
     note: 'Yibin I, Sichuan (2007) © Nadav Kander — the reopening’s lead show; also carries the crawl’s reopening cards (LBB’s Friday one, I amsterdam’s weekend one)',
   },
