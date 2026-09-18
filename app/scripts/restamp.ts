@@ -34,7 +34,9 @@ import { emitLetter } from './lib/letter'
 import type { Pick } from '../src/types'
 
 const CITY = process.argv.find((a) => a.startsWith('--city='))?.split('=')[1] ?? 'amsterdam'
-const path = `${import.meta.dir}/../public/data/picks.${CITY}.json`
+// the data dir, shared with the letter hook below (refresh.ts names the same constant)
+const OUT_DIR = `${import.meta.dir}/../public/data`
+const path = `${OUT_DIR}/picks.${CITY}.json`
 const pendPath = `${import.meta.dir}/../public/data/pending.${CITY}.json`
 const feed = JSON.parse(await Bun.file(path).text()) as { generatedAt: string; restampedAt?: string; topMatches?: string[]; count?: number; picks: Pick[] }
 let pendingFile: { generatedAt: string; count?: number; pending: Pick[] } | null = null

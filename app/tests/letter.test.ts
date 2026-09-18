@@ -210,3 +210,21 @@ describe('the shipped letter agrees with the shipped feed', () => {
     expect(letter!.front.length).toBeLessThanOrEqual(FRONT_N)
   })
 })
+
+// ─── THE PUBLISHERS BOTH REACH THE LETTER ───────────────────────────────────────────────────
+// 2026-09-18: the first restamp after V.11.12 died at its last line — `OUT_DIR is not defined` —
+// because the letter hook was pasted from refresh.ts, which defines that constant, into
+// restamp.ts, which did not. Scripts are not type-checked by tsc (tsconfig includes `src` only),
+// so a free identifier in a script is only ever caught by running it. This reads both publishers
+// and insists that every name the letter hook uses is defined in the file that uses it.
+describe('both publishers define what the letter hook needs', () => {
+  for (const f of ['refresh.ts', 'restamp.ts']) {
+    it(`${f} defines OUT_DIR before handing it to emitLetter`, () => {
+      const src = readFileSync(join(import.meta.dir, '../scripts', f), 'utf8')
+      expect(src).toContain('emitLetter(OUT_DIR')
+      expect(src).toMatch(/const OUT_DIR = /)
+      expect(src.indexOf('const OUT_DIR = ')).toBeLessThan(src.indexOf('emitLetter(OUT_DIR'))
+    })
+  }
+})
+
