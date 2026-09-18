@@ -1,7 +1,7 @@
 {
  "v": 1,
  "city": "amsterdam",
- "builtAt": "2026-09-18T15:36:26.460Z",
+ "builtAt": "2026-09-18T15:36:44.536Z",
  "feedAt": "2026-09-18T13:44:19.168Z",
  "weekend": {
   "sat": "2026-09-19",
@@ -2008,77 +2008,10 @@
   }
  ],
  "changes": {
-  "since": "2026-09-18T13:48:30.743Z",
+  "since": "2026-09-18T15:36:26.460Z",
   "in": [],
   "out": [],
-  "moved": [
-   {
-    "id": "web-iams-yayoi-kusama",
-    "title": "Yayoi Kusama",
-    "from": 3,
-    "to": 2
-   },
-   {
-    "id": "web-scout-hailun-ma-hometown",
-    "title": "Hailun Ma: Hometown",
-    "from": 5,
-    "to": 3
-   },
-   {
-    "id": "web-iams-ligconcert-presents-lying-down-concert-at-the-maritime-museum",
-    "title": "Ligconcert® presents: lying down concert at the Maritime Museum",
-    "from": 6,
-    "to": 4
-   },
-   {
-    "id": "web-lbb-ij-hallen-flea-market",
-    "title": "IJ-Hallen Flea Market",
-    "from": null,
-    "to": 5
-   },
-   {
-    "id": "web-ra-2495691",
-    "title": "Lola x BRET - Midas Field Curates",
-    "from": null,
-    "to": 6
-   },
-   {
-    "id": "web-iams-museum-market",
-    "title": "Museum Market",
-    "from": null,
-    "to": 8
-   },
-   {
-    "id": "web-ra-2524889",
-    "title": "Athenaeum Boekhandel 60 jaar w/ Parisienne b2b Terrakin b2b Vinz Sosa",
-    "from": null,
-    "to": 9
-   },
-   {
-    "id": "web-iams-tapt-festival-amsterdam-west",
-    "title": "Tapt Festival Amsterdam-West",
-    "from": 2,
-    "to": null
-   },
-   {
-    "id": "web-iams-classical-music-at-amstelveld",
-    "title": "Budget Option: Klassiek op het Amstelveld (KOHA)",
-    "from": 4,
-    "to": null
-   },
-   {
-    "id": "web-iams-west-beach-film-festival",
-    "title": "West Beach Film Festival",
-    "from": 9,
-    "to": null
-   },
-   {
-    "id": "web-iams-10-years-muze-van-zuid-vrijhaven-voor-muziek",
-    "title": "10 years Muze van Zuid: Vrijhaven voor Muziek",
-    "from": 8,
-    "to": null
-   }
-  ]
+  "moved": []
  },
  "doubts": {
   "noPhoto": [
