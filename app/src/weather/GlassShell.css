@@ -199,8 +199,8 @@ html[data-field='glass'][data-face^='glass'] .np-material-mark { border-color:tr
      frosted  — the default: readable at a glance, still glass
      smoked   — always dark, white ink; the night pane
    The ink follows the material: dark scenes and smoked glass get white controls. */
-html[data-field='glass'] { --pane: #f5f7f3; --pane-a: .66; --pane-blur: 28px; --pane-ink: #172a35; --pane-line: #ffffff66; }
-html[data-field='glass']:is([data-glass-scene='rain'],[data-glass-scene='storm'],[data-glass-scene='mixed'],[data-glass-scene='evening'],[data-daylight='night'],[data-daylight='dusk'],[data-daylight='dawn']) { --pane: #0d1724; --pane-a: .8; --pane-blur: 30px; --pane-ink: #f4f7f9; --pane-line: #ffffff33; }   /* 2026-09-18: was .5 — a yellow poster bled through the menu */
+html[data-field='glass'] { --pane: #f5f7f3; --pane-a: .76; --pane-blur: 30px; --pane-ink: #172a35; --pane-line: #ffffff66; }   /* 2026-09-19: firmer — Ness: "legibility issues" */
+html[data-field='glass']:is([data-glass-scene='rain'],[data-glass-scene='storm'],[data-glass-scene='mixed'],[data-glass-scene='evening'],[data-daylight='night'],[data-daylight='dusk'],[data-daylight='dawn']) { --pane: #0d1724; --pane-a: .86; --pane-blur: 32px; --pane-ink: #f4f7f9; --pane-line: #ffffff33; }   /* 2026-09-18: was .5 — a yellow poster bled through the menu */
 html[data-field='glass'][data-menu='clear'] { --pane-a: .16; --pane-blur: 9px; }
 html[data-field='glass'][data-menu='clear']:is([data-glass-scene='rain'],[data-glass-scene='storm'],[data-glass-scene='mixed'],[data-glass-scene='evening'],[data-daylight='night'],[data-daylight='dusk'],[data-daylight='dawn']) { --pane-a: .2; }
 html[data-field='glass'][data-menu='smoked'] { --pane: #070d14; --pane-a: .74; --pane-blur: 22px; --pane-ink: #f4f7f9; --pane-line: #ffffff2e; }
@@ -255,8 +255,8 @@ html[data-field='glass'][data-menu='smoked'] { --pane: #070d14; --pane-a: .74; -
    take a LIGHT frosted glass whatever the scene — their body copy is dark ink and must stay
    readable — with the sky and the deck showing through the frost. The toast takes dark glass. */
 html[data-field='glass'] :is(.sheet, .detail, .share, .itin-sheet, .glass-forecast, .stack-empty, .fs, .chk-card) {
-  background: color-mix(in srgb, #f6f8f4 58%, transparent);
-  -webkit-backdrop-filter: blur(20px) saturate(1.2); backdrop-filter: blur(20px) saturate(1.2);
+  background: color-mix(in srgb, #f6f8f4 72%, transparent);
+  -webkit-backdrop-filter: blur(26px) saturate(1.2); backdrop-filter: blur(26px) saturate(1.2);
   border: 1px solid transparent;
   box-shadow: 0 30px 80px -24px #0a1a2a73;
 }
@@ -334,3 +334,10 @@ html[data-field='glass'] .cal-veil { background: color-mix(in srgb, #f6f8f4 72%,
 .app--glass .saves-panel .sv-open { color: var(--pane-ink); background: color-mix(in srgb, var(--pane-ink) 8%, transparent); border-color: color-mix(in srgb, var(--pane-ink) 18%, transparent); }
 .app--glass .saves-panel .sv-open:hover { background: color-mix(in srgb, var(--pane-ink) 14%, transparent); }
 .app--glass .saves-panel .sv-thumb { background-color: color-mix(in srgb, var(--pane-ink) 12%, transparent); }
+
+/* ═══ INK ON GLASS (2026-09-19) ═══════════════════════════════════════════════════════════════
+   The frost is firmer now (72% on the sheets, 76% / 86% on the panes) and the secondary ink is
+   darker: the muted greys that read on paper faded on glass. Ness: "where it says what this is
+   being pulled from, underneath the headline — we were losing that." */
+html[data-field='glass'] :is(.detail-venue, .detail-when .verify, .detail-when, .glass-card-caption) { color: var(--ink-2); }
+html[data-field='glass'] :is(.sheet, .fs, .share, .itin-sheet, .glass-forecast) :is(.fs-hint, .sv-sub, .sheet-hint, .glass-forecast-note, .fs-sub) { color: var(--ink-2); }

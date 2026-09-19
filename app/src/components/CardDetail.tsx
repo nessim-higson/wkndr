@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { placeOf } from '../lib/place'
 import { headerImageOf, originalOf } from '../lib/image'
 import { AnimatePresence, motion, useDragControls } from 'framer-motion'
 import { X, Star, ArrowUpRight, Check, Maximize2, Sparkles } from 'lucide-react'
@@ -93,7 +94,7 @@ export function CardDetail({
   async function share() {
     if (!pick) return
     const url = `${shareBase()}?w=${shortCode(pick)}`
-    const data = { title: pick.title, text: `${pick.title} — ${pick.venue}, ${pick.area}`, url }
+    const data = { title: pick.title, text: [pick.title, [placeOf(pick), pick.area].filter(Boolean).join(', ')].filter(Boolean).join(' — '), url }
     if (navigator.share) {
       // cancelling the native sheet rejects with AbortError — that's a decision, not a
       // failure. Only a real failure falls through to the clipboard; a cancel must not
@@ -181,7 +182,7 @@ export function CardDetail({
                 <motion.h2 className="detail-title" variants={itemV}>{pick.title}</motion.h2>
                 <motion.div className="detail-venue" variants={itemV}>
                   {/* venue repeats the title for venue-IS-the-pick rows (restaurants, shops) — skip it */}
-                  {[pick.venue !== pick.title ? pick.venue : null, pick.area, pick.price].filter(Boolean).join(' · ')}
+                  {[placeOf(pick) !== pick.title ? placeOf(pick) : null, pick.area, pick.price].filter(Boolean).join(' · ')}
                 </motion.div>
                 {pick.blurb && <motion.p className="detail-blurb" variants={itemV}>{pick.blurb}</motion.p>}
 

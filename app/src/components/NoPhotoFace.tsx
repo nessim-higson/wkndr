@@ -1,4 +1,5 @@
 import type { Pick } from '../types'
+import { placeOf } from '../lib/place'
 import { CATEGORY_LABEL } from '../types'
 import { titleMark } from '../lib/card-material'
 import { resolveGeo } from '../lib/geo'
@@ -20,7 +21,7 @@ export function NoPhotoFace({ pick }: { pick: Pick }) {
       </svg>
     </div>
     <div className="np-stub">
-      {pick.venue && <p className="np-venue">{pick.venue}</p>}
+      {placeOf(pick) && <p className="np-venue">{placeOf(pick)}</p>}
       <div className="np-facts">
         <span>{place.district ?? pick.area}</span>
         {pick.price && <span>{pick.price}</span>}

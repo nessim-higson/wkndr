@@ -1,4 +1,5 @@
 import type { CSSProperties } from 'react'
+import { placeOf } from '../lib/place'
 import { glassSignature } from '../lib/card-material'
 import { Maximize2, Clock } from 'lucide-react'
 import type { Pick, Mode } from '../types'
@@ -55,7 +56,7 @@ export function Card({ pick, temp, mode }: { pick: Pick; temp?: number; mode?: M
       ) : (
         <div className="card-body">
           <h2 className="card-title">{pick.title}</h2>
-          <p className="glass-card-caption">{[pick.venue, pick.price].filter(Boolean).join(' · ')}</p>
+          <p className="glass-card-caption">{[placeOf(pick), pick.price].filter(Boolean).join(' · ')}</p>
         </div>
       )}
     </article>

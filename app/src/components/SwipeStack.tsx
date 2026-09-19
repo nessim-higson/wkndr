@@ -9,6 +9,7 @@ import { X, Star } from 'lucide-react'
 import type { Pick, SwipeDir, Mode } from '../types'
 import { Card } from './Card'
 import './SwipeStack.css'
+import { placeOf } from '../lib/place'
 
 // reduced motion: no entrance choreography, no exit tumble — cards land/leave in a step
 const PRM = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -284,7 +285,7 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
            (Enter/Space opens details; ←/→ skip/save ride the global handler below) */
         role={interactive ? 'button' : undefined}
         tabIndex={interactive ? 0 : -1}
-        aria-label={interactive ? `${pick.title} — ${pick.venue}, ${pick.when}. Enter opens details; arrow keys skip or save.` : undefined}
+        aria-label={interactive ? `${pick.title} — ${[placeOf(pick), pick.when].filter(Boolean).join(', ')}. Enter opens details; arrow keys skip or save.` : undefined}
         onKeyDown={interactive ? (e: { key: string; preventDefault: () => void }) => {
           if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onOpen?.(pick, cardRef.current?.getBoundingClientRect()) }
         } : undefined}
@@ -437,7 +438,7 @@ export function SwipeStack({
 
       {/* the top card announced for screen readers as the deck advances */}
       <div className="sr-only" aria-live="polite">
-        {visible[0] ? `${visible[0].title} — ${visible[0].venue}, ${visible[0].when}` : ''}
+        {visible[0] ? `${visible[0].title} — ${[placeOf(visible[0]), visible[0].when].filter(Boolean).join(', ')}` : ''}
       </div>
 
       {weatherBrief}
