@@ -42,6 +42,11 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
   two channels (fast-lane worker + GitHub issue, payload byte-compatible; an untouched front sends an
   empty pile). Simple/Advanced gone; Formspree retired. **The old grid is parked at `/curate/legacy/`**
   (drop box, 👑, +CANON, image URL still live there). `?curate2026!` → the letter on any width.
+- **A venue is a place, never a publisher (2026-09-19, pipeline law).** The I amsterdam adapter
+  filled an unknown venue with its own name, so eleven live cards read "I amsterdam · Museumplein"
+  at the foot while their neighbours read a real place. The adapter now leaves an unknown venue
+  empty (the card shows the area), `restamp.ts` scrubs the feeds already on disk with the poster's
+  `realVenue`, and `tests/poster.test.ts` pins both. The live feed was rewritten the same morning.
   **433 tests.** The law that follows: **the board shows what changed and what the run is unsure of;
   doing nothing is a valid reply.** Take 2 ("taste as a dial" — the corpus as a living document
   inside the app) is written up in the 2026-09-11 session and unstarted.
