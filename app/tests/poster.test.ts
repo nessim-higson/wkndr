@@ -238,3 +238,12 @@ describe('the shipped unfurl composition', () => {
     expect(html).not.toContain('>c<')
   })
 })
+
+describe('a venue is a place, never a publisher — the pipeline', () => {
+  it('the adapter no longer fills an unknown venue with its own name, and the restamp scrubs the feed', async () => {
+    const adapter = await Bun.file(`${import.meta.dir}/../scripts/adapters/iamsterdam.ts`).text()
+    expect(adapter).not.toContain("venue || 'I amsterdam'")
+    const restamp = await Bun.file(`${import.meta.dir}/../scripts/restamp.ts`).text()
+    expect(restamp).toContain('p.venue = realVenue(p)')
+  })
+})

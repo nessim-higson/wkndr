@@ -31,6 +31,7 @@ import { heroPicks } from './heroes'
 import { whenIsPast, whenLooksBroken } from '../src/lib/when'
 import { effectiveFreshness } from '../src/lib/freshness'
 import { emitLetter } from './lib/letter'
+import { realVenue } from './poster'
 import type { Pick } from '../src/types'
 
 const CITY = process.argv.find((a) => a.startsWith('--city='))?.split('=')[1] ?? 'amsterdam'
@@ -174,6 +175,12 @@ for (const p of picks) { const c = curatedImage(p.title); if (c) { p.image = toP
 // (src/lib/freshness.ts). Without it a Tuesday compile would re-publish Thursday's labels verbatim
 // and hold the bucket open for another cycle; the fast-path would quietly out-live the slow one.
 for (const p of picks) p.freshness = effectiveFreshness(p)
+
+// A VENUE IS A PLACE, NEVER A PUBLISHER (2026-09-19) — the I amsterdam adapter used to fill an
+// unknown venue with its own name, and eleven live cards read "I amsterdam · Museumplein" at the
+// foot (Ness: "it's a little confusing, some cards have it, some don't"). The adapter no longer
+// writes it; this scrubs the feeds already on disk, with the poster's own test for it.
+for (const p of picks) p.venue = realVenue(p)
 
 // NO TWO CARDS SHARE A PHOTO — mirrored from refresh.ts (2026-09-18: a pin applied here put the
 // same photograph on two live cards, and the fast path had no pass to catch it). Canon first; a

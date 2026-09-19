@@ -100,7 +100,7 @@ export function parseEventPage(html: string, pageUrl: string, category: Category
   const pick: Pick = {
     id: `web-iams-${slugOf(pageUrl)}`,
     title: name.slice(0, 90),
-    venue: venue || 'I amsterdam',
+    venue,   // a venue is a place, never a publisher (2026-09-19): unknown stays '' — the card shows the area instead
     area,
     when: fmtWhen(startDate, endDate, wkEnd),
     category,
