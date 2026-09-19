@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { placeOf } from '../lib/place'
 import { Star, CalendarPlus } from 'lucide-react'
 import type { Pick, SwipeDir } from '../types'
 import { CATEGORY_LABEL } from '../types'
@@ -74,7 +75,7 @@ export function Itinerary({
                 />
                 <div className="itin-info">
                   <h4 className="itin-name">{p.title}</h4>
-                  <p className="itin-ven">{p.venue} · {p.area} · {CATEGORY_LABEL[p.category]}</p>
+                  <p className="itin-ven">{[placeOf(p), p.area, CATEGORY_LABEL[p.category]].filter(Boolean).join(' · ')}</p>
                 </div>
                 <button
                   className="itin-save"
