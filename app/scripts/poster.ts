@@ -673,7 +673,7 @@ try {
         const [VW, VH] = CANVAS(j.layout)
         await page.setViewport({ width: VW, height: VH, deviceScaleFactor: 1 })
         await page.setContent(posterHtml(j.picks, wx, `data:font/woff2;base64,${font}`,
-          { thumb: style, layout: j.layout, ground: j.ground, ogv }), { waitUntil: 'networkidle0', timeout: 45_000 })
+          { thumb: style, layout: j.layout, ground: j.ground, ogv }), { waitUntil: 'networkidle0' as 'load', timeout: 45_000 })
         await page.evaluateHandle('document.fonts.ready')
         shot = await page.screenshot({ type: 'png' }) as Buffer
       } finally { await page.close() }

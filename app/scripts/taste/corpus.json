@@ -280,7 +280,8 @@
     "île de bisous",
     "ile de bisous",
     "hortus summer tour",
-    "summer activities"
+    "summer activities",
+    "read my world"
   ],
   "_vetoNote": "Taste kills from the board — dropped at publish, every run, any source; matched with WORD BOUNDARIES (refresh.ts) so short names like 'monne' can't hit 'Monnickendam'. R5 late-compiles from issues #8/#9 (filed but never read): 'île de bisous' (killed TWICE — it was leading the airlock; ascii twin covers retitles) and 'hortus summer tour' (title-scoped — Hortus Botanicus itself stays ★5). Dupe-kills are deliberately NOT here: R1's Julidans/TREK/Vondelpark twins, and R2's 'The Netherlands – Japan: Connected Through Time' (EN twin of the ★4 Dutch-titled show) were dedup actions, not taste. R3 REVERSAL: 'lunchtime organ concert' removed — Ness ★4'd the Waterlooplein series (community-authentic wins); the Westerkerk lunchconcerten veto stands. R9b: 'summer activities' — the Scheepvaartmuseum card Ness killed (wrong image + generic kidsproof link); scoped tight so the canon museum entry and the venue's Ekō show are untouched.",
   "rested": [
@@ -676,6 +677,18 @@
     {
       "match": "dekmantel",
       "stars": 5
+    },
+    {
+      "match": "rush hour records",
+      "stars": 5
+    },
+    {
+      "match": "exhibition worn",
+      "stars": 4
+    },
+    {
+      "match": "peppa pig",
+      "stars": 4
     }
   ],
   "_starredNote": "★4-5 live events from the board: (a) editorScore floor 8 when present, (b) CARRIED FORWARD from the prior feed when an adapter fails to re-surface them and they're still date-valid — Ness's investment must not evaporate between runs. Matched with word boundaries (so 'bak' ≠ 'bakkerij'). R2 removals: 'oatly x radio radio' (reversed to KILL — now vetoed).",

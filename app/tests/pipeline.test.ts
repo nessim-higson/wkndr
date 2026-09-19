@@ -189,3 +189,40 @@ describe('stampServeOrder — the board reads the deck, not a mirror', () => {
     expect(out[0].servePos).toBe(1)
   })
 })
+
+describe('dedupe — a keyless twin folds into its structured record at 10 key chars (V.11.11)', () => {
+  it('"Yayoi Kusama Exhibition Opening" folds onto the organiser\'s "Yayoi Kusama"', () => {
+    const out = dedupe([
+      P({ id: 'web-iams-yayoi-kusama', title: 'Yayoi Kusama', source: 'I amsterdam', image: 'https://i/k.jpg' }),
+      P({ id: 'web-lbb-yayoi-kusama-exhibition-opening', title: 'Yayoi Kusama Exhibition Opening', source: 'Your Little Black Book' }),
+      P({ id: 'web-x-yayoi-kusama-exhibition-opens', title: 'Yayoi Kusama Exhibition Opens', source: 'Het Parool' }),
+    ])
+    expect(out.length).toBe(1)
+    expect(out[0].id).toBe('web-iams-yayoi-kusama')
+    expect(out[0].buzz).toBe(3)
+  })
+  it('a shorter shared start still does not collapse two keyless events', () => {
+    // PASS 2 measures the 't:'-prefixed key (≥12 = 10 bare chars); "jazznight" is 9
+    const out = dedupe([P({ id: 'web-a-x', title: 'Jazz Night' }), P({ id: 'web-b-y', title: 'Jazz Night Special Edition' })])
+    expect(out.length).toBe(2)
+  })
+})
+
+// A HAND CALL IS A THIS-WEEKEND CALL (2026-09-18). The pile's #1 (filed `new`) and #3 (filed
+// `always`) were dealt first and shown to nobody: the default deck opens on the This-weekend lens.
+import { markThisWeekend, pickByTitle } from '../scripts/lib/pipeline'
+describe('the slate files its cards under the default lens', () => {
+  it('a piled or led card becomes weekend, whatever it was filed as', () => {
+    expect(markThisWeekend({ freshness: 'always' }).freshness).toBe('weekend')
+    expect(markThisWeekend({ freshness: 'new' }).freshness).toBe('weekend')
+    expect(markThisWeekend({ freshness: 'weekend' }).freshness).toBe('weekend')
+  })
+  it('a pile title lands on the exact title before the loose match', () => {
+    const picks = [{ title: 'Sandberg x Schilo: 5-course pop-up dinner inspired by Yayoi Kusama' }, { title: 'Yayoi Kusama' }, { title: 'Foam' }, { title: 'FOAM Photography Museum' }]
+    expect(pickByTitle(picks, 'Yayoi Kusama')?.title).toBe('Yayoi Kusama')
+    expect(pickByTitle(picks, 'yayoi  kusama')?.title).toBe('Yayoi Kusama')
+    expect(pickByTitle(picks, 'FOAM Photography Museum')?.title).toBe('FOAM Photography Museum')
+    expect(pickByTitle(picks, 'Kusama exhibition')?.title).toBeUndefined()
+  })
+})
+

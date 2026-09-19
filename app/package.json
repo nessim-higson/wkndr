@@ -12,7 +12,9 @@
     "test": "bun test tests",
     "bump": "bun run scripts/bump.ts",
     "poster": "bun run scripts/poster.ts",
-    "ingest": "bun run scripts/ingest.ts"
+    "ingest": "bun run scripts/ingest.ts",
+    "letter": "bun run scripts/letter.ts",
+    "check:scripts": "tsc -p tsconfig.scripts.json"
   },
   "dependencies": {
     "framer-motion": "^11.15.0",
@@ -21,6 +23,7 @@
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
+    "@types/bun": "^1.4.2",
     "@types/node": "^26.1.0",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",

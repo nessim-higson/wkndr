@@ -19,16 +19,18 @@
  */
 import { CITIES, type City } from '../src/data/cities'
 import type { Pick } from '../src/types'
-import { dedupe, balanceByCategory, isGoodImage, isPortraitImage, imageBroken, urlLooksNonPhoto, imageIsCardworthy, fetchEventImage, toPortrait, wikiImage, webImageCandidates, verifyImageForEvent, venueMatchImage, venueBook, linkIsIndex, imageFocalPoint, focalFailures, originalOf, NO_PHOTO_CAP, whenBeforeWeekend, upcomingWeekend, weekendMode, weekendModes, stampServeOrder, publishCheck, crownsActive, JUDGE_FLOOR, STAR_BOOST, linkOk, mapLimit, rxOf, titleKey, titleLooseMatch, tokKey, approvalCheck, type TasteCorpus, type WeeklySlate } from './lib/pipeline'
+import { dedupe, balanceByCategory, isGoodImage, isPortraitImage, imageBroken, urlLooksNonPhoto, imageIsCardworthy, fetchEventImage, toPortrait, wikiImage, webImageCandidates, verifyImageForEvent, venueMatchImage, venueBook, linkIsIndex, imageFocalPoint, focalFailures, originalOf, NO_PHOTO_CAP, whenBeforeWeekend, upcomingWeekend, weekendMode, weekendModes, stampServeOrder, publishCheck, crownsActive, JUDGE_FLOOR, STAR_BOOST, linkOk, mapLimit, rxOf, titleKey, titleLooseMatch, tokKey, approvalCheck, pickByTitle, markThisWeekend, type TasteCorpus, type WeeklySlate } from './lib/pipeline'
 import { fixWhen, latestDateOf, whenActiveBy, whenIsPast, whenLooksBroken } from '../src/lib/when'
 import { effectiveFreshness, NEW_DAYS } from '../src/lib/freshness'
 import { mergeSightings, pruneRegistry, appendRun, type SeenRegistry, type HealthFile } from './lib/ingest'
+import { emitLetter } from './lib/letter'
 import { songkickAdapter } from './adapters/songkick'
 import { llmExtract } from './adapters/llm'
 import { websearchExtract } from './adapters/websearch'
 import { editorialScores } from './adapters/editor'
 import { raExtract, upgradeViaRa } from './adapters/ra'
 import { iamsterdamExtract, upgradeViaIamsterdam } from './adapters/iamsterdam'
+import { iamsGuideExtract, lbbWeekendTipsExtract, foldGuides } from './adapters/guides'
 import { lbbExtract } from './adapters/lbb'
 import { scoutedExtract } from './adapters/scouted'
 import { curatedImage } from './curated'
@@ -60,6 +62,10 @@ const FRESH_RANK: Record<string, number> = { new: 3, ending: 3, weekend: 2, alwa
 
 async function buildCity(city: City) {
   console.log(`\n● ${city.label}`)
+  // A build on a Saturday/Sunday afternoon targets the weekend that is ENDING (upcomingWeekend is
+  // this weekend until Sunday night) — seven such runs on 5–6 Sep 2026 left Monday–Thursday serving
+  // leftovers. The crons run Monday + Thursday; a manual weekend dispatch should know what it does.
+  { const d = new Date(); if ((d.getDay() === 0 || d.getDay() === 6) && d.getUTCHours() >= 12) console.log('  ⚠ weekend-afternoon build: this targets the weekend now ending — dispatch on Monday for next weekend') }
   const roster = ROSTERS[city.key] ?? []
 
   // NOVELTY — read LAST week's feed (the file we're about to overwrite) so we can lead with what's
@@ -110,6 +116,18 @@ async function buildCity(city: City) {
   const iams = await iamsterdamExtract(city.key)
   fromRoster.push(...iams)
   if (iams.length) console.log(`  iams:     ${iams.length} events (I amsterdam · deterministic variety)`)
+
+  // THE WEEKEND GUIDES (V.11.11) — I amsterdam's weekend guide + LBB's weekendtips, read AS guides:
+  // keyless, deterministic, every item resolved to the organiser's record when one exists. These are
+  // the two pages Ness opens when the deck feels stale, and until now neither was in the pool. A
+  // guide pick is approved at the bar, cap-exempt, and leads the deck (modes.ts GUIDE_BOOST).
+  {
+    const [ig, lt] = await Promise.all([iamsGuideExtract(city.key), lbbWeekendTipsExtract(city.key)])
+    const both = foldGuides(ig, lt, titleLooseMatch)
+    fromRoster.push(...both)
+    const resolved = both.filter((p) => /^web-(iams|ra)-/.test(p.id)).length
+    console.log(`  guides:   ${ig.length} I amsterdam weekend guide · ${lt.length} LBB weekendtips → ${both.length} (${ig.length + lt.length - both.length} named by both) · ${resolved} resolved to organiser records`)
+  }
 
   // RESIDENT ADVISOR — keyless structured club/electronic listings: exact dates, real flyer images, and an
   // `attending` popularity signal. Ness's #3 trusted source; runs alongside RSS (no API key needed).
@@ -222,6 +240,10 @@ async function buildCity(city: City) {
     let demoted = 0
     for (const p of picks) {
       if (!isLive(p) || !p.when) continue
+      // a weekend-guide feature is THIS weekend's news whatever its run length — Yayoi Kusama opened
+      // on Friday and runs to January; filing it "always good" hid the newest thing in the city from
+      // the default This-weekend view (2026-09-10)
+      if (p.guide) continue
       const latest = latestDateOf(p.when, now)
       if (!latest) continue
       const daysOut = (latest.getTime() - now.getTime()) / 864e5
@@ -249,7 +271,7 @@ async function buildCity(city: City) {
   // rescued everything I amsterdam could name; what remains is the lowest-trust object in the pool.
   // A second source vouching for it (buzz ≥ 2) keeps it — corroboration is evidence, a link is not.
   {
-    const websearch = (p: Pick) => /^web-/.test(p.id) && !/^web-(iams|ra|lbb|scout|hero)-/.test(p.id)
+    const websearch = (p: Pick) => /^web-/.test(p.id) && !/^web-(iams|ra|lbb|scout|hero|guide)-/.test(p.id)
     const before = picks.length
     const gone = picks.filter((p) => websearch(p) && (p.buzz ?? 1) < 2 && (!p.link || linkIsIndex(p.link)))
     picks = picks.filter((p) => !gone.includes(p))
@@ -275,7 +297,7 @@ async function buildCity(city: City) {
   if (!SKIP_IMAGES) {
     const live = picks.filter(isLive)
     for (const p of live) p.imageWhy = undefined                     // every receipt is earned THIS run
-    const trustedImg = (p: Pick) => /^web-(iams|ra|lbb|scout)-/.test(p.id) && !!p.image
+    const trustedImg = (p: Pick) => /^web-(iams|ra|lbb|scout|guide)-/.test(p.id) && !!p.image   // guide = the guide's own editorial photo
     const PERFORMER = new Set(['live', 'stage'])
     const visionOn = !!process.env.ANTHROPIC_API_KEY
 
@@ -560,6 +582,7 @@ async function buildCity(city: City) {
       if ((p.buzz ?? 1) >= 2) return true   // corroborated ("talked about") events are cap-EXEMPT — the caps
                                             // once ate BOTH language-twins of the H'ART Canal Parade show
       if (datedThisWeekend(p)) return true  // dated THIS weekend = cap-exempt (see above)
+      if (p.guide) return true              // a weekend-guide feature is never capped out (V.11.11)
       const fam = FAMILIES.find((f) => p.id.startsWith(f))
       if (!fam) return true
       const k = fam + p.category
@@ -580,11 +603,11 @@ async function buildCity(city: City) {
     // dated-this-weekend picks bypass the category balance too — the weekend itself is never
     // "over-represented"; the balancer's job is taming undated/evergreen floods
     const laneIds = new Set([...heroesInPool, ...raLane].map((p) => p.id))
-    const wkndExempt = picks.filter((p) => isLive(p) && datedThisWeekend(p) && !laneIds.has(p.id))
+    const wkndExempt = picks.filter((p) => isLive(p) && (datedThisWeekend(p) || !!p.guide) && !laneIds.has(p.id))
     const exempt = new Set([...heroesInPool, ...raLane, ...wkndExempt].map((p) => p.id))
     const balanced = balanceByCategory(picks.filter((p) => !exempt.has(p.id)), 8)
     const out = [...heroesInPool, ...raLane, ...wkndExempt, ...balanced]
-    console.log(`  ranked:   ${picks.length} → ${out.length} after per-category cap (${heroesInPool.length} hero-exempt · ${raLane.length} RA lane · ${wkndExempt.length} dated-this-weekend exempt) · ${novelCount} new this week`)
+    console.log(`  ranked:   ${picks.length} → ${out.length} after per-category cap (${heroesInPool.length} hero-exempt · ${raLane.length} RA lane · ${wkndExempt.length} dated-this-weekend/guide exempt · ${picks.filter((p) => p.guide).length} guide) · ${novelCount} new this week`)
     picks = out
   } else {
     console.log(`  ranked:   ${picks.length} (canon floor) · ${novelCount} new this week`)
@@ -732,7 +755,7 @@ async function buildCity(city: City) {
       const leads = leadList.map(rxOf), laters = laterList.map(rxOf)
       let l = 0, d = 0
       for (const p of picks) {
-        if (leads.some((rx) => rx.test(p.title))) { p.lead = true; p.editorScore = Math.max(p.editorScore ?? 0, 9); l++ }
+        if (leads.some((rx) => rx.test(p.title))) { p.lead = true; markThisWeekend(p); p.editorScore = Math.max(p.editorScore ?? 0, 9); l++ }
         else if (laters.some((rx) => rx.test(p.title))) { p.later = true; d++ }
       }
       for (const rx of leads) {
@@ -749,8 +772,8 @@ async function buildCity(city: City) {
       let po = 0
       const missed: string[] = []
       pileList.forEach((t, i) => {
-        const hit = picks.find((p) => titleLooseMatch(p.title, t))
-        if (hit) { hit.pilePos = i + 1; po++ } else missed.push(t)
+        const hit = pickByTitle(picks, t)
+        if (hit) { hit.pilePos = i + 1; markThisWeekend(hit); po++ } else missed.push(t)
       })
       if (l || d || po) console.log(`  slate:    ${l} ▲ lead this weekend · ${d} ▼ pushed later${po ? ` · pile order hand-set (${po}/${pileList.length})` : ''}${missed.length ? ` · pile UNMATCHED: ${missed.join(' | ')}` : ''}`)
     } else if (leadList.length || laterList.length || pileList.length) {
@@ -785,7 +808,7 @@ async function buildCity(city: City) {
     // its flyer by id. A new id that collides with a pick already in the feed = a twin: drop the carry.
     let upgraded = 0
     const twins = new Set<string>()
-    await mapLimit(picks.filter((p) => isLive(p) && !/^web-(iams|ra|lbb|scout|hero)-/.test(p.id) && !HONEST.has(p.imageWhy ?? '')), 3, async (p) => {
+    await mapLimit(picks.filter((p) => isLive(p) && !/^web-(iams|ra|lbb|scout|hero|guide)-/.test(p.id) && !HONEST.has(p.imageWhy ?? '')), 3, async (p) => {
       const r = (await upgradeViaRa(p)) ?? (await upgradeViaIamsterdam(p))
       if (!r || r === 'off-weekend') return
       if (picks.some((q) => q !== p && q.id === r.id)) { twins.add(p.id); return }
@@ -794,7 +817,7 @@ async function buildCity(city: City) {
     })
     if (twins.size) picks = picks.filter((p) => !twins.has(p.id))
     await mapLimit(picks.filter((p) => isLive(p) && p.image && !HONEST.has(p.imageWhy ?? '')), 3, async (p) => {
-      if (/^web-(iams|ra|lbb|scout)-/.test(p.id)) { p.imageWhy = 'organiser'; relabelled++; return }
+      if (/^web-(iams|ra|lbb|scout|guide)-/.test(p.id)) { p.imageWhy = 'organiser'; relabelled++; return }
       const carried = originalOf(p.image!)
       const og = p.link ? await fetchEventImage(p.link) : null
       const cands = [...new Set([og, carried].filter((u): u is string => !!u && u.startsWith('https://')))]
@@ -808,6 +831,44 @@ async function buildCity(city: City) {
 
   let pendingOut: Pick[] = []
   let noPhotoShare = 0, liveBeforeCap = 0
+
+  // (V.11.11) stamped BEFORE the airlock split, not after: stampServeOrder ranks with the app's own
+  // rankPicks, which now carries a novelty term read off firstSeen — an unstamped pick is not new.
+  // FIRST SEEN — stamp the one fact that makes "New this week" mean this week. `freshness: 'new'`
+  // is a claim (a source's, a scout's, a canon author's) and nothing ever took it back, so the
+  // bucket aged into a lie: two canon picks have carried 'new' since the day they were typed. Now
+  // every pick gets the date we FIRST met its title, carried forward untouched once set, and
+  // effectiveFreshness() honours the claim only while that date is recent (src/lib/freshness.ts).
+  //
+  // The backstop matters as much as the stamp: a title already in last week's feed with no
+  // firstSeen inherits that feed's generatedAt, NOT today. Without it the first run after this
+  // change would stamp all ~78 picks with today's date and declare the entire feed new — the exact
+  // failure we're removing, dressed as a fix.
+  // Stamps the AIRLOCK too, not just the feed: pendingOut is a disjoint slice of the same crawl,
+  // and restamp.ts promotes out of it mid-week. An unstamped promotion would arrive with a `new`
+  // claim and no record behind it, which expires on contact — the airlock would quietly launder
+  // fresh finds into stale ones.
+  //
+  // Three cases, and the middle one is the whole transition:
+  //   recorded last week      → carry that date forward, untouched, forever
+  //   in last week's feed but unrecorded (legacy) → leave ABSENT; we never saw it arrive
+  //   not in last week's feed → today; this is the run it arrived
+  {
+    const today = new Date().toISOString().slice(0, 10)
+    for (const p of [...picks, ...pendingOut]) {
+      const k = titleKey(p.title)
+      p.firstSeen = firstSeenOf.get(k) ?? (seenLastWeek.has(k) ? undefined : today)
+      p.freshness = effectiveFreshness(p)
+    }
+    // write this run's sightings back so the registry stays whole even if the daily poll dies —
+    // the two writers share one min-date merge, so they can only ever make each other more precise
+    registry = pruneRegistry(mergeSightings(registry, [...picks, ...pendingOut].map((p) => titleKey(p.title)), today), today)
+    await Bun.write(`${OUT_DIR}/seen.${city.key}.json`, JSON.stringify(registry, null, 1))
+    const arrived = picks.filter((p) => p.firstSeen === today).length
+    const legacy = picks.filter((p) => !p.firstSeen).length
+    console.log(`  seen:     ${arrived} first seen today · ${legacy} undated legacy · ${picks.filter((p) => p.freshness === 'new').length} claim New (≤${NEW_DAYS}d)`)
+  }
+
   {
     // THE BAR, INVERTED (2026-08-29). This gate used to be an ALLOW-LIST: a live pick published only
     // if it matched something Ness had already approved on the board. That made the app structurally
@@ -872,41 +933,6 @@ async function buildCity(city: City) {
     const before = picks.length
     picks = picks.filter((p) => !whenLooksBroken(p.when))
     if (before !== picks.length) console.log(`  broken:   dropped ${before - picks.length} malformed date range(s) at the gate`)
-  }
-
-  // FIRST SEEN — stamp the one fact that makes "New this week" mean this week. `freshness: 'new'`
-  // is a claim (a source's, a scout's, a canon author's) and nothing ever took it back, so the
-  // bucket aged into a lie: two canon picks have carried 'new' since the day they were typed. Now
-  // every pick gets the date we FIRST met its title, carried forward untouched once set, and
-  // effectiveFreshness() honours the claim only while that date is recent (src/lib/freshness.ts).
-  //
-  // The backstop matters as much as the stamp: a title already in last week's feed with no
-  // firstSeen inherits that feed's generatedAt, NOT today. Without it the first run after this
-  // change would stamp all ~78 picks with today's date and declare the entire feed new — the exact
-  // failure we're removing, dressed as a fix.
-  // Stamps the AIRLOCK too, not just the feed: pendingOut is a disjoint slice of the same crawl,
-  // and restamp.ts promotes out of it mid-week. An unstamped promotion would arrive with a `new`
-  // claim and no record behind it, which expires on contact — the airlock would quietly launder
-  // fresh finds into stale ones.
-  //
-  // Three cases, and the middle one is the whole transition:
-  //   recorded last week      → carry that date forward, untouched, forever
-  //   in last week's feed but unrecorded (legacy) → leave ABSENT; we never saw it arrive
-  //   not in last week's feed → today; this is the run it arrived
-  {
-    const today = new Date().toISOString().slice(0, 10)
-    for (const p of [...picks, ...pendingOut]) {
-      const k = titleKey(p.title)
-      p.firstSeen = firstSeenOf.get(k) ?? (seenLastWeek.has(k) ? undefined : today)
-      p.freshness = effectiveFreshness(p)
-    }
-    // write this run's sightings back so the registry stays whole even if the daily poll dies —
-    // the two writers share one min-date merge, so they can only ever make each other more precise
-    registry = pruneRegistry(mergeSightings(registry, [...picks, ...pendingOut].map((p) => titleKey(p.title)), today), today)
-    await Bun.write(`${OUT_DIR}/seen.${city.key}.json`, JSON.stringify(registry, null, 1))
-    const arrived = picks.filter((p) => p.firstSeen === today).length
-    const legacy = picks.filter((p) => !p.firstSeen).length
-    console.log(`  seen:     ${arrived} first seen today · ${legacy} undated legacy · ${picks.filter((p) => p.freshness === 'new').length} claim New (≤${NEW_DAYS}d)`)
   }
 
   // PUBLISH GATE — refuse to ship a BROKEN feed. A quiet/thin weekend is NOT broken (it just warns); only the
@@ -1017,6 +1043,14 @@ async function buildCity(city: City) {
       .map((p) => ({ id: p.id, title: p.title, venue: p.venue, area: p.area, when: p.when, category: p.category, image: p.image, imageWhy: p.imageWhy, blurb: p.blurb, source: p.source, link: p.link, buzz: p.buzz, weatherFit: p.weatherFit, freshness: p.freshness, firstSeen: p.firstSeen, outdoor: p.outdoor, kid: p.kid, price: p.price, why: p.why, editorScore: p.editorScore }))
     await Bun.write(`${OUT_DIR}/candidates.${city.key}.json`, JSON.stringify({ generatedAt: feed.generatedAt, count: cands.length, candidates: cands }, null, 2))
     console.log(`  → wrote candidates.${city.key}.json (${cands.length} bench events for the Curation Board)`)
+  }
+
+  // THE LETTER (V.11.12) — the board's content, written by the run that knows it. Last on purpose:
+  // it reads the bench + ingest health this run just wrote, and the letter it overwrites is the
+  // baseline for "what changed". Best-effort — a letter can never fail a publish.
+  {
+    const letter = await emitLetter(OUT_DIR, city.key, { generatedAt: feed.generatedAt, picks, pending: pendingOut })
+    if (letter) console.log(`  → wrote letter.${city.key}.json (front ${letter.counts.front} · +${letter.changes.in.length} −${letter.changes.out.length} ~${letter.changes.moved.length} since ${letter.changes.since ? letter.changes.since.slice(0, 16) : 'never'} · ${letter.health.tag})`)
   }
 }
 

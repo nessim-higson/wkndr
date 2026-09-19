@@ -69,6 +69,26 @@ export function titleLooseMatch(feedTitle: string, entry: string): boolean {
   return shared >= 2 && shared >= Math.min(ta.size, tb.size) * 0.75
 }
 
+/** A hand call on a card — ▲ lead or a pile slot — is a call about THIS weekend, so the card is
+ *  filed under the This-weekend lens the default deck opens on. Without this (2026-09-18) the pile's
+ *  #1 (Foam, filed `new`) and #3 (Kusama, filed `always`) were dealt first by orderServed and shown
+ *  to nobody: DEFAULT_WHENS is ['weekend'], and both sat outside it. effectiveFreshness keeps
+ *  'weekend' on any card with a real date, which every piled card has. */
+export function markThisWeekend<T extends { freshness: string }>(p: T): T {
+  p.freshness = 'weekend'   // 'new' too: it is outside the default lens as well; novelty lives in firstSeen, not here
+  return p
+}
+
+/** Which published pick a pile/lead title means. EXACT first (case-, space- and accent-blind), the
+ *  loose match second: "Yayoi Kusama" must land on the Stedelijk show, not on "Sandberg x Schilo:
+ *  5-course pop-up dinner inspired by Yayoi Kusama", which the loose containment rule also accepts
+ *  and which `find` happened to meet first (2026-09-18). */
+export function pickByTitle<T extends { title: string }>(picks: T[], entry: string): T | undefined {
+  const norm = (x: string) => x.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, ' ').trim()
+  const e = norm(entry)
+  return picks.find((p) => norm(p.title) === e) ?? picks.find((p) => titleLooseMatch(p.title, entry))
+}
+
 // ─── THE AIRLOCK — approval matching ─────────────────────────────────────────
 // Ness's decision (2026-07-10): the live deck is 1:1 with his Curation Board approvals. This
 // builds the ONE predicate that refresh.ts (the publish split), restamp.ts (promote/demote)
@@ -136,14 +156,14 @@ export const STAR_BOOST = Number(process.env.WKNDR_STAR_BOOST ?? 2)
  *  gating on it would be circular — approved picks clearing a bar their own approval had set. */
 export function publishCheck(
   corpus: TasteCorpus, weekly: WeeklySlate, heroTitles: string[], now: Date = new Date(),
-): (p: { title: string; buzz?: number; judgeScore?: number }) => boolean {
+): (p: { title: string; buzz?: number; judgeScore?: number; guide?: string }) => boolean {
   const approved = approvalCheck(corpus, weekly, heroTitles, now)
   return (p) => (p.judgeScore ?? 0) >= JUDGE_FLOOR || approved(p)
 }
 
 export function approvalCheck(
   corpus: TasteCorpus, weekly: WeeklySlate, heroTitles: string[], now: Date = new Date(),
-): (p: { title: string; buzz?: number }) => boolean {
+): (p: { title: string; buzz?: number; guide?: string }) => boolean {
   const rx: RegExp[] = [
     ...corpus.starredKeeps.map((k) => rxOf(k.match)),
     ...corpus.topPicks.map(rxOf),
@@ -156,6 +176,7 @@ export function approvalCheck(
     : []
   const heroKeys = new Set(heroTitles.map(titleKey))
   return (p) =>
+    !!p.guide ||                      // V.11.11: the city's weekend guides ARE the taste signal
     (p.buzz ?? 1) >= 3 ||
     heroKeys.has(titleKey(p.title)) ||
     rx.some((r) => r.test(p.title)) ||
@@ -194,7 +215,10 @@ export function dedupe(picks: Pick[]): Pick[] {
     // keep the strongest draw signal through the merge — the {...richer} spread would otherwise drop it
     // when the richer record is the one WITHOUT a popularity count (e.g. a web-search dup of an RA night).
     const popularity = Math.max(a.popularity ?? 0, b.popularity ?? 0) || undefined
-    return { ...a, ...richer, source, buzz, popularity }
+    // an editorial feature survives the merge whichever record is richer (V.11.11) — two guides
+    // naming the same event read as one line, and count as corroboration through `source`
+    const guide = [...new Set([a.guide, b.guide].flatMap((g) => (g ? g.split(' · ') : [])))].join(' · ') || undefined
+    return { ...a, ...richer, source, buzz, popularity, guide }
   }
 
   // Structured sources (I amsterdam, RA) carry a STABLE per-event id (a slug), so two similarly-titled but
@@ -247,12 +271,16 @@ export function dedupe(picks: Pick[]): Pick[] {
     let s = struct.get(k)
     // near-match fold: "World Press Photo EXHIBITION 2026" (keyless) must fold into "World Press
     // Photo 2026" (structured) — same prefix rule PASS 2 uses among keyless picks (≥12 chars).
-    if (!s) for (const [sk, sp] of struct) { if ((sk.length >= 12 && k.startsWith(sk)) || (k.length >= 12 && sk.startsWith(k))) { s = sp; break } }
+    // ≥ 10 key chars here (PASS 2 keeps 12): a keyless twin folding INTO a structured record is the safe
+    // direction — the organiser's facts win — and "yayoikusama" is 11. Four Kusama cards, 2026-09-10.
+    if (!s) for (const [sk, sp] of struct) { if ((sk.length >= 10 && k.startsWith(sk)) || (k.length >= 10 && sk.startsWith(k))) { s = sp; break } }
     if (s) {
       const u = unionCredits(s.source, p.source)
       s.source = u.source
       s.buzz = u.buzz
       s.popularity = Math.max(s.popularity ?? 0, p.popularity ?? 0) || undefined
+      const guide = [...new Set([s.guide, p.guide].flatMap((g) => (g ? g.split(' · ') : [])))].join(' · ')
+      if (guide) s.guide = guide
     } else kept.push(p)
   }
   return kept
@@ -999,12 +1027,22 @@ export function matchEventLoc(title: string, locs: string[]): string | null {
 }
 
 /** Does a fetched event's own name agree with the title we matched it from? Same overlap rule. */
+const GENERIC_TOKEN = /^(festival|market|markt|amsterdam|museum|day|dag|night|nacht|party|open|weekend|summer|zomer|winter|editie|edition|international|edition|concert|show|tour|exhibition|tentoonstelling)$/
+const stem = (t: string) => t.replace(/(ies)$/, 'y').replace(/(?<=[a-z]{3})e?s$/, '')
 export function titlesAgree(a: string, b: string): boolean {
-  const ta = titleTokens(a), tb = new Set(titleTokens(b))
+  const ta = titleTokens(a).map(stem), tbl = titleTokens(b).map(stem), tb = new Set(tbl)
   if (!ta.length || !tb.size) return false
   const hit = ta.filter((t) => tb.has(t)).length
   const need = ta.length === 1 ? 1 : Math.max(2, Math.ceil(Math.min(ta.length, tb.size) * 0.6))
-  return hit >= need
+  if (hit < need) return false
+  // the overlap rule alone lets "Phono Lake Festival" agree with "Reggae Lake Festival" (lake +
+  // festival). When each title's FIRST distinctive word is missing from the other, they are two
+  // events sharing a venue or a genre, not one event in two languages ("Open House X TF" ↔ "Open
+  // Huis X TF" still agrees: "house" is missing from one side, but "meervaart" is on both).
+  const distinct = (ts: string[]) => ts.find((t) => t.length >= 5 && !GENERIC_TOKEN.test(t))
+  const da = distinct(ta), db = distinct(tbl)
+  if (da && db && da !== db && !tb.has(da) && !new Set(ta).has(db)) return false
+  return true
 }
 
 // VENUE MATCH — the one honest borrow. A pick AT a canon place may wear that place's photo: the

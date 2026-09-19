@@ -25,15 +25,19 @@
  */
 import corpus from './taste/corpus.json'
 import weekly from './taste/weekly.json'
-import { rxOf, titleLooseMatch, tokKey, upcomingWeekend, crownsActive, publishCheck, STAR_BOOST, NO_PHOTO_CAP, weekendModes, stampServeOrder, toPortrait, approvalCheck, type TasteCorpus, type WeeklySlate } from './lib/pipeline'
+import { rxOf, titleLooseMatch, tokKey, upcomingWeekend, crownsActive, publishCheck, STAR_BOOST, NO_PHOTO_CAP, weekendModes, stampServeOrder, toPortrait, originalOf, approvalCheck, pickByTitle, markThisWeekend, type TasteCorpus, type WeeklySlate } from './lib/pipeline'
 import { curatedImage } from './curated'
 import { heroPicks } from './heroes'
 import { whenIsPast, whenLooksBroken } from '../src/lib/when'
 import { effectiveFreshness } from '../src/lib/freshness'
+import { emitLetter } from './lib/letter'
+import { realVenue } from './poster'
 import type { Pick } from '../src/types'
 
 const CITY = process.argv.find((a) => a.startsWith('--city='))?.split('=')[1] ?? 'amsterdam'
-const path = `${import.meta.dir}/../public/data/picks.${CITY}.json`
+// the data dir, shared with the letter hook below (refresh.ts names the same constant)
+const OUT_DIR = `${import.meta.dir}/../public/data`
+const path = `${OUT_DIR}/picks.${CITY}.json`
 const pendPath = `${import.meta.dir}/../public/data/pending.${CITY}.json`
 const feed = JSON.parse(await Bun.file(path).text()) as { generatedAt: string; restampedAt?: string; topMatches?: string[]; count?: number; picks: Pick[] }
 let pendingFile: { generatedAt: string; count?: number; pending: Pick[] } | null = null
@@ -145,13 +149,13 @@ const satKey = `${sat.getFullYear()}-${String(sat.getMonth() + 1).padStart(2, '0
 if ((weekly.weekend as string) === satKey) {
   const leads = (weekly.lead as string[]).map(rxOf), laters = (weekly.later as string[]).map(rxOf)
   for (const p of picks) {
-    if (leads.some((rx) => rx.test(p.title))) { p.lead = true; p.editorScore = Math.max(p.editorScore ?? 0, 9) }
+    if (leads.some((rx) => rx.test(p.title))) { p.lead = true; markThisWeekend(p); p.editorScore = Math.max(p.editorScore ?? 0, 9) }
     else if (laters.some((rx) => rx.test(p.title))) p.later = true
   }
   const missed: string[] = []
   ;((weekly as { pile?: string[] }).pile ?? []).forEach((t, i) => {
-    const hit = picks.find((p) => titleLooseMatch(p.title, t))
-    if (hit) hit.pilePos = i + 1
+    const hit = pickByTitle(picks, t)
+    if (hit) { hit.pilePos = i + 1; markThisWeekend(hit) }
     else missed.push(t)
   })
   if (missed.length) console.log(`  pile UNMATCHED: ${missed.join(' | ')}`)
@@ -165,12 +169,40 @@ if (picks.length < 20) { console.error(`✖ restamp abstained: only ${picks.leng
 
 // curated image pins apply on the fast-path too — an img-url verdict (board → curated.ts) lands
 // in ~90s instead of waiting for Thursday's image pass. Wrapped like every card image.
-for (const p of picks) { const c = curatedImage(p.title); if (c) p.image = toPortrait(c) }
+for (const p of picks) { const c = curatedImage(p.title); if (c) { p.image = toPortrait(c); p.imageWhy = 'curated' } }   // the receipt follows the pin (2026-09-18: a pinned card shipped with a 'none' receipt)
 
 // FRESHNESS DECAY — a restamp republishes the feed, so re-derive the `new` claim against firstSeen
 // (src/lib/freshness.ts). Without it a Tuesday compile would re-publish Thursday's labels verbatim
 // and hold the bucket open for another cycle; the fast-path would quietly out-live the slow one.
 for (const p of picks) p.freshness = effectiveFreshness(p)
+
+// A VENUE IS A PLACE, NEVER A PUBLISHER (2026-09-19) — the I amsterdam adapter used to fill an
+// unknown venue with its own name, and eleven live cards read "I amsterdam · Museumplein" at the
+// foot (Ness: "it's a little confusing, some cards have it, some don't"). The adapter no longer
+// writes it; this scrubs the feeds already on disk, with the poster's own test for it.
+for (const p of picks) p.venue = realVenue(p)
+
+// NO TWO CARDS SHARE A PHOTO — mirrored from refresh.ts (2026-09-18: a pin applied here put the
+// same photograph on two live cards, and the fast path had no pass to catch it). Canon first; a
+// venue-borrow may share its owner's photo; among live cards the hand pile keeps, then the better
+// serve position keeps, and the later twin goes without — an honest blank, not a borrowed photo.
+{
+  const isLiveP = (p: Pick) => ['llm-', 'web-', 'rss-', 'sk-'].some((pre) => p.id.startsWith(pre))
+  const rank = (p: Pick) => (p.pilePos ?? 99) * 10000 + (p.servePos ?? 9999)
+  const owner = new Map<string, 'canon' | 'live'>()
+  let dupes = 0
+  for (const p of [...picks.filter((p) => !isLiveP(p)), ...picks.filter(isLiveP).sort((a, b) => rank(a) - rank(b))]) {
+    if (!p.image) continue
+    const k = originalOf(p.image)
+    const o = owner.get(k)
+    if (o) {
+      if (isLiveP(p) && !(o === 'canon' && p.imageWhy === 'venue')) { p.image = undefined; p.imageWhy = 'none'; dupes++ }
+      continue
+    }
+    owner.set(k, isLiveP(p) ? 'live' : 'canon')
+  }
+  if (dupes) console.log(`  unique:   ${dupes} duplicate card photos → the later card goes without`)
+}
 
 // re-stamp the projected serve order — verdicts just moved cards, the board must see the real front
 picks = stampServeOrder(picks, await weekendModes())   // per-day: a Sunday pick stamped by Sunday
@@ -183,6 +215,12 @@ await Bun.write(path, JSON.stringify(feed, null, 1))
 if (pendingFile) {
   // generatedAt preserved — the airlock belongs to the round it was crawled in
   await Bun.write(pendPath, JSON.stringify({ generatedAt: pendingFile.generatedAt, count: pendingKeep.length, pending: pendingKeep }, null, 2))
+}
+// THE LETTER (V.11.12) — a restamp republishes the feed, so the board's letter is rewritten from the
+// same picks (the fast path must never leave the letter describing a deck that no longer exists).
+{
+  const letter = await emitLetter(OUT_DIR, CITY, { generatedAt: feed.generatedAt, picks, pending: pendingFile ? pendingKeep : [] })
+  if (letter) console.log(`  → letter.${CITY}.json rewritten (front ${letter.counts.front} · +${letter.changes.in.length} −${letter.changes.out.length} ~${letter.changes.moved.length})`)
 }
 console.log(`✓ restamped ${CITY}: ${before} → ${picks.length} picks · tops ${picks.filter((p) => p.top).length} · pile ${picks.filter((p) => p.pilePos).length}` +
   `${pendingFile ? ` · airlock: +${promoted} promoted · ${demoted} demoted · ${pendingKeep.length} pending` : ''}` +

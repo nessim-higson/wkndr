@@ -22,6 +22,7 @@ jobs:
       - uses: oven-sh/setup-bun@v2
       - run: cd app && bun install
       - run: cd app && bun run test
+      - run: cd app && bun run check:scripts   # scripts sit outside tsc -b (2026-09-18: two runs died on a free identifier)
       - run: cd app && bun run scripts/restamp.ts --city=amsterdam
       - name: Weekend poster
         continue-on-error: true

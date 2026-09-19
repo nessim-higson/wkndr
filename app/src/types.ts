@@ -52,6 +52,10 @@ export interface Pick {
                        // crop centres on it (wsrv a=focal) and the card positions the uncropped
                        // source by it (background-position), so a wide desktop card and a tall phone
                        // card both keep the subject. Absent = centre-weighted default (50% 40%).
+  guide?: string       // THE EDITORIAL FEATURE (V.11.11) — which weekend guide(s) listed it this week
+                       // ("I amsterdam weekend guide" · "LBB weekendtips"). The city's two editorial
+                       // "this weekend" lists are the freshness signal WKNDR was missing: a guide
+                       // pick is approved at the publish bar, exempt from the caps, +3 in the deck.
   imageWhy?: ImageWhy  // THE IMAGE RECEIPT (V.11.9) — where the photo came from, stamped by the
                        // pipeline on every live pick (canon is hand-imaged, unstamped). The board
                        // renders it as a chip so a wrong-photo class is a 2-minute glance, not a
@@ -151,6 +155,8 @@ export function cardSignal(p: Pick, live?: Mode): CardSignal | null {
   // should have some indication of best for this rainy day"). A generic "Perfect this weekend"
   // asks to be trusted; "Perfect for a rainy day" explains itself.
   if (weatherPill(p, live).perfect) return { text: live === 'COLD_WET' ? 'Perfect for a rainy day' : 'Perfect this weekend', tone: 'accent', glow: true }
+  // the city's own weekend guide named it — for a stranger, the strongest "why now" after the weather
+  if (p.guide) return { text: 'Weekend guide', tone: 'accent' }
   if (p.status) {
     const tone = p.status === 'final-week' ? 'red' : p.status === 'free' ? 'green' : p.status === 'sold-out' ? 'dim' : 'accent'
     return { text: STATUS_LABEL[p.status], tone }

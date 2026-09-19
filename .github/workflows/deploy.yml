@@ -74,6 +74,21 @@ jobs:
       - name: Build app (domain target)
         run: cd app && bun run build:domain
 
+      # THE /v2 MOUNT (2026-09-18). The weather-glass variation (codex/weather-glass) is built with
+      # base /v2/ and copied into the production artifact, so app.wkndr.xyz/v2/ is the same build as
+      # its preview, on the same domain as production, reading the same live feed — for comparing
+      # the two side by side. Non-fatal on purpose: a broken branch must never hold up the domain.
+      # Production stays main; /v2 is a guest. Remove this step when the variation graduates or closes.
+      - name: Mount /v2 (the weather-glass variation)
+        continue-on-error: true
+        run: |
+          git fetch --depth=1 origin codex/weather-glass
+          git worktree add ../v2 FETCH_HEAD
+          cd ../v2/app && bun install --frozen-lockfile
+          WKNDR_DEPLOY=domain WKNDR_BASE=/v2/ VITE_DATA_ORIGIN=https://app.wkndr.xyz/ bun run build
+          mkdir -p "$GITHUB_WORKSPACE/app/dist/v2" && cp -r dist/* "$GITHUB_WORKSPACE/app/dist/v2/"
+          echo "mounted /v2 from $(git rev-parse --short FETCH_HEAD)"
+
       - name: Deploy app → app.wkndr.xyz
         uses: cloudflare/wrangler-action@v3
         with:

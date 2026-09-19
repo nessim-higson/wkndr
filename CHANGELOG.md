@@ -14,6 +14,87 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.11.12 · app + board V.10] — 2026-09-11 — THE LETTER (the board becomes a renderer)
+Ness, Thursday, on the curation tool: "Simple versus Advanced — is it confusing?" It was, and the
+layout was not the reason. The board was built for the 1:1 airlock, when nothing shipped without him,
+so it had to show him EVERYTHING and let him assemble the week by hand; under auto-by-default
+(V.11.3) his job is review. Two takes were written; this is the first, built the same day.
+- **The pipeline writes the board's content.** `scripts/lib/letter.ts` → `data/letter.<city>.json`,
+  at the end of every refresh AND restamp (`bun run letter` rebuilds it from disk; `--prev=<an older
+  picks.json>` lends a first baseline). In it: **the front** — the deck's projected opening hand
+  (the stamped `servePos`, through the app's default *This weekend* lens) with ONE why-line per card
+  built from the facts `rankPicks` scores ("your #3 · both weekend guides · new this week · Sat");
+  **what changed** since the previous letter (in / out, with the reason a card left: past, held,
+  benched, dropped / moved from → to); **the doubts** — no-photo cards, venue borrows, the top five
+  of the airlock with the fact that holds each, title pairs the dedupe was not sure about; **one
+  health sentence** and the next build time. The letter it overwrites is the baseline, so one
+  file is the whole memory.
+- **The board renders it and nothing else.** `public/curate/index.html` rewritten (1,511 → 522
+  lines): no date brain, no weekend lens, no title-key mirror — the drift class STATE.md recorded is
+  gone by construction, and `tests/letter-board.test.ts` forbids the mirrors from returning. One
+  column, phone-first; one search box over the front, the shelf, the door and the bench; the same
+  three verbs everywhere — **★** (teaches; on a held card, admits), **✕** with the SAME eight reasons
+  and kinds, **⠿** drag (pointer events, thumbs work) or ▲▼ on the front, **↑ Front** anywhere;
+  every ruled row says where the call lands (*live in seconds* vs *on the next build*). **Reply** =
+  deltas only, on the same two channels (worker fast lane + the GitHub issue; payload lines
+  byte-compatible: `PILE-ORDER |`, `KILL`, `REST:<date>`, `why:<reason>`); an untouched front sends
+  an EMPTY pile, so the deck keeps its own order (`lib/overrides.ts`). Simple/Advanced is gone; the
+  Formspree mail is retired; doing nothing is a stated, valid reply.
+- **The old grid is parked at `/curate/legacy/`** (banner, data paths re-rooted, same Submit, same
+  key) for what the letter does not carry yet: the drop box for Instagram links, 👑 TOP, +CANON, the
+  better-image URL. `?curate2026!` opens the letter on every screen width; Triage no longer
+  auto-opens on a phone (still behind `?dev=1`). `docs/board-roadmap.md` Track A/B unchanged — the
+  letter's Reply speaks exactly those two contracts.
+- First letter written against the 6 Sep feed as its baseline: front = the guides' ten, +46 in /
+  −18 out / 5 moved. It surfaced two things on its own: a guide item wearing I amsterdam's article
+  headline as its title (open item), and 14 imageless live cards. **433 tests** (+31).
+
+## [V.11.11 · app + board V.9.48] — 2026-09-10 — FRESH LEADS (the weekend guides, read as guides)
+Ness, Thursday morning, after opening I amsterdam's weekend guide and LBB's weekendtips himself:
+"a TON of new fresh things to do this weekend … I'm constantly disappointed by how stale WKNDR
+feels when I open it. Week over week. I thought we changed things so that things update without
+my eyes." Three causes, none of them the taste engine:
+- **The Sunday build.** Seven ship-day runs on 5–6 Sep rebuilt the feed for the weekend that was
+  ending; from Monday the app served that build minus its past-dated cards — the long-runs, four
+  days straight, until Thursday's cron. → **A Monday 10:00 UTC cron** (`refresh.yml`): the first
+  build FOR the coming weekend, refreshed Thursday with the late-week guides. `refresh.ts` warns
+  when a manual dispatch would build for a weekend that is ending.
+- **Neither guide was read as a guide.** I amsterdam's page is an index the crawl never opened;
+  LBB's went through a Haiku extraction capped at ten of eighty-nine. → **`adapters/guides.ts`**:
+  both pages parsed deterministically (headings, the paragraph under each, the first link, the
+  first image — no LLM, no key), every item resolved to the organiser's record when I amsterdam
+  serves one (event page by link, else the events sitemap by title and its variants), the two
+  guides folded onto each other (`foldGuides`, the pile's loose match), dates read off the prose
+  (`whenFromText`), recurring markets evergreen, the kids list per tip. **`Pick.guide`** = the
+  editorial feature: an approval at the publish bar, exempt from the source/category/no-photo
+  caps, unioned through dedupe, "Weekend guide" as the card's pill. Tests run on the real pages of
+  10/11 Sep as fixtures.
+- **Nothing in the served ranking rewarded new.** Weather-fit and editorial score decided the
+  front; a fifth-week card ranked like a first-week one. → `rankPicks`: **GUIDE_BOOST 3 ·
+  NEW_BOOST 2** (firstSeen ≤ 7d; half to 14d) · **ONEOFF_BOOST 1.5** (a card whose last date falls
+  inside the weekend, not an "Until 17 Jan" run) · **wallpaper −1.5** (live, seen > 3 weeks, not a
+  one-off). All inside the weather tier. `firstSeen` is stamped BEFORE the projected serve order
+  so the board's pile sees it too.
+- **This weekend's slate** (`weekly.json`, 2026-09-12): the guides' ten — Yayoi Kusama · Open
+  Monuments Day · Read My World · Phono Lake Festival · Pearls of the City · Side to Side · Open
+  House X TF at Meervaart · @ H'ART: Vintage Market · Biennale Pakhuis Wilhelmina · Kwaku Downtown —
+  his explicit call; from now on the guides lead by ranking without a slate.
+- **The board says what it is** (V.9.48): "Simple / Advanced" → **"This weekend / Everything"**; a
+  fresh line under the title ("Built automatically Thu 10 Sep at 10:07 · 46 live cards · 32 new this
+  week · 24 from the weekend guides · rebuilds every Monday and Thursday. Nothing here waits for
+  you."); GUIDE / NEW / WEEK n chips on every card so wallpaper is visible as wallpaper. The deeper
+  overhaul stays with brief 004.
+- `titlesAgree` no longer lets a shared genre word pass ("Phono Lake Festival" ≠ "Reggae Lake
+  Festival"; "Open House X TF" = "Open Huis X TF" still).
+- **Found by the first two live runs, fixed the same morning:** the judge's single call truncated
+  at ~150 candidates ("JSON Parse error" → no merit scores, no semantic dedupe) → **chunked, ≤80
+  per call, a cut-off reply salvaged row by row** (`parseJudge`); a guide feature is never demoted
+  to "always" by run length (Kusama runs to January and was hidden from *This weekend*); LBB's
+  "Open this week" claims `new`; a keyless twin folds onto its structured record at **10** key chars
+  (four Kusama cards shipped — "yayoikusama" is 11); guide resolution runs in parallel with a floor
+  on title variants (the variant search had gone quadratic); the feed audit's blank ceiling is the
+  gate's own 50%. **402 tests.**
+
 ## [V.11.10 · app] — 2026-09-06 — THE END IS THE END (+ the crop, + two rescues)
 Ness, first pass through V.11.9 on a Sunday: "when I go through the cards and don't like anything, it
 reshuffles the deck with the same cards" · "Dekmantel × BRET had a great card — now it's gone" · "the

@@ -1,15 +1,18 @@
 # WKNDR — STATE (catch-me-up snapshot)
 
-_Living "where are we right now" doc — a **snapshot, not a history**. **Updated 2026-09-06.** Read this
+_Living "where are we right now" doc — a **snapshot, not a history**. **Updated 2026-09-11.** Read this
 FIRST in a new chat. For strategy + backlog see `docs/backlog.md`; for the pipeline architecture see
 `docs/pipeline-architecture.md` + `docs/source-map.md`; for **who may write to the deck vs to a personal
 profile** (board / Tune / airlock — read before touching either) see `docs/curation-surfaces.md`; for the
 **board roadmap** (auto-compile tracks) see `docs/board-roadmap.md`; for full **version history** see
-`CHANGELOG.md` (current to app **V.11.10** / board V.9.47) and the **git log / tags**. Onboarding:
-`CLAUDE.md`. App lives in `/app` (Vite + React + TS, run with `bun`); ships to **Cloudflare Pages**
+`CHANGELOG.md` (current to app **V.11.12** / board V.10) and the **git log / tags**. Onboarding:
+`CLAUDE.md`; for any coding agent (Codex included) **`AGENTS.md`** is the working manual and
+`docs/variations/` the prototype protocol + the open briefs. App lives in `/app` (Vite + React + TS, run with `bun`); ships to **Cloudflare Pages**
 (`wkndr.xyz` + `app.wkndr.xyz`) **and** GitHub Pages (legacy, keeps old share links alive)._
 
-> **START-OF-SESSION for WKNDR:** check `gh issue list --label curation` — the Curation Board's
+> **START-OF-SESSION for WKNDR:** check `gh pr list` for open `codex/**` variations (judge on their
+> preview URL, on the phone; a variation reaches `main` only through the graduation steps in
+> `docs/variations/README.md`) and `gh issue list --label curation` — the Curation Board's
 > **Submit** button files Ness's verdict rounds as repo issues. That's the canonical inbox:
 > read the open ones, compile into the taste engine (below), ship, then close the issue.
 >
@@ -27,6 +30,47 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
 > sessions update (today it's on load).
 
 ## Live right now
+- **V.11.12 — THE LETTER (2026-09-11, board V.10).** The Curation Board is now a RENDERER. The
+  pipeline writes **`data/letter.<city>.json`** at the end of every refresh and restamp
+  (`scripts/lib/letter.ts`; `bun run letter` rebuilds it from disk): the front as the deck will deal
+  it (stamped `servePos` through the app's default *This weekend* lens) with one why-line per card;
+  in / out / moved since the previous letter; the doubts (no photo, venue borrows, the airlock's top
+  five with the hold reason, twin suspects); one health sentence; the next build time.
+  `public/curate/index.html` (522 lines) reads that file and nothing else — **no date brain, no lens,
+  no title-key mirror** (`tests/letter-board.test.ts` forbids them). Verbs: ★ / ✕ (the same eight
+  reasons → kinds) / ⠿ + ▲▼ on the front / ↑ Front anywhere; **Reply** sends deltas only on the same
+  two channels (fast-lane worker + GitHub issue, payload byte-compatible; an untouched front sends an
+  empty pile). Simple/Advanced gone; Formspree retired. **The old grid is parked at `/curate/legacy/`**
+  (drop box, 👑, +CANON, image URL still live there). `?curate2026!` → the letter on any width.
+- **A venue is a place, never a publisher (2026-09-19, pipeline law).** The I amsterdam adapter
+  filled an unknown venue with its own name, so eleven live cards read "I amsterdam · Museumplein"
+  at the foot while their neighbours read a real place. The adapter now leaves an unknown venue
+  empty (the card shows the area), `restamp.ts` scrubs the feeds already on disk with the poster's
+  `realVenue`, and `tests/poster.test.ts` pins both. The live feed was rewritten the same morning.
+  **433 tests.** The law that follows: **the board shows what changed and what the run is unsure of;
+  doing nothing is a valid reply.** Take 2 ("taste as a dial" — the corpus as a living document
+  inside the app) is written up in the 2026-09-11 session and unstarted.
+- **V.11.11 — FRESH LEADS (2026-09-10, board V.9.48).** Ness: "constantly disappointed by how stale
+  WKNDR feels — week over week." Three structural causes, fixed: (1) **the Sunday build** — the
+  7 ship-day runs rebuilt the feed for the ending weekend, so Mon–Thu served leftovers → **a Monday
+  cron** joins Thursday's; (2) **the weekend guides weren't read as guides** → `adapters/guides.ts`
+  parses I amsterdam's weekend guide + LBB's weekendtips deterministically (no LLM), resolves each
+  item to the organiser's record, folds the two guides; **`Pick.guide`** = approved at the bar,
+  cap-exempt, +3 in the deck, "Weekend guide" pill; (3) **no novelty in the served order** →
+  `rankPicks` NEW/one-off/wallpaper terms, `firstSeen` stamped before the serve order. This
+  weekend's `weekly.json` slate = the guides' ten (his call). Board: "This weekend / Everything",
+  the fresh line, GUIDE/NEW/WEEK chips. **397 tests.** The law that follows: **the front of the deck
+  is what the city's guides say this weekend is, newest first; nothing in it needs Ness.**
+- **THE PROTOTYPE PROTOCOL (2026-09-07 →).** Design variations run on `codex/**` / `proto/**`
+  branches with their own preview URLs; `main` is production and this document describes `main`
+  ONLY. Shipped here: **`AGENTS.md`** (the agent manual), **`.github/workflows/preview.yml`**
+  (branch → `https://<slug>.wkndr-app.pages.dev`, gated by the same tests as the cron),
+  **`VITE_DATA_ORIGIN`** (`app/src/lib/data.ts` + CORS via `app/public/_headers`) so previews read
+  the live feed, and the briefs in `docs/variations/`. **What is in flight lives in the PRs and
+  nowhere else** — `gh pr list`, judged on the preview, reviewed in PR comments. Nothing unmerged is
+  described in this file, in `CHANGELOG.md`, or in a session memory; a variation enters the record
+  the day it graduates (rebase + `bun run bump` + its entries + merge). The one exception is the
+  reason a variation was closed, which goes to `docs/variations/README.md` § Outcomes.
 - **V.11.10 — THE END IS THE END (2026-09-06).** Ness's first pass through V.11.9 on Sunday. (1) The
   browse deck no longer recycles: **the wings** (`lib/wings.ts` = bench + judge-≥5 airlock, fetched
   lazily, dealt ONCE) are the honest "more"; then the empty state counts what you saw and **Start over
@@ -36,7 +80,19 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
   positioned on it (`lib/image.ts cardImageOf`) — the desktop card is near-square and was double-
   cropping the 800×1200 portrait render. (3) **RA upgrade on contact** (`upgradeViaRa`, by event id —
   flyer/time/attending) + **carry re-gathers instead of stripping** — both for "DKMNTL at BRET".
-  **380 tests.** First feed with focal points = the refresh dispatched on ship day.
+  **379 tests.** Six refresh runs on ship day taught the rest: the focal read as "a point" came
+  back dead-centre for 96/133 images and 52 reads were rate-limited → **ask for the subject + its
+  bounding box, take the centre, retry 429/529 with backoff, print failure reasons + the dead-centre
+  share** (run 6: 179 read, 4 failed, 42% centred — plausible for flyers; cache
+  `data/focal.amsterdam.json`, 174 entries, only new images are read from here on). Also landed:
+  `isGoodImage` **MIN_DIM 700 → 500** (the 1.6× render cap is the real floor); the venue book
+  **excludes event-shaped canon titles** ("Danh Vo at the Stedelijk" lent its photo to a Kho Liang Ie
+  show); a venue-borrow **may share its canon owner's photo** (Concertgebouw Open next to the Royal
+  Concertgebouw card); an off-weekend verdict **drops only via the pick's own link** (a sitemap match
+  may be last year's run); carried keyless picks are **offered the organiser record at the carry
+  choke point** (that is how DKMNTL at BRET came back as `web-ra-2495711`); a pre-existing geo
+  coverage test blocked the cron on the richer feeds → 18 venue pins + the test is now the collapse
+  line its comment describes. Live since 2026-09-06 18:01.
 - **V.11.9 — HONEST IMAGES (2026-09-05, board V.9.47).** Ness back after three heads-down weeks:
   "the images are still an issue" — a tattoo convention wearing the Bloemenmarkt, Concertgebouw Open
   wearing Haarlem. Traced: NOT scraping errors — the **category-bank fallback working as designed**
@@ -461,34 +517,52 @@ seed jitter; `diversify()` de-clusters the **served** deck (and MatchGame) so no
 Adaptive RESERVE widens canon backfill on thin weeks. Runtime `whenIsPast` guard: a stale feed
 self-corrects in the browser — past events never render.
 
-**Imagery (the hard-won part):** structured-source images are **trusted-but-screened** — organiser
-posters/flyers flow untouched (re-processing them was the great sabotage of V.6.6–6.16), with two sanity
-screens: a keyless URL smell-test (logo/wordmark/stock filenames) + a narrow vision check that rejects
-ONLY logos/flat graphics/blank frames (keeps real posters). Untrusted (web-scraped) images get the full
-gather → vision-verify → Pexels → canon-bank chain. **Every image routes through wsrv.nl** (800×1200
-saliency portrait crop + server-side fetch = no hotlink blanks). Dead images self-heal to a verified bank
-photo. **House treatment:** a weather-keyed soft-light glaze + film grain on both card faces
-(`--card-grade`/`--card-grain`) so mixed sources read as one designed system. **Low-res hardening
-(V.8):** `isGoodImage` now parses more formats (WEBP-lossless, 256KB probe range) and **rejects
-unparseable dims** (the old benefit-of-the-doubt pass was the low-res back door) + a render-aware
-1.6×-upscale cap; the board shows `LOW RES · w×h` flags. **Dupe suppression (V.8):** `dedupe()` PASS 2.5
-collapses word-order/punctuation twins (token-set key `tokKey`); the board hides cross-section twins.
+**Imagery — THE HONEST-IMAGES LAW (V.11.9/V.11.10, 2026-09-05/06):** a live card's photo is OF the
+event or its venue, or the card has none. Structured-source images are **trusted-but-screened** —
+organiser posters/flyers flow untouched (re-processing them was the great sabotage of V.6.6–6.16),
+with two sanity screens: a keyless URL smell-test (logo/wordmark/stock filenames) + a narrow vision
+check that rejects ONLY logos/flat graphics/blank frames (keeps real posters). Before dedupe every
+keyless pick is **upgraded on contact** to the organiser's own record when one exists (`upgradeViaRa`
+by event id; `upgradeViaIamsterdam` by link or the events sitemap, `/event-gone` = removed). The
+chain for the rest, each step stamping **`imageWhy`** (the receipt the board renders as a chip):
+organiser → event-page (og/JSON-LD off the pick's own link, vision-verified) → portrait → web (vision-
+verified) → **venue** (the canon photo of the SAME venue, `venueMatchImage` over `venueBook` — place-
+shaped canon only, performers only when the title names the hall) → curated pin → **none** (the
+typographic no-photo face, `Card.tsx`). **Retired, never restore:** the category bank and Pexels
+themed stock — both produced a real photo of a *different* place (17% of the 2026-09-03 live feed).
+Every image gets **`imageFocal`** (vision, once, cached) which drives the phone's server crop
+(`toPortrait a=focal`) and the desktop card's CSS position over the UNCROPPED source
+(`lib/image.ts cardImageOf` — the near-square desktop card was double-cropping the 800×1200 render).
+Blanks rank −2, never open the deck (`holdBackImageless`), publish on merit up to **`NO_PHOTO_CAP` = 3**
+per refresh (the rest wait in the airlock; a ★ admits; restamp mirrors). Canon (hand-imaged) is never
+re-judged; a dead canon image is dropped and named in the log. **Every image routes through wsrv.nl**
+(server-side fetch = no hotlink blanks; `default=` falls back to the raw file). **House treatment:** a
+weather-keyed soft-light glaze + film grain on both faces so mixed sources read as one system.
+**Low-res hardening:** `isGoodImage` rejects unparseable dims, shortest side < 500, and anything the
+card would upscale > 1.6× (the board's LOW RES flag uses the same line). **Dupe suppression (V.8):**
+`dedupe()` PASS 2.5 collapses word-order/punctuation twins (`tokKey`); no two live cards share a photo.
 
 **Self-sufficiency:** the run **grades itself** — a publish gate hard-fails only truly-broken states
-(empty/past-dated/http images/imageless live/missing hero) and **abstains** (last-good keeps serving);
-thin weekends warn but ship. Health line lands in `$GITHUB_STEP_SUMMARY` (the Actions email); optional
-`HEALTHCHECK_URL` dead-man ping catches silent non-runs. **45 logic tests gate the cron** (`app/tests/`).
+(empty/past-dated/http images/missing hero/**>50% of the crawl imageless** — an image pass that broke)
+and **abstains** (last-good keeps serving); thin weekends and >25% imageless warn but ship; the health
+line carries `no-photo N`. Health line lands in `$GITHUB_STEP_SUMMARY` (the Actions email); optional
+`HEALTHCHECK_URL` dead-man ping catches silent non-runs. **379 logic tests gate the cron AND every branch preview** (`app/tests/`).
 **The date brain is unified in `src/lib/when.ts`** — build (pipeline), runtime (dock/deck), and the
 itinerary/.ics export all parse `when` strings through that one module.
 
 ## Pipeline ops
-- Cron **Thu 13:00 UTC** + on-demand (`gh workflow run refresh.yml`). ~$1–2/run. Dispatch race caveat
-  still applies (confirm `headSha` matches after a fresh push).
+- Crons **Mon + Thu 10:00 UTC** (Monday = the first build FOR the coming weekend, V.11.11; Thursday catches the late-week guides; delay-compensated so the feed is live by ~15:00 Amsterdam) + on-demand
+  (`gh workflow run refresh.yml`, ~11 min, ~$1–2/run — seven runs on 5–6 Sep while the image law
+  landed). Daily poll `ingest.yml` 05:30 UTC (keyless, never touches the served feed). Dispatch race
+  caveat still applies (confirm `headSha` matches after a fresh push). Env knobs, no commit needed:
+  `WKNDR_JUDGE_FLOOR` (5) · `WKNDR_STAR_BOOST` (2) · `WKNDR_NO_PHOTO_CAP` (3) · `WKNDR_WEIGHTS`.
 - **Keys set:** `ANTHROPIC_API_KEY`, `ANTHROPIC_JUDGE_MODEL` (`PEXELS_API_KEY` retired V.11.9 — no longer read). **Pending:**
   `SERPER_API_KEY` (Google-Images candidates, wired + dormant), `HEALTHCHECK_URL` (ping, wired + dormant).
   **Declined for now:** Ticketmaster (Ness: variety > ticketing spine).
-- **Last good feed: 2026-07-04** — 72 picks, 49 live, 9/9 categories; 4 👑 TOP escalated to deck-lead,
-  3 fatigue-benched (rested until 25 Jul), 19 vetoed, 14 ★-floored + 22 carried forward.
+- **Last good feed: 2026-09-06 18:01** (run 6 of ship day) — 73 picks, 35 live, 9/9 categories,
+  7 honest blanks, receipts organiser 21 · venue 3 · event-page 2 · curated 2; focal on 60/66 imaged
+  cards; airlock 55 (7 above the judge floor = the deck's wings); crowns expired (last stamped
+  2026-08-01 — re-crown on the board to lead the deck). Next cron: Thu 2026-09-10.
 
 ## Evergreen canon
 ~149 hand-authored picks in the pool (the board's canon library ≈ 141 after the veto filter). Two
@@ -512,6 +586,24 @@ organ-concert veto REVERSED (community-authentic wins). The pipeline stamps `top
 GUARANTEES topped/led picks into the feed (pull-back from prePool/canon if the balancer cut them).
 
 ## Open items / next
+0. **Variations:** `gh pr list` is the only record of what is in flight — not this file. Judge on
+   the preview, on the phone; review in the PR. Brief 003 (the opening beat) is written and
+   unstarted. Brief 004's audit landed on `main` as **the letter (V.11.12)**; the brief is re-aimed
+   at a look-and-feel pass on the letter (read only `letter.json`, keep the reply contract) or at
+   Take 2 — "taste as a dial", the corpus as a living document inside the app (a new brief when
+   Ness wants it). **The legacy grid retires when the letter carries the drop box.**
+0b. **Seen in the first letter (2026-09-11):** (a) a guide item folded onto its crawled twin keeps the
+   crawl's title — "Side to Side strijkt neer in de Amsterdamse Houthavens: hoe de dansscene
+   ontstond" is I amsterdam's article headline; the guide's own title ("Side to Side") should win
+   the display title when `dedupe` unions `guide` (`adapters/guides.ts` / `pipeline.ts` merge);
+   (b) 14 of 61 live cards imageless (the front is fully pictured) — the cap holds, the letter's
+   "No photo" lane is where to glance; (c) the `weekly.json` lead "Yayoi Kusama" also matched
+   "Sandberg x Schilo: 5-course pop-up dinner inspired by Yayoi Kusama" (rxOf is a substring match)
+   — a lead should match by titleLooseMatch like the pile does; (d) "Open Monumentendag Amsterdam
+   (40th Edition)" ships beside "Open Monuments Day" — the Dutch/English twin the dedupe cannot see
+   (the letter lists both; a ✕ duplicate merges them); (e) a guides item ships with the venue
+   string "Noordermarkt 1, Amsterdam Dates: Every Monday and Saturday m" — the LBB kids/market
+   heuristic swallowed the dates line into `venue`.
 1. ~~Phase 2 — demote web_search~~ **DONE 2026-09-05 (V.11.9)** — 3 facets + index-only-link drop. Next
    on images: watch the first two `receipts:` census lines in the refresh log; if `web` dominates over
    `event-page`/`organiser`, raise the sitemap matcher's reach before loosening anything else.
@@ -520,8 +612,12 @@ GUARANTEES topped/led picks into the feed (pull-back from prePool/canon if the b
    (b) the I amsterdam `festivals` listing crawl (`PER_CAT` 12, listing order) MISSED the same-weekend
    Tattoo Convention once the web-search facet that used to catch it was retired — next: seed the crawl
    from the events sitemap's `<lastmod>`-recent locs so dated one-offs can't fall off the cap;
-   (c) the crawl's honest imageless share was 33% before the cap (12 organiser images failed the
-   ≥700px floor) — watch whether the floor is too strict for Feed Factory flyers before touching it.
+   (c) ~~the ≥700px floor~~ lowered to 500 on 2026-09-05; the crawl's honest imageless share ran
+   31–41% before the cap across six runs — **the cap holds; watch the `receipts:` line, don't loosen**;
+   (d) the DKMNTL RA flyer (`images.ra.co`) 404s through wsrv (hotlink?) → no focal, card falls back to
+   the raw file — check whether RA images need a direct path; (e) text-heavy programme posters
+   ("Lunchtime organ concerts" — a schedule on a photo) pass `imageIsCardworthy` — Ness's imageRules
+   say text-only posters are not fine; tighten that prompt only with a real sample.
 2. **Thin slices:** eat/drink/shop fresh sources — re-run the (stubbed) research sweeps for food/community
    feeds and venue ICS calendars.
 3. **"Talked about" pill** — make the buzz up-level visible on the card face, not just the ranking.
@@ -547,6 +643,9 @@ GUARANTEES topped/led picks into the feed (pull-back from prePool/canon if the b
   they're late-Jul — offer to gate TOP activation to the event's own weekend.
 
 ## Doc map
+**`AGENTS.md`** (root — the agent manual, Codex reads it) · **`docs/variations/`** (the prototype
+protocol, the PR brief, briefs 001–004) · `ingest.md` (the daily poll + how to live-test a feed) ·
+`pipeline-freshness.md` (the freshness audit, Parts I–III) ·
 `backlog.md` (strategy) · **`takeovers.md`** (2026-07-28 night memo — guest curators, slot-based
 weather, stickiness, model tasking; advances `curation-surfaces.md` §5 from parked to planned) ·
 `pipeline-architecture.md` (north star/roadmap) · `source-map.md` (source

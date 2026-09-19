@@ -15,7 +15,7 @@ import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { whenIsPast, whenLooksBroken, whenWeekendDays, upcomingWeekendEnd } from '../src/lib/when'
 
-const BOARD = join(import.meta.dir, '../public/curate/index.html')
+const BOARD = join(import.meta.dir, '../public/curate/legacy/index.html')   // V.11.12: the studio grid is parked at /curate/legacy/; the letter board carries no mirror to audit
 const html = readFileSync(BOARD, 'utf8')
 
 /** Lift a verbatim slice of the board's source, so the test runs the SHIPPED code, not a copy. */

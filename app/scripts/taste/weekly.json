@@ -1,31 +1,15 @@
 {
   "_": "WEEKLY SLATE — Ness's ephemeral this-weekend-only controls from the Curation Board (▲ LEAD / ▼ LATER / dragged PILE-ORDER). Applies ONLY while `weekend` matches the pipeline's upcoming Saturday (YYYY-MM-DD): a stale file is silently ignored, so weekend calls can never drag into the next week. LEAD = guaranteed into the feed + opens the deck (just under 👑 TOPs) + editorScore floor 9. LATER = stays in the feed but sinks to the back of the pile (NOT a kill). PILE = the hand-dragged opening order from the board (ordered titles) — stamped as pilePos; the app deals those cards first, in exactly this order, above every other tier. Permanent taste lives in corpus.json; this file is the week's front page.",
-  "weekend": "2026-08-01",
+  "weekend": "2026-09-19",
   "lead": [
-    "Chefs in het Bos",
-    "Horta: Spanish Restaurant Opening"
+    "FOAM Photography Museum",
+    "Hailun Ma: Hometown"
   ],
   "later": [],
   "pile": [
-    "Canal Parade",
-    "Kwaku Summer Festival",
-    "Dekmantel Festival 2026 - Friday",
-    "Kaap Amsterdam",
-    "VriendenLoterij Summer Concerts",
-    "Pluk de Nacht Film Festival",
-    "Cinema Culinair",
-    "Horta: Spanish Restaurant Opening",
-    "Chefs in het Bos",
-    "Mokumboot: sloepje huren",
-    "BOPS x KIKI - WorldPride Amsterdam",
-    "American Identities",
-    "Two Story",
-    "Hortus Botanicus",
-    "HOMOMONUMENT X BRET AFTERHOURS (18+)",
-    "Ekō – Japan in twee beeldverhalen",
-    "The Little Big Things",
-    "American Myth Memory – David Levinthal",
-    "ARTIS Royal Zoo",
-    "The Jollof Club West-African restaurant"
-  ]
+    "FOAM Photography Museum",
+    "Yayoi Kusama",
+    "Hailun Ma: Hometown"
+  ],
+  "_2026-09-19": "Ness, 2026-09-18: hero Foam's reopening (I amsterdam's reopening card leads, wearing Foam's Kander key visual), the Stedelijk's Kusama retrospective, and Hailun Ma: Hometown — the three he named, and ONLY those three in the hand pile. The first pass interleaved Thursday's whole front behind them, which froze six outdoor cards on top of a weekend whose forecast then turned to ~70% rain; the pile ignores the weather by design, so it must carry only what he actually called. Kander's own card was dropped: it wore the same photograph as the reopening card. Peppa Pig Live at DeLaMar is Sat 26 Sep — starred into the deck, not piled into this weekend."
 }
