@@ -12,7 +12,7 @@ import './SwipeStack.css'
 import { placeOf } from '../lib/place'
 
 // reduced motion: no entrance choreography, no exit tumble — cards land/leave in a step
-const PRM = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+const PRM = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches && new URLSearchParams(window.location.search).get('motion') !== '1'   // ?motion=1 forces the deal-in past Reduce Motion, like the sky
 
 const THRESHOLD = 105
 const VELOCITY = 550

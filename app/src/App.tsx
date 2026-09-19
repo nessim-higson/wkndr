@@ -201,6 +201,9 @@ function rememberWx(mode: Mode, wx: Wx) {
   try { localStorage.setItem(WX_CACHE_KEY, JSON.stringify({ mode, wx, ts: Date.now() } satisfies CachedWx)) } catch { /* private mode */ }
 }
 
+/** the weather-glass build (this branch, /v2 and the previews): the intro plays on every open */
+const GLASS_BUILD = true
+
 export default function App() {
   const [boot] = useState(lastKnownWx)   // read ONCE — a re-render must not re-read storage
   const [mode, setMode] = useState<Mode>(boot.mode)
@@ -355,7 +358,11 @@ export default function App() {
   // door (Triage z-340 would cover the intro z-60 anyway, leaving it animating blind behind the veil).
   // Tunable: widen `visits <= 1` (e.g. `<= 3`) to bring the splash back for the first few visits.
   const isArrival = SHARED_IDS || SHARED_FROM || SHARED_CONFIRM
-  const [intro, setIntro] = useState(!CURATE_DOOR && (visits <= 1 || !!isArrival))
+  // THE PAGE COMES TO LIFE ON EVERY OPEN on the glass build (2026-09-19, Ness: "I'm not seeing the
+  // deal-out animation or how the page animates to life"). Production gates the intro to the first
+  // visit or an arrival from a share link — and the visit counter is localStorage on this same
+  // origin, so a /v2 opened after months of the live app never once showed it. ?intro=0 skips it.
+  const [intro, setIntro] = useState(!CURATE_DOOR && new URLSearchParams(location.search).get('intro') !== '0' && (visits <= 1 || !!isArrival || GLASS_BUILD))
   const [listStyle, setListStyle] = useState<'wheel' | 'flux'>(() => {  // list motion language
     const s = localStorage.getItem('wkndr.liststyle')
     return s === 'flux' ? 'flux' : 'wheel'
