@@ -43,6 +43,24 @@ function resolveDate(day: number, mon: number, now: Date, openRun = false): Date
 /** Correct the weekday(s) in a freeform `when` string to match the actual date. Idempotent. */
 export function fixWhen(when: string, now: Date = new Date()): string {
   if (!when) return when
+  // A RUN WRITTEN AS A RANGE WITH YEARS — "Sat 19 Sep 2026 (opening) — 31 Jan 2027" (an LLM-extracted
+  // Eye Filmmuseum run, 2026-09-20). Neither date reader takes a year, the bare "31 Jan" resolved to
+  // the January already gone, and the board and the app disagreed on whether the show was over —
+  // which turned the parity test, and with it the refresh gate, red. Rewrite it into the house
+  // format the rest of the feed speaks: an opened run is "Until Sun 31 Jan"; one still to open is
+  // "Opens Sat 19 Sep · until Sun 31 Jan". Only strings that carry a year or a parenthetical are
+  // touched — "Fri 3 – Sun 5 Jul" is already house format and stays as written.
+  const run = when.match(new RegExp(`^\\s*(?:(?:${WDAY})\\.?\\s+)?(\\d{1,2})\\s+(${MONS})[a-z]*\\.?(?:\\s+(\\d{4}))?\\s*(?:\\((?:opening|opens|vernissage|premiere)\\))?\\s*[–—-]\\s*(?:(?:${WDAY})\\.?\\s+)?(\\d{1,2})\\s+(${MONS})[a-z]*\\.?(?:\\s+(\\d{4}))?\\s*$`, 'i'))
+  if (run && (run[3] || run[6] || when.includes('('))) {
+    const [, d1, m1, y1, d2, m2, y2] = run
+    const start = y1 ? new Date(+y1, MON[m1.toLowerCase()], +d1, 12) : resolveDate(+d1, MON[m1.toLowerCase()], now)
+    const end = y2 ? new Date(+y2, MON[m2.toLowerCase()], +d2, 12) : resolveDate(+d2, MON[m2.toLowerCase()], now, true)
+    if (end.getTime() - start.getTime() > 9 * 864e5) {   // a run, not a long weekend
+      const cap = (m: string) => m[0].toUpperCase() + m.slice(1, 3).toLowerCase()
+      const until = `${WD[end.getDay()]} ${+d2} ${cap(m2)}`
+      return start.getTime() <= now.getTime() ? `Until ${until}` : `Opens ${WD[start.getDay()]} ${+d1} ${cap(m1)} · until ${until}`
+    }
+  }
   const openRun = OPEN_RUN.test(when)
   // range first: "Sat–Sun 13–14 Jun" → recompute both ends from the two day numbers
   let s = when.replace(

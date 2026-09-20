@@ -1,6 +1,6 @@
 {
   "generatedAt": "2026-09-18T13:44:19.168Z",
-  "count": 43,
+  "count": 37,
   "pending": [
     {
       "id": "web-lbb-the-last-ship-sting-shaggy",
@@ -238,39 +238,6 @@
       "firstSeen": "2026-08-29"
     },
     {
-      "id": "web-lbb-lunchconcert-in-het-concertgebouw",
-      "title": "Lunchconcert in het Concertgebouw",
-      "venue": "Concertgebouw",
-      "area": "Amsterdam",
-      "when": "Sat 19 Sep · 12:30",
-      "category": "live",
-      "freshness": "weekend",
-      "outdoor": false,
-      "kid": false,
-      "price": "Free",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fres.klook.com%2Fimages%2Ffl_lossy.progressive%2Cq_65%2Fc_fill%2Cw_1295%2Ch_863%2Cf_auto%2Fw_80%2Cx_15%2Cy_15%2Cg_south_west%2Cl_klook_water%2Factivities%2Fvzsaj69cjxg6biod1jwm%2FAmsterdamTheRoyalConcertgebouwGuidedTour.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fres.klook.com%2Fimages%2Ffl_lossy.progressive%2Cq_65%2Fc_fill%2Cw_1295%2Ch_863%2Cf_auto%2Fw_80%2Cx_15%2Cy_15%2Cg_south_west%2Cl_klook_water%2Factivities%2Fvzsaj69cjxg6biod1jwm%2FAmsterdamTheRoyalConcertgebouwGuidedTour.jpg",
-      "blurb": "Weekly 30-minute free classical concerts at 12:30pm. Bring lunch and reserve a ticket to enjoy high-quality performances.",
-      "why": "Free daily lunchtime classical concerts",
-      "source": "Your Little Black Book",
-      "link": "https://www.concertgebouw.nl/lunchconcerten",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "verify": false,
-      "imageWhy": "venue",
-      "imageFocal": [
-        0.5,
-        0.5
-      ],
-      "editorScore": 3,
-      "judgeScore": 3,
-      "firstSeen": "2026-09-18"
-    },
-    {
       "id": "web-lbb-relics",
       "title": "RELICS",
       "venue": "ART ZOO",
@@ -302,105 +269,6 @@
       "editorScore": 3,
       "judgeScore": 3,
       "firstSeen": "2026-09-03"
-    },
-    {
-      "id": "web-iams-vtoroi-ka",
-      "title": "VTOROI KA",
-      "venue": "P60",
-      "area": "Amstelveen",
-      "when": "Sat 19 Sep · 20:00",
-      "category": "drink",
-      "freshness": "weekend",
-      "outdoor": false,
-      "kid": false,
-      "price": "from €22",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a5c190c39e8220fa2095653%2F73845fe2dadfae6d7f097bf550ef6b5e0f1bf849_019f6d9b-891c-7023-b608-cc60374737c7.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.550&fpy=0.450&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a5c190c39e8220fa2095653%2F73845fe2dadfae6d7f097bf550ef6b5e0f1bf849_019f6d9b-891c-7023-b608-cc60374737c7.webp",
-      "blurb": "Discover Vtoroi Ka's unique sound\n Vtoroi Ka (2nd K) is a dynamic duo from Bishkek, Kyrgyzstan, consisting of Ilya and Sultan. Since their formation in 2017, th",
-      "why": "On I amsterdam",
-      "source": "I amsterdam",
-      "link": "https://www.iamsterdam.com/en/whats-on/calendar/nightlife/clubbing/vtoroi-ka",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "verify": false,
-      "imageWhy": "organiser",
-      "imageFocal": [
-        0.55,
-        0.45
-      ],
-      "editorScore": 3,
-      "judgeScore": 3,
-      "firstSeen": "2026-09-14"
-    },
-    {
-      "id": "web-iams-skamele-1803",
-      "title": "Skamele 180.3",
-      "venue": "P60",
-      "area": "Amstelveen",
-      "when": "Fri 18 – Sat 19 Sep",
-      "category": "drink",
-      "freshness": "weekend",
-      "outdoor": false,
-      "kid": false,
-      "price": "from €25.5",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a2c2249fd181953a220c074%2Fa58725adb63c93ec4219bd497772c47a3f19090d_019e9fa0-5496-7889-821f-7158d12cf54d.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.150&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a2c2249fd181953a220c074%2Fa58725adb63c93ec4219bd497772c47a3f19090d_019e9fa0-5496-7889-821f-7158d12cf54d.webp",
-      "blurb": "Last edition in the Netherlands\n Skamele Recordings is organizing the seventh and final edition on Dutch soil. Before the organization expands its horizons abro",
-      "why": "On I amsterdam",
-      "source": "I amsterdam",
-      "link": "https://www.iamsterdam.com/en/whats-on/calendar/nightlife/clubbing/skamele-1803",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "verify": false,
-      "imageWhy": "organiser",
-      "imageFocal": [
-        0.5,
-        0.15
-      ],
-      "editorScore": 3,
-      "judgeScore": 3,
-      "firstSeen": "2026-09-14"
-    },
-    {
-      "id": "web-iams-next-new-era-of-xtraordinary-talents-at-veronica-ship",
-      "title": "NEXT – New Era of Xtraordinary Talents @ Veronica ship",
-      "venue": "Veronicaschip",
-      "area": "NDSM-pier 1",
-      "when": "Sat 19 Sep · 21:00",
-      "category": "drink",
-      "freshness": "weekend",
-      "outdoor": false,
-      "kid": false,
-      "price": "from €10",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a807e1d6a44301b52532aa3%2FNEXT_-_New_Era_of_Xtraordinary_Talents_-_edition_2_-_September_19__2026_-_Het_Veronica_Schip_landscape.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.350&fpy=0.235&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a807e1d6a44301b52532aa3%2FNEXT_-_New_Era_of_Xtraordinary_Talents_-_edition_2_-_September_19__2026_-_Het_Veronica_Schip_landscape.webp",
-      "blurb": "New stars on the Veronica ship\n From soulful and funky to tech house and a touch of afro: these new stars present a warm mix of styles in the intimate Veronica ",
-      "why": "On I amsterdam",
-      "source": "I amsterdam",
-      "link": "https://www.iamsterdam.com/en/whats-on/calendar/nightlife/clubbing/next-new-era-of-xtraordinary-talents-at-veronica-ship",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "verify": false,
-      "imageWhy": "organiser",
-      "imageFocal": [
-        0.35000000000000003,
-        0.235
-      ],
-      "editorScore": 3,
-      "judgeScore": 3,
-      "firstSeen": "2026-09-14"
     },
     {
       "id": "web-iams-kaboom-x-melkweg-cinema",
@@ -531,72 +399,6 @@
       "editorScore": 3,
       "judgeScore": 3,
       "firstSeen": "2026-08-29"
-    },
-    {
-      "id": "web-iams-boyos-wonderland",
-      "title": "Boyos Wonderland",
-      "venue": "Club Up",
-      "area": "Korte Leidsedwarsstraat 26",
-      "when": "Fri 18 – Sat 19 Sep",
-      "category": "drink",
-      "freshness": "weekend",
-      "outdoor": false,
-      "kid": false,
-      "price": "from €9.75",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a8598a64f65703141ddd5a8%2F1920x1080.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.500&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a8598a64f65703141ddd5a8%2F1920x1080.webp",
-      "blurb": "A form of its own\n Boyos Wonderland grew out of parties, Dine Dance nights, and mini-festivals in Haarlem. Each edition features a different setting and scale, ",
-      "why": "On I amsterdam",
-      "source": "I amsterdam",
-      "link": "https://www.iamsterdam.com/en/whats-on/calendar/nightlife/clubbing/boyos-wonderland",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "verify": false,
-      "imageWhy": "organiser",
-      "imageFocal": [
-        0.5,
-        0.5
-      ],
-      "editorScore": 2,
-      "judgeScore": 2,
-      "firstSeen": "2026-09-14"
-    },
-    {
-      "id": "web-iams-emo-night-mainland",
-      "title": "Emo Night Mainland",
-      "venue": "Melkweg",
-      "area": "Lijnbaansgracht 234A",
-      "when": "Sat 19 Sep · 19:00",
-      "category": "drink",
-      "freshness": "weekend",
-      "outdoor": false,
-      "kid": false,
-      "price": "from €14.5",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F664d1a2fda401705640328e7%2FPromo-horizontaal---fotograaf-Kim-Tielemans.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.525&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F664d1a2fda401705640328e7%2FPromo-horizontaal---fotograaf-Kim-Tielemans.webp",
-      "blurb": "MP3 player \n The DJ teams of Emo Night Mainland will play your favorite anthems that used to be on your MP3 player and still grace your Spotify Wrapped. Many cl",
-      "why": "On I amsterdam",
-      "source": "I amsterdam",
-      "link": "https://www.iamsterdam.com/en/whats-on/calendar/nightlife/clubbing/emo-night-mainland",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "verify": false,
-      "imageWhy": "organiser",
-      "imageFocal": [
-        0.5,
-        0.525
-      ],
-      "editorScore": 2,
-      "judgeScore": 2,
-      "firstSeen": "2026-09-14"
     },
     {
       "id": "web-iams-mr-pieps-pranks-including-face-painting-2-6-jaar",

@@ -1,7 +1,7 @@
 {
  "v": 1,
  "city": "amsterdam",
- "builtAt": "2026-09-19T05:39:13.327Z",
+ "builtAt": "2026-09-20T06:47:25.533Z",
  "feedAt": "2026-09-18T13:44:19.168Z",
  "weekend": {
   "sat": "2026-09-19",
@@ -11,18 +11,18 @@
  "nextBuild": "2026-09-21T10:00:00.000Z",
  "health": {
   "tag": "ok",
-  "text": "73 live cards, 37 from the weekend guides, 28 new this week, 32 without a photo. 43 held at the door."
+  "text": "67 live cards, 33 from the weekend guides, 22 new this week, 29 without a photo. 37 held at the door."
  },
  "counts": {
-  "live": 73,
+  "live": 67,
   "canon": 41,
-  "weekend": 35,
+  "weekend": 29,
   "front": 10,
-  "fresh": 28,
-  "guide": 37,
-  "noPhoto": 32,
+  "fresh": 22,
+  "guide": 33,
+  "noPhoto": 29,
   "borrowed": 4,
-  "held": 43,
+  "held": 37,
   "bench": 8
  },
  "front": [
@@ -44,7 +44,7 @@
    "lead": true,
    "judge": 8,
    "buzz": 2,
-   "age": 1
+   "age": 2
   },
   {
    "id": "web-iams-yayoi-kusama",
@@ -63,7 +63,7 @@
    "hand": 2,
    "judge": 8,
    "buzz": 2,
-   "age": 9
+   "age": 10
   },
   {
    "id": "web-scout-hailun-ma-hometown",
@@ -98,7 +98,7 @@
    "pos": 4,
    "guide": "I amsterdam weekend guide",
    "judge": 6,
-   "age": 5
+   "age": 6
   },
   {
    "id": "web-iams-10-years-muze-van-zuid-vrijhaven-voor-muziek",
@@ -116,7 +116,7 @@
    "pos": 5,
    "guide": "I amsterdam weekend guide",
    "judge": 6,
-   "age": 3
+   "age": 4
   },
   {
    "id": "web-lbb-tips-nap-art-fair-in-the-central-market-hall",
@@ -133,7 +133,7 @@
    "pos": 6,
    "guide": "LBB weekendtips",
    "judge": 7,
-   "age": 2
+   "age": 3
   },
   {
    "id": "web-lbb-tips-lombok-bali-sandwich-takeover-at-bakery-louf",
@@ -150,7 +150,7 @@
    "pos": 7,
    "guide": "LBB weekendtips",
    "judge": 7,
-   "age": 2
+   "age": 3
   },
   {
    "id": "web-lbb-ij-hallen-flea-market",
@@ -167,7 +167,7 @@
    "imageWhy": "venue",
    "pos": 8,
    "judge": 7,
-   "age": 1
+   "age": 2
   },
   {
    "id": "web-iams-het-kleine-grote-festival",
@@ -185,7 +185,7 @@
    "pos": 9,
    "judge": 5,
    "buzz": 2,
-   "age": 9
+   "age": 10
   },
   {
    "id": "web-iams-ligconcert-presents-lying-down-concert-at-the-maritime-museum",
@@ -195,7 +195,7 @@
    "category": "live",
    "link": "https://www.iamsterdam.com/en/whats-on/calendar/concerts-and-music/concerts/ligconcert-presents-lying-down-concert-at-the-maritime-museum",
    "source": "I amsterdam · Your Little Black Book",
-   "why": "LBB weekendtips · on all weekend · 2 sources",
+   "why": "LBB weekendtips · week 4 · on all weekend · 2 sources",
    "lens": "weekend",
    "live": true,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F67ed4c7506e08d518c2103e1%2FPHOTO-2023-12-10-23-33-00_2.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.600&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F67ed4c7506e08d518c2103e1%2FPHOTO-2023-12-10-23-33-00_2.webp",
@@ -204,7 +204,7 @@
    "guide": "LBB weekendtips",
    "judge": 8,
    "buzz": 2,
-   "age": 21
+   "age": 22
   }
  ],
  "rest": [
@@ -216,14 +216,14 @@
    "category": "out",
    "link": "https://www.iamsterdam.com/en/whats-on/calendar/festivals/events/bottomless-brunch",
    "source": "I amsterdam",
-   "why": "Sat + Sun",
+   "why": "week 4 · Sat + Sun",
    "lens": "weekend",
    "live": true,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F66c74f2ab19fd060b4452c00%2F2._Landscape_Ribs__snacks__and_cocktails_-_Copy.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.500&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F66c74f2ab19fd060b4452c00%2F2._Landscape_Ribs__snacks__and_cocktails_-_Copy.webp",
    "imageWhy": "organiser",
    "pos": 11,
    "judge": 8,
-   "age": 21
+   "age": 22
   },
   {
    "id": "ams-ev-ij-hallen",
@@ -240,7 +240,7 @@
    "pos": 12,
    "guide": "LBB weekendtips",
    "buzz": 2,
-   "age": 21
+   "age": 22
   },
   {
    "id": "web-lbb-tips-open-this-week-da-vinci-raphael-michelangelo-at-",
@@ -257,7 +257,7 @@
    "pos": 13,
    "guide": "LBB weekendtips",
    "judge": 4,
-   "age": 2
+   "age": 3
   },
   {
    "id": "web-lbb-openluchttheater-vondelpark",
@@ -274,7 +274,7 @@
    "imageWhy": "venue",
    "pos": 14,
    "judge": 3,
-   "age": 9
+   "age": 10
   },
   {
    "id": "web-guide-iams-wildcard-pick-patio-summer-closing",
@@ -292,7 +292,7 @@
    "pos": 15,
    "guide": "I amsterdam weekend guide",
    "judge": 6,
-   "age": 5
+   "age": 6
   },
   {
    "id": "web-iams-concertgebouworkest-and-klaus-makela-berlioz-symphonie-fantastique",
@@ -309,7 +309,7 @@
    "imageWhy": "organiser",
    "pos": 16,
    "judge": 7,
-   "age": 3
+   "age": 4
   },
   {
    "id": "web-lbb-tips-sunday-market",
@@ -327,7 +327,7 @@
    "guide": "LBB weekendtips",
    "judge": 6,
    "buzz": 2,
-   "age": 2
+   "age": 3
   },
   {
    "id": "web-lbb-tips-mexican-independence-day-in-oaxaca",
@@ -345,7 +345,7 @@
    "pos": 18,
    "guide": "LBB weekendtips",
    "judge": 7,
-   "age": 9
+   "age": 10
   },
   {
    "id": "web-guide-iams-record-planet",
@@ -363,42 +363,7 @@
    "pos": 19,
    "guide": "I amsterdam weekend guide",
    "judge": 5,
-   "age": 5
-  },
-  {
-   "id": "llm-eye-filmmuseum-ulrich-seidl-ber-das-leben-die-liebe-und-den-tod",
-   "title": "Ulrich Seidl: Über das Leben, die Liebe und den Tod",
-   "venue": "",
-   "when": "Sat 19 Sep 2026 (opening) — 31 Jan 2027",
-   "category": "art",
-   "link": "https://www.eyefilm.nl/en/whats-on",
-   "source": "Eye Filmmuseum",
-   "why": "Sat + Sun",
-   "lens": "new",
-   "live": true,
-   "image": "https://images.weserv.nl/?url=https%3A%2F%2Fassets.eyefilm.nl%2Fimages%2Fprogramme-item%2F_1200x630_crop_center-center_none%2Fcampagnebeeld-Eyes-Open.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.675&output=jpg&default=https%3A%2F%2Fassets.eyefilm.nl%2Fimages%2Fprogramme-item%2F_1200x630_crop_center-center_none%2Fcampagnebeeld-Eyes-Open.jpg",
-   "imageWhy": "venue",
-   "pos": 20,
-   "judge": 7,
-   "age": 9
-  },
-  {
-   "id": "web-iams-legacies",
-   "title": "Legacies",
-   "venue": "Dutch National Opera & Ballet",
-   "when": "Until Sun 27 Sep",
-   "category": "stage",
-   "link": "https://www.iamsterdam.com/en/whats-on/calendar/theatre-and-stage/stage/legacies",
-   "source": "I amsterdam · Your Little Black Book",
-   "why": "on all weekend · 2 sources",
-   "lens": "weekend",
-   "live": true,
-   "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a023ee95ebafd251afe1d07%2FaHR0cHM6Ly9zaG9wLm9wZXJhYmFsbGV0Lm5sLy9jbXNfZmlsZXMvc3lzdGVtL2ltYWdlcy9pbWcxNzEyX29yaWcuanBn.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.575&fpy=0.525&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a023ee95ebafd251afe1d07%2FaHR0cHM6Ly9zaG9wLm9wZXJhYmFsbGV0Lm5sLy9jbXNfZmlsZXMvc3lzdGVtL2ltYWdlcy9pbWcxNzEyX29yaWcuanBn.webp",
-   "imageWhy": "organiser",
-   "pos": 21,
-   "judge": 7,
-   "buzz": 2,
-   "age": 13
+   "age": 6
   },
   {
    "id": "web-scout-nadav-kander-the-edge-of-things",
@@ -412,10 +377,10 @@
    "lens": "weekend",
    "live": true,
    "imageWhy": "none",
-   "pos": 22,
+   "pos": 20,
    "judge": 8,
    "buzz": 2,
-   "age": 2
+   "age": 3
   },
   {
    "id": "web-iams-carista-prance-rod",
@@ -430,26 +395,27 @@
    "live": true,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a8ecaa849087946d04762b8%2F765670878_17998838915988854_1333954142529880022_n.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.500&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a8ecaa849087946d04762b8%2F765670878_17998838915988854_1333954142529880022_n.webp",
    "imageWhy": "organiser",
-   "pos": 23,
+   "pos": 21,
    "judge": 5,
-   "age": 5
+   "age": 6
   },
   {
-   "id": "web-iams-she-was-born-for-happiness-veronika-abdul-visocka-frascati-producties",
-   "title": "She was born for happiness Veronika Abdul-Visocka / Frascati Producties",
-   "venue": "Frascati",
-   "when": "Tue 15 – Sat 19 Sep",
-   "category": "stage",
-   "link": "https://www.iamsterdam.com/en/whats-on/calendar/theatre-and-stage/stage/she-was-born-for-happiness-veronika-abdul-visocka-frascati-producties",
-   "source": "I amsterdam",
-   "why": "new this week · Sat",
+   "id": "web-iams-museum-market",
+   "title": "Museum Market",
+   "venue": "",
+   "when": "Until Sun 13 Dec",
+   "category": "shop",
+   "link": "https://www.iamsterdam.com/en/whats-on/calendar/shopping/markets/museum-market",
+   "source": "I amsterdam · Your Little Black Book",
+   "why": "LBB weekendtips · week 4 · on all weekend · 2 sources",
    "lens": "weekend",
    "live": true,
-   "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6aa882f706b79235624c8063%2FaHR0cHM6Ly93d3cuZnJhc2NhdGl0aGVhdGVyLm5sLy9jbXNfZmlsZXMvc3lzdGVtL2ltYWdlcy9pbWcyNDU5M19vcmlnLmpwZw.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.550&fpy=0.450&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6aa882f706b79235624c8063%2FaHR0cHM6Ly93d3cuZnJhc2NhdGl0aGVhdGVyLm5sLy9jbXNfZmlsZXMvc3lzdGVtL2ltYWdlcy9pbWcyNDU5M19vcmlnLmpwZw.webp",
-   "imageWhy": "organiser",
-   "pos": 24,
-   "judge": 5,
-   "age": 3
+   "imageWhy": "none",
+   "pos": 22,
+   "guide": "LBB weekendtips",
+   "judge": 7,
+   "buzz": 2,
+   "age": 22
   },
   {
    "id": "web-iams-nothing-here-now-x-the-rest-is-noise",
@@ -464,27 +430,9 @@
    "live": true,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a67ea31f698026fb199c201%2FaHR0cHM6Ly93d3cubXV6aWVrZ2Vib3V3Lm5sLy9jbXNfZmlsZXMvc3lzdGVtL2ltYWdlcy9pbWc4NTkyMV9vcmlnLkpQRw.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.600&fpy=0.500&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a67ea31f698026fb199c201%2FaHR0cHM6Ly93d3cubXV6aWVrZ2Vib3V3Lm5sLy9jbXNfZmlsZXMvc3lzdGVtL2ltYWdlcy9pbWc4NTkyMV9vcmlnLkpQRw.webp",
    "imageWhy": "organiser",
-   "pos": 25,
+   "pos": 23,
    "judge": 5,
-   "age": 5
-  },
-  {
-   "id": "web-iams-museum-market",
-   "title": "Museum Market",
-   "venue": "",
-   "when": "Until Sun 13 Dec",
-   "category": "shop",
-   "link": "https://www.iamsterdam.com/en/whats-on/calendar/shopping/markets/museum-market",
-   "source": "I amsterdam · Your Little Black Book",
-   "why": "LBB weekendtips · on all weekend · 2 sources",
-   "lens": "weekend",
-   "live": true,
-   "imageWhy": "none",
-   "pos": 26,
-   "guide": "LBB weekendtips",
-   "judge": 7,
-   "buzz": 2,
-   "age": 21
+   "age": 6
   },
   {
    "id": "web-lbb-tips-noordermarkt",
@@ -498,11 +446,11 @@
    "lens": "always",
    "live": true,
    "imageWhy": "none",
-   "pos": 27,
+   "pos": 24,
    "guide": "LBB weekendtips",
    "judge": 6,
    "buzz": 2,
-   "age": 9
+   "age": 10
   },
   {
    "id": "web-lbb-tips-must-see-major-yayoi-kusama-exhibition-at-the-st",
@@ -516,10 +464,10 @@
    "lens": "always",
    "live": true,
    "imageWhy": "none",
-   "pos": 28,
+   "pos": 25,
    "guide": "LBB weekendtips",
    "judge": 7,
-   "age": 2
+   "age": 3
   },
   {
    "id": "web-lbb-world-press-photo-exhibition-2026",
@@ -534,9 +482,9 @@
    "live": true,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.nieuwekerk.nl%2Fwp-content%2Fuploads%2F2026%2F02%2F2026-04-23_De-Nieuwe-Kerk_World-Press-Photo-2026__Tomek-Dersu-Aaron_1967.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fwww.nieuwekerk.nl%2Fwp-content%2Fuploads%2F2026%2F02%2F2026-04-23_De-Nieuwe-Kerk_World-Press-Photo-2026__Tomek-Dersu-Aaron_1967.jpg",
    "imageWhy": "curated",
-   "pos": 29,
+   "pos": 26,
    "judge": 7,
-   "age": 9
+   "age": 10
   },
   {
    "id": "llm-your-little-black-book-sandberg-x-schilo-5-course-pop-up-dinner-yayoi-k",
@@ -550,25 +498,26 @@
    "lens": "new",
    "live": true,
    "imageWhy": "none",
-   "pos": 30,
+   "pos": 27,
    "judge": 8,
-   "age": 9
+   "age": 10
   },
   {
-   "id": "web-lbb-nederlands-theater-festival-2026",
-   "title": "Nederlands Theater Festival 2026",
-   "venue": "Multiple venues",
-   "when": "Sat–Sun 19–20 Sep (within 3–13 Sep)",
+   "id": "web-iams-legacies",
+   "title": "Legacies",
+   "venue": "Dutch National Opera & Ballet",
+   "when": "Until Sun 27 Sep",
    "category": "stage",
-   "link": "https://tf.nl/programma-tickets/",
-   "source": "Your Little Black Book",
-   "why": "Sat + Sun",
+   "link": "https://www.iamsterdam.com/en/whats-on/calendar/theatre-and-stage/stage/legacies",
+   "source": "I amsterdam · Your Little Black Book",
+   "why": "on all weekend · 2 sources",
    "lens": "weekend",
    "live": true,
-   "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.yourlittleblackbook.me%2Fwp-content%2Fuploads%2F2026%2F08%2FTheater-agenda-amsterdam-theaterfestival.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.300&output=jpg&default=https%3A%2F%2Fwww.yourlittleblackbook.me%2Fwp-content%2Fuploads%2F2026%2F08%2FTheater-agenda-amsterdam-theaterfestival.jpg",
+   "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a023ee95ebafd251afe1d07%2FaHR0cHM6Ly9zaG9wLm9wZXJhYmFsbGV0Lm5sLy9jbXNfZmlsZXMvc3lzdGVtL2ltYWdlcy9pbWcxNzEyX29yaWcuanBn.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.575&fpy=0.525&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a023ee95ebafd251afe1d07%2FaHR0cHM6Ly9zaG9wLm9wZXJhYmFsbGV0Lm5sLy9jbXNfZmlsZXMvc3lzdGVtL2ltYWdlcy9pbWcxNzEyX29yaWcuanBn.webp",
    "imageWhy": "organiser",
-   "pos": 31,
-   "judge": 6,
+   "pos": 28,
+   "judge": 7,
+   "buzz": 2,
    "age": 14
   },
   {
@@ -584,27 +533,27 @@
    "live": true,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.yourlittleblackbook.me%2Fwp-content%2Fuploads%2F2026%2F07%2Fbeste-nieuwe-restaurants-amsterdam-2026-update.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.600&output=jpg&default=https%3A%2F%2Fwww.yourlittleblackbook.me%2Fwp-content%2Fuploads%2F2026%2F07%2Fbeste-nieuwe-restaurants-amsterdam-2026-update.jpg",
    "imageWhy": "organiser",
-   "pos": 32,
+   "pos": 29,
    "guide": "LBB weekendtips",
    "judge": 4,
-   "age": 9
+   "age": 10
   },
   {
-   "id": "web-guide-iams-haliun-ma",
-   "title": "Haliun Ma",
+   "id": "llm-eye-filmmuseum-ulrich-seidl-ber-das-leben-die-liebe-und-den-tod",
+   "title": "Ulrich Seidl: Über das Leben, die Liebe und den Tod",
    "venue": "",
-   "when": "This weekend",
+   "when": "Until Sun 31 Jan",
    "category": "art",
-   "link": "https://www.foam.org/nl/events/hailun-ma",
-   "source": "I amsterdam",
-   "why": "I amsterdam guide · new this week",
-   "lens": "always",
+   "link": "https://www.eyefilm.nl/en/whats-on",
+   "source": "Eye Filmmuseum",
+   "why": "on all weekend",
+   "lens": "new",
    "live": true,
-   "imageWhy": "none",
-   "pos": 33,
-   "guide": "I amsterdam weekend guide",
-   "judge": 5,
-   "age": 5
+   "image": "https://images.weserv.nl/?url=https%3A%2F%2Fassets.eyefilm.nl%2Fimages%2Fprogramme-item%2F_1200x630_crop_center-center_none%2Fcampagnebeeld-Eyes-Open.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.675&output=jpg&default=https%3A%2F%2Fassets.eyefilm.nl%2Fimages%2Fprogramme-item%2F_1200x630_crop_center-center_none%2Fcampagnebeeld-Eyes-Open.jpg",
+   "imageWhy": "venue",
+   "pos": 30,
+   "judge": 7,
+   "age": 10
   },
   {
    "id": "web-lbb-tips-spin-listening-bar-pool-cafe-in-oud-west",
@@ -618,27 +567,27 @@
    "lens": "always",
    "live": true,
    "imageWhy": "none",
-   "pos": 34,
+   "pos": 31,
    "guide": "LBB weekendtips",
    "judge": 6,
-   "age": 2
+   "age": 3
   },
   {
-   "id": "web-iams-queer-amsterdam-toen-nu-en-straks",
-   "title": "Queer Amsterdam: toen, nu en straks",
-   "venue": "",
-   "when": "Until Wed 30 Sep",
-   "category": "art",
-   "link": "https://www.iamsterdam.com/en/whats-on/calendar/exhibitions/all-exhibitions/queer-amsterdam-toen-nu-en-straks",
-   "source": "I amsterdam",
-   "why": "on all weekend",
+   "id": "web-lbb-nederlands-theater-festival-2026",
+   "title": "Nederlands Theater Festival 2026",
+   "venue": "Multiple venues",
+   "when": "Sat–Sun 19–20 Sep (within 3–13 Sep)",
+   "category": "stage",
+   "link": "https://tf.nl/programma-tickets/",
+   "source": "Your Little Black Book",
+   "why": "Sat + Sun",
    "lens": "weekend",
    "live": true,
-   "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a1c3c22d4205c628350ef94%2FQueer_Amsterdam_-_Eve_Fatale_GF_8977.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.525&fpy=0.550&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a1c3c22d4205c628350ef94%2FQueer_Amsterdam_-_Eve_Fatale_GF_8977.webp",
+   "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.yourlittleblackbook.me%2Fwp-content%2Fuploads%2F2026%2F08%2FTheater-agenda-amsterdam-theaterfestival.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.300&output=jpg&default=https%3A%2F%2Fwww.yourlittleblackbook.me%2Fwp-content%2Fuploads%2F2026%2F08%2FTheater-agenda-amsterdam-theaterfestival.jpg",
    "imageWhy": "organiser",
-   "pos": 35,
-   "judge": 5,
-   "age": 12
+   "pos": 32,
+   "judge": 6,
+   "age": 15
   },
   {
    "id": "web-lbb-tips-afternoon-tea-at-mandarin-oriental-conservatory",
@@ -653,10 +602,27 @@
    "live": true,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.yourlittleblackbook.me%2Fwp-content%2Fuploads%2F2026%2F09%2Famsterdam-dine-lounge-afternoontea-all1.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.500&output=jpg&default=https%3A%2F%2Fwww.yourlittleblackbook.me%2Fwp-content%2Fuploads%2F2026%2F09%2Famsterdam-dine-lounge-afternoontea-all1.jpg",
    "imageWhy": "organiser",
-   "pos": 36,
+   "pos": 33,
    "guide": "LBB weekendtips",
    "judge": 3,
-   "age": 9
+   "age": 10
+  },
+  {
+   "id": "web-guide-iams-haliun-ma",
+   "title": "Haliun Ma",
+   "venue": "",
+   "when": "This weekend",
+   "category": "art",
+   "link": "https://www.foam.org/nl/events/hailun-ma",
+   "source": "I amsterdam",
+   "why": "I amsterdam guide · new this week",
+   "lens": "always",
+   "live": true,
+   "imageWhy": "none",
+   "pos": 34,
+   "guide": "I amsterdam weekend guide",
+   "judge": 5,
+   "age": 6
   },
   {
    "id": "ams-ev-pure-markt",
@@ -670,9 +636,26 @@
    "lens": "always",
    "live": false,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F600a80ecf21e8920ab28277e%2F0112feda-7dc2-4d02-93aa-fe4f4f4f4c22.webp&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F600a80ecf21e8920ab28277e%2F0112feda-7dc2-4d02-93aa-fe4f4f4f4c22.webp",
-   "pos": 37,
+   "pos": 35,
    "buzz": 2,
-   "age": 21
+   "age": 22
+  },
+  {
+   "id": "web-iams-queer-amsterdam-toen-nu-en-straks",
+   "title": "Queer Amsterdam: toen, nu en straks",
+   "venue": "",
+   "when": "Until Wed 30 Sep",
+   "category": "art",
+   "link": "https://www.iamsterdam.com/en/whats-on/calendar/exhibitions/all-exhibitions/queer-amsterdam-toen-nu-en-straks",
+   "source": "I amsterdam",
+   "why": "on all weekend",
+   "lens": "weekend",
+   "live": true,
+   "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a1c3c22d4205c628350ef94%2FQueer_Amsterdam_-_Eve_Fatale_GF_8977.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.525&fpy=0.550&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a1c3c22d4205c628350ef94%2FQueer_Amsterdam_-_Eve_Fatale_GF_8977.webp",
+   "imageWhy": "organiser",
+   "pos": 36,
+   "judge": 5,
+   "age": 13
   },
   {
    "id": "ams-ev2-artis-aquarium",
@@ -686,10 +669,10 @@
    "lens": "always",
    "live": false,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.rosaceus.be%2Fwp-content%2Fuploads%2F2025%2F05%2Fartis.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fwww.rosaceus.be%2Fwp-content%2Fuploads%2F2025%2F05%2Fartis.jpg",
-   "pos": 38,
+   "pos": 37,
    "guide": "LBB weekendtips",
    "buzz": 2,
-   "age": 9
+   "age": 10
   },
   {
    "id": "web-lbb-tips-kiseki-sake-bar-food",
@@ -704,10 +687,10 @@
    "live": true,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fkisekiamsterdam.nl%2Fkka%2Fwp-content%2Fuploads%2F2026%2F06%2FTerras-Kiseki.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.175&fpy=0.400&output=jpg&default=https%3A%2F%2Fkisekiamsterdam.nl%2Fkka%2Fwp-content%2Fuploads%2F2026%2F06%2FTerras-Kiseki.webp",
    "imageWhy": "event-page",
-   "pos": 39,
+   "pos": 38,
    "guide": "LBB weekendtips",
    "judge": 4,
-   "age": 14
+   "age": 15
   },
   {
    "id": "web-guide-iams-saint-madeleine",
@@ -721,10 +704,10 @@
    "lens": "always",
    "live": true,
    "imageWhy": "none",
-   "pos": 40,
+   "pos": 39,
    "guide": "I amsterdam weekend guide",
    "judge": 4,
-   "age": 2
+   "age": 3
   },
   {
    "id": "web-lbb-tips-bistro-de-fles-on-the-prinsengracht",
@@ -738,44 +721,10 @@
    "lens": "always",
    "live": true,
    "imageWhy": "none",
-   "pos": 41,
+   "pos": 40,
    "guide": "LBB weekendtips",
    "judge": 4,
-   "age": 2
-  },
-  {
-   "id": "web-iams-pagliacci-cavalleria-rusticana",
-   "title": "Pagliacci / Cavalleria rusticana",
-   "venue": "Dutch National Opera & Ballet",
-   "when": "Sat 5 – Wed 23 Sep",
-   "category": "stage",
-   "link": "https://www.iamsterdam.com/en/whats-on/calendar/theatre-and-stage/stage/pagliacci-cavalleria-rusticana",
-   "source": "I amsterdam",
-   "why": "Sat + Sun",
-   "lens": "weekend",
-   "live": true,
-   "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a023ee85ebafd251afe1d04%2FaHR0cHM6Ly9zaG9wLm9wZXJhYmFsbGV0Lm5sLy9jbXNfZmlsZXMvc3lzdGVtL2ltYWdlcy9pbWcxNzAxX29yaWcuanBn.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.400&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a023ee85ebafd251afe1d04%2FaHR0cHM6Ly9zaG9wLm9wZXJhYmFsbGV0Lm5sLy9jbXNfZmlsZXMvc3lzdGVtL2ltYWdlcy9pbWcxNzAxX29yaWcuanBn.webp",
-   "imageWhy": "organiser",
-   "pos": 42,
-   "judge": 6,
-   "age": 13
-  },
-  {
-   "id": "web-lbb-tips-restaurant-flore-celebrates-5-years-with-special",
-   "title": "Restaurant Flore celebrates 5 years with special collaborations",
-   "venue": "",
-   "when": "This weekend",
-   "category": "eat",
-   "link": "https://www.instagram.com/p/DcIcl1EjCU0/?img_index=1",
-   "source": "Your Little Black Book",
-   "why": "LBB weekendtips",
-   "lens": "always",
-   "live": true,
-   "imageWhy": "none",
-   "pos": 43,
-   "guide": "LBB weekendtips",
-   "judge": 6,
-   "age": 9
+   "age": 3
   },
   {
    "id": "web-lbb-tips-harvest-festivals-pick-your-own-at-the-olmenhors",
@@ -789,10 +738,27 @@
    "lens": "always",
    "live": true,
    "imageWhy": "none",
-   "pos": 44,
+   "pos": 41,
    "guide": "LBB weekendtips",
    "judge": 5,
-   "age": 9
+   "age": 10
+  },
+  {
+   "id": "web-lbb-tips-restaurant-flore-celebrates-5-years-with-special",
+   "title": "Restaurant Flore celebrates 5 years with special collaborations",
+   "venue": "",
+   "when": "This weekend",
+   "category": "eat",
+   "link": "https://www.instagram.com/p/DcIcl1EjCU0/?img_index=1",
+   "source": "Your Little Black Book",
+   "why": "LBB weekendtips",
+   "lens": "always",
+   "live": true,
+   "imageWhy": "none",
+   "pos": 42,
+   "guide": "LBB weekendtips",
+   "judge": 6,
+   "age": 10
   },
   {
    "id": "web-lbb-tips-qru",
@@ -806,10 +772,10 @@
    "lens": "always",
    "live": true,
    "imageWhy": "none",
-   "pos": 45,
+   "pos": 43,
    "guide": "LBB weekendtips",
    "judge": 3,
-   "age": 2
+   "age": 3
   },
   {
    "id": "web-lbb-tips-pure-market",
@@ -823,10 +789,10 @@
    "lens": "always",
    "live": true,
    "imageWhy": "none",
-   "pos": 46,
+   "pos": 44,
    "guide": "LBB weekendtips",
    "judge": 5,
-   "age": 9
+   "age": 10
   },
   {
    "id": "web-lbb-tips-jeugdland-amsterdam",
@@ -840,10 +806,10 @@
    "lens": "always",
    "live": true,
    "imageWhy": "none",
-   "pos": 47,
+   "pos": 45,
    "guide": "LBB weekendtips",
    "judge": 5,
-   "age": 9
+   "age": 10
   },
   {
    "id": "web-lbb-tips-vermut-in-oud-west",
@@ -857,10 +823,10 @@
    "lens": "always",
    "live": true,
    "imageWhy": "none",
-   "pos": 48,
+   "pos": 46,
    "guide": "LBB weekendtips",
    "judge": 5,
-   "age": 9
+   "age": 10
   },
   {
    "id": "web-lbb-tips-javaplein-vintage-market",
@@ -874,10 +840,10 @@
    "lens": "always",
    "live": true,
    "imageWhy": "none",
-   "pos": 49,
+   "pos": 47,
    "guide": "LBB weekendtips",
    "judge": 5,
-   "age": 9
+   "age": 10
   },
   {
    "id": "llm-kidsproof-feest-op-zondag-midherfstfestival",
@@ -891,9 +857,9 @@
    "lens": "weekend",
    "live": true,
    "imageWhy": "none",
-   "pos": 50,
+   "pos": 48,
    "judge": 6,
-   "age": 9
+   "age": 10
   },
   {
    "id": "web-scout-two-story",
@@ -908,9 +874,9 @@
    "live": true,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fcdn.prod.website-files.com%2F68062f75d222786462a6618f%2F6a33c8bbd2fa7baccef66ae5_A%2520Living%2520Spectrum%2520Two%2520Story%2520-%2520Studio%2520Aest-45%25201.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.825&fpy=0.600&output=jpg&default=https%3A%2F%2Fcdn.prod.website-files.com%2F68062f75d222786462a6618f%2F6a33c8bbd2fa7baccef66ae5_A%2520Living%2520Spectrum%2520Two%2520Story%2520-%2520Studio%2520Aest-45%25201.jpg",
    "imageWhy": "organiser",
-   "pos": 51,
+   "pos": 49,
    "judge": 7,
-   "age": 16
+   "age": 17
   },
   {
    "id": "web-lbb-tips-tuimelaar-thu-17-sep-09",
@@ -924,10 +890,10 @@
    "lens": "always",
    "live": true,
    "imageWhy": "none",
-   "pos": 52,
+   "pos": 50,
    "guide": "LBB weekendtips",
    "judge": 2,
-   "age": 2
+   "age": 3
   },
   {
    "id": "web-lbb-tips-bar-francois",
@@ -941,25 +907,27 @@
    "lens": "always",
    "live": true,
    "imageWhy": "none",
-   "pos": 53,
+   "pos": 51,
    "guide": "LBB weekendtips",
    "judge": 4,
-   "age": 9
+   "age": 10
   },
   {
-   "id": "cafe-chris",
-   "title": "Café Chris — oldest brown café",
-   "venue": "Café Chris",
-   "when": "Daily · afternoon–late",
-   "category": "drink",
-   "link": "https://www.cafechris.nl/",
-   "source": "Your Little Black Book",
-   "why": "",
-   "lens": "always",
-   "live": false,
-   "image": "https://images.weserv.nl/?url=https%3A%2F%2Fdynamic-media-cdn.tripadvisor.com%2Fmedia%2Fphoto-o%2F2a%2Fea%2F21%2F79%2Fcaption.jpg%3Fw%3D1200%26h%3D-1%26s%3D1&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.525&output=jpg&default=https%3A%2F%2Fdynamic-media-cdn.tripadvisor.com%2Fmedia%2Fphoto-o%2F2a%2Fea%2F21%2F79%2Fcaption.jpg%3Fw%3D1200%26h%3D-1%26s%3D1",
-   "pos": 54,
-   "age": 16
+   "id": "web-iams-pagliacci-cavalleria-rusticana",
+   "title": "Pagliacci / Cavalleria rusticana",
+   "venue": "Dutch National Opera & Ballet",
+   "when": "Sat 5 – Wed 23 Sep",
+   "category": "stage",
+   "link": "https://www.iamsterdam.com/en/whats-on/calendar/theatre-and-stage/stage/pagliacci-cavalleria-rusticana",
+   "source": "I amsterdam",
+   "why": "Sat + Sun",
+   "lens": "weekend",
+   "live": true,
+   "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a023ee85ebafd251afe1d04%2FaHR0cHM6Ly9zaG9wLm9wZXJhYmFsbGV0Lm5sLy9jbXNfZmlsZXMvc3lzdGVtL2ltYWdlcy9pbWcxNzAxX29yaWcuanBn.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.400&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a023ee85ebafd251afe1d04%2FaHR0cHM6Ly9zaG9wLm9wZXJhYmFsbGV0Lm5sLy9jbXNfZmlsZXMvc3lzdGVtL2ltYWdlcy9pbWcxNzAxX29yaWcuanBn.webp",
+   "imageWhy": "organiser",
+   "pos": 52,
+   "judge": 6,
+   "age": 14
   },
   {
    "id": "foodhallen",
@@ -973,8 +941,8 @@
    "lens": "always",
    "live": false,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fthumb%2F3%2F30%2FFoodhallen_in_Oud-West_%2528Amsterdam%252C_The_Netherlands_2017%2529_%252834245643041%2529.jpg%2F1280px-Foodhallen_in_Oud-West_%2528Amsterdam%252C_The_Netherlands_2017%2529_%252834245643041%2529.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.575&output=jpg&default=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fthumb%2F3%2F30%2FFoodhallen_in_Oud-West_%2528Amsterdam%252C_The_Netherlands_2017%2529_%252834245643041%2529.jpg%2F1280px-Foodhallen_in_Oud-West_%2528Amsterdam%252C_The_Netherlands_2017%2529_%252834245643041%2529.jpg",
-   "pos": 55,
-   "age": 16
+   "pos": 53,
+   "age": 17
   },
   {
    "id": "ams-ev2-droog",
@@ -988,8 +956,8 @@
    "lens": "always",
    "live": false,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.droog.com%2Fwp-content%2Fuploads%2F2020%2F04%2F85_lamps_01.png&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fwww.droog.com%2Fwp-content%2Fuploads%2F2020%2F04%2F85_lamps_01.png",
-   "pos": 56,
-   "age": 16
+   "pos": 54,
+   "age": 17
   },
   {
    "id": "ams-ev-utrecht",
@@ -1003,8 +971,8 @@
    "lens": "always",
    "live": false,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fi.guim.co.uk%2Fimg%2Fmedia%2F30f7ae0e50398b97474581a1ed4b1056b6bfa268%2F0_0_5690_3414%2Fmaster%2F5690.jpg%3Fwidth%3D1200%26height%3D1200%26quality%3D85%26auto%3Dformat%26fit%3Dcrop%26s%3D081ae42ca96e2c5818c4868ae025955a&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fi.guim.co.uk%2Fimg%2Fmedia%2F30f7ae0e50398b97474581a1ed4b1056b6bfa268%2F0_0_5690_3414%2Fmaster%2F5690.jpg%3Fwidth%3D1200%26height%3D1200%26quality%3D85%26auto%3Dformat%26fit%3Dcrop%26s%3D081ae42ca96e2c5818c4868ae025955a",
-   "pos": 57,
-   "age": 16
+   "pos": 55,
+   "age": 17
   },
   {
    "id": "ams-ev2-mendo",
@@ -1018,8 +986,8 @@
    "lens": "always",
    "live": false,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fmendo.nl%2Fcdn%2Fshop%2Ffiles%2FFrankey_Positive_Disruption_plain.png%3Fv%3D1732108299%26width%3D480&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fmendo.nl%2Fcdn%2Fshop%2Ffiles%2FFrankey_Positive_Disruption_plain.png%3Fv%3D1732108299%26width%3D480",
-   "pos": 58,
-   "age": 16
+   "pos": 56,
+   "age": 17
   },
   {
    "id": "ams-efteling",
@@ -1033,8 +1001,8 @@
    "lens": "always",
    "live": false,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.efteling.com%2Fen%2F-%2Fmedia%2Fimages%2Fsocial-open-graph%2F1200x628-python-kurkentrekker.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.425&fpy=0.350&output=jpg&default=https%3A%2F%2Fwww.efteling.com%2Fen%2F-%2Fmedia%2Fimages%2Fsocial-open-graph%2F1200x628-python-kurkentrekker.jpg",
-   "pos": 59,
-   "age": 16
+   "pos": 57,
+   "age": 17
   },
   {
    "id": "ams-b2-moise",
@@ -1048,8 +1016,8 @@
    "lens": "always",
    "live": false,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fmedia.licdn.com%2Fdms%2Fimage%2Fv2%2FC561BAQHDkbg5laBwow%2Fcompany-background_10000%2Fcompany-background_10000%2F0%2F1585425295198%2Fmoise_store_cover%3Fe%3D2147483647%26v%3Dbeta%26t%3DbalgwACnbBvaLmlVam_9VLjXuYzd4uaGpKFcG_d7uYg&w=800&h=1200&fit=cover&a=focal&fpx=0.250&fpy=0.550&output=jpg&default=https%3A%2F%2Fmedia.licdn.com%2Fdms%2Fimage%2Fv2%2FC561BAQHDkbg5laBwow%2Fcompany-background_10000%2Fcompany-background_10000%2F0%2F1585425295198%2Fmoise_store_cover%3Fe%3D2147483647%26v%3Dbeta%26t%3DbalgwACnbBvaLmlVam_9VLjXuYzd4uaGpKFcG_d7uYg",
-   "pos": 60,
-   "age": 16
+   "pos": 58,
+   "age": 17
   },
   {
    "id": "ams-madurodam",
@@ -1063,8 +1031,8 @@
    "lens": "always",
    "live": false,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.public-transport-holland.com%2Fwp-content%2Fuploads%2F2017%2F05%2FGezin-tussen-miniatuur-scaled.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.450&output=jpg&default=https%3A%2F%2Fwww.public-transport-holland.com%2Fwp-content%2Fuploads%2F2017%2F05%2FGezin-tussen-miniatuur-scaled.jpg",
-   "pos": 61,
-   "age": 16
+   "pos": 59,
+   "age": 17
   },
   {
    "id": "ams-b2-patta",
@@ -1078,8 +1046,8 @@
    "lens": "always",
    "live": false,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fdk.patta.nl%2Fcdn%2Fshop%2Ffiles%2FPATTA-AMS-STORE_10.jpg%3Fv%3D1739810240%26width%3D1280&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.625&output=jpg&default=https%3A%2F%2Fdk.patta.nl%2Fcdn%2Fshop%2Ffiles%2FPATTA-AMS-STORE_10.jpg%3Fv%3D1739810240%26width%3D1280",
-   "pos": 62,
-   "age": 16
+   "pos": 60,
+   "age": 17
   },
   {
    "id": "ams-ev2-nxt-museum",
@@ -1093,8 +1061,8 @@
    "lens": "always",
    "live": false,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fadmin.nxtmuseum.com%2Fcontent%2Fuploads%2F2024%2F05%2FLife-In-Our-Minds_-Motherflock-_-III-2023-by-Random-International-%25E2%2580%2593-exhibited-in-%25E2%2580%2598Life-in-a-Different-Resolution-at-Nxt-Museum-The-Netherlands_-Photographer_Maarten-Nauw_01-scaled.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fadmin.nxtmuseum.com%2Fcontent%2Fuploads%2F2024%2F05%2FLife-In-Our-Minds_-Motherflock-_-III-2023-by-Random-International-%25E2%2580%2593-exhibited-in-%25E2%2580%2598Life-in-a-Different-Resolution-at-Nxt-Museum-The-Netherlands_-Photographer_Maarten-Nauw_01-scaled.jpg",
-   "pos": 63,
-   "age": 16
+   "pos": 61,
+   "age": 17
   },
   {
    "id": "ams-b2-x-bank",
@@ -1108,8 +1076,8 @@
    "lens": "always",
    "live": false,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fi.pinimg.com%2Foriginals%2Fdc%2Fae%2Fd3%2Fdcaed3ee8c10492ce947c821c8de87e1.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.600&output=jpg&default=https%3A%2F%2Fi.pinimg.com%2Foriginals%2Fdc%2Fae%2Fd3%2Fdcaed3ee8c10492ce947c821c8de87e1.jpg",
-   "pos": 64,
-   "age": 16
+   "pos": 62,
+   "age": 17
   },
   {
    "id": "ams-ev-bloemenmarkt",
@@ -1123,8 +1091,8 @@
    "lens": "always",
    "live": false,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Faboutnl.com%2Fwp-content%2Fuploads%2F2023%2F10%2Ffloating-market-amsterdam.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Faboutnl.com%2Fwp-content%2Fuploads%2F2023%2F10%2Ffloating-market-amsterdam.jpg",
-   "pos": 65,
-   "age": 16
+   "pos": 63,
+   "age": 17
   },
   {
    "id": "ams-b2-mobilia",
@@ -1138,8 +1106,8 @@
    "lens": "always",
    "live": false,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fi.pinimg.com%2Foriginals%2F66%2F83%2Fa0%2F6683a0d19052a8cb98cdc5322ae54438.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.175&fpy=0.525&output=jpg&default=https%3A%2F%2Fi.pinimg.com%2Foriginals%2F66%2F83%2Fa0%2F6683a0d19052a8cb98cdc5322ae54438.jpg",
-   "pos": 66,
-   "age": 16
+   "pos": 64,
+   "age": 17
   },
   {
    "id": "ams-ev2-museum-van-loon",
@@ -1153,8 +1121,8 @@
    "lens": "always",
    "live": false,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fthumb%2F8%2F86%2FAmsterdam_-_Museum_Van_Loon_-_Gardens.jpg%2F1280px-Amsterdam_-_Museum_Van_Loon_-_Gardens.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fthumb%2F8%2F86%2FAmsterdam_-_Museum_Van_Loon_-_Gardens.jpg%2F1280px-Amsterdam_-_Museum_Van_Loon_-_Gardens.jpg",
-   "pos": 67,
-   "age": 16
+   "pos": 65,
+   "age": 17
   },
   {
    "id": "ams-b2-vlieger",
@@ -1168,8 +1136,8 @@
    "lens": "always",
    "live": false,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2F4.bp.blogspot.com%2F--AHdyrnMcgs%2FU53ht8RshxI%2FAAAAAAAAELk%2FtaKnvOilL2Q%2Fs1600%2FIMG_5588.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.550&output=jpg&default=https%3A%2F%2F4.bp.blogspot.com%2F--AHdyrnMcgs%2FU53ht8RshxI%2FAAAAAAAAELk%2FtaKnvOilL2Q%2Fs1600%2FIMG_5588.jpg",
-   "pos": 68,
-   "age": 16
+   "pos": 66,
+   "age": 17
   },
   {
    "id": "ams-ev-marken-volendam",
@@ -1183,8 +1151,8 @@
    "lens": "always",
    "live": false,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fmedia.tacdn.com%2Fmedia%2Fattractions-splice-spp-674x446%2F06%2F73%2Fde%2F1a.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fmedia.tacdn.com%2Fmedia%2Fattractions-splice-spp-674x446%2F06%2F73%2Fde%2F1a.jpg",
-   "pos": 69,
-   "age": 16
+   "pos": 67,
+   "age": 17
   },
   {
    "id": "ams-ev-albert-cuyp",
@@ -1198,8 +1166,8 @@
    "lens": "always",
    "live": false,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2F6%2F62%2FAlbert_Cuypmarkt.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2F6%2F62%2FAlbert_Cuypmarkt.jpg",
-   "pos": 70,
-   "age": 16
+   "pos": 68,
+   "age": 17
   },
   {
    "id": "ams-ev-zandvoort",
@@ -1213,8 +1181,8 @@
    "lens": "always",
    "live": false,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fimages.trvl-media.com%2Fplace%2F6110890%2F9e2b09e5-f29a-4379-aead-f4b2601547ee.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fimages.trvl-media.com%2Fplace%2F6110890%2F9e2b09e5-f29a-4379-aead-f4b2601547ee.jpg",
-   "pos": 71,
-   "age": 16
+   "pos": 69,
+   "age": 17
   },
   {
    "id": "ams-ev-waterlooplein",
@@ -1228,8 +1196,8 @@
    "lens": "always",
    "live": false,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fi.pinimg.com%2Foriginals%2Ffb%2F02%2Ff1%2Ffb02f143ed724aee69433617c2249bae.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fi.pinimg.com%2Foriginals%2Ffb%2F02%2Ff1%2Ffb02f143ed724aee69433617c2249bae.jpg",
-   "pos": 72,
-   "age": 16
+   "pos": 70,
+   "age": 17
   },
   {
    "id": "ams-ev-kinderdijk",
@@ -1243,8 +1211,8 @@
    "lens": "always",
    "live": false,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fcdn.audleytravel.com%2F5346%2F3820%2F79%2F15989287-windmills-and-tulips-of-kinderdijk.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fcdn.audleytravel.com%2F5346%2F3820%2F79%2F15989287-windmills-and-tulips-of-kinderdijk.jpg",
-   "pos": 73,
-   "age": 16
+   "pos": 71,
+   "age": 17
   },
   {
    "id": "web-lbb-martine-gutierrez-wunderkind",
@@ -1259,8 +1227,8 @@
    "live": true,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fhuismarseille.nl%2Fapp%2Fuploads%2F2026%2F02%2FStill_Life_Moms_Refrigerator.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fhuismarseille.nl%2Fapp%2Fuploads%2F2026%2F02%2FStill_Life_Moms_Refrigerator.jpg",
    "imageWhy": "curated",
-   "pos": 74,
-   "age": 16
+   "pos": 72,
+   "age": 17
   },
   {
    "id": "web-iams-nicolas-van-poucke-pianorecital",
@@ -1275,8 +1243,8 @@
    "live": true,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fdenieuwemuze.nl%2Fwp-content%2Fuploads%2F2024%2F10%2F59F966E8-F1CC-46B7-9C77-5692C9FD8179.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fdenieuwemuze.nl%2Fwp-content%2Fuploads%2F2024%2F10%2F59F966E8-F1CC-46B7-9C77-5692C9FD8179.jpg",
    "imageWhy": "curated",
-   "pos": 75,
-   "age": 16
+   "pos": 73,
+   "age": 17
   },
   {
    "id": "web-iams-agathas-almanac",
@@ -1291,9 +1259,9 @@
    "live": true,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F69e187c1a8ab8e24a45b73ce%2Fhttps___culturekit-assets.imgix.net_1_assets_640e4920-cd7c-4464-ab53-d637a36e8518.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.450&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F69e187c1a8ab8e24a45b73ce%2Fhttps___culturekit-assets.imgix.net_1_assets_640e4920-cd7c-4464-ab53-d637a36e8518.webp",
    "imageWhy": "organiser",
-   "pos": 76,
+   "pos": 74,
    "judge": 4,
-   "age": 18
+   "age": 19
   },
   {
    "id": "web-iams-straat-collectie",
@@ -1308,8 +1276,8 @@
    "live": true,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F69722aa2f8ac733b5bd29a0d%2Fiamsterdam_5.webp&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F69722aa2f8ac733b5bd29a0d%2Fiamsterdam_5.webp",
    "imageWhy": "organiser",
-   "pos": 77,
-   "age": 16
+   "pos": 75,
+   "age": 17
   },
   {
    "id": "web-lbb-tips-pllek",
@@ -1323,10 +1291,10 @@
    "lens": "always",
    "live": true,
    "imageWhy": "none",
-   "pos": 78,
+   "pos": 76,
    "guide": "LBB weekendtips",
    "judge": 3,
-   "age": 16
+   "age": 17
   },
   {
    "id": "web-lbb-kho-liang-ie-mid-century-modernist",
@@ -1341,9 +1309,9 @@
    "live": true,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fthumb%2F6%2F61%2FDe_nieuwe_vleugel_van_het_Stedelijk_Museum_Amsterdam.jpg%2F1280px-De_nieuwe_vleugel_van_het_Stedelijk_Museum_Amsterdam.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.625&fpy=0.500&output=jpg&default=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fthumb%2F6%2F61%2FDe_nieuwe_vleugel_van_het_Stedelijk_Museum_Amsterdam.jpg%2F1280px-De_nieuwe_vleugel_van_het_Stedelijk_Museum_Amsterdam.jpg",
    "imageWhy": "venue",
-   "pos": 79,
+   "pos": 77,
    "judge": 7,
-   "age": 14
+   "age": 15
   },
   {
    "id": "web-iams-lunchtime-organ-concerts-at-waterlooplein",
@@ -1353,14 +1321,14 @@
    "category": "live",
    "link": "https://www.iamsterdam.com/en/whats-on/calendar/concerts-and-music/concerts/lunchtime-organ-concerts-at-waterlooplein",
    "source": "I amsterdam",
-   "why": "on all weekend",
+   "why": "week 4 · on all weekend",
    "lens": "weekend",
    "live": true,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F69d4be57a8ab8e24a457b978%2Flunchorgelconcerten_2026__Vierkant_kussen___1_.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.275&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F69d4be57a8ab8e24a457b978%2Flunchorgelconcerten_2026__Vierkant_kussen___1_.webp",
    "imageWhy": "organiser",
-   "pos": 80,
+   "pos": 78,
    "judge": 6,
-   "age": 21
+   "age": 22
   },
   {
    "id": "web-scout-marocaine",
@@ -1375,9 +1343,9 @@
    "live": true,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fmarocaine.nl%2Fwp-content%2Fuploads%2F2026%2F01%2FWhatsApp-Image-2026-01-26-at-15.01.49-1024x768.jpeg&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.500&output=jpg&default=https%3A%2F%2Fmarocaine.nl%2Fwp-content%2Fuploads%2F2026%2F01%2FWhatsApp-Image-2026-01-26-at-15.01.49-1024x768.jpeg",
    "imageWhy": "organiser",
-   "pos": 81,
+   "pos": 79,
    "judge": 7,
-   "age": 14
+   "age": 15
   },
   {
    "id": "web-iams-the-maker-market",
@@ -1387,14 +1355,14 @@
    "category": "shop",
    "link": "https://www.iamsterdam.com/en/whats-on/calendar/shopping/markets/the-maker-market",
    "source": "I amsterdam",
-   "why": "on all weekend",
+   "why": "week 4 · on all weekend",
    "lens": "always",
    "live": true,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F697250f4f8ac733b5bd29b88%2FIMG_3236.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.450&fpy=0.500&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F697250f4f8ac733b5bd29b88%2FIMG_3236.webp",
    "imageWhy": "organiser",
-   "pos": 82,
+   "pos": 80,
    "judge": 7,
-   "age": 21
+   "age": 22
   },
   {
    "id": "web-iams-de-roode-remise-singing-session",
@@ -1404,14 +1372,14 @@
    "category": "live",
    "link": "https://www.iamsterdam.com/en/whats-on/calendar/concerts-and-music/concerts/de-roode-remise-singing-session",
    "source": "I amsterdam",
-   "why": "on all weekend",
+   "why": "week 4 · on all weekend",
    "lens": "always",
    "live": true,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6943e067b1a06d3d84846847%2F450605301_373678192089931_7485012110454334483_n__1_.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.225&fpy=0.625&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6943e067b1a06d3d84846847%2F450605301_373678192089931_7485012110454334483_n__1_.webp",
    "imageWhy": "organiser",
-   "pos": 83,
+   "pos": 81,
    "judge": 7,
-   "age": 21
+   "age": 22
   },
   {
    "id": "web-lbb-liefde-op-de-grachten-30-jaar-canal-parade",
@@ -1425,9 +1393,9 @@
    "lens": "weekend",
    "live": true,
    "imageWhy": "none",
-   "pos": 84,
+   "pos": 82,
    "judge": 5,
-   "age": 14
+   "age": 15
   },
   {
    "id": "web-lbb-tips-amstel-1-market",
@@ -1441,10 +1409,10 @@
    "lens": "always",
    "live": true,
    "imageWhy": "none",
-   "pos": 85,
+   "pos": 83,
    "guide": "LBB weekendtips",
    "judge": 3,
-   "age": 14
+   "age": 15
   },
   {
    "id": "web-iams-the-mystery-of-the-girl-in-blue",
@@ -1459,80 +1427,9 @@
    "live": true,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F68e8f19b0a64d26bf0bd5848%2FJohannes_Verspronck__Portret_van_een_meisje_in_het_blauw__1641__Rijksmuseum_Amsterdam.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.525&fpy=0.550&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F68e8f19b0a64d26bf0bd5848%2FJohannes_Verspronck__Portret_van_een_meisje_in_het_blauw__1641__Rijksmuseum_Amsterdam.webp",
    "imageWhy": "organiser",
-   "pos": 86,
+   "pos": 84,
    "judge": 5,
-   "age": 19
-  },
-  {
-   "id": "web-iams-tapt-festival-amsterdam-west",
-   "title": "Tapt Festival Amsterdam-West",
-   "venue": "Rembrandtpark",
-   "when": "Fri 18 – Sat 19 Sep",
-   "category": "out",
-   "link": "https://www.iamsterdam.com/en/whats-on/calendar/festivals/events/tapt-festival-amsterdam-west",
-   "source": "I amsterdam · Your Little Black Book",
-   "why": "I amsterdam guide · new this week · Sat · 2 sources",
-   "lens": "weekend",
-   "live": true,
-   "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F67c9632f350f82010ce15d61%2Ftapt_05_1800x1020.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.525&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F67c9632f350f82010ce15d61%2Ftapt_05_1800x1020.webp",
-   "imageWhy": "organiser",
-   "pos": 87,
-   "guide": "I amsterdam weekend guide",
-   "judge": 6,
-   "buzz": 2,
-   "age": 5
-  },
-  {
-   "id": "web-iams-exhibition-worn-in-the-rijksmuseum",
-   "title": "Exhibition Worn in the Rijksmuseum",
-   "venue": "Rijksmuseum",
-   "when": "Until Sun 21 Mar",
-   "category": "art",
-   "link": "https://www.iamsterdam.com/en/whats-on/calendar/exhibitions/all-exhibitions/exhibition-worn-in-the-rijksmuseum",
-   "source": "I amsterdam",
-   "why": "on all weekend",
-   "lens": "always",
-   "live": true,
-   "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F69ccd961758e000e5db6dcdd%2FWorn_beelddrager.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.500&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F69ccd961758e000e5db6dcdd%2FWorn_beelddrager.webp",
-   "imageWhy": "organiser",
-   "pos": 88,
-   "judge": 6,
-   "age": 21
-  },
-  {
-   "id": "web-iams-classical-music-at-amstelveld",
-   "title": "Budget Option: Klassiek op het Amstelveld (KOHA)",
-   "venue": "Amstelkerk",
-   "when": "Fri 18 – Sat 19 Sep",
-   "category": "out",
-   "link": "https://www.iamsterdam.com/en/whats-on/calendar/festivals/events/classical-music-at-amstelveld",
-   "source": "I amsterdam · Your Little Black Book",
-   "why": "I amsterdam guide · new this week · Sat · 2 sources",
-   "lens": "weekend",
-   "live": true,
-   "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F68a57c665751c661a6afd1d6%2FOntwerp_zonder_titel__9_.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.725&fpy=0.425&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F68a57c665751c661a6afd1d6%2FOntwerp_zonder_titel__9_.webp",
-   "imageWhy": "organiser",
-   "pos": 89,
-   "guide": "I amsterdam weekend guide",
-   "judge": 6,
-   "buzz": 2,
-   "age": 5
-  },
-  {
-   "id": "web-lbb-larissa-sansour-rogue-agents-of-history",
-   "title": "Larissa Sansour: Rogue Agents of History",
-   "venue": "Wereldmuseum Amsterdam",
-   "when": "Until Sun 27 Sep",
-   "category": "art",
-   "link": "https://duckduckgo.com/?q=Larissa%20Sansour%3A%20Rogue%20Agents%20of%20History%20Wereldmuseum%20Amsterdam%20Amsterdam",
-   "source": "Your Little Black Book",
-   "why": "on all weekend",
-   "lens": "weekend",
-   "live": true,
-   "imageWhy": "none",
-   "pos": 90,
-   "judge": 6,
-   "age": 16
+   "age": 20
   },
   {
    "id": "ams-lostin-de-ceuvel",
@@ -1546,40 +1443,25 @@
    "lens": "always",
    "live": false,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fi.pinimg.com%2Foriginals%2Fb4%2F08%2Fac%2Fb408ac9c5dc7534a2bf4483b9b21352c.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.525&fpy=0.300&output=jpg&default=https%3A%2F%2Fi.pinimg.com%2Foriginals%2Fb4%2F08%2Fac%2Fb408ac9c5dc7534a2bf4483b9b21352c.jpg",
-   "pos": 91,
-   "age": 2
+   "pos": 85,
+   "age": 3
   },
   {
-   "id": "the-movies",
-   "title": "The Movies — arthouse cinema",
-   "venue": "The Movies",
-   "when": "Daily · evening sessions",
-   "category": "stage",
-   "link": "https://themovies.nl/",
-   "source": "Uitkrant · Maps",
-   "why": "2 sources",
-   "lens": "always",
-   "live": false,
-   "image": "https://images.weserv.nl/?url=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1777994808497-e9ca0037c671%3Fw%3D1200%26q%3D80&w=800&h=1200&fit=cover&a=focal&fpx=0.525&fpy=0.500&output=jpg&default=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1777994808497-e9ca0037c671%3Fw%3D1200%26q%3D80",
-   "pos": 92,
-   "buzz": 2,
-   "age": 16
-  },
-  {
-   "id": "web-scout-de-poldervogel",
-   "title": "De Poldervogel",
-   "venue": "De Poldervogel",
-   "when": "Just opened · dinner",
-   "category": "eat",
-   "link": "https://www.restaurantdepoldervogel.nl/",
-   "source": "Fresh find",
-   "why": "",
+   "id": "web-iams-exhibition-worn-in-the-rijksmuseum",
+   "title": "Exhibition Worn in the Rijksmuseum",
+   "venue": "Rijksmuseum",
+   "when": "Until Sun 21 Mar",
+   "category": "art",
+   "link": "https://www.iamsterdam.com/en/whats-on/calendar/exhibitions/all-exhibitions/exhibition-worn-in-the-rijksmuseum",
+   "source": "I amsterdam",
+   "why": "week 4 · on all weekend",
    "lens": "always",
    "live": true,
-   "imageWhy": "none",
-   "pos": 93,
-   "judge": 7,
-   "age": 14
+   "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F69ccd961758e000e5db6dcdd%2FWorn_beelddrager.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.500&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F69ccd961758e000e5db6dcdd%2FWorn_beelddrager.webp",
+   "imageWhy": "organiser",
+   "pos": 86,
+   "judge": 6,
+   "age": 22
   },
   {
    "id": "eye-screening",
@@ -1593,71 +1475,41 @@
    "lens": "always",
    "live": false,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fassets.eyefilm.nl%2Fimages%2F_1200x630_crop_center-center_none%2FFoto-EYE-Marcus-Koppen-bijgesneden-2_2021-04-12-140514.jpeg&w=800&h=1200&fit=cover&a=focal&fpx=0.525&fpy=0.650&output=jpg&default=https%3A%2F%2Fassets.eyefilm.nl%2Fimages%2F_1200x630_crop_center-center_none%2FFoto-EYE-Marcus-Koppen-bijgesneden-2_2021-04-12-140514.jpeg",
-   "pos": 94,
+   "pos": 87,
    "buzz": 2,
-   "age": 16
+   "age": 17
   },
   {
-   "id": "web-lbb-tips-bak-wine-lunch-with-special-aged-bottles",
-   "title": "BAK Wine Lunch with special aged bottles",
-   "venue": "BAK, Van",
-   "when": "Sat 19 Sep",
-   "category": "out",
-   "link": "http://www.bakrestaurant.nl?ft-ticket=322c1ed6",
+   "id": "web-lbb-larissa-sansour-rogue-agents-of-history",
+   "title": "Larissa Sansour: Rogue Agents of History",
+   "venue": "Wereldmuseum Amsterdam",
+   "when": "Until Sun 27 Sep",
+   "category": "art",
+   "link": "https://duckduckgo.com/?q=Larissa%20Sansour%3A%20Rogue%20Agents%20of%20History%20Wereldmuseum%20Amsterdam%20Amsterdam",
    "source": "Your Little Black Book",
-   "why": "LBB weekendtips · new this week · Sat",
+   "why": "on all weekend",
    "lens": "weekend",
    "live": true,
    "imageWhy": "none",
-   "pos": 95,
-   "guide": "LBB weekendtips",
-   "judge": 9,
-   "age": 2
+   "pos": 88,
+   "judge": 6,
+   "age": 17
   },
   {
-   "id": "east-beach",
-   "title": "East Beach — rooftop city beach",
-   "venue": "House of Orchid rooftop",
-   "when": "New · daily",
-   "category": "drink",
-   "link": "https://www.amsterdamnow.com/en/going-out-entertainment/beach-of-east-city-beach-on-roof-terrace-of-house-of-orchid/",
-   "source": "AmsterdamNow",
+   "id": "web-scout-de-poldervogel",
+   "title": "De Poldervogel",
+   "venue": "De Poldervogel",
+   "when": "Just opened · dinner",
+   "category": "eat",
+   "link": "https://www.restaurantdepoldervogel.nl/",
+   "source": "Fresh find",
    "why": "",
    "lens": "always",
-   "live": false,
-   "image": "https://images.weserv.nl/?url=https%3A%2F%2Fcdn.amsterdamnow.com%2Fapp%2Fuploads%2Fstrand-oost-amsterdam_1.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.450&fpy=0.550&output=jpg&default=https%3A%2F%2Fcdn.amsterdamnow.com%2Fapp%2Fuploads%2Fstrand-oost-amsterdam_1.jpg",
-   "pos": 96,
-   "age": 16
-  },
-  {
-   "id": "sauna-deco",
-   "title": "Sauna Deco — Art Deco baths",
-   "venue": "Sauna Deco",
-   "when": "Daily · 12:00–23:00",
-   "category": "out",
-   "link": "https://www.saunadeco.nl/",
-   "source": "I amsterdam",
-   "why": "",
-   "lens": "always",
-   "live": false,
-   "image": "https://images.weserv.nl/?url=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1757940556610-a114be4733bf%3Fw%3D1200%26q%3D80&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.600&output=jpg&default=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1757940556610-a114be4733bf%3Fw%3D1200%26q%3D80",
-   "pos": 97,
-   "age": 16
-  },
-  {
-   "id": "de-pimpelmees",
-   "title": "De Pimpelmees",
-   "venue": "Wine bar · Staatsliedenbuurt",
-   "when": "New · daily",
-   "category": "drink",
-   "link": "https://www.amsterdamnow.com/en/restaurants/pimple-tit-wine-cafe-stateside/",
-   "source": "AmsterdamNow",
-   "why": "",
-   "lens": "always",
-   "live": false,
-   "image": "https://images.weserv.nl/?url=https%3A%2F%2Fcdn.amsterdamnow.com%2Fapp%2Fuploads%2Fpimpelmees-wijn-cafe-amsterdam.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.500&output=jpg&default=https%3A%2F%2Fcdn.amsterdamnow.com%2Fapp%2Fuploads%2Fpimpelmees-wijn-cafe-amsterdam.jpg",
-   "pos": 98,
-   "age": 16
+   "live": true,
+   "imageWhy": "none",
+   "pos": 89,
+   "judge": 7,
+   "age": 15
   },
   {
    "id": "ams-vondelpark-play",
@@ -1671,8 +1523,23 @@
    "lens": "always",
    "live": false,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.landezine.com%2Fwp-content%2Fuploads%2F2010%2F12%2Fvondelpark-playground-amsterdam-by-carve-landscape-architecture-09.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.500&output=jpg&default=https%3A%2F%2Fwww.landezine.com%2Fwp-content%2Fuploads%2F2010%2F12%2Fvondelpark-playground-amsterdam-by-carve-landscape-architecture-09.jpg",
-   "pos": 99,
-   "age": 16
+   "pos": 90,
+   "age": 17
+  },
+  {
+   "id": "east-beach",
+   "title": "East Beach — rooftop city beach",
+   "venue": "House of Orchid rooftop",
+   "when": "New · daily",
+   "category": "drink",
+   "link": "https://www.amsterdamnow.com/en/going-out-entertainment/beach-of-east-city-beach-on-roof-terrace-of-house-of-orchid/",
+   "source": "AmsterdamNow",
+   "why": "",
+   "lens": "always",
+   "live": false,
+   "image": "https://images.weserv.nl/?url=https%3A%2F%2Fcdn.amsterdamnow.com%2Fapp%2Fuploads%2Fstrand-oost-amsterdam_1.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.450&fpy=0.550&output=jpg&default=https%3A%2F%2Fcdn.amsterdamnow.com%2Fapp%2Fuploads%2Fstrand-oost-amsterdam_1.jpg",
+   "pos": 91,
+   "age": 17
   },
   {
    "id": "ams-b2-foam",
@@ -1686,8 +1553,23 @@
    "lens": "always",
    "live": false,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Faws-tiqets-cdn.imgix.net%2Fimages%2Fcontent%2Fe2b3e203f7524292acea46b5394820b0.jpeg%3Fauto%3Dformat%26fit%3Dcrop%26h%3D800%26w%3D800%26q%3D70&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.500&output=jpg&default=https%3A%2F%2Faws-tiqets-cdn.imgix.net%2Fimages%2Fcontent%2Fe2b3e203f7524292acea46b5394820b0.jpeg%3Fauto%3Dformat%26fit%3Dcrop%26h%3D800%26w%3D800%26q%3D70",
-   "pos": 100,
-   "age": 16
+   "pos": 92,
+   "age": 17
+  },
+  {
+   "id": "de-pimpelmees",
+   "title": "De Pimpelmees",
+   "venue": "Wine bar · Staatsliedenbuurt",
+   "when": "New · daily",
+   "category": "drink",
+   "link": "https://www.amsterdamnow.com/en/restaurants/pimple-tit-wine-cafe-stateside/",
+   "source": "AmsterdamNow",
+   "why": "",
+   "lens": "always",
+   "live": false,
+   "image": "https://images.weserv.nl/?url=https%3A%2F%2Fcdn.amsterdamnow.com%2Fapp%2Fuploads%2Fpimpelmees-wijn-cafe-amsterdam.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.500&output=jpg&default=https%3A%2F%2Fcdn.amsterdamnow.com%2Fapp%2Fuploads%2Fpimpelmees-wijn-cafe-amsterdam.jpg",
+   "pos": 93,
+   "age": 17
   },
   {
    "id": "ams-ev-melkweg",
@@ -1701,8 +1583,8 @@
    "lens": "always",
    "live": false,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fthumb%2Fe%2Fe8%2FMelkweg_en_Rabozaal.jpg%2F1280px-Melkweg_en_Rabozaal.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fthumb%2Fe%2Fe8%2FMelkweg_en_Rabozaal.jpg%2F1280px-Melkweg_en_Rabozaal.jpg",
-   "pos": 101,
-   "age": 16
+   "pos": 94,
+   "age": 17
   },
   {
    "id": "ams-micropia",
@@ -1716,8 +1598,8 @@
    "lens": "always",
    "live": false,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fmedia.newyorker.com%2Fphotos%2F5909703aebe912338a376f7e%2Fmaster%2Fw_2560%252Cc_limit%2FYong-Amsterdams-Microbe-Museum.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.500&output=jpg&default=https%3A%2F%2Fmedia.newyorker.com%2Fphotos%2F5909703aebe912338a376f7e%2Fmaster%2Fw_2560%252Cc_limit%2FYong-Amsterdams-Microbe-Museum.jpg",
-   "pos": 102,
-   "age": 16
+   "pos": 95,
+   "age": 17
   },
   {
    "id": "ams-ev-paradiso",
@@ -1731,8 +1613,8 @@
    "lens": "always",
    "live": false,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fthumb%2Fd%2Fde%2FAmsterdam_Paradiso.jpg%2F1280px-Amsterdam_Paradiso.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fthumb%2Fd%2Fde%2FAmsterdam_Paradiso.jpg%2F1280px-Amsterdam_Paradiso.jpg",
-   "pos": 103,
-   "age": 16
+   "pos": 96,
+   "age": 17
   },
   {
    "id": "ams-lostin-kriterion",
@@ -1746,8 +1628,8 @@
    "lens": "always",
    "live": false,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Falmostginger.com%2Fwp-content%2Fuploads%2F2018%2F10%2FFilmtheater-Kriterion-Courtesy-of-Amsterdamming-9393843589_cedc6162e2_b-1024x678.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.500&output=jpg&default=https%3A%2F%2Falmostginger.com%2Fwp-content%2Fuploads%2F2018%2F10%2FFilmtheater-Kriterion-Courtesy-of-Amsterdamming-9393843589_cedc6162e2_b-1024x678.jpg",
-   "pos": 104,
-   "age": 16
+   "pos": 97,
+   "age": 17
   },
   {
    "id": "ams-ev-muiderslot",
@@ -1761,8 +1643,8 @@
    "lens": "always",
    "live": false,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Ftassiedevilabroad.com%2Fwp-content%2Fuploads%2F2018%2F07%2FMuiderslot-2-1080x794.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Ftassiedevilabroad.com%2Fwp-content%2Fuploads%2F2018%2F07%2FMuiderslot-2-1080x794.jpg",
-   "pos": 105,
-   "age": 16
+   "pos": 98,
+   "age": 17
   },
   {
    "id": "ams-ev-dappermarkt",
@@ -1776,8 +1658,8 @@
    "lens": "always",
    "live": false,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.volkshotel.nl%2Fcontent%2Fuploads%2F2016%2F02%2FAmsterdam-Dappermarkt-5-862x575.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fwww.volkshotel.nl%2Fcontent%2Fuploads%2F2016%2F02%2FAmsterdam-Dappermarkt-5-862x575.jpg",
-   "pos": 106,
-   "age": 16
+   "pos": 99,
+   "age": 17
   },
   {
    "id": "ams-b2-rijksmuseum",
@@ -1791,8 +1673,8 @@
    "lens": "always",
    "live": false,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fthumb%2F8%2F80%2FSouth_facade_of_the_Rijksmuseum_Amsterdam_%2528DSCF0528%2529.jpg%2F1280px-South_facade_of_the_Rijksmuseum_Amsterdam_%2528DSCF0528%2529.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.350&output=jpg&default=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fthumb%2F8%2F80%2FSouth_facade_of_the_Rijksmuseum_Amsterdam_%2528DSCF0528%2529.jpg%2F1280px-South_facade_of_the_Rijksmuseum_Amsterdam_%2528DSCF0528%2529.jpg",
-   "pos": 107,
-   "age": 16
+   "pos": 100,
+   "age": 17
   },
   {
    "id": "ams-lostin-de-filmhallen",
@@ -1806,8 +1688,8 @@
    "lens": "always",
    "live": false,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F5ff89832de7e8633a4ab3ae8%2F7de55fa9-f2b2-4663-978c-964fe563eb18.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.400&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F5ff89832de7e8633a4ab3ae8%2F7de55fa9-f2b2-4663-978c-964fe563eb18.jpg",
-   "pos": 108,
-   "age": 16
+   "pos": 101,
+   "age": 17
   },
   {
    "id": "ams-b2-huis-marseille",
@@ -1821,25 +1703,23 @@
    "lens": "always",
    "live": false,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6756d5230288895796c46430%2Fzomer-in-huis-marseille-amsterdam_copy_2.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.550&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6756d5230288895796c46430%2Fzomer-in-huis-marseille-amsterdam_copy_2.webp",
-   "pos": 109,
-   "age": 16
+   "pos": 102,
+   "age": 17
   },
   {
-   "id": "web-lbb-tips-grand-opening-nai-pure-sake-bar",
-   "title": "Grand opening: NAI!! Pure Sake Bar",
-   "venue": "",
-   "when": "Sat 19 Sep",
-   "category": "out",
-   "link": "https://www.instagram.com/nai.sakebar/",
+   "id": "cafe-chris",
+   "title": "Café Chris — oldest brown café",
+   "venue": "Café Chris",
+   "when": "Daily · afternoon–late",
+   "category": "drink",
+   "link": "https://www.cafechris.nl/",
    "source": "Your Little Black Book",
-   "why": "LBB weekendtips · new this week · Sat",
-   "lens": "weekend",
-   "live": true,
-   "imageWhy": "none",
-   "pos": 110,
-   "guide": "LBB weekendtips",
-   "judge": 7,
-   "age": 2
+   "why": "",
+   "lens": "always",
+   "live": false,
+   "image": "https://images.weserv.nl/?url=https%3A%2F%2Fdynamic-media-cdn.tripadvisor.com%2Fmedia%2Fphoto-o%2F2a%2Fea%2F21%2F79%2Fcaption.jpg%3Fw%3D1200%26h%3D-1%26s%3D1&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.525&output=jpg&default=https%3A%2F%2Fdynamic-media-cdn.tripadvisor.com%2Fmedia%2Fphoto-o%2F2a%2Fea%2F21%2F79%2Fcaption.jpg%3Fw%3D1200%26h%3D-1%26s%3D1",
+   "pos": 103,
+   "age": 17
   },
   {
    "id": "ams-b2-stedelijk",
@@ -1853,24 +1733,24 @@
    "lens": "always",
    "live": false,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fthumb%2F6%2F61%2FDe_nieuwe_vleugel_van_het_Stedelijk_Museum_Amsterdam.jpg%2F1280px-De_nieuwe_vleugel_van_het_Stedelijk_Museum_Amsterdam.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.625&fpy=0.500&output=jpg&default=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fthumb%2F6%2F61%2FDe_nieuwe_vleugel_van_het_Stedelijk_Museum_Amsterdam.jpg%2F1280px-De_nieuwe_vleugel_van_het_Stedelijk_Museum_Amsterdam.jpg",
-   "pos": 111,
-   "age": 16
+   "pos": 104,
+   "age": 17
   },
   {
-   "id": "web-lbb-klassiek-op-het-amstelveld",
-   "title": "Klassiek op het Amstelveld",
-   "venue": "Amstelveld",
-   "when": "Fri 18 Sep · 19:00, Sat 19 Sep · 12:30",
-   "category": "live",
-   "link": "https://www.klassiekophetamstelveld.nl/",
-   "source": "Your Little Black Book",
-   "why": "new this week · Sat",
-   "lens": "weekend",
-   "live": true,
-   "imageWhy": "none",
-   "pos": 112,
-   "judge": 6,
-   "age": 1
+   "id": "the-movies",
+   "title": "The Movies — arthouse cinema",
+   "venue": "The Movies",
+   "when": "Daily · evening sessions",
+   "category": "stage",
+   "link": "https://themovies.nl/",
+   "source": "Uitkrant · Maps",
+   "why": "2 sources",
+   "lens": "always",
+   "live": false,
+   "image": "https://images.weserv.nl/?url=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1777994808497-e9ca0037c671%3Fw%3D1200%26q%3D80&w=800&h=1200&fit=cover&a=focal&fpx=0.525&fpy=0.500&output=jpg&default=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1777994808497-e9ca0037c671%3Fw%3D1200%26q%3D80",
+   "pos": 105,
+   "buzz": 2,
+   "age": 17
   },
   {
    "id": "web-guide-iams-editor-s-pick-yayoi-kusama",
@@ -1884,7 +1764,22 @@
    "lens": "weekend",
    "live": true,
    "imageWhy": "none",
-   "pos": 113
+   "pos": 106
+  },
+  {
+   "id": "sauna-deco",
+   "title": "Sauna Deco — Art Deco baths",
+   "venue": "Sauna Deco",
+   "when": "Daily · 12:00–23:00",
+   "category": "out",
+   "link": "https://www.saunadeco.nl/",
+   "source": "I amsterdam",
+   "why": "",
+   "lens": "always",
+   "live": false,
+   "image": "https://images.weserv.nl/?url=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1757940556610-a114be4733bf%3Fw%3D1200%26q%3D80&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.600&output=jpg&default=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1757940556610-a114be4733bf%3Fw%3D1200%26q%3D80",
+   "pos": 107,
+   "age": 17
   },
   {
    "id": "web-scout-peppa-pig-live-2",
@@ -1899,15 +1794,46 @@
    "live": true,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fdelamar.nl%2Fmedia%2F54xe5kfh%2Fsc%C3%A8nefoto-6-peppa-pig-live-fotocredits-hasbro.jpg%3Fwidth%3D1600%26quality%3D80&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.525&output=jpg&default=https%3A%2F%2Fdelamar.nl%2Fmedia%2F54xe5kfh%2Fsc%C3%A8nefoto-6-peppa-pig-live-fotocredits-hasbro.jpg%3Fwidth%3D1600%26quality%3D80",
    "imageWhy": "organiser",
-   "pos": 114,
+   "pos": 108,
    "judge": 4,
-   "age": 1
+   "age": 2
   }
  ],
  "changes": {
-  "since": "2026-09-19T05:37:01.667Z",
+  "since": "2026-09-19T05:39:13.327Z",
   "in": [],
-  "out": [],
+  "out": [
+   {
+    "id": "web-iams-she-was-born-for-happiness-veronika-abdul-visocka-frascati-producties",
+    "title": "She was born for happiness Veronika Abdul-Visocka / Frascati Producties",
+    "why": "past"
+   },
+   {
+    "id": "web-iams-tapt-festival-amsterdam-west",
+    "title": "Tapt Festival Amsterdam-West",
+    "why": "past"
+   },
+   {
+    "id": "web-iams-classical-music-at-amstelveld",
+    "title": "Budget Option: Klassiek op het Amstelveld (KOHA)",
+    "why": "past"
+   },
+   {
+    "id": "web-lbb-tips-bak-wine-lunch-with-special-aged-bottles",
+    "title": "BAK Wine Lunch with special aged bottles",
+    "why": "past"
+   },
+   {
+    "id": "web-lbb-tips-grand-opening-nai-pure-sake-bar",
+    "title": "Grand opening: NAI!! Pure Sake Bar",
+    "why": "past"
+   },
+   {
+    "id": "web-lbb-klassiek-op-het-amstelveld",
+    "title": "Klassiek op het Amstelveld",
+    "why": "past"
+   }
+  ],
   "moved": []
  },
  "doubts": {
@@ -1927,7 +1853,7 @@
     "pos": 6,
     "guide": "LBB weekendtips",
     "judge": 7,
-    "age": 2
+    "age": 3
    },
    {
     "id": "web-lbb-tips-lombok-bali-sandwich-takeover-at-bakery-louf",
@@ -1944,7 +1870,7 @@
     "pos": 7,
     "guide": "LBB weekendtips",
     "judge": 7,
-    "age": 2
+    "age": 3
    },
    {
     "id": "web-lbb-tips-open-this-week-da-vinci-raphael-michelangelo-at-",
@@ -1961,7 +1887,7 @@
     "pos": 13,
     "guide": "LBB weekendtips",
     "judge": 4,
-    "age": 2
+    "age": 3
    },
    {
     "id": "web-lbb-tips-sunday-market",
@@ -1979,7 +1905,7 @@
     "guide": "LBB weekendtips",
     "judge": 6,
     "buzz": 2,
-    "age": 2
+    "age": 3
    },
    {
     "id": "web-scout-nadav-kander-the-edge-of-things",
@@ -1993,10 +1919,10 @@
     "lens": "weekend",
     "live": true,
     "imageWhy": "none",
-    "pos": 22,
+    "pos": 20,
     "judge": 8,
     "buzz": 2,
-    "age": 2
+    "age": 3
    },
    {
     "id": "web-iams-museum-market",
@@ -2006,15 +1932,15 @@
     "category": "shop",
     "link": "https://www.iamsterdam.com/en/whats-on/calendar/shopping/markets/museum-market",
     "source": "I amsterdam · Your Little Black Book",
-    "why": "LBB weekendtips · on all weekend · 2 sources",
+    "why": "LBB weekendtips · week 4 · on all weekend · 2 sources",
     "lens": "weekend",
     "live": true,
     "imageWhy": "none",
-    "pos": 26,
+    "pos": 22,
     "guide": "LBB weekendtips",
     "judge": 7,
     "buzz": 2,
-    "age": 21
+    "age": 22
    },
    {
     "id": "web-lbb-tips-noordermarkt",
@@ -2028,11 +1954,11 @@
     "lens": "always",
     "live": true,
     "imageWhy": "none",
-    "pos": 27,
+    "pos": 24,
     "guide": "LBB weekendtips",
     "judge": 6,
     "buzz": 2,
-    "age": 9
+    "age": 10
    },
    {
     "id": "web-lbb-tips-must-see-major-yayoi-kusama-exhibition-at-the-st",
@@ -2046,10 +1972,10 @@
     "lens": "always",
     "live": true,
     "imageWhy": "none",
-    "pos": 28,
+    "pos": 25,
     "guide": "LBB weekendtips",
     "judge": 7,
-    "age": 2
+    "age": 3
    },
    {
     "id": "llm-your-little-black-book-sandberg-x-schilo-5-course-pop-up-dinner-yayoi-k",
@@ -2063,26 +1989,9 @@
     "lens": "new",
     "live": true,
     "imageWhy": "none",
-    "pos": 30,
+    "pos": 27,
     "judge": 8,
-    "age": 9
-   },
-   {
-    "id": "web-guide-iams-haliun-ma",
-    "title": "Haliun Ma",
-    "venue": "",
-    "when": "This weekend",
-    "category": "art",
-    "link": "https://www.foam.org/nl/events/hailun-ma",
-    "source": "I amsterdam",
-    "why": "I amsterdam guide · new this week",
-    "lens": "always",
-    "live": true,
-    "imageWhy": "none",
-    "pos": 33,
-    "guide": "I amsterdam weekend guide",
-    "judge": 5,
-    "age": 5
+    "age": 10
    },
    {
     "id": "web-lbb-tips-spin-listening-bar-pool-cafe-in-oud-west",
@@ -2096,10 +2005,27 @@
     "lens": "always",
     "live": true,
     "imageWhy": "none",
-    "pos": 34,
+    "pos": 31,
     "guide": "LBB weekendtips",
     "judge": 6,
-    "age": 2
+    "age": 3
+   },
+   {
+    "id": "web-guide-iams-haliun-ma",
+    "title": "Haliun Ma",
+    "venue": "",
+    "when": "This weekend",
+    "category": "art",
+    "link": "https://www.foam.org/nl/events/hailun-ma",
+    "source": "I amsterdam",
+    "why": "I amsterdam guide · new this week",
+    "lens": "always",
+    "live": true,
+    "imageWhy": "none",
+    "pos": 34,
+    "guide": "I amsterdam weekend guide",
+    "judge": 5,
+    "age": 6
    },
    {
     "id": "web-guide-iams-saint-madeleine",
@@ -2113,10 +2039,10 @@
     "lens": "always",
     "live": true,
     "imageWhy": "none",
-    "pos": 40,
+    "pos": 39,
     "guide": "I amsterdam weekend guide",
     "judge": 4,
-    "age": 2
+    "age": 3
    },
    {
     "id": "web-lbb-tips-bistro-de-fles-on-the-prinsengracht",
@@ -2130,27 +2056,10 @@
     "lens": "always",
     "live": true,
     "imageWhy": "none",
-    "pos": 41,
+    "pos": 40,
     "guide": "LBB weekendtips",
     "judge": 4,
-    "age": 2
-   },
-   {
-    "id": "web-lbb-tips-restaurant-flore-celebrates-5-years-with-special",
-    "title": "Restaurant Flore celebrates 5 years with special collaborations",
-    "venue": "",
-    "when": "This weekend",
-    "category": "eat",
-    "link": "https://www.instagram.com/p/DcIcl1EjCU0/?img_index=1",
-    "source": "Your Little Black Book",
-    "why": "LBB weekendtips",
-    "lens": "always",
-    "live": true,
-    "imageWhy": "none",
-    "pos": 43,
-    "guide": "LBB weekendtips",
-    "judge": 6,
-    "age": 9
+    "age": 3
    },
    {
     "id": "web-lbb-tips-harvest-festivals-pick-your-own-at-the-olmenhors",
@@ -2164,10 +2073,27 @@
     "lens": "always",
     "live": true,
     "imageWhy": "none",
-    "pos": 44,
+    "pos": 41,
     "guide": "LBB weekendtips",
     "judge": 5,
-    "age": 9
+    "age": 10
+   },
+   {
+    "id": "web-lbb-tips-restaurant-flore-celebrates-5-years-with-special",
+    "title": "Restaurant Flore celebrates 5 years with special collaborations",
+    "venue": "",
+    "when": "This weekend",
+    "category": "eat",
+    "link": "https://www.instagram.com/p/DcIcl1EjCU0/?img_index=1",
+    "source": "Your Little Black Book",
+    "why": "LBB weekendtips",
+    "lens": "always",
+    "live": true,
+    "imageWhy": "none",
+    "pos": 42,
+    "guide": "LBB weekendtips",
+    "judge": 6,
+    "age": 10
    },
    {
     "id": "web-lbb-tips-qru",
@@ -2181,10 +2107,10 @@
     "lens": "always",
     "live": true,
     "imageWhy": "none",
-    "pos": 45,
+    "pos": 43,
     "guide": "LBB weekendtips",
     "judge": 3,
-    "age": 2
+    "age": 3
    },
    {
     "id": "web-lbb-tips-pure-market",
@@ -2198,10 +2124,10 @@
     "lens": "always",
     "live": true,
     "imageWhy": "none",
-    "pos": 46,
+    "pos": 44,
     "guide": "LBB weekendtips",
     "judge": 5,
-    "age": 9
+    "age": 10
    },
    {
     "id": "web-lbb-tips-jeugdland-amsterdam",
@@ -2215,10 +2141,10 @@
     "lens": "always",
     "live": true,
     "imageWhy": "none",
-    "pos": 47,
+    "pos": 45,
     "guide": "LBB weekendtips",
     "judge": 5,
-    "age": 9
+    "age": 10
    },
    {
     "id": "web-lbb-tips-vermut-in-oud-west",
@@ -2232,10 +2158,10 @@
     "lens": "always",
     "live": true,
     "imageWhy": "none",
-    "pos": 48,
+    "pos": 46,
     "guide": "LBB weekendtips",
     "judge": 5,
-    "age": 9
+    "age": 10
    },
    {
     "id": "web-lbb-tips-javaplein-vintage-market",
@@ -2249,10 +2175,10 @@
     "lens": "always",
     "live": true,
     "imageWhy": "none",
-    "pos": 49,
+    "pos": 47,
     "guide": "LBB weekendtips",
     "judge": 5,
-    "age": 9
+    "age": 10
    },
    {
     "id": "llm-kidsproof-feest-op-zondag-midherfstfestival",
@@ -2266,9 +2192,9 @@
     "lens": "weekend",
     "live": true,
     "imageWhy": "none",
-    "pos": 50,
+    "pos": 48,
     "judge": 6,
-    "age": 9
+    "age": 10
    },
    {
     "id": "web-lbb-tips-tuimelaar-thu-17-sep-09",
@@ -2282,10 +2208,10 @@
     "lens": "always",
     "live": true,
     "imageWhy": "none",
-    "pos": 52,
+    "pos": 50,
     "guide": "LBB weekendtips",
     "judge": 2,
-    "age": 2
+    "age": 3
    },
    {
     "id": "web-lbb-tips-bar-francois",
@@ -2299,10 +2225,10 @@
     "lens": "always",
     "live": true,
     "imageWhy": "none",
-    "pos": 53,
+    "pos": 51,
     "guide": "LBB weekendtips",
     "judge": 4,
-    "age": 9
+    "age": 10
    },
    {
     "id": "web-lbb-tips-pllek",
@@ -2316,10 +2242,10 @@
     "lens": "always",
     "live": true,
     "imageWhy": "none",
-    "pos": 78,
+    "pos": 76,
     "guide": "LBB weekendtips",
     "judge": 3,
-    "age": 16
+    "age": 17
    },
    {
     "id": "web-lbb-liefde-op-de-grachten-30-jaar-canal-parade",
@@ -2333,9 +2259,9 @@
     "lens": "weekend",
     "live": true,
     "imageWhy": "none",
-    "pos": 84,
+    "pos": 82,
     "judge": 5,
-    "age": 14
+    "age": 15
    },
    {
     "id": "web-lbb-tips-amstel-1-market",
@@ -2349,10 +2275,10 @@
     "lens": "always",
     "live": true,
     "imageWhy": "none",
-    "pos": 85,
+    "pos": 83,
     "guide": "LBB weekendtips",
     "judge": 3,
-    "age": 14
+    "age": 15
    },
    {
     "id": "web-lbb-larissa-sansour-rogue-agents-of-history",
@@ -2366,9 +2292,9 @@
     "lens": "weekend",
     "live": true,
     "imageWhy": "none",
-    "pos": 90,
+    "pos": 88,
     "judge": 6,
-    "age": 16
+    "age": 17
    },
    {
     "id": "web-scout-de-poldervogel",
@@ -2382,59 +2308,9 @@
     "lens": "always",
     "live": true,
     "imageWhy": "none",
-    "pos": 93,
+    "pos": 89,
     "judge": 7,
-    "age": 14
-   },
-   {
-    "id": "web-lbb-tips-bak-wine-lunch-with-special-aged-bottles",
-    "title": "BAK Wine Lunch with special aged bottles",
-    "venue": "BAK, Van",
-    "when": "Sat 19 Sep",
-    "category": "out",
-    "link": "http://www.bakrestaurant.nl?ft-ticket=322c1ed6",
-    "source": "Your Little Black Book",
-    "why": "LBB weekendtips · new this week · Sat",
-    "lens": "weekend",
-    "live": true,
-    "imageWhy": "none",
-    "pos": 95,
-    "guide": "LBB weekendtips",
-    "judge": 9,
-    "age": 2
-   },
-   {
-    "id": "web-lbb-tips-grand-opening-nai-pure-sake-bar",
-    "title": "Grand opening: NAI!! Pure Sake Bar",
-    "venue": "",
-    "when": "Sat 19 Sep",
-    "category": "out",
-    "link": "https://www.instagram.com/nai.sakebar/",
-    "source": "Your Little Black Book",
-    "why": "LBB weekendtips · new this week · Sat",
-    "lens": "weekend",
-    "live": true,
-    "imageWhy": "none",
-    "pos": 110,
-    "guide": "LBB weekendtips",
-    "judge": 7,
-    "age": 2
-   },
-   {
-    "id": "web-lbb-klassiek-op-het-amstelveld",
-    "title": "Klassiek op het Amstelveld",
-    "venue": "Amstelveld",
-    "when": "Fri 18 Sep · 19:00, Sat 19 Sep · 12:30",
-    "category": "live",
-    "link": "https://www.klassiekophetamstelveld.nl/",
-    "source": "Your Little Black Book",
-    "why": "new this week · Sat",
-    "lens": "weekend",
-    "live": true,
-    "imageWhy": "none",
-    "pos": 112,
-    "judge": 6,
-    "age": 1
+    "age": 15
    },
    {
     "id": "web-guide-iams-editor-s-pick-yayoi-kusama",
@@ -2448,7 +2324,7 @@
     "lens": "weekend",
     "live": true,
     "imageWhy": "none",
-    "pos": 113
+    "pos": 106
    }
   ],
   "borrowed": [
@@ -2467,7 +2343,7 @@
     "imageWhy": "venue",
     "pos": 8,
     "judge": 7,
-    "age": 1
+    "age": 2
    },
    {
     "id": "web-lbb-openluchttheater-vondelpark",
@@ -2484,24 +2360,24 @@
     "imageWhy": "venue",
     "pos": 14,
     "judge": 3,
-    "age": 9
+    "age": 10
    },
    {
     "id": "llm-eye-filmmuseum-ulrich-seidl-ber-das-leben-die-liebe-und-den-tod",
     "title": "Ulrich Seidl: Über das Leben, die Liebe und den Tod",
     "venue": "",
-    "when": "Sat 19 Sep 2026 (opening) — 31 Jan 2027",
+    "when": "Until Sun 31 Jan",
     "category": "art",
     "link": "https://www.eyefilm.nl/en/whats-on",
     "source": "Eye Filmmuseum",
-    "why": "Sat + Sun",
+    "why": "on all weekend",
     "lens": "new",
     "live": true,
     "image": "https://images.weserv.nl/?url=https%3A%2F%2Fassets.eyefilm.nl%2Fimages%2Fprogramme-item%2F_1200x630_crop_center-center_none%2Fcampagnebeeld-Eyes-Open.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.675&output=jpg&default=https%3A%2F%2Fassets.eyefilm.nl%2Fimages%2Fprogramme-item%2F_1200x630_crop_center-center_none%2Fcampagnebeeld-Eyes-Open.jpg",
     "imageWhy": "venue",
-    "pos": 20,
+    "pos": 30,
     "judge": 7,
-    "age": 9
+    "age": 10
    },
    {
     "id": "web-lbb-kho-liang-ie-mid-century-modernist",
@@ -2516,9 +2392,9 @@
     "live": true,
     "image": "https://images.weserv.nl/?url=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fthumb%2F6%2F61%2FDe_nieuwe_vleugel_van_het_Stedelijk_Museum_Amsterdam.jpg%2F1280px-De_nieuwe_vleugel_van_het_Stedelijk_Museum_Amsterdam.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.625&fpy=0.500&output=jpg&default=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fthumb%2F6%2F61%2FDe_nieuwe_vleugel_van_het_Stedelijk_Museum_Amsterdam.jpg%2F1280px-De_nieuwe_vleugel_van_het_Stedelijk_Museum_Amsterdam.jpg",
     "imageWhy": "venue",
-    "pos": 79,
+    "pos": 77,
     "judge": 7,
-    "age": 14
+    "age": 15
    }
   ],
   "held": [
@@ -2535,7 +2411,7 @@
     "live": true,
     "imageWhy": "none",
     "judge": 5,
-    "age": 16,
+    "age": 17,
     "hold": "no photo — past the cap of 3 on merit"
    },
    {
@@ -2551,7 +2427,7 @@
     "live": true,
     "imageWhy": "none",
     "judge": 5,
-    "age": 1,
+    "age": 2,
     "hold": "no photo — past the cap of 3 on merit"
    },
    {
@@ -2567,7 +2443,7 @@
     "live": true,
     "imageWhy": "none",
     "judge": 5,
-    "age": 16,
+    "age": 17,
     "hold": "no photo — past the cap of 3 on merit"
    },
    {
@@ -2583,7 +2459,7 @@
     "live": true,
     "imageWhy": "none",
     "judge": 5,
-    "age": 9,
+    "age": 10,
     "hold": "no photo — past the cap of 3 on merit"
    },
    {
@@ -2594,12 +2470,12 @@
     "category": "stage",
     "link": "https://www.iamsterdam.com/en/whats-on/calendar/theatre-and-stage/stage/rico-weeland-curated-mysteries",
     "source": "I amsterdam",
-    "why": "on all weekend",
+    "why": "week 4 · on all weekend",
     "lens": "weekend",
     "live": true,
     "imageWhy": "none",
     "judge": 4,
-    "age": 21,
+    "age": 22,
     "hold": "judge 4 — below the bar of 5"
    }
   ],
@@ -2623,7 +2499,7 @@
      "lead": true,
      "judge": 8,
      "buzz": 2,
-     "age": 1
+     "age": 2
     },
     "b": {
      "id": "ams-b2-foam",
@@ -2637,8 +2513,8 @@
      "lens": "always",
      "live": false,
      "image": "https://images.weserv.nl/?url=https%3A%2F%2Faws-tiqets-cdn.imgix.net%2Fimages%2Fcontent%2Fe2b3e203f7524292acea46b5394820b0.jpeg%3Fauto%3Dformat%26fit%3Dcrop%26h%3D800%26w%3D800%26q%3D70&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.500&output=jpg&default=https%3A%2F%2Faws-tiqets-cdn.imgix.net%2Fimages%2Fcontent%2Fe2b3e203f7524292acea46b5394820b0.jpeg%3Fauto%3Dformat%26fit%3Dcrop%26h%3D800%26w%3D800%26q%3D70",
-     "pos": 100,
-     "age": 16
+     "pos": 92,
+     "age": 17
     }
    },
    {
@@ -2659,7 +2535,7 @@
      "hand": 2,
      "judge": 8,
      "buzz": 2,
-     "age": 9
+     "age": 10
     },
     "b": {
      "id": "web-lbb-tips-must-see-major-yayoi-kusama-exhibition-at-the-st",
@@ -2673,10 +2549,10 @@
      "lens": "always",
      "live": true,
      "imageWhy": "none",
-     "pos": 28,
+     "pos": 25,
      "guide": "LBB weekendtips",
      "judge": 7,
-     "age": 2
+     "age": 3
     }
    },
    {
@@ -2697,7 +2573,7 @@
      "hand": 2,
      "judge": 8,
      "buzz": 2,
-     "age": 9
+     "age": 10
     },
     "b": {
      "id": "llm-your-little-black-book-sandberg-x-schilo-5-course-pop-up-dinner-yayoi-k",
@@ -2711,9 +2587,9 @@
      "lens": "new",
      "live": true,
      "imageWhy": "none",
-     "pos": 30,
+     "pos": 27,
      "judge": 8,
-     "age": 9
+     "age": 10
     }
    },
    {
@@ -2734,7 +2610,7 @@
      "hand": 2,
      "judge": 8,
      "buzz": 2,
-     "age": 9
+     "age": 10
     },
     "b": {
      "id": "web-guide-iams-editor-s-pick-yayoi-kusama",
@@ -2748,7 +2624,7 @@
      "lens": "weekend",
      "live": true,
      "imageWhy": "none",
-     "pos": 113
+     "pos": 106
     }
    },
    {
@@ -2767,7 +2643,7 @@
      "imageWhy": "venue",
      "pos": 8,
      "judge": 7,
-     "age": 1
+     "age": 2
     },
     "b": {
      "id": "ams-ev-ij-hallen",
@@ -2784,7 +2660,7 @@
      "pos": 12,
      "guide": "LBB weekendtips",
      "buzz": 2,
-     "age": 21
+     "age": 22
     }
    },
    {
@@ -2796,14 +2672,14 @@
      "category": "art",
      "link": "https://www.iamsterdam.com/en/whats-on/calendar/exhibitions/all-exhibitions/exhibition-worn-in-the-rijksmuseum",
      "source": "I amsterdam",
-     "why": "on all weekend",
+     "why": "week 4 · on all weekend",
      "lens": "always",
      "live": true,
      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F69ccd961758e000e5db6dcdd%2FWorn_beelddrager.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.500&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F69ccd961758e000e5db6dcdd%2FWorn_beelddrager.webp",
      "imageWhy": "organiser",
-     "pos": 88,
+     "pos": 86,
      "judge": 6,
-     "age": 21
+     "age": 22
     },
     "b": {
      "id": "ams-b2-rijksmuseum",
@@ -2817,8 +2693,8 @@
      "lens": "always",
      "live": false,
      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fthumb%2F8%2F80%2FSouth_facade_of_the_Rijksmuseum_Amsterdam_%2528DSCF0528%2529.jpg%2F1280px-South_facade_of_the_Rijksmuseum_Amsterdam_%2528DSCF0528%2529.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.350&output=jpg&default=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fthumb%2F8%2F80%2FSouth_facade_of_the_Rijksmuseum_Amsterdam_%2528DSCF0528%2529.jpg%2F1280px-South_facade_of_the_Rijksmuseum_Amsterdam_%2528DSCF0528%2529.jpg",
-     "pos": 107,
-     "age": 16
+     "pos": 100,
+     "age": 17
     }
    }
   ]
@@ -2837,7 +2713,7 @@
    "live": true,
    "imageWhy": "none",
    "judge": 5,
-   "age": 16,
+   "age": 17,
    "hold": "no photo — past the cap of 3 on merit"
   },
   {
@@ -2853,7 +2729,7 @@
    "live": true,
    "imageWhy": "none",
    "judge": 5,
-   "age": 1,
+   "age": 2,
    "hold": "no photo — past the cap of 3 on merit"
   },
   {
@@ -2869,7 +2745,7 @@
    "live": true,
    "imageWhy": "none",
    "judge": 5,
-   "age": 16,
+   "age": 17,
    "hold": "no photo — past the cap of 3 on merit"
   },
   {
@@ -2885,7 +2761,7 @@
    "live": true,
    "imageWhy": "none",
    "judge": 5,
-   "age": 9,
+   "age": 10,
    "hold": "no photo — past the cap of 3 on merit"
   },
   {
@@ -2896,12 +2772,12 @@
    "category": "stage",
    "link": "https://www.iamsterdam.com/en/whats-on/calendar/theatre-and-stage/stage/rico-weeland-curated-mysteries",
    "source": "I amsterdam",
-   "why": "on all weekend",
+   "why": "week 4 · on all weekend",
    "lens": "weekend",
    "live": true,
    "imageWhy": "none",
    "judge": 4,
-   "age": 21,
+   "age": 22,
    "hold": "judge 4 — below the bar of 5"
   },
   {
@@ -2918,7 +2794,7 @@
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a7c29790287261ac3bacc4f%2FEAST_HOH_23__MG_8717.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.625&fpy=0.550&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a7c29790287261ac3bacc4f%2FEAST_HOH_23__MG_8717.webp",
    "imageWhy": "organiser",
    "judge": 4,
-   "age": 5,
+   "age": 6,
    "hold": "judge 4 — below the bar of 5"
   },
   {
@@ -2929,13 +2805,13 @@
    "category": "art",
    "link": "https://www.iamsterdam.com/en/whats-on/calendar/exhibitions/all-exhibitions/exhibition-the-essence",
    "source": "I amsterdam",
-   "why": "on all weekend",
+   "why": "week 4 · on all weekend",
    "lens": "always",
    "live": true,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F69e0a9a8a8ab8e24a45b32c4%2FSTRAAT-theessence27_-_hires__1_-min.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.600&fpy=0.575&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F69e0a9a8a8ab8e24a45b32c4%2FSTRAAT-theessence27_-_hires__1_-min.webp",
    "imageWhy": "organiser",
    "judge": 4,
-   "age": 21,
+   "age": 22,
    "hold": "judge 4 — below the bar of 5"
   },
   {
@@ -2946,31 +2822,14 @@
    "category": "art",
    "link": "https://www.iamsterdam.com/en/whats-on/calendar/exhibitions/all-exhibitions/glass-made-in-antiquity",
    "source": "I amsterdam",
-   "why": "on all weekend",
+   "why": "week 4 · on all weekend",
    "lens": "always",
    "live": true,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6825d556b269c6438fe5acf3%2FAryballos._50-175_n._Chr.__75-150_n._Chr._Rijnland..webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.550&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6825d556b269c6438fe5acf3%2FAryballos._50-175_n._Chr.__75-150_n._Chr._Rijnland..webp",
    "imageWhy": "organiser",
    "judge": 4,
-   "age": 21,
+   "age": 22,
    "hold": "judge 4 — below the bar of 5"
-  },
-  {
-   "id": "web-lbb-lunchconcert-in-het-concertgebouw",
-   "title": "Lunchconcert in het Concertgebouw",
-   "venue": "Concertgebouw",
-   "when": "Sat 19 Sep · 12:30",
-   "category": "live",
-   "link": "https://www.concertgebouw.nl/lunchconcerten",
-   "source": "Your Little Black Book",
-   "why": "new this week · Sat",
-   "lens": "weekend",
-   "live": true,
-   "image": "https://images.weserv.nl/?url=https%3A%2F%2Fres.klook.com%2Fimages%2Ffl_lossy.progressive%2Cq_65%2Fc_fill%2Cw_1295%2Ch_863%2Cf_auto%2Fw_80%2Cx_15%2Cy_15%2Cg_south_west%2Cl_klook_water%2Factivities%2Fvzsaj69cjxg6biod1jwm%2FAmsterdamTheRoyalConcertgebouwGuidedTour.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fres.klook.com%2Fimages%2Ffl_lossy.progressive%2Cq_65%2Fc_fill%2Cw_1295%2Ch_863%2Cf_auto%2Fw_80%2Cx_15%2Cy_15%2Cg_south_west%2Cl_klook_water%2Factivities%2Fvzsaj69cjxg6biod1jwm%2FAmsterdamTheRoyalConcertgebouwGuidedTour.jpg",
-   "imageWhy": "venue",
-   "judge": 3,
-   "age": 1,
-   "hold": "judge 3 — below the bar of 5"
   },
   {
    "id": "web-lbb-relics",
@@ -2986,58 +2845,7 @@
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.yourlittleblackbook.me%2Fwp-content%2Fuploads%2F2026%2F04%2FMuseumagenda-amsterdam-Art-zoo.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.500&output=jpg&default=https%3A%2F%2Fwww.yourlittleblackbook.me%2Fwp-content%2Fuploads%2F2026%2F04%2FMuseumagenda-amsterdam-Art-zoo.jpg",
    "imageWhy": "organiser",
    "judge": 3,
-   "age": 16,
-   "hold": "judge 3 — below the bar of 5"
-  },
-  {
-   "id": "web-iams-vtoroi-ka",
-   "title": "VTOROI KA",
-   "venue": "P60",
-   "when": "Sat 19 Sep · 20:00",
-   "category": "drink",
-   "link": "https://www.iamsterdam.com/en/whats-on/calendar/nightlife/clubbing/vtoroi-ka",
-   "source": "I amsterdam",
-   "why": "new this week · Sat",
-   "lens": "weekend",
-   "live": true,
-   "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a5c190c39e8220fa2095653%2F73845fe2dadfae6d7f097bf550ef6b5e0f1bf849_019f6d9b-891c-7023-b608-cc60374737c7.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.550&fpy=0.450&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a5c190c39e8220fa2095653%2F73845fe2dadfae6d7f097bf550ef6b5e0f1bf849_019f6d9b-891c-7023-b608-cc60374737c7.webp",
-   "imageWhy": "organiser",
-   "judge": 3,
-   "age": 5,
-   "hold": "judge 3 — below the bar of 5"
-  },
-  {
-   "id": "web-iams-skamele-1803",
-   "title": "Skamele 180.3",
-   "venue": "P60",
-   "when": "Fri 18 – Sat 19 Sep",
-   "category": "drink",
-   "link": "https://www.iamsterdam.com/en/whats-on/calendar/nightlife/clubbing/skamele-1803",
-   "source": "I amsterdam",
-   "why": "new this week · Sat",
-   "lens": "weekend",
-   "live": true,
-   "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a2c2249fd181953a220c074%2Fa58725adb63c93ec4219bd497772c47a3f19090d_019e9fa0-5496-7889-821f-7158d12cf54d.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.150&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a2c2249fd181953a220c074%2Fa58725adb63c93ec4219bd497772c47a3f19090d_019e9fa0-5496-7889-821f-7158d12cf54d.webp",
-   "imageWhy": "organiser",
-   "judge": 3,
-   "age": 5,
-   "hold": "judge 3 — below the bar of 5"
-  },
-  {
-   "id": "web-iams-next-new-era-of-xtraordinary-talents-at-veronica-ship",
-   "title": "NEXT – New Era of Xtraordinary Talents @ Veronica ship",
-   "venue": "Veronicaschip",
-   "when": "Sat 19 Sep · 21:00",
-   "category": "drink",
-   "link": "https://www.iamsterdam.com/en/whats-on/calendar/nightlife/clubbing/next-new-era-of-xtraordinary-talents-at-veronica-ship",
-   "source": "I amsterdam",
-   "why": "new this week · Sat",
-   "lens": "weekend",
-   "live": true,
-   "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a807e1d6a44301b52532aa3%2FNEXT_-_New_Era_of_Xtraordinary_Talents_-_edition_2_-_September_19__2026_-_Het_Veronica_Schip_landscape.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.350&fpy=0.235&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a807e1d6a44301b52532aa3%2FNEXT_-_New_Era_of_Xtraordinary_Talents_-_edition_2_-_September_19__2026_-_Het_Veronica_Schip_landscape.webp",
-   "imageWhy": "organiser",
-   "judge": 3,
-   "age": 5,
+   "age": 17,
    "hold": "judge 3 — below the bar of 5"
   },
   {
@@ -3048,13 +2856,13 @@
    "category": "out",
    "link": "https://www.iamsterdam.com/en/whats-on/calendar/festivals/events/kaboom-x-melkweg-cinema",
    "source": "I amsterdam",
-   "why": "on all weekend",
+   "why": "week 4 · on all weekend",
    "lens": "always",
    "live": true,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F68399174987d4050163719d9%2FKaboom_2025.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.675&fpy=0.500&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F68399174987d4050163719d9%2FKaboom_2025.webp",
    "imageWhy": "organiser",
    "judge": 3,
-   "age": 21,
+   "age": 22,
    "hold": "judge 3 — below the bar of 5"
   },
   {
@@ -3065,13 +2873,13 @@
    "category": "art",
    "link": "https://www.iamsterdam.com/en/whats-on/calendar/exhibitions/all-exhibitions/diederik-schneemann-1-1-3",
    "source": "I amsterdam",
-   "why": "on all weekend",
+   "why": "week 4 · on all weekend",
    "lens": "always",
    "live": true,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a0c497ffd31667bcf5570be%2Fimage.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.550&fpy=0.650&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a0c497ffd31667bcf5570be%2Fimage.webp",
    "imageWhy": "organiser",
    "judge": 3,
-   "age": 21,
+   "age": 22,
    "hold": "judge 3 — below the bar of 5"
   },
   {
@@ -3082,13 +2890,13 @@
    "category": "art",
    "link": "https://www.iamsterdam.com/en/whats-on/calendar/exhibitions/all-exhibitions/onno-theelens-strange-creatures",
    "source": "I amsterdam",
-   "why": "on all weekend",
+   "why": "week 4 · on all weekend",
    "lens": "always",
    "live": true,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6978b3bc7630a7064d1475c4%2FDuck_Circle_-_Onno_Theelen_-_2023.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.550&fpy=0.550&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6978b3bc7630a7064d1475c4%2FDuck_Circle_-_Onno_Theelen_-_2023.webp",
    "imageWhy": "organiser",
    "judge": 3,
-   "age": 21,
+   "age": 22,
    "hold": "judge 3 — below the bar of 5"
   },
   {
@@ -3099,48 +2907,14 @@
    "category": "art",
    "link": "https://www.iamsterdam.com/en/whats-on/calendar/exhibitions/all-exhibitions/living-mesh-a-world-beyond-linnaeus",
    "source": "I amsterdam",
-   "why": "on all weekend",
+   "why": "week 4 · on all weekend",
    "lens": "always",
    "live": true,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a1ed541d4205c6283517b26%2FWolfbane___Monnikskap__2024__160x200cm__Natural_pigments_and_oil_paint_on_linen-cropped.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.550&fpy=0.500&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a1ed541d4205c6283517b26%2FWolfbane___Monnikskap__2024__160x200cm__Natural_pigments_and_oil_paint_on_linen-cropped.webp",
    "imageWhy": "organiser",
    "judge": 3,
-   "age": 21,
+   "age": 22,
    "hold": "judge 3 — below the bar of 5"
-  },
-  {
-   "id": "web-iams-boyos-wonderland",
-   "title": "Boyos Wonderland",
-   "venue": "Club Up",
-   "when": "Fri 18 – Sat 19 Sep",
-   "category": "drink",
-   "link": "https://www.iamsterdam.com/en/whats-on/calendar/nightlife/clubbing/boyos-wonderland",
-   "source": "I amsterdam",
-   "why": "new this week · Sat",
-   "lens": "weekend",
-   "live": true,
-   "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a8598a64f65703141ddd5a8%2F1920x1080.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.500&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a8598a64f65703141ddd5a8%2F1920x1080.webp",
-   "imageWhy": "organiser",
-   "judge": 2,
-   "age": 5,
-   "hold": "judge 2 — below the bar of 5"
-  },
-  {
-   "id": "web-iams-emo-night-mainland",
-   "title": "Emo Night Mainland",
-   "venue": "Melkweg",
-   "when": "Sat 19 Sep · 19:00",
-   "category": "drink",
-   "link": "https://www.iamsterdam.com/en/whats-on/calendar/nightlife/clubbing/emo-night-mainland",
-   "source": "I amsterdam",
-   "why": "new this week · Sat",
-   "lens": "weekend",
-   "live": true,
-   "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F664d1a2fda401705640328e7%2FPromo-horizontaal---fotograaf-Kim-Tielemans.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.525&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F664d1a2fda401705640328e7%2FPromo-horizontaal---fotograaf-Kim-Tielemans.webp",
-   "imageWhy": "organiser",
-   "judge": 2,
-   "age": 5,
-   "hold": "judge 2 — below the bar of 5"
   },
   {
    "id": "web-iams-mr-pieps-pranks-including-face-painting-2-6-jaar",
@@ -3155,7 +2929,7 @@
    "live": true,
    "imageWhy": "none",
    "judge": 2,
-   "age": 13,
+   "age": 14,
    "hold": "judge 2 — below the bar of 5"
   },
   {
@@ -3166,13 +2940,13 @@
    "category": "out",
    "link": "https://www.iamsterdam.com/en/whats-on/calendar/festivals/events/music-films-at-de-melkweg",
    "source": "I amsterdam",
-   "why": "on all weekend",
+   "why": "week 4 · on all weekend",
    "lens": "always",
    "live": true,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F631b15601e38785419669461%2FMelkwegext..webp&w=800&h=1200&fit=cover&a=focal&fpx=0.425&fpy=0.550&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F631b15601e38785419669461%2FMelkwegext..webp",
    "imageWhy": "organiser",
    "judge": 2,
-   "age": 21,
+   "age": 22,
    "hold": "judge 2 — below the bar of 5"
   },
   {
@@ -3188,7 +2962,7 @@
    "live": true,
    "imageWhy": "none",
    "judge": 1,
-   "age": 13,
+   "age": 14,
    "hold": "judge 1 — below the bar of 5"
   },
   {
@@ -3199,13 +2973,13 @@
    "category": "drink",
    "link": "https://www.iamsterdam.com/en/whats-on/calendar/nightlife/clubbing/cheeky-monday",
    "source": "I amsterdam",
-   "why": "on all weekend",
+   "why": "week 4 · on all weekend",
    "lens": "weekend",
    "live": true,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fthumb%2Fe%2Fe8%2FMelkweg_en_Rabozaal.jpg%2F1280px-Melkweg_en_Rabozaal.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.575&output=jpg&default=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fthumb%2Fe%2Fe8%2FMelkweg_en_Rabozaal.jpg%2F1280px-Melkweg_en_Rabozaal.jpg",
    "imageWhy": "curated",
    "judge": 1,
-   "age": 21,
+   "age": 22,
    "hold": "judge 1 — below the bar of 5"
   },
   {
@@ -3221,7 +2995,7 @@
    "live": true,
    "imageWhy": "none",
    "judge": 6,
-   "age": 16,
+   "age": 17,
    "hold": "no photo — past the cap of 3 on merit"
   },
   {
@@ -3237,7 +3011,7 @@
    "live": true,
    "imageWhy": "none",
    "judge": 6,
-   "age": 16,
+   "age": 17,
    "hold": "no photo — past the cap of 3 on merit"
   },
   {
@@ -3253,7 +3027,7 @@
    "live": true,
    "imageWhy": "none",
    "judge": 5,
-   "age": 16,
+   "age": 17,
    "hold": "no photo — past the cap of 3 on merit"
   },
   {
@@ -3269,7 +3043,7 @@
    "live": true,
    "imageWhy": "none",
    "judge": 5,
-   "age": 16,
+   "age": 17,
    "hold": "no photo — past the cap of 3 on merit"
   },
   {
@@ -3285,7 +3059,7 @@
    "live": true,
    "imageWhy": "none",
    "judge": 5,
-   "age": 1,
+   "age": 2,
    "hold": "no photo — past the cap of 3 on merit"
   },
   {
@@ -3302,7 +3076,7 @@
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fcdn.prod.website-files.com%2F68ee4e2d030a44cd00bb13ac%2F6a2bb2b11c8981adf38d1997_DSC_5031.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.625&output=jpg&default=https%3A%2F%2Fcdn.prod.website-files.com%2F68ee4e2d030a44cd00bb13ac%2F6a2bb2b11c8981adf38d1997_DSC_5031.jpg",
    "imageWhy": "event-page",
    "judge": 4,
-   "age": 14,
+   "age": 15,
    "hold": "judge 4 — below the bar of 5"
   },
   {
@@ -3313,12 +3087,12 @@
    "category": "live",
    "link": "https://subbacultcha.nl/2026/06/19/you-at-eq/",
    "source": "Subbacultcha",
-   "why": "",
+   "why": "week 4",
    "lens": "always",
    "live": true,
    "imageWhy": "none",
    "judge": 3,
-   "age": 21,
+   "age": 22,
    "hold": "judge 3 — below the bar of 5"
   },
   {
@@ -3334,7 +3108,7 @@
    "live": true,
    "imageWhy": "none",
    "judge": 3,
-   "age": 20,
+   "age": 21,
    "hold": "judge 3 — below the bar of 5"
   },
   {
@@ -3350,7 +3124,7 @@
    "live": true,
    "imageWhy": "none",
    "judge": 2,
-   "age": 17,
+   "age": 18,
    "hold": "judge 2 — below the bar of 5"
   },
   {
@@ -3366,7 +3140,7 @@
    "live": true,
    "imageWhy": "none",
    "judge": 2,
-   "age": 20,
+   "age": 21,
    "hold": "judge 2 — below the bar of 5"
   },
   {
@@ -3382,7 +3156,7 @@
    "live": true,
    "imageWhy": "none",
    "judge": 2,
-   "age": 20,
+   "age": 21,
    "hold": "judge 2 — below the bar of 5"
   },
   {
@@ -3398,7 +3172,7 @@
    "live": true,
    "imageWhy": "none",
    "judge": 1,
-   "age": 1,
+   "age": 2,
    "hold": "judge 1 — below the bar of 5"
   },
   {
@@ -3409,13 +3183,13 @@
    "category": "eat",
    "link": "https://www.amsterdamfoodie.nl/wine-guides/wineries-in-the-netherlands/",
    "source": "Amsterdam Foodie",
-   "why": "",
+   "why": "week 4",
    "lens": "always",
    "live": true,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.amsterdamfoodie.nl%2Fwp-content%2Fuploads%2F2026%2F08%2FFrysling-vineyards.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.375&fpy=0.550&output=jpg&default=https%3A%2F%2Fwww.amsterdamfoodie.nl%2Fwp-content%2Fuploads%2F2026%2F08%2FFrysling-vineyards.jpg",
    "imageWhy": "event-page",
    "judge": 1,
-   "age": 21,
+   "age": 22,
    "hold": "judge 1 — below the bar of 5"
   },
   {
@@ -3432,7 +3206,7 @@
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.amsterdamfoodie.nl%2Fwp-content%2Fuploads%2F2023%2F08%2FSushi-Fanatics.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.525&output=jpg&default=https%3A%2F%2Fwww.amsterdamfoodie.nl%2Fwp-content%2Fuploads%2F2023%2F08%2FSushi-Fanatics.jpg",
    "imageWhy": "event-page",
    "judge": 1,
-   "age": 1,
+   "age": 2,
    "hold": "judge 1 — below the bar of 5"
   },
   {
@@ -3448,7 +3222,7 @@
    "live": true,
    "imageWhy": "none",
    "judge": 1,
-   "age": 3,
+   "age": 4,
    "hold": "judge 1 — below the bar of 5"
   },
   {
@@ -3459,13 +3233,13 @@
    "category": "eat",
    "link": "https://www.amsterdamfoodie.nl/food-travel/london-restaurants/",
    "source": "Amsterdam Foodie",
-   "why": "",
+   "why": "week 4",
    "lens": "always",
    "live": true,
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.amsterdamfoodie.nl%2Fwp-content%2Fuploads%2F2026%2F08%2Ffish-chips.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.550&output=jpg&default=https%3A%2F%2Fwww.amsterdamfoodie.nl%2Fwp-content%2Fuploads%2F2026%2F08%2Ffish-chips.jpg",
    "imageWhy": "event-page",
    "judge": 1,
-   "age": 21,
+   "age": 22,
    "hold": "judge 1 — below the bar of 5"
   },
   {
@@ -3481,7 +3255,7 @@
    "live": true,
    "imageWhy": "none",
    "judge": 1,
-   "age": 1,
+   "age": 2,
    "hold": "judge 1 — below the bar of 5"
   },
   {
@@ -3497,7 +3271,7 @@
    "live": true,
    "imageWhy": "none",
    "judge": 1,
-   "age": 20,
+   "age": 21,
    "hold": "judge 1 — below the bar of 5"
   },
   {
@@ -3513,7 +3287,7 @@
    "live": true,
    "imageWhy": "none",
    "judge": 1,
-   "age": 1,
+   "age": 2,
    "hold": "judge 1 — below the bar of 5"
   },
   {
@@ -3524,12 +3298,12 @@
    "category": "live",
    "link": "https://subbacultcha.nl/2026/08/04/subbacultcha-spring-highlights/",
    "source": "Subbacultcha",
-   "why": "",
+   "why": "week 4",
    "lens": "always",
    "live": true,
    "imageWhy": "none",
    "judge": 1,
-   "age": 21,
+   "age": 22,
    "hold": "judge 1 — below the bar of 5"
   }
  ],
