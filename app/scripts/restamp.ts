@@ -28,7 +28,7 @@ import weekly from './taste/weekly.json'
 import { rxOf, titleLooseMatch, tokKey, upcomingWeekend, crownsActive, publishCheck, STAR_BOOST, NO_PHOTO_CAP, weekendModes, stampServeOrder, toPortrait, originalOf, approvalCheck, pickByTitle, markThisWeekend, type TasteCorpus, type WeeklySlate } from './lib/pipeline'
 import { curatedImage } from './curated'
 import { heroPicks } from './heroes'
-import { whenIsPast, whenLooksBroken } from '../src/lib/when'
+import { fixWhen, whenIsPast, whenLooksBroken } from '../src/lib/when'
 import { effectiveFreshness } from '../src/lib/freshness'
 import { emitLetter } from './lib/letter'
 import { realVenue } from './poster'
@@ -181,6 +181,11 @@ for (const p of picks) p.freshness = effectiveFreshness(p)
 // foot (Ness: "it's a little confusing, some cards have it, some don't"). The adapter no longer
 // writes it; this scrubs the feeds already on disk, with the poster's own test for it.
 for (const p of picks) p.venue = realVenue(p)
+
+// THE HOUSE DATE FORMAT — fixWhen is applied at ingest and refresh; a string that slipped through
+// before fixWhen learned its shape (a run written with years, 2026-09-20) is rewritten here too, so
+// the feed on disk speaks one format and the board/app parity test reads what the app will show.
+for (const p of picks) if (p.when) p.when = fixWhen(p.when)
 
 // NO TWO CARDS SHARE A PHOTO — mirrored from refresh.ts (2026-09-18: a pin applied here put the
 // same photograph on two live cards, and the fast path had no pass to catch it). Canon first; a
