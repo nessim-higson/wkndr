@@ -52,6 +52,9 @@ describe('what a stop paints and how it ranks', () => {
     expect(modeForHour({ temp: 19, pop: 10 })).toBe('WARM')
     expect(modeForHour({ temp: 27, pop: 5 })).toBe('HOT')
     expect(modeForHour({ temp: 12, pop: 20 })).toBe('COOL')
+    expect(modeForHour({ temp: 19, pop: 50 })).toBe('VOLATILE')      // an hour at 50% is a wet-ish hour: a day's gates would call it warm
+    expect(modeForHour({ temp: 13, pop: 40 })).toBe('COLD_WET')
+    expect(modeForHour({ temp: 19, pop: 7, code: 61 })).toBe('COLD_WET')   // the code says it is raining
     const s = weekendStops(decodeHourly(payload()), (T0 + 10 * 3600) * 1000)
     expect(s.find((x) => x.clock === 'Sat 20:00')!.mode).toBe('COLD_WET')
     expect(s.find((x) => x.clock === 'Sat 20:00')!.scene).toBe('rain')

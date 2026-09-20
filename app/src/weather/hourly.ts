@@ -7,8 +7,7 @@
 // This file turns that into the STOPS of the weekend being served — Sat 06:00 → Sun 23:00 in the
 // city's own clock — and gives each stop the two things the app runs on: the SCENE the pane
 // paints (the same code table the live reading uses) and the ranking MODE the deck is scored
-// against (modes.ts `classify`, with the hour's temperature standing in for the day's high and
-// the hour's rain chance for the day's). The sun is not here: daylight.ts grades the sky from the
+// against (`modeForHour`: the hour's own rain gates, then modes.ts `classify` for the temperature). The sun is not here: daylight.ts grades the sky from the
 // stop's timestamp, so Saturday 21:00 is dusk because of where the sun is, not because a table says so.
 //
 // Honesty: a stop is a FORECAST for that hour, labelled as one in the header while scrubbed. The
@@ -59,8 +58,17 @@ export function skyForCode(code: number, pop = 0): { scene: GlassScene; sky: str
   return { scene: 'sunny', sky: 'Clear' }
 }
 
-/** The ranking mode for ONE hour: the hour's temperature for the high, its rain chance for the day's. */
-export const modeForHour = (h: Pick<HourWx, 'temp' | 'pop'>): Mode => classify(Math.round(h.temp), h.pop, 0)
+/** The ranking mode for ONE hour. classify() reads a DAY: its rain gates (65 / 80) are for a day's
+ *  MAXIMUM chance, and an hour's chance runs far lower for the same weather — a 55% hour is a wet
+ *  hour. The first cut fed hours through the day's gates and a whole mild, showery weekend ranked
+ *  "warm" at every stop: the sky moved and the cards never did. So the hour gets its own rain gates
+ *  (and a code that says it is raining settles it); classify keeps the temperature bands. */
+const WET_CODES = [51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 71, 73, 75, 77, 80, 81, 82, 85, 86, 95, 96, 99]
+export function modeForHour(h: { temp: number; pop: number; code?: number }): Mode {
+  if (h.pop >= 60 || (h.code != null && WET_CODES.includes(h.code))) return 'COLD_WET'
+  if (h.pop >= 35) return h.temp < 16 ? 'COLD_WET' : 'VOLATILE'
+  return classify(Math.round(h.temp), 0, 0)
+}
 
 const DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 const read = (h: HourWx): HourReading => ({ ...h, ...skyForCode(h.code, h.pop), mode: modeForHour(h), clock: `${DOW[h.dow]} ${String(h.hour).padStart(2, '0')}:00` })
