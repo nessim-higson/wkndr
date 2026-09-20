@@ -32,6 +32,7 @@ import { fixWhen, whenIsPast, whenLooksBroken } from '../src/lib/when'
 import { effectiveFreshness } from '../src/lib/freshness'
 import { emitLetter } from './lib/letter'
 import { realVenue } from './poster'
+import { tidyBlurb } from '../src/lib/blurb'
 import type { Pick } from '../src/types'
 
 const CITY = process.argv.find((a) => a.startsWith('--city='))?.split('=')[1] ?? 'amsterdam'
@@ -186,6 +187,10 @@ for (const p of picks) p.venue = realVenue(p)
 // before fixWhen learned its shape (a run written with years, 2026-09-20) is rewritten here too, so
 // the feed on disk speaks one format and the board/app parity test reads what the app will show.
 for (const p of picks) if (p.when) p.when = fixWhen(p.when)
+
+// A BLURB IS A SENTENCE ABOUT THE EVENT (src/lib/blurb.ts) — gallery chrome stripped, a guillotined
+// blurb ended on a word with an ellipsis. Idempotent, so the fast path can run it every time.
+for (const p of picks) if (p.blurb) p.blurb = tidyBlurb(p.blurb)
 
 // NO TWO CARDS SHARE A PHOTO — mirrored from refresh.ts (2026-09-18: a pin applied here put the
 // same photograph on two live cards, and the fast path had no pass to catch it). Canon first; a

@@ -56,6 +56,8 @@ export const ORIGIN_PRESETS = {
 // [needle, lat, lon, northOfIJ?]. Matched against "venue | title", lowercased + de-accented.
 // Needles must be ≥4 chars (short ones collide — "as", "bak" go in GAZ_EXACT instead).
 const GAZ: [string, number, number, 1?][] = [
+  // 2026-09-20: two West venues that were being pinned to Noord by the 'straat' needle (see WHOLE_WORD)
+  ['centrale markthal', 52.3777, 4.8571], ['fabrique des lumi', 52.3859, 4.8724],
   // V.11.10 (2026-09-06): the venues the first honest-images feeds carried that the gazetteer didn't
   // know — the coverage test dipped to 58% and blocked the cron. Theatres, museums, the Stopera.
   ['frascati', 52.3712, 4.8952], ['bellevue', 52.3638, 4.8815], ['splendor', 52.3696, 4.9059],
@@ -158,6 +160,15 @@ export function trainMinutes(area: string | undefined): number {
  * Where is this pick? Prefers coordinates off the feed (forward-compatible with the
  * pipeline geocode), then the venue gazetteer, then the district, then honestly nothing.
  */
+// NEEDLES THAT ARE ALSO WORD-PARTS match as whole words only (2026-09-20). 'straat' is the STRAAT
+// museum at NDSM; as a bare substring it claimed every "-straat" ADDRESS for Noord — once the I
+// amsterdam adapter started carrying addresses in `venue`, the Centrale Markthal (Jan van
+// Galenstraat), Fabrique des Lumières (Pazzanistraat) and a bakery on the Bilderdijkstraat were all
+// dealt as Noord, on the card and in the Where sheet's count. Prefix needles ('eye film' →
+// "Eye Filmmuseum", 'albert cuyp' → "Albert Cuypmarkt") stay substring matches on purpose.
+const WHOLE_WORD = new Set(['straat'])
+const wholeWord = (hay: string, needle: string) => new RegExp(`(?:^|[^a-z0-9])${needle}(?:[^a-z0-9]|$)`).test(hay)
+
 export function resolveGeo(p: Pick): Place {
   // 1. the feed knows (once the cron stamps coords — STATE.md open item 8)
   if (typeof p.lat === 'number' && typeof p.lon === 'number') {
@@ -179,7 +190,7 @@ export function resolveGeo(p: Pick): Place {
       district: districtOf(p.area) ?? nearestDistrict(exact[0], exact[1]) }
   }
   for (const [needle, lat, lon, north] of GAZ) {
-    if (needle.length >= 4 && hay.includes(needle)) {
+    if (needle.length >= 4 && (WHOLE_WORD.has(needle) ? wholeWord(hay, needle) : hay.includes(needle))) {
       return { kind: 'pin', lat, lon, north: !!north,
         district: north ? 'Noord' : (districtOf(p.area) ?? nearestDistrict(lat, lon)) }
     }
