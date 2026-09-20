@@ -381,3 +381,19 @@ html[data-field='glass'] .stack-empty span { opacity: 1; color: #2a3f4a; }
    orange ring around the whole header — it read as an error state (it is in two of Ness's
    screenshots). Keyboard focus stays visible, as a quiet ring in the glass ink. */
 .app--glass .topbar-row:focus-visible { outline: 1.5px solid color-mix(in srgb, var(--glass-ink) 45%, transparent); outline-offset: 3px; border-radius: 20px; }
+
+/* ═══ THREE SAVES, ON GLASS (2026-09-20) ═════════════════════════════════════════════════════════
+   Ness sent it: a sharp box, its stars on the top edge and its last button cut by the bottom one. Like
+   the end of the deck, `.chk-card` was never a panel — it was type on a cream veil — and the
+   every-panel-is-glass rule gave it a frost and nothing else. It is a panel now. */
+html[data-field='glass'] .chk-card { max-width: 380px; padding: 40px 34px 30px; border-radius: 32px; gap: 12px; color: #172a35; }
+html[data-field='glass'] .chk-card .chk-sub { color: #2a3f4a; }
+
+/* ═══ FOCUS ON GLASS ═════════════════════════════════════════════════════════════════════════════
+   The app's keyboard focus ring is 2.5–3px of accent orange. On the glass build it kept reading as
+   an error or a selection — around the header, around the top card, around the detail's close button
+   (it is in most of Ness's screenshots, because arrow-key swiping puts the page in keyboard modality).
+   Focus stays visible everywhere, as a quiet ring in the element's own ink; on the sky it takes the
+   glass ink, which is chosen to contrast with the hour. */
+html[data-field='glass'] :is(button, a, [role='button'], [tabindex], select, input:not([type='range'])):focus-visible { outline: 2px solid color-mix(in srgb, currentColor 55%, transparent); outline-offset: 3px; }
+html[data-field='glass'] :is(.swipe-card, .act, .stack-more, .topbar-row, .glass-settings-link):focus-visible { outline: 1.5px solid color-mix(in srgb, var(--glass-ink) 50%, transparent); outline-offset: 5px; }

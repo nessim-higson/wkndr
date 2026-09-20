@@ -16,6 +16,7 @@ import { GLASS_LABELS, GLASS_SCENES, type GlassScene } from './weather/glass'
 import { PHASES, daylightAt, type Phase } from './weather/daylight'
 import { nowStop } from './weather/hourly'
 import { deckForHour } from './weather/scrubDeck'
+import { neverTwoGlass } from './weather/glassDeck'
 import { TimeScrub } from './weather/TimeScrub'
 import { useHourly } from './components/useHourly'
 import { useDaylight } from './components/useDaylight'
@@ -726,7 +727,20 @@ export default function App() {
   // fresh load and make the resting state look like a filtered one.
   const whensAtDefault = whens.length === DEFAULT_WHENS.length && whens.every((w) => DEFAULT_WHENS.includes(w))
   const filterActive = filter !== 'all' || cats.length > 0 || !whensAtDefault || wheres.length > 0
-  const deck = useMemo(() => shown.filter((p) => !(deckStop ? scrubSwiped : swiped).has(p.id)), [shown, swiped, scrubSwiped, deckStop])
+  // A GLASS CARD ONLY EVER SITS ON A PHOTOGRAPH (weather/glassDeck.ts) — and THE ORDER IS LAID ONCE PER
+  // DEAL, NOT PER SWIPE. neverTwoGlass reorders, and a reorder recomputed after every swipe re-flows
+  // the visible stack: the photo card peeking behind a glass card was overtaken by the next glass card
+  // the moment the top one left. So the order is laid over what is unswiped at the moment of the deal,
+  // and swipes then only remove from it — what you saw next IS next. Re-laid on a new deal, a new
+  // `shown`, a scrub commit, or an undo. (The glass-only study is imageless on purpose.)
+  const activeSwiped = deckStop ? scrubSwiped : swiped
+  const [relay, setRelay] = useState(0)
+  const dealt = useMemo(() => {
+    const d = shown.filter((p) => !activeSwiped.has(p.id))
+    return glassActive && !glassOnly ? neverTwoGlass(d) : d
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [shown, deckStop, glassActive, glassOnly, dealKey, relay])
+  const deck = useMemo(() => dealt.filter((p) => !activeSwiped.has(p.id)), [dealt, activeSwiped])
   // saved picks in rank order — fuels the saves-dock peek
   // THE EVERGREEN ESCAPE (V.11) — the specific dead-end this release could otherwise create.
   // Where × a dated When empties nearly every district (Noord has 1 dated pick and 6 evergreen
@@ -843,6 +857,7 @@ export default function App() {
     if (!undoable) return
     const { pick, dir, wasSaved } = undoable
     ;(deckStop ? setScrubSwiped : setSwiped)((s) => { const n = new Set(s); n.delete(pick.id); return n })
+    setRelay((k) => k + 1)   // the undone card was swiped before the order was laid — lay it again with the card back in
     if ((dir === 'like' || dir === 'save') && !wasSaved) {
       setSaved((s) => { const n = new Set(s); n.delete(pick.id); return n })
     }
