@@ -18,6 +18,7 @@
 // (~2,900 locs, keyless) matched by title. The 2026-09-03 feed shipped a tattoo convention filed as
 // `market` wearing the Bloemenmarkt's photo while its event page held two real flyers.
 import type { Pick, Category } from '../../src/types'
+import { tidyBlurb } from '../../src/lib/blurb'
 import { deriveWeatherFit, upcomingWeekend, htmlToText, mapLimit, iamsCategoryFromPath, linkIsIndex, matchEventLocs, titlesAgree, unionCredits } from '../lib/pipeline'
 
 const BASE = 'https://www.iamsterdam.com'
@@ -91,7 +92,9 @@ export function parseEventPage(html: string, pageUrl: string, category: Category
   const priceStr = offer?.price != null ? (Number(offer.price) === 0 ? 'free' : `from €${offer.price}`) : 'ticketed'
   // strip HTML; collapse a doubled leading phrase ("David Levinthal David Levinthal (born…)" — the
   // page repeats the heading at the start of its body text)
-  const blurb = htmlToText(String(ev.description || '')).replace(/^((?:\S+\s+){1,5})\1/, '$1').slice(0, 160)
+  // tidyBlurb: the description can open with the page's photo carousel (caption, credit, controls), and
+  // the old flat slice(0, 160) cut mid-word — see src/lib/blurb.ts
+  const blurb = tidyBlurb(htmlToText(String(ev.description || '')).replace(/^((?:\S+\s+){1,5})\1/, '$1'), 200)
   // LINK — the most direct page we can offer. The JSON-LD `url` is unreliable (often the generic
   // /en/whats-on index, which dead-ends the card's "open at"). Rule: an OFF-SITE organiser/venue event
   // page wins (the "talked about elsewhere" link); otherwise the exact detail page we just crawled.

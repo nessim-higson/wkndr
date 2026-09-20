@@ -182,3 +182,16 @@ describe('the live feed — coverage and the pool shape', () => {
     expect(scored.some((x) => x.s > 0)).toBe(true)   // and it actually does something
   })
 })
+
+describe("'straat' is a museum, not every street", () => {
+  const p = (venue: string, title = 'x', area = '') => ({ id: 'web-x', title, venue, area, when: '', category: 'art', freshness: 'weekend', outdoor: false, kid: false, price: '', blurb: '', why: '', link: '', source: '', weatherFit: [] }) as unknown as import('../src/types').Pick
+  test('an address ending in -straat is not pinned to NDSM', () => {
+    expect(resolveGeo(p('Bakkerij Louf Oud-West, Bilderdijkstraat 140')).district).not.toBe('Noord')
+    expect(resolveGeo(p('Centrale Markthal, Jan van Galenstraat 6, Amsterdam')).district).toBe('West')
+    expect(resolveGeo(p('Fabrique des Lumières, Pazzanistraat 37, Amsterdam')).district).toBe('West')
+  })
+  test('the STRAAT museum still is', () => {
+    expect(resolveGeo(p('STRAAT Museum')).district).toBe('Noord')
+    expect(resolveGeo(p('NDSM', 'Street art at STRAAT')).district).toBe('Noord')
+  })
+})

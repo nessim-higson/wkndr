@@ -192,6 +192,14 @@ function rememberWx(mode: Mode, wx: Wx) {
   try { localStorage.setItem(WX_CACHE_KEY, JSON.stringify({ mode, wx, ts: Date.now() } satisfies CachedWx)) } catch { /* private mode */ }
 }
 
+/** The newest of several ISO times. The detail's "listing checked …" line took the curation board's last
+ *  override time whenever one existed — even when the feed had been restamped since — so a card checked
+ *  that morning read "checked 45 days ago" (2026-09-20). */
+function latestIso(...isos: (string | null | undefined)[]): string | undefined {
+  const ts = isos.map((x) => (x ? Date.parse(x) : NaN)).filter(Number.isFinite)
+  return ts.length ? new Date(Math.max(...ts)).toISOString() : undefined
+}
+
 export default function App() {
   const [boot] = useState(lastKnownWx)   // read ONCE — a re-render must not re-read storage
   const [mode, setMode] = useState<Mode>(boot.mode)
@@ -448,7 +456,7 @@ export default function App() {
         const picks = applyOverrides(raw, ov, j.generatedAt)   // board's live order/kills, in seconds
         // checkedAt = the last time the pipeline actually LOOKED at these listings — a restamp
         // (board verdicts re-applied over live data) counts; it feeds the detail's freshness line
-        setFeeds((prev) => ({ ...prev, [key]: { picks, generatedAt: j.generatedAt, checkedAt: ov?.at ? new Date(ov.at).toISOString() : (j.restampedAt ?? j.generatedAt), topMatches: Array.isArray(j.topMatches) ? j.topMatches : [] } }))
+        setFeeds((prev) => ({ ...prev, [key]: { picks, generatedAt: j.generatedAt, checkedAt: latestIso(ov?.at ? new Date(ov.at).toISOString() : null, j.restampedAt, j.generatedAt), topMatches: Array.isArray(j.topMatches) ? j.topMatches : [] } }))
       })
       .catch(() => { fetchedFeeds.current.delete(key) /* keep bundled; retry on a later pass */ })
   }, [city.key])
