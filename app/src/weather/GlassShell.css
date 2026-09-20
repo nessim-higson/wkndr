@@ -339,7 +339,8 @@ html[data-field='glass'] .cal-veil { background: color-mix(in srgb, #f6f8f4 72%,
    The frost is firmer now (72% on the sheets, 76% / 86% on the panes) and the secondary ink is
    darker: the muted greys that read on paper faded on glass. Ness: "where it says what this is
    being pulled from, underneath the headline — we were losing that." */
-html[data-field='glass'] :is(.detail-venue, .detail-when .verify, .detail-when, .glass-card-caption) { color: var(--ink-2); }
+html[data-field='glass'] :is(.detail-venue, .detail-when .verify, .detail-when, .detail-trace) { color: var(--ink-2); }
+/* (the photo card's caption is NOT in that list: it sits on the card's dark foot and keeps its light ink — it was, for a day, and all but vanished) */
 html[data-field='glass'] :is(.sheet, .fs, .share, .itin-sheet, .glass-forecast) :is(.fs-hint, .sv-sub, .sheet-hint, .glass-forecast-note, .fs-sub) { color: var(--ink-2); }
 
 /* ═══ THE HOUR SCRUBBER (2026-09-20) ══════════════════════════════════════════════════════════
