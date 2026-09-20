@@ -7,13 +7,17 @@ import { Shuffle, Clock, CloudRain, CloudSun, Sun, Cloud, Moon, Snowflake, Layou
 // subtle haptic on commit/save (Android/Chrome; iOS Safari ignores navigator.vibrate)
 const haptic = (ms = 10) => { try { navigator.vibrate?.(ms) } catch { /* unsupported */ } }
 import type { Mode, Pick, SwipeDir } from './types'
-import { MODES, MODE_META, classify, applyMode, rankPicks, diversify, orderServed, moreLikeOrder, weekendFrom, modeSpecOf, tempForPick, type DayWx, type WeekendWx } from './weather/modes'
+import { MODES, MODE_META, classify, applyMode, rankPicks, diversify, orderServed, moreLikeOrder, weekendFrom, modeSpecOf, tempForPick, type DayWx, type WeekendWx, type ModeSpec } from './weather/modes'
 import { CITIES, DEFAULT_CITY, cityByKey, cityByName, nearestCity, type City } from './data/cities'
 import { AmbientField } from './weather/AmbientField'
 import { GlassField } from './weather/GlassField'
 import { GlassForecast } from './weather/GlassForecast'
 import { GLASS_LABELS, GLASS_SCENES, type GlassScene } from './weather/glass'
-import { PHASES, type Phase } from './weather/daylight'
+import { PHASES, daylightAt, type Phase } from './weather/daylight'
+import { nowStop } from './weather/hourly'
+import { deckForHour } from './weather/scrubDeck'
+import { TimeScrub } from './weather/TimeScrub'
+import { useHourly } from './components/useHourly'
 import { useDaylight } from './components/useDaylight'
 import type { Look } from './weather/ambientEngine'
 import { APP_VERSION } from './version'
@@ -218,7 +222,7 @@ export default function App() {
   // so they keep the single-mode ranking rather than inventing a Saturday and a Sunday.
   const [weekend, setWeekend] = useState<WeekendWx | null>(null)
   const [live, setLive] = useState(false)        // true once the real forecast loads
-  const [swiped, setSwiped] = useState<Set<string>>(() => loadSwiped())   // persisted — declines survive a refresh
+  const [swiped, setSwiped] = useState<Set<string>>(() => (new URLSearchParams(location.search).get('fresh') === '1' ? new Set() : loadSwiped()))   // persisted — declines survive a refresh; ?fresh=1 starts over on load
   const [saved, setSaved] = useState<Set<string>>(() => loadSaved())   // persisted
   const [taste, setTaste] = useState<Taste>(() => loadTaste())         // persisted taste profile
   const [toast, setToast] = useState<{ text: string; save?: boolean } | null>(null)
@@ -331,12 +335,12 @@ export default function App() {
   const [glassForecastOpen, setGlassForecastOpen] = useState(false)
   const [glassSettingsOpen, setGlassSettingsOpen] = useState(false)
   const glassActive = look === 'glass'
-  const glassWeather: GlassScene = glassPreview ?? (currentReading ? { clear:'sunny',night:'sunny',cloud:'overcast',fog:'mist',rain:'rain',snow:'snow',storm:'storm' }[currentReading.sky] as GlassScene : 'overcast')
+  // partly cloudy (code 2) is the open sky with its scattered cumulus, not the overcast blanket
+  const liveScene: GlassScene = currentReading ? (currentReading.code === 2 ? 'sunny' : { clear:'sunny',night:'sunny',cloud:'overcast',fog:'mist',rain:'rain',snow:'snow',storm:'storm' }[currentReading.sky] as GlassScene) : 'overcast'
   useEffect(() => {
     document.documentElement.dataset.field = glassActive ? 'glass' : 'original'
-    document.documentElement.dataset.glassScene = glassWeather
-    return () => { delete document.documentElement.dataset.field; delete document.documentElement.dataset.glassScene }
-  }, [glassActive, glassWeather])
+    return () => { delete document.documentElement.dataset.field }
+  }, [glassActive])
 
   const [fieldReroll, setFieldReroll] = useState(0)   // bump → reroll the seeded field's composition
   const [tintX, setTintX] = useState(() => {          // card-grade weather-tint strength
@@ -374,11 +378,31 @@ export default function App() {
   // ?sun=golden|dusk|night|dawn|day holds a phase for judging; ?at=19:40 holds a clock time, today.
   const [sunPreview, setSunPreview] = useState<Phase | null>(() => { const s = new URLSearchParams(location.search).get('sun'); return PHASES.find((p) => p === s) ?? null })
   const [clockAt] = useState(() => new URLSearchParams(location.search).get('at'))
-  const daylight = useDaylight(city.lat, city.lon, sunPreview, clockAt)
+  // THE HOUR SCRUBBER (2026-09-20, Ness: "a slider for time of the day, and see the weather change and
+  // the cards associated with that weather come forward"). The sky follows the thumb live (scene + the
+  // sun's grade for that timestamp); the deck re-deals for that hour's weather on RELEASE — re-ranking
+  // on every tick would shuffle cards under a moving finger. A what-if deck never touches real declines.
+  const hourStops = useHourly(city.lat, city.lon)
+  const [scrubIdx, setScrubIdx] = useState<number | null>(null)   // follows the thumb: sky + header
+  const [deckIdx, setDeckIdx] = useState<number | null>(null)     // committed on release: the deck
+  const [scrubSwiped, setScrubSwiped] = useState<Set<string>>(() => new Set())
+  const scrub = scrubIdx != null ? hourStops[scrubIdx] ?? null : null
+  const deckStop = deckIdx != null ? hourStops[deckIdx] ?? null : null
+  function commitScrub(i: number | null) {
+    if (i === deckIdx) return
+    setDeckIdx(i); setScrubSwiped(new Set()); setDealKey((k) => k + 1)
+  }
+  const glassWeather: GlassScene = glassPreview ?? scrub?.scene ?? liveScene
+  useEffect(() => { document.documentElement.dataset.glassScene = glassWeather; return () => { delete document.documentElement.dataset.glassScene } }, [glassWeather])
+  const liveDaylight = useDaylight(city.lat, city.lon, sunPreview, clockAt)
+  const daylight = useMemo(
+    () => (scrub && !sunPreview ? daylightAt(new Date(scrub.time + 1_800_000), city.lat, city.lon) : liveDaylight),
+    [scrub, sunPreview, liveDaylight, city.lat, city.lon],
+  )
   useEffect(() => { document.documentElement.dataset.daylight = daylight.phase; return () => { delete document.documentElement.dataset.daylight } }, [daylight.phase])
   const moonOut = glassWeather === 'evening' || (glassWeather === 'sunny' && ['night', 'dusk', 'dawn'].includes(daylight.phase))
   const GlassWeatherIcon = moonOut ? Moon : glassWeather === 'sunny' ? Sun : glassWeather === 'snow' ? Snowflake : glassWeather === 'mixed' ? CloudSun : ['rain', 'storm'].includes(glassWeather) ? CloudRain : Cloud
-  const sunLabel = { day: 'now', golden: 'golden hour', dusk: 'dusk', dawn: 'dawn', night: 'night' }[daylight.phase] + (sunPreview || clockAt ? ' · preview' : '')
+  const sunLabel = scrub ? `${scrub.clock} · forecast` : { day: 'now', golden: 'golden hour', dusk: 'dusk', dawn: 'dawn', night: 'night' }[daylight.phase] + (sunPreview || clockAt ? ' · preview' : '')
   const [feeds, setFeeds] = useState<Record<string, { picks: Pick[]; generatedAt: string; checkedAt?: string; topMatches?: string[] }>>({})
   const fetchedFeeds = useRef<Set<string>>(new Set())
 
@@ -618,10 +642,15 @@ export default function App() {
 
   // Refresh reshuffles the whole pool (within weather tiers) so BOTH views reorder,
   // then re-ranks. List + stack both change; the stack re-deals with a toast.
+  const scrubSpec: ModeSpec | null = useMemo(() => {
+    if (!deckStop) return null
+    const day = (k: 'sat' | 'sun') => weekend?.days.find((d) => d.key === k)?.mode ?? deckStop.mode
+    return deckStop.dow === 0 ? { sat: day('sat'), sun: deckStop.mode } : { sat: deckStop.mode, sun: day('sun') }
+  }, [deckStop, weekend])
   const rankedAll = useMemo(
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    () => rankPicks(cityPicks, modeSpecOf(weekend, mode), hasTaste(tasteRef.current) ? tasteRef.current : undefined, seed, nearMe ? origin : null),
-    [cityPicks, mode, weekend, seed, nearMe, origin],   // seed jitters the order ("show me more"); NOT [taste] — keeps the deck stable while swiping
+    () => rankPicks(cityPicks, scrubSpec ?? modeSpecOf(weekend, mode), hasTaste(tasteRef.current) ? tasteRef.current : undefined, seed, nearMe ? origin : null),
+    [cityPicks, mode, weekend, seed, nearMe, origin, scrubSpec],   // seed jitters the order ("show me more"); NOT [taste] — keeps the deck stable while swiping
   )
   // De-clustered full ranking for the MATCH game (it presents picks in order). rankPicks no longer
   // diversifies — the served deck de-clusters in `shown` — so do it here too or the match deck waves.
@@ -652,6 +681,8 @@ export default function App() {
       // 👑 TOP and ▲ LEAD are all discarded, because diversify only knows about categories.
       // This was silently true on EVERY load: DEFAULT_WHENS is ['weekend'], so `whens.length > 0`
       // is true before the user touches anything — the board's order never reached the deck once.
+      // THE SCRUB DECK: the weather's own order for that hour (weather/scrubDeck.ts)
+      if (deckStop && filter === 'all') { const { on, off } = deckForHour(filtered, deckStop.dow); return orderServed([...diversify(on), ...diversify(off)]) }
       if (filter !== 'all' || cats.length > 0 || whens.length > 0 || wheres.length > 0) {
         return orderServed(diversify(filtered))
       }
@@ -680,14 +711,14 @@ export default function App() {
       // is preserved within each tier (no re-clustering).
       return orderServed([...diversify(fresh), ...diversify(sample)])
     },
-    [rankedAll, filter, cats, whens, wheres, saved, seed, sharedPickIds, moreLike, mode],
+    [rankedAll, filter, cats, whens, wheres, saved, seed, sharedPickIds, moreLike, mode, deckStop],
   )
   // "you have narrowed something" — measured against the DEFAULT, not against empty. With
   // When defaulting to This weekend, counting it as active would light the menu's dot on a
   // fresh load and make the resting state look like a filtered one.
   const whensAtDefault = whens.length === DEFAULT_WHENS.length && whens.every((w) => DEFAULT_WHENS.includes(w))
   const filterActive = filter !== 'all' || cats.length > 0 || !whensAtDefault || wheres.length > 0
-  const deck = useMemo(() => shown.filter((p) => !swiped.has(p.id)), [shown, swiped])
+  const deck = useMemo(() => shown.filter((p) => !(deckStop ? scrubSwiped : swiped).has(p.id)), [shown, swiped, scrubSwiped, deckStop])
   // saved picks in rank order — fuels the saves-dock peek
   // THE EVERGREEN ESCAPE (V.11) — the specific dead-end this release could otherwise create.
   // Where × a dated When empties nearly every district (Noord has 1 dated pick and 6 evergreen
@@ -772,7 +803,7 @@ export default function App() {
 
   function handleStackSwipe(p: Pick, dir: SwipeDir) {
     const wasSaved = saved.has(p.id)
-    setSwiped((s) => new Set(s).add(p.id))
+    ;(deckStop ? setScrubSwiped : setSwiped)((s) => new Set(s).add(p.id))   // a what-if deck never touches the real declines
     if (dir === 'like' || dir === 'save') {
       setSaved((s) => new Set(s).add(p.id))   // the header counter turns orange + bumps — that's the confirmation
       track('save')
@@ -803,7 +834,7 @@ export default function App() {
   function undoSwipe() {
     if (!undoable) return
     const { pick, dir, wasSaved } = undoable
-    setSwiped((s) => { const n = new Set(s); n.delete(pick.id); return n })
+    ;(deckStop ? setScrubSwiped : setSwiped)((s) => { const n = new Set(s); n.delete(pick.id); return n })
     if ((dir === 'like' || dir === 'save') && !wasSaved) {
       setSaved((s) => { const n = new Set(s); n.delete(pick.id); return n })
     }
@@ -1060,7 +1091,7 @@ export default function App() {
                 onClick={(e) => { e.stopPropagation(); setGlassForecastOpen(true) }}
                 onKeyDown={(e) => e.stopPropagation()}>
                 <GlassWeatherIcon size={22} strokeWidth={1.3} aria-hidden />
-                <span>{glassPreview ? GLASS_LABELS[glassPreview] : currentReading ? `${Math.round(currentReading.temperature)}° · ${currentReading.label}` : 'Weather unavailable'}
+                <span>{glassPreview ? GLASS_LABELS[glassPreview] : scrub ? `${Math.round(scrub.temp)}° · ${scrub.sky}` : currentReading ? `${Math.round(currentReading.temperature)}° · ${currentReading.label}` : 'Weather unavailable'}
                   <small>{glassPreview ? 'Appearance preview' : `${city.label} · ${sunLabel}`}</small>
                 </span>
               </button>}
@@ -1329,6 +1360,9 @@ export default function App() {
               <Navigation className="ft-icon" size={13} strokeWidth={2.2} /> {whereSummary}
             </button>
           </div>
+        )}
+        {glassActive && filter === 'all' && !intro && !moreLike && view === 'stack' && (
+          <TimeScrub stops={hourStops} idx={scrubIdx} nowIdx={nowStop(hourStops)} onIdx={setScrubIdx} onCommit={commitScrub} />
         )}
 
         {filter === 'saved' && saved.size > 0 && (

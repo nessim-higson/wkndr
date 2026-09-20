@@ -1,5 +1,5 @@
 export type Sky = 'clear' | 'night' | 'cloud' | 'fog' | 'rain' | 'snow' | 'storm'
-export interface CurrentWeather { sky: Sky; temperature: number; time: number; label: string }
+export interface CurrentWeather { sky: Sky; temperature: number; time: number; label: string; /** the WMO code — partly cloudy (2) paints the open sky, not the blanket */ code: number }
 export function decodeCurrentWeather(data: unknown, now = Date.now()): CurrentWeather | null {
   const c = (data as { current?: Record<string, unknown> } | null)?.current
   if (!c || typeof c.time !== 'number' || typeof c.temperature_2m !== 'number' || typeof c.weather_code !== 'number' || ![0, 1].includes(c.is_day as number)) return null
@@ -16,5 +16,5 @@ export function decodeCurrentWeather(data: unknown, now = Date.now()): CurrentWe
   else if ([0,1].includes(code)) sky = c.is_day ? 'clear' : 'night'
   else return null
   const labels: Record<Sky,string> = {clear:'Clear skies',night:'Clear night',cloud:'Cloudy',fog:'Fog',rain:'Rain',snow:'Snow',storm:'Thunderstorms'}
-  return { sky, temperature:c.temperature_2m, time, label:labels[sky] }
+  return { sky, temperature:c.temperature_2m, time, label: code === 2 ? 'Partly cloudy' : labels[sky], code }
 }

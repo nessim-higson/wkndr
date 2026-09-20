@@ -341,3 +341,42 @@ html[data-field='glass'] .cal-veil { background: color-mix(in srgb, #f6f8f4 72%,
    being pulled from, underneath the headline — we were losing that." */
 html[data-field='glass'] :is(.detail-venue, .detail-when .verify, .detail-when, .glass-card-caption) { color: var(--ink-2); }
 html[data-field='glass'] :is(.sheet, .fs, .share, .itin-sheet, .glass-forecast) :is(.fs-hint, .sv-sub, .sheet-hint, .glass-forecast-note, .fs-sub) { color: var(--ink-2); }
+
+/* ═══ THE HOUR SCRUBBER (2026-09-20) ══════════════════════════════════════════════════════════
+   A quiet line under the filters: drag it and the sky follows; let go and the deck re-deals for
+   that hour's weather. Reads in the glass ink, so it turns white with the dark hours. */
+.time-scrub { display: flex; align-items: center; gap: 10px; width: min(100%, var(--module-w, 420px)); margin: 0 auto; padding: 0 var(--sp-3) 6px; color: var(--glass-ink); font-size: 11px; font-weight: 500; letter-spacing: .04em; flex: 0 0 auto; }
+.ts-now { flex: 0 0 auto; height: 24px; padding: 0 10px; border-radius: 999px; font: inherit; color: inherit; background: color-mix(in srgb, var(--glass-ink) 10%, transparent); transition: background .2s, color .2s; }
+.ts-now[aria-pressed='true'] { background: color-mix(in srgb, var(--glass-ink) 88%, transparent); color: color-mix(in srgb, var(--glass-ink) 0%, #f6f8f4); }
+html[data-field='glass']:is([data-glass-scene='rain'],[data-glass-scene='storm'],[data-glass-scene='mixed'],[data-glass-scene='evening'],[data-daylight='night'],[data-daylight='dusk'],[data-daylight='dawn']) .ts-now[aria-pressed='true'] { color: #101c2a; }
+.ts-track { position: relative; flex: 1 1 auto; height: 34px; min-width: 0; }
+.ts-track input[type='range'] { -webkit-appearance: none; appearance: none; position: absolute; inset: 0 0 auto 0; width: 100%; height: 24px; margin: 0; background: transparent; cursor: pointer; touch-action: pan-y; }
+.ts-track input[type='range']::-webkit-slider-runnable-track { height: 2px; border-radius: 2px; background: color-mix(in srgb, var(--glass-ink) 32%, transparent); }
+.ts-track input[type='range']::-moz-range-track { height: 2px; border-radius: 2px; background: color-mix(in srgb, var(--glass-ink) 32%, transparent); }
+.ts-track input[type='range']::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 16px; height: 16px; margin-top: -7px; border-radius: 50%; background: var(--glass-ink); border: 0; box-shadow: 0 2px 8px #0a1a2a40; transition: transform .15s, background .2s; }
+.ts-track input[type='range']::-moz-range-thumb { width: 16px; height: 16px; border-radius: 50%; background: var(--glass-ink); border: 0; box-shadow: 0 2px 8px #0a1a2a40; }
+.time-scrub.on .ts-track input[type='range']::-webkit-slider-thumb { background: var(--accent); transform: scale(1.12); }
+.time-scrub.on .ts-track input[type='range']::-moz-range-thumb { background: var(--accent); }
+.ts-track input[type='range']:focus-visible { outline: none; }
+.ts-track input[type='range']:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 4px color-mix(in srgb, var(--glass-ink) 28%, transparent); }
+.ts-day { position: absolute; top: 20px; font-size: 9px; letter-spacing: .12em; text-transform: uppercase; opacity: .6; transform: translateX(0); pointer-events: none; }
+.ts-nowmark { position: absolute; top: 9px; width: 1px; height: 6px; background: currentColor; opacity: .55; pointer-events: none; }
+.ts-read { flex: 0 0 auto; min-width: 122px; text-align: right; font-variant-numeric: tabular-nums; opacity: .85; white-space: nowrap; }
+.time-scrub.on .ts-read { opacity: 1; }
+@media (max-width: 380px) { .ts-read { min-width: 0; font-size: 10px; } .time-scrub { gap: 8px; } }
+
+/* ═══ THE END OF THE DECK, ON GLASS (2026-09-20) ═════════════════════════════════════════════════
+   Ness sent it: a sharp-cornered box, its primary button unreadable. `.stack-empty` was never a
+   panel — the every-panel-is-glass rule gave it a frost and nothing else — and its buttons took
+   the field's ink (dark on a dark pill). It is a proper glass panel now, with its own dark ink
+   whatever the hour, because the frost behind it is always light. */
+html[data-field='glass'] .stack-empty { max-width: 360px; padding: 30px 28px 24px; border-radius: 28px; gap: 10px; color: #172a35; }
+html[data-field='glass'] .stack-empty span { opacity: 1; color: #2a3f4a; }
+.app--glass .stack-empty .stack-btn { color: #172a35; background: #172a3514; border-color: transparent; -webkit-backdrop-filter: none; backdrop-filter: none; }
+.app--glass .stack-empty .stack-btn:hover { background: #172a3522; }
+.app--glass .stack-empty .stack-btn.primary { background: #172a35; color: #f6f8f4; }
+
+/* THE HEADER'S FOCUS RING: the row is a button, so after any key press it wore the app's 2.5px
+   orange ring around the whole header — it read as an error state (it is in two of Ness's
+   screenshots). Keyboard focus stays visible, as a quiet ring in the glass ink. */
+.app--glass .topbar-row:focus-visible { outline: 1.5px solid color-mix(in srgb, var(--glass-ink) 45%, transparent); outline-offset: 3px; border-radius: 20px; }
