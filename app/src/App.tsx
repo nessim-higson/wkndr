@@ -642,11 +642,11 @@ export default function App() {
 
   // Refresh reshuffles the whole pool (within weather tiers) so BOTH views reorder,
   // then re-ranks. List + stack both change; the stack re-deals with a toast.
-  const scrubSpec: ModeSpec | null = useMemo(() => {
-    if (!deckStop) return null
-    const day = (k: 'sat' | 'sun') => weekend?.days.find((d) => d.key === k)?.mode ?? deckStop.mode
-    return deckStop.dow === 0 ? { sat: day('sat'), sun: deckStop.mode } : { sat: deckStop.mode, sun: day('sun') }
-  }, [deckStop, weekend])
+  // ONE mode while scrubbed — the hour's. The served deck scores a both-days card by its BETTER day
+  // (you would go on the dry one), which is right for planning a weekend and wrong for "what is good
+  // at 15:00 on Saturday": an open-air festival kept the top slot through a 50% hour because Sunday
+  // was dry. Which DAY a card is on is deckForHour's job (weather/scrubDeck.ts).
+  const scrubSpec: ModeSpec | null = deckStop ? deckStop.mode : null
   const rankedAll = useMemo(
     // eslint-disable-next-line react-hooks/exhaustive-deps
     () => rankPicks(cityPicks, scrubSpec ?? modeSpecOf(weekend, mode), hasTaste(tasteRef.current) ? tasteRef.current : undefined, seed, nearMe ? origin : null),
