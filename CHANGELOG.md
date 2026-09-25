@@ -14,6 +14,29 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.12 · app] — 2026-09-25 — THE GLASS (the weather-glass variation graduates)
+The background is a window now. Ness, 18 Sep, on the branch: "I love these new backgrounds — so please
+make this known." Codex opened it (`codex/weather-glass`, PR #29, brief `docs/variations/001`); the
+week of 18–20 Sep took it from comps to the app; today it is the app.
+- **THE PANE** (`weather/WetGlassPane.ts`, `wetglass.ts`) — a WebGL2 fragment shader draws a photographic
+  sky plate THROUGH wet glass: real macro-photo drop maps bend and shade the sky; condensation is a blur
+  of the plate; snow is flakes in the air. Eleven plates, one photographer's set (Higgsfield Soul, 3:4).
+  The sky moves by default (drift, breath, a cloud veil, RUNNERS that let go and run down the pane);
+  Reduce Motion and `?motion=0` still it; 30 fps cap, DPR 2 × 0.75.
+- **THE SUN** (`weather/daylight.ts`) — the real solar altitude over the city grades every plate: golden
+  hour, dusk, night; rain at 22:00 is dark rain. A clear sky changes plate with the hour (open sky →
+  golden → dusk → night, a crossfade). `?sun=` and `?at=HH:MM` hold an hour.
+- **THE HOUR SCRUBBER** (`weather/hourly.ts`, `TimeScrub.tsx`) — Sat 06:00 → Sun 23:00 from the hourly
+  forecast; the sky follows the thumb, the deck re-deals on release for that hour's weather (its own
+  rain gates; the hand pile steps aside). A what-if deck never touches real declines.
+- **GLASS UI** — every module is glass (menu pane, saves peek, sheets, checkpoint, end of deck), firmer
+  frost for legibility, no strokes, the saves star turns orange, quiet focus rings, no glass card ever
+  sits on a glass card (`weather/glassDeck.ts`), the page comes to life on every open (`?intro=0` skips).
+- **RETIRED**: the /v2 mount (`/v2/*` → `/`, 301); Auras stays in the `?dev=1` look switcher; the study
+  controls (shell, menu material, faces, time of day) live behind `?dev=1` as Prototype settings.
+- Along the way, on main: a venue is a place never a publisher; blurbs without the page's furniture; the
+  publish gate reads an outage, not a percentage.
+
 ## [V.11.12 · app + board V.10] — 2026-09-11 — THE LETTER (the board becomes a renderer)
 Ness, Thursday, on the curation tool: "Simple versus Advanced — is it confusing?" It was, and the
 layout was not the reason. The board was built for the 1:1 airlock, when nothing shipped without him,

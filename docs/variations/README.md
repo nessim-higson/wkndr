@@ -1,7 +1,7 @@
 # Variations — the protocol and the brief
 
-Open briefs: `001-the-field-is-a-verb.md` · `002-the-no-photo-face.md` · `003-the-opening-beat.md` ·
-`004-the-two-minute-board.md`. One branch each; the file IS the first prompt.
+Open briefs: `002-the-no-photo-face.md` · `003-the-opening-beat.md` · `004-the-two-minute-board.md`.
+Graduated: `001-the-field-is-a-verb.md` (V.12, 2026-09-25 — the glass). One branch each; the file IS the first prompt.
 
 A variation is a question about WKNDR answered in code, on its own branch, with its own preview
 URL, judged against the live feed. It is never `main`. See `AGENTS.md` for the working rules.

@@ -1,13 +1,25 @@
+import { useCurrentWeather } from './components/useCurrentWeather'
+import './components/FaceMaterials.css'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { AnimatePresence, MotionConfig, motion } from 'framer-motion'
-import { Shuffle, Clock, CloudRain, LayoutGrid, Star, ArrowUpRight, LocateFixed, Info, RotateCw, RotateCcw, X, Heart, Navigation } from 'lucide-react'
+import { Shuffle, Clock, CloudRain, CloudSun, Sun, Cloud, Moon, Snowflake, LayoutGrid, Star, ArrowUpRight, LocateFixed, Info, RotateCw, RotateCcw, X, Heart, Navigation } from 'lucide-react'
 
 // subtle haptic on commit/save (Android/Chrome; iOS Safari ignores navigator.vibrate)
 const haptic = (ms = 10) => { try { navigator.vibrate?.(ms) } catch { /* unsupported */ } }
 import type { Mode, Pick, SwipeDir } from './types'
-import { MODES, MODE_META, classify, applyMode, rankPicks, diversify, orderServed, moreLikeOrder, weekendFrom, modeSpecOf, tempForPick, type DayWx, type WeekendWx } from './weather/modes'
+import { MODES, MODE_META, classify, applyMode, rankPicks, diversify, orderServed, moreLikeOrder, weekendFrom, modeSpecOf, tempForPick, type DayWx, type WeekendWx, type ModeSpec } from './weather/modes'
 import { CITIES, DEFAULT_CITY, cityByKey, cityByName, nearestCity, type City } from './data/cities'
 import { AmbientField } from './weather/AmbientField'
+import { GlassField } from './weather/GlassField'
+import { GlassForecast } from './weather/GlassForecast'
+import { GLASS_LABELS, GLASS_SCENES, type GlassScene } from './weather/glass'
+import { PHASES, daylightAt, type Phase } from './weather/daylight'
+import { nowStop } from './weather/hourly'
+import { deckForHour } from './weather/scrubDeck'
+import { neverTwoGlass } from './weather/glassDeck'
+import { TimeScrub } from './weather/TimeScrub'
+import { useHourly } from './components/useHourly'
+import { useDaylight } from './components/useDaylight'
 import type { Look } from './weather/ambientEngine'
 import { APP_VERSION } from './version'
 import { SwipeStack } from './components/SwipeStack'
@@ -93,6 +105,7 @@ import {
   loadSwiped, persistSwiped, KEY_SWIPED,
 } from './taste'
 import './App.css'
+import './weather/GlassShell.css'
 
 // `filter` is now just the top-level MODE (browse / saved / shared). The category + when axes are
 // MULTI-SELECT sets layered on top — tick several and they combine (a union).
@@ -118,7 +131,7 @@ const INITIAL_CITY: City =
 type View = 'stack' | 'list' | 'fan'
 // `temp` is the headline number; `label` is the window it describes ("This weekend" / a
 // preview). The live forecast describes the COMING WEEKEND, not the current hour.
-interface Wx { temp: number; hi: number; lo: number; city: string; label?: string }
+interface Wx { temp: number; hi: number; lo: number; city: string; label?: string; pop?: number }
 
 // Pick the upcoming weekend (Sat+Sun) out of a daily forecast's date list. If today is the
 // weekend, use today onward. Returns the indices into the daily arrays + a human label.
@@ -157,6 +170,7 @@ const DEMO: Record<Mode, Wx> = {
 // the ambient field looks the user can switch between (persisted to localStorage).
 // V2: a fresh set of five — flip through them to judge.
 const FIELD_OPTS: { key: Look; label: string }[] = [
+  { key: 'glass', label: 'Glass' },
   { key: 'silk', label: 'Silk' },
   { key: 'auras', label: 'Auras' },
   { key: 'riso', label: 'Riso' },
@@ -192,6 +206,9 @@ function rememberWx(mode: Mode, wx: Wx) {
   try { localStorage.setItem(WX_CACHE_KEY, JSON.stringify({ mode, wx, ts: Date.now() } satisfies CachedWx)) } catch { /* private mode */ }
 }
 
+/** V.12: the page comes to life on every open — the intro, then the deal (see the intro state); ?intro=0 skips it */
+const GLASS_BUILD = true
+
 /** The newest of several ISO times. The detail's "listing checked …" line took the curation board's last
  *  override time whenever one existed — even when the feed had been restamped since — so a card checked
  *  that morning read "checked 45 days ago" (2026-09-20). */
@@ -214,7 +231,7 @@ export default function App() {
   // so they keep the single-mode ranking rather than inventing a Saturday and a Sunday.
   const [weekend, setWeekend] = useState<WeekendWx | null>(null)
   const [live, setLive] = useState(false)        // true once the real forecast loads
-  const [swiped, setSwiped] = useState<Set<string>>(() => loadSwiped())   // persisted — declines survive a refresh
+  const [swiped, setSwiped] = useState<Set<string>>(() => (new URLSearchParams(location.search).get('fresh') === '1' ? new Set() : loadSwiped()))   // persisted — declines survive a refresh; ?fresh=1 starts over on load
   const [saved, setSaved] = useState<Set<string>>(() => loadSaved())   // persisted
   const [taste, setTaste] = useState<Taste>(() => loadTaste())         // persisted taste profile
   const [toast, setToast] = useState<{ text: string; save?: boolean } | null>(null)
@@ -294,14 +311,46 @@ export default function App() {
   const [whenOpen, setWhenOpen] = useState(false)          // When sheet
   const [whereOpen, setWhereOpen] = useState(false)        // Where sheet (V.11)
   const [look, setLook] = useState<Look>(() => {       // ambient field (validated)
-    // The MVP ships ONE canonical look (Auras). Only honour a stored/switched look inside ?dev=1;
-    // otherwise a look picked during a dev session (Riso's grid+arcs, Forms, Silk) would leak
-    // into the single-look live app. Non-dev always renders Auras, and the persist effect below
-    // self-heals any stale stored value back to 'auras'.
-    if (!DEVUI) return 'auras'
+    // This branch explores Glass. Production's Auras remains available in the dev
+    // switcher, so the same real deck can be compared without changing its ranking.
+    if (!DEVUI) return 'glass'
     const s = localStorage.getItem('wkndr.field') as Look
-    return FIELD_OPTS.some((o) => o.key === s) ? s : 'auras'
+    return FIELD_OPTS.some((o) => o.key === s) ? s : 'glass'
   })
+  const { reading: currentReading } = useCurrentWeather()
+  const [glassShell,setGlassShell] = useState(()=>new URLSearchParams(location.search).get('shell') === 'floating' ? 'floating' : 'open')
+  const [glassFace,setGlassFace] = useState('glass-opal')
+  const [glassFinish,setGlassFinish] = useState('auto')
+  const [glassMenu,setGlassMenu] = useState(()=>new URLSearchParams(location.search).get('menu') ?? 'frosted')
+  const [glassOnly,setGlassOnly] = useState(() => new URLSearchParams(location.search).get('cards') === 'glass')
+  useEffect(()=> {
+    document.documentElement.dataset.shell=glassShell
+    document.documentElement.dataset.face=glassFace
+    document.documentElement.dataset.menu=glassMenu
+    if(glassFinish === 'auto') delete document.documentElement.dataset.glassOverride
+    else document.documentElement.dataset.glassOverride=glassFinish
+    return ()=> { delete document.documentElement.dataset.shell; delete document.documentElement.dataset.face; delete document.documentElement.dataset.menu; delete document.documentElement.dataset.glassOverride }
+  },[glassShell,glassFace,glassFinish,glassMenu])
+  const [glassPreview, setGlassPreview] = useState<GlassScene | null>(() => { const scene = new URLSearchParams(location.search).get('scene'); return GLASS_SCENES.find(s => s === scene) ?? null })
+  // THE SKY MOVES BY DEFAULT on the glass build (Ness, 2026-09-18: "can we have that background
+  // move?") — unless the OS asks for reduced motion, or ?motion=0. Prototype settings keeps the
+  // opt-out. The pane caps itself at 30 fps and stops when the tab is hidden.
+  const [glassMoving, setGlassMoving] = useState(() => {
+    const m = new URLSearchParams(location.search).get('motion')
+    if (m === '0') return false
+    if (m === '1') return true   // force it, to judge the effect on a machine with Reduce Motion on
+    return !matchMedia('(prefers-reduced-motion: reduce)').matches
+  })
+  const [glassForecastOpen, setGlassForecastOpen] = useState(false)
+  const [glassSettingsOpen, setGlassSettingsOpen] = useState(false)
+  const glassActive = look === 'glass'
+  // partly cloudy (code 2) is the open sky with its scattered cumulus, not the overcast blanket
+  const liveScene: GlassScene = currentReading ? (currentReading.code === 2 ? 'sunny' : { clear:'sunny',night:'sunny',cloud:'overcast',fog:'mist',rain:'rain',snow:'snow',storm:'storm' }[currentReading.sky] as GlassScene) : 'overcast'
+  useEffect(() => {
+    document.documentElement.dataset.field = glassActive ? 'glass' : 'original'
+    return () => { delete document.documentElement.dataset.field }
+  }, [glassActive])
+
   const [fieldReroll, setFieldReroll] = useState(0)   // bump → reroll the seeded field's composition
   const [tintX, setTintX] = useState(() => {          // card-grade weather-tint strength
     // like `look`: only honour a stored value inside ?dev=1 — a strength picked while
@@ -322,12 +371,47 @@ export default function App() {
   // door (Triage z-340 would cover the intro z-60 anyway, leaving it animating blind behind the veil).
   // Tunable: widen `visits <= 1` (e.g. `<= 3`) to bring the splash back for the first few visits.
   const isArrival = SHARED_IDS || SHARED_FROM || SHARED_CONFIRM
-  const [intro, setIntro] = useState(!CURATE_DOOR && (visits <= 1 || !!isArrival))
+  // THE PAGE COMES TO LIFE ON EVERY OPEN on the glass build (2026-09-19, Ness: "I'm not seeing the
+  // deal-out animation or how the page animates to life"). Production gates the intro to the first
+  // visit or an arrival from a share link — and the visit counter is localStorage on this same
+  // origin, so a /v2 opened after months of the live app never once showed it. ?intro=0 skips it.
+  const [intro, setIntro] = useState(!CURATE_DOOR && new URLSearchParams(location.search).get('intro') !== '0' && (visits <= 1 || !!isArrival || GLASS_BUILD))
   const [listStyle, setListStyle] = useState<'wheel' | 'flux'>(() => {  // list motion language
     const s = localStorage.getItem('wkndr.liststyle')
     return s === 'flux' ? 'flux' : 'wheel'
   })
   const [city, setCity] = useState<City>(INITIAL_CITY)   // which city's feed is active
+  // THE SUN (2026-09-18, Ness: "the condition of the weather is relative to the time of day"): the
+  // pane is graded by where the sun is over the active city, re-read every minute (daylight.ts).
+  // A clear night is a clear sky at night — the moon plate comes from the hour, not the weather code.
+  // ?sun=golden|dusk|night|dawn|day holds a phase for judging; ?at=19:40 holds a clock time, today.
+  const [sunPreview, setSunPreview] = useState<Phase | null>(() => { const s = new URLSearchParams(location.search).get('sun'); return PHASES.find((p) => p === s) ?? null })
+  const [clockAt] = useState(() => new URLSearchParams(location.search).get('at'))
+  // THE HOUR SCRUBBER (2026-09-20, Ness: "a slider for time of the day, and see the weather change and
+  // the cards associated with that weather come forward"). The sky follows the thumb live (scene + the
+  // sun's grade for that timestamp); the deck re-deals for that hour's weather on RELEASE — re-ranking
+  // on every tick would shuffle cards under a moving finger. A what-if deck never touches real declines.
+  const hourStops = useHourly(city.lat, city.lon)
+  const [scrubIdx, setScrubIdx] = useState<number | null>(null)   // follows the thumb: sky + header
+  const [deckIdx, setDeckIdx] = useState<number | null>(null)     // committed on release: the deck
+  const [scrubSwiped, setScrubSwiped] = useState<Set<string>>(() => new Set())
+  const scrub = scrubIdx != null ? hourStops[scrubIdx] ?? null : null
+  const deckStop = deckIdx != null ? hourStops[deckIdx] ?? null : null
+  function commitScrub(i: number | null) {
+    if (i === deckIdx) return
+    setDeckIdx(i); setScrubSwiped(new Set()); setDealKey((k) => k + 1)
+  }
+  const glassWeather: GlassScene = glassPreview ?? scrub?.scene ?? liveScene
+  useEffect(() => { document.documentElement.dataset.glassScene = glassWeather; return () => { delete document.documentElement.dataset.glassScene } }, [glassWeather])
+  const liveDaylight = useDaylight(city.lat, city.lon, sunPreview, clockAt)
+  const daylight = useMemo(
+    () => (scrub && !sunPreview ? daylightAt(new Date(scrub.time + 1_800_000), city.lat, city.lon) : liveDaylight),
+    [scrub, sunPreview, liveDaylight, city.lat, city.lon],
+  )
+  useEffect(() => { document.documentElement.dataset.daylight = daylight.phase; return () => { delete document.documentElement.dataset.daylight } }, [daylight.phase])
+  const moonOut = glassWeather === 'evening' || (glassWeather === 'sunny' && ['night', 'dusk', 'dawn'].includes(daylight.phase))
+  const GlassWeatherIcon = moonOut ? Moon : glassWeather === 'sunny' ? Sun : glassWeather === 'snow' ? Snowflake : glassWeather === 'mixed' ? CloudSun : ['rain', 'storm'].includes(glassWeather) ? CloudRain : Cloud
+  const sunLabel = scrub ? `${scrub.clock} · forecast` : { day: 'now', golden: 'golden hour', dusk: 'dusk', dawn: 'dawn', night: 'night' }[daylight.phase] + (sunPreview || clockAt ? ' · preview' : '')
   const [feeds, setFeeds] = useState<Record<string, { picks: Pick[]; generatedAt: string; checkedAt?: string; topMatches?: string[] }>>({})
   const fetchedFeeds = useRef<Set<string>>(new Set())
 
@@ -567,10 +651,15 @@ export default function App() {
 
   // Refresh reshuffles the whole pool (within weather tiers) so BOTH views reorder,
   // then re-ranks. List + stack both change; the stack re-deals with a toast.
+  // ONE mode while scrubbed — the hour's. The served deck scores a both-days card by its BETTER day
+  // (you would go on the dry one), which is right for planning a weekend and wrong for "what is good
+  // at 15:00 on Saturday": an open-air festival kept the top slot through a 50% hour because Sunday
+  // was dry. Which DAY a card is on is deckForHour's job (weather/scrubDeck.ts).
+  const scrubSpec: ModeSpec | null = deckStop ? deckStop.mode : null
   const rankedAll = useMemo(
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    () => rankPicks(cityPicks, modeSpecOf(weekend, mode), hasTaste(tasteRef.current) ? tasteRef.current : undefined, seed, nearMe ? origin : null),
-    [cityPicks, mode, weekend, seed, nearMe, origin],   // seed jitters the order ("show me more"); NOT [taste] — keeps the deck stable while swiping
+    () => rankPicks(cityPicks, scrubSpec ?? modeSpecOf(weekend, mode), hasTaste(tasteRef.current) ? tasteRef.current : undefined, seed, nearMe ? origin : null),
+    [cityPicks, mode, weekend, seed, nearMe, origin, scrubSpec],   // seed jitters the order ("show me more"); NOT [taste] — keeps the deck stable while swiping
   )
   // De-clustered full ranking for the MATCH game (it presents picks in order). rankPicks no longer
   // diversifies — the served deck de-clusters in `shown` — so do it here too or the match deck waves.
@@ -601,6 +690,8 @@ export default function App() {
       // 👑 TOP and ▲ LEAD are all discarded, because diversify only knows about categories.
       // This was silently true on EVERY load: DEFAULT_WHENS is ['weekend'], so `whens.length > 0`
       // is true before the user touches anything — the board's order never reached the deck once.
+      // THE SCRUB DECK: the weather's own order for that hour (weather/scrubDeck.ts)
+      if (deckStop && filter === 'all') { const { on, off } = deckForHour(filtered, deckStop.dow); return orderServed([...diversify(on), ...diversify(off)]) }
       if (filter !== 'all' || cats.length > 0 || whens.length > 0 || wheres.length > 0) {
         return orderServed(diversify(filtered))
       }
@@ -629,14 +720,27 @@ export default function App() {
       // is preserved within each tier (no re-clustering).
       return orderServed([...diversify(fresh), ...diversify(sample)])
     },
-    [rankedAll, filter, cats, whens, wheres, saved, seed, sharedPickIds, moreLike, mode],
+    [rankedAll, filter, cats, whens, wheres, saved, seed, sharedPickIds, moreLike, mode, deckStop],
   )
   // "you have narrowed something" — measured against the DEFAULT, not against empty. With
   // When defaulting to This weekend, counting it as active would light the menu's dot on a
   // fresh load and make the resting state look like a filtered one.
   const whensAtDefault = whens.length === DEFAULT_WHENS.length && whens.every((w) => DEFAULT_WHENS.includes(w))
   const filterActive = filter !== 'all' || cats.length > 0 || !whensAtDefault || wheres.length > 0
-  const deck = useMemo(() => shown.filter((p) => !swiped.has(p.id)), [shown, swiped])
+  // A GLASS CARD ONLY EVER SITS ON A PHOTOGRAPH (weather/glassDeck.ts) — and THE ORDER IS LAID ONCE PER
+  // DEAL, NOT PER SWIPE. neverTwoGlass reorders, and a reorder recomputed after every swipe re-flows
+  // the visible stack: the photo card peeking behind a glass card was overtaken by the next glass card
+  // the moment the top one left. So the order is laid over what is unswiped at the moment of the deal,
+  // and swipes then only remove from it — what you saw next IS next. Re-laid on a new deal, a new
+  // `shown`, a scrub commit, or an undo. (The glass-only study is imageless on purpose.)
+  const activeSwiped = deckStop ? scrubSwiped : swiped
+  const [relay, setRelay] = useState(0)
+  const dealt = useMemo(() => {
+    const d = shown.filter((p) => !activeSwiped.has(p.id))
+    return glassActive && !glassOnly ? neverTwoGlass(d) : d
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [shown, deckStop, glassActive, glassOnly, dealKey, relay])
+  const deck = useMemo(() => dealt.filter((p) => !activeSwiped.has(p.id)), [dealt, activeSwiped])
   // saved picks in rank order — fuels the saves-dock peek
   // THE EVERGREEN ESCAPE (V.11) — the specific dead-end this release could otherwise create.
   // Where × a dated When empties nearly every district (Noord has 1 dated pick and 6 evergreen
@@ -721,7 +825,7 @@ export default function App() {
 
   function handleStackSwipe(p: Pick, dir: SwipeDir) {
     const wasSaved = saved.has(p.id)
-    setSwiped((s) => new Set(s).add(p.id))
+    ;(deckStop ? setScrubSwiped : setSwiped)((s) => new Set(s).add(p.id))   // a what-if deck never touches the real declines
     if (dir === 'like' || dir === 'save') {
       setSaved((s) => new Set(s).add(p.id))   // the header counter turns orange + bumps — that's the confirmation
       track('save')
@@ -752,7 +856,8 @@ export default function App() {
   function undoSwipe() {
     if (!undoable) return
     const { pick, dir, wasSaved } = undoable
-    setSwiped((s) => { const n = new Set(s); n.delete(pick.id); return n })
+    ;(deckStop ? setScrubSwiped : setSwiped)((s) => { const n = new Set(s); n.delete(pick.id); return n })
+    setRelay((k) => k + 1)   // the undone card was swiped before the order was laid — lay it again with the card back in
     if ((dir === 'like' || dir === 'save') && !wasSaved) {
       setSaved((s) => { const n = new Set(s); n.delete(pick.id); return n })
     }
@@ -900,7 +1005,7 @@ export default function App() {
       })
       setMode(m)
       setWeekend(weekendFrom(days, m))
-      const nextWx = { temp: hi, hi, lo, city: placeName, label }
+      const nextWx = { temp: hi, hi, lo, city: placeName, label, pop: pp }
       setWx(nextWx)
       setLive(true)
       rememberWx(m, nextWx)   // the next reload boots on THIS sky — no more amber flash in the rain
@@ -912,7 +1017,9 @@ export default function App() {
     // reducedMotion="user": every framer transform/layout animation (detail expand, sheet
     // slides, ctx bars) collapses to a crossfade for prefers-reduced-motion users
     <MotionConfig reducedMotion="user">
-      <AmbientField mode={mode} look={look} onLookChange={setLook} rerollNonce={fieldReroll} />
+      {glassActive
+        ? <GlassField scene={glassWeather} daylight={daylight} moving={glassMoving} />
+        : <AmbientField mode={mode} look={look} onLookChange={setLook} rerollNonce={fieldReroll} />}
 
       <AnimatePresence>
         {intro && <Intro
@@ -941,7 +1048,7 @@ export default function App() {
       </AnimatePresence>
 
       <motion.div
-        className="app"
+        className={`app${glassActive ? ' app--glass' : ''}`}
         initial={false}
         /* opacity only — NO transform: a transform here would make .app the containing block
            for position:fixed children (the fan stage, overlays), offsetting them by the
@@ -973,6 +1080,7 @@ export default function App() {
             >
               <div className="tb-brandblock">
                 <div className="tb-brand"><span className={`tb-dot${locating ? ' pulsing' : ''}`} aria-hidden />WKNDR</div>
+                {glassActive && <span className="glass-city">Amsterdam</span>}
                 <span className="tb-divider" aria-hidden />
                 <div className="tb-wx">
                   <span className="tb-when">
@@ -1000,6 +1108,17 @@ export default function App() {
                 </div>
               </div>
 
+              {glassActive && <button type="button" className="glass-header-weather"
+                aria-label="View weekend forecast"
+                title={currentReading && !glassPreview ? `Amsterdam · ${new Date(currentReading.time).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Amsterdam' })}` : undefined}
+                onClick={(e) => { e.stopPropagation(); setGlassForecastOpen(true) }}
+                onKeyDown={(e) => e.stopPropagation()}>
+                <GlassWeatherIcon size={22} strokeWidth={1.3} aria-hidden />
+                <span>{glassPreview ? GLASS_LABELS[glassPreview] : scrub ? `${Math.round(scrub.temp)}° · ${scrub.sky}` : currentReading ? `${Math.round(currentReading.temperature)}° · ${currentReading.label}` : 'Weather unavailable'}
+                  <small>{glassPreview ? 'Appearance preview' : `${city.label} · ${sunLabel}`}</small>
+                </span>
+              </button>}
+
               <div className="tb-actions">
                 <button
                   type="button"
@@ -1016,15 +1135,13 @@ export default function App() {
                   className={`tb-icon tb-menu${barOpen ? ' on' : ''}${!barOpen && filterActive ? ' dot' : ''}`}
                   aria-hidden
                 >
-                  {barOpen ? (
-                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                      <line x1="5" y1="5" x2="15" y2="15" /><line x1="15" y1="5" x2="5" y2="15" />
-                    </svg>
-                  ) : (
-                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                      <line x1="3" y1="7" x2="17" y2="7" /><line x1="3" y1="13" x2="17" y2="13" />
-                    </svg>
-                  )}
+                  {/* both glyphs stay mounted; App.css crossfades + turns them (the swap used to be a hard cut) */}
+                  <svg className="ico-lines" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <line x1="3" y1="7" x2="17" y2="7" /><line x1="3" y1="13" x2="17" y2="13" />
+                  </svg>
+                  <svg className="ico-x" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <line x1="5" y1="5" x2="15" y2="15" /><line x1="15" y1="5" x2="5" y2="15" />
+                  </svg>
                 </span>
               </div>
             </div>
@@ -1267,6 +1384,9 @@ export default function App() {
             </button>
           </div>
         )}
+        {glassActive && filter === 'all' && !intro && !moreLike && view === 'stack' && (
+          <TimeScrub stops={hourStops} idx={scrubIdx} nowIdx={nowStop(hourStops)} onIdx={setScrubIdx} onCommit={commitScrub} />
+        )}
 
         {filter === 'saved' && saved.size > 0 && (
           <div className="ctx-bar">
@@ -1334,8 +1454,8 @@ export default function App() {
               <SwipeStack
                 /* remount when the intro lifts so the deck deals in while it's actually visible
                    (mounting behind the intro would burn the fly-in before the app is revealed) */
-                key={`${dealKey}-${filter}-${cats.join(',')}-${whens.join(',')}-${intro ? 'intro' : 'live'}`}
-                picks={deck}
+                key={`${dealKey}-${filter}-${cats.join(',')}-${whens.join(',')}-${intro ? 'intro' : 'live'}-${glassOnly}`}
+                picks={glassActive && glassOnly ? deck.filter(p => !p.image) : deck}
                 temp={wx.temp}
                 tempOf={(p) => tempForPick(p, weekend, wx.temp)}
                 mode={mode}
@@ -1352,7 +1472,7 @@ export default function App() {
                 onSeeList={() => setView('list')}
                 escape={evergreenEscape}
                 /* the deck owns ←/→ only while nothing sits above it */
-                keysActive={!intro && !detail && !shareOpen && !barOpen && !savesOpen && !matching && !inputsOpen && !filterOpen && !whenOpen && !whereOpen && !calibrating && !triaging && !checkpoint}
+                keysActive={!intro && !detail && !shareOpen && !barOpen && !savesOpen && !matching && !inputsOpen && !filterOpen && !whenOpen && !whereOpen && !calibrating && !triaging && !checkpoint && !glassForecastOpen && !glassSettingsOpen}
               />
             </motion.div>
           ) : view === 'fan' ? (
@@ -1377,7 +1497,11 @@ export default function App() {
             </motion.div>
           )}
         </main>
+        {DEVUI && glassActive && !intro && <button className="glass-settings-link" onClick={() => setGlassSettingsOpen(true)}>Prototype settings</button>}
       </motion.div>
+      {glassActive && <GlassForecast glassOnly={glassOnly} onGlassOnly={setGlassOnly} settings={DEVUI && glassSettingsOpen} open={glassForecastOpen || (DEVUI && glassSettingsOpen)} onClose={() => { setGlassForecastOpen(false); setGlassSettingsOpen(false) }}
+        weekend={weekend} live={live} label={wx.label} preview={glassPreview} onPreview={setGlassPreview}
+        moving={glassMoving} onMoving={setGlassMoving} sun={sunPreview} onSun={setSunPreview} shell={glassShell} onShell={setGlassShell} face={glassFace} onFace={setGlassFace} finish={glassFinish} onFinish={setGlassFinish} menu={glassMenu} onMenu={setGlassMenu} />}
 
       {toast && (
         <div className={`toast${toast.save ? ' toast--save' : ''}`}>

@@ -1,4 +1,5 @@
 import { useEffect, useLayoutEffect, useRef } from 'react'
+import { placeOf } from '../lib/place'
 import type { CSSProperties } from 'react'
 import { Star } from 'lucide-react'
 import type { Pick, SwipeDir } from '../types'
@@ -205,7 +206,7 @@ export function ListView({
                   {p.verify && <span className="row-verify">verify</span>}
                 </div>
                 <h3 className="row-title">{p.title}</h3>
-                <div className="row-meta"><span className="row-when">{p.when}</span> · {p.venue} · {p.area}</div>
+                <div className="row-meta"><span className="row-when">{p.when}</span>{[placeOf(p), p.area].filter(Boolean).map((x) => ` · ${x}`).join('')}</div>
                 <div className="row-why">{p.why}</div>
               </div>
               <button

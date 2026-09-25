@@ -2,6 +2,8 @@
 
 **Branch** `codex/field-is-a-verb` · **Seam** the ambient field (`app/src/weather/`)
 
+**GRADUATED — V.12, 2026-09-25.** Answered on `codex/weather-glass` (PR #29): the field is a window — a photographic sky through wet glass, graded by the real sun, with the weekend's hours on a scrubber. Merged to main; `/v2` retired.
+
 **The question** — What if the field *did* the weather instead of colour-coding it: rain falls,
 heat shimmers, wind pushes, cloud drifts, a changeable day changes — and you read the sky before
 you read the header?

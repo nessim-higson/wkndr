@@ -86,6 +86,13 @@
 }
 .tb-icon:hover { background: rgba(0, 0, 0, 0.06); }
 .tb-icon svg { stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; }
+/* the burger turns into the cross instead of cutting to it: both glyphs are mounted, one fades and
+   rotates out as the other fades and rotates in */
+.tb-menu svg { position: absolute; transition: opacity 0.26s ease, transform 0.34s cubic-bezier(0.22, 1, 0.36, 1); }
+.tb-menu .ico-x { opacity: 0; transform: rotate(-90deg) scale(0.7); }
+.tb-menu.on .ico-x { opacity: 1; transform: none; }
+.tb-menu.on .ico-lines { opacity: 0; transform: rotate(90deg) scale(0.7); }
+@media (prefers-reduced-motion: reduce) { .tb-menu svg { transition: opacity 0.2s ease; transform: none !important; } }
 .tb-menu.dot::after {
   content: ''; position: absolute; top: 7px; right: 7px;
   width: 7px; height: 7px; border-radius: 50%; background: var(--accent);
