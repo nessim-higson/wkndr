@@ -19,7 +19,7 @@
  */
 import { CITIES, type City } from '../src/data/cities'
 import type { Pick } from '../src/types'
-import { dedupe, balanceByCategory, isGoodImage, isPortraitImage, imageBroken, urlLooksNonPhoto, imageIsCardworthy, fetchEventImage, toPortrait, wikiImage, webImageCandidates, verifyImageForEvent, venueMatchImage, venueBook, linkIsIndex, imageFocalPoint, focalFailures, originalOf, NO_PHOTO_CAP, whenBeforeWeekend, upcomingWeekend, weekendMode, weekendModes, stampServeOrder, publishCheck, crownsActive, JUDGE_FLOOR, STAR_BOOST, linkOk, mapLimit, rxOf, titleKey, titleLooseMatch, tokKey, approvalCheck, pickByTitle, markThisWeekend, type TasteCorpus, type WeeklySlate } from './lib/pipeline'
+import { dedupe, balanceByCategory, isGoodImage, isPortraitImage, imageBroken, urlLooksNonPhoto, imageIsCardworthy, fetchEventImage, toPortrait, wikiImage, webImageCandidates, verifyImageForEvent, venueMatchImage, venueBook, linkIsIndex, imageFocalPoint, focalFailures, originalOf, NO_PHOTO_CAP, whenBeforeWeekend, upcomingWeekend, weekendMode, weekendModes, stampServeOrder, publishCheck, crownsActive, JUDGE_FLOOR, STAR_BOOST, linkOk, mapLimit, rxOf, titleKey, titleLooseMatch, tokKey, approvalCheck, pickByTitle, markThisWeekend, type TasteCorpus, type WeeklySlate, imagePassBroken } from './lib/pipeline'
 import { fixWhen, latestDateOf, whenActiveBy, whenIsPast, whenLooksBroken } from '../src/lib/when'
 import { effectiveFreshness, NEW_DAYS } from '../src/lib/freshness'
 import { mergeSightings, pruneRegistry, appendRun, type SeenRegistry, type HealthFile } from './lib/ingest'
@@ -830,7 +830,7 @@ async function buildCity(city: City) {
   }
 
   let pendingOut: Pick[] = []
-  let noPhotoShare = 0, liveBeforeCap = 0
+  let noPhotoShare = 0, liveBeforeCap = 0, imagelessBeforeCap = 0
 
   // (V.11.11) stamped BEFORE the airlock split, not after: stampServeOrder ranks with the app's own
   // rankPicks, which now carries a novelty term read off firstSeen — an unstamped pick is not new.
@@ -901,6 +901,7 @@ async function buildCity(city: City) {
     {
       const noPhoto = picks.filter((p) => isLive(p) && !p.image)
       liveBeforeCap = picks.filter(isLive).length
+      imagelessBeforeCap = noPhoto.length
       noPhotoShare = liveBeforeCap ? noPhoto.length / liveBeforeCap : 0
       const onMerit = noPhoto.filter((p) => !isApproved(p))
         .sort((a, b) => (b.judgeScore ?? 0) - (a.judgeScore ?? 0) || topical(b) - topical(a))
@@ -959,7 +960,10 @@ async function buildCity(city: City) {
     // (V.11.9) a card without a photo is HONEST, not broken — the gate no longer fails on one. What IS
     // broken: an image pass that lost MOST of the crawl (keys/network down) — abstain rather than ship a
     // deck of blanks. Read at the pre-cap share, or the cap would hide the outage behind a thin feed.
-    if (liveBeforeCap >= 8 && noPhotoShare > 0.5) fail.push(`${Math.round(noPhotoShare * 100)}% of ${liveBeforeCap} live picks imageless — image pass broken?`)
+    // (2026-09-25) …and "most" is measured against what an outage looks like, not a percentage a healthy autumn crawl
+    // can cross — see imagePassBroken. The feed already serving is the comparison.
+    const lastGoodImaged = priorPicks.length ? priorPicks.filter((p) => isLive(p) && !!p.image).length : null
+    if (imagePassBroken(liveBeforeCap, imagelessBeforeCap, lastGoodImaged)) fail.push(`${liveBeforeCap - imagelessBeforeCap} of ${liveBeforeCap} live picks imaged (last good: ${lastGoodImaged ?? '—'}) — image pass broken?`)
     if (heroesMissing.length) fail.push(`heroes missing: ${heroesMissing.map((h) => titleKey(h.title)).join(', ')}`)
     const warn: string[] = []
     if (liveN < 8) warn.push(`thin live feed (${liveN})`)

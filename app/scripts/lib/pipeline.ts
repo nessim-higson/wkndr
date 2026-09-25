@@ -142,6 +142,19 @@ export const JUDGE_FLOOR = Number(process.env.WKNDR_JUDGE_FLOOR ?? 5)
 // landing on 8 — the exact value the floor gave them, so the hand-curated library doesn't move.
 export const STAR_BOOST = Number(process.env.WKNDR_STAR_BOOST ?? 2)
 
+/** IS THE IMAGE PASS BROKEN? (2026-09-25) The publish gate failed the feed when more than half the
+ *  crawl was imageless — and refused two healthy runs in a row (53%, 57%) when the autumn crawl simply
+ *  carried more photo-less listings than the summer one: the pass had imaged 94 picks against 100 on the
+ *  last good run, and the app served a two-week-old weekend. An outage looks different — the imaged COUNT
+ *  collapses (keys or network down). So: broken when fewer than a third of the crawl is imaged, or when
+ *  fewer than half as many are imaged as the feed already serving. A first run has only the floor. */
+export function imagePassBroken(liveBeforeCap: number, imagelessBeforeCap: number, lastGoodImaged: number | null): boolean {
+  if (liveBeforeCap < 8) return false
+  const imaged = liveBeforeCap - imagelessBeforeCap
+  if (imaged / liveBeforeCap < 1 / 3) return true
+  return lastGoodImaged != null && lastGoodImaged >= 20 && imaged < lastGoodImaged / 2
+}
+
 /** MAY THIS PICK SHIP? The gate refresh.ts publishes through, and the one tests/airlock.test.ts
  *  audits the feed with — one predicate, so a rogue pick means the pipeline regressed, not that the
  *  test drifted.
