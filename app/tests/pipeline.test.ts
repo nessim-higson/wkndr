@@ -2,7 +2,7 @@
 // the image URL screens, and the weekend window. These are the pure functions the whole content
 // pipeline leans on; each rule here encodes a bug we actually hit during the pipeline era.
 import { describe, it, expect } from 'bun:test'
-import { dedupe, unionCredits, titleKey, urlLooksNonPhoto, toPortrait, upcomingWeekend, whenBeforeWeekend } from '../scripts/lib/pipeline'
+import { dedupe, unionCredits, titleKey, urlLooksNonPhoto, toPortrait, upcomingWeekend, whenBeforeWeekend, imagePassBroken } from '../scripts/lib/pipeline'
 import { whenIsPast } from '../src/lib/when'
 import type { Pick } from '../src/types'
 
@@ -226,3 +226,20 @@ describe('the slate files its cards under the default lens', () => {
   })
 })
 
+
+describe('imagePassBroken — the publish gate reads an OUTAGE, not a percentage', () => {
+  it('passes the two autumn runs it wrongly refused (2026-09-21 / 09-24)', () => {
+    expect(imagePassBroken(99, 56, 47)).toBe(false)   // 24 Sep: 43 imaged of 99, last good served 47
+    expect(imagePassBroken(85, 45, 47)).toBe(false)   // 21 Sep
+  })
+  it('fails when the imaged count collapses — keys or network down', () => {
+    expect(imagePassBroken(99, 92, 47)).toBe(true)    // 7 of 99
+    expect(imagePassBroken(120, 60, 130)).toBe(true)  // 60 imaged against 130 serving: half of last good
+    expect(imagePassBroken(120, 60, 100)).toBe(false) // 60 against 100: thinner, not broken
+  })
+  it('a first run has only the floor; a tiny crawl never trips it', () => {
+    expect(imagePassBroken(99, 56, null)).toBe(false)
+    expect(imagePassBroken(99, 70, null)).toBe(true)
+    expect(imagePassBroken(6, 6, 47)).toBe(false)
+  })
+})
