@@ -206,7 +206,7 @@ function rememberWx(mode: Mode, wx: Wx) {
   try { localStorage.setItem(WX_CACHE_KEY, JSON.stringify({ mode, wx, ts: Date.now() } satisfies CachedWx)) } catch { /* private mode */ }
 }
 
-/** the weather-glass build (this branch, /v2 and the previews): the intro plays on every open */
+/** V.12: the page comes to life on every open — the intro, then the deal (see the intro state); ?intro=0 skips it */
 const GLASS_BUILD = true
 
 /** The newest of several ISO times. The detail's "listing checked …" line took the curation board's last
@@ -1497,9 +1497,9 @@ export default function App() {
             </motion.div>
           )}
         </main>
-        {glassActive && !intro && <button className="glass-settings-link" onClick={() => setGlassSettingsOpen(true)}>Prototype settings</button>}
+        {DEVUI && glassActive && !intro && <button className="glass-settings-link" onClick={() => setGlassSettingsOpen(true)}>Prototype settings</button>}
       </motion.div>
-      {glassActive && <GlassForecast glassOnly={glassOnly} onGlassOnly={setGlassOnly} settings={glassSettingsOpen} open={glassForecastOpen || glassSettingsOpen} onClose={() => { setGlassForecastOpen(false); setGlassSettingsOpen(false) }}
+      {glassActive && <GlassForecast glassOnly={glassOnly} onGlassOnly={setGlassOnly} settings={DEVUI && glassSettingsOpen} open={glassForecastOpen || (DEVUI && glassSettingsOpen)} onClose={() => { setGlassForecastOpen(false); setGlassSettingsOpen(false) }}
         weekend={weekend} live={live} label={wx.label} preview={glassPreview} onPreview={setGlassPreview}
         moving={glassMoving} onMoving={setGlassMoving} sun={sunPreview} onSun={setSunPreview} shell={glassShell} onShell={setGlassShell} face={glassFace} onFace={setGlassFace} finish={glassFinish} onFinish={setGlassFinish} menu={glassMenu} onMenu={setGlassMenu} />}
 

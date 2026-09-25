@@ -52,10 +52,3 @@ jobs:
           echo "https://${{ steps.slug.outputs.slug }}.wkndr-app.pages.dev" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
           echo "Built against the live feed at app.wkndr.xyz. Share links minted here point at production." >> "$GITHUB_STEP_SUMMARY"
-      # THE /v2 MOUNT: production's deploy.yml copies this branch's build to app.wkndr.xyz/v2/ (see
-      # its "Mount /v2" step). A green preview of THIS branch asks main to redeploy so /v2 follows.
-      - name: Re-mount /v2 on the domain
-        if: github.ref_name == 'codex/weather-glass'
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: gh workflow run deploy.yml --ref main

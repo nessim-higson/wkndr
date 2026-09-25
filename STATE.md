@@ -30,6 +30,21 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
 > sessions update (today it's on load).
 
 ## Live right now
+- **V.12 — THE GLASS (2026-09-25).** The weather-glass variation (Codex, `codex/weather-glass`, PR #29,
+  brief `docs/variations/001`) is the app. The background is a WINDOW: `weather/WetGlassPane.ts` draws a
+  photographic sky plate through wet glass in a WebGL2 shader — real macro-photo drop maps lens and shade
+  the sky, condensation is a mip blur, snow is in the air, and a few RUNNERS let go and run down the pane
+  — with the CSS field as the no-WebGL fallback. `weather/daylight.ts` grades every plate by the real sun
+  over the city (golden hour, dusk, night; rain at night is dark rain) and swaps a clear sky's plate with
+  the hour. `weather/hourly.ts` + `TimeScrub.tsx`: drag through the weekend's hourly forecast, the sky
+  follows, the deck re-deals for that hour on release. Every module is glass; the intro plays on every
+  open (`?intro=0`). The laws that came with it: a glass (no-photo) card only ever sits on a photograph
+  (`glassDeck.ts`); plates are illustrative skies, never a claim about this cloud; the water is
+  photographed, only the runners are procedural. Judging handles: `?scene=`, `?sun=`, `?at=HH:MM`,
+  `?motion=0|1`, `?fresh=1`; the study controls (shell, menu material, no-photo faces, time of day) are
+  Prototype settings under `?dev=1`. `/v2/*` redirects to `/`. Auras remains only in the dev look
+  switcher. Open judgment calls: night darkness, runner count, the scrubber ranks by weather not opening
+  hours, a dawn plate (dusk's is reused). Unfurls in the glass language are comped, not built (Ness to pick).
 - **V.11.12 — THE LETTER (2026-09-11, board V.10).** The Curation Board is now a RENDERER. The
   pipeline writes **`data/letter.<city>.json`** at the end of every refresh and restamp
   (`scripts/lib/letter.ts`; `bun run letter` rebuilds it from disk): the front as the deck will deal
