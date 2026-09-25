@@ -47,6 +47,14 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
   at the foot while their neighbours read a real place. The adapter now leaves an unknown venue
   empty (the card shows the area), `restamp.ts` scrubs the feeds already on disk with the poster's
   `realVenue`, and `tests/poster.test.ts` pins both. The live feed was rewritten the same morning.
+- **The publish gate reads an outage, not a percentage (2026-09-25).** The weekly refresh failed on
+  21 and 24 Sep — "53% / 57% of the crawl imageless, image pass broken?" — and abstained, so the app
+  served the 19–20 Sep weekend into the next Friday. The pass was fine (94 imaged vs 100 last good);
+  the autumn crawl carries more photo-less listings and the 50% line was a share a healthy run can
+  cross. `imagePassBroken` (pipeline.ts): fail when under a third of the crawl is imaged, or under
+  half as many as the feed already serving. **Check `gh run list --workflow refresh.yml` at session
+  start** — a red refresh is silent in the app (last-good keeps serving). Also open: the Mata Hari
+  canon image URL is a 404 (`src/data/picks.lostin.ts`), so that card ships blank.
   **433 tests.** The law that follows: **the board shows what changed and what the run is unsure of;
   doing nothing is a valid reply.** Take 2 ("taste as a dial" — the corpus as a living document
   inside the app) is written up in the 2026-09-11 session and unstarted.
