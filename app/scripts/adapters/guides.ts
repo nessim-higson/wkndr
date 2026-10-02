@@ -17,7 +17,7 @@
 // are trimmed to a short blurb, the source credited, the link out is the guide's link or the
 // organiser's page. Never throws.
 import type { Pick, Category } from '../../src/types'
-import { deriveWeatherFit, matchEventLocs, titlesAgree, iamsCategoryFromPath, raEventIdOf, mapLimit } from '../lib/pipeline'
+import { deriveWeatherFit, matchEventLocs, titlesAgree, iamsCategoryFromPath, raEventIdOf, mapLimit, isOwnPage, type RecordExtras } from '../lib/pipeline'
 import { iamsEventsSitemap, parseEventPage } from './iamsterdam'
 import { upgradeViaRa } from './ra'
 
@@ -97,6 +97,20 @@ const IAMS_SECTION: [RegExp, Category, boolean][] = [
   [/concert|gig|music/i, 'live', false], [/eat|drink|food/i, 'eat', false], [/shop|market/i, 'market', false],
   [/exhibition|art|museum/i, 'art', false], [/theat|stage|film|cinema/i, 'stage', false],
 ]
+/** The item's photograph at full width, whichever way the media host writes its URL. Until September
+ *  2026 the transform came first (`/w_907,h_514/<id>-<name>.webp`); since then an asset id leads
+ *  (`/<assetId>/w_907,h_514/<name>.webp`). The old pattern read the new shape as
+ *  `/w_1800/<assetId>/w_10/<name>.webp`, which the host answers with a 1px GIF — so six of eight guide
+ *  items lost their editorial photo without a word (found 2026-10-02). Drop every transform segment, keep
+ *  the rest of the path, ask for 1800 wide. Pure. */
+export function iamsMediaUrl(block: string): string | undefined {
+  const m = block.match(/media\.iamsterdam\.com((?:%2F|\/)(?:%2F|%2C|\/|[^"'&\s%])+?\.(?:webp|jpe?g|png))/i)
+  if (!m) return undefined
+  const segs = m[1].replace(/%2F/gi, '/').replace(/%2C/gi, ',').split('/').filter(Boolean)
+  const file = segs.pop()!
+  const dirs = segs.filter((x) => !/^[a-z]{1,2}_\d+(?:,[a-z]{1,2}_\d+)*$/i.test(x))
+  return `https://media.iamsterdam.com/${[...dirs, 'w_1800', file].join('/')}`
+}
 export function parseIamsGuide(html: string): GuideItem[] {
   const stop = html.search(/Follow us on social media|Related articles|Others also read/)
   const doc = stop > 0 ? html.slice(0, stop) : html
@@ -109,16 +123,19 @@ export function parseIamsGuide(html: string): GuideItem[] {
     if (m[1] === '2' && caps) { section = t; return }
     if (!section || !t) return
     const block = doc.slice(m.index! + m[0].length, heads[i + 1]?.index ?? doc.length)
-    const title = t.replace(/^(editor'?s pick|tip)\s*:\s*/i, '').trim()
+    const title = t.replace(/^(?:(?:editor'?s|budget|family|kids'?|free|top)\s+)?(?:pick|tip)\s*:\s*/i, '').trim()   // "Editor's pick: …", "Budget pick: …"
     const hrefs = [...block.matchAll(/href="([^"#]+)"/g)].map((h) => decode(h[1]))
       .filter((u) => /^https?:\/\//.test(u) || u.startsWith('/'))
       .map((u) => (u.startsWith('/') ? 'https://www.iamsterdam.com' + u : u))
       .filter((u) => !/\/(privacy|cookies|newsletter)|iamsterdam\.com\/en\/?$/i.test(u))
-    const img = block.match(/media\.iamsterdam\.com(?:%2F|\/)(?:w_\d+(?:%2C|,)h_\d+(?:%2F|\/)|w_\d+(?:%2F|\/))?([^"'&\s%]+?\.(?:webp|jpg|jpeg|png))/i)
-    const body = text(block).replace(/^Image (?:from|by|©)\s[^.]{0,80}?(?=\s[A-Z][a-z])/, '').trim()
+    const image = iamsMediaUrl(block)
+    // the photo credit is its own element ("Image from Kirsten van Santen") — remove the ELEMENT, not a
+    // guessed span of text: the old lazy match stopped at the first capital, so the cards read "Santen
+    // Furniture lovers unite…" and "Museum Haarlem Here’s a fun activity…" (2026-10-02)
+    const body = text(block.replace(/<(div|figcaption|span|p)\b[^>]*>\s*Image (?:from|by|©|:)[^<]{0,140}<\/\1>/gi, ' ')).replace(/^Image (?:from|by|©)\s[^.]{0,80}?(?=\s[A-Z][a-z])/, '').trim()
     const [, category, kid] = IAMS_SECTION.find(([rx]) => rx.test(section)) ?? [null, 'out' as Category, false]
     const { when, freshness } = whenFromText(body)
-    out.push({ title, section, text: body.slice(0, 420), link: hrefs[0] ?? IAMS_GUIDE_URL, image: img ? `https://media.iamsterdam.com/w_1800/${img[1]}` : undefined, category, kid, when, freshness })
+    out.push({ title, section, text: body.slice(0, 420), link: hrefs[0] ?? IAMS_GUIDE_URL, image, category, kid, when, freshness })
   })
   return out
 }
@@ -218,7 +235,11 @@ function toPick(item: GuideItem, guide: string, source: string, idPrefix: string
     const title = guide.startsWith('I amsterdam') || /\/uit\//.test(rec.url) ? item.title : (s.title.length <= item.title.length ? s.title : item.title)
     // the guide's claim rides the organiser's record: "Open this week" is `new`, a recurring market `always`
     const freshness = item.freshness === 'new' ? 'new' : item.freshness === 'always' ? 'always' : s.freshness
-    return { ...s, title, freshness, blurb: blurb || s.blurb, why, kid: item.kid || s.kid, source, guide, verify: false }
+    // the guide's own editorial photograph rides behind the organiser's (pipeline-only `_gallery`): when the
+    // record's image is a poster or too small, the card wears the photo the guide ran for this very item
+    const x = s as Pick & RecordExtras
+    const gallery = [...new Set([...(x._gallery ?? []), ...(item.image ? [item.image] : [])])].filter((u) => u !== s.image)
+    return { ...s, image: s.image ?? item.image, title, freshness, blurb: blurb || s.blurb, why, kid: item.kid || s.kid, source, guide, verify: false, ...(gallery.length ? { _gallery: gallery } : {}) } as Pick
   }
   return {
     id: `${idPrefix}-${slug(item.title)}`,
@@ -271,10 +292,25 @@ export async function lbbWeekendTipsExtract(cityKey: string): Promise<Pick[]> {
  *  Tolhuistuin" ↔ "Read My World"; "Vintage market during Summer @ H'ART" ↔ "@ H'ART: Vintage
  *  Market"). Fold the LBB tip onto the I amsterdam item — the one with the organiser record and
  *  image, usually — keeping both credits and both guides. Pure; the loose title match is the pile's. */
+/** Two guide items, one organiser, one day. I amsterdam's "IJver anniversary" (ijveramsterdam.nl) and LBB's
+ *  "Diligence 1000 + 1000 at the NDSM" (ijveramsterdam.nl/event/3-oktober/) are the same party, and no
+ *  title match will ever say so: the deck dealt both, one pictured and one blank (2026-10-02). The same
+ *  own-site host and the same DATED `when` is the same event — unless both link to different specific
+ *  pages, which is two shows at one hall. Pure. */
+export function sameOrganiserDay(a: { link: string; when: string }, b: { link: string; when: string }): boolean {
+  if (a.when !== b.when || !/\d/.test(a.when)) return false
+  let ua: URL, ub: URL
+  try { ua = new URL(a.link); ub = new URL(b.link) } catch { return false }
+  const host = (u: URL) => u.hostname.replace(/^www\./, '').toLowerCase()
+  if (host(ua) !== host(ub) || !isOwnPage(a.link)) return false
+  const path = (u: URL) => u.pathname.replace(/\/+$/, '')
+  return !path(ua) || !path(ub) || path(ua) === path(ub)
+}
+
 export function foldGuides(iams: Pick[], lbb: Pick[], loose: (a: string, b: string) => boolean): Pick[] {
   const out = [...iams]
   for (const t of lbb) {
-    const twin = out.find((p) => loose(p.title, t.title) || loose(t.title, p.title))
+    const twin = out.find((p) => loose(p.title, t.title) || loose(t.title, p.title) || sameOrganiserDay(p, t))
     if (!twin) { out.push(t); continue }
     const keep = twin.image || !t.image ? twin : { ...t, title: twin.title }
     const guide = [...new Set([twin.guide, t.guide].flatMap((g) => (g ? g.split(' · ') : [])))].join(' · ')

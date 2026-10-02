@@ -2,7 +2,7 @@
 // the image URL screens, and the weekend window. These are the pure functions the whole content
 // pipeline leans on; each rule here encodes a bug we actually hit during the pipeline era.
 import { describe, it, expect } from 'bun:test'
-import { dedupe, unionCredits, titleKey, urlLooksNonPhoto, toPortrait, upcomingWeekend, whenBeforeWeekend, imagePassBroken, largerRenditions, pagePhotosFrom, isOwnPage, approvalCheck, type TasteCorpus, type WeeklySlate } from '../scripts/lib/pipeline'
+import { dedupe, unionCredits, titleKey, urlLooksNonPhoto, toPortrait, upcomingWeekend, whenBeforeWeekend, imagePassBroken, largerRenditions, pagePhotosFrom, isOwnPage, approvalCheck, type TasteCorpus, type WeeklySlate, untrustedWebPick, ADAPTER_PICK, OWN_RECORD, OWN_IMAGE, iamsLanguageTwins } from '../scripts/lib/pipeline'
 import { whenIsPast } from '../src/lib/when'
 import type { Pick } from '../src/types'
 
@@ -283,5 +283,43 @@ describe('a starred venue admits its own programme', () => {
     expect(ok({ title: 'Ulrich Seidl – Über das Leben', venue: 'Eye Filmmuseum' })).toBe(true)
     expect(ok({ title: 'Some other show', venue: 'Stedelijk Museum' })).toBe(false)
     expect(ok({ title: 'Eye-catching market', venue: '' })).toBe(false)
+  })
+})
+
+describe('a structured adapter’s pick is never an unverified web-search find', () => {
+  it('Eye’s permanent exhibition lives at a URL that looks like an index — and is kept', () => {
+    expect(untrustedWebPick({ id: 'web-eye-permanent-exhibition', link: 'https://www.eyefilm.nl/en/permanent-exhibition', buzz: 1 })).toBe(false)
+  })
+  it('a lone web-search pick behind a listing index is dropped; a second source or a real page keeps it', () => {
+    expect(untrustedWebPick({ id: 'web-java-vintage-market', link: 'https://www.iamsterdam.com/en/whats-on', buzz: 1 })).toBe(true)
+    expect(untrustedWebPick({ id: 'web-java-vintage-market', link: '', buzz: 1 })).toBe(true)
+    expect(untrustedWebPick({ id: 'web-java-vintage-market', link: 'https://www.iamsterdam.com/en/whats-on', buzz: 2 })).toBe(false)
+    expect(untrustedWebPick({ id: 'web-java-vintage-market', link: 'https://javaplein.nl/agenda/vintage-market-oktober', buzz: 1 })).toBe(false)
+    expect(untrustedWebPick({ id: 'llm-eye-filmmuseum-x', link: 'https://www.eyefilm.nl/en/whats-on', buzz: 1 })).toBe(false)   // the LLM lane is judged elsewhere
+  })
+  it('every adapter answers all three questions', () => {
+    for (const a of ['iams', 'ra', 'lbb', 'scout', 'eye']) { expect(ADAPTER_PICK.test(`web-${a}-x`)).toBe(true); expect(OWN_RECORD.test(`web-${a}-x`)).toBe(true); expect(OWN_IMAGE.test(`web-${a}-x`)).toBe(true) }
+    expect(ADAPTER_PICK.test('web-guide-iams-x')).toBe(true); expect(OWN_IMAGE.test('web-guide-iams-x')).toBe(true)
+    expect(OWN_RECORD.test('web-guide-iams-x')).toBe(false)     // a guide item is still offered the organiser's record
+    expect(ADAPTER_PICK.test('web-hero-x')).toBe(true); expect(OWN_IMAGE.test('web-hero-x')).toBe(false)   // a hero's image is a hand pin
+    for (const rx of [ADAPTER_PICK, OWN_RECORD, OWN_IMAGE]) expect(rx.test('web-some-search-find')).toBe(false)
+  })
+})
+
+describe('one event, two records — I amsterdam’s English and Dutch slug', () => {
+  const en = { id: 'web-iams-weekend-of-science-in-amsterdam', link: 'https://www.iamsterdam.com/en/whats-on/calendar/festivals/events/weekend-of-science-in-amsterdam', when: 'Sat 3 – Sun 4 Oct', venue: 'Diverse locaties door heel Amsterdam' }
+  const nl = { id: 'web-iams-weekend-van-de-wetenschap', link: 'https://www.iamsterdam.com/uit/agenda/festivals/events/weekend-van-de-wetenschap', when: 'Sat 3 – Sun 4 Oct', venue: 'Diverse locaties door heel Amsterdam' }
+  it('one from each tree, same dates, same place: the same event', () => {
+    expect(iamsLanguageTwins(en, nl)).toBe(true)
+    expect(iamsLanguageTwins(nl, en)).toBe(true)
+  })
+  it('two listings from ONE tree are a reseller’s — different events that share a photo', () => {
+    expect(iamsLanguageTwins(en, { ...en, id: 'web-iams-candlelight-queen' })).toBe(false)
+  })
+  it('different dates or a different place is a different event; so is anything that is not an I amsterdam record', () => {
+    expect(iamsLanguageTwins(en, { ...nl, when: 'Sat 10 – Sun 11 Oct' })).toBe(false)
+    expect(iamsLanguageTwins(en, { ...nl, venue: 'NEMO Science Museum' })).toBe(false)
+    expect(iamsLanguageTwins(en, { ...nl, id: 'web-lbb-tips-weekend-van-de-wetenschap' })).toBe(false)
+    expect(iamsLanguageTwins({ ...en, link: 'https://weekendvandewetenschap.nl/' }, nl)).toBe(false)   // off-site link: the tree is unknown
   })
 })

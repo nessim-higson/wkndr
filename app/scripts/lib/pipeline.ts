@@ -1084,6 +1084,25 @@ export async function mapLimit<T, R>(items: T[], limit: number, fn: (item: T, i:
  *  endless, so an honest blank at the back costs little; ten of them read as a broken run. */
 export const NO_PHOTO_CAP = Number(process.env.WKNDR_NO_PHOTO_CAP ?? 3)
 
+// STRUCTURED ADAPTERS — a pick read deterministically off a source's own records carries the id prefix
+// `web-<adapter>-`. Three different questions are asked of that prefix, and a NEW ADAPTER MUST ANSWER ALL
+// THREE HERE. They used to be five inline regexes in refresh.ts: Eye (2026-10-02) was added to one and
+// not the others, and the trust filter dropped its permanent exhibition as an unverified web-search find.
+/** Not a web-search guess: exempt from the index-only-link trust filter and the carried-pick re-judging. */
+export const ADAPTER_PICK = /^web-(iams|ra|lbb|scout|hero|guide|eye)-/
+/** Already the organiser's (or a first-hand editor's) own record: never "upgraded" onto another source's. */
+export const OWN_RECORD = /^web-(iams|ra|lbb|scout|eye)-/
+/** Its image is the source's own upload: sanity-screened, receipted `organiser`, never re-verified on subject. */
+export const OWN_IMAGE = /^web-(iams|ra|lbb|scout|guide|eye)-/
+
+/** WHAT THE ORGANISER'S RECORD ALSO KNOWS — pipeline-only, never published (refresh strips both after the
+ *  image pass). `_gallery`: the rest of the record's own photographs, tried in order when the first is a
+ *  logo or too small for a card (Camera Japan's record led with a 1024px stall and carried a 6000px
+ *  festival photograph behind it). `_site`: the organiser's own website off the record's "visit website"
+ *  button — where the gather looks for photographs when the record's are all too small (Museum Market). */
+export type RecordExtras = { _gallery?: string[]; _site?: string }
+export const extrasOf = (p: Pick): Pick & RecordExtras => p as Pick & RecordExtras
+
 // A LISTING INDEX rather than a specific event page — the class that dead-ends "open at", starves
 // the og:image pass, and (on a web-search pick) means the date was never read off an event page.
 const INDEX_LEAF = /^(whats-on|whats-on-amsterdam(-[a-z]+)?|agenda|uitagenda|events?|calendar|weekend-guide|weekendtips|weekend|annual-event-calendar|gratis-deze-maand|this-weekend|this-week|tips|search|festivals|exhibitions|concerts|theatre|nightlife|shopping|markets|all|home|index(\.html?)?)$/i
@@ -1094,6 +1113,24 @@ export function linkIsIndex(url: string): boolean {
   if (segs.length <= 1) return true
   if (INDEX_LEAF.test(segs[segs.length - 1])) return true
   return segs.length === 2 && /^(en|nl|uit|de|fr)$/i.test(segs[0])   // a bare language/section root
+}
+
+/** The lowest-trust object in the pool: an UNCORROBORATED web-search pick whose only link is a listing
+ *  index. A structured adapter's pick is never one, whatever its link looks like — Eye's permanent
+ *  exhibition lives at /en/permanent-exhibition, which reads as "a language root plus one segment". */
+export function untrustedWebPick(p: { id: string; link?: string; buzz?: number }): boolean {
+  return /^web-/.test(p.id) && !ADAPTER_PICK.test(p.id) && (p.buzz ?? 1) < 2 && (!p.link || linkIsIndex(p.link))
+}
+
+/** ONE EVENT, TWO RECORDS — I amsterdam files the same event under an English and a Dutch slug, and both
+ *  reach the pool (the crawl and the guides resolve the EN record; a Dutch-titled keyless pick upgrades
+ *  onto the NL one). The caller has already seen them wear the SAME organiser photograph; one record from
+ *  each tree, on the same dates, at the same place, is then the same event. Two listings from ONE tree
+ *  that share a photo are a reseller's (different events) and are left alone. */
+export function iamsLanguageTwins(a: { id: string; link?: string; when: string; venue?: string }, b: { id: string; link?: string; when: string; venue?: string }): boolean {
+  const tree = (p: { id: string; link?: string }) => !/^web-iams-/.test(p.id) ? '' : /iamsterdam\.com\/en\//i.test(p.link ?? '') ? 'en' : /iamsterdam\.com\/(?:uit|nl)\//i.test(p.link ?? '') ? 'nl' : ''
+  const ta = tree(a), tb = tree(b)
+  return !!ta && !!tb && ta !== tb && a.when === b.when && (a.venue ?? '').trim().toLowerCase() === (b.venue ?? '').trim().toLowerCase()
 }
 
 /** I amsterdam calendar namespace (EN + NL paths) → WKNDR category. null = not a calendar URL. */

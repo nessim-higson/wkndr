@@ -19,7 +19,7 @@
 // `market` wearing the Bloemenmarkt's photo while its event page held two real flyers.
 import type { Pick, Category } from '../../src/types'
 import { tidyBlurb } from '../../src/lib/blurb'
-import { deriveWeatherFit, upcomingWeekend, htmlToText, mapLimit, iamsCategoryFromPath, linkIsIndex, matchEventLocs, titlesAgree, unionCredits } from '../lib/pipeline'
+import { deriveWeatherFit, upcomingWeekend, htmlToText, mapLimit, iamsCategoryFromPath, linkIsIndex, matchEventLocs, titlesAgree, unionCredits, type RecordExtras } from '../lib/pipeline'
 
 const BASE = 'https://www.iamsterdam.com'
 const UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36'
@@ -83,7 +83,12 @@ export function parseEventPage(html: string, pageUrl: string, category: Category
   const endDate = (ev.endDate as string) || startDate
   const startMs = Date.parse(startDate), endMs = Date.parse(endDate)
   const spansWeekend = startMs < wkEnd && endMs >= wkStart
-  const imgRaw = Array.isArray(ev.image) ? (ev.image as unknown[]).find((x) => typeof x === 'string') : ev.image
+  // the record's whole gallery, in the organiser's order: the first is the card's photo, the rest ride
+  // along (pipeline-only) for the day the first turns out to be a logo or too small for a card
+  const gallery = [...new Set((Array.isArray(ev.image) ? (ev.image as unknown[]) : [ev.image]).filter((x): x is string => typeof x === 'string' && x.startsWith('http')))]
+  // the organiser's own website, off the page's "visit website" button (pipeline-only: where the image
+  // gather looks when none of the record's photographs is usable)
+  const site = html.match(/<a\b[^>]*\bhref="(https?:\/\/[^"]+)"[^>]*>\s*(?:visit|bezoek(?:\s+de)?)\s+website/i)?.[1]
   const loc = (ev.location || {}) as { name?: string; address?: { streetAddress?: string; addressLocality?: string }; url?: string }
   const venue = String(loc.name || '').slice(0, 60)
   const locality = loc.address?.addressLocality
@@ -100,7 +105,7 @@ export function parseEventPage(html: string, pageUrl: string, category: Category
   // page wins (the "talked about elsewhere" link); otherwise the exact detail page we just crawled.
   const evUrl = typeof ev.url === 'string' && (ev.url as string).startsWith('http') ? (ev.url as string) : ''
   const link = evUrl && !/iamsterdam\.com/i.test(evUrl) ? evUrl : pageUrl
-  const pick: Pick = {
+  const pick: Pick & RecordExtras = {
     id: `web-iams-${slugOf(pageUrl)}`,
     title: name.slice(0, 90),
     venue,   // a venue is a place, never a publisher (2026-09-19): unknown stays '' — the card shows the area instead
@@ -111,13 +116,15 @@ export function parseEventPage(html: string, pageUrl: string, category: Category
     outdoor: category === 'out',
     kid: false,
     price: priceStr,
-    image: typeof imgRaw === 'string' && imgRaw.startsWith('http') ? imgRaw : undefined,
+    image: gallery[0],
     blurb: blurb || name,
     why: 'On I amsterdam',
     source: 'I amsterdam',
     link,
     weatherFit: deriveWeatherFit(category === 'out'),
     verify: false,
+    ...(gallery.length > 1 ? { _gallery: gallery.slice(1, 6) } : {}),
+    ...(site && !/iamsterdam\.com/i.test(site) ? { _site: site.replace(/&amp;/g, '&') } : {}),
   }
   return { pick, spansWeekend }
 }

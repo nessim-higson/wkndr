@@ -19,7 +19,7 @@
  */
 import { CITIES, type City } from '../src/data/cities'
 import type { Pick } from '../src/types'
-import { dedupe, balanceByCategory, isGoodImage, isPortraitImage, imageBroken, urlLooksNonPhoto, imageIsCardworthy, fetchEventImage, toPortrait, wikiImage, webImageCandidates, verifyImageForEvent, venueMatchImage, venueBook, linkIsIndex, imageFocalPoint, focalFailures, originalOf, NO_PHOTO_CAP, whenBeforeWeekend, upcomingWeekend, weekendMode, weekendModes, stampServeOrder, publishCheck, crownsActive, JUDGE_FLOOR, STAR_BOOST, linkOk, mapLimit, rxOf, titleKey, titleLooseMatch, tokKey, approvalCheck, pickByTitle, markThisWeekend, type TasteCorpus, type WeeklySlate, imagePassBroken, fetchEventImages, bestRendition } from './lib/pipeline'
+import { dedupe, balanceByCategory, isGoodImage, isPortraitImage, imageBroken, urlLooksNonPhoto, imageIsCardworthy, fetchEventImage, toPortrait, wikiImage, webImageCandidates, verifyImageForEvent, venueMatchImage, venueBook, imageFocalPoint, focalFailures, originalOf, NO_PHOTO_CAP, whenBeforeWeekend, upcomingWeekend, weekendMode, weekendModes, stampServeOrder, publishCheck, crownsActive, JUDGE_FLOOR, STAR_BOOST, linkOk, mapLimit, rxOf, titleKey, titleLooseMatch, tokKey, approvalCheck, pickByTitle, markThisWeekend, type TasteCorpus, type WeeklySlate, imagePassBroken, fetchEventImages, bestRendition, ADAPTER_PICK, OWN_RECORD, OWN_IMAGE, untrustedWebPick, extrasOf, iamsLanguageTwins, unionCredits, isOwnPage } from './lib/pipeline'
 import { fixWhen, latestDateOf, whenActiveBy, whenIsPast, whenLooksBroken } from '../src/lib/when'
 import { effectiveFreshness, NEW_DAYS } from '../src/lib/freshness'
 import { mergeSightings, pruneRegistry, appendRun, type SeenRegistry, type HealthFile } from './lib/ingest'
@@ -120,11 +120,13 @@ async function buildCity(city: City) {
   fromRoster.push(...iams)
   if (iams.length) console.log(`  iams:     ${iams.length} events (I amsterdam · deterministic variety)`)
 
-  // EYE FILMMUSEUM — its exhibitions, read from the museum's own page (adapters/eye.ts): keyless, the
-  // museum's dates and its campaign photography. Ness, 2026-10-02: "the Eye and its exhibits — nice photography."
+  // EYE FILMMUSEUM — its exhibitions and the programmes it features, read from the museum's own pages
+  // (adapters/eye.ts): keyless, the museum's dates and its campaign photography. Ness, 2026-10-02: "the Eye
+  // and its exhibits — nice photography." When it delivers, the LLM read of the same what's-on page is
+  // skipped below: that read returned the film season with a guessed link and no photograph.
   const eye = await eyeExtract(city.key)
   fromRoster.push(...eye)
-  if (eye.length) console.log(`  eye:      ${eye.length} exhibitions (Eye Filmmuseum · its own page)`)
+  if (eye.length) console.log(`  eye:      ${eye.length} programmes (Eye Filmmuseum · its own pages: ${eye.map((p) => p.title.slice(0, 24)).join(' · ')})`)
 
   // THE WEEKEND GUIDES (V.11.11) — I amsterdam's weekend guide + LBB's weekendtips, read AS guides:
   // keyless, deterministic, every item resolved to the organiser's record when one exists. These are
@@ -158,10 +160,11 @@ async function buildCity(city: City) {
     fromRoster.push(...lbb)
     if (lbb.length) console.log(`  lbb:      ${lbb.length} picks (Your Little Black Book · direct from the agenda)`)
 
-    const got = await mapLimit(llmSrc, 1, (s) => llmExtract(city.name, s))   // sequential — the gate paces the API calls
+    const llmRun = eye.length ? llmSrc.filter((s) => s.name !== 'Eye Filmmuseum') : llmSrc   // the adapter read that page already
+    const got = await mapLimit(llmRun, 1, (s) => llmExtract(city.name, s))   // sequential — the gate paces the API calls
     const n = got.reduce((a, b) => a + b.length, 0)
     got.forEach((g) => fromRoster.push(...g))
-    console.log(`  llm:      ${llmSrc.length} sources → ${n} picks`)
+    console.log(`  llm:      ${llmRun.length} sources → ${n} picks`)
     // WEB SEARCH — the fresh-event engine: finds what's ACTUALLY on this weekend via live search
     // (catches the JS-rendered listings the scrape above can't see). Same key.
     const web = await websearchExtract(city.key, city.name)
@@ -187,7 +190,7 @@ async function buildCity(city: City) {
   // shipped a tattoo convention filed as `market` wearing the Bloemenmarkt, while its own event page
   // (linked from the card!) carried two real flyers.
   {
-    const keyless = fromRoster.filter((p) => /^(web|llm|rss)-/.test(p.id) && !/^web-(iams|ra|lbb|scout)-/.test(p.id))
+    const keyless = fromRoster.filter((p) => /^(web|llm|rss)-/.test(p.id) && !OWN_RECORD.test(p.id))
     let up = 0, off = 0
     const offIds = new Set<string>()
     const who: string[] = []
@@ -280,9 +283,8 @@ async function buildCity(city: City) {
   // rescued everything I amsterdam could name; what remains is the lowest-trust object in the pool.
   // A second source vouching for it (buzz ≥ 2) keeps it — corroboration is evidence, a link is not.
   {
-    const websearch = (p: Pick) => /^web-/.test(p.id) && !/^web-(iams|ra|lbb|scout|hero|guide)-/.test(p.id)
     const before = picks.length
-    const gone = picks.filter((p) => websearch(p) && (p.buzz ?? 1) < 2 && (!p.link || linkIsIndex(p.link)))
+    const gone = picks.filter(untrustedWebPick)   // never a structured adapter's pick — see ADAPTER_PICK
     picks = picks.filter((p) => !gone.includes(p))
     if (before !== picks.length) console.log(`  trust:    dropped ${before - picks.length} uncorroborated web-search picks with index-only links (${gone.slice(0, 5).map((p) => p.title.slice(0, 24)).join(' · ')}${gone.length > 5 ? ' …' : ''})`)
   }
@@ -306,9 +308,13 @@ async function buildCity(city: City) {
   if (!SKIP_IMAGES) {
     const live = picks.filter(isLive)
     for (const p of live) p.imageWhy = undefined                     // every receipt is earned THIS run
-    const trustedImg = (p: Pick) => /^web-(iams|ra|lbb|scout|guide|eye)-/.test(p.id) && !!p.image   // guide = the guide's own editorial photo
+    const trustedImg = (p: Pick) => OWN_IMAGE.test(p.id) && !!p.image   // guide = the guide's own editorial photo
     const PERFORMER = new Set(['live', 'stage'])
     const visionOn = !!process.env.ANTHROPIC_API_KEY
+    // WHY A CARD IS BLANK — one reason per live pick that ends the pass without a photo, printed at the
+    // receipt. "Are we sure there is nothing we can do for those?" (Ness, 2026-10-02) could only be answered
+    // by re-running the gather by hand; now the log says which stage said no.
+    const blankWhy = new Map<string, string>()
 
     // THE VENUE BOOK — the canon's evergreen, PLACE-shaped entries (hand-imaged); venue-match borrows
     // from these only. Event-shaped canon titles are excluded — see venueBook in lib/pipeline.
@@ -321,22 +327,29 @@ async function buildCity(city: City) {
     // logos/flat graphics/blank frames while KEEPING real posters (the Agatha class). A reject now simply
     // DROPS the image — the pick re-enters the gather below like any imageless one (was: → bank).
     {
-      let sane = 0, upsized = 0
+      let sane = 0, upsized = 0, nextInRecord = 0
       await mapLimit(live.filter(trustedImg), 3, async (p) => {
         // isGoodImage = logo/stock URL smell + REAL pixel dims (≥700 shortest side — a low-res organiser
         // upload upscaled to the 1200-tall card is mush: the Amsterdamse Bos class) + sane aspect.
-        // a trusted image that fails the size screen gets one more chance at a LARGER rendition of itself
-        const img = (await isGoodImage(p.image!)) ? p.image! : await bestRendition(p.image!)
-        const bad = !img || !(await imageIsCardworthy(img))
-        if (bad) { p.image = undefined; sane++ } else { if (img !== p.image) upsized++; p.image = img!; p.imageWhy = 'organiser' }
+        // a trusted image that fails the size screen gets one more chance at a LARGER rendition of itself,
+        // and then THE NEXT PHOTOGRAPH IN THE ORGANISER'S OWN RECORD (its gallery, then the guide's editorial
+        // photo for the item): Camera Japan led with a 1024px stall and carried a 6000px one behind it
+        const first = p.image!
+        let kept: string | null = null
+        for (const cand of [first, ...(extrasOf(p)._gallery ?? [])]) {
+          const img = (await isGoodImage(cand)) ? cand : await bestRendition(cand)
+          if (img && (await imageIsCardworthy(img))) { kept = img; if (cand !== first) nextInRecord++; else if (img !== first) upsized++; break }
+        }
+        if (!kept) { p.image = undefined; sane++; blankWhy.set(p.id, 'its own image is a logo or too small') } else { p.image = kept; p.imageWhy = 'organiser' }
       })
       if (sane) console.log(`  sanity:   ${sane} organiser logos/blank frames dropped → re-gathered below`)
       if (upsized) console.log(`  upsized:  ${upsized} organiser images swapped for a larger rendition of the same file`)
+      if (nextInRecord) console.log(`  gallery:  ${nextInRecord} cards took the next photograph in the organiser's own record`)
     }
     // an untrusted image that ARRIVED with the pick (the LLM lane's matched page photo) must at least be
     // a real photo of card-worthy size; its SUBJECT is judged by the vision QA at the end of the pass
     await mapLimit(live.filter((p) => p.image && !trustedImg(p)), 5, async (p) => {
-      if (!(await isGoodImage(p.image!))) p.image = undefined
+      if (!(await isGoodImage(p.image!))) { p.image = undefined; blankWhy.set(p.id, 'its own image is a logo or too small') }
       else p.imageWhy = 'event-page'
     })
 
@@ -357,8 +370,10 @@ async function buildCity(city: City) {
     // + sharp, EVEN over an image the pick already has — but VERIFY it's really this act first (a festival
     // name like "Wonderfeel" can match a wrong wiki portrait): vision confirms the subject when the key is
     // set; without it we only fill an imageless act, never overwrite. Wikimedia never hotlink-blocks.
+    // …except over a museum's own campaign image (Eye's film seasons are filed `stage`; the still Eye chose
+    // for "The Films of Jacques Demy" is the photograph, not a Wikipedia portrait of the director)
     let portraits = 0
-    await mapLimit(live.filter((p) => PERFORMER.has(p.category)), 2, async (p) => {
+    await mapLimit(live.filter((p) => PERFORMER.has(p.category) && !(/^web-eye-/.test(p.id) && p.image)), 2, async (p) => {
       const wk = await wikiImage(actName(p))
       if (!wk || !(await isPortraitImage(wk))) return
       const use = visionOn ? !!(await verifyImageForEvent([wk], p, city.name)) : !p.image
@@ -366,8 +381,20 @@ async function buildCity(city: City) {
     })
     if (portraits) console.log(`  portrait: ${portraits} performer cards → verified Wikipedia portrait`)
 
-    let visGot = 0, visRej = 0, ownPage = 0
-    await mapLimit(live.filter((p) => !p.image), 2, async (p) => {
+    let visGot = 0, visRej = 0, ownPage = 0, viaSite = 0
+    // CARDS THAT SHARE A PAGE TAKE TURNS. Four Jeugdland clubs link to one agenda page and each was offered
+    // the same three photographs: the verifier chose one twice (and the shared-hero rule below stripped
+    // both), or never saw the garden, which sat fifth on the page. So: a photograph already on a card leaves
+    // every later card's candidates (`taken`, seeded with what the deck already wears), a page that has
+    // given photographs away offers that many more, and cards on the same page are gathered one after
+    // another so each sees what the last one took.
+    const taken = new Set(picks.filter((p) => p.image).map((p) => originalOf(p.image!)))
+    const given = new Map<string, number>()
+    const turn = new Map<string, Promise<void>>()
+    // the page whose photographs this card is offered: its own link when that is the event's or venue's own
+    // page; else the organiser's website off its record (an I amsterdam listing is not the organiser's page)
+    const pageOf = (p: Pick) => (p.link && isOwnPage(p.link) ? p.link : extrasOf(p)._site && isOwnPage(extrasOf(p)._site!) ? extrasOf(p)._site! : p.link || '')
+    const gather = async (p: Pick) => {
       const perf = PERFORMER.has(p.category)
       // VENUE-AWARE QUERY — Ness's manual test proved it: "Martine Gutierrez Huis Marseille" returns the
       // museum's own images of the actual show, where "title + Amsterdam" returned junk. The venue is the
@@ -381,24 +408,35 @@ async function buildCity(city: City) {
       // download cap even when web hits are on strict hosts (Billboard/Rolling Stone 403 our fetch).
       const cands: string[] = []
       let wiki: string | null = null, og: string | null = null
-      if (perf) { wiki = await wikiImage(actName(p)); if (wiki && (await isGoodImage(wiki))) cands.push(wiki); else wiki = null }
+      if (perf) { wiki = await wikiImage(actName(p)); if (wiki && (await isGoodImage(wiki)) && !taken.has(wiki)) cands.push(wiki); else wiki = null }
       // ORGANISER FIRST: the event page's own image leads the candidate list — when it and a web hit both
       // "fit", vision tie-breaks toward the honest source (a Hamburg guide's japanese-food photo "fits" a
       // japanese restaurant; only the restaurant's OWN photo is true). Web hits fill in behind it.
       // …and its OWN PAGE'S PHOTOGRAPHS behind the share image (which is a logo more often than not on a bar's site)
+      const page = pageOf(p)
       let own: string[] = []
-      if (p.link) { own = await fetchEventImages(p.link); og = own[0] ?? null; cands.push(...own) }
-      cands.push(...await webImageCandidates(q, 5))
-      if (!cands.length) return
+      if (page) { own = (await fetchEventImages(page, 3 + (given.get(page) ?? 0))).filter((u) => !taken.has(u)); og = own[0] ?? null; cands.push(...own) }
+      cands.push(...(await webImageCandidates(q, 5)).filter((u) => !taken.has(u)))
+      if (!cands.length) { blankWhy.set(p.id, page ? 'nothing usable on its page or the open web' : 'no link to look behind, nothing on the open web'); return }
       const best = visionOn ? await verifyImageForEvent(cands, p, city.name) : cands[0]
-      if (best) { p.image = best; p.imageWhy = own.includes(best) ? 'event-page' : best === wiki ? 'portrait' : 'web'; visGot++; if (own.includes(best) && best !== og) ownPage++ }
-      else if (visionOn) visRej++
+      if (best) {
+        p.image = best; p.imageWhy = own.includes(best) ? 'event-page' : best === wiki ? 'portrait' : 'web'; visGot++
+        taken.add(best)
+        if (own.includes(best)) { given.set(page, (given.get(page) ?? 0) + 1); if (best !== og) ownPage++; if (page !== p.link) viaSite++ }
+      } else if (visionOn) { visRej++; blankWhy.set(p.id, `the verifier turned down all ${Math.min(cands.length, 5)} candidates`) }
+    }
+    await mapLimit(live.filter((p) => !p.image), 2, (p) => {
+      const page = pageOf(p)
+      if (!page) return gather(p)
+      const run = (turn.get(page) ?? Promise.resolve()).then(() => gather(p))
+      turn.set(page, run.catch(() => {}))
+      return run
     })
-    console.log(`  vision:   +${visGot} live picks imaged via verified search${ownPage ? ` (${ownPage} from the venue's own page)` : ''}${visRej ? ` · ${visRej} rejected → no photo` : ''}`)
+    console.log(`  vision:   +${visGot} live picks imaged via verified search${ownPage ? ` (${ownPage} from the venue's own page)` : ''}${viaSite ? ` (${viaSite} via the organiser's own website)` : ''}${visRej ? ` · ${visRej} rejected → no photo` : ''}`)
 
     const seen = new Map<string, number>()
     for (const p of live) if (p.image && !trustedImg(p)) seen.set(p.image, (seen.get(p.image) || 0) + 1)
-    for (const p of live) if (p.image && !trustedImg(p) && (seen.get(p.image) || 0) > 1) { p.image = undefined; p.imageWhy = undefined }   // shared hero = generic
+    for (const p of live) if (p.image && !trustedImg(p) && (seen.get(p.image) || 0) > 1) { p.image = undefined; p.imageWhy = undefined; blankWhy.set(p.id, 'its image is a site-wide hero shared by several cards') }   // shared hero = generic
 
     // VENUE MATCH — the one honest borrow (replaces Pexels themed stock + the category bank). A pick AT a
     // canon place wears that place's photo: true for "Concertgebouw Open" at Het Concertgebouw, and only
@@ -464,18 +502,30 @@ async function buildCity(city: City) {
     // that — both are the Concertgebouw, and the second live run blanked the open day for it. So: a
     // place's own card always keeps its photo; a venue-borrow may share with THAT card; two live cards
     // may still never share (two Melkweg nights: the better-ranked keeps the facade).
+    // ONE EVENT, TWO RECORDS (2026-10-02): the feed carried "Weekend of Science" at 7 — blank, the later
+    // twin — and "Weekend van de Wetenschap" at 13 wearing the photo: I amsterdam's English and Dutch record
+    // of one event. The same organiser photograph on the same dates at the same place is not a duplicate
+    // PHOTO, it is a duplicate CARD: fold the twin into one (the English record, credits and guides united)
+    // instead of leaving a blank double behind. See iamsLanguageTwins.
     {
-      const owner = new Map<string, 'canon' | 'live'>()
+      const owner = new Map<string, Pick>()
       let dupes = 0
+      const folded = new Set<Pick>()
       for (const p of [...picks.filter((p) => !isLive(p)), ...picks.filter(isLive)]) {
         if (!p.image) continue
         const o = owner.get(p.image)
-        if (o) {
-          if (isLive(p) && !(o === 'canon' && p.imageWhy === 'venue')) { p.image = undefined; p.imageWhy = undefined; dupes++ }
+        if (!o) { owner.set(p.image, p); continue }
+        if (!isLive(p)) continue
+        if (isLive(o) && iamsLanguageTwins(o, p)) {
+          const en = /iamsterdam\.com\/en\//i.test(o.link ?? '') ? o : p, nl = en === o ? p : o
+          const guide = [...new Set([en.guide, nl.guide].flatMap((g) => (g ? g.split(' · ') : [])))].join(' · ') || undefined
+          Object.assign(en, unionCredits(en.source, nl.source), { guide, kid: en.kid || nl.kid, popularity: Math.max(en.popularity ?? 0, nl.popularity ?? 0) || undefined })
+          folded.add(nl); owner.set(p.image, en)
           continue
         }
-        owner.set(p.image, isLive(p) ? 'live' : 'canon')
+        if (!(!isLive(o) && p.imageWhy === 'venue')) { p.image = undefined; p.imageWhy = undefined; dupes++; blankWhy.set(p.id, `another card already wears its photo (${o.title.slice(0, 28)})`) }
       }
+      if (folded.size) { picks = picks.filter((p) => !folded.has(p)); for (const f of folded) { const i = live.indexOf(f); if (i >= 0) live.splice(i, 1) }; console.log(`  twins:    ${folded.size} I amsterdam records folded into their other-language twin (${[...folded].slice(0, 4).map((p) => p.title.slice(0, 26)).join(' · ')})`) }
       if (dupes) console.log(`  unique:   ${dupes} duplicate card photos → the later card goes without (a place's own card keeps its photo; its own event may share it)`)
     }
 
@@ -487,7 +537,7 @@ async function buildCity(city: City) {
       let lost = 0
       const gone: string[] = []
       await mapLimit(picks.filter((p) => p.image), 6, async (p) => {
-        if (await imageBroken(p.image!)) { p.image = undefined; p.imageWhy = undefined; lost++; if (!isLive(p)) gone.push(p.title) }
+        if (await imageBroken(p.image!)) { p.image = undefined; p.imageWhy = undefined; lost++; blankWhy.set(p.id, 'its image no longer loads'); if (!isLive(p)) gone.push(p.title) }
       })
       if (lost) console.log(`  validate: ${lost} broken images dropped${gone.length ? ` · CANON lost: ${gone.join(', ')} — fix the URL in src/data` : ''}`)
     }
@@ -501,7 +551,7 @@ async function buildCity(city: City) {
       let qa = 0
       await mapLimit(live.filter((p) => p.image && !trustedImg(p) && p.imageWhy !== 'venue' && p.imageWhy !== 'curated'), 3, async (p) => {
         if (await verifyImageForEvent([p.image!], p, city.name)) return
-        p.image = undefined; p.imageWhy = undefined; qa++
+        p.image = undefined; p.imageWhy = undefined; qa++; blankWhy.set(p.id, 'the final look rejected its photo')
       })
       if (qa) console.log(`  vision-qa: ${qa} final images rejected → no photo`)
     }
@@ -512,7 +562,15 @@ async function buildCity(city: City) {
     for (const p of live) census[p.imageWhy!] = (census[p.imageWhy!] ?? 0) + 1
     const imaged = live.filter((p) => p.image).length
     console.log(`  images:   ${imaged}/${live.length} live imaged · ${live.length - imaged} honest blanks (no bank, no stock) · receipts: ${Object.entries(census).map(([k, v]) => `${k} ${v}`).join(' · ')}`)
+    // the blanks, by the stage that said no — so "can nothing be done for these?" is a read, not a re-run
+    {
+      const by = new Map<string, string[]>()
+      for (const p of picks.filter((p) => isLive(p) && !p.image)) { const w = blankWhy.get(p.id) ?? 'no candidates gathered'; by.set(w, [...(by.get(w) ?? []), p.title.slice(0, 30)]) }
+      for (const [w, names] of [...by].sort((a, b) => b[1].length - a[1].length)) console.log(`  blank:    ${names.length} · ${w} — ${names.slice(0, 10).join(' · ')}${names.length > 10 ? ' …' : ''}`)
+    }
   }
+  // the organiser-record extras were for the image pass alone — never published
+  for (const p of picks) { delete extrasOf(p)._gallery; delete extrasOf(p)._site }
   // belt-and-suspenders: any remaining http:// image (e.g. an old canon URL) → https, else it's a
   // mixed-content blank card on the https site.
   for (const p of picks) if (p.image && p.image.startsWith('http://')) p.image = 'https://' + p.image.slice(7)
@@ -827,7 +885,7 @@ async function buildCity(city: City) {
     // its flyer by id. A new id that collides with a pick already in the feed = a twin: drop the carry.
     let upgraded = 0
     const twins = new Set<string>()
-    await mapLimit(picks.filter((p) => isLive(p) && !/^web-(iams|ra|lbb|scout|hero|guide)-/.test(p.id) && !HONEST.has(p.imageWhy ?? '')), 3, async (p) => {
+    await mapLimit(picks.filter((p) => isLive(p) && !ADAPTER_PICK.test(p.id) && !HONEST.has(p.imageWhy ?? '')), 3, async (p) => {
       const r = (await upgradeViaRa(p)) ?? (await upgradeViaIamsterdam(p))
       if (!r || r === 'off-weekend') return
       if (picks.some((q) => q !== p && q.id === r.id)) { twins.add(p.id); return }
@@ -836,7 +894,7 @@ async function buildCity(city: City) {
     })
     if (twins.size) picks = picks.filter((p) => !twins.has(p.id))
     await mapLimit(picks.filter((p) => isLive(p) && p.image && !HONEST.has(p.imageWhy ?? '')), 3, async (p) => {
-      if (/^web-(iams|ra|lbb|scout|guide|eye)-/.test(p.id)) { p.imageWhy = 'organiser'; relabelled++; return }
+      if (OWN_IMAGE.test(p.id)) { p.imageWhy = 'organiser'; relabelled++; return }
       const carried = originalOf(p.image!)
       const og = p.link ? await fetchEventImage(p.link) : null
       const cands = [...new Set([og, carried].filter((u): u is string => !!u && u.startsWith('https://')))]

@@ -2,7 +2,9 @@
 // feels stale. Fixtures are the real pages of 10/11 September 2026, trimmed to the guide body.
 import { describe, it, expect } from 'bun:test'
 import { readFileSync } from 'node:fs'
-import { parseIamsGuide, parseLbbWeekendTips, whenFromText, decode, titleVariants, foldGuides } from '../scripts/adapters/guides'
+import { parseIamsGuide, parseLbbWeekendTips, whenFromText, decode, titleVariants, foldGuides, iamsMediaUrl, sameOrganiserDay } from '../scripts/adapters/guides'
+import { parseEventPage } from '../scripts/adapters/iamsterdam'
+import type { RecordExtras } from '../scripts/lib/pipeline'
 import { titlesAgree, titleLooseMatch, approvalCheck, dedupe, type TasteCorpus, type WeeklySlate } from '../scripts/lib/pipeline'
 import { rankPicks } from '../src/weather/modes'
 import type { Pick } from '../src/types'
@@ -153,4 +155,83 @@ describe('parseJudge — a truncated judge reply is salvaged, not discarded', ()
     expect(r?.dupes).toEqual([])
   })
   it('nothing usable → null', () => { expect(parseJudge('sorry, no')).toBeNull() })
+})
+
+describe('the photo credit is an element, not the opening of the blurb', () => {
+  // the live markup, 2026-10-02: the cards read "Santen Furniture lovers…" and "Museum Haarlem Here’s a fun…"
+  const page = (credit: string, body: string, title: string) => `<h2>SHOPPING &amp; MARKETS</h2><section><div class="rich-text"><h3>${title}</h3></div></section>
+    <section class="content-container"><div class="flex w-full flex-col overflow-hidden rounded-lg"><img srcSet="/_next/image?url=https%3A%2F%2Fmedia.iamsterdam.com%2F4z3mbfy0yxh6%2Fw_907%2Ch_514%2Fphoto.webp&amp;w=1920&amp;q=75 1x"/></div>
+    <div class="border-grey-dark text-grey-darker mt-4 border-l pl-2 text-xs">${credit}</div></section>
+    <section class="content-container"><div class="rich-text"><p>${body}</p></div></section>`
+  it('a multi-word credit leaves whole', () => {
+    expect(parseIamsGuide(page('Image from Kirsten van Santen', 'Furniture lovers and curio hunters unite at this design market.', 'CABINET'))[0].text).toBe('Furniture lovers and curio hunters unite at this design market.')
+    expect(parseIamsGuide(page('Image from Teylers Museum Haarlem', 'Here’s a fun activity for the whole family.', 'Weekend of Science'))[0].text).toBe('Here’s a fun activity for the whole family.')
+  })
+  it('and the guide image is still read from the block', () => {
+    expect(parseIamsGuide(page('Image from Kirsten van Santen', 'Furniture lovers unite.', 'CABINET'))[0].image).toBe('https://media.iamsterdam.com/4z3mbfy0yxh6/w_1800/photo.webp')
+  })
+})
+
+describe('what the organiser’s record also knows (pipeline-only)', () => {
+  const ld = (images: string[]) => `<script type="application/ld+json">${JSON.stringify({ '@context': 'https://schema.org', '@type': 'Event', name: 'Camera Japan Festival', startDate: '2026-10-01T12:30:00+00:00', endDate: '2026-10-04T22:00:00+00:00', image: images, location: { '@type': 'Place', name: 'LAB111' } })}</script>`
+  const url = 'https://www.iamsterdam.com/en/whats-on/calendar/festivals/events/camera-japan-festival'
+  it('the rest of its gallery rides behind the first image; the "visit website" button is the organiser’s site', () => {
+    const html = ld(['https://app.thefeedfactory.nl/a/small.webp', 'https://app.thefeedfactory.nl/a/large.webp']) +
+      '<a href="https://www.google.com/maps/search/?api=1">Show in Google Maps</a><a rel="noopener" target="_blank" class="Button_button" href="https://camerajapan.nl/">visit website<span></span></a>'
+    const r = parseEventPage(html, url, 'out')!.pick as Pick & RecordExtras
+    expect(r.image).toBe('https://app.thefeedfactory.nl/a/small.webp')
+    expect(r._gallery).toEqual(['https://app.thefeedfactory.nl/a/large.webp'])
+    expect(r._site).toBe('https://camerajapan.nl/')
+  })
+  it('a record with one image and no button carries neither', () => {
+    const r = parseEventPage(ld(['https://app.thefeedfactory.nl/a/only.webp']), url, 'out')!.pick as Pick & RecordExtras
+    expect(r._gallery).toBeUndefined()
+    expect(r._site).toBeUndefined()
+  })
+})
+
+describe('the guide photograph, whichever way the media host writes its URL', () => {
+  it('the old shape: transform first', () => {
+    expect(iamsMediaUrl('srcSet="/_next/image?url=https%3A%2F%2Fmedia.iamsterdam.com%2Fw_907%2Ch_514%2F2c490sw69evq-beurspassage.webp&amp;w=1920"')).toBe('https://media.iamsterdam.com/w_1800/2c490sw69evq-beurspassage.webp')
+    expect(iamsMediaUrl('blurSrc="https://media.iamsterdam.com/w_10/2c490sw69evq-beurspassage.webp"')).toBe('https://media.iamsterdam.com/w_1800/2c490sw69evq-beurspassage.webp')
+  })
+  it('the new shape: an asset id leads, and stays in the path (the old read returned a 1px GIF)', () => {
+    expect(iamsMediaUrl('blurSrc="https://media.iamsterdam.com/5g00c3ae1kut/w_10/dsc3483.webp"')).toBe('https://media.iamsterdam.com/5g00c3ae1kut/w_1800/dsc3483.webp')
+    expect(iamsMediaUrl('url=https%3A%2F%2Fmedia.iamsterdam.com%2F4z3mbfy0yxh6%2Fw_907%2Ch_514%2Fcabinet-kirsten-van-santen.webp&amp;w=1920')).toBe('https://media.iamsterdam.com/4z3mbfy0yxh6/w_1800/cabinet-kirsten-van-santen.webp')
+  })
+  it('a crop transform is a transform too; a file named like a size is not', () => {
+    expect(iamsMediaUrl('https://media.iamsterdam.com/55z25qkjliwq/ex_0,ey_103,ew_2048,w_2048,eh_1160,h_1160/cabinet-2.jpg')).toBe('https://media.iamsterdam.com/55z25qkjliwq/w_1800/cabinet-2.jpg')
+    expect(iamsMediaUrl('https://media.iamsterdam.com/69fugugiu2lb/w_10/a3yqx000001iiiimau-2422x1362.webp')).toBe('https://media.iamsterdam.com/69fugugiu2lb/w_1800/a3yqx000001iiiimau-2422x1362.webp')
+  })
+  it('no media asset in the block: no image', () => { expect(iamsMediaUrl('<p>No picture here</p>')).toBeUndefined() })
+})
+
+describe('two guides, one organiser, one day', () => {
+  const iamsItem = { link: 'https://ijveramsterdam.nl/', when: 'Sat 3 Oct' }
+  const lbbItem = { link: 'https://www.ijveramsterdam.nl/event/3-oktober/', when: 'Sat 3 Oct' }
+  it('the same own-site host on the same dated day is the same event', () => {
+    expect(sameOrganiserDay(iamsItem, lbbItem)).toBe(true)
+    expect(sameOrganiserDay(lbbItem, { ...lbbItem })).toBe(true)
+  })
+  it('two different pages at one hall are two shows; another day or an undated tip is not evidence', () => {
+    expect(sameOrganiserDay({ link: 'https://melkweg.nl/agenda/a', when: 'Sat 3 Oct' }, { link: 'https://melkweg.nl/agenda/b', when: 'Sat 3 Oct' })).toBe(false)
+    expect(sameOrganiserDay(iamsItem, { ...lbbItem, when: 'Sun 4 Oct' })).toBe(false)
+    expect(sameOrganiserDay({ ...iamsItem, when: 'This weekend' }, { ...lbbItem, when: 'This weekend' })).toBe(false)
+  })
+  it('a guide, a social profile or a ticket shop is nobody’s own site', () => {
+    expect(sameOrganiserDay({ link: 'https://www.yourlittleblackbook.me/en/weekendtips-amsterdam/', when: 'Sat 3 Oct' }, { link: 'https://www.yourlittleblackbook.me/en/weekendtips-amsterdam/', when: 'Sat 3 Oct' })).toBe(false)
+    expect(sameOrganiserDay({ link: 'https://www.instagram.com/a/', when: 'Sat 3 Oct' }, { link: 'https://www.instagram.com/b/', when: 'Sat 3 Oct' })).toBe(false)
+  })
+  it('foldGuides folds them, keeping the pictured item, both guides and both credits', () => {
+    const P = (o: Partial<Pick>): Pick => ({ id: 'x', title: 'T', venue: '', area: '', when: 'Sat 3 Oct', category: 'drink', freshness: 'weekend', outdoor: false, kid: false, price: '', blurb: '', why: '', source: 'S', link: 'https://x.example/', weatherFit: [], ...o } as Pick)
+    const folded = foldGuides(
+      [P({ id: 'web-guide-iams-ijver-anniversary', title: 'IJver anniversary', link: 'https://ijveramsterdam.nl/', image: 'https://media.iamsterdam.com/48abgf9usz0p/w_1800/party.webp', source: 'I amsterdam', guide: 'I amsterdam weekend guide' })],
+      [P({ id: 'web-lbb-tips-diligence', title: 'Diligence 1000 + 1000 at the NDSM', link: 'https://ijveramsterdam.nl/event/3-oktober/', source: 'Your Little Black Book', guide: 'LBB weekendtips' })],
+      titleLooseMatch)
+    expect(folded).toHaveLength(1)
+    expect(folded[0].title).toBe('IJver anniversary')
+    expect(folded[0].image).toContain('party.webp')
+    expect(folded[0].guide).toBe('I amsterdam weekend guide · LBB weekendtips')
+    expect(folded[0].source).toBe('I amsterdam · Your Little Black Book')
+  })
 })

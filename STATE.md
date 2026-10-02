@@ -45,6 +45,22 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
   test erased venues that publish their own programme (Eye, Efteling, Micropia, Madurodam). `fixWhen` reads
   month-first ranges. Housekeeping: PRs #30/#31 closed (superseded by V.12), `codex/weather-glass` deleted,
   Mata Hari's canon photo repointed to the bar's own site.
+  **Same day, second pass — why the rest were blank, read off each card's own page.** (1) *I amsterdam's
+  media host changed its URL shape* (an asset id now leads the path) and the guide parser had been asking
+  for a URL the host answers with a 1px GIF: six of eight weekend-guide items lost their editorial photo
+  without a word (`iamsMediaUrl`). (2) *An organiser's record is a gallery*: Camera Japan led with a
+  1024px image and carried a 6000px one behind it — the sanity screen now walks the record's own images,
+  then the guide's photo for the item (`_gallery`, pipeline-only). (3) *The organiser's website* rides
+  the record too (`_site`, the page's "visit website" button): where the gather looks when a listing's
+  images are all too small. (4) *Cards that share a page take turns* — four Jeugdland clubs, one agenda:
+  a photo given to one card leaves the next card's candidates, and the page offers one more. (5) *One
+  event, two records*: I amsterdam's EN and NL record with the same photo, dates and place fold into one
+  card (`iamsLanguageTwins`) instead of leaving a blank double; two guide items from one organiser on one
+  day fold too (`sameOrganiserDay`). (6) *Eye's featured programmes* (the what's-on carousel: the film
+  season with its dates and campaign still) are read by the adapter; the LLM read of that page is skipped
+  when it delivers. (7) The three "which adapter" regexes live in ONE place (`ADAPTER_PICK` / `OWN_RECORD`
+  / `OWN_IMAGE`, lib/pipeline) — Eye had been added to one of five and the trust filter dropped its
+  permanent exhibition. (8) The log now says WHY each blank is blank (`blank:` lines, by stage).
 - **V.12 — THE GLASS (2026-09-25).** The weather-glass variation (Codex, `codex/weather-glass`, PR #29,
   brief `docs/variations/001`) is the app. The background is a WINDOW: `weather/WetGlassPane.ts` draws a
   photographic sky plate through wet glass in a WebGL2 shader — real macro-photo drop maps lens and shade
