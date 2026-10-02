@@ -218,6 +218,13 @@ describe('a run written as a range with years', () => {
   it('a run still to open says when it opens and when it ends', () => {
     expect(fixWhen('Fri 2 Oct 2026 – 14 Feb 2027', now)).toBe('Opens Fri 2 Oct · until Sun 14 Feb')
   })
+  it('reads a range written month-first', () => {
+    expect(fixWhen('Nov 13–Jan 23 (preview/booking this weekend)', now)).toBe('Opens Fri 13 Nov · until Sat 23 Jan')
+    expect(whenIsPast(fixWhen('Nov 13–Jan 23 (preview/booking this weekend)', now), now)).toBe(false)
+    expect(fixWhen('Oct 3–4', new Date(2026, 9, 2, 10))).toBe('Sat 3 – Sun 4 Oct')
+    expect(fixWhen('Oct 31 – Nov 1', new Date(2026, 9, 2, 10))).toBe('Sat 31 Oct – Sun 1 Nov')
+    expect(fixWhen('September 19, 2026 - January 31, 2027', now)).toBe('Until Sun 31 Jan')
+  })
   it('leaves the house formats alone', () => {
     for (const w of ['Fri 3 – Sun 5 Jul', 'Until Sun 31 Jan', 'Sat–Sun 19–20 Sep', 'Sat 26 Sep · 13:30 & 16:00', 'Opens Fri 18 Sep · Sat–Sun 19–20 Sep'])
       expect(fixWhen(w, now)).toBe(fixWhen(fixWhen(w, now), now))

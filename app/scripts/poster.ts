@@ -24,6 +24,7 @@ import { join } from 'node:path'
 import puppeteer from 'puppeteer-core'
 import { classify } from '../src/weather/modes'
 import { upcomingWeekend } from './lib/pipeline'
+import { placeOf } from '../src/lib/place'
 import { fixWhen, whenWeekendDays, upcomingWeekendEnd } from '../src/lib/when'
 import type { Mode, Pick } from '../src/types'
 
@@ -80,8 +81,10 @@ async function forecast(): Promise<{ label: string; days: { label: string; hi: n
 /** 8 of 80 live picks carry a `venue` that is just their SOURCE name ("I amsterdam") — an upstream
  *  extraction fallback. On a poster that reads as a place, so drop it rather than print a wrong one. */
 export function realVenue(p: Pick): string {
-  const v = (p.venue || '').trim()
-  return v && !(p.source || '').toLowerCase().includes(v.toLowerCase()) ? v : ''
+  // (2026-10-02) one rule, shared with the client: a PUBLISHER's name is not a place — see src/lib/place.ts.
+  // The old test here ("the source string contains the venue") erased every venue that publishes its own
+  // programme: Eye Filmmuseum from Eye's own site, Efteling, Micropia, Madurodam.
+  return placeOf(p)
 }
 
 /** Hand-pick the poster's line-up by title, in the order given — for when the DECK order and the

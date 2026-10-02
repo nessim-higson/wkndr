@@ -617,7 +617,11 @@ async function buildCity(city: City) {
     // dated-this-weekend picks bypass the category balance too — the weekend itself is never
     // "over-represented"; the balancer's job is taming undated/evergreen floods
     const laneIds = new Set([...heroesInPool, ...raLane].map((p) => p.id))
-    const wkndExempt = picks.filter((p) => isLive(p) && (datedThisWeekend(p) || !!p.guide) && !laneIds.has(p.id))
+    // …and so does the programme of a venue Ness has starred (corpus.starredVenues): "the Eye and its exhibits"
+    // lost its permanent exhibition to the art cap on the first run it was in the pool (2026-10-02)
+    const starVenueRx = ((corpus as TasteCorpus).starredVenues ?? []).filter((v) => v.stars >= 4).map((v) => rxOf(v.match))
+    const starVenue = (p: Pick) => !!p.venue && starVenueRx.some((rx) => rx.test(p.venue))
+    const wkndExempt = picks.filter((p) => isLive(p) && (datedThisWeekend(p) || !!p.guide || starVenue(p)) && !laneIds.has(p.id))
     const exempt = new Set([...heroesInPool, ...raLane, ...wkndExempt].map((p) => p.id))
     const balanced = balanceByCategory(picks.filter((p) => !exempt.has(p.id)), 8)
     const out = [...heroesInPool, ...raLane, ...wkndExempt, ...balanced]
@@ -692,8 +696,9 @@ async function buildCity(city: City) {
     const keeps = (corpus.starredKeeps as { match: string; stars: number }[])
       .filter((k) => k.stars >= 4)
       .map((k) => ({ ...k, rx: rxOf(k.match) }))
+    const venueStars = ((corpus as TasteCorpus).starredVenues ?? []).filter((v) => v.stars >= 4).map((v) => rxOf(v.match))
     let floored = 0, carried = 0
-    for (const p of picks) if (keeps.some((k) => k.rx.test(p.title))) { p.editorScore = Math.min(10, (p.judgeScore ?? 6) + STAR_BOOST); floored++ }
+    for (const p of picks) if (keeps.some((k) => k.rx.test(p.title)) || (isLive(p) && !!p.venue && venueStars.some((rx) => rx.test(p.venue)))) { p.editorScore = Math.min(10, (p.judgeScore ?? 6) + STAR_BOOST); floored++ }
     // CARRY-FORWARD IS NOW A TIME-CRITICAL RESCUE ONLY — it must be dated THIS weekend. It used to
     // pull back any date-valid star, which quietly meant every undated evergreen one ("Now open"),
     // every week, forever: 18 picks last run, and a third of why the deck read identical three weeks
@@ -1067,6 +1072,7 @@ async function buildCity(city: City) {
       .sort((a, b) => Number(!!b.image) - Number(!!a.image))   // stable: pictured first, rank order within
       .slice(0, 120)
       .map((p) => ({ id: p.id, title: p.title, venue: p.venue, area: p.area, when: p.when, category: p.category, image: p.image, imageWhy: p.imageWhy, blurb: p.blurb, source: p.source, link: p.link, buzz: p.buzz, weatherFit: p.weatherFit, freshness: p.freshness, firstSeen: p.firstSeen, outdoor: p.outdoor, kid: p.kid, price: p.price, why: p.why, editorScore: p.editorScore }))
+    for (const c of cands as { when?: string }[]) if (c.when) c.when = fixWhen(c.when)   // candidates speak the house date format too (the board reads them)
     await Bun.write(`${OUT_DIR}/candidates.${city.key}.json`, JSON.stringify({ generatedAt: feed.generatedAt, count: cands.length, candidates: cands }, null, 2))
     console.log(`  → wrote candidates.${city.key}.json (${cands.length} bench events for the Curation Board)`)
   }

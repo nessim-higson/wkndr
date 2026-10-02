@@ -30,6 +30,21 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
 > sessions update (today it's on load).
 
 ## Live right now
+- **2026-10-02 — more honest photographs, Eye's exhibitions, the venue rule corrected.** Ness: "I see a
+  LOT of cards without images. Are we sure there is nothing we can do?" We were not. The image gather now
+  (a) asks the CMS for a LARGER rendition of the same file before the sharpness guard turns it away
+  (`largerRenditions` / `bestRendition`: resize queries, WordPress, Craft, Wix, Squarespace) and (b) offers
+  the vision verifier up to three photographs from the event's or venue's OWN page behind its share image
+  (`fetchEventImages`, `isOwnPage` — never a guide, listing, ticket shop or social profile). First run:
+  27 cards imaged by the gather (9 the day before), live blanks 26/66 → 19/73. What stays blank is honest:
+  Instagram/guide links, and good landscape photos under 750px tall (PROPOSED, not built: a photo-band
+  card — see Open items). **Eye Filmmuseum** has its own adapter (`adapters/eye.ts`, keyless, the museum's
+  dates and campaign images; fixture + tests). **`corpus.starredVenues`**: a venue Ness names ships its own
+  programme at the bar, cap-exempt, with the ★ lift. **A venue is a place, never a PUBLISHER** is now an
+  explicit list (`src/lib/place.ts`, shared by client and pipeline) — the old "matches one of its sources"
+  test erased venues that publish their own programme (Eye, Efteling, Micropia, Madurodam). `fixWhen` reads
+  month-first ranges. Housekeeping: PRs #30/#31 closed (superseded by V.12), `codex/weather-glass` deleted,
+  Mata Hari's canon photo repointed to the bar's own site.
 - **V.12 — THE GLASS (2026-09-25).** The weather-glass variation (Codex, `codex/weather-glass`, PR #29,
   brief `docs/variations/001`) is the app. The background is a WINDOW: `weather/WetGlassPane.ts` draws a
   photographic sky plate through wet glass in a WebGL2 shader — real macro-photo drop maps lens and shade
@@ -613,6 +628,12 @@ organ-concert veto REVERSED (community-authentic wins). The pipeline stamps `top
 GUARANTEES topped/led picks into the feed (pull-back from prePool/canon if the balancer cut them).
 
 ## Open items / next
+00. **Awaiting Ness (2026-10-02):** (a) the UNFURL direction — board sent, B "the deck on the sky" recommended,
+   with a dated link title stamped at each refresh; (b) the PHOTO-BAND card — a landscape photo across the
+   top of a glass card, for good photos the portrait guard rejects (Camera Japan, Museum Market…); (c) the
+   EVERGREEN marker — `FRESHNESS_LABEL.always` ("Always good") exists and never reaches the card face; proposed
+   as a quiet dark pill + an "Anytime" chip, orange reserved for this weekend; (d) which link is "the link"
+   (app.wkndr.xyz vs the cream/orange landing); (e) the intro on every open vs once a day.
 0. **Variations:** `gh pr list` is the only record of what is in flight — not this file. Judge on
    the preview, on the phone; review in the PR. Brief 003 (the opening beat) is written and
    unstarted. Brief 004's audit landed on `main` as **the letter (V.11.12)**; the brief is re-aimed
@@ -634,8 +655,8 @@ GUARANTEES topped/led picks into the feed (pull-back from prePool/canon if the b
 1. ~~Phase 2 — demote web_search~~ **DONE 2026-09-05 (V.11.9)** — 3 facets + index-only-link drop. Next
    on images: watch the first two `receipts:` census lines in the refresh log; if `web` dominates over
    `event-page`/`organiser`, raise the sitemap matcher's reach before loosening anything else.
-1b. **From the first two live runs under the law (2026-09-05):** (a) `src/data/picks.lostin.ts` **Mata
-   Hari** image URL is dead (redlightinfo.nl 404) — the card ships blank until a new photo is pinned;
+1b. **From the first two live runs under the law (2026-09-05):** (a) ~~Mata Hari's dead image URL~~ **fixed
+   2026-10-02** (the bar's own photo);
    (b) the I amsterdam `festivals` listing crawl (`PER_CAT` 12, listing order) MISSED the same-weekend
    Tattoo Convention once the web-search facet that used to catch it was retired — next: seed the crawl
    from the events sitemap's `<lastmod>`-recent locs so dated one-offs can't fall off the cap;

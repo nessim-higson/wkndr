@@ -50,7 +50,7 @@ export function fixWhen(when: string, now: Date = new Date()): string {
   // format the rest of the feed speaks: an opened run is "Until Sun 31 Jan"; one still to open is
   // "Opens Sat 19 Sep · until Sun 31 Jan". Only strings that carry a year or a parenthetical are
   // touched — "Fri 3 – Sun 5 Jul" is already house format and stays as written.
-  const run = when.match(new RegExp(`^\\s*(?:(?:${WDAY})\\.?\\s+)?(\\d{1,2})\\s+(${MONS})[a-z]*\\.?(?:\\s+(\\d{4}))?\\s*(?:\\((?:opening|opens|vernissage|premiere)\\))?\\s*[–—-]\\s*(?:(?:${WDAY})\\.?\\s+)?(\\d{1,2})\\s+(${MONS})[a-z]*\\.?(?:\\s+(\\d{4}))?\\s*$`, 'i'))
+  const run = when.match(new RegExp(`^\\s*(?:(?:${WDAY})\\.?\\s+)?(\\d{1,2})\\s+(${MONS})[a-z]*\\.?(?:\\s+(\\d{4}))?\\s*(?:\\((?:opening|opens|vernissage|premiere)\\))?\\s*[–—-]\\s*(?:(?:${WDAY})\\.?\\s+)?(\\d{1,2})\\s+(${MONS})[a-z]*\\.?(?:\\s+(\\d{4}))?\\s*(?:\\([^)]*\\))?\\s*$`, 'i'))
   if (run && (run[3] || run[6] || when.includes('('))) {
     const [, d1, m1, y1, d2, m2, y2] = run
     const start = y1 ? new Date(+y1, MON[m1.toLowerCase()], +d1, 12) : resolveDate(+d1, MON[m1.toLowerCase()], now)
@@ -60,6 +60,23 @@ export function fixWhen(when: string, now: Date = new Date()): string {
       const until = `${WD[end.getDay()]} ${+d2} ${cap(m2)}`
       return start.getTime() <= now.getTime() ? `Until ${until}` : `Opens ${WD[start.getDay()]} ${+d1} ${cap(m1)} · until ${until}`
     }
+  }
+  // …and a range written MONTH-FIRST — "Nov 13–Jan 23 (preview/booking this weekend)" (an LLM candidate,
+  // 2026-10-02: the board read the bare "Jan 23" as last January and called it over; the app did not;
+  // the parity test went red and would have stopped Monday's refresh). Not house format in any form, so
+  // it is always rewritten: a run becomes Until / Opens, a short range becomes "Sat 3 – Sun 4 Oct".
+  const mf = when.match(new RegExp(`^\\s*(${MONS})[a-z]*\\.?\\s+(\\d{1,2})(?:,?\\s+(\\d{4}))?\\s*[–—-]\\s*(?:(${MONS})[a-z]*\\.?\\s+)?(\\d{1,2})(?:,?\\s+(\\d{4}))?\\s*(?:\\([^)]*\\))?\\s*$`, 'i'))
+  if (mf) {
+    const [, m1, d1, y1, m2raw, d2, y2] = mf
+    const m2 = m2raw ?? m1
+    const cap = (m: string) => m[0].toUpperCase() + m.slice(1, 3).toLowerCase()
+    const start = y1 ? new Date(+y1, MON[m1.toLowerCase()], +d1, 12) : resolveDate(+d1, MON[m1.toLowerCase()], now)
+    let end = new Date(y2 ? +y2 : start.getFullYear(), MON[m2.toLowerCase()], +d2, 12)
+    if (end.getTime() < start.getTime()) end = new Date(end.getFullYear() + 1, end.getMonth(), end.getDate(), 12)
+    const until = `${WD[end.getDay()]} ${+d2} ${cap(m2)}`
+    if (end.getTime() - start.getTime() > 9 * 864e5)
+      return start.getTime() <= now.getTime() ? `Until ${until}` : `Opens ${WD[start.getDay()]} ${+d1} ${cap(m1)} · until ${until}`
+    return `${WD[start.getDay()]} ${+d1}${m2.toLowerCase() !== m1.toLowerCase() ? ` ${cap(m1)}` : ''} – ${until}`
   }
   const openRun = OPEN_RUN.test(when)
   // range first: "Sat–Sun 13–14 Jun" → recompute both ends from the two day numbers

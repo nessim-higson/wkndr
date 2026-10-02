@@ -141,9 +141,12 @@ const crownsLive = crownsActive(corpus as { topPicksWeekend?: string })
 const topRx = crownsLive ? (corpus.topPicks as string[]).map(rxOf) : []
 const keepRx = (corpus.starredKeeps as { match: string; stars: number }[])
   .filter((k) => k.stars >= 4).map((k) => rxOf(k.match))
+const venueStarRx = ((corpus as { starredVenues?: { match: string; stars: number }[] }).starredVenues ?? [])
+  .filter((v) => v.stars >= 4).map((v) => rxOf(v.match))
 for (const p of picks) {
   p.top = topRx.some((rx) => rx.test(p.title)) || undefined   // recompute — a retired crown must CLEAR
-  if (keepRx.some((rx) => rx.test(p.title))) p.editorScore = Math.min(10, (p.judgeScore ?? 6) + STAR_BOOST)   // ★ = judge+2, not a floor (see refresh.ts)
+  const starVenue = /^(web|llm|rss|sk)-/.test(p.id) && !!p.venue && venueStarRx.some((rx) => rx.test(p.venue))   // a starred venue's own programme (corpus.starredVenues)
+  if (keepRx.some((rx) => rx.test(p.title)) || starVenue) p.editorScore = Math.min(10, (p.judgeScore ?? 6) + STAR_BOOST)   // ★ = judge+2, not a floor (see refresh.ts)
 }
 const { sat } = upcomingWeekend()
 const satKey = `${sat.getFullYear()}-${String(sat.getMonth() + 1).padStart(2, '0')}-${String(sat.getDate()).padStart(2, '0')}`
