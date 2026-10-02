@@ -2,7 +2,7 @@
 // the image URL screens, and the weekend window. These are the pure functions the whole content
 // pipeline leans on; each rule here encodes a bug we actually hit during the pipeline era.
 import { describe, it, expect } from 'bun:test'
-import { dedupe, unionCredits, titleKey, urlLooksNonPhoto, toPortrait, upcomingWeekend, whenBeforeWeekend, imagePassBroken, largerRenditions, pagePhotosFrom, isOwnPage, approvalCheck, type TasteCorpus, type WeeklySlate, untrustedWebPick, ADAPTER_PICK, OWN_RECORD, OWN_IMAGE, iamsLanguageTwins } from '../scripts/lib/pipeline'
+import { dedupe, unionCredits, titleKey, urlLooksNonPhoto, toPortrait, upcomingWeekend, whenBeforeWeekend, imagePassBroken, largerRenditions, pagePhotosFrom, isOwnPage, approvalCheck, type TasteCorpus, type WeeklySlate, untrustedWebPick, ADAPTER_PICK, OWN_RECORD, OWN_IMAGE, iamsLanguageTwins, crossSourceTwins } from '../scripts/lib/pipeline'
 import { whenIsPast } from '../src/lib/when'
 import type { Pick } from '../src/types'
 
@@ -321,5 +321,36 @@ describe('one event, two records — I amsterdam’s English and Dutch slug', ()
     expect(iamsLanguageTwins(en, { ...nl, venue: 'NEMO Science Museum' })).toBe(false)
     expect(iamsLanguageTwins(en, { ...nl, id: 'web-lbb-tips-weekend-van-de-wetenschap' })).toBe(false)
     expect(iamsLanguageTwins({ ...en, link: 'https://weekendvandewetenschap.nl/' }, nl)).toBe(false)   // off-site link: the tree is unknown
+  })
+})
+
+describe('one event, two organiser records — I amsterdam lists the festival, Resident Advisor its night', () => {
+  const iams = { id: 'web-iams-butoh-festival-amsterdam-x-edition-teatro-munganga', title: 'Butoh Festival Amsterdam X Edition - Teatro Munganga', venue: 'Teatro Munganga' }
+  const ra = { id: 'web-ra-2291184', title: 'Butoh Festival Amsterdam', venue: 'Teatro Munganga' }
+  it('one from each source, the same venue, one title inside the other', () => {
+    expect(crossSourceTwins(iams, ra)).toBe(true)
+    expect(crossSourceTwins(ra, iams)).toBe(true)
+  })
+  it('two records from ONE source never fold, however alike', () => {
+    expect(crossSourceTwins(ra, { ...ra, id: 'web-ra-2291185' })).toBe(false)
+    expect(crossSourceTwins(iams, { ...iams, id: 'web-iams-butoh-festival-amsterdam' })).toBe(false)
+  })
+  it('another venue, an unrelated title, a missing venue or a short title is not evidence', () => {
+    expect(crossSourceTwins(iams, { ...ra, venue: 'Melkweg' })).toBe(false)
+    expect(crossSourceTwins(iams, { ...ra, title: 'Paesaggi Records Autunno Minitour' })).toBe(false)
+    expect(crossSourceTwins({ ...iams, venue: '' }, { ...ra, venue: '' })).toBe(false)
+    expect(crossSourceTwins({ ...iams, title: 'Melkweg night' }, { ...ra, title: 'Melkweg' })).toBe(false)
+    expect(crossSourceTwins(iams, { id: 'web-lbb-tips-butoh', title: 'Butoh Festival Amsterdam', venue: 'Teatro Munganga' })).toBe(false)
+  })
+  it('reads the venue past an article and an accent', () => {
+    expect(crossSourceTwins({ ...iams, venue: 'Het Concertgebouw', title: 'Concertgebouw Open Day 2026' }, { ...ra, venue: 'Concertgebouw', title: 'Concertgebouw Open Day' })).toBe(true)
+  })
+})
+
+describe('the page’s own photographs — a CMS that serves images without a file extension', () => {
+  const html = `<img src="/img/woordmerk_darkgreen.svg"><img data-big='/File/image/lOBdmpV2IrLowAqML9sy' src='/File/image/lOBdmpV2IrLowAqML9sy/500' class='img-fluid'>
+    <img src="/api/track?id=1"><a href="/File/pdf/menu">menu</a><img src="/images/foto_mm2.gif">`
+  it('takes the full-size file route, then its thumbnail; never a vector, a GIF or a tracker', () => {
+    expect(pagePhotosFrom(html, 'https://olmenhorst.nl/activiteiten/oogstfeesten-2026')).toEqual(['https://olmenhorst.nl/File/image/lOBdmpV2IrLowAqML9sy', 'https://olmenhorst.nl/File/image/lOBdmpV2IrLowAqML9sy/500'])
   })
 })

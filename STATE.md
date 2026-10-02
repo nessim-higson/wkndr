@@ -61,6 +61,15 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
   when it delivers. (7) The three "which adapter" regexes live in ONE place (`ADAPTER_PICK` / `OWN_RECORD`
   / `OWN_IMAGE`, lib/pipeline) — Eye had been added to one of five and the trust filter dropped its
   permanent exhibition. (8) The log now says WHY each blank is blank (`blank:` lines, by stage).
+  **Third pass, read off those `blank:` lines.** THE OPEN-WEB IMAGE SEARCH IS DEAD: the keyless DuckDuckGo
+  endpoint answers 403, every call fell through the catch to [], and the only symptom was more blanks (39
+  of 47 pool blanks were "nothing on its page or the open web"). The health line now WARNS when it answers
+  nothing (`imageSearchHealth`). The designed fix is a `SERPER_API_KEY` repo secret (Google Images, vision
+  verified, the path the code already prefers) — **Ness's to add; it is the largest remaining lever on
+  blank cards.** Also: an I amsterdam record and a Resident Advisor night of the same event fold
+  (`crossSourceTwins`: Butoh Festival was dealt twice, once blank); the page-photo reader takes CMS file
+  routes with no extension and `data-big` sources (olmenhorst.nl); a tip's "Location:" stops at the next
+  label (`locationOf`).
 - **V.12 — THE GLASS (2026-09-25).** The weather-glass variation (Codex, `codex/weather-glass`, PR #29,
   brief `docs/variations/001`) is the app. The background is a WINDOW: `weather/WetGlassPane.ts` draws a
   photographic sky plate through wet glass in a WebGL2 shader — real macro-photo drop maps lens and shade
@@ -646,7 +655,8 @@ GUARANTEES topped/led picks into the feed (pull-back from prePool/canon if the b
 ## Open items / next
 00. **Awaiting Ness (2026-10-02):** (a) the UNFURL direction — board sent, B "the deck on the sky" recommended,
    with a dated link title stamped at each refresh; (b) the PHOTO-BAND card — a landscape photo across the
-   top of a glass card, for good photos the portrait guard rejects (Camera Japan, Museum Market…); (c) the
+   top of a glass card, for good photos the portrait guard rejects (Museum Market 960×720, Noordermarkt
+   800×600; comp sent as wkndr-card-proposals.png); (b2) a `SERPER_API_KEY` secret, see above; (c) the
    EVERGREEN marker — `FRESHNESS_LABEL.always` ("Always good") exists and never reaches the card face; proposed
    as a quiet dark pill + an "Anytime" chip, orange reserved for this weekend; (d) which link is "the link"
    (app.wkndr.xyz vs the cream/orange landing); (e) the intro on every open vs once a day.

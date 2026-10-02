@@ -19,7 +19,7 @@
  */
 import { CITIES, type City } from '../src/data/cities'
 import type { Pick } from '../src/types'
-import { dedupe, balanceByCategory, isGoodImage, isPortraitImage, imageBroken, urlLooksNonPhoto, imageIsCardworthy, fetchEventImage, toPortrait, wikiImage, webImageCandidates, verifyImageForEvent, venueMatchImage, venueBook, imageFocalPoint, focalFailures, originalOf, NO_PHOTO_CAP, whenBeforeWeekend, upcomingWeekend, weekendMode, weekendModes, stampServeOrder, publishCheck, crownsActive, JUDGE_FLOOR, STAR_BOOST, linkOk, mapLimit, rxOf, titleKey, titleLooseMatch, tokKey, approvalCheck, pickByTitle, markThisWeekend, type TasteCorpus, type WeeklySlate, imagePassBroken, fetchEventImages, bestRendition, ADAPTER_PICK, OWN_RECORD, OWN_IMAGE, untrustedWebPick, extrasOf, iamsLanguageTwins, unionCredits, isOwnPage } from './lib/pipeline'
+import { dedupe, balanceByCategory, isGoodImage, isPortraitImage, imageBroken, urlLooksNonPhoto, imageIsCardworthy, fetchEventImage, toPortrait, wikiImage, webImageCandidates, verifyImageForEvent, venueMatchImage, venueBook, imageFocalPoint, focalFailures, originalOf, NO_PHOTO_CAP, whenBeforeWeekend, upcomingWeekend, weekendMode, weekendModes, stampServeOrder, publishCheck, crownsActive, JUDGE_FLOOR, STAR_BOOST, linkOk, mapLimit, rxOf, titleKey, titleLooseMatch, tokKey, approvalCheck, pickByTitle, markThisWeekend, type TasteCorpus, type WeeklySlate, imagePassBroken, fetchEventImages, bestRendition, ADAPTER_PICK, OWN_RECORD, OWN_IMAGE, untrustedWebPick, extrasOf, iamsLanguageTwins, unionCredits, isOwnPage, crossSourceTwins, imageSearchHealth } from './lib/pipeline'
 import { fixWhen, latestDateOf, whenActiveBy, whenIsPast, whenLooksBroken } from '../src/lib/when'
 import { effectiveFreshness, NEW_DAYS } from '../src/lib/freshness'
 import { mergeSightings, pruneRegistry, appendRun, type SeenRegistry, type HealthFile } from './lib/ingest'
@@ -209,6 +209,22 @@ async function buildCity(city: City) {
   // EVERY live-adapter id prefix must be listed (llm/web + rss/songkick): a missed prefix means those
   // picks skip the image pass AND the gate's imageless check the day the source is switched on.
   const isLive = (p: Pick) => ['llm-', 'web-', 'rss-', 'sk-'].some((pre) => p.id.startsWith(pre))
+
+  // ONE EVENT, TWO ORGANISER RECORDS — see crossSourceTwins. The I amsterdam record stays (the festival and
+  // its run); Resident Advisor's flyer rides behind its image for the sanity screen to fall back on, and its
+  // credit and its draw come along.
+  {
+    const iamsRecs = picks.filter((p) => /^web-iams-/.test(p.id))
+    const gone = new Set<Pick>()
+    for (const r of picks.filter((p) => /^web-ra-/.test(p.id))) {
+      const twin = iamsRecs.find((p) => crossSourceTwins(p, r))
+      if (!twin) continue
+      if (r.image) { if (!twin.image) twin.image = r.image; else extrasOf(twin)._gallery = [...(extrasOf(twin)._gallery ?? []), r.image] }
+      Object.assign(twin, unionCredits(twin.source, r.source), { popularity: Math.max(twin.popularity ?? 0, r.popularity ?? 0) || undefined })
+      gone.add(r)
+    }
+    if (gone.size) { picks = picks.filter((p) => !gone.has(p)); console.log(`  twins:    ${gone.size} Resident Advisor nights folded into I amsterdam's record of the same event (${[...gone].slice(0, 4).map((p) => p.title.slice(0, 26)).join(' · ')})`) }
+  }
 
   // DROP STALE — past-dated picks (hardcoded canon dates that have rolled by, or LLM picks that
   // scraped an already-finished event). Evergreen "Daily"/"Always" whens are kept.
@@ -1053,6 +1069,8 @@ async function buildCity(city: City) {
     const warn: string[] = []
     if (liveN < 8) warn.push(`thin live feed (${liveN})`)
     if (noPhotoShare > 0.25) warn.push(`${Math.round(noPhotoShare * 100)}% of the crawl imageless before the cap`)
+    // a dead image search is silent everywhere else: its only symptom is more blank cards
+    if (imageSearchHealth.asked >= 5 && imageSearchHealth.answered === 0) warn.push(`open-web image search answered 0 of ${imageSearchHealth.asked} queries${imageSearchHealth.lastError ? ` (${imageSearchHealth.lastError})` : ''} — set SERPER_API_KEY`)
 
     const tag = fail.length ? '❌ BROKEN' : warn.length ? '⚠️ OK' : '✅ HEALTHY'
     const health = `${tag} · ${city.label} · ${picks.length} picks (${liveN} live · ${catN}/9 cats · ${imagelessLive.length} no-photo)${warn.length ? ' · warn: ' + warn.join(', ') : ''}${fail.length ? ' · FAIL: ' + fail.join(', ') : ''}`

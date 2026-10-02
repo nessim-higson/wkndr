@@ -226,6 +226,14 @@ async function organiserRecord(item: GuideItem): Promise<{ pick: Pick; url: stri
   return null
 }
 
+/** The place off a tip's "Location:" line — and only the place: LBB runs its labels together on one line
+ *  ("Location: Noordermarkt 1, Amsterdam Dates: Every Monday and Saturday morning"), and the card read the
+ *  dates as part of the venue (2026-10-02). Stops at the next "Label:". Pure. */
+export function locationOf(text: string): string {
+  const v = text.match(/Location:\s*([^.|]{3,60})/)?.[1] ?? ''
+  return v.split(/\s+(?=[A-Z][a-z]+(?: [a-z]+)?:)/)[0].trim()   // one capitalised word, at most one more: "Dates:", "Opening hours:"
+}
+
 function toPick(item: GuideItem, guide: string, source: string, idPrefix: string, why: string, rec: { pick: Pick; url: string } | null): Pick {
   const blurb = item.text.length >= 20 ? item.text.slice(0, 160) : ''
   if (rec) {
@@ -246,7 +254,7 @@ function toPick(item: GuideItem, guide: string, source: string, idPrefix: string
     title: item.title.slice(0, 90),
     // a venue is a place, never a publisher: no "Location:" line → no venue (the card shows the area) — this
     // used to fall back to the guide's own name, and 26 live cards read "Your Little Black Book" as a place
-    venue: item.text.match(/Location:\s*([^.|]{3,60})/)?.[1]?.trim() ?? '',
+    venue: locationOf(item.text),
     area: '',
     when: item.when,
     category: item.category,

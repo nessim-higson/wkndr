@@ -668,7 +668,11 @@ export function pagePhotosFrom(html: string, pageUrl: string, max = 12): string[
     if (!raw) return
     let u = ''
     try { u = new URL(raw.trim().replace(/&amp;/g, '&'), pageUrl).toString().replace(/^http:\/\//i, 'https://') } catch { return }
-    if (!/\.(?:jpe?g|png|webp)(?:\?|$)/i.test(u) || urlLooksNonPhoto(u) || out.includes(u)) return
+    // a photo by its extension — or a CMS file route with NO extension at all (olmenhorst.nl serves
+    // /File/image/<hash>; the caller's size check reads the content-type and the real dimensions anyway)
+    const leaf = u.split(/[?#]/)[0].split('/').filter(Boolean).pop() ?? ''
+    const photoish = /\.(?:jpe?g|png|webp)(?:\?|$)/i.test(u) || (!/\.[a-z0-9]{2,5}$/i.test(leaf) && /\/(?:file|files|image|images|img|media|uploads?|assets?|storage|photos?)\//i.test(u))
+    if (!photoish || urlLooksNonPhoto(u) || out.includes(u)) return
     out.push(u)
   }
   const largest = (srcset: string) => srcset.split(',').map((x) => x.trim().split(/\s+/)).filter((a) => a[0])
@@ -677,7 +681,7 @@ export function pagePhotosFrom(html: string, pageUrl: string, max = 12): string[
     const tag = m[0]
     const ss = tag.match(/\b(?:data-)?srcset=["']([^"']+)["']/i)?.[1]
     if (ss) push(largest(ss))
-    push(tag.match(/\bdata-(?:src|lazy-src|original)=["']([^"']+)["']/i)?.[1])
+    push(tag.match(/\bdata-(?:big|full|large|zoom-image|src|lazy-src|original)=["']([^"']+)["']/i)?.[1])   // the full-size source first
     push(tag.match(/\ssrc=["']([^"']+)["']/i)?.[1])
     if (out.length >= max) break
   }
@@ -783,7 +787,18 @@ export async function wikiImage(query: string): Promise<string | null> {
 // Raw image hits in relevance order, with dimensions. Prefers SERPER (a Google-Images API — far better
 // relevance + reliable dims) when SERPER_API_KEY is set; falls back to the keyless DuckDuckGo scrape (the
 // vqd token is fragile and silently breaks, which is why a paid key is worth it). Both → {image,width,height}[].
+/** THE OPEN-WEB IMAGE SEARCH MUST NOT DIE QUIETLY. The keyless DuckDuckGo endpoint began answering 403 and
+ *  every call returned [] through the catch: the whole "open web" leg of the image gather was gone and the
+ *  only symptom was more blank cards (found 2026-10-02, when the blank log put 39 of 47 in "nothing on its
+ *  page or the open web"). refresh reads this and warns in the health line. */
+export const imageSearchHealth = { asked: 0, answered: 0, lastError: '' }
 async function rawImageResults(query: string): Promise<{ image?: string; width?: number; height?: number }[]> {
+  imageSearchHealth.asked++
+  const out = await rawImageResultsUncounted(query)
+  if (out.length) imageSearchHealth.answered++
+  return out
+}
+async function rawImageResultsUncounted(query: string): Promise<{ image?: string; width?: number; height?: number }[]> {
   if (process.env.SERPER_API_KEY) {
     try {
       const res = await fetch('https://google.serper.dev/images', {
@@ -804,7 +819,8 @@ async function rawImageResults(query: string): Promise<{ image?: string; width?:
     if (!vqd) return []
     await sleep(250)
     const data = await fetch(`https://duckduckgo.com/i.js?l=us-en&o=json&q=${encodeURIComponent(query)}&vqd=${vqd}&f=,,,,,&p=1`,
-      { headers: { 'user-agent': UA, referer: 'https://duckduckgo.com/' } }).then((r) => r.json()).catch(() => null)
+      { headers: { 'user-agent': UA, referer: 'https://duckduckgo.com/' } })
+      .then((r) => { if (!r.ok) imageSearchHealth.lastError = `DuckDuckGo HTTP ${r.status}`; return r.json() }).catch(() => null)
     return data?.results || []
   } catch {
     return []
@@ -1131,6 +1147,21 @@ export function iamsLanguageTwins(a: { id: string; link?: string; when: string; 
   const tree = (p: { id: string; link?: string }) => !/^web-iams-/.test(p.id) ? '' : /iamsterdam\.com\/en\//i.test(p.link ?? '') ? 'en' : /iamsterdam\.com\/(?:uit|nl)\//i.test(p.link ?? '') ? 'nl' : ''
   const ta = tree(a), tb = tree(b)
   return !!ta && !!tb && ta !== tb && a.when === b.when && (a.venue ?? '').trim().toLowerCase() === (b.venue ?? '').trim().toLowerCase()
+}
+
+/** ONE EVENT, TWO ORGANISER RECORDS — I amsterdam lists the festival, Resident Advisor lists its night.
+ *  "Butoh Festival Amsterdam X Edition - Teatro Munganga" (I amsterdam: blank, its only image a 410px
+ *  poster) and "Butoh Festival Amsterdam" (RA: with its flyer) were dealt seven cards apart (2026-10-02).
+ *  dedupe keys structured records by id on purpose — two similar titles from ONE source are two events —
+ *  so this asks for more: one record from each source, the same venue, one title inside the other. */
+export function crossSourceTwins(a: { id: string; title: string; venue?: string }, b: { id: string; title: string; venue?: string }): boolean {
+  const src = (p: { id: string }) => p.id.match(/^web-(iams|ra)-/)?.[1] ?? ''
+  if (!src(a) || !src(b) || src(a) === src(b)) return false
+  const place = (v?: string) => (v ?? '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/^(the|het|de)\s+/, '').replace(/[^a-z0-9]+/g, ' ').trim()
+  if (!place(a.venue) || place(a.venue) !== place(b.venue)) return false
+  const t = (x: string) => x.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, ' ').trim()
+  const [short, long] = t(a.title).length <= t(b.title).length ? [t(a.title), t(b.title)] : [t(b.title), t(a.title)]
+  return short.length >= 10 && long.includes(short)
 }
 
 /** I amsterdam calendar namespace (EN + NL paths) → WKNDR category. null = not a calendar URL. */

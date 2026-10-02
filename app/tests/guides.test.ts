@@ -2,7 +2,7 @@
 // feels stale. Fixtures are the real pages of 10/11 September 2026, trimmed to the guide body.
 import { describe, it, expect } from 'bun:test'
 import { readFileSync } from 'node:fs'
-import { parseIamsGuide, parseLbbWeekendTips, whenFromText, decode, titleVariants, foldGuides, iamsMediaUrl, sameOrganiserDay } from '../scripts/adapters/guides'
+import { parseIamsGuide, parseLbbWeekendTips, whenFromText, decode, titleVariants, foldGuides, iamsMediaUrl, sameOrganiserDay, locationOf } from '../scripts/adapters/guides'
 import { parseEventPage } from '../scripts/adapters/iamsterdam'
 import type { RecordExtras } from '../scripts/lib/pipeline'
 import { titlesAgree, titleLooseMatch, approvalCheck, dedupe, type TasteCorpus, type WeeklySlate } from '../scripts/lib/pipeline'
@@ -233,5 +233,16 @@ describe('two guides, one organiser, one day', () => {
     expect(folded[0].image).toContain('party.webp')
     expect(folded[0].guide).toBe('I amsterdam weekend guide · LBB weekendtips')
     expect(folded[0].source).toBe('I amsterdam · Your Little Black Book')
+  })
+})
+
+describe('a venue is the place, not the rest of the line', () => {
+  it('stops at the next label LBB runs onto the same line', () => {
+    expect(locationOf('Every Saturday… Location: Noordermarkt 1, Amsterdam Dates: Every Monday and Saturday morning')).toBe('Noordermarkt 1, Amsterdam')
+    expect(locationOf('Location: Amstel 1, Amsterdam Time: 9:00 – 17:00')).toBe('Amstel 1, Amsterdam')
+  })
+  it('a plain location line is kept whole; no line, no venue', () => {
+    expect(locationOf('Location: Park Frankendael. Free entry')).toBe('Park Frankendael')
+    expect(locationOf('A lovely market in Oost')).toBe('')
   })
 })
