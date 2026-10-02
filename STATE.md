@@ -62,6 +62,10 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
   at the foot while their neighbours read a real place. The adapter now leaves an unknown venue
   empty (the card shows the area), `restamp.ts` scrubs the feeds already on disk with the poster's
   `realVenue`, and `tests/poster.test.ts` pins both. The live feed was rewritten the same morning.
+  **2026-10-02:** the law had a hole — the weekend-guides adapter still fell back to its own name and
+  the refresh never scrubbed (26 of 106 picks on the 1 Oct build). `refresh.ts` now runs `realVenue` AND
+  `tidyBlurb` over every pick at the choke point before the publish gate; blurbs also lose a glued
+  leading photo credit ("Smilde The market…").
 - **The publish gate reads an outage, not a percentage (2026-09-25).** The weekly refresh failed on
   21 and 24 Sep — "53% / 57% of the crawl imageless, image pass broken?" — and abstained, so the app
   served the 19–20 Sep weekend into the next Friday. The pass was fine (94 imaged vs 100 last good);
