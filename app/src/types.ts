@@ -45,6 +45,8 @@ export interface Pick {
   kid: boolean
   price: string
   image?: string       // a photo OF THE EVENT (or of its venue) — never a stand-in. Absent = the
+  /** the photograph's own caption/credit, when the organiser states one (Eye's campaign images do) */
+  imageCredit?: string
                        // card renders the typographic no-photo face (V.11.9: an honest blank beats
                        // a plausible wrong photo; the category bank + themed stock are retired).
   imageFocal?: [number, number]  // THE FOCAL POINT (V.11.10) — where the photo's subject sits, as

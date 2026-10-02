@@ -19,7 +19,7 @@
  */
 import { CITIES, type City } from '../src/data/cities'
 import type { Pick } from '../src/types'
-import { dedupe, balanceByCategory, isGoodImage, isPortraitImage, imageBroken, urlLooksNonPhoto, imageIsCardworthy, fetchEventImage, toPortrait, wikiImage, webImageCandidates, verifyImageForEvent, venueMatchImage, venueBook, linkIsIndex, imageFocalPoint, focalFailures, originalOf, NO_PHOTO_CAP, whenBeforeWeekend, upcomingWeekend, weekendMode, weekendModes, stampServeOrder, publishCheck, crownsActive, JUDGE_FLOOR, STAR_BOOST, linkOk, mapLimit, rxOf, titleKey, titleLooseMatch, tokKey, approvalCheck, pickByTitle, markThisWeekend, type TasteCorpus, type WeeklySlate, imagePassBroken } from './lib/pipeline'
+import { dedupe, balanceByCategory, isGoodImage, isPortraitImage, imageBroken, urlLooksNonPhoto, imageIsCardworthy, fetchEventImage, toPortrait, wikiImage, webImageCandidates, verifyImageForEvent, venueMatchImage, venueBook, linkIsIndex, imageFocalPoint, focalFailures, originalOf, NO_PHOTO_CAP, whenBeforeWeekend, upcomingWeekend, weekendMode, weekendModes, stampServeOrder, publishCheck, crownsActive, JUDGE_FLOOR, STAR_BOOST, linkOk, mapLimit, rxOf, titleKey, titleLooseMatch, tokKey, approvalCheck, pickByTitle, markThisWeekend, type TasteCorpus, type WeeklySlate, imagePassBroken, fetchEventImages, bestRendition } from './lib/pipeline'
 import { fixWhen, latestDateOf, whenActiveBy, whenIsPast, whenLooksBroken } from '../src/lib/when'
 import { effectiveFreshness, NEW_DAYS } from '../src/lib/freshness'
 import { mergeSightings, pruneRegistry, appendRun, type SeenRegistry, type HealthFile } from './lib/ingest'
@@ -35,6 +35,7 @@ import { iamsterdamExtract, upgradeViaIamsterdam } from './adapters/iamsterdam'
 import { iamsGuideExtract, lbbWeekendTipsExtract, foldGuides } from './adapters/guides'
 import { lbbExtract } from './adapters/lbb'
 import { scoutedExtract } from './adapters/scouted'
+import { eyeExtract } from './adapters/eye'
 import { curatedImage } from './curated'
 import { heroPicks } from './heroes'
 import corpus from './taste/corpus.json'
@@ -118,6 +119,12 @@ async function buildCity(city: City) {
   const iams = await iamsterdamExtract(city.key)
   fromRoster.push(...iams)
   if (iams.length) console.log(`  iams:     ${iams.length} events (I amsterdam · deterministic variety)`)
+
+  // EYE FILMMUSEUM — its exhibitions, read from the museum's own page (adapters/eye.ts): keyless, the
+  // museum's dates and its campaign photography. Ness, 2026-10-02: "the Eye and its exhibits — nice photography."
+  const eye = await eyeExtract(city.key)
+  fromRoster.push(...eye)
+  if (eye.length) console.log(`  eye:      ${eye.length} exhibitions (Eye Filmmuseum · its own page)`)
 
   // THE WEEKEND GUIDES (V.11.11) — I amsterdam's weekend guide + LBB's weekendtips, read AS guides:
   // keyless, deterministic, every item resolved to the organiser's record when one exists. These are
@@ -299,7 +306,7 @@ async function buildCity(city: City) {
   if (!SKIP_IMAGES) {
     const live = picks.filter(isLive)
     for (const p of live) p.imageWhy = undefined                     // every receipt is earned THIS run
-    const trustedImg = (p: Pick) => /^web-(iams|ra|lbb|scout|guide)-/.test(p.id) && !!p.image   // guide = the guide's own editorial photo
+    const trustedImg = (p: Pick) => /^web-(iams|ra|lbb|scout|guide|eye)-/.test(p.id) && !!p.image   // guide = the guide's own editorial photo
     const PERFORMER = new Set(['live', 'stage'])
     const visionOn = !!process.env.ANTHROPIC_API_KEY
 
@@ -314,14 +321,17 @@ async function buildCity(city: City) {
     // logos/flat graphics/blank frames while KEEPING real posters (the Agatha class). A reject now simply
     // DROPS the image — the pick re-enters the gather below like any imageless one (was: → bank).
     {
-      let sane = 0
+      let sane = 0, upsized = 0
       await mapLimit(live.filter(trustedImg), 3, async (p) => {
         // isGoodImage = logo/stock URL smell + REAL pixel dims (≥700 shortest side — a low-res organiser
         // upload upscaled to the 1200-tall card is mush: the Amsterdamse Bos class) + sane aspect.
-        const bad = !(await isGoodImage(p.image!)) || !(await imageIsCardworthy(p.image!))
-        if (bad) { p.image = undefined; sane++ } else p.imageWhy = 'organiser'
+        // a trusted image that fails the size screen gets one more chance at a LARGER rendition of itself
+        const img = (await isGoodImage(p.image!)) ? p.image! : await bestRendition(p.image!)
+        const bad = !img || !(await imageIsCardworthy(img))
+        if (bad) { p.image = undefined; sane++ } else { if (img !== p.image) upsized++; p.image = img!; p.imageWhy = 'organiser' }
       })
       if (sane) console.log(`  sanity:   ${sane} organiser logos/blank frames dropped → re-gathered below`)
+      if (upsized) console.log(`  upsized:  ${upsized} organiser images swapped for a larger rendition of the same file`)
     }
     // an untrusted image that ARRIVED with the pick (the LLM lane's matched page photo) must at least be
     // a real photo of card-worthy size; its SUBJECT is judged by the vision QA at the end of the pass
@@ -356,7 +366,7 @@ async function buildCity(city: City) {
     })
     if (portraits) console.log(`  portrait: ${portraits} performer cards → verified Wikipedia portrait`)
 
-    let visGot = 0, visRej = 0
+    let visGot = 0, visRej = 0, ownPage = 0
     await mapLimit(live.filter((p) => !p.image), 2, async (p) => {
       const perf = PERFORMER.has(p.category)
       // VENUE-AWARE QUERY — Ness's manual test proved it: "Martine Gutierrez Huis Marseille" returns the
@@ -375,14 +385,16 @@ async function buildCity(city: City) {
       // ORGANISER FIRST: the event page's own image leads the candidate list — when it and a web hit both
       // "fit", vision tie-breaks toward the honest source (a Hamburg guide's japanese-food photo "fits" a
       // japanese restaurant; only the restaurant's OWN photo is true). Web hits fill in behind it.
-      if (p.link) { og = await fetchEventImage(p.link); if (og) cands.push(og) }
+      // …and its OWN PAGE'S PHOTOGRAPHS behind the share image (which is a logo more often than not on a bar's site)
+      let own: string[] = []
+      if (p.link) { own = await fetchEventImages(p.link); og = own[0] ?? null; cands.push(...own) }
       cands.push(...await webImageCandidates(q, 5))
       if (!cands.length) return
       const best = visionOn ? await verifyImageForEvent(cands, p, city.name) : cands[0]
-      if (best) { p.image = best; p.imageWhy = best === og ? 'event-page' : best === wiki ? 'portrait' : 'web'; visGot++ }
+      if (best) { p.image = best; p.imageWhy = own.includes(best) ? 'event-page' : best === wiki ? 'portrait' : 'web'; visGot++; if (own.includes(best) && best !== og) ownPage++ }
       else if (visionOn) visRej++
     })
-    console.log(`  vision:   +${visGot} live picks imaged via verified search${visRej ? ` · ${visRej} rejected → no photo` : ''}`)
+    console.log(`  vision:   +${visGot} live picks imaged via verified search${ownPage ? ` (${ownPage} from the venue's own page)` : ''}${visRej ? ` · ${visRej} rejected → no photo` : ''}`)
 
     const seen = new Map<string, number>()
     for (const p of live) if (p.image && !trustedImg(p)) seen.set(p.image, (seen.get(p.image) || 0) + 1)
@@ -819,7 +831,7 @@ async function buildCity(city: City) {
     })
     if (twins.size) picks = picks.filter((p) => !twins.has(p.id))
     await mapLimit(picks.filter((p) => isLive(p) && p.image && !HONEST.has(p.imageWhy ?? '')), 3, async (p) => {
-      if (/^web-(iams|ra|lbb|scout|guide)-/.test(p.id)) { p.imageWhy = 'organiser'; relabelled++; return }
+      if (/^web-(iams|ra|lbb|scout|guide|eye)-/.test(p.id)) { p.imageWhy = 'organiser'; relabelled++; return }
       const carried = originalOf(p.image!)
       const og = p.link ? await fetchEventImage(p.link) : null
       const cands = [...new Set([og, carried].filter((u): u is string => !!u && u.startsWith('https://')))]

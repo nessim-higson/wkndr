@@ -2,7 +2,7 @@
 // the image URL screens, and the weekend window. These are the pure functions the whole content
 // pipeline leans on; each rule here encodes a bug we actually hit during the pipeline era.
 import { describe, it, expect } from 'bun:test'
-import { dedupe, unionCredits, titleKey, urlLooksNonPhoto, toPortrait, upcomingWeekend, whenBeforeWeekend, imagePassBroken } from '../scripts/lib/pipeline'
+import { dedupe, unionCredits, titleKey, urlLooksNonPhoto, toPortrait, upcomingWeekend, whenBeforeWeekend, imagePassBroken, largerRenditions, pagePhotosFrom, isOwnPage, approvalCheck, type TasteCorpus, type WeeklySlate } from '../scripts/lib/pipeline'
 import { whenIsPast } from '../src/lib/when'
 import type { Pick } from '../src/types'
 
@@ -241,5 +241,47 @@ describe('imagePassBroken — the publish gate reads an OUTAGE, not a percentage
     expect(imagePassBroken(99, 56, null)).toBe(false)
     expect(imagePassBroken(99, 70, null)).toBe(true)
     expect(imagePassBroken(6, 6, 47)).toBe(false)
+  })
+})
+
+describe('largerRenditions — the same photograph, more pixels', () => {
+  it('asks a resize query for one sane width and keeps the rest of the query', () => {
+    const v = largerRenditions('https://www.artis.nl/media/drvgtbyd/deepseeingcurrents_liggend.jpg?width=1200&height=630&quality=80&v=1dd5')
+    expect(v[0]).toBe('https://www.artis.nl/media/drvgtbyd/deepseeingcurrents_liggend.jpg?quality=80&v=1dd5&width=2000')
+    expect(v[v.length - 1]).toBe('https://www.artis.nl/media/drvgtbyd/deepseeingcurrents_liggend.jpg?width=1200&height=630&quality=80&v=1dd5')
+  })
+  it('knows WordPress, Craft, Wix and Squarespace', () => {
+    expect(largerRenditions('https://x.nl/wp-content/uploads/2026/09/guide-700x525.jpg')[0]).toBe('https://x.nl/wp-content/uploads/2026/09/guide.jpg')
+    expect(largerRenditions('https://assets.eyefilm.nl/images/programme-item/_1200x630_crop_center-center_none/campagnebeeld.jpg')[0]).toBe('https://assets.eyefilm.nl/images/programme-item/campagnebeeld.jpg')
+    expect(largerRenditions('https://static.wixstatic.com/media/396d30_3e~mv2.jpg/v1/fill/w_600,h_400,al_c/396d30_3e~mv2.jpg')[0]).toBe('https://static.wixstatic.com/media/396d30_3e~mv2.jpg')
+    expect(largerRenditions('https://images.squarespace-cdn.com/content/v1/a/b/room.jpg?format=750w')[0]).toBe('https://images.squarespace-cdn.com/content/v1/a/b/room.jpg?format=2500w')
+  })
+  it('leaves a plain URL alone, and always ends on the URL as given', () => {
+    expect(largerRenditions('https://x.nl/photo.jpg')).toEqual(['https://x.nl/photo.jpg'])
+    for (const u of ['https://x.nl/a-700x525.jpg', 'https://x.nl/a.jpg?w=600']) { const v = largerRenditions(u); expect(v[v.length - 1]).toBe(u) }
+  })
+})
+
+describe("the page's own photographs", () => {
+  const html = `<img src="/img/logo.png"><img data-src="https://cdn.x.nl/room.jpg" src="data:image/gif;base64,AAA">
+    <picture><source srcset="/a-400.jpg 400w, /a-1600.jpg 1600w, /a-800.jpg 800w"><img src="/a-400.jpg"></picture>
+    <img src="//cdn.x.nl/bar.webp?x=1&amp;y=2"><img src="/sprite-icons.png"><img src="/vector.svg">`
+  it('takes the largest srcset entry and lazy sources, resolves them, skips logos, icons and vectors', () => {
+    expect(pagePhotosFrom(html, 'https://x.nl/menu/')).toEqual(['https://cdn.x.nl/room.jpg', 'https://x.nl/a-1600.jpg', 'https://x.nl/a-400.jpg', 'https://cdn.x.nl/bar.webp?x=1&y=2'])
+  })
+  it('only an event’s or a venue’s own page counts as its page', () => {
+    for (const u of ['https://bistrodefles.nl/', 'https://www.artis.nl/en/x', 'https://www.eyefilm.nl/en/programme/x/1']) expect(isOwnPage(u)).toBe(true)
+    for (const u of ['https://www.yourlittleblackbook.me/en/weekendtips-amsterdam/', 'https://www.iamsterdam.com/en/whats-on/x', 'https://www.instagram.com/bar_francois/', 'https://duckduckgo.com/?q=x', 'https://tiqets.tpo.lv/d7W']) expect(isOwnPage(u)).toBe(false)
+  })
+})
+
+describe('a starred venue admits its own programme', () => {
+  const corpus = { starredKeeps: [], topPicks: [], starredVenues: [{ match: 'eye filmmuseum', stars: 4 }] } as unknown as TasteCorpus
+  const weekly = { weekend: '', lead: [], later: [], pile: [] } as unknown as WeeklySlate
+  it('by venue, at the bar, and nobody else', () => {
+    const ok = approvalCheck(corpus, weekly, [])
+    expect(ok({ title: 'Ulrich Seidl – Über das Leben', venue: 'Eye Filmmuseum' })).toBe(true)
+    expect(ok({ title: 'Some other show', venue: 'Stedelijk Museum' })).toBe(false)
+    expect(ok({ title: 'Eye-catching market', venue: '' })).toBe(false)
   })
 })

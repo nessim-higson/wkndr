@@ -36,7 +36,7 @@ const ROWS: Row[] = [
     why: 'Show-stopping room · book ahead', image: 'https://cache.marriott.com/content/dam/marriott-renditions/AMSWH/amswh-the-duchess-7579-hor-clsc.jpg' },
   { slug: 'mata-hari', title: 'Mata Hari', area: 'Centrum (Wallen)', category: 'drink', tier: 'bespoke', price: '€€', when: 'Dinner & drinks',
     blurb: 'A warm canal-side bar-restaurant on the Wallen — candlelit, characterful and a local antidote to the crowds.',
-    why: 'Canal-side · candlelit', image: 'https://redlightinfo.nl/wp-content/uploads/2024/06/MAtihari.jpeg' },
+    why: 'Canal-side · candlelit', image: 'https://matahari.yourhotelwebsite.com/upload/heading/image-900x800_2.webp' },
   { slug: 'de-ceuvel', title: 'De Ceuvel', area: 'Noord', category: 'drink', tier: 'bespoke', price: '€€', when: 'Daily · sunny best',
     blurb: 'A café on a reclaimed shipyard — a circular-economy experiment with a ramshackle, plant-filled terrace.',
     why: 'Sustainable · creative Noord', image: 'https://i.pinimg.com/originals/b4/08/ac/b408ac9c5dc7534a2bf4483b9b21352c.jpg' },

@@ -108,6 +108,8 @@ export type TasteCorpus = {
   starredKeeps: { match: string; stars: number }[]
   topPicks: string[]
   starAnchors?: { title: string; stars: number }[]
+  /** VENUES whose own programme ships on Ness's word (2026-10-02: "the Eye and its exhibits") — matched on `venue` */
+  starredVenues?: { match: string; stars: number }[]
 }
 export type WeeklySlate = { weekend: string; lead: string[]; later: string[]; pile?: string[] }
 // "Ligconcert — lying-down concert, Maritime Museum" → ["Ligconcert"]; "Vlieger / Moise /
@@ -169,14 +171,15 @@ export function imagePassBroken(liveBeforeCap: number, imagelessBeforeCap: numbe
  *  gating on it would be circular — approved picks clearing a bar their own approval had set. */
 export function publishCheck(
   corpus: TasteCorpus, weekly: WeeklySlate, heroTitles: string[], now: Date = new Date(),
-): (p: { title: string; buzz?: number; judgeScore?: number; guide?: string }) => boolean {
+): (p: { title: string; buzz?: number; judgeScore?: number; guide?: string; venue?: string }) => boolean {
   const approved = approvalCheck(corpus, weekly, heroTitles, now)
   return (p) => (p.judgeScore ?? 0) >= JUDGE_FLOOR || approved(p)
 }
 
 export function approvalCheck(
   corpus: TasteCorpus, weekly: WeeklySlate, heroTitles: string[], now: Date = new Date(),
-): (p: { title: string; buzz?: number; guide?: string }) => boolean {
+): (p: { title: string; buzz?: number; guide?: string; venue?: string }) => boolean {
+  const venueRx: RegExp[] = (corpus.starredVenues ?? []).filter((v) => v.stars >= 4).map((v) => rxOf(v.match))
   const rx: RegExp[] = [
     ...corpus.starredKeeps.map((k) => rxOf(k.match)),
     ...corpus.topPicks.map(rxOf),
@@ -193,6 +196,7 @@ export function approvalCheck(
     (p.buzz ?? 1) >= 3 ||
     heroKeys.has(titleKey(p.title)) ||
     rx.some((r) => r.test(p.title)) ||
+    (!!p.venue && venueRx.some((r) => r.test(p.venue!))) ||   // a starred venue's own programme
     slate.some((t) => titleLooseMatch(p.title, t))
 }
 
@@ -596,11 +600,122 @@ export async function fetchEventImage(url: string, timeoutMs = 8000): Promise<st
       if (img.startsWith('//')) img = 'https:' + img
       else if (img.startsWith('/')) { const u = new URL(url); img = u.origin + img }
       img = img.replace(/^http:\/\//i, 'https://')                          // avoid mixed-content blanks
-      if (img.startsWith('http') && (await isGoodImage(img))) return img     // SCREEN each candidate
+      if (!img.startsWith('http')) continue
+      const good = await bestRendition(img)                                  // SCREEN each candidate — at its largest rendition
+      if (good) return good
     }
     return null
   } catch {
     return null
+  }
+}
+
+// LARGER RENDITIONS OF THE SAME FILE (2026-10-02). Ness: "I see a LOT of cards without images. Are we sure
+// there is nothing we can do for those?" We were not. The web's standard share image is 1200×630, and the
+// portrait card's sharpness guard (isGoodImage) rightly turns it away — but the CMS behind it usually holds
+// the same photograph far larger, one URL edit away: ARTIS serves `…jpg?width=1200&height=630` and, asked
+// for width=2000, the same picture at 2000×1333. Pure: the URLs worth trying, the URL as given LAST.
+// Same file, more pixels — never a different image.
+const RESIZE_PARAMS = ['width', 'height', 'w', 'h', 'rmode', 'mode', 'fit', 'crop', 'rect', 'ar', 'dpr']
+export function largerRenditions(url: string): string[] {
+  const out: string[] = []
+  const add = (u: string) => { if (u && u !== url && !out.includes(u)) out.push(u) }
+  try {
+    const u = new URL(url)
+    const keys = [...u.searchParams.keys()]
+    // ① resize QUERIES (Umbraco / ImageSharp, imgix, Contentful, Sanity, Shopify): one sane width, aspect kept
+    if (keys.some((k) => RESIZE_PARAMS.includes(k.toLowerCase()))) {
+      const big = new URL(url)
+      for (const k of keys) if (RESIZE_PARAMS.includes(k.toLowerCase())) big.searchParams.delete(k)
+      big.searchParams.set(keys.some((k) => /^(w|h)$/i.test(k)) ? 'w' : 'width', '2000')
+      add(big.toString())
+    }
+    // ② Squarespace: ?format=750w → its largest rendition
+    if (/squarespace(-cdn)?\.com$/i.test(u.hostname) && u.searchParams.has('format')) {
+      const big = new URL(url); big.searchParams.set('format', '2500w'); add(big.toString())
+    }
+    // ③ WordPress: name-700x525.jpg → name.jpg
+    add(url.replace(/-\d{2,4}x\d{2,4}(?=\.(?:jpe?g|png|webp)(?:\?|$))/i, ''))
+    // ④ Craft CMS transforms: /_1200x630_crop_center-center_none/ → the untransformed file
+    add(url.replace(/\/_\d+x\d+_[a-z0-9_-]+\//i, '/'))
+    // ⑤ Wix: …~mv2.jpg/v1/fill/w_600,h_400,…/name.jpg → the media file itself
+    add(url.replace(/(static\.wixstatic\.com\/media\/[^/]+\.(?:jpe?g|png|webp))\/v1\/.*$/i, '$1'))
+  } catch { /* not a URL we can reason about */ }
+  return [...out, url]
+}
+
+/** The first rendition of this image that passes the card's quality screen — a larger one when the CMS has it. */
+export async function bestRendition(url: string): Promise<string | null> {
+  for (const v of largerRenditions(url)) if (v.startsWith('https://') && (await isGoodImage(v))) return v
+  return null
+}
+
+// WHOSE PAGE IS IT? Only the event's or the venue's OWN page has its photographs. A guide's article, a
+// listing, a ticket shop or a social profile shows other things beside it — LBB's weekendtips page carries
+// photos of twenty OTHER tips — so those pages give us their share image to judge and nothing more.
+const NOT_OWN_PAGE = /(^|\.)(yourlittleblackbook\.me|iamsterdam\.com|amsterdamtips\.com|timeout\.com|instagram\.com|facebook\.com|tiktok\.com|duckduckgo\.com|google\.[a-z.]+|tiqets\.[a-z.]+|tpo\.lv|ticketmaster\.[a-z.]+|eventbrite\.[a-z.]+|ra\.co)$/i
+export function isOwnPage(url: string): boolean {
+  try { return !NOT_OWN_PAGE.test(new URL(url).hostname) } catch { return false }
+}
+
+// THE PAGE'S OWN PHOTOGRAPHS — beyond og:image. A bar's share image is very often its LOGO (SPIN, Murmur,
+// Café Atelier, Le Foodwalk all were), while the photographs of the room sit right there in the page. Pure:
+// every <img>/<source> on the page, largest srcset entry first, resolved, https, photo-shaped by URL, in
+// document order. The caller screens them (size) and the vision verifier still decides the subject.
+export function pagePhotosFrom(html: string, pageUrl: string, max = 12): string[] {
+  const out: string[] = []
+  const push = (raw?: string) => {
+    if (!raw) return
+    let u = ''
+    try { u = new URL(raw.trim().replace(/&amp;/g, '&'), pageUrl).toString().replace(/^http:\/\//i, 'https://') } catch { return }
+    if (!/\.(?:jpe?g|png|webp)(?:\?|$)/i.test(u) || urlLooksNonPhoto(u) || out.includes(u)) return
+    out.push(u)
+  }
+  const largest = (srcset: string) => srcset.split(',').map((x) => x.trim().split(/\s+/)).filter((a) => a[0])
+    .sort((a, b) => (parseFloat(b[1]) || 0) - (parseFloat(a[1]) || 0))[0]?.[0]
+  for (const m of html.matchAll(/<(?:img|source)\b[^>]*>/gi)) {
+    const tag = m[0]
+    const ss = tag.match(/\b(?:data-)?srcset=["']([^"']+)["']/i)?.[1]
+    if (ss) push(largest(ss))
+    push(tag.match(/\bdata-(?:src|lazy-src|original)=["']([^"']+)["']/i)?.[1])
+    push(tag.match(/\ssrc=["']([^"']+)["']/i)?.[1])
+    if (out.length >= max) break
+  }
+  return out.slice(0, max)
+}
+
+/** The event page's own images, best first: its share image (largest rendition), then — on the event's or
+ *  venue's OWN page only — up to `pageMax` photographs from the page itself. One fetch. Never throws. */
+export async function fetchEventImages(url: string, pageMax = 3, timeoutMs = 8000): Promise<string[]> {
+  try {
+    const res = await fetch(url, { headers: { 'user-agent': UA, accept: 'text/html' }, signal: AbortSignal.timeout(timeoutMs), redirect: 'follow' })
+    if (!res.ok) return []
+    const html = await res.text()
+    const base = res.url || url
+    const out: string[] = []
+    const shares = [
+      jsonLdImage(html),
+      html.match(/<meta[^>]+property=["']og:image(?::secure_url)?["'][^>]+content=["']([^"']+)["']/i)?.[1],
+      html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:image["']/i)?.[1],
+      html.match(/<meta[^>]+name=["']twitter:image["'][^>]+content=["']([^"']+)["']/i)?.[1],
+    ]
+    for (const raw of shares) {
+      if (!raw) continue
+      let img = ''
+      try { img = new URL(raw.trim().replace(/&amp;/g, '&'), base).toString().replace(/^http:\/\//i, 'https://') } catch { continue }
+      const good = await bestRendition(img)
+      if (good) { out.push(good); break }
+    }
+    if (isOwnPage(base)) {
+      for (const cand of pagePhotosFrom(html, base)) {
+        if (out.length >= pageMax + 1) break
+        const good = await bestRendition(cand)
+        if (good && !out.includes(good)) out.push(good)
+      }
+    }
+    return out
+  } catch {
+    return []
   }
 }
 
@@ -745,7 +860,7 @@ export async function verifyImageForEvent(
 ): Promise<string | null> {
   const key = process.env.ANTHROPIC_API_KEY
   const model = process.env.ANTHROPIC_MODEL || 'claude-haiku-4-5'
-  const uniq = [...new Set(candidates)].slice(0, 4)
+  const uniq = [...new Set(candidates)].slice(0, 5)   // was 4 — the page's own photos lead the list now (2026-10-02)
   if (!key || !uniq.length) return null
   // download + base64 the candidates that actually return a real image (skip the rest)
   const imgs: { url: string; data: string; mt: string }[] = []
