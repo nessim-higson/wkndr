@@ -1111,7 +1111,7 @@ export default function App() {
 
               {glassActive && <button type="button" className="glass-header-weather"
                 aria-label="View weekend forecast"
-                title={currentReading && !glassPreview ? `Amsterdam · ${currentReading.note}` : undefined}
+                title={glassPreview ? undefined : scrub ? `Amsterdam · forecast for ${scrub.clock}` : currentReading ? `Amsterdam · ${currentReading.note}` : undefined}
                 onClick={(e) => { e.stopPropagation(); setGlassForecastOpen(true) }}
                 onKeyDown={(e) => e.stopPropagation()}>
                 <GlassWeatherIcon size={22} strokeWidth={1.3} aria-hidden />
