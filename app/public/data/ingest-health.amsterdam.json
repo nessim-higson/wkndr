@@ -2,18 +2,6 @@
  "v": 1,
  "runs": [
   {
-   "date": "2026-08-29",
-   "kind": "daily",
-   "sources": {
-    "Het Parool PS": 6,
-    "Subbacultcha": 6,
-    "Amsterdam Foodie": 6,
-    "I amsterdam": 53,
-    "Resident Advisor": 30
-   },
-   "fresh": 69
-  },
-  {
    "date": "2026-08-30",
    "kind": "daily",
    "sources": {
@@ -641,6 +629,32 @@
     "Resident Advisor": 30
    },
    "fresh": 10
+  },
+  {
+   "date": "2026-10-02",
+   "kind": "weekly",
+   "sources": {
+    "I amsterdam · Girls Who Magazine · Your Little Black Book": 1,
+    "I amsterdam · Your Little Black Book": 7,
+    "I amsterdam · Your Little Black Book · Het Parool PS": 1,
+    "Your Little Black Book · I amsterdam": 1,
+    "Your Little Black Book": 37,
+    "Your Little Black Book · Kidsproof": 1,
+    "I amsterdam · Kidsproof": 1,
+    "I amsterdam · Concertgebouw": 1,
+    "I amsterdam": 40,
+    "I amsterdam · Maps · Your Little Black Book": 1,
+    "Fresh find": 8,
+    "Resident Advisor": 27,
+    "Amsterdam Tips": 2,
+    "Kidsproof": 2,
+    "Eye Filmmuseum": 3,
+    "Amsterdam Foodie": 6,
+    "Eventbrite": 2,
+    "Het Parool PS": 3,
+    "Subbacultcha": 6
+   },
+   "fresh": 14
   }
  ],
  "alerts": []
