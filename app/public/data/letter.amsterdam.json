@@ -1,7 +1,7 @@
 {
  "v": 1,
  "city": "amsterdam",
- "builtAt": "2026-10-02T12:52:51.380Z",
+ "builtAt": "2026-10-02T12:59:27.829Z",
  "feedAt": "2026-10-01T17:06:08.881Z",
  "weekend": {
   "sat": "2026-10-03",
@@ -1774,23 +1774,10 @@
   }
  ],
  "changes": {
-  "since": "2026-10-01T17:06:08.888Z",
+  "since": "2026-10-02T12:52:51.380Z",
   "in": [],
   "out": [],
-  "moved": [
-   {
-    "id": "web-ra-2499136",
-    "title": "UNTIED",
-    "from": null,
-    "to": 10
-   },
-   {
-    "id": "web-guide-iams-budget-pick-ijver-anniversary",
-    "title": "Budget pick: IJver anniversary",
-    "from": 10,
-    "to": null
-   }
-  ]
+  "moved": []
  },
  "doubts": {
   "noPhoto": [
