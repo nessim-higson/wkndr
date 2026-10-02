@@ -23,6 +23,7 @@ import { dedupe, balanceByCategory, isGoodImage, isPortraitImage, imageBroken, u
 import { fixWhen, latestDateOf, whenActiveBy, whenIsPast, whenLooksBroken } from '../src/lib/when'
 import { effectiveFreshness, NEW_DAYS } from '../src/lib/freshness'
 import { mergeSightings, pruneRegistry, appendRun, type SeenRegistry, type HealthFile } from './lib/ingest'
+import { realVenue } from './poster'
 import { emitLetter } from './lib/letter'
 import { songkickAdapter } from './adapters/songkick'
 import { llmExtract } from './adapters/llm'
@@ -935,6 +936,11 @@ async function buildCity(city: City) {
     picks = picks.filter((p) => !whenLooksBroken(p.when))
     if (before !== picks.length) console.log(`  broken:   dropped ${before - picks.length} malformed date range(s) at the gate`)
   }
+
+  // A VENUE IS A PLACE, NEVER A PUBLISHER — at the choke point, whichever door a pick came in through
+  // (2026-10-02: the law was applied in the I amsterdam adapter and the restamp, and the guides adapter's
+  // fallback walked straight past both). realVenue is the poster's own test for it.
+  for (const p of picks) p.venue = realVenue(p)
 
   // PUBLISH GATE — refuse to ship a BROKEN feed. A quiet/thin weekend is NOT broken (it just warns); only the
   // things that would actually embarrass us hard-fail. On failure we ABSTAIN — exit(1) WITHOUT writing — so the

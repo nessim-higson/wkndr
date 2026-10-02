@@ -223,7 +223,9 @@ function toPick(item: GuideItem, guide: string, source: string, idPrefix: string
   return {
     id: `${idPrefix}-${slug(item.title)}`,
     title: item.title.slice(0, 90),
-    venue: item.text.match(/Location:\s*([^.|]{3,60})/)?.[1]?.trim() ?? source,
+    // a venue is a place, never a publisher: no "Location:" line → no venue (the card shows the area) — this
+    // used to fall back to the guide's own name, and 26 live cards read "Your Little Black Book" as a place
+    venue: item.text.match(/Location:\s*([^.|]{3,60})/)?.[1]?.trim() ?? '',
     area: '',
     when: item.when,
     category: item.category,
