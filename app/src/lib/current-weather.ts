@@ -158,7 +158,8 @@ export function fuseSky(model: ModelNow, metar: Metar | null, sun: SunHour | nul
   if (grey) return made('cloud', 'Cloudy')
   const partly = metar?.cover === 2 || sun?.cls === 'mixed' || (!metar && !sun && model.code >= 2)
   if (!model.isDay) return made('night', partly ? 'Partly cloudy' : 'Clear night')
-  return made('clear', partly ? 'Partly cloudy' : metar?.cover === 1 ? 'Mostly sunny' : 'Clear skies')
+  // short on purpose: the header gives this label one line beside the temperature on a phone
+  return made('clear', partly ? 'Partly cloudy' : metar?.cover === 1 ? 'Sunny' : 'Clear skies')
 }
 
 /** The forecast-only reading (no station report, no satellite): what the header shows when both are out. */

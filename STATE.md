@@ -661,20 +661,24 @@ organ-concert veto REVERSED (community-authentic wins). The pipeline stamps `top
 GUARANTEES topped/led picks into the feed (pull-back from prePool/canon if the balancer cut them).
 
 ## Open items / next
-000. **THE "NOW" SKY IS A FORECAST, NOT AN OBSERVATION (found 2026-10-02, NOT FIXED, awaiting Ness).** Ness, under
-   a blue sky: "Why is this returning a cloudy sky?" `useCurrentWeather` reads Open-Meteo `current`, which is
-   a 15-minute slice of a MODEL (for NL: KNMI Harmonie). At 16:45 it said code 3, 94% cover, 87% low cloud;
-   Schiphol's METAR at 16:55 said FEW029 and the station pyranometer read clear-sky sunshine. Measured over
-   22 days of daytime hours against satellite-observed sunshine: in hours when the sun was out the app showed
-   "Cloudy" 35% of the time (12 of 34). Two causes: the model misplaces low cloud (4 of 12, today's case), and
-   WMO code 3 is derived from TOTAL cover, so thin high cloud the sun shines through reads as overcast (8 of
-   12). Even an hour-old observation picked the right plate 82% of the time, the model 71%.
-   RECOMMENDED: the sky for "now" from Schiphol's METAR (observed layers and present weather, day and night,
-   public domain). aviationweather.gov sends no CORS header, so it needs a small same-origin endpoint (a
-   Pages function); model stays as the fallback, with a layer-aware rule (low and mid cloud, not total).
-   Ruled out: Buienradar's `weatherdescription` (CORS-open, but it said "Zwaar bewolkt" under the same sun;
-   its measured `sunpower` is real, its terms are non-commercial). Open-Meteo's satellite radiation API is
-   observed and CORS-open but hourly, about an hour behind, and blind at night.
+000. **THE "NOW" SKY IS OBSERVED, NOT FORECAST (shipped 2026-10-02 evening).** Ness, under a blue sky: "Why is
+   this returning a cloudy sky?", then, rightly: "I just called out that the weather is off and it's still
+   off." The header had been reading Open-Meteo `current`, a 15-minute slice of a MODEL (KNMI Harmonie): code
+   3, 87% low cloud, while Schiphol reported FEW029 and the satellite measured full sun. Scored over 22 days
+   of dry daytime hours against satellite-measured sunshine, "code 3 = Cloudy" was right 66% of the time and
+   showed grey in 12 of 33 sunny hours; the new reading scores 86% and 2 of 33.
+   RULES (`src/lib/current-weather.ts`, pure, tested with that afternoon as the fixture): weather is the
+   observer's (Schiphol METAR) when a report is at hand; BKN/OVC low cloud in the report is grey; otherwise
+   the satellite's last complete hour of radiation decides (Open-Meteo satellite API: sunny / overcast);
+   only an in-between hour asks the model, about its low and mid layers; at night the report, then the layers.
+   PLUMBING: `app/public/_worker.js` is a Pages advanced-mode worker, `/api/*` only (`_routes.json`): it
+   relays aviationweather.gov's EHAM METAR (no CORS there), cached five minutes. `_headers` and `_redirects`
+   still apply to static assets (verified on a preview and live). The dev server and the legacy host have
+   no relay and fall through to a public mirror (metar.vatsim.net), then to the forecast alone.
+   The header tooltip says what the reading stands on ("Observed: Schiphol 17:25 · satellite sunshine to
+   17:00" / "Forecast estimate"). NOT USED, on purpose: Buienradar's feed (its terms require permission
+   for mobile or commercial use, and its `weatherdescription` said "Zwaar bewolkt" under the same sun).
+   STILL A FORECAST, correctly: the weekend ranking and the hour scrubber.
 00. **Awaiting Ness (2026-10-02):** (a) the UNFURL direction — board sent, B "the deck on the sky" recommended,
    with a dated link title stamped at each refresh; (b) the PHOTO-BAND card — a landscape photo across the
    top of a glass card, for good photos the portrait guard rejects (Museum Market 960×720, Noordermarkt

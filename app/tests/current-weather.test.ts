@@ -86,7 +86,7 @@ describe('one reading from the forecast, the report and the sun', () => {
   test('THAT AFTERNOON: the model says overcast, Schiphol says a few clouds, the satellite says sun', () => {
     const r = fuseSky(model(), parseMetar(REPORT, AT), latestSunHour({ hourly: { time: [Date.UTC(2026, 9, 2, 15) / 1000], shortwave_radiation: [349.5], direct_radiation: [251], terrestrial_radiation: [515] } }, AT))
     expect(r.sky).toBe('clear')
-    expect(r.label).toBe('Mostly sunny')
+    expect(r.label).toBe('Sunny')
     expect(r.basis).toBe('observed')
     expect(r.note).toBe('Observed: Schiphol 16:55 · satellite sunshine to 17:00')
     expect(decodeCurrentWeather({ current: { time: model().time / 1000, temperature_2m: 20.4, weather_code: 3, is_day: 1, cloud_cover_low: 87, cloud_cover_mid: 0 } }, AT)?.sky).toBe('cloud')   // what the forecast alone would have shown
