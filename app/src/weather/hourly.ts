@@ -27,11 +27,14 @@ export interface HourWx {
   pop: number
   /** WMO weather code */
   code: number
+  /** forecast cloud cover in the low and mid sky, % (null when the payload does not carry it) */
+  low?: number | null
+  mid?: number | null
 }
 export interface HourReading extends HourWx { scene: GlassScene; sky: string; mode: Mode; clock: string }
 
 export function decodeHourly(data: unknown): HourWx[] {
-  const d = data as { utc_offset_seconds?: number; hourly?: { time?: number[]; temperature_2m?: number[]; precipitation_probability?: (number | null)[]; weather_code?: number[] } } | null
+  const d = data as { utc_offset_seconds?: number; hourly?: { time?: number[]; temperature_2m?: number[]; precipitation_probability?: (number | null)[]; weather_code?: number[]; cloud_cover_low?: (number | null)[]; cloud_cover_mid?: (number | null)[] } } | null
   const h = d?.hourly
   if (!h || !Array.isArray(h.time) || !Array.isArray(h.temperature_2m) || !Array.isArray(h.weather_code)) return []
   const off = typeof d?.utc_offset_seconds === 'number' && Number.isFinite(d.utc_offset_seconds) ? d.utc_offset_seconds : 0
@@ -41,20 +44,29 @@ export function decodeHourly(data: unknown): HourWx[] {
     if (![t, temp, code].every((x) => typeof x === 'number' && Number.isFinite(x))) continue
     const local = new Date((t + off) * 1000)   // read with the UTC getters = the city's wall clock
     const pop = h.precipitation_probability?.[i]
-    out.push({ time: t * 1000, dow: local.getUTCDay(), hour: local.getUTCHours(), temp, pop: Math.round(typeof pop === 'number' ? pop : 0), code })
+    const pct = (v: unknown) => (typeof v === 'number' && Number.isFinite(v) ? v : null)
+    out.push({ time: t * 1000, dow: local.getUTCDay(), hour: local.getUTCHours(), temp, pop: Math.round(typeof pop === 'number' ? pop : 0), code, low: pct(h.cloud_cover_low?.[i]), mid: pct(h.cloud_cover_mid?.[i]) })
   }
   return out
 }
 
 /** The scene a weather code paints. A clear or partly-cloudy hour is the open sky (its scattered
- *  cumulus IS partly cloudy); partly cloudy with a real chance of a shower is the passing front. */
-export function skyForCode(code: number, pop = 0): { scene: GlassScene; sky: string } {
+ *  cumulus IS partly cloudy); partly cloudy with a real chance of a shower is the passing front.
+ *
+ *  CODE 3 IS NOT ALWAYS A GREY SKY (2026-10-02). The code is derived from TOTAL cloud cover, so an hour
+ *  under high cloud the sun shines through is "overcast" too: the forecast for Saturday 3 October was code
+ *  3 at every hour with 0% low cloud, 0% mid cloud and 10.4 of 11.5 possible hours of sunshine, and the
+ *  scrubber painted the blanket all day. When the layers are known, code 3 is the blanket only with a real
+ *  deck low or mid in the sky (≥ 70%, the same line lib/current-weather draws for the live reading);
+ *  otherwise it is the open sky, called partly cloudy. Layers unknown: the code stands. */
+export function skyForCode(code: number, pop = 0, low?: number | null, mid?: number | null): { scene: GlassScene; sky: string } {
   if ([95, 96, 99].includes(code)) return { scene: 'storm', sky: 'Thunderstorms' }
   if ([71, 73, 75, 77, 85, 86].includes(code)) return { scene: 'snow', sky: 'Snow' }
   if ([51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82].includes(code)) return { scene: 'rain', sky: 'Rain' }
   if ([45, 48].includes(code)) return { scene: 'mist', sky: 'Fog' }
-  if (code === 3) return { scene: 'overcast', sky: 'Cloudy' }
-  if (code === 2) return { scene: pop >= 35 ? 'mixed' : 'sunny', sky: 'Partly cloudy' }
+  const deck = low == null && mid == null ? true : Math.max(low ?? 0, mid ?? 0) >= 70
+  if (code === 3 && deck) return { scene: 'overcast', sky: 'Cloudy' }
+  if (code === 2 || code === 3) return { scene: pop >= 35 ? 'mixed' : 'sunny', sky: 'Partly cloudy' }
   return { scene: 'sunny', sky: 'Clear' }
 }
 
@@ -71,7 +83,7 @@ export function modeForHour(h: { temp: number; pop: number; code?: number }): Mo
 }
 
 const DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-const read = (h: HourWx): HourReading => ({ ...h, ...skyForCode(h.code, h.pop), mode: modeForHour(h), clock: `${DOW[h.dow]} ${String(h.hour).padStart(2, '0')}:00` })
+const read = (h: HourWx): HourReading => ({ ...h, ...skyForCode(h.code, h.pop, h.low, h.mid), mode: modeForHour(h), clock: `${DOW[h.dow]} ${String(h.hour).padStart(2, '0')}:00` })
 
 /** Every hour of the weekend being served, Sat 06:00 → Sun 23:00 (42 stops). On a weekday that is
  *  the coming weekend; on Saturday or Sunday it is THIS one, the hours already gone included. */

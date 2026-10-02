@@ -68,7 +68,14 @@ describe('the sun, measured', () => {
     expect(sunClass(260, 20, 520)).toBe('overcast')        // bright, but no disc of the sun: a milky deck
     expect(sunClass(305, 123, 518)).toBe('mixed')          // that morning, under high cloud
   })
-  test('a low sun says nothing', () => { expect(sunClass(60, 40, 120)).toBeNull() })
+  test('a low sun: the sunny line is lower, and below about 13° the reading is not trusted at all', () => {
+    expect(sunClass(197, 98.3, 342.7)).toBe('sunny')       // that evening, 17:00–18:00, under FEW030
+    expect(sunClass(265, 130, 449)).toBe('sunny')          // a cloudless September morning: 0.59 and 0.49
+    expect(sunClass(55, 0, 284.5)).toBeNull()              // a clear dusk the satellite measured as no sun at all
+    expect(sunClass(82, 16, 190)).toBeNull()               // CAVOK, measured direct share 0.2
+    expect(sunClass(60, 40, 120)).toBeNull()
+    expect(sunClass(100, 4, 400)).toBe('overcast')         // a grey late afternoon is still grey
+  })
   const hourly = (rows: [number, number | null, number | null, number][]) => ({ hourly: { time: rows.map((r) => r[0] / 1000), shortwave_radiation: rows.map((r) => r[1]), direct_radiation: rows.map((r) => r[2]), terrestrial_radiation: rows.map((r) => r[3]) } })
   const H = (h: number) => Date.UTC(2026, 9, 2, h)
   test('the last COMPLETE hour, not the empty rows ahead of it', () => {

@@ -106,11 +106,20 @@ export interface SunHour { time: number; cls: SunClass }
 
 /** One hour of measured radiation → what the sky was doing. `kt` is the share of the sunlight arriving at
  *  the top of the atmosphere that reached the ground; `direct` the share of that which came straight from
- *  the sun's disc. Null when the sun is too low for the ratios to mean anything. */
+ *  the sun's disc.
+ *
+ *  A LOW SUN changes the reading (checked against cloudless days, 2026-10-02 evening). Below about 13° of
+ *  elevation (under 330 W/m² at the top of the atmosphere) the retrieval is not to be trusted: a CAVOK
+ *  evening measured a direct share of 0.2, and one clear dusk measured none at all, which would have
+ *  painted a blanket over a clear sky. Null there — and that is every hour of a December day at this
+ *  latitude, when the report and the forecast's layers carry the reading alone. Between that and about 20°
+ *  even a cloudless sky passes less light and less of it direct (0.57 and 0.50 under FEW030 that evening),
+ *  so the sunny line is lower. */
 export function sunClass(global: number, direct: number, topOfAtmosphere: number): SunClass | null {
-  if (![global, direct, topOfAtmosphere].every(Number.isFinite) || topOfAtmosphere < 150 || global < 0) return null
+  if (![global, direct, topOfAtmosphere].every(Number.isFinite) || topOfAtmosphere < 330 || global < 0) return null
   const kt = global / topOfAtmosphere, df = global > 0 ? direct / global : 0
-  if (kt >= 0.55 && df >= 0.5) return 'sunny'
+  const lowSun = topOfAtmosphere < 476
+  if (lowSun ? kt >= 0.45 && df >= 0.38 : kt >= 0.55 && df >= 0.5) return 'sunny'
   if (kt < 0.30 || df < 0.12) return 'overcast'
   return 'mixed'
 }

@@ -46,6 +46,11 @@ describe('what a stop paints and how it ranks', () => {
     expect(skyForCode(73).scene).toBe('snow'); expect(skyForCode(45).scene).toBe('mist')
     expect(skyForCode(3).scene).toBe('overcast'); expect(skyForCode(0).scene).toBe('sunny')
     expect(skyForCode(2, 10).scene).toBe('sunny'); expect(skyForCode(2, 50).scene).toBe('mixed')
+    // code 3 is total cover: with the layers known, only a real low or mid deck is the blanket
+    expect(skyForCode(3, 0, 0, 0)).toEqual({ scene: 'sunny', sky: 'Partly cloudy' })        // Saturday 3 Oct 2026: 100% HIGH cloud, 90% sunshine
+    expect(skyForCode(3, 0, 85, 0).scene).toBe('overcast'); expect(skyForCode(3, 0, 10, 75).scene).toBe('overcast')
+    expect(skyForCode(3, 50, 20, 10).scene).toBe('mixed')                                    // thin cloud and a real chance of a shower
+    expect(skyForCode(3, 0, null, null).scene).toBe('overcast')                              // layers unknown: the code stands
   })
   it('ranks a wet evening as rain and a dry mild afternoon as warm', () => {
     expect(modeForHour({ temp: 17, pop: 85 })).toBe('COLD_WET')

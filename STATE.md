@@ -678,7 +678,14 @@ GUARANTEES topped/led picks into the feed (pull-back from prePool/canon if the b
    The header tooltip says what the reading stands on ("Observed: Schiphol 17:25 · satellite sunshine to
    17:00" / "Forecast estimate"). NOT USED, on purpose: Buienradar's feed (its terms require permission
    for mobile or commercial use, and its `weatherdescription` said "Zwaar bewolkt" under the same sun).
-   STILL A FORECAST, correctly: the weekend ranking and the hour scrubber.
+   STILL A FORECAST, correctly: the weekend ranking and the hour scrubber. But the SCRUBBER had the same
+   flaw in its own table: Saturday 3 Oct was code 3 at every hour (100% HIGH cloud, 0% low and mid, 10.4 of
+   11.5 h of sunshine forecast) and it painted the blanket all day. `skyForCode` takes the hour's low and
+   mid layers now (`useHourly` asks for them): code 3 is the blanket only with a deck ≥ 70% low or mid.
+   LOW SUN: under 330 W/m² at the top of the atmosphere (about 13° of elevation) the satellite reading is
+   not trusted (a clear dusk measured no direct sun at all) and `sunClass` returns null; between that and
+   476 the sunny line is lower. So through December the reading stands on the report and the forecast's
+   layers alone. Re-scored with that: 85% (72 of 84), grey in 2 of 33 sunny hours.
 00. **Awaiting Ness (2026-10-02):** (a) the UNFURL direction — board sent, B "the deck on the sky" recommended,
    with a dated link title stamped at each refresh; (b) the PHOTO-BAND card — a landscape photo across the
    top of a glass card, for good photos the portrait guard rejects (Museum Market 960×720, Noordermarkt
