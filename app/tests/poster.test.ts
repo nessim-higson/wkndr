@@ -5,8 +5,8 @@
 // Importing the module must not launch a browser — poster.ts guards its run block with
 // `import.meta.main`. If that guard is ever removed this file will hang, which is the point.
 import { describe, it, expect } from 'bun:test'
-import { realVenue, topPicks, posterHtml, THUMBS, assignDays, MODE_TINT, rankOf, CANVAS, OG_DEFAULT } from '../scripts/poster'
-import { readFileSync } from 'node:fs'
+import { realVenue, topPicks, posterHtml, THUMBS, assignDays, MODE_TINT, rankOf, CANVAS, OG_DEFAULT, OG_REV, OG_SKIES, weekendSky, weekendWords, type WxDay } from '../scripts/poster'
+import { existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { upcomingWeekend } from '../scripts/lib/pipeline'
 import { upcomingWeekendEnd } from '../src/lib/when'
@@ -183,7 +183,7 @@ describe('the unfurl', () => {
       const now = new Date(`${iso}T09:00:00`)
       const sat = upcomingWeekend(now).sat
       const key = `${sat.getFullYear()}-${String(sat.getMonth() + 1).padStart(2, '0')}-${String(sat.getDate()).padStart(2, '0')}`
-      expect(ogImagePath(now), `disagreement on ${iso}`).toBe(`/share/og-${key}.png`)
+      expect(ogImagePath(now), `disagreement on ${iso}`).toBe(`/share/og-${key}-${OG_REV}.png`)   // the date AND the design revision
     }
   })
 
@@ -226,9 +226,35 @@ describe('rankOf', () => {
 // a future default change is visible in a diff rather than silently going out to every pasted link.
 describe('the shipped unfurl composition', () => {
   const src = readFileSync(join(import.meta.dir, '../scripts/poster.ts'), 'utf8')
-  it('is hero', () => {
-    expect(OG_DEFAULT).toBe('hero')
-    expect(src).toContain("const ogv = (arg('ogv') ?? 'hero') as OgVariant")
+  it('is across — the sky, the line and three cards, picked by Ness on 2026-10-02', () => {
+    expect(OG_DEFAULT).toBe('across')
+    expect(src).toContain("const ogv = (arg('ogv') ?? OG_DEFAULT) as OgVariant")
+  })
+  it('across carries the line, the weekend, the weather and the deck’s first three, in order', () => {
+    const five = ['a', 'b', 'c', 'd', 'e'].map((t) => p({ title: t, image: `https://x.example/${t}.jpg`, when: 'Sat 3 Oct' }))
+    const wx = { label: '3–4 Oct', span: 'Sat 3 – Sun 4 Oct', days: [{ label: 'Sat', hi: 20, mode: 'WARM' as const, pop: 0, sun: 0.9, code: 3 }, { label: 'Sun', hi: 21, mode: 'WARM' as const, pop: 12, sun: 0.73, code: 3 }] }
+    const html = posterHtml(five, wx, '', { layout: 'og', ogv: 'across', plates: { sunny: 'data:image/webp;base64,AAAA' } })
+    expect(html).toContain('Your weekend,<br><span class="em">one swipe</span> away.')
+    expect(html).toContain('Amsterdam · Sat 3 – Sun 4 Oct')
+    expect(html).toContain('21° and mostly sunny')
+    expect(html).toContain("background-image:url('data:image/webp;base64,AAAA')")
+    expect(html.indexOf('>a<')).toBeGreaterThan(0)
+    expect(html.indexOf('>a<')).toBeLessThan(html.indexOf('>b<')); expect(html.indexOf('>b<')).toBeLessThan(html.indexOf('>c<'))
+    expect(html).not.toContain('>d<')
+    expect(html).toContain('clash-display')                        // the app's display face, from the app's own stylesheet
+  })
+  it('across names both days when the weekend splits, and says nothing about weather it does not have', () => {
+    const three = ['a', 'b', 'c'].map((t) => p({ title: t, image: `https://x.example/${t}.jpg` }))
+    const split = { label: '3–4 Oct', span: 'Sat 3 – Sun 4 Oct', days: [{ label: 'Sat', hi: 27, mode: 'HOT' as const, pop: 5, sun: 0.9 }, { label: 'Sun', hi: 17, mode: 'COLD_WET' as const, pop: 85, sun: 0.1 }] }
+    const two = posterHtml(three, split, '', { layout: 'og', ogv: 'across' })
+    expect(two).toContain('Sat 27° and mostly sunny<br>Sun 17° and rainy')   // a line per day, each with its own weather
+    const dead = posterHtml(three, null, '', { layout: 'og', ogv: 'across' })
+    expect(dead).toContain('Amsterdam · This weekend')
+    expect(dead).not.toMatch(/\d+°/)
+  })
+  it('across escapes what the feed hands it', () => {
+    const html = posterHtml([p({ title: '<b>x</b>', venue: 'A & B', image: 'https://x.example/a.jpg' })], null, '', { layout: 'og', ogv: 'across' })
+    expect(html).toContain('&lt;b&gt;x&lt;/b&gt;'); expect(html).toContain('A &amp; B')
   })
   it('hero renders exactly one pick, however many it is handed', () => {
     const three = [p({ title: 'a' }), p({ title: 'b' }), p({ title: 'c' })]
@@ -250,5 +276,42 @@ describe('a venue is a place, never a publisher — the pipeline', () => {
     expect(refresh).toContain('p.venue = realVenue(p)')
     const guides = await Bun.file(`${import.meta.dir}/../scripts/adapters/guides.ts`).text()
     expect(guides).not.toMatch(/venue:[^\n]*\?\? source/)
+  })
+})
+
+// THE UNFURL'S SKY is the weekend forecast's, and not its WMO code: code 3 is total cloud cover, and the
+// Saturday this shipped on was "overcast" with 10.4 of 11.5 hours of sunshine forecast.
+describe('the sky behind the unfurl', () => {
+  const d = (o: Partial<WxDay>): WxDay => ({ label: 'Sat', hi: 20, mode: 'WARM', pop: 0, sun: 0.8, code: 1, ...o })
+  it('that weekend: code 3 both days, dry, 90% and 73% of the daylight as sunshine', () => {
+    const days = [d({ code: 3, sun: 0.9 }), d({ label: 'Sun', hi: 21, code: 3, sun: 0.73, pop: 12 })]
+    expect(weekendSky(days)).toBe('sunny')
+    expect(weekendWords(days)).toBe('mostly sunny')
+  })
+  it('dry weekends are sun or cloud by the sunshine forecast', () => {
+    expect(weekendSky([d({ sun: 0.5 }), d({ sun: 0.55 })])).toBe('sunny'); expect(weekendWords([d({ sun: 0.5 }), d({ sun: 0.55 })])).toBe('sun and cloud')
+    expect(weekendSky([d({ sun: 0.2 }), d({ sun: 0.3 })])).toBe('overcast'); expect(weekendWords([d({ sun: 0.2 }), d({ sun: 0.3 })])).toBe('cloudy')
+  })
+  it('rain chance decides the wet ones: a shower day, a wet weekend, snow, thunder', () => {
+    expect(weekendSky([d({ pop: 45 }), d({ pop: 10 })])).toBe('mixed')
+    expect(weekendSky([d({ pop: 70 }), d({ pop: 65 })])).toBe('rain'); expect(weekendWords([d({ pop: 70 }), d({ pop: 65 })])).toBe('rainy')
+    expect(weekendSky([d({ pop: 60, code: 73 }), d({ pop: 20 })])).toBe('snow')
+    expect(weekendSky([d({ pop: 80, code: 95 }), d({ pop: 30 })])).toBe('storm')
+  })
+  it('no sunshine figures: the mode stands in; no forecast at all: the house sky', () => {
+    expect(weekendSky([d({ sun: undefined, mode: 'COOL' })])).toBe('overcast')
+    expect(weekendSky([d({ sun: undefined, mode: 'HOT' })])).toBe('sunny')
+    expect(weekendSky(undefined)).toBe('sunny')
+  })
+  it('every sky has its photograph on disk and an ink that reads on it', () => {
+    for (const [sky, s] of Object.entries(OG_SKIES)) {
+      expect(existsSync(join(import.meta.dir, '../src/assets/atmosphere', s.plate)), `${sky}: ${s.plate}`).toBe(true)
+      expect(['dark', 'light']).toContain(s.ink)
+    }
+  })
+  it('index.html carries the title that goes with it, and no em dash', () => {
+    const idx = readFileSync(join(import.meta.dir, '../index.html'), 'utf8')
+    expect(idx).toContain('<meta property="og:title" content="WKNDR · Your weekend, one swipe away" />')
+    for (const tag of idx.match(/<meta[^>]+(?:og:title|og:description|name="description")[^>]*>/g) ?? []) expect(tag).not.toContain('—')
   })
 })

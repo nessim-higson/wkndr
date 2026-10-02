@@ -30,6 +30,17 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
 > sessions update (today it's on load).
 
 ## Live right now
+- **2026-10-02 (evening) — THE UNFURL IS "C · THREE ACROSS".** Ness, from the options board: "lets do C please."
+  A pasted link now shows the WKNDR line ("Your weekend, one swipe away.") on the weekend's own sky, with
+  the deck's first three cards fanned across it, and the title "WKNDR · Your weekend, one swipe away" (was
+  the #1 pick full-bleed under "WKNDR — the app"). `scripts/poster.ts`: og variant `across`, now
+  `OG_DEFAULT`. THE SKY is the forecast's and not its WMO code (`weekendSky`: rain chance decides wet or
+  dry, the forecast share of sunshine decides sun or cloud); each sky has its plate, framing and ink in
+  `OG_SKIES` (the app's own photographs, inlined); a weekend whose days differ gets a line per day. The
+  display face is the app's Clash Display, from the app's stylesheet link; the script says so if it did
+  not load (Familjen Grotesk stands in). THE FILE NAME carries a design revision, `og-<saturday>-c.png`
+  (`OG_REV`, mirrored in vite.config and pinned by a test): chat apps cache an unfurl by URL, so the new
+  design needed a new name. The og/meta descriptions lost their em dashes.
 - **2026-10-02 — more honest photographs, Eye's exhibitions, the venue rule corrected.** Ness: "I see a
   LOT of cards without images. Are we sure there is nothing we can do?" We were not. The image gather now
   (a) asks the CMS for a LARGER rendition of the same file before the sharpness guard turns it away
@@ -686,8 +697,8 @@ GUARANTEES topped/led picks into the feed (pull-back from prePool/canon if the b
    not trusted (a clear dusk measured no direct sun at all) and `sunClass` returns null; between that and
    476 the sunny line is lower. So through December the reading stands on the report and the forecast's
    layers alone. Re-scored with that: 85% (72 of 84), grey in 2 of 33 sunny hours.
-00. **Awaiting Ness (2026-10-02):** (a) the UNFURL direction — board sent, B "the deck on the sky" recommended,
-   with a dated link title stamped at each refresh; (b) the PHOTO-BAND card — a landscape photo across the
+00. **Awaiting Ness (2026-10-02):** (a) ~~the UNFURL direction~~ DECIDED AND SHIPPED the same evening: "lets do C
+   please" (see the unfurl entry under Live right now); (b) the PHOTO-BAND card — a landscape photo across the
    top of a glass card, for good photos the portrait guard rejects (Museum Market 960×720, Noordermarkt
    800×600; comp sent as wkndr-card-proposals.png); (b2) a `SERPER_API_KEY` secret, see above; (c) the
    EVERGREEN marker — `FRESHNESS_LABEL.always` ("Always good") exists and never reaches the card face; proposed

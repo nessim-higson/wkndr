@@ -51,10 +51,16 @@ function chromePath(): string {
 }
 
 /** The weekend, per day — the same read the app makes (see weather/modes.ts). */
-async function forecast(): Promise<{ label: string; days: { label: string; hi: number; mode: Mode }[] } | null> {
+export interface WxDay { label: string; hi: number; mode: Mode
+  /** chance of rain that day, % · share of its daylight forecast as sunshine, 0–1 · WMO code (all optional: the unfurl's sky reads them) */
+  pop?: number; sun?: number; code?: number }
+export interface Wx { label: string; days: WxDay[]
+  /** the weekend as a line of copy: "Sat 3 – Sun 4 Oct" */
+  span?: string }
+async function forecast(): Promise<Wx | null> {
   try {
-    const r = await fetch('https://api.open-meteo.com/v1/forecast?latitude=52.37&longitude=4.9&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Europe%2FAmsterdam&forecast_days=7')
-    const j = await r.json() as { daily: { time: string[]; temperature_2m_max: number[]; temperature_2m_min: number[]; precipitation_probability_max: number[] } }
+    const r = await fetch('https://api.open-meteo.com/v1/forecast?latitude=52.37&longitude=4.9&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,weather_code,sunshine_duration,daylight_duration&timezone=Europe%2FAmsterdam&forecast_days=7')
+    const j = await r.json() as { daily: { time: string[]; temperature_2m_max: number[]; temperature_2m_min: number[]; precipitation_probability_max: number[]; weather_code?: number[]; sunshine_duration?: number[]; daylight_duration?: number[] } }
     const { sat } = upcomingWeekend()
     const iso = `${sat.getFullYear()}-${String(sat.getMonth() + 1).padStart(2, '0')}-${String(sat.getDate()).padStart(2, '0')}`
     const i = j.daily.time.indexOf(iso)
@@ -67,6 +73,9 @@ async function forecast(): Promise<{ label: string; days: { label: string; hi: n
         hi: Math.round(j.daily.temperature_2m_max[k]),
         mode: classify(j.daily.temperature_2m_max[k], j.daily.precipitation_probability_max[k] ?? 0,
                        j.daily.temperature_2m_max[k] - j.daily.temperature_2m_min[k]),
+        pop: j.daily.precipitation_probability_max[k] ?? 0,
+        sun: j.daily.sunshine_duration?.[k] != null && j.daily.daylight_duration?.[k] ? j.daily.sunshine_duration[k] / j.daily.daylight_duration[k] : undefined,
+        code: j.daily.weather_code?.[k],
       }
     })
     const M = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
@@ -74,9 +83,57 @@ async function forecast(): Promise<{ label: string; days: { label: string; hi: n
     const label = sat.getMonth() === sun.getMonth()
       ? `${sat.getDate()}–${sun.getDate()} ${M[sun.getMonth()]}`
       : `${sat.getDate()} ${M[sat.getMonth()]} – ${sun.getDate()} ${M[sun.getMonth()]}`
-    return { label, days }
+    const span = sat.getMonth() === sun.getMonth()
+      ? `Sat ${sat.getDate()} – Sun ${sun.getDate()} ${M[sun.getMonth()]}`
+      : `Sat ${sat.getDate()} ${M[sat.getMonth()]} – Sun ${sun.getDate()} ${M[sun.getMonth()]}`
+    return { label, days, span }
   } catch { return null }
 }
+
+// ─── THE UNFURL'S SKY ─────────────────────────────────────────────────────────
+// The unfurl sits on the weekend's weather, the way the app does (Ness picked "C · three across",
+// 2026-10-02). Which sky is a read of the FORECAST for the two days, and it is not the WMO code: code 3
+// is total cover, and Saturday 3 October was "overcast" with 10.4 of 11.5 hours of sunshine forecast.
+// Rain chance decides wet or dry; among dry weekends the share of daylight forecast as sunshine decides
+// sun or cloud.
+export type OgSky = 'sunny' | 'overcast' | 'mixed' | 'rain' | 'storm' | 'snow'
+const STORM_CODES = [95, 96, 99], SNOW_CODES = [71, 73, 75, 77, 85, 86]
+export function weekendSky(days: WxDay[] | undefined): OgSky {
+  if (!days?.length) return 'sunny'                      // no forecast: the house sky, and no weather words
+  const pop = days.map((d) => d.pop ?? 0), top = Math.max(...pop), mean = pop.reduce((a, b) => a + b, 0) / pop.length
+  if (top >= 50 && days.some((d) => d.code != null && SNOW_CODES.includes(d.code))) return 'snow'
+  if (top >= 70 && days.some((d) => d.code != null && STORM_CODES.includes(d.code))) return 'storm'
+  if (mean >= 60) return 'rain'
+  if (top >= 40) return 'mixed'
+  const known = days.filter((d) => d.sun != null)
+  if (!known.length) return days.some((d) => d.mode === 'COOL' || d.mode === 'COLD_WET') ? 'overcast' : 'sunny'
+  return known.reduce((a, d) => a + d.sun!, 0) / known.length >= 0.45 ? 'sunny' : 'overcast'
+}
+/** The weather in two or three words, to follow the temperature: "21° and mostly sunny". */
+export function weekendWords(days: WxDay[] | undefined): string {
+  const sky = weekendSky(days)
+  if (sky === 'sunny') {
+    const known = (days ?? []).filter((d) => d.sun != null)
+    const share = known.length ? known.reduce((a, d) => a + d.sun!, 0) / known.length : 1
+    return share >= 0.7 ? 'mostly sunny' : 'sun and cloud'
+  }
+  return { overcast: 'cloudy', mixed: 'showery', rain: 'rainy', storm: 'stormy', snow: 'snowy' }[sky]
+}
+/** Each sky's photograph (src/assets/atmosphere — the app's own plates), how it is framed in 1200×630, and
+ *  the ink that reads on it. `golden` is the warm low sun of the comp Ness approved; its upper band is
+ *  slate, so the frame takes the lower, lit part. `flat` is the ground when the photograph is not at hand. */
+export const OG_SKIES: Record<OgSky, { plate: string; ink: 'dark' | 'light'; frame: string; flat: string }> = {
+  sunny:    { plate: 'golden.webp',        ink: 'dark',  frame: '130% auto;background-position:35% 66%',  flat: '#e9c27a' },
+  overcast: { plate: 'overcast.webp',      ink: 'dark',  frame: 'cover;background-position:center',       flat: '#e8e9ea' },
+  mixed:    { plate: 'passing-front.webp', ink: 'light', frame: 'cover;background-position:center 70%',   flat: '#4b6183' },
+  rain:     { plate: 'rain.webp',          ink: 'light', frame: 'cover;background-position:center',       flat: '#6f7a8c' },
+  storm:    { plate: 'storm.webp',         ink: 'light', frame: 'cover;background-position:center',       flat: '#27323d' },
+  snow:     { plate: 'snow.webp',          ink: 'dark',  frame: 'cover;background-position:center',       flat: '#d9e3e2' },
+}
+/** The design revision of the unfurl, carried in its FILE NAME (vite.config stamps the same letter).
+ *  Chat apps cache an unfurl by URL: a new design under the old name would never be seen by anyone who
+ *  had already pasted the link that week. Bump it when the composition changes. */
+export const OG_REV = 'c'
 
 /** 8 of 80 live picks carry a `venue` that is just their SOURCE name ("I amsterdam") — an upstream
  *  extraction fallback. On a poster that reads as a place, so drop it rather than print a wrong one. */
@@ -211,18 +268,21 @@ export type Layout = 'list' | 'two' | 'one' | 'bare' | 'index' | 'days' | 'og'
  *   hero  — ONE photograph full-bleed, everything overlaid
  *   trio  — three photo columns, brand floating over the first
  *   type  — no photographs at all: masthead + a numbered list
- *   band  — brand band across the top, a photo strip beneath */
-export type OgVariant = 'split' | 'hero' | 'trio' | 'type' | 'band'
-/** The shipped unfurl composition. `hero` — one photograph full-bleed — because an unfurl is a
- *  thumbnail that gets a single glance at ~500px, and it is the only variant whose image survives
- *  that shrink. Trade-off accepted knowingly: it sells ONE pick instead of listing three, and its
- *  quality tracks the #1 pick's photo. */
-export const OG_DEFAULT: OgVariant = 'hero'
-export interface PosterOpts { thumb?: ThumbStyle; layout?: Layout; ground?: Ground; ogv?: OgVariant }
+ *   band  — brand band across the top, a photo strip beneath
+ *   across — the weekend's sky, the line, and the deck's top three cards fanned across it */
+export type OgVariant = 'split' | 'hero' | 'trio' | 'type' | 'band' | 'across'
+/** The shipped unfurl composition: `across`. Ness chose it from the board on 2026-10-02 ("lets do C
+ *  please"): the WKNDR line on the weekend's own sky with the deck's first three cards across it — the
+ *  product and the weekend in one frame, where `hero` (shipped until then) sold a single event with no
+ *  hint of the app. Trade-off accepted knowingly: three cards are small at message size. */
+export const OG_DEFAULT: OgVariant = 'across'
+export interface PosterOpts { thumb?: ThumbStyle; layout?: Layout; ground?: Ground; ogv?: OgVariant
+  /** the sky photographs as data URLs, by sky (the `across` unfurl); absent → a flat ground of the sky's colour */
+  plates?: Partial<Record<OgSky, string>> }
 
 export function posterHtml(
   picks: Pick[],
-  wx: Awaited<ReturnType<typeof forecast>>,
+  wx: Wx | null,
   fontDataUrl: string,
   opts: PosterOpts = {},
 ): string {
@@ -256,7 +316,7 @@ export function posterHtml(
   // ── the non-list layouts: a heavier masthead, a stronger ground, and far fewer picks ──────────
   if (layout !== 'list') {
     const [CW, CH] = CANVAS(layout)
-    const shell = (body: string, css: string) => `<!doctype html><html><head><meta charset="utf-8"><style>
+    const shell = (body: string, css: string, head = '') => `<!doctype html><html><head><meta charset="utf-8">${head}<style>
 @font-face{font-family:'Familjen Grotesk';font-weight:700;src:url('${fontDataUrl}') format('woff2')}
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{width:${CW}px;height:${CH}px}
@@ -301,7 +361,60 @@ ${css}</style></head><body>${body}</body></html>`
 .tm{margin-top:6px;font-size:${metaSize}px;color:rgba(255,255,255,.9);text-shadow:0 1px 8px rgba(0,0,0,.65);
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}`
 
-      // ── SPLIT — the shipped composition: brand panel left, photographs right ─────────────────
+      // ── ACROSS — the shipped composition (2026-10-02): the weekend's sky, the line, three cards ──
+      // Built from the comp Ness picked. The sky is the forecast's (weekendSky), the cards are the
+      // deck's own first three wearing the app's own crop, and the display face is the app's (Clash
+      // Display, from the same stylesheet the app links; Familjen Grotesk stands in if it cannot load).
+      if (ogv === 'across') {
+        const sky = weekendSky(wx?.days)
+        const S = OG_SKIES[sky]
+        const plate = opts.plates?.[sky]
+        const light = S.ink === 'light'
+        const his = wx?.days.map((d) => d.hi) ?? []
+        // one line for a weekend that is one kind of weather; a line per day when the two days differ
+        // (the app's own split rule), each with its own words: "Sat 26° and mostly sunny" / "Sun 17° and rainy"
+        const lines = !wx ? []
+          : split ? wx.days.map((d) => `${d.label} ${d.hi}° and ${weekendWords([d])}`)
+          : [`${Math.max(...his)}° and ${weekendWords(wx.days)}`]
+        const place = (p: Pick) => { const v = realVenue(p); return v && v.length <= 34 ? `<span>${esc(v)}</span>` : '' }
+        const card = (p: Pick, i: number) => `
+          <div class="card c${i}"${bg(p)}><div class="chip">${esc(fixWhen(p.when || ''))}</div>
+            <div class="cf"><b>${esc(p.title)}</b>${place(p)}</div></div>`
+        return shell(`<div class="ac"${plate ? ` style="background-image:url('${plate}')"` : ''}>${light ? '<div class="shade"></div>' : ''}
+          <div class="mark"><span>WKNDR</span><i></i></div>
+          <div class="disp">Your weekend,<br><span class="em">one swipe</span> away.</div>
+          <div class="meta">Amsterdam · ${esc(wx?.span ?? 'This weekend')}${lines.length ? `<br><span>${lines.map(esc).join('<br>')}</span>` : ''}</div>
+          <div class="url">app.wkndr.xyz</div>
+          ${picks.slice(0, 3).map(card).join('')}
+        </div>`, `
+.ac{flex:1;position:relative;overflow:hidden;color:${light ? '#fff' : '#172a35'};background:${S.flat} no-repeat;background-size:${S.frame}}
+.shade{position:absolute;inset:0;background:linear-gradient(90deg,#0a1a2e8c 0%,#0a1a2e59 38%,transparent 64%),linear-gradient(180deg,#06101c40,transparent 30%,transparent 70%,#06101c59)}
+.mark{position:absolute;left:64px;top:54px;display:flex;align-items:flex-start;gap:7px;
+  font:700 42px/1 'Familjen Grotesk','Helvetica Neue',Arial,sans-serif;letter-spacing:-.025em}
+.mark i{width:13px;height:13px;border-radius:50%;background:#ff4d1f;margin-top:1px}
+.disp{position:absolute;left:62px;top:226px;font:600 50px/.95 'Clash Display','Familjen Grotesk','Helvetica Neue',Arial,sans-serif;letter-spacing:-.022em}
+.em{color:#ff4d1f}
+.meta{position:absolute;left:64px;top:352px;font-size:22px;line-height:1.32;letter-spacing:-.005em}
+.meta span{opacity:.72}
+.url{position:absolute;left:64px;bottom:54px;font-size:22px;letter-spacing:.01em;opacity:.9}
+.card{position:absolute;width:236px;height:350px;border-radius:30px;overflow:hidden;color:#fff;
+  background:#1c2a33 center/cover no-repeat;box-shadow:0 34px 70px -22px #0a1a2ab8}
+.chip{position:absolute;left:16px;top:16px;max-width:204px;padding:7px 12px;border-radius:10px;background:#1c2a33d1;
+  font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cf{position:absolute;inset:auto 0 0 0;padding:24px 18px 18px;
+  background:linear-gradient(180deg,transparent,#0b1d3870 36%,#0b1d38cc);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.cf b{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;
+  font-size:19px;font-weight:500;letter-spacing:-.02em;line-height:1.08}
+.cf span{display:block;margin-top:6px;font-size:15px;opacity:.9;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* the fan: each card tucks under the next, so the first two keep their words clear of the overlap */
+.c0{left:472px;top:160px;transform:rotate(-8deg);z-index:1}
+.c1{left:694px;top:130px;transform:rotate(1deg);z-index:2}
+.c2{left:916px;top:160px;transform:rotate(9deg);z-index:3}
+.c0 .cf{padding-right:44px}.c1 .cf{padding-right:30px}`,
+          '<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=clash-display@600,700&display=swap">')
+      }
+
+      // ── SPLIT — brand panel left, photographs right (shipped until V.10) ──────────────────────
       if (ogv === 'split') {
         return shell(`<div class="og">
           <div class="ogl">${brand}
@@ -633,7 +746,7 @@ const feed = JSON.parse(readFileSync(join(root, `public/data/picks.${CITY}.json`
 const style = (arg('thumb') ?? 'portrait') as ThumbStyle
 const layout = (arg('layout') ?? 'list') as Layout
 const ground = (arg('ground') ?? 'cream') as Ground
-const ogv = (arg('ogv') ?? 'hero') as OgVariant   // the house unfurl — see --ogv for the alternatives
+const ogv = (arg('ogv') ?? OG_DEFAULT) as OgVariant   // the house unfurl — see --ogv for the alternatives
 // `days` fills two columns, so it needs a deeper pool than the five a single list shows
 const chosen = arg('picks')   // --picks="Canal Parade,Chefs in het Bos" overrides the deck order
 const picks = chosen ? pickByTitle(feed.picks, chosen.split(',')) : topPicks(feed.picks, layout === 'days' ? 8 : COUNT)
@@ -641,6 +754,9 @@ if (!chosen && picks.length < 4) throw new Error(`only ${picks.length} imaged pi
 
 const wx = await forecast()
 const font = readFileSync(join(root, 'src/assets/fonts/familjen-grotesk-700.woff2')).toString('base64')
+// the app's own sky photographs, for the unfurl: one per sky, inlined so the render needs no server
+const plates = Object.fromEntries((Object.entries(OG_SKIES) as [OgSky, typeof OG_SKIES[OgSky]][])
+  .map(([sky, s]) => [sky, `data:image/webp;base64,${readFileSync(join(root, 'src/assets/atmosphere', s.plate)).toString('base64')}`])) as Record<OgSky, string>
 
 const dir = join(root, 'public/share')
 mkdirSync(dir, { recursive: true })
@@ -659,7 +775,7 @@ const jobs = out
       { file: join(dir, 'weekend.png'), layout, ground, picks },
       { file: join(dir, `${key}.png`), layout, ground, picks },
       { file: join(dir, 'og.png'), layout: 'og' as Layout, ground: 'ink' as Ground, picks: picks.slice(0, 3) },
-      { file: join(dir, `og-${key}.png`), layout: 'og' as Layout, ground: 'ink' as Ground, picks: picks.slice(0, 3) },
+      { file: join(dir, `og-${key}-${OG_REV}.png`), layout: 'og' as Layout, ground: 'ink' as Ground, picks: picks.slice(0, 3) },
     ]
 
 const browser = await puppeteer.launch({ executablePath: chromePath(), args: ['--no-sandbox', '--disable-dev-shm-usage'] })
@@ -676,8 +792,12 @@ try {
         const [VW, VH] = CANVAS(j.layout)
         await page.setViewport({ width: VW, height: VH, deviceScaleFactor: 1 })
         await page.setContent(posterHtml(j.picks, wx, `data:font/woff2;base64,${font}`,
-          { thumb: style, layout: j.layout, ground: j.ground, ogv }), { waitUntil: 'networkidle0' as 'load', timeout: 45_000 })
+          { thumb: style, layout: j.layout, ground: j.ground, ogv, plates }), { waitUntil: 'networkidle0' as 'load', timeout: 45_000 })
         await page.evaluateHandle('document.fonts.ready')
+        // the unfurl's display face comes from a stylesheet link; say so if it did not arrive (the layout
+        // falls back to Familjen Grotesk, which is embedded, so the image is still on-brand)
+        if (j.layout === 'og' && ogv === 'across' && !(await page.evaluate(`document.fonts.check('600 50px "Clash Display"')`)))
+          console.log('  ⚠ Clash Display did not load — the unfurl line is set in Familjen Grotesk this run')
         shot = await page.screenshot({ type: 'png' }) as Buffer
       } finally { await page.close() }
       cache.set(sig, shot)                          // the stable + dated pair are the same image
@@ -686,7 +806,7 @@ try {
   }
   console.log(`✓ poster ${CITY} ${key} · ${layout}/${ground} · ${picks.length} picks · ${jobs.length} file(s)`)
   console.log(`  ${picks.map((p, i) => `${rankOf(p, i)}. ${p.title}`).join(' · ')}`)
-  if (!out) console.log(`  unfurl → share/og-${key}.png (og/${ogv}/ink)`)
+  if (!out) console.log(`  unfurl → share/og-${key}-${OG_REV}.png (og/${ogv} · sky ${weekendSky(wx?.days)}${wx ? ` · ${weekendWords(wx.days)}` : ''})`)
 } finally {
   await browser.close()
 }
