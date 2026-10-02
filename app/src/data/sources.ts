@@ -63,6 +63,7 @@ export const SOURCE_ROSTER: Record<string, Source[]> = {
   ],
   'Weather': [
     { name: 'Open-Meteo', url: 'https://open-meteo.com/' },
+    { name: 'Schiphol weather report (NOAA Aviation Weather Center)', url: 'https://aviationweather.gov/data/metar/?ids=EHAM' },
     { name: 'Buienradar', url: 'https://www.buienradar.nl/' },
     { name: 'KNMI', url: 'https://www.knmi.nl/' },
   ],

@@ -344,8 +344,9 @@ export default function App() {
   const [glassForecastOpen, setGlassForecastOpen] = useState(false)
   const [glassSettingsOpen, setGlassSettingsOpen] = useState(false)
   const glassActive = look === 'glass'
-  // partly cloudy (code 2) is the open sky with its scattered cumulus, not the overcast blanket
-  const liveScene: GlassScene = currentReading ? (currentReading.code === 2 ? 'sunny' : { clear:'sunny',night:'sunny',cloud:'overcast',fog:'mist',rain:'rain',snow:'snow',storm:'storm' }[currentReading.sky] as GlassScene) : 'overcast'
+  // the reading decides grey or open (lib/current-weather: observed first, the forecast last); a partly
+  // cloudy sky is the open one with its scattered cumulus, not the overcast blanket
+  const liveScene: GlassScene = currentReading ? ({ clear:'sunny',night:'sunny',cloud:'overcast',fog:'mist',rain:'rain',snow:'snow',storm:'storm' }[currentReading.sky] as GlassScene) : 'overcast'
   useEffect(() => {
     document.documentElement.dataset.field = glassActive ? 'glass' : 'original'
     return () => { delete document.documentElement.dataset.field }
@@ -1110,7 +1111,7 @@ export default function App() {
 
               {glassActive && <button type="button" className="glass-header-weather"
                 aria-label="View weekend forecast"
-                title={currentReading && !glassPreview ? `Amsterdam · ${new Date(currentReading.time).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Amsterdam' })}` : undefined}
+                title={currentReading && !glassPreview ? `Amsterdam · ${currentReading.note}` : undefined}
                 onClick={(e) => { e.stopPropagation(); setGlassForecastOpen(true) }}
                 onKeyDown={(e) => e.stopPropagation()}>
                 <GlassWeatherIcon size={22} strokeWidth={1.3} aria-hidden />
