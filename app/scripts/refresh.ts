@@ -19,7 +19,7 @@
  */
 import { CITIES, type City } from '../src/data/cities'
 import type { Pick } from '../src/types'
-import { dedupe, balanceByCategory, isGoodImage, isPortraitImage, imageBroken, urlLooksNonPhoto, imageIsCardworthy, fetchEventImage, toPortrait, wikiImage, webImageCandidates, verifyImageForEvent, venueMatchImage, venueBook, imageFocalPoint, focalFailures, originalOf, NO_PHOTO_CAP, whenBeforeWeekend, upcomingWeekend, weekendMode, weekendModes, stampServeOrder, publishCheck, crownsActive, JUDGE_FLOOR, STAR_BOOST, linkOk, mapLimit, rxOf, titleKey, titleLooseMatch, tokKey, approvalCheck, pickByTitle, markThisWeekend, type TasteCorpus, type WeeklySlate, imagePassBroken, fetchEventImages, bestRendition, ADAPTER_PICK, OWN_RECORD, OWN_IMAGE, untrustedWebPick, extrasOf, iamsLanguageTwins, unionCredits, isOwnPage, crossSourceTwins, imageSearchHealth } from './lib/pipeline'
+import { dedupe, balanceByCategory, isGoodImage, isPortraitImage, imageBroken, urlLooksNonPhoto, imageIsCardworthy, fetchEventImage, toPortrait, wikiImage, webImageCandidates, verifyImageForEvent, venueMatchImage, venueBook, imageFocalPoint, focalFailures, originalOf, NO_PHOTO_CAP, whenBeforeWeekend, upcomingWeekend, weekendMode, weekendModes, stampServeOrder, publishCheck, crownsActive, JUDGE_FLOOR, STAR_BOOST, linkOk, mapLimit, rxOf, titleKey, titleLooseMatch, tokKey, approvalCheck, pickByTitle, markThisWeekend, type TasteCorpus, type WeeklySlate, imagePassBroken, fetchEventImages, bestRendition, ADAPTER_PICK, OWN_RECORD, OWN_IMAGE, untrustedWebPick, extrasOf, iamsLanguageTwins, unionCredits, isOwnPage, crossSourceTwins, imageSearchHealth, suspectTwins } from './lib/pipeline'
 import { fixWhen, latestDateOf, whenActiveBy, whenIsPast, whenLooksBroken } from '../src/lib/when'
 import { effectiveFreshness, NEW_DAYS } from '../src/lib/freshness'
 import { mergeSightings, pruneRegistry, appendRun, type SeenRegistry, type HealthFile } from './lib/ingest'
@@ -1069,6 +1069,11 @@ async function buildCity(city: City) {
     const warn: string[] = []
     if (liveN < 8) warn.push(`thin live feed (${liveN})`)
     if (noPhotoShare > 0.25) warn.push(`${Math.round(noPhotoShare * 100)}% of the crawl imageless before the cap`)
+    // two live cards that look like one event under two names — said out loud, never folded on a guess
+    {
+      const twins = suspectTwins(picks.filter(isLive))
+      if (twins.length) warn.push(`${twins.length} possible duplicate card${twins.length > 1 ? 's' : ''} (${twins.slice(0, 3).map(([x, y]) => `${x.title.slice(0, 26)} ~ ${y.title.slice(0, 26)}`).join(' · ')})`)
+    }
     // a dead image search is silent everywhere else: its only symptom is more blank cards
     if (imageSearchHealth.asked >= 5 && imageSearchHealth.answered === 0) warn.push(`open-web image search answered 0 of ${imageSearchHealth.asked} queries${imageSearchHealth.lastError ? ` (${imageSearchHealth.lastError})` : ''} — set SERPER_API_KEY`)
 

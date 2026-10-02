@@ -2,7 +2,7 @@
 // the image URL screens, and the weekend window. These are the pure functions the whole content
 // pipeline leans on; each rule here encodes a bug we actually hit during the pipeline era.
 import { describe, it, expect } from 'bun:test'
-import { dedupe, unionCredits, titleKey, urlLooksNonPhoto, toPortrait, upcomingWeekend, whenBeforeWeekend, imagePassBroken, largerRenditions, pagePhotosFrom, isOwnPage, approvalCheck, type TasteCorpus, type WeeklySlate, untrustedWebPick, ADAPTER_PICK, OWN_RECORD, OWN_IMAGE, iamsLanguageTwins, crossSourceTwins } from '../scripts/lib/pipeline'
+import { dedupe, unionCredits, titleKey, urlLooksNonPhoto, toPortrait, upcomingWeekend, whenBeforeWeekend, imagePassBroken, largerRenditions, pagePhotosFrom, isOwnPage, approvalCheck, type TasteCorpus, type WeeklySlate, untrustedWebPick, ADAPTER_PICK, OWN_RECORD, OWN_IMAGE, iamsLanguageTwins, crossSourceTwins, suspectTwins } from '../scripts/lib/pipeline'
 import { whenIsPast } from '../src/lib/when'
 import type { Pick } from '../src/types'
 
@@ -298,7 +298,13 @@ describe('a structured adapter’s pick is never an unverified web-search find',
     expect(untrustedWebPick({ id: 'llm-eye-filmmuseum-x', link: 'https://www.eyefilm.nl/en/whats-on', buzz: 1 })).toBe(false)   // the LLM lane is judged elsewhere
   })
   it('every adapter answers all three questions', () => {
-    for (const a of ['iams', 'ra', 'lbb', 'scout', 'eye']) { expect(ADAPTER_PICK.test(`web-${a}-x`)).toBe(true); expect(OWN_RECORD.test(`web-${a}-x`)).toBe(true); expect(OWN_IMAGE.test(`web-${a}-x`)).toBe(true) }
+    for (const a of ['iams', 'ra', 'scout', 'eye']) { expect(ADAPTER_PICK.test(`web-${a}-x`)).toBe(true); expect(OWN_RECORD.test(`web-${a}-x`)).toBe(true); expect(OWN_IMAGE.test(`web-${a}-x`)).toBe(true) }
+    // LBB: its photograph is its own and it is no web-search guess — but only a weekend TIP is a resolved
+    // record. An agenda pick is an LLM reading of an article and must be offered the organiser's record:
+    // "Cabinet Design Market" (LBB) is "CABINET | Curated curiosa & design weekendmarkt" (I amsterdam)
+    for (const id of ['web-lbb-cabinet-design-market', 'web-lbb-tips-vermut-in-oud-west']) { expect(ADAPTER_PICK.test(id)).toBe(true); expect(OWN_IMAGE.test(id)).toBe(true) }
+    expect(OWN_RECORD.test('web-lbb-tips-vermut-in-oud-west')).toBe(true)
+    expect(OWN_RECORD.test('web-lbb-cabinet-design-market')).toBe(false)
     expect(ADAPTER_PICK.test('web-guide-iams-x')).toBe(true); expect(OWN_IMAGE.test('web-guide-iams-x')).toBe(true)
     expect(OWN_RECORD.test('web-guide-iams-x')).toBe(false)     // a guide item is still offered the organiser's record
     expect(ADAPTER_PICK.test('web-hero-x')).toBe(true); expect(OWN_IMAGE.test('web-hero-x')).toBe(false)   // a hero's image is a hand pin
@@ -352,5 +358,24 @@ describe('the page’s own photographs — a CMS that serves images without a fi
     <img src="/api/track?id=1"><a href="/File/pdf/menu">menu</a><img src="/images/foto_mm2.gif">`
   it('takes the full-size file route, then its thumbnail; never a vector, a GIF or a tracker', () => {
     expect(pagePhotosFrom(html, 'https://olmenhorst.nl/activiteiten/oogstfeesten-2026')).toEqual(['https://olmenhorst.nl/File/image/lOBdmpV2IrLowAqML9sy', 'https://olmenhorst.nl/File/image/lOBdmpV2IrLowAqML9sy/500'])
+  })
+})
+
+describe('possible duplicate cards are said out loud', () => {
+  const c = (id: string, title: string, venue: string) => ({ id, title, venue })
+  it('the same distinctive name at the same place, under two titles', () => {
+    const twins = suspectTwins([
+      c('web-lbb-cabinet-design-market', 'Cabinet Design Market', 'Centrale Markt'),
+      c('web-iams-cabinet-curated-curiosa-and-design-weekendmarkt', 'CABINET | Curated curiosa & design weekendmarkt', 'Centrale Markthal'),
+      c('web-iams-the-maker-market', 'The Maker Market', 'De Hallen Amsterdam'),
+    ])
+    expect(twins).toHaveLength(1)
+    expect(twins[0].map((p) => p.id)).toEqual(['web-lbb-cabinet-design-market', 'web-iams-cabinet-curated-curiosa-and-design-weekendmarkt'])
+  })
+  it('a venue’s own name, a generic word or another place is not a shared name', () => {
+    expect(suspectTwins([c('a', 'Melkweg: Techno Tuesday', 'Melkweg'), c('b', 'Melkweg presents Cheeky Monday', 'Melkweg')])).toHaveLength(0)
+    expect(suspectTwins([c('a', 'Sunday Market at Westergas', 'Westergas'), c('b', 'Sunday Roast Club', 'Westergas')])).toHaveLength(0)
+    expect(suspectTwins([c('a', 'Cabinet Design Market', 'Centrale Markt'), c('b', 'Cabinet of Curiosities', 'Tropenmuseum')])).toHaveLength(0)
+    expect(suspectTwins([c('a', 'Cabinet Design Market', ''), c('b', 'CABINET weekend', '')])).toHaveLength(0)
   })
 })

@@ -1106,8 +1106,13 @@ export const NO_PHOTO_CAP = Number(process.env.WKNDR_NO_PHOTO_CAP ?? 3)
 // not the others, and the trust filter dropped its permanent exhibition as an unverified web-search find.
 /** Not a web-search guess: exempt from the index-only-link trust filter and the carried-pick re-judging. */
 export const ADAPTER_PICK = /^web-(iams|ra|lbb|scout|hero|guide|eye)-/
-/** Already the organiser's (or a first-hand editor's) own record: never "upgraded" onto another source's. */
-export const OWN_RECORD = /^web-(iams|ra|lbb|scout|eye)-/
+/** Already the organiser's (or a first-hand editor's) own record: never "upgraded" onto another source's.
+ *  An LBB weekend TIP is one (the guides adapter resolves it itself); an LBB AGENDA pick (`web-lbb-<slug>`)
+ *  is NOT — it is an LLM reading of an article, often with no organiser link at all. It sat on this list
+ *  until 2026-10-02 and so was never offered the organiser's record: four other sources' "CABINET" all
+ *  upgraded onto I amsterdam's record and folded into one card, while LBB's "Cabinet Design Market" stayed
+ *  its own blank card behind a search-engine link. Ness swiped the pictured one, refreshed, met the twin. */
+export const OWN_RECORD = /^web-(?:iams|ra|scout|eye|lbb-tips)-/
 /** Its image is the source's own upload: sanity-screened, receipted `organiser`, never re-verified on subject. */
 export const OWN_IMAGE = /^web-(iams|ra|lbb|scout|guide|eye)-/
 
@@ -1162,6 +1167,26 @@ export function crossSourceTwins(a: { id: string; title: string; venue?: string 
   const t = (x: string) => x.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, ' ').trim()
   const [short, long] = t(a.title).length <= t(b.title).length ? [t(a.title), t(b.title)] : [t(b.title), t(a.title)]
   return short.length >= 10 && long.includes(short)
+}
+
+/** POSSIBLE DUPLICATE CARDS — a warning, never a fold. Two LIVE cards at the same place whose titles open
+ *  on the same distinctive name ("Cabinet Design Market" / "CABINET | Curated curiosa & design weekendmarkt",
+ *  both at the Centrale Markt[hal]) are usually one event that two sources named differently and no rule
+ *  joined. Usually, not always (two rooms of one festival), so the pipeline only SAYS so, in the health
+ *  line, where a human or the next session reads it. The name must be ≥ 5 letters, not a generic word, and
+ *  not the venue's own name (every Melkweg night opens on "Melkweg"). Pure. */
+const TWIN_STOP = new Set(['amsterdam', 'weekend', 'market', 'markt', 'festival', 'exhibition', 'opening', 'concert', 'museum', 'night', 'nacht', 'friday', 'saturday', 'sunday', 'vrijdag', 'zaterdag', 'zondag', 'presents', 'special', 'edition', 'party', 'summer', 'autumn', 'winter', 'spring', 'dutch', 'world', 'international', 'grand', 'great', 'little', 'kids', 'family', 'music', 'dance', 'house', 'techno', 'disco', 'classic', 'classics', 'cinema', 'theatre', 'theater', 'gallery', 'studio', 'garden', 'secret', 'sunset', 'rooftop', 'brunch', 'dinner', 'lunch', 'workshop', 'talks', 'tour', 'tours', 'guided', 'free', 'open'])
+export function suspectTwins<T extends { id: string; title: string; venue?: string }>(live: T[]): [T, T][] {
+  const norm = (x: string) => x.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, ' ').trim()
+  const place = (v?: string) => norm(v ?? '').replace(/^(the|het|de)\s+/, '')
+  const lead = (p: T) => norm(p.title).split(' ').find((t) => t.length >= 5 && !TWIN_STOP.has(t) && !place(p.venue).split(' ').includes(t)) ?? ''
+  const samePlace = (a: string, b: string) => !!a && !!b && (a === b || (Math.min(a.length, b.length) >= 6 && (a.startsWith(b) || b.startsWith(a))))
+  const out: [T, T][] = []
+  for (let i = 0; i < live.length; i++) for (let k = i + 1; k < live.length; k++) {
+    const a = live[i], b = live[k]
+    if (lead(a) && lead(a) === lead(b) && samePlace(place(a.venue), place(b.venue))) out.push([a, b])
+  }
+  return out
 }
 
 /** I amsterdam calendar namespace (EN + NL paths) → WKNDR category. null = not a calendar URL. */

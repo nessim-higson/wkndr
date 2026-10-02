@@ -19,7 +19,7 @@
 // `market` wearing the Bloemenmarkt's photo while its event page held two real flyers.
 import type { Pick, Category } from '../../src/types'
 import { tidyBlurb } from '../../src/lib/blurb'
-import { deriveWeatherFit, upcomingWeekend, htmlToText, mapLimit, iamsCategoryFromPath, linkIsIndex, matchEventLocs, titlesAgree, unionCredits, type RecordExtras } from '../lib/pipeline'
+import { deriveWeatherFit, upcomingWeekend, htmlToText, mapLimit, iamsCategoryFromPath, linkIsIndex, matchEventLocs, titlesAgree, unionCredits, OWN_IMAGE, type RecordExtras } from '../lib/pipeline'
 
 const BASE = 'https://www.iamsterdam.com'
 const UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36'
@@ -206,6 +206,10 @@ export async function upgradeViaIamsterdam(p: Pick): Promise<Pick | 'off-weekend
       source: credit.source,
       buzz: Math.max(p.buzz ?? 1, credit.buzz),
       popularity: p.popularity,
-    }
+      // a first-hand editor's own photograph (LBB's, a guide's) is not thrown away with the upgrade: it rides
+      // behind the organiser's images, for the day those are a poster or too small. An unverified page image
+      // from the LLM or web-search lane does not — nothing has looked at its subject yet.
+      ...(p.image && p.image !== s.image && OWN_IMAGE.test(p.id) ? { _gallery: [...((s as Pick & RecordExtras)._gallery ?? []), p.image] } : {}),
+    } as Pick
   } catch { return null }
 }

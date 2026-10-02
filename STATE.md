@@ -70,6 +70,14 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
   (`crossSourceTwins`: Butoh Festival was dealt twice, once blank); the page-photo reader takes CMS file
   routes with no extension and `data-big` sources (olmenhorst.nl); a tip's "Location:" stops at the next
   label (`locationOf`).
+  **Evening, from Ness's phone: "the cabinet had a card and now on refresh it's empty".** Two cards, not one:
+  I amsterdam's CABINET (pictured) and LBB's "Cabinet Design Market" (blank, behind a search-engine link).
+  Swipes persist across a refresh, so once the pictured card was swiped the blank twin was what remained.
+  CAUSE: `web-lbb-*` AGENDA picks sat on the "already an organiser's record" list and were never offered
+  the I amsterdam upgrade that folded four other sources' CABINET onto one id. `OWN_RECORD` now holds only
+  LBB TIPS; an agenda pick's own photo rides behind the organiser's (`_gallery`). The twin was removed
+  from this weekend's feed by hand (106 picks) and re-stamped; no refresh was run. The health line now
+  also WARNS on possible duplicates (`suspectTwins`: same place, same leading name) and never folds on it.
 - **V.12 — THE GLASS (2026-09-25).** The weather-glass variation (Codex, `codex/weather-glass`, PR #29,
   brief `docs/variations/001`) is the app. The background is a WINDOW: `weather/WetGlassPane.ts` draws a
   photographic sky plate through wet glass in a WebGL2 shader — real macro-photo drop maps lens and shade
