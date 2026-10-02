@@ -42,5 +42,12 @@ export function endCleanly(s: string, max = Infinity, wasCut = false): string {
   return `${body.replace(/[\s,;:–—-]+$/, '')}…`
 }
 
+/** A LEADING PHOTO CREDIT glued to the copy — "Smilde The market is back on at Westergas…" (the weekend
+ *  guide's paragraph opens on the photographer's name, 2026-10-02: the top card of the week). One
+ *  capitalised token directly followed by a sentence that opens on an article is not a sentence; the
+ *  token goes. Narrow on purpose: "Amsterdam is…" and "The market…" are untouched. */
+const CREDIT = /^[A-ZÀ-Ý][\p{L}'’.-]{2,}\s+(?=(?:The|A|An|This|These|That|Our)\s+\p{Ll})/u
+export const stripCredit = (s: string): string => s.replace(CREDIT, '')
+
 export const tidyBlurb = (s: string, max = Infinity): string =>
-  (s ? endCleanly(stripGallery(s), max, s.trim().length >= GUILLOTINE && !/[.!?…]["”’')\]]?\s*$/.test(s)) : s)
+  (s ? endCleanly(stripCredit(stripGallery(s).trimStart()), max, s.trim().length >= GUILLOTINE && !/[.!?…]["”’')\]]?\s*$/.test(s)) : s)

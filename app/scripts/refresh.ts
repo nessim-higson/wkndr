@@ -23,6 +23,7 @@ import { dedupe, balanceByCategory, isGoodImage, isPortraitImage, imageBroken, u
 import { fixWhen, latestDateOf, whenActiveBy, whenIsPast, whenLooksBroken } from '../src/lib/when'
 import { effectiveFreshness, NEW_DAYS } from '../src/lib/freshness'
 import { mergeSightings, pruneRegistry, appendRun, type SeenRegistry, type HealthFile } from './lib/ingest'
+import { tidyBlurb } from '../src/lib/blurb'
 import { realVenue } from './poster'
 import { emitLetter } from './lib/letter'
 import { songkickAdapter } from './adapters/songkick'
@@ -941,6 +942,9 @@ async function buildCity(city: City) {
   // (2026-10-02: the law was applied in the I amsterdam adapter and the restamp, and the guides adapter's
   // fallback walked straight past both). realVenue is the poster's own test for it.
   for (const p of picks) p.venue = realVenue(p)
+  // …and a blurb is a sentence about the event (src/lib/blurb.ts): gallery chrome, a glued photo credit and
+  // a guillotined ending are cleaned here for every adapter, not only the one that was caught first.
+  for (const p of picks) if (p.blurb) p.blurb = tidyBlurb(p.blurb)
 
   // PUBLISH GATE — refuse to ship a BROKEN feed. A quiet/thin weekend is NOT broken (it just warns); only the
   // things that would actually embarrass us hard-fail. On failure we ABSTAIN — exit(1) WITHOUT writing — so the

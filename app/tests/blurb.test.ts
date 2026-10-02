@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'bun:test'
-import { stripGallery, endCleanly, tidyBlurb } from '../src/lib/blurb'
+import { stripGallery, stripCredit, endCleanly, tidyBlurb } from '../src/lib/blurb'
 
 describe('a blurb is a sentence about the event', () => {
   it('drops a leading photo carousel: caption, credit, controls, counter', () => {
@@ -24,5 +24,14 @@ describe('a blurb is a sentence about the event', () => {
     expect(once.endsWith('…')).toBe(true)
     expect(tidyBlurb(once)).toBe(once)
     expect(tidyBlurb('')).toBe('')
+  })
+})
+
+describe('a leading photo credit is not the first word of the sentence', () => {
+  it('drops the glued credit and nothing else', () => {
+    expect(stripCredit('Smilde The market is back on at Westergas this Sunday.')).toBe('The market is back on at Westergas this Sunday.')
+    expect(tidyBlurb('Smilde The market is back on at Westergas this Sunday with street food stalls.')).toBe('The market is back on at Westergas this Sunday with street food stalls.')
+    for (const ok of ['The market is back on.', 'Amsterdam is lovely in October. The canals glow.', 'Join us for a night of vermouth.', 'De Broodsalon returns to the hall.'])
+      expect(stripCredit(ok)).toBe(ok)
   })
 })

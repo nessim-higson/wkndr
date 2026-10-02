@@ -254,13 +254,13 @@ html[data-field='glass'][data-menu='smoked'] { --pane: #070d14; --pane-a: .74; -
    content-heavy ones (detail, inputs, share, itinerary, forecast/settings, saves, the end state)
    take a LIGHT frosted glass whatever the scene — their body copy is dark ink and must stay
    readable — with the sky and the deck showing through the frost. The toast takes dark glass. */
-html[data-field='glass'] :is(.sheet, .detail, .share, .itin-sheet, .glass-forecast, .stack-empty, .fs, .chk-card) {
+html[data-field='glass'] :is(.sheet, .detail, .share, .itin-sheet, .glass-forecast, .stack-empty, .fs, .chk-card, .fb-sheet) {
   background: color-mix(in srgb, #f6f8f4 72%, transparent);
   -webkit-backdrop-filter: blur(26px) saturate(1.2); backdrop-filter: blur(26px) saturate(1.2);
   border: 1px solid transparent;
   box-shadow: 0 30px 80px -24px #0a1a2a73;
 }
-html[data-field='glass'] :is(.sheet-backdrop, .detail-backdrop, .share-backdrop, .glass-forecast-backdrop, .fs-backdrop, .chk-veil) {
+html[data-field='glass'] :is(.sheet-backdrop, .detail-backdrop, .share-backdrop, .glass-forecast-backdrop, .fs-backdrop, .chk-veil, .fb-scrim) {
   background: #0b1d3833; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
 }
 html[data-field='glass'] .toast { background: color-mix(in srgb, #0d1722 70%, transparent); color: #f4f7f9; -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px); border: 0; }
