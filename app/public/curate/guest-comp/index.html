@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#e9eeee">
+<title>Curator tool comps · WKNDR</title>
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=clash-display@600,700&display=swap">
+<link rel="stylesheet" href="comp.css">
+<style>
+/* THE COMP INDEX. Start here. Static comps for the guest-curator tool (proto/curator-tool):
+   plain HTML, CSS and a little JavaScript, no backend. Nothing is saved or sent. */
+.wrap--index { padding-bottom: var(--sp-12); }
+h1 { font-size: clamp(34px, 10vw, 48px); margin: var(--sp-2) 0 var(--sp-3); letter-spacing: -.03em; }
+.lede { font-size: var(--fs-md); line-height: 1.45; }
+.screens { list-style: none; display: grid; gap: var(--sp-2); margin-top: var(--sp-6); counter-reset: s; }
+.screens a { display: grid; grid-template-columns: 28px minmax(0, 1fr) 24px; gap: var(--sp-3); align-items: start; padding: var(--sp-4); border-radius: 22px; background: var(--row); box-shadow: 0 8px 24px -14px #10253766, inset 0 0 0 1px #ffffff8c; text-decoration: none; }
+.screens a::before { counter-increment: s; content: counter(s); font-family: var(--font-display); font-weight: 600; font-size: var(--fs-lg); line-height: 1; padding-top: 2px; }
+.screens a:hover { background: color-mix(in srgb, #f6f8f4 82%, transparent); }
+.screens b { display: block; font-size: var(--fs-lg); font-weight: 500; letter-spacing: -.015em; line-height: 1.2; }
+.screens span { display: block; font-size: var(--fs-sm); color: var(--muted); margin-top: 4px; line-height: 1.4; }
+.screens svg { width: 20px; height: 20px; margin-top: 2px; opacity: .6; }
+.notes { margin-top: var(--sp-8); font-size: var(--fs-sm); color: var(--ink-2); }
+.notes h2 { margin-bottom: var(--sp-2); }
+.notes p + p { margin-top: 2px; }
+.notes + .notes { margin-top: var(--sp-6); }
+.notes code { font-family: inherit; font-weight: 600; }
+@media (min-width: 960px) {
+  .wrap--index { max-width: 1040px; }
+  .layout { display: grid; grid-template-columns: 360px minmax(0, 1fr); gap: var(--sp-12); align-items: start; }
+  .screens { margin-top: 0; }
+}
+</style>
+</head>
+<body>
+<p class="strip"><span>Comp. Nothing here is saved or sent.</span></p>
+<div class="wrap wrap--page wrap--index">
+  <header class="mast">
+    <a class="brand" href="../../" aria-label="WKNDR, Amsterdam"><b>WKNDR</b><span>Amsterdam</span></a>
+    <span class="mast-note">proto/curator-tool</span>
+  </header>
+  <main class="layout">
+    <section>
+      <p class="label">Guest curators</p>
+      <h1 class="display">The ten-minute week</h1>
+      <div class="lede lines">
+        <p>A guest starts from the ranked deck.</p>
+        <p>They put it in their order, cut what they would skip, and add up to five of their own.</p>
+        <p>Each of their own picks carries a line in their words.</p>
+        <p>The week lives on a page with their name on it.</p>
+      </div>
+    </section>
+    <div>
+      <ol class="screens">
+        <li><a href="week/index.html"><span><b>The guest's week</b><span>The tool. What a guest opens from the link they are sent. Move, cut, add, say why, publish.</span></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+        <li><a href="ams/sanne/index.html"><span><b>Sanne's page, this week</b><span>The public page at /ams/sanne. One line, the week, the picks in order, each with its line.</span></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+        <li><a href="ams/sanne/index.html?after=1"><span><b>Sanne's page, after the week</b><span>The same page once Sunday has passed. It stays readable. What is still on says so.</span></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+        <li><a href="ams/index.html"><span><b>Curators</b><span>The index at /ams. This week, next, and every past week.</span></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+      </ol>
+
+      <section class="notes lines">
+        <h2 class="label">What is real here</h2>
+        <p>The picks are real. This week's ten are the feed built on 5 October, in the order the deck deals them.</p>
+        <p>The sample additions are events the same run held back.</p>
+        <p>The two past weeks are the feeds of 3 and 4 October and 26 and 27 September.</p>
+        <p>Sanne, Joris, Malika and Daan are not real. Every line in their voice is sample copy.</p>
+      </section>
+      <section class="notes lines">
+        <h2 class="label">For sitting with a real person</h2>
+        <p>Open the tool on their phone with <code>?name=Their name</code> to greet them and start their line empty.</p>
+        <p>Add <code>?live=1</code> to load that week's real ten from the production feed.</p>
+        <p>When they publish, <code>Copy my week as text</code> puts the whole week on the clipboard.</p>
+        <p>Any link they paste is kept, and the rest is typed. This comp cannot read live pages.</p>
+      </section>
+      <section class="notes lines">
+        <h2 class="label">How to judge it</h2>
+        <p>On a phone first. Then on a wide window, where the add form stands beside the list.</p>
+        <p>Count the taps a week takes you.</p>
+        <p>Then read Sanne's page as one of her friends would.</p>
+      </section>
+    </div>
+  </main>
+</div>
+</body>
+</html>
