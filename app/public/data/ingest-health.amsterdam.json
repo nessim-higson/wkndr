@@ -2,18 +2,6 @@
  "v": 1,
  "runs": [
   {
-   "date": "2026-09-02",
-   "kind": "daily",
-   "sources": {
-    "Het Parool PS": 6,
-    "Subbacultcha": 6,
-    "Amsterdam Foodie": 6,
-    "I amsterdam": 43,
-    "Resident Advisor": 30
-   },
-   "fresh": 11
-  },
-  {
    "date": "2026-09-03",
    "kind": "daily",
    "sources": {
@@ -653,6 +641,31 @@
     "Resident Advisor": 30
    },
    "fresh": 35
+  },
+  {
+   "date": "2026-10-05",
+   "kind": "weekly",
+   "sources": {
+    "Resident Advisor · I amsterdam": 1,
+    "I amsterdam · Your Little Black Book": 5,
+    "Your Little Black Book · I amsterdam": 4,
+    "Your Little Black Book": 43,
+    "I amsterdam · Your Little Black Book · Maps": 1,
+    "I amsterdam · Amsterdam Spotted · I amsterdam & AmsterdamTips": 1,
+    "I amsterdam · AmsterdamTips": 1,
+    "I amsterdam": 37,
+    "Fresh find": 7,
+    "Resident Advisor": 26,
+    "Songkick · AmsterdamTips & Songkick": 1,
+    "Kidsproof": 3,
+    "Eye Filmmuseum": 3,
+    "Your Little Black Book · Maps": 1,
+    "Ajax.nl & Johan Cruijff ArenA official": 1,
+    "Amsterdam Sights": 1,
+    "Het Parool PS": 4,
+    "Subbacultcha": 6
+   },
+   "fresh": 77
   }
  ],
  "alerts": []
