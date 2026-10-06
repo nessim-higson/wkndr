@@ -15,7 +15,9 @@
 .wrap--index { padding-bottom: var(--sp-12); }
 h1 { font-size: clamp(34px, 10vw, 48px); margin: var(--sp-2) 0 var(--sp-3); letter-spacing: -.03em; }
 .lede { font-size: var(--fs-md); line-height: 1.45; }
-.screens { list-style: none; display: grid; gap: var(--sp-2); margin-top: var(--sp-6); counter-reset: s; }
+.screens { list-style: none; display: grid; gap: var(--sp-2); counter-reset: s; }
+.screens--abc { counter-reset: abc; }
+.screens--abc a::before { counter-increment: abc; content: counter(abc, upper-alpha); }
 .screens a { display: grid; grid-template-columns: 28px minmax(0, 1fr) 24px; gap: var(--sp-3); align-items: start; padding: var(--sp-4); border-radius: 22px; background: var(--row); box-shadow: 0 8px 24px -14px #10253766, inset 0 0 0 1px #ffffff8c; text-decoration: none; }
 .screens a::before { counter-increment: s; content: counter(s); font-family: var(--font-display); font-weight: 600; font-size: var(--fs-lg); line-height: 1; padding-top: 2px; }
 .screens a:hover { background: color-mix(in srgb, #f6f8f4 82%, transparent); }
@@ -50,11 +52,18 @@ h1 { font-size: clamp(34px, 10vw, 48px); margin: var(--sp-2) 0 var(--sp-3); lett
         <p>They put it in their order, cut what they would skip, and add up to five of their own.</p>
         <p>Each of their own picks carries a line in their words.</p>
         <p>The week lives on a page with their name on it.</p>
+        <p>The tool is comped three ways. The page once.</p>
       </div>
     </section>
     <div>
+      <h2 class="label" style="margin:0 4px 10px">The tool, three ways</h2>
+      <ol class="screens screens--abc">
+        <li><a href="week/index.html"><span><b>The list</b><span>Ten rows. Move with arrows, cut, add in a sheet, say why when you want to. The quickest to scan.</span></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+        <li><a href="week-b/index.html"><span><b>Swipe first, then order</b><span>The ten dealt as cards, the app's own gesture. Keep or cut, then the list to order and add. Two steps, each simple.</span></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+        <li><a href="week-c/index.html"><span><b>The week as a letter</b><span>Every pick is an entry with its line open. Writing is the main act; move and remove are quiet. One screen from start to Send.</span></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+      </ol>
+      <h2 class="label" style="margin:32px 4px 10px">The page</h2>
       <ol class="screens">
-        <li><a href="week/index.html"><span><b>The guest's week</b><span>The tool. What a guest opens from the link they are sent. Move, cut, add, say why, publish.</span></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
         <li><a href="ams/sanne/index.html"><span><b>Sanne's page, this week</b><span>The public page at /ams/sanne. One line, the week, the picks in order, each with its line.</span></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
         <li><a href="ams/sanne/index.html?after=1"><span><b>Sanne's page, after the week</b><span>The same page once Sunday has passed. It stays readable. What is still on says so.</span></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
         <li><a href="ams/index.html"><span><b>Curators</b><span>The index at /ams. This week, next, and every past week.</span></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
@@ -76,7 +85,8 @@ h1 { font-size: clamp(34px, 10vw, 48px); margin: var(--sp-2) 0 var(--sp-3); lett
       </section>
       <section class="notes lines">
         <h2 class="label">How to judge it</h2>
-        <p>On a phone first. Then on a wide window, where the add form stands beside the list.</p>
+        <p>On a phone first. Then on a wide window.</p>
+        <p>Do a week in each of the three tools and notice which one you would open again.</p>
         <p>Count the taps a week takes you.</p>
         <p>Then read Sanne's page as one of her friends would.</p>
       </section>

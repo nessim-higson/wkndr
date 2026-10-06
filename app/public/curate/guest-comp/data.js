@@ -24,6 +24,7 @@ window.COMP = {
    "source": "I amsterdam · Amsterdam Spotted · I amsterdam & AmsterdamTips",
    "area": "Buikslotermeerplein 2003",
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6aa29b8b1e0ab35cf938594a%2Fv__53_.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.500&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6aa29b8b1e0ab35cf938594a%2Fv__53_.webp",
+   "guide": true,
    "until": "2026-10-16"
   },
   {
@@ -34,7 +35,8 @@ window.COMP = {
    "link": "https://www.iamsterdam.com/uit/agenda/winkelen/markten/art-design-and-vintage-markt",
    "source": "Your Little Black Book · I amsterdam",
    "area": "Hannie Dankbaarpassage 47",
-   "image": "https://images.weserv.nl/?url=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fthumb%2F3%2F30%2FFoodhallen_in_Oud-West_%2528Amsterdam%252C_The_Netherlands_2017%2529_%252834245643041%2529.jpg%2F1280px-Foodhallen_in_Oud-West_%2528Amsterdam%252C_The_Netherlands_2017%2529_%252834245643041%2529.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.575&output=jpg&default=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fthumb%2F3%2F30%2FFoodhallen_in_Oud-West_%2528Amsterdam%252C_The_Netherlands_2017%2529_%252834245643041%2529.jpg%2F1280px-Foodhallen_in_Oud-West_%2528Amsterdam%252C_The_Netherlands_2017%2529_%252834245643041%2529.jpg"
+   "image": "https://images.weserv.nl/?url=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fthumb%2F3%2F30%2FFoodhallen_in_Oud-West_%2528Amsterdam%252C_The_Netherlands_2017%2529_%252834245643041%2529.jpg%2F1280px-Foodhallen_in_Oud-West_%2528Amsterdam%252C_The_Netherlands_2017%2529_%252834245643041%2529.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.575&output=jpg&default=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fthumb%2F3%2F30%2FFoodhallen_in_Oud-West_%2528Amsterdam%252C_The_Netherlands_2017%2529_%252834245643041%2529.jpg%2F1280px-Foodhallen_in_Oud-West_%2528Amsterdam%252C_The_Netherlands_2017%2529_%252834245643041%2529.jpg",
+   "guide": true
   },
   {
    "id": "web-iams-pianoduo-festival-amsterdam",
@@ -44,7 +46,8 @@ window.COMP = {
    "link": "https://www.iamsterdam.com/en/whats-on/calendar/festivals/events/pianoduo-festival-amsterdam",
    "source": "I amsterdam",
    "area": "Prinsengracht 756",
-   "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a992a5dfc761f1e3d9dbd31%2FROBVANDAMFOTO.NL_-8015__1_.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.500&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a992a5dfc761f1e3d9dbd31%2FROBVANDAMFOTO.NL_-8015__1_.webp"
+   "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a992a5dfc761f1e3d9dbd31%2FROBVANDAMFOTO.NL_-8015__1_.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.500&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a992a5dfc761f1e3d9dbd31%2FROBVANDAMFOTO.NL_-8015__1_.webp",
+   "guide": true
   },
   {
    "id": "web-ra-2515709",
@@ -71,7 +74,8 @@ window.COMP = {
    "venue": "TILLATEC",
    "when": "Fri 9 Oct · 23:00",
    "link": "https://ra.co/events/2531411",
-   "source": "Resident Advisor · I amsterdam"
+   "source": "Resident Advisor · I amsterdam",
+   "guide": true
   },
   {
    "id": "web-iams-ligconcert-presents-lying-down-concert-at-the-maritime-museum",
@@ -82,6 +86,7 @@ window.COMP = {
    "source": "I amsterdam · Your Little Black Book",
    "area": "Kattenburgerplein 1",
    "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F67ed4c7506e08d518c2103e1%2FPHOTO-2023-12-10-23-33-00_2.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.600&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F67ed4c7506e08d518c2103e1%2FPHOTO-2023-12-10-23-33-00_2.webp",
+   "guide": true,
    "until": "2026-12-12"
   },
   {
@@ -90,7 +95,8 @@ window.COMP = {
    "venue": "",
    "when": "Sun 11 Oct",
    "link": "https://cheezu.nl/",
-   "source": "Your Little Black Book"
+   "source": "Your Little Black Book",
+   "guide": true
   },
   {
    "id": "web-lbb-artis-new-aquarium-deep-seeing-currents",
@@ -109,7 +115,8 @@ window.COMP = {
    "when": "Sat 10 Oct – Fri 16 Oct",
    "link": "https://verkoop.cinekid.nl/",
    "source": "Your Little Black Book",
-   "image": "https://images.weserv.nl/?url=https%3A%2F%2Fverkoop.cinekid.nl%2Fpublic%2Fassets%2Fimages%2Fkleuterworkshop-tekenfeestje.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.300&fpy=0.525&output=jpg&default=https%3A%2F%2Fverkoop.cinekid.nl%2Fpublic%2Fassets%2Fimages%2Fkleuterworkshop-tekenfeestje.jpg"
+   "image": "https://images.weserv.nl/?url=https%3A%2F%2Fverkoop.cinekid.nl%2Fpublic%2Fassets%2Fimages%2Fkleuterworkshop-tekenfeestje.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.300&fpy=0.525&output=jpg&default=https%3A%2F%2Fverkoop.cinekid.nl%2Fpublic%2Fassets%2Fimages%2Fkleuterworkshop-tekenfeestje.jpg",
+   "guide": true
   }
  ],
  "samples": [
@@ -166,6 +173,7 @@ window.COMP = {
      "when": "Sun 11 Oct",
      "link": "https://cheezu.nl/",
      "source": "Your Little Black Book",
+     "guide": true,
      "why": "Sake and cheese on a Sunday. I did not need to be asked twice."
     },
     {
@@ -224,6 +232,7 @@ window.COMP = {
      "source": "I amsterdam · Your Little Black Book",
      "area": "Kattenburgerplein 1",
      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F67ed4c7506e08d518c2103e1%2FPHOTO-2023-12-10-23-33-00_2.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.600&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F67ed4c7506e08d518c2103e1%2FPHOTO-2023-12-10-23-33-00_2.webp",
+     "guide": true,
      "until": "2026-12-12",
      "why": "A concert where you may lie down. I plan to."
     },
@@ -247,6 +256,7 @@ window.COMP = {
      "source": "I amsterdam",
      "area": "Prinsengracht 756",
      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a992a5dfc761f1e3d9dbd31%2FROBVANDAMFOTO.NL_-8015__1_.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.500&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a992a5dfc761f1e3d9dbd31%2FROBVANDAMFOTO.NL_-8015__1_.webp",
+     "guide": true,
      "why": "Two pianos, one room. I am going on Sunday."
     },
     {
@@ -257,7 +267,8 @@ window.COMP = {
      "link": "https://www.iamsterdam.com/uit/agenda/winkelen/markten/art-design-and-vintage-markt",
      "source": "Your Little Black Book · I amsterdam",
      "area": "Hannie Dankbaarpassage 47",
-     "image": "https://images.weserv.nl/?url=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fthumb%2F3%2F30%2FFoodhallen_in_Oud-West_%2528Amsterdam%252C_The_Netherlands_2017%2529_%252834245643041%2529.jpg%2F1280px-Foodhallen_in_Oud-West_%2528Amsterdam%252C_The_Netherlands_2017%2529_%252834245643041%2529.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.575&output=jpg&default=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fthumb%2F3%2F30%2FFoodhallen_in_Oud-West_%2528Amsterdam%252C_The_Netherlands_2017%2529_%252834245643041%2529.jpg%2F1280px-Foodhallen_in_Oud-West_%2528Amsterdam%252C_The_Netherlands_2017%2529_%252834245643041%2529.jpg"
+     "image": "https://images.weserv.nl/?url=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fthumb%2F3%2F30%2FFoodhallen_in_Oud-West_%2528Amsterdam%252C_The_Netherlands_2017%2529_%252834245643041%2529.jpg%2F1280px-Foodhallen_in_Oud-West_%2528Amsterdam%252C_The_Netherlands_2017%2529_%252834245643041%2529.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.575&output=jpg&default=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fthumb%2F3%2F30%2FFoodhallen_in_Oud-West_%2528Amsterdam%252C_The_Netherlands_2017%2529_%252834245643041%2529.jpg%2F1280px-Foodhallen_in_Oud-West_%2528Amsterdam%252C_The_Netherlands_2017%2529_%252834245643041%2529.jpg",
+     "guide": true
     },
     {
      "id": "web-ra-2531411",
@@ -266,6 +277,7 @@ window.COMP = {
      "when": "Fri 9 Oct · 23:00",
      "link": "https://ra.co/events/2531411",
      "source": "Resident Advisor · I amsterdam",
+     "guide": true,
      "why": "The one night this month I plan to see the sunrise."
     },
     {
@@ -324,6 +336,7 @@ window.COMP = {
      "link": "https://www.iamsterdam.com/en/whats-on/calendar/festivals/events/camera-japan-festival",
      "source": "I amsterdam · Your Little Black Book · Camera Japan Festival",
      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F600a8138f21e8920ab2828ce%2F7a5b987d-16ad-4a4a-9af2-8d74ec3658d7.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.500&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F600a8138f21e8920ab2828ce%2F7a5b987d-16ad-4a4a-9af2-8d74ec3658d7.webp",
+     "guide": true,
      "why": "I book one film I know and one I have never heard of."
     },
     {
@@ -346,6 +359,7 @@ window.COMP = {
      "link": "https://www.iamsterdam.com/en/whats-on/calendar/exhibitions/all-exhibitions/chez-matisse",
      "source": "I amsterdam · Your Little Black Book · Het Parool PS",
      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F69fb16d14f5b8a3505362be6%2FAM_3245_P.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.525&fpy=0.450&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F69fb16d14f5b8a3505362be6%2FAM_3245_P.webp",
+     "guide": true,
      "until": "2027-02-14",
      "why": "I am going twice. Once to look and once to draw."
     },
@@ -357,6 +371,7 @@ window.COMP = {
      "link": "https://www.sundaymarket.nl/locatie/westergas/",
      "source": "I amsterdam · Your Little Black Book",
      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fmedia.iamsterdam.com%2Fw_1800%2F1j8k4x65u652-westergas.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.675&fpy=0.450&output=jpg&default=https%3A%2F%2Fmedia.iamsterdam.com%2Fw_1800%2F1j8k4x65u652-westergas.webp",
+     "guide": true,
      "why": "My Sunday walk ends here whether I plan it or not."
     },
     {
@@ -389,6 +404,7 @@ window.COMP = {
      "link": "https://www.iamsterdam.com/en/whats-on/calendar/shopping/markets/cabinet-curated-curiosa-and-design-weekendmarkt",
      "source": "I amsterdam · Your Little Black Book",
      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6aba516d9d31480e738fba2f%2FCABINET_3_4_oktobe.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.200&fpy=0.235&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6aba516d9d31480e738fba2f%2FCABINET_3_4_oktobe.webp",
+     "guide": true,
      "until": "2026-12-13"
     },
     {
@@ -398,7 +414,8 @@ window.COMP = {
      "when": "Sat 3 Oct",
      "link": "https://ijveramsterdam.nl/",
      "source": "I amsterdam · Your Little Black Book",
-     "image": "https://images.weserv.nl/?url=https%3A%2F%2Fmedia.iamsterdam.com%2F48abgf9usz0p%2Fw_1800%2Funtitled-design-25.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.575&output=jpg&default=https%3A%2F%2Fmedia.iamsterdam.com%2F48abgf9usz0p%2Fw_1800%2Funtitled-design-25.webp"
+     "image": "https://images.weserv.nl/?url=https%3A%2F%2Fmedia.iamsterdam.com%2F48abgf9usz0p%2Fw_1800%2Funtitled-design-25.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.575&output=jpg&default=https%3A%2F%2Fmedia.iamsterdam.com%2F48abgf9usz0p%2Fw_1800%2Funtitled-design-25.webp",
+     "guide": true
     },
     {
      "id": "web-iams-afrovibes-festival",
@@ -407,7 +424,8 @@ window.COMP = {
      "when": "Thu 1 – Sat 3 Oct",
      "link": "https://www.iamsterdam.com/en/whats-on/calendar/theatre-and-stage/stage/afrovibes-festival",
      "source": "I amsterdam",
-     "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a3aa20cc0645e68812f30ee%2Fafrovibes-2026-7-general_banner_-_1800x1020.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.750&fpy=0.550&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a3aa20cc0645e68812f30ee%2Fafrovibes-2026-7-general_banner_-_1800x1020.webp"
+     "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a3aa20cc0645e68812f30ee%2Fafrovibes-2026-7-general_banner_-_1800x1020.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.750&fpy=0.550&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a3aa20cc0645e68812f30ee%2Fafrovibes-2026-7-general_banner_-_1800x1020.webp",
+     "guide": true
     }
    ],
    "cut": []
@@ -432,6 +450,7 @@ window.COMP = {
      "link": "https://www.modernamsterdam.nl/",
      "source": "Your Little Black Book",
      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fhotspotjes.nl%2Fwp-content%2Fuploads%2F2022%2F03%2Fcafe-modern-amsterdam-noord-interieur.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.500&output=jpg&default=https%3A%2F%2Fhotspotjes.nl%2Fwp-content%2Fuploads%2F2022%2F03%2Fcafe-modern-amsterdam-noord-interieur.jpg",
+     "guide": true,
      "why": "Brunch is my day off. I let someone else cook."
     },
     {
@@ -462,6 +481,7 @@ window.COMP = {
      "link": "https://www.iamsterdam.com/en/whats-on/calendar/festivals/events/bunka-sai-japanese-culture-creativity-and-connection-in-amstelveen",
      "source": "I amsterdam",
      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a9f4d995c8f415856d09f9b%2F0f5c9ce74e250cdd9219e0479030e7bd4f71a757_01a06c4c-1a0e-7888-846d-4792cdc63285.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.675&fpy=0.450&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a9f4d995c8f415856d09f9b%2F0f5c9ce74e250cdd9219e0479030e7bd4f71a757_01a06c4c-1a0e-7888-846d-4792cdc63285.webp",
+     "guide": true,
      "why": "I will be at whichever stall has the longest queue."
     },
     {
@@ -483,6 +503,7 @@ window.COMP = {
      "link": "https://www.iamsterdam.com/en/whats-on/calendar/festivals/events/ambacht-in-beeld-festival?sdim_gc=CjwKCAjwq8PVBhAKEiwA2i3SHY7LlZBIxyP-84I03AdMXq4w_c8X0YnKdLCcVJdF-1Cc5iDFNRKjRhoCK7EQAvD_BwE&gad_source=1&gad_campaignid=23326114999&gbraid=0AAAAADRxZOHG3qn-IStXQJdo9DhUq9EOp&gclid=CjwKCAjwq8PVBhAKEiwA2i3SHY7LlZBIxyP-84I03AdMXq4w_c8X0YnKdLCcVJdF-1Cc5iDFNRKjRhoCK7EQAvD_BwE",
      "source": "I amsterdam · Your Little Black Book",
      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a32af3409e4a23d1666ac9b%2FBram-Kloos-Photography-Stichting-Ambacht-in-Beeld-002.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.600&fpy=0.500&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a32af3409e4a23d1666ac9b%2FBram-Kloos-Photography-Stichting-Ambacht-in-Beeld-002.webp",
+     "guide": true,
      "why": "I like watching people who are good with their hands."
     },
     {
@@ -493,6 +514,7 @@ window.COMP = {
      "link": "https://www.iamsterdam.com/uit/agenda/tentoonstellingen/alle-tentoonstellingen/abracadabra",
      "source": "I amsterdam · Your Little Black Book",
      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a97e718fc761f1e3d9d539b%2FHans-Klok-Liggend.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.600&fpy=0.550&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a97e718fc761f1e3d9d539b%2FHans-Klok-Liggend.webp",
+     "guide": true,
      "until": "2027-03-29"
     },
     {
