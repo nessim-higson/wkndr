@@ -52,16 +52,20 @@
 .house { margin-top: var(--sp-8); font-size: var(--fs-md); }
 .house .btn { margin-top: var(--sp-4); }
 
-@media (min-width: 960px) {
+/* the laptop layout starts where the app's own does, 720px */
+@media (min-width: 720px) {
   .wrap--page { max-width: 1040px; }
-  .layout { display: grid; grid-template-columns: 360px minmax(0, 1fr); gap: var(--sp-12); align-items: start; }
+  .layout { display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: var(--sp-8); align-items: start; }
   .hero { position: sticky; top: var(--sp-6); }
   .hero h1 { font-size: 56px; }
   .picks { margin-top: 0; }
   .p { grid-template-columns: 140px minmax(0, 1fr); padding: var(--sp-4); }
   .p-ph { width: 140px; height: 175px; }
   .p-title { font-size: var(--fs-xl); }
-  .roster .layout { grid-template-columns: 360px minmax(0, 1fr); }
+  .roster .layout { grid-template-columns: 300px minmax(0, 1fr); }
   .roster .lead { position: sticky; top: var(--sp-6); }
   .roster h2:first-of-type { margin-top: 0; }
+}
+@media (min-width: 1040px) {
+  .layout, .roster .layout { grid-template-columns: 360px minmax(0, 1fr); gap: var(--sp-12); }
 }

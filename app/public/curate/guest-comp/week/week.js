@@ -12,7 +12,7 @@
   const MAX_OWN = 5      // at least half of any guest's first ten is still the ranked deck
   const MIN_PICKS = 5    // a page with fewer reads as broken
   const WHY_MAX = 140, LINE_MAX = 90
-  const wide = window.matchMedia('(min-width: 960px)')
+  const wide = window.matchMedia('(min-width: 720px)')   // the app's own desktop breakpoint
   const $ = (id) => document.getElementById(id)
   const esc = U.esc
 
