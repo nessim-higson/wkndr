@@ -2,26 +2,6 @@
  "v": 1,
  "runs": [
   {
-   "date": "2026-09-03",
-   "kind": "weekly",
-   "sources": {
-    "I amsterdam · Your Little Black Book": 2,
-    "Your Little Black Book": 11,
-    "I amsterdam · AmsterdamTips": 1,
-    "I amsterdam · Maps": 1,
-    "I amsterdam": 41,
-    "Resident Advisor": 28,
-    "Eye Filmmuseum": 2,
-    "Fresh find": 5,
-    "I amsterdam · H’ART Museum": 1,
-    "Kidsproof": 2,
-    "Subbacultcha": 6,
-    "Het Parool PS": 6,
-    "Amsterdam Foodie": 6
-   },
-   "fresh": 34
-  },
-  {
    "date": "2026-09-04",
    "kind": "daily",
    "sources": {
@@ -666,6 +646,18 @@
     "Resident Advisor": 30
    },
    "fresh": 10
+  },
+  {
+   "date": "2026-10-07",
+   "kind": "daily",
+   "sources": {
+    "Het Parool PS": 6,
+    "Subbacultcha": 6,
+    "Amsterdam Foodie": 6,
+    "I amsterdam": 48,
+    "Resident Advisor": 30
+   },
+   "fresh": 8
   }
  ],
  "alerts": []

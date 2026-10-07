@@ -1,6 +1,6 @@
 {
- "generatedAt": "2026-10-06T12:08:58.534Z",
- "count": 8,
+ "generatedAt": "2026-10-07T11:54:39.385Z",
+ "count": 13,
  "inbox": [
   {
    "id": "web-iams-family-month-at-the-rijksmuseum",
@@ -25,8 +25,8 @@
    ],
    "verify": false,
    "firstSeen": "2026-10-06",
-   "inboxScore": 7.7,
-   "scoreWhy": "seen today · on this weekend · taste: rijksmuseum"
+   "inboxScore": 7.4,
+   "scoreWhy": "seen 1d ago · on this weekend · taste: rijksmuseum"
   },
   {
    "id": "web-iams-feel-good-theatre-one-story-in-the-genre-of",
@@ -53,8 +53,39 @@
    ],
    "verify": false,
    "firstSeen": "2026-10-06",
-   "inboxScore": 7.7,
-   "scoreWhy": "seen today · on this weekend · taste: story"
+   "inboxScore": 7.4,
+   "scoreWhy": "seen 1d ago · on this weekend · taste: story"
+  },
+  {
+   "id": "web-iams-sovereign-son",
+   "title": "Sovereign Son",
+   "venue": "De Balie",
+   "area": "Kleine-Gartmanplantsoen 10",
+   "when": "Wed 7 – Fri 9 Oct",
+   "category": "stage",
+   "freshness": "weekend",
+   "outdoor": false,
+   "kid": false,
+   "price": "ticketed",
+   "image": "https://app.thefeedfactory.nl/api/assets/6aa8c2b206b79235624cc08b/https___culturekit-assets.imgix.net_1_assets_797bc349-1801-4cb8-8a47-247a7927c317.webp",
+   "blurb": "A father he never knew As a baby, Marcus van Belkum met his father Stanley Powton once. Years later, he hears that Stanley was found dead in a self-built tent on the outskirts of Amsterdam, where he…",
+   "why": "On I amsterdam",
+   "source": "I amsterdam",
+   "link": "https://www.iamsterdam.com/en/whats-on/calendar/theatre-and-stage/stage/sovereign-son",
+   "weatherFit": [
+    "HOT",
+    "WARM",
+    "COOL",
+    "COLD_WET",
+    "VOLATILE"
+   ],
+   "verify": false,
+   "_gallery": [
+    "https://app.thefeedfactory.nl/api/assets/6a9f81e45c8f415856d0d251/https___culturekit-assets.imgix.net_1_assets_d8484346-552b-4370-96bc-9e5be6e9cc18.webp"
+   ],
+   "firstSeen": "2026-10-07",
+   "inboxScore": 7,
+   "scoreWhy": "seen today · on this weekend"
   },
   {
    "id": "web-iams-funk-baptism",
@@ -82,8 +113,8 @@
    "verify": false,
    "_site": "https://felixmeritis.nl/programma/funk-baptism-2/",
    "firstSeen": "2026-10-06",
-   "inboxScore": 7,
-   "scoreWhy": "seen today · on this weekend"
+   "inboxScore": 6.7,
+   "scoreWhy": "seen 1d ago · on this weekend"
   },
   {
    "id": "web-iams-galaxy-hockey-cup",
@@ -108,8 +139,8 @@
    ],
    "verify": false,
    "firstSeen": "2026-10-06",
-   "inboxScore": 7,
-   "scoreWhy": "seen today · on this weekend"
+   "inboxScore": 6.7,
+   "scoreWhy": "seen 1d ago · on this weekend"
   },
   {
    "id": "web-iams-britt-for-president-de-warme-winkel",
@@ -136,43 +167,12 @@
    ],
    "verify": false,
    "firstSeen": "2026-10-06",
-   "inboxScore": 7,
-   "scoreWhy": "seen today · on this weekend"
+   "inboxScore": 6.7,
+   "scoreWhy": "seen 1d ago · on this weekend"
   },
   {
-   "id": "web-iams-all-the-presidents-men-4k-restauratie-in-lab111-amsterdam",
-   "title": "All the President's Men (4K Restauratie) in Lab111 Amsterdam",
-   "venue": "LAB111",
-   "area": "Arie Biemondstraat 111",
-   "when": "Tue 6 – Tue 13 Oct",
-   "category": "stage",
-   "freshness": "weekend",
-   "outdoor": false,
-   "kid": false,
-   "price": "ticketed",
-   "image": "https://app.thefeedfactory.nl/api/assets/6aacaf6a8405820163ae8918/https___culturekit-assets.imgix.net_1_assets_2cf9a137-8dce-4a3a-af61-c2321cb23ec9.webp",
-   "blurb": "Discover the Watergate revelations Alan J. Pakula, a master of conspiracy films, brings the true story of Bob Woodward and Carl Bernstein to life.",
-   "why": "On I amsterdam",
-   "source": "I amsterdam",
-   "link": "https://www.iamsterdam.com/en/whats-on/calendar/theatre-and-stage/stage/all-the-presidents-men-4k-restauratie-in-lab111-amsterdam",
-   "weatherFit": [
-    "HOT",
-    "WARM",
-    "COOL",
-    "COLD_WET",
-    "VOLATILE"
-   ],
-   "verify": false,
-   "_gallery": [
-    "https://app.thefeedfactory.nl/api/assets/69ae294e555f1007593cf786/https___culturekit-assets.imgix.net_1_assets_c3a699f5-c3ab-49af-a040-87a0d3dab8b9.webp"
-   ],
-   "firstSeen": "2026-10-06",
-   "inboxScore": 7,
-   "scoreWhy": "seen today · on this weekend"
-  },
-  {
-   "id": "rss-het-parool-ps-de-vlottenbouwers-van-amsterdam-onderhouden-de-d",
-   "title": "De Vlottenbouwers van Amsterdam onderhouden de drijvende eilanden in de Entrepothaven: ‘Di",
+   "id": "rss-het-parool-ps-faryel-39-en-maarten-39-ontmoetten-elkaar-op-het",
+   "title": "Faryel (39) en Maarten (39) ontmoetten elkaar op het Hervormd Lyceum West: ‘We stonden bek",
    "venue": "Het Parool PS",
    "area": "",
    "when": "This weekend",
@@ -184,7 +184,7 @@
    "blurb": "Featured this week by Het Parool PS.",
    "why": "In this week's Het Parool PS",
    "source": "Het Parool PS",
-   "link": "https://www.parool.nl/ps/de-vlottenbouwers-van-amsterdam-onderhouden-de-drijvende-eilanden-in-de-entrepothaven-dit-zijn-niet-zomaar-wat-willekeurige-eilanden~bf374a4a/",
+   "link": "https://www.parool.nl/ps/faryel-39-en-maarten-39-ontmoetten-elkaar-op-het-hervormd-lyceum-west-we-stonden-bekend-als-dat-kleffe-stelletje~bf03f9738/",
    "weatherFit": [
     "HOT",
     "WARM",
@@ -193,13 +193,13 @@
     "VOLATILE"
    ],
    "verify": true,
-   "firstSeen": "2026-10-06",
+   "firstSeen": "2026-10-07",
    "inboxScore": 3,
    "scoreWhy": "seen today"
   },
   {
-   "id": "rss-het-parool-ps-tijdens-buy-my-darlings-bij-ndsm-fuse-kun-je-aan",
-   "title": "Tijdens Buy My Darlings bij NDSM Fuse kun je aanschuiven bij kunstenaars en direct hun wer",
+   "id": "rss-het-parool-ps-marijn-halsema-59-werd-gevraagd-als-scriptadvise",
+   "title": "Marijn Halsema (59) werd gevraagd als scriptadviseur voor een musical over zijn vader Fran",
    "venue": "Het Parool PS",
    "area": "",
    "when": "This weekend",
@@ -211,7 +211,7 @@
    "blurb": "Featured this week by Het Parool PS.",
    "why": "In this week's Het Parool PS",
    "source": "Het Parool PS",
-   "link": "https://www.parool.nl/ps/tijdens-buy-my-darlings-bij-ndsm-fuse-kun-je-aanschuiven-bij-kunstenaars-en-direct-hun-werk-kopen~ba37d7c3/",
+   "link": "https://www.parool.nl/ps/marijn-halsema-59-werd-gevraagd-als-scriptadviseur-voor-een-musical-over-zijn-vader-frans-hij-was-een-lolbroek-een-echte-bon-vivant~b2263df9/",
    "weatherFit": [
     "HOT",
     "WARM",
@@ -220,7 +220,142 @@
     "VOLATILE"
    ],
    "verify": true,
-   "firstSeen": "2026-10-06",
+   "firstSeen": "2026-10-07",
+   "inboxScore": 3,
+   "scoreWhy": "seen today"
+  },
+  {
+   "id": "rss-amsterdam-foodie-a-foodie-s-guide-to-strasbourg-restaurants-wine-",
+   "title": "A Foodie’s Guide to Strasbourg Restaurants & Wine Bars",
+   "venue": "Amsterdam Foodie",
+   "area": "",
+   "when": "This weekend",
+   "category": "eat",
+   "freshness": "weekend",
+   "outdoor": false,
+   "kid": false,
+   "price": "",
+   "blurb": "Featured this week by Amsterdam Foodie.",
+   "why": "In this week's Amsterdam Foodie",
+   "source": "Amsterdam Foodie",
+   "link": "https://www.amsterdamfoodie.nl/2026/strasbourg-restaurants-wine-bars/",
+   "weatherFit": [
+    "HOT",
+    "WARM",
+    "COOL",
+    "COLD_WET",
+    "VOLATILE"
+   ],
+   "verify": true,
+   "firstSeen": "2026-10-07",
+   "inboxScore": 3,
+   "scoreWhy": "seen today"
+  },
+  {
+   "id": "rss-het-parool-ps-bij-flow-community-hoef-je-na-de-yogales-niet-ge",
+   "title": "Bij Flow Community hoef je na de yogales niet gelijk naar huis: ‘Er is tijd voor thee en e",
+   "venue": "Het Parool PS",
+   "area": "",
+   "when": "This weekend",
+   "category": "out",
+   "freshness": "weekend",
+   "outdoor": false,
+   "kid": false,
+   "price": "",
+   "blurb": "Featured this week by Het Parool PS.",
+   "why": "In this week's Het Parool PS",
+   "source": "Het Parool PS",
+   "link": "https://www.parool.nl/uit-in-amsterdam/bij-flow-community-hoef-je-na-de-yogales-niet-gelijk-naar-huis-er-is-tijd-voor-thee-en-een-gesprek~bfe143c08/",
+   "weatherFit": [
+    "HOT",
+    "WARM",
+    "COOL",
+    "COLD_WET",
+    "VOLATILE"
+   ],
+   "verify": true,
+   "firstSeen": "2026-10-07",
+   "inboxScore": 3,
+   "scoreWhy": "seen today"
+  },
+  {
+   "id": "rss-het-parool-ps-cinekid-directeur-joanne-oldenbeuving-waarom-bes",
+   "title": "Cinekid-directeur Joanne Oldenbeuving: ‘Waarom bestaat er niet zoiets als de Kinderboekenw",
+   "venue": "Het Parool PS",
+   "area": "",
+   "when": "This weekend",
+   "category": "out",
+   "freshness": "weekend",
+   "outdoor": false,
+   "kid": false,
+   "price": "",
+   "blurb": "Featured this week by Het Parool PS.",
+   "why": "In this week's Het Parool PS",
+   "source": "Het Parool PS",
+   "link": "https://www.parool.nl/ps/cinekid-directeur-joanne-oldenbeuving-waarom-bestaat-er-niet-zoiets-als-de-kinderboekenweek-voor-films~b7765e740/",
+   "weatherFit": [
+    "HOT",
+    "WARM",
+    "COOL",
+    "COLD_WET",
+    "VOLATILE"
+   ],
+   "verify": true,
+   "firstSeen": "2026-10-07",
+   "inboxScore": 3,
+   "scoreWhy": "seen today"
+  },
+  {
+   "id": "rss-het-parool-ps-door-een-huwelijksfoto-uit-1976-geeft-het-allard",
+   "title": "Door een huwelijksfoto uit 1976 geeft het Allard Pierson deze vaas nu terug aan Sicilië",
+   "venue": "Het Parool PS",
+   "area": "",
+   "when": "This weekend",
+   "category": "out",
+   "freshness": "weekend",
+   "outdoor": false,
+   "kid": false,
+   "price": "",
+   "blurb": "Featured this week by Het Parool PS.",
+   "why": "In this week's Het Parool PS",
+   "source": "Het Parool PS",
+   "link": "https://www.parool.nl/kunst-media/door-een-huwelijksfoto-uit-1976-geeft-het-allard-pierson-deze-vaas-nu-terug-aan-sicilie~b099bb47/",
+   "weatherFit": [
+    "HOT",
+    "WARM",
+    "COOL",
+    "COLD_WET",
+    "VOLATILE"
+   ],
+   "verify": true,
+   "firstSeen": "2026-10-07",
+   "inboxScore": 3,
+   "scoreWhy": "seen today"
+  },
+  {
+   "id": "rss-het-parool-ps-nadat-parooljournalist-lorianne-van-gelder-41-wa",
+   "title": "Nadat Parooljournalist Lorianne van Gelder (41) was behandeld voor borstkanker, besloot ze",
+   "venue": "Het Parool PS",
+   "area": "",
+   "when": "This weekend",
+   "category": "out",
+   "freshness": "weekend",
+   "outdoor": false,
+   "kid": false,
+   "price": "",
+   "blurb": "Featured this week by Het Parool PS.",
+   "why": "In this week's Het Parool PS",
+   "source": "Het Parool PS",
+   "link": "https://www.parool.nl/ps/nadat-parooljournalist-lorianne-van-gelder-41-was-behandeld-voor-borstkanker-besloot-ze-mee-te-doen-aan-een-run-in-het-olympisch-stadion-ik-vloek-en-zucht-baal-en-klaag~b3588916/",
+   "weatherFit": [
+    "HOT",
+    "WARM",
+    "COOL",
+    "COLD_WET",
+    "VOLATILE"
+   ],
+   "verify": true,
+   "firstSeen": "2026-10-07",
    "inboxScore": 3,
    "scoreWhy": "seen today"
   }
