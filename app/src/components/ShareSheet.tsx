@@ -7,6 +7,7 @@ import { shareLink } from '../lib/share'
 import { newRoundId, relayOn, rememberSentRound } from '../lib/relay'
 import { useDialogA11y } from '../lib/useDialogA11y'
 import './ShareSheet.css'
+import { cssUrl } from '../lib/image'
 
 function cover(mode: Mode): string {
   const f = MODE_META[mode].field
@@ -93,7 +94,7 @@ export function ShareSheet({
                   <ul className="wc-list">
                     {picks.slice(0, 5).map((p) => (
                       <li key={p.id} className="wc-item">
-                        <span className={`wc-thumb${p.image ? '' : ` poster poster--${p.category}`}`} style={p.image ? { backgroundImage: `url(${p.image})` } : undefined} />
+                        <span className={`wc-thumb${p.image ? '' : ` poster poster--${p.category}`}`} style={p.image ? { backgroundImage: cssUrl(p.image) } : undefined} />
                         <span className="wc-text">
                           <span className="wc-title">{p.title}</span>
                           <span className="wc-when">{p.when}</span>

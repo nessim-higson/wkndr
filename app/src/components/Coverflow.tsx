@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef } from 'react'
 import type { Pick, Mode } from '../types'
 import { cardSignal } from '../types'
 import './Coverflow.css'
+import { cssUrl } from '../lib/image'
 
 /** MOBILE browse — a horizontal 3D coverflow. The centred card stands upright + bright; cards to
  *  either side rotate away in perspective and dim. Scroll-snaps to a card; tap to open its detail.
@@ -50,7 +51,7 @@ export function Coverflow({ picks, onOpen, mode }: { picks: Pick[]; onOpen?: (p:
           <button className="cf-card" key={p.id} onClick={() => onOpen?.(p)}>
             <span
               className={`cf-face${p.image ? '' : ` poster poster--${p.category}`}`}
-              style={p.image ? { backgroundImage: `url(${p.image})` } : undefined}
+              style={p.image ? { backgroundImage: cssUrl(p.image) } : undefined}
             >
               <span className="cf-shade" aria-hidden />
               <span className="cf-dim" aria-hidden />

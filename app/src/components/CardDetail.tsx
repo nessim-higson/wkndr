@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { placeOf } from '../lib/place'
-import { headerImageOf, originalOf } from '../lib/image'
+import { cssUrl, headerImageOf, originalOf } from '../lib/image'
 import { AnimatePresence, motion, useDragControls } from 'framer-motion'
 import { X, Star, ArrowUpRight, Check, Maximize2, Sparkles } from 'lucide-react'
 import type { Pick } from '../types'
@@ -149,7 +149,7 @@ export function CardDetail({
               ><X size={20} strokeWidth={2.6} /></button>
               <motion.div
                 className={`detail-img${pick.image ? '' : ` poster poster--${pick.category}`}`}
-                style={{ ...(pick.image ? { backgroundImage: `url(${headerImageOf(pick.image, pick.imageFocal)})` } : {}), touchAction: 'none' }}
+                style={{ ...(pick.image ? { backgroundImage: cssUrl(headerImageOf(pick.image, pick.imageFocal)) } : {}), touchAction: 'none' }}
                 onPointerDown={(e) => dragControls.start(e)}
                 initial={{ scale: pick.image ? 1.06 : 1 }} animate={{ scale: 1 }}
                 transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}

@@ -5,6 +5,7 @@ import type { Pick, Mode } from '../types'
 import { cardSignal } from '../types'
 import { Coverflow } from './Coverflow'
 import './FanView.css'
+import { cssUrl } from '../lib/image'
 
 /** Fan view = the signature browse. MOBILE gets the Coverflow (width-bounded, never crops);
  *  DESKTOP gets the wide hand-fan arc. (May unify to Coverflow on both in a later pass.) */
@@ -190,7 +191,7 @@ function WheelFan({
           <div className="wheel-card" key={p.id} data-fan-i={i}>
             <div
               className={`wheel-card-face${p.image ? '' : ` poster poster--${p.category}`}`}
-              style={p.image ? { backgroundImage: `url(${p.image})` } : undefined}
+              style={p.image ? { backgroundImage: cssUrl(p.image) } : undefined}
             >
               <span className="wcard-shade" aria-hidden />
               <span className="wcard-dim" aria-hidden />

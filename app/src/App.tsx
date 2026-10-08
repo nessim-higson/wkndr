@@ -96,7 +96,7 @@ import { fetchRound, relayOn, resolveSentRound, roundReady, sentRounds } from '.
 import { sanePicks } from './lib/feed'
 import { fetchOverrides, applyOverrides } from './lib/overrides'
 import { mergeWings, fetchWings } from './lib/wings'
-import { cardImageOf } from './lib/image'
+import { cardImageOf, cssUrl } from './lib/image'
 import { dataBase, dataUrl } from './lib/data'
 import { initMetrics, track } from './lib/metrics'
 import { FEEDBACK_FORM } from './components/Feedback'
@@ -1329,7 +1329,7 @@ export default function App() {
                                 return (
                                   <div className="sv-row" key={p.id}>
                                     <button className="sv-rowmain" onClick={() => { openDetail(p); setSavesOpen(false) }}>
-                                      <span className="sv-thumb" style={p.image ? { backgroundImage: `url(${p.image})` } : undefined}>
+                                      <span className="sv-thumb" style={p.image ? { backgroundImage: cssUrl(p.image) } : undefined}>
                                         {!p.image && <span className="sv-thumb-cat">{CATEGORY_LABEL[p.category]}</span>}
                                       </span>
                                       <span className="sv-meta">
