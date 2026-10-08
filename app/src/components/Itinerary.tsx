@@ -5,6 +5,7 @@ import type { Pick, SwipeDir } from '../types'
 import { CATEGORY_LABEL } from '../types'
 import { parseWhen, buildICS, downloadICS } from '../weekend'
 import './Itinerary.css'
+import { cssUrl } from '../lib/image'
 
 /** Your saved picks, laid out as a day-by-day plan (Fri/Sat/Sun + an "Anytime" bucket for
  *  ongoing/multi-day things) so you can read your weekend at a glance — times, order, what's
@@ -71,7 +72,7 @@ export function Itinerary({
                 <span className="itin-time">{info.time ?? '—'}</span>
                 <span
                   className={`itin-thumb${p.image ? '' : ` poster poster--${p.category}`}`}
-                  style={p.image ? { backgroundImage: `url(${p.image})` } : undefined}
+                  style={p.image ? { backgroundImage: cssUrl(p.image) } : undefined}
                 />
                 <div className="itin-info">
                   <h4 className="itin-name">{p.title}</h4>

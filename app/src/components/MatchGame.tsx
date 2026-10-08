@@ -8,6 +8,7 @@ import { shareLink, shortCode } from '../lib/share'
 import { postRound } from '../lib/relay'
 import { track } from '../lib/metrics'
 import './MatchGame.css'
+import { cssUrl } from '../lib/image'
 
 // PROTOTYPE — the swipe-to-match slice. Reuses the real SwipeStack physics; the "partner" is
 // simulated here (a deterministic subset of the deck they've already said yes to) so that mutual
@@ -198,7 +199,7 @@ function MatchSlam({
         >
           <div
             className={`mg-slam-thumb${pick.image ? '' : ` poster--${pick.category}`}`}
-            style={pick.image ? { backgroundImage: `url(${pick.image})` } : undefined}
+            style={pick.image ? { backgroundImage: cssUrl(pick.image) } : undefined}
           />
           <div className="mg-slam-meta">
             <span className="mg-slam-cat">{CATEGORY_LABEL[pick.category]}</span>
@@ -302,7 +303,7 @@ function MatchPlan({
             <li key={p.id} className="mg-plan-row" onClick={() => onOpen?.(p)}>
               <div
                 className={`mg-plan-thumb${p.image ? '' : ` poster--${p.category}`}`}
-                style={p.image ? { backgroundImage: `url(${p.image})` } : undefined}
+                style={p.image ? { backgroundImage: cssUrl(p.image) } : undefined}
               />
               <div className="mg-plan-info">
                 <span className="mg-plan-cat">{CATEGORY_LABEL[p.category]}</span>

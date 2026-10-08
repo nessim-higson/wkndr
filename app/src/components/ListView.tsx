@@ -5,6 +5,7 @@ import { Star } from 'lucide-react'
 import type { Pick, SwipeDir } from '../types'
 import { CATEGORY_LABEL, FRESHNESS_LABEL, STATUS_LABEL } from '../types'
 import './ListView.css'
+import { cssUrl } from '../lib/image'
 
 type ListStyle = 'wheel' | 'flux'
 
@@ -196,7 +197,7 @@ export function ListView({
             <div className="row-inner">
               <div
                 className={`row-thumb${p.image ? '' : ` poster poster--${p.category}`}`}
-                style={p.image ? { backgroundImage: `url(${p.image})` } : undefined}
+                style={p.image ? { backgroundImage: cssUrl(p.image) } : undefined}
               />
               <div className="row-main">
                 <div className="row-tags mono">

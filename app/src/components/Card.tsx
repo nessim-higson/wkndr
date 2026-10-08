@@ -4,7 +4,7 @@ import { glassSignature } from '../lib/card-material'
 import { Maximize2, Clock } from 'lucide-react'
 import type { Pick, Mode } from '../types'
 import { cardSignal } from '../types'
-import { cardImageOf, focalPosition } from '../lib/image'
+import { cardImageOf, cssUrl, focalPosition } from '../lib/image'
 import './Card.css'
 import { NoPhotoFace } from './NoPhotoFace'
 
@@ -29,7 +29,7 @@ export function Card({ pick, temp, mode }: { pick: Pick; temp?: number; mode?: M
       // THE CROP (V.11.10): the uncropped source, ONE `cover` crop done here, positioned on the focal
       // point — so the wide desktop card and the tall phone card both keep the subject (the portrait
       // render painted into a near-square box was a crop of a crop: the Fringe dancer became a red blob)
-      style={pick.image ? { backgroundImage: `url(${cardImageOf(pick.image)})`, backgroundPosition: focalPosition(pick) } : { '--glass-angle': `${glass.angle}deg`, '--glass-offset': `${glass.offset}%` } as CSSProperties}
+      style={pick.image ? { backgroundImage: cssUrl(cardImageOf(pick.image)), backgroundPosition: focalPosition(pick) } : { '--glass-angle': `${glass.angle}deg`, '--glass-offset': `${glass.offset}%` } as CSSProperties}
     >
       {nophoto && <div className="np-ground" aria-hidden />}
       {nophoto && <div className="np-material-mark" aria-hidden />}
