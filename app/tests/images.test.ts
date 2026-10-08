@@ -5,7 +5,7 @@
 // guess) wearing the Bloemenmarkt's photo, and "Concertgebouw Open" wearing Haarlem — the category-bank
 // fallback working exactly as designed. 9 of 53 live cards showed a photo that was not of the event.
 import { describe, it, expect } from 'bun:test'
-import { linkIsIndex, iamsCategoryFromPath, matchEventLoc, matchEventLocs, titlesAgree, titleTokens, venueMatchImage, venueBook, NO_PHOTO_CAP, toPortrait, raEventIdOf, originalOf } from '../scripts/lib/pipeline'
+import { linkIsIndex, iamsCategoryFromPath, matchEventLoc, matchEventLocs, titlesAgree, titleTokens, venueMatchImage, venueBook, NO_PHOTO_CAP, toPortrait, raEventIdOf, originalOf, photoHolderAfter } from '../scripts/lib/pipeline'
 import { rankPicks, holdBackImageless, orderServed } from '../src/weather/modes'
 import type { Pick, ImageWhy } from '../src/types'
 import feed from '../public/data/picks.amsterdam.json'
@@ -219,6 +219,30 @@ describe('the published feed keeps the law', () => {
     // V.11.11: the weekend guides admit imageless editorial items (a market, a block party) on
     // approval — a third of the live feed can honestly be blank. The line is the gate's own: half.
     expect(blanks).toBeLessThanOrEqual(Math.max(NO_PHOTO_CAP + 6, Math.ceil(live.length * 0.5)))
+  })
+})
+
+describe('a photo is lent once — photoHolderAfter (the De Hallen pair, 2026-10-08)', () => {
+  const borrow = { imageWhy: 'venue' }
+  it('the canon card holds its own photo, and keeps it against anything', () => {
+    expect(photoHolderAfter(undefined, {}, false)).toEqual({ keep: true, holder: 'canon' })
+    expect(photoHolderAfter('live', {}, false)).toEqual({ keep: true, holder: 'live' })
+  })
+  it('the one venue-borrow shares the canon photo and becomes its live holder', () => {
+    expect(photoHolderAfter('canon', borrow, true)).toEqual({ keep: true, holder: 'live' })
+  })
+  it('a second live borrow of the same photo goes without (Denim Days after the Art, Design & Vintage Market)', () => {
+    const first = photoHolderAfter('canon', borrow, true)
+    expect(photoHolderAfter(first.holder, borrow, true).keep).toBe(false)
+  })
+  it('a live card that is not a borrow never shares with anyone', () => {
+    expect(photoHolderAfter('canon', { imageWhy: 'web' }, true).keep).toBe(false)
+    expect(photoHolderAfter('live', { imageWhy: 'organiser' }, true).keep).toBe(false)
+  })
+  it('two live picks with the same photo: the first keeps, the second goes without', () => {
+    const first = photoHolderAfter(undefined, { imageWhy: 'organiser' }, true)
+    expect(first).toEqual({ keep: true, holder: 'live' })
+    expect(photoHolderAfter(first.holder, { imageWhy: 'organiser' }, true).keep).toBe(false)
   })
 })
 

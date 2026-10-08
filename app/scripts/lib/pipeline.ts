@@ -1323,3 +1323,21 @@ export function venueMatchImage(
   }
   return best ? { image: best.image, place: best.place } : null
 }
+
+/** A PHOTO IS LENT ONCE. Who holds a photograph after a card wears it, for the no-two-cards-share-a-photo
+ *  pass in both publishers (refresh.ts and restamp.ts). A place's own canon card always keeps its photo;
+ *  its ONE venue-borrow may share it; from then on a LIVE card holds it, and every later live card that
+ *  wants it goes without — an honest blank that the no-photo cap routes to the airlock like any other.
+ *  2026-10-08: two guide picks at De Hallen (the Art, Design & Vintage Market and the Denim Days Market)
+ *  both wore the Foodhallen's photo because the pass compared each only against the canon holder and
+ *  never recorded the first borrow; the feed audit halted the Thursday cron on it. */
+export function photoHolderAfter(
+  holder: 'canon' | 'live' | undefined,
+  p: { imageWhy?: string | null },
+  live: boolean,
+): { keep: boolean; holder: 'canon' | 'live' } {
+  if (!holder) return { keep: true, holder: live ? 'live' : 'canon' }
+  if (!live) return { keep: true, holder }                                   // canon never loses its own photo
+  if (holder === 'canon' && p.imageWhy === 'venue') return { keep: true, holder: 'live' }   // the one borrow
+  return { keep: false, holder }
+}

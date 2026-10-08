@@ -25,7 +25,7 @@
  */
 import corpus from './taste/corpus.json'
 import weekly from './taste/weekly.json'
-import { rxOf, titleLooseMatch, tokKey, upcomingWeekend, crownsActive, publishCheck, STAR_BOOST, NO_PHOTO_CAP, weekendModes, stampServeOrder, toPortrait, originalOf, approvalCheck, pickByTitle, markThisWeekend, type TasteCorpus, type WeeklySlate } from './lib/pipeline'
+import { rxOf, titleLooseMatch, tokKey, upcomingWeekend, crownsActive, publishCheck, STAR_BOOST, NO_PHOTO_CAP, weekendModes, stampServeOrder, toPortrait, originalOf, approvalCheck, pickByTitle, markThisWeekend, photoHolderAfter, type TasteCorpus, type WeeklySlate } from './lib/pipeline'
 import { curatedImage } from './curated'
 import { heroPicks } from './heroes'
 import { fixWhen, whenIsPast, whenLooksBroken } from '../src/lib/when'
@@ -207,12 +207,11 @@ for (const p of picks) if (p.blurb) p.blurb = tidyBlurb(p.blurb)
   for (const p of [...picks.filter((p) => !isLiveP(p)), ...picks.filter(isLiveP).sort((a, b) => rank(a) - rank(b))]) {
     if (!p.image) continue
     const k = originalOf(p.image)
-    const o = owner.get(k)
-    if (o) {
-      if (isLiveP(p) && !(o === 'canon' && p.imageWhy === 'venue')) { p.image = undefined; p.imageWhy = 'none'; dupes++ }
-      continue
-    }
-    owner.set(k, isLiveP(p) ? 'live' : 'canon')
+    // A PHOTO IS LENT ONCE (photoHolderAfter in lib/pipeline, shared with refresh.ts, 2026-10-08): the one
+    // allowed borrow makes the live card the holder, so a second live card at the same place goes without.
+    const verdict = photoHolderAfter(owner.get(k), p, isLiveP(p))
+    if (!verdict.keep) { p.image = undefined; p.imageWhy = 'none'; dupes++; continue }
+    owner.set(k, verdict.holder)
   }
   if (dupes) console.log(`  unique:   ${dupes} duplicate card photos → the later card goes without`)
 }

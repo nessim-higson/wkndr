@@ -19,7 +19,7 @@
  */
 import { CITIES, type City } from '../src/data/cities'
 import type { Pick } from '../src/types'
-import { dedupe, balanceByCategory, isGoodImage, isPortraitImage, imageBroken, urlLooksNonPhoto, imageIsCardworthy, fetchEventImage, toPortrait, wikiImage, webImageCandidates, verifyImageForEvent, venueMatchImage, venueBook, imageFocalPoint, focalFailures, originalOf, NO_PHOTO_CAP, whenBeforeWeekend, upcomingWeekend, weekendMode, weekendModes, stampServeOrder, publishCheck, crownsActive, JUDGE_FLOOR, STAR_BOOST, linkOk, mapLimit, rxOf, titleKey, titleLooseMatch, tokKey, approvalCheck, pickByTitle, markThisWeekend, type TasteCorpus, type WeeklySlate, imagePassBroken, fetchEventImages, bestRendition, ADAPTER_PICK, OWN_RECORD, OWN_IMAGE, untrustedWebPick, extrasOf, iamsLanguageTwins, unionCredits, isOwnPage, crossSourceTwins, imageSearchHealth, suspectTwins } from './lib/pipeline'
+import { dedupe, balanceByCategory, isGoodImage, isPortraitImage, imageBroken, urlLooksNonPhoto, imageIsCardworthy, fetchEventImage, toPortrait, wikiImage, webImageCandidates, verifyImageForEvent, venueMatchImage, venueBook, imageFocalPoint, focalFailures, originalOf, NO_PHOTO_CAP, whenBeforeWeekend, upcomingWeekend, weekendMode, weekendModes, stampServeOrder, publishCheck, crownsActive, JUDGE_FLOOR, STAR_BOOST, linkOk, mapLimit, rxOf, titleKey, titleLooseMatch, tokKey, approvalCheck, pickByTitle, markThisWeekend, type TasteCorpus, type WeeklySlate, imagePassBroken, fetchEventImages, bestRendition, ADAPTER_PICK, OWN_RECORD, OWN_IMAGE, untrustedWebPick, extrasOf, iamsLanguageTwins, unionCredits, isOwnPage, crossSourceTwins, imageSearchHealth, suspectTwins, photoHolderAfter } from './lib/pipeline'
 import { fixWhen, latestDateOf, whenActiveBy, whenIsPast, whenLooksBroken } from '../src/lib/when'
 import { effectiveFreshness, NEW_DAYS } from '../src/lib/freshness'
 import { mergeSightings, pruneRegistry, appendRun, type SeenRegistry, type HealthFile } from './lib/ingest'
@@ -539,7 +539,12 @@ async function buildCity(city: City) {
           folded.add(nl); owner.set(p.image, en)
           continue
         }
-        if (!(!isLive(o) && p.imageWhy === 'venue')) { p.image = undefined; p.imageWhy = undefined; dupes++; blankWhy.set(p.id, `another card already wears its photo (${o.title.slice(0, 28)})`) }
+        // A PHOTO IS LENT ONCE (photoHolderAfter, 2026-10-08): the one allowed borrow makes THIS card the
+        // holder, so a second live card at the same place goes without — the pass used to compare every
+        // later card against the canon owner only, and two De Hallen guide picks both wore the Foodhallen.
+        const verdict = photoHolderAfter(isLive(o) ? 'live' : 'canon', p, true)
+        if (verdict.keep) { owner.set(p.image, p); continue }
+        p.image = undefined; p.imageWhy = undefined; dupes++; blankWhy.set(p.id, `another card already wears its photo (${o.title.slice(0, 28)})`)
       }
       if (folded.size) { picks = picks.filter((p) => !folded.has(p)); for (const f of folded) { const i = live.indexOf(f); if (i >= 0) live.splice(i, 1) }; console.log(`  twins:    ${folded.size} I amsterdam records folded into their other-language twin (${[...folded].slice(0, 4).map((p) => p.title.slice(0, 26)).join(' · ')})`) }
       if (dupes) console.log(`  unique:   ${dupes} duplicate card photos → the later card goes without (a place's own card keeps its photo; its own event may share it)`)
