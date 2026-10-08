@@ -5,7 +5,7 @@
 // guess) wearing the Bloemenmarkt's photo, and "Concertgebouw Open" wearing Haarlem — the category-bank
 // fallback working exactly as designed. 9 of 53 live cards showed a photo that was not of the event.
 import { describe, it, expect } from 'bun:test'
-import { linkIsIndex, iamsCategoryFromPath, matchEventLoc, matchEventLocs, titlesAgree, titleTokens, venueMatchImage, venueBook, NO_PHOTO_CAP, toPortrait, raEventIdOf, originalOf, photoHolderAfter } from '../scripts/lib/pipeline'
+import { linkIsIndex, iamsCategoryFromPath, matchEventLoc, matchEventLocs, titlesAgree, titleTokens, venueMatchImage, venueBook, NO_PHOTO_CAP, toPortrait, raEventIdOf, originalOf, photoHolderAfter, photoPassOrder } from '../scripts/lib/pipeline'
 import { rankPicks, holdBackImageless, orderServed } from '../src/weather/modes'
 import type { Pick, ImageWhy } from '../src/types'
 import feed from '../public/data/picks.amsterdam.json'
@@ -243,6 +243,19 @@ describe('a photo is lent once — photoHolderAfter (the De Hallen pair, 2026-10
     const first = photoHolderAfter(undefined, { imageWhy: 'organiser' }, true)
     expect(first).toEqual({ keep: true, holder: 'live' })
     expect(photoHolderAfter(first.holder, { imageWhy: 'organiser' }, true).keep).toBe(false)
+  })
+})
+
+describe('photoPassOrder — the lent photo lands on the card the deck shows first', () => {
+  it('canon first, then live by serve order, never crawl order (the De Hallen pair, 2026-10-08)', () => {
+    const canon = P({ id: 'foodhallen', title: 'Foodhallen', freshness: 'always', image: 'x' })
+    const later = P({ id: 'web-a', title: 'Denim Days Market', editorScore: 3, judgeScore: 3, image: 'x', imageWhy: 'venue' })
+    const first = P({ id: 'web-b', title: 'Art, Design & Vintage Market', editorScore: 9, judgeScore: 9, image: 'x', imageWhy: 'venue' })
+    const isLive = (p: Pick) => p.id.startsWith('web-')
+    const order = photoPassOrder([later, first, canon], isLive, 'WARM').map((p) => p.id)
+    expect(order[0]).toBe('foodhallen')
+    expect(order.indexOf('web-b')).toBeLessThan(order.indexOf('web-a'))
+    expect(order).toHaveLength(3)
   })
 })
 
