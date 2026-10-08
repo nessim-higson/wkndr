@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-10-05T19:19:40.110Z",
-  "count": 63,
+  "generatedAt": "2026-10-08T20:45:04.090Z",
+  "count": 71,
   "pending": [
     {
       "id": "web-ra-2520614",
@@ -14,7 +14,7 @@
       "kid": false,
       "price": "",
       "blurb": "Leon Vynehall, Marie K (1), Yu Su at CLUB RAUM.",
-      "why": "25 going on RA",
+      "why": "31 going on RA",
       "source": "Resident Advisor",
       "link": "https://ra.co/events/2520614",
       "weatherFit": [
@@ -24,27 +24,112 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "popularity": 25,
+      "popularity": 31,
       "imageWhy": "none",
-      "editorScore": 6,
-      "judgeScore": 6,
+      "editorScore": 7,
+      "judgeScore": 7,
       "firstSeen": "2026-10-05"
     },
     {
-      "id": "web-ajax-nl-johan-cruijff-arena-official-ajax-vs-nec-nijmegen",
-      "title": "Ajax vs NEC Nijmegen",
-      "venue": "Johan Cruijff ArenA",
-      "area": "Amsterdam Bijlmer",
-      "when": "Sat 10 Oct · 21:00",
+      "id": "web-iams-voor-haar-de-frans-halsema-musical",
+      "title": "Voor haar, de Frans Halsema musical",
+      "venue": "DeLaMar",
+      "area": "Marnixstraat 402",
+      "when": "Until Sun 14 Mar",
+      "category": "stage",
+      "freshness": "always",
+      "outdoor": false,
+      "kid": false,
+      "price": "ticketed",
+      "blurb": "Soy Kroon portrays cabaret artist Frans Halsema in this musical featuring his greatest hits, exploring both his public joy and private struggles.",
+      "why": "Musical debut weekend of this Dutch cabaret legend",
+      "source": "I amsterdam · Your Little Black Book",
+      "link": "https://www.iamsterdam.com/uit/agenda/voorstellingen/theater-en-podiumkunsten/voor-haar-de-frans-halsema-musical",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "verify": false,
+      "buzz": 2,
+      "imageWhy": "none",
+      "editorScore": 6,
+      "judgeScore": 6,
+      "firstSeen": "2026-10-08"
+    },
+    {
+      "id": "web-lbb-kaili-smith-solo-tentoonstelling",
+      "title": "Kaili Smith – Solo tentoonstelling",
+      "venue": "Grachtenmuseum",
+      "area": "Amsterdam",
+      "when": "Until Sun 28 Feb",
+      "category": "art",
+      "freshness": "always",
+      "outdoor": false,
+      "kid": true,
+      "price": "",
+      "blurb": "Australian-American artist's first museum solo show—paintings and films exploring youth culture, family and urban life with new works.",
+      "why": "First major museum exhibition of emerging artist",
+      "source": "Your Little Black Book",
+      "link": "https://tc.tradetracker.net/?c=25043&m=12&a=163300&r=museumagenda-tentoonstellingen-amsterdam-2026-grachten-museum&u=%2Fnl%2Famsterdam%2Fmusea%2Fgrachtenmuseum%2F",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "verify": false,
+      "imageWhy": "none",
+      "editorScore": 6,
+      "judgeScore": 6,
+      "firstSeen": "2026-09-28"
+    },
+    {
+      "id": "web-allevents-japanese-ramen-workshop",
+      "title": "Japanese Ramen Workshop",
+      "venue": "De Republiek",
+      "area": "Amsterdam",
+      "when": "Sat 10 Oct · 10:30 or Sun 11 Oct · 11:00",
+      "category": "eat",
+      "freshness": "weekend",
+      "outdoor": false,
+      "kid": true,
+      "price": "€10",
+      "blurb": "Hands-on ramen workshop making rich chicken broth & noodles from scratch.",
+      "why": "Affordable interactive food experience",
+      "source": "AllEvents",
+      "link": "https://allevents.in/amsterdam/food-drinks",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "verify": true,
+      "imageWhy": "none",
+      "editorScore": 6,
+      "judgeScore": 6,
+      "firstSeen": "2026-09-05"
+    },
+    {
+      "id": "web-iams-achter-de-noten-try-out",
+      "title": "Achter De Noten (Try-out)",
+      "venue": "Splendor Amsterdam",
+      "area": "Nieuwe Uilenburgerstraat 116",
+      "when": "Thu 8 – Fri 9 Oct",
       "category": "live",
       "freshness": "weekend",
       "outdoor": false,
-      "kid": true,
+      "kid": false,
       "price": "ticketed",
-      "blurb": "Eredivisie match: Dutch football at Amsterdam's premier stadium after international break.",
-      "why": "Home side action, full capacity crowd",
-      "source": "Ajax.nl & Johan Cruijff ArenA official",
-      "link": "https://www.johancruijffarena.nl/en/calendar/451504-ajax-nec/",
+      "blurb": "About member concerts Splendor can only be the independent sanctuary that it is, thanks to the members who support us. We repay them with what we live for: music.",
+      "why": "On I amsterdam",
+      "source": "I amsterdam",
+      "link": "https://www.iamsterdam.com/en/whats-on/calendar/concerts-and-music/concerts/achter-de-noten-try-out",
       "weatherFit": [
         "HOT",
         "WARM",
@@ -52,39 +137,11 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "verify": true,
+      "verify": false,
       "imageWhy": "none",
-      "editorScore": 6,
-      "judgeScore": 6,
-      "firstSeen": "2026-10-05"
-    },
-    {
-      "id": "llm-kidsproof-d-a-de-muertos-celebration",
-      "title": "Día de Muertos celebration",
-      "venue": "Wereldmuseum Amsterdam",
-      "area": "Amsterdam",
-      "when": "Sun 11 Oct",
-      "category": "out",
-      "freshness": "weekend",
-      "outdoor": false,
-      "kid": true,
-      "price": "free",
-      "blurb": "Family-friendly Day of the Dead festivity with music, craft activities, and cultural celebration.",
-      "why": "Colorful, culturally immersive weekend activity",
-      "source": "Kidsproof",
-      "link": "https://www.kidsproof.nl/amsterdam",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "verify": true,
-      "imageWhy": "none",
-      "editorScore": 6,
-      "judgeScore": 6,
-      "firstSeen": "2026-10-05"
+      "editorScore": 5,
+      "judgeScore": 5,
+      "firstSeen": "2026-10-08"
     },
     {
       "id": "web-ra-2539698",
@@ -98,7 +155,7 @@
       "kid": false,
       "price": "",
       "blurb": "Buttechno, Andy Garvey, Lara Renner, Daya at Garage Noord.",
-      "why": "22 going on RA",
+      "why": "26 going on RA",
       "source": "Resident Advisor",
       "link": "https://ra.co/events/2539698",
       "weatherFit": [
@@ -108,28 +165,28 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "popularity": 22,
+      "popularity": 26,
       "imageWhy": "none",
       "editorScore": 5,
       "judgeScore": 5,
       "firstSeen": "2026-10-05"
     },
     {
-      "id": "web-iams-live-at-our-place",
-      "title": "Live At Our Place",
-      "venue": "Treehouse NDSM",
-      "area": "Tt. Neveritaweg 55-57",
-      "when": "Until Sat 31 Oct",
-      "category": "live",
-      "freshness": "always",
+      "id": "web-iams-funk-baptism",
+      "title": "Funk Baptism",
+      "venue": "Felix Meritis",
+      "area": "Keizersgracht 324",
+      "when": "Sat 10 Oct · 16:00",
+      "category": "drink",
+      "freshness": "weekend",
       "outdoor": false,
       "kid": false,
       "price": "ticketed",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6aa3e43bba041f4a920c31b2%2FP1280606.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.475&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6aa3e43bba041f4a920c31b2%2FP1280606.webp",
-      "blurb": "The monthly concert series is back! With over 100 musicians in-house at Treehouse, Live At Our Place gives you the chance to intimately discover our resident artists.",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6aa956ee06b79235624cea8d%2FFunk-Baptism-cropped.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.550&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6aa956ee06b79235624cea8d%2FFunk-Baptism-cropped.webp",
+      "blurb": "Part II Funk Baptism returns to Felix Meritis – bigger, bolder and funkier than ever. Get baptized in the funkiest sounds, wildest dance battles, groovy cyphers, unique showcases and tasty food.",
       "why": "On I amsterdam",
       "source": "I amsterdam",
-      "link": "https://www.iamsterdam.com/en/whats-on/calendar/concerts-and-music/concerts/live-at-our-place",
+      "link": "https://www.iamsterdam.com/en/whats-on/calendar/nightlife/clubbing/funk-baptism",
       "weatherFit": [
         "HOT",
         "WARM",
@@ -141,11 +198,44 @@
       "imageWhy": "organiser",
       "imageFocal": [
         0.5,
-        0.475
+        0.55
       ],
       "editorScore": 4,
       "judgeScore": 4,
-      "firstSeen": "2026-09-26"
+      "firstSeen": "2026-10-06"
+    },
+    {
+      "id": "web-iams-chrissy-chlapecka",
+      "title": "Chrissy Chlapecka",
+      "venue": "Melkweg",
+      "area": "Lijnbaansgracht 234A",
+      "when": "Fri 9 Oct · 19:30",
+      "category": "live",
+      "freshness": "weekend",
+      "outdoor": false,
+      "kid": false,
+      "price": "ticketed",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a177bab608a39268b6d6c03%2F_A7R0283-Edit.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.550&fpy=0.550&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a177bab608a39268b6d6c03%2F_A7R0283-Edit.webp",
+      "blurb": "Promising new pop star With her striking style and unique pop sound, she attracted the attention of well-known media outlets such as Rolling Stone, Interview, and Nylon.",
+      "why": "On I amsterdam",
+      "source": "I amsterdam",
+      "link": "https://www.iamsterdam.com/en/whats-on/calendar/concerts-and-music/concerts/chrissy-chlapecka",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "verify": false,
+      "imageWhy": "organiser",
+      "imageFocal": [
+        0.55,
+        0.5499999999999999
+      ],
+      "editorScore": 4,
+      "judgeScore": 4,
+      "firstSeen": "2026-10-08"
     },
     {
       "id": "web-iams-diederik-schneemann-1-1-3",
@@ -214,21 +304,21 @@
       "firstSeen": "2026-08-29"
     },
     {
-      "id": "web-ra-2517610",
-      "title": "Doppelgang Birthday Session",
-      "venue": "Shelter Amsterdam",
-      "area": "",
-      "when": "Fri 9 Oct · 23:00",
-      "category": "live",
-      "freshness": "weekend",
+      "id": "web-iams-exhibition-the-essence",
+      "title": "Exhibition: the ESSENCE",
+      "venue": "STRAAT Museum – Street art en graffiti in Amsterdam",
+      "area": "NDSM-plein 1",
+      "when": "Until Wed 30 Dec",
+      "category": "art",
+      "freshness": "always",
       "outdoor": false,
       "kid": false,
-      "price": "",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fimages.ra.co%2F2e6769c844e4a88aa829e4cac967fff953eebe17.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.650&fpy=0.315&output=jpg&default=https%3A%2F%2Fimages.ra.co%2F2e6769c844e4a88aa829e4cac967fff953eebe17.jpg",
-      "blurb": "Budino, Doppelgang, Bennet (DE), Sandrien and more at Shelter Amsterdam.",
-      "why": "318 going on RA",
-      "source": "Resident Advisor",
-      "link": "https://ra.co/events/2517610",
+      "price": "ticketed",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F69e0a9a8a8ab8e24a45b32c4%2FSTRAAT-theessence27_-_hires__1_-min.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.600&fpy=0.575&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F69e0a9a8a8ab8e24a45b32c4%2FSTRAAT-theessence27_-_hires__1_-min.webp",
+      "blurb": "Core elements of graffiti The exhibition focuses on the core elements of graffiti: names, tags, lines and repetition as the building blocks of a visual system.",
+      "why": "On I amsterdam",
+      "source": "I amsterdam",
+      "link": "https://www.iamsterdam.com/en/whats-on/calendar/exhibitions/all-exhibitions/exhibition-the-essence",
       "weatherFit": [
         "HOT",
         "WARM",
@@ -236,15 +326,15 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "popularity": 318,
+      "verify": false,
       "imageWhy": "organiser",
       "imageFocal": [
-        0.6499999999999999,
-        0.315
+        0.6,
+        0.575
       ],
       "editorScore": 4,
       "judgeScore": 4,
-      "firstSeen": "2026-10-05"
+      "firstSeen": "2026-08-29"
     },
     {
       "id": "web-ra-2517612",
@@ -259,7 +349,7 @@
       "price": "",
       "image": "https://images.weserv.nl/?url=https%3A%2F%2Fimages.ra.co%2Fc8bcd095b24fc47fa9a6768a377cafffd3d00ed3.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.600&fpy=0.325&output=jpg&default=https%3A%2F%2Fimages.ra.co%2Fc8bcd095b24fc47fa9a6768a377cafffd3d00ed3.jpg",
       "blurb": "Moody Mehran, OLIVIA LENSEN, Entasia, Freddi and more at Shelter Amsterdam.",
-      "why": "306 going on RA",
+      "why": "316 going on RA",
       "source": "Resident Advisor",
       "link": "https://ra.co/events/2517612",
       "weatherFit": [
@@ -269,7 +359,7 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "popularity": 306,
+      "popularity": 316,
       "imageWhy": "organiser",
       "imageFocal": [
         0.6,
@@ -277,71 +367,6 @@
       ],
       "editorScore": 4,
       "judgeScore": 4,
-      "firstSeen": "2026-10-05"
-    },
-    {
-      "id": "web-ra-2539732",
-      "title": "Future Metal Fest",
-      "venue": "Toekomstmuziek",
-      "area": "",
-      "when": "Fri 9 Oct · 20:00",
-      "category": "live",
-      "freshness": "weekend",
-      "outdoor": false,
-      "kid": false,
-      "price": "",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fimages.ra.co%2F0bb73f413b49a8f56c17c725d4a9adb7de566064.png&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.400&output=jpg&default=https%3A%2F%2Fimages.ra.co%2F0bb73f413b49a8f56c17c725d4a9adb7de566064.png",
-      "blurb": "Club night at Toekomstmuziek.",
-      "why": "On Resident Advisor",
-      "source": "Resident Advisor",
-      "link": "https://ra.co/events/2539732",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "imageWhy": "organiser",
-      "imageFocal": [
-        0.5,
-        0.4
-      ],
-      "editorScore": 4,
-      "judgeScore": 4,
-      "firstSeen": "2026-10-05"
-    },
-    {
-      "id": "web-iams-dance-at-sissis",
-      "title": "Dance at Sissi's",
-      "venue": "Sissi's",
-      "area": "Anthony Fokkerweg 3",
-      "when": "Sat 10 – Sun 11 Oct",
-      "category": "drink",
-      "freshness": "weekend",
-      "outdoor": false,
-      "kid": false,
-      "price": "ticketed",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6aa14e0a5c8f415856d170d9%2FSISSIS_byNoahSchielen_WS-66-min.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.500&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6aa14e0a5c8f415856d170d9%2FSISSIS_byNoahSchielen_WS-66-min.webp",
-      "blurb": "Swinging South Come dance at the ultimate hotspot of the Schinkelkwartier. After a day full of activities, end the evening swinging at Sissi's, a cultural meeting place in Amsterdam South where food…",
-      "why": "On I amsterdam",
-      "source": "I amsterdam",
-      "link": "https://www.iamsterdam.com/en/whats-on/calendar/nightlife/clubbing/dance-at-sissis",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "verify": false,
-      "imageWhy": "organiser",
-      "imageFocal": [
-        0.5,
-        0.5
-      ],
-      "editorScore": 3,
-      "judgeScore": 3,
       "firstSeen": "2026-10-05"
     },
     {
@@ -411,6 +436,39 @@
       "firstSeen": "2026-08-29"
     },
     {
+      "id": "web-iams-soft-focus-met-drabes-nosso-omari-steph-andrew",
+      "title": "Soft Focus met Drabes, Nosso, Omari, Steph Andrew",
+      "venue": "The Beef Chief / Transit",
+      "area": "Aambeeldstraat 38",
+      "when": "Fri 9 Oct · 19:00",
+      "category": "drink",
+      "freshness": "weekend",
+      "outdoor": false,
+      "kid": false,
+      "price": "ticketed",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a4ff1c75ed63a0917aed570%2FIMG_1749.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.575&fpy=0.325&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a4ff1c75ed63a0917aed570%2FIMG_1749.webp",
+      "blurb": "About Soft Focus Soft Focus is the new home of deep and soulful house in Amsterdam. Founded by Nosso and Omari. Soft Focus gives the sound with African roots the recognition it deserves.",
+      "why": "On I amsterdam",
+      "source": "I amsterdam",
+      "link": "https://www.iamsterdam.com/en/whats-on/calendar/nightlife/clubbing/soft-focus-met-drabes-nosso-omari-steph-andrew",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "verify": false,
+      "imageWhy": "organiser",
+      "imageFocal": [
+        0.575,
+        0.325
+      ],
+      "editorScore": 3,
+      "judgeScore": 3,
+      "firstSeen": "2026-10-06"
+    },
+    {
       "id": "web-iams-farah-coppola-i-pizzini",
       "title": "Farah Coppola - I pizzini",
       "venue": "Scala | Foodbar and Theatre",
@@ -439,21 +497,21 @@
       "firstSeen": "2026-10-01"
     },
     {
-      "id": "web-iams-the-impresario-wa-mozart",
-      "title": "The Impresario - W.A. Mozart",
-      "venue": "Amsterdam Marionette Theatre",
-      "area": "Nieuwe Jonkerstraat 8",
-      "when": "Until Sat 26 Dec",
+      "id": "web-iams-soundlab-holiday-edition-for-kids-7-12-jaar",
+      "title": "SoundLAB Holiday Edition for Kids (7-12 jaar)",
+      "venue": "Muziekgebouw aan 't IJ",
+      "area": "Piet Heinkade 1",
+      "when": "Until Wed 24 Feb",
       "category": "stage",
       "freshness": "always",
       "outdoor": false,
       "kid": false,
       "price": "ticketed",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a65fb78f698026fb1994413%2FImpresario_FeMi.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.550&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a65fb78f698026fb1994413%2FImpresario_FeMi.webp",
-      "blurb": "A short comic opera by W.A. Mozart Large wooden marionettes, put on stage by five puppeteers. Performances are presented in Dutch.",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F668c6782e7ce076bbec84266%2FaHR0cHM6Ly93d3cubXV6aWVrZ2Vib3V3Lm5sLy9jbXNfZmlsZXMvc3lzdGVtL2ltYWdlcy9pbWc3ODE2NV9vcmlnLmpwZWc_25.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.600&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F668c6782e7ce076bbec84266%2FaHR0cHM6Ly93d3cubXV6aWVrZ2Vib3V3Lm5sLy9jbXNfZmlsZXMvc3lzdGVtL2ltYWdlcy9pbWc3ODE2NV9vcmlnLmpwZWc_25.webp",
+      "blurb": "SoundLAB Holiday Special Not on vacation? Fortunately, you can still actively work with electronic music!",
       "why": "On I amsterdam",
       "source": "I amsterdam",
-      "link": "https://www.iamsterdam.com/en/whats-on/calendar/theatre-and-stage/stage/the-impresario-wa-mozart",
+      "link": "https://www.iamsterdam.com/en/whats-on/calendar/theatre-and-stage/stage/soundlab-holiday-edition-for-kids-7-12-jaar",
       "weatherFit": [
         "HOT",
         "WARM",
@@ -465,11 +523,11 @@
       "imageWhy": "organiser",
       "imageFocal": [
         0.5,
-        0.55
+        0.6
       ],
       "editorScore": 3,
       "judgeScore": 3,
-      "firstSeen": "2026-09-27"
+      "firstSeen": "2026-10-08"
     },
     {
       "id": "web-ra-2515385",
@@ -493,7 +551,7 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "popularity": 2,
+      "popularity": 5,
       "imageWhy": "none",
       "editorScore": 3,
       "judgeScore": 3,
@@ -511,8 +569,8 @@
       "kid": false,
       "price": "",
       "image": "https://images.weserv.nl/?url=https%3A%2F%2Fimages.ra.co%2F0fd570d48cd13f98fdebd0b273f0ebc20fbbfba1.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.400&output=jpg&default=https%3A%2F%2Fimages.ra.co%2F0fd570d48cd13f98fdebd0b273f0ebc20fbbfba1.jpg",
-      "blurb": "Lex Eco, Taylor Taylor at Toekomstmuziek.",
-      "why": "20 going on RA",
+      "blurb": "Lex Eco, KateGia (2), Taylor Taylor at Toekomstmuziek.",
+      "why": "32 going on RA",
       "source": "Resident Advisor",
       "link": "https://ra.co/events/2527157",
       "weatherFit": [
@@ -522,7 +580,7 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "popularity": 20,
+      "popularity": 32,
       "imageWhy": "organiser",
       "imageFocal": [
         0.5,
@@ -531,39 +589,6 @@
       "editorScore": 3,
       "judgeScore": 3,
       "firstSeen": "2026-10-05"
-    },
-    {
-      "id": "web-ra-2528257",
-      "title": "Vidafina",
-      "venue": "Supperclub",
-      "area": "",
-      "when": "Fri 9 Oct · 23:00",
-      "category": "live",
-      "freshness": "weekend",
-      "outdoor": false,
-      "kid": false,
-      "price": "",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fimages.ra.co%2Fa02ca09f95afe4b0ee76ef7d6e1dbc38d8bf1062.png&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.550&output=jpg&default=https%3A%2F%2Fimages.ra.co%2Fa02ca09f95afe4b0ee76ef7d6e1dbc38d8bf1062.png",
-      "blurb": "Club night at Supperclub.",
-      "why": "212 going on RA",
-      "source": "Resident Advisor",
-      "link": "https://ra.co/events/2528257",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "popularity": 212,
-      "imageWhy": "organiser",
-      "imageFocal": [
-        0.5,
-        0.55
-      ],
-      "editorScore": 3,
-      "judgeScore": 3,
-      "firstSeen": "2026-08-31"
     },
     {
       "id": "web-ra-2529482",
@@ -578,7 +603,7 @@
       "price": "",
       "image": "https://images.weserv.nl/?url=https%3A%2F%2Fimages.ra.co%2Fbccf028fa4c53a7f87a9a41997be27c5c05ccf1d.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.500&output=jpg&default=https%3A%2F%2Fimages.ra.co%2Fbccf028fa4c53a7f87a9a41997be27c5c05ccf1d.jpg",
       "blurb": "akcel, Anabel Arroyo, DHÆÜR, Rosati at RADION.",
-      "why": "44 going on RA",
+      "why": "53 going on RA",
       "source": "Resident Advisor",
       "link": "https://ra.co/events/2529482",
       "weatherFit": [
@@ -588,7 +613,7 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "popularity": 44,
+      "popularity": 53,
       "imageWhy": "organiser",
       "imageFocal": [
         0.5,
@@ -610,7 +635,7 @@
       "kid": false,
       "price": "",
       "blurb": "TINS, Tida Kamara, Shinshan Salazar, Franky Sticks and more at Skatecafe.",
-      "why": "276 going on RA",
+      "why": "287 going on RA",
       "source": "Resident Advisor",
       "link": "https://ra.co/events/2534238",
       "weatherFit": [
@@ -620,8 +645,40 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "popularity": 276,
+      "popularity": 287,
       "imageWhy": "none",
+      "editorScore": 3,
+      "judgeScore": 3,
+      "firstSeen": "2026-10-05"
+    },
+    {
+      "id": "web-ra-2539732",
+      "title": "Future Metal Fest",
+      "venue": "Toekomstmuziek",
+      "area": "",
+      "when": "Fri 9 Oct · 20:00",
+      "category": "live",
+      "freshness": "weekend",
+      "outdoor": false,
+      "kid": false,
+      "price": "",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fimages.ra.co%2F0bb73f413b49a8f56c17c725d4a9adb7de566064.png&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.400&output=jpg&default=https%3A%2F%2Fimages.ra.co%2F0bb73f413b49a8f56c17c725d4a9adb7de566064.png",
+      "blurb": "Club night at Toekomstmuziek.",
+      "why": "On Resident Advisor",
+      "source": "Resident Advisor",
+      "link": "https://ra.co/events/2539732",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "imageWhy": "organiser",
+      "imageFocal": [
+        0.5,
+        0.4
+      ],
       "editorScore": 3,
       "judgeScore": 3,
       "firstSeen": "2026-10-05"
@@ -660,39 +717,6 @@
       "firstSeen": "2026-10-05"
     },
     {
-      "id": "web-ra-2550712",
-      "title": "Femme Tale",
-      "venue": "Yellow House",
-      "area": "",
-      "when": "Sat 10 Oct · 21:00",
-      "category": "live",
-      "freshness": "weekend",
-      "outdoor": false,
-      "kid": false,
-      "price": "",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fimages.ra.co%2F03996f67064a239fb03e3d1d610ef84d02068ef2.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.450&output=jpg&default=https%3A%2F%2Fimages.ra.co%2F03996f67064a239fb03e3d1d610ef84d02068ef2.jpg",
-      "blurb": "Club night at Yellow House.",
-      "why": "69 going on RA",
-      "source": "Resident Advisor",
-      "link": "https://ra.co/events/2550712",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "popularity": 69,
-      "imageWhy": "organiser",
-      "imageFocal": [
-        0.5,
-        0.45
-      ],
-      "editorScore": 3,
-      "judgeScore": 3,
-      "firstSeen": "2026-10-05"
-    },
-    {
       "id": "web-ra-2553106",
       "title": "Nachtraaf: Y4R4 invites",
       "venue": "Yellow House",
@@ -705,7 +729,7 @@
       "price": "",
       "image": "https://images.weserv.nl/?url=https%3A%2F%2Fimages.ra.co%2Fa804b705b1100849ab6134d0537c5549930e6fda.png&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.400&output=jpg&default=https%3A%2F%2Fimages.ra.co%2Fa804b705b1100849ab6134d0537c5549930e6fda.png",
       "blurb": "DECADANCE, inKKiss, Lasse, Millyosa and more at Yellow House.",
-      "why": "36 going on RA",
+      "why": "119 going on RA",
       "source": "Resident Advisor",
       "link": "https://ra.co/events/2553106",
       "weatherFit": [
@@ -715,7 +739,7 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "popularity": 36,
+      "popularity": 119,
       "imageWhy": "organiser",
       "imageFocal": [
         0.5,
@@ -726,54 +750,21 @@
       "firstSeen": "2026-10-05"
     },
     {
-      "id": "web-iams-digger",
-      "title": "Digger",
-      "venue": "LAB111",
-      "area": "Arie Biemondstraat 111",
-      "when": "Thu 1 – Fri 9 Oct",
-      "category": "stage",
-      "freshness": "weekend",
-      "outdoor": false,
-      "kid": false,
-      "price": "ticketed",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a6d675bf698026fb19b67b6%2Fhttps___culturekit-assets.imgix.net_1_assets_48c58454-1fc2-4c96-8607-1f9eb063df77.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.600&fpy=0.575&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a6d675bf698026fb19b67b6%2Fhttps___culturekit-assets.imgix.net_1_assets_48c58454-1fc2-4c96-8607-1f9eb063df77.webp",
-      "blurb": "A film about power, responsibility, and chaos In Digger, Tom Cruise plays the most powerful man in the world: someone who has set in motion a global catastrophe and is now doing whatever it takes to…",
-      "why": "On I amsterdam",
-      "source": "I amsterdam",
-      "link": "https://www.iamsterdam.com/en/whats-on/calendar/theatre-and-stage/stage/digger",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "verify": false,
-      "imageWhy": "organiser",
-      "imageFocal": [
-        0.6,
-        0.575
-      ],
-      "editorScore": 2,
-      "judgeScore": 2,
-      "firstSeen": "2026-10-01"
-    },
-    {
-      "id": "web-iams-40up-upbeat",
-      "title": "40UP UPBEAT",
-      "venue": "P60",
-      "area": "Amstelveen",
-      "when": "Fri 9 – Sat 10 Oct",
+      "id": "web-iams-dance-at-sissis",
+      "title": "Dance at Sissi's",
+      "venue": "Sissi's",
+      "area": "Anthony Fokkerweg 3",
+      "when": "Sat 10 – Sun 11 Oct",
       "category": "drink",
       "freshness": "weekend",
       "outdoor": false,
       "kid": false,
       "price": "ticketed",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a0aec70fd31667bcf54a037%2Fc8e5238cca675bba9de6e29bfc190de70afbd67b_019e2e52-9010-7b34-b36c-c8401cd1fdd8.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.200&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a0aec70fd31667bcf54a037%2Fc8e5238cca675bba9de6e29bfc190de70afbd67b_019e2e52-9010-7b34-b36c-c8401cd1fdd8.webp",
-      "blurb": "House then and now in P60 40UP Upbeat is an evening full of house at P60 in Amstelveen. Residents Frenk Wiersma and Baxter spin classics from the heyday of house, interspersed with new material from…",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6aa14e0a5c8f415856d170d9%2FSISSIS_byNoahSchielen_WS-66-min.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.500&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6aa14e0a5c8f415856d170d9%2FSISSIS_byNoahSchielen_WS-66-min.webp",
+      "blurb": "Swinging South Come dance at the ultimate hotspot of the Schinkelkwartier. After a day full of activities, end the evening swinging at Sissi's, a cultural meeting place in Amsterdam South where food…",
       "why": "On I amsterdam",
       "source": "I amsterdam",
-      "link": "https://www.iamsterdam.com/en/whats-on/calendar/nightlife/clubbing/40up-upbeat",
+      "link": "https://www.iamsterdam.com/en/whats-on/calendar/nightlife/clubbing/dance-at-sissis",
       "weatherFit": [
         "HOT",
         "WARM",
@@ -785,28 +776,28 @@
       "imageWhy": "organiser",
       "imageFocal": [
         0.5,
-        0.19999999999999998
+        0.5
       ],
       "editorScore": 2,
       "judgeScore": 2,
       "firstSeen": "2026-10-05"
     },
     {
-      "id": "web-iams-the-great-dictator",
-      "title": "The Great Dictator",
-      "venue": "LAB111",
-      "area": "Arie Biemondstraat 111",
-      "when": "Fri 2 – Fri 9 Oct",
-      "category": "stage",
+      "id": "web-iams-simple-plan-viert-25-jarig-jubileum",
+      "title": "Simple Plan viert 25-jarig jubileum",
+      "venue": "AFAS Live",
+      "area": "Arena boulevard 590",
+      "when": "Fri 9 Oct · 20:00",
+      "category": "live",
       "freshness": "weekend",
       "outdoor": false,
       "kid": false,
       "price": "ticketed",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a696bcbf698026fb19a4c69%2Fhttps___culturekit-assets.imgix.net_1_assets_523a68d3-74b1-4383-870a-2ad089cbfb8f.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.475&fpy=0.550&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a696bcbf698026fb19a4c69%2Fhttps___culturekit-assets.imgix.net_1_assets_523a68d3-74b1-4383-870a-2ad089cbfb8f.webp",
-      "blurb": "A satirical classic about a dark time In The Great Dictator , Charles Chaplin plays two roles simultaneously: a poor Jewish barber from a ghetto and dictator Adenoid Hynkel, modeled after Adolf…",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6964bfdf6277e746b546f6a8%2FPressPic5_SimplePlan_SkylerBarberio.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.550&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6964bfdf6277e746b546f6a8%2FPressPic5_SimplePlan_SkylerBarberio.webp",
+      "blurb": "A special guest and an opening act The special guest is the Welsh band Neck Deep, which stood at the forefront of the pop-punk revival upon its formation in 2012.",
       "why": "On I amsterdam",
       "source": "I amsterdam",
-      "link": "https://www.iamsterdam.com/en/whats-on/calendar/theatre-and-stage/stage/the-great-dictator",
+      "link": "https://www.iamsterdam.com/en/whats-on/calendar/concerts-and-music/concerts/simple-plan-viert-25-jarig-jubileum",
       "weatherFit": [
         "HOT",
         "WARM",
@@ -817,12 +808,12 @@
       "verify": false,
       "imageWhy": "organiser",
       "imageFocal": [
-        0.475,
-        0.55
+        0.5,
+        0.5499999999999999
       ],
       "editorScore": 2,
       "judgeScore": 2,
-      "firstSeen": "2026-09-04"
+      "firstSeen": "2026-10-08"
     },
     {
       "id": "web-iams-kiem",
@@ -858,21 +849,20 @@
       "firstSeen": "2026-09-25"
     },
     {
-      "id": "web-iams-the-jr-scheme",
-      "title": "The JR Scheme",
-      "venue": "Grand Hotel Amrâth Amsterdam",
-      "area": "Prins Hendrikkade 108-114",
-      "when": "Until Fri 18 Dec",
+      "id": "web-iams-double-dutch-derek-mitchell",
+      "title": "Double Dutch - Derek Mitchell",
+      "venue": "Theatre De Landing",
+      "area": "Amstelveen",
+      "when": "Until Wed 9 Dec",
       "category": "stage",
       "freshness": "always",
       "outdoor": false,
       "kid": false,
       "price": "ticketed",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6aa8811506b79235624c7f8a%2F_V1_BANNER__JR_SCHEME_10.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.375&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6aa8811506b79235624c7f8a%2F_V1_BANNER__JR_SCHEME_10.webp",
-      "blurb": "More about JR Scheme Jacob and Robert started the JR Scheme as a small underground show at Cafe Havelaar, a bar on the Voetboogstraat.",
+      "blurb": "Experience Derek Mitchell live After hundreds of sold-out shows worldwide, comedian and viral creator Derek Mitchell, known from @letsdoubledutch, brings his second theater show , Double Dutch: Two…",
       "why": "On I amsterdam",
       "source": "I amsterdam",
-      "link": "https://www.iamsterdam.com/en/whats-on/calendar/theatre-and-stage/stage/the-jr-scheme",
+      "link": "https://www.iamsterdam.com/en/whats-on/calendar/theatre-and-stage/stage/double-dutch-derek-mitchell",
       "weatherFit": [
         "HOT",
         "WARM",
@@ -881,64 +871,27 @@
         "VOLATILE"
       ],
       "verify": false,
-      "imageWhy": "organiser",
-      "imageFocal": [
-        0.5,
-        0.375
-      ],
+      "imageWhy": "none",
       "editorScore": 2,
       "judgeScore": 2,
-      "firstSeen": "2026-09-20"
+      "firstSeen": "2026-10-08"
     },
     {
-      "id": "web-iams-techno-tuesday",
-      "title": "Techno Tuesday",
-      "venue": "Melkweg",
-      "area": "Lijnbaansgracht 234A",
-      "when": "Until Wed 28 Oct",
-      "category": "drink",
+      "id": "web-iams-feel-good-theatre-one-story-in-the-genre-of",
+      "title": "Feel-good theatre: One Story in the genre of...",
+      "venue": "Treehouse NDSM",
+      "area": "Tt. Neveritaweg 55-57",
+      "when": "Until Thu 27 May",
+      "category": "stage",
       "freshness": "always",
       "outdoor": false,
       "kid": false,
       "price": "ticketed",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fthumb%2Fe%2Fe8%2FMelkweg_en_Rabozaal.jpg%2F1280px-Melkweg_en_Rabozaal.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fthumb%2Fe%2Fe8%2FMelkweg_en_Rabozaal.jpg%2F1280px-Melkweg_en_Rabozaal.jpg",
-      "blurb": "Line up If you want to know more, check the Melkweg website .",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6aafdb3ef900a65001483a3f%2F261217-Genre-banner.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.325&fpy=0.550&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6aafdb3ef900a65001483a3f%2F261217-Genre-banner.webp",
+      "blurb": "Frequently asked questions about improvisational theater Is it really improvised Yes, our Flock Company Members perform a show that has never been performed before and never will be performed again.",
       "why": "On I amsterdam",
       "source": "I amsterdam",
-      "link": "https://www.iamsterdam.com/en/whats-on/calendar/nightlife/clubbing/techno-tuesday",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "verify": false,
-      "imageWhy": "venue",
-      "imageFocal": [
-        0.5,
-        0.575
-      ],
-      "editorScore": 2,
-      "judgeScore": 2,
-      "firstSeen": "2026-08-29"
-    },
-    {
-      "id": "web-iams-we-want-the-funk-sunday-dancing",
-      "title": "We Want The Funk - SunDay Dancing",
-      "venue": "Panama",
-      "area": "Oostelijke Handelskade 4",
-      "when": "Until Sun 7 Feb",
-      "category": "drink",
-      "freshness": "always",
-      "outdoor": false,
-      "kid": false,
-      "price": "ticketed",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a68bef7f698026fb19a0113%2FFacebook_Eventbanner.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.175&fpy=0.525&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a68bef7f698026fb19a0113%2FFacebook_Eventbanner.webp",
-      "blurb": "Turn your Sunday into a party On Sunday, September 27, Panama in Amsterdam will be transformed into the ultimate destination for lovers of funky tunes, groovy beats, captivating soul, and swinging…",
-      "why": "On I amsterdam",
-      "source": "I amsterdam",
-      "link": "https://www.iamsterdam.com/en/whats-on/calendar/nightlife/clubbing/we-want-the-funk-sunday-dancing",
+      "link": "https://www.iamsterdam.com/en/whats-on/calendar/theatre-and-stage/stage/feel-good-theatre-one-story-in-the-genre-of",
       "weatherFit": [
         "HOT",
         "WARM",
@@ -949,45 +902,12 @@
       "verify": false,
       "imageWhy": "organiser",
       "imageFocal": [
-        0.175,
-        0.525
+        0.325,
+        0.5499999999999999
       ],
       "editorScore": 2,
       "judgeScore": 2,
-      "firstSeen": "2026-09-21"
-    },
-    {
-      "id": "web-ra-2490633",
-      "title": "Cincity [all night long]",
-      "venue": "Lofi",
-      "area": "",
-      "when": "Sat 10 Oct · 23:00",
-      "category": "live",
-      "freshness": "weekend",
-      "outdoor": false,
-      "kid": false,
-      "price": "",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fimages.ra.co%2Fe29e9c6923f66c6c679987e4bf38f04f9977aee4.png&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.500&output=jpg&default=https%3A%2F%2Fimages.ra.co%2Fe29e9c6923f66c6c679987e4bf38f04f9977aee4.png",
-      "blurb": "Cincity at Lofi.",
-      "why": "200 going on RA",
-      "source": "Resident Advisor",
-      "link": "https://ra.co/events/2490633",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "popularity": 200,
-      "imageWhy": "organiser",
-      "imageFocal": [
-        0.5,
-        0.5
-      ],
-      "editorScore": 2,
-      "judgeScore": 2,
-      "firstSeen": "2026-10-05"
+      "firstSeen": "2026-10-06"
     },
     {
       "id": "web-ra-2514034",
@@ -1011,16 +931,16 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "popularity": 3,
+      "popularity": 4,
       "imageWhy": "none",
       "editorScore": 2,
       "judgeScore": 2,
       "firstSeen": "2026-10-05"
     },
     {
-      "id": "web-ra-2525107",
-      "title": "HOTBOX: Gils Promor's Birthday",
-      "venue": "MeWe Amsterdam",
+      "id": "web-ra-2528257",
+      "title": "Vidafina",
+      "venue": "Supperclub",
       "area": "",
       "when": "Fri 9 Oct · 23:00",
       "category": "live",
@@ -1028,11 +948,11 @@
       "outdoor": false,
       "kid": false,
       "price": "",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fimages.ra.co%2Fdb880cf51fb2d348ccb29e14ed1e19c3b8dcf8b3.png&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.450&output=jpg&default=https%3A%2F%2Fimages.ra.co%2Fdb880cf51fb2d348ccb29e14ed1e19c3b8dcf8b3.png",
-      "blurb": "Gino Da Koda, HOTBOX COLLECTIVE, Gils Promor, Sanne Dammers at MeWe Amsterdam.",
-      "why": "On Resident Advisor",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fimages.ra.co%2Fa02ca09f95afe4b0ee76ef7d6e1dbc38d8bf1062.png&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.550&output=jpg&default=https%3A%2F%2Fimages.ra.co%2Fa02ca09f95afe4b0ee76ef7d6e1dbc38d8bf1062.png",
+      "blurb": "Club night at Supperclub.",
+      "why": "233 going on RA",
       "source": "Resident Advisor",
-      "link": "https://ra.co/events/2525107",
+      "link": "https://ra.co/events/2528257",
       "weatherFit": [
         "HOT",
         "WARM",
@@ -1040,15 +960,15 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "popularity": 2,
+      "popularity": 233,
       "imageWhy": "organiser",
       "imageFocal": [
         0.5,
-        0.45
+        0.55
       ],
       "editorScore": 2,
       "judgeScore": 2,
-      "firstSeen": "2026-10-05"
+      "firstSeen": "2026-08-31"
     },
     {
       "id": "web-ra-2538454",
@@ -1073,7 +993,7 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "popularity": 7,
+      "popularity": 9,
       "imageWhy": "organiser",
       "imageFocal": [
         0.5,
@@ -1105,6 +1025,7 @@
         "COLD_WET",
         "VOLATILE"
       ],
+      "popularity": 6,
       "imageWhy": "none",
       "editorScore": 2,
       "judgeScore": 2,
@@ -1144,6 +1065,71 @@
       "firstSeen": "2026-09-10"
     },
     {
+      "id": "web-ra-2556162",
+      "title": "Techno with Attitude - 99dB",
+      "venue": "OT301",
+      "area": "",
+      "when": "Fri 9 Oct · 21:00",
+      "category": "live",
+      "freshness": "weekend",
+      "outdoor": false,
+      "kid": false,
+      "price": "",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fimages.ra.co%2F85e598e7033f0ef8e460e05288971772eee8e03c.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.650&output=jpg&default=https%3A%2F%2Fimages.ra.co%2F85e598e7033f0ef8e460e05288971772eee8e03c.jpg",
+      "blurb": "Club night at OT301.",
+      "why": "On Resident Advisor",
+      "source": "Resident Advisor",
+      "link": "https://ra.co/events/2556162",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "imageWhy": "organiser",
+      "imageFocal": [
+        0.5,
+        0.65
+      ],
+      "editorScore": 2,
+      "judgeScore": 2,
+      "firstSeen": "2026-10-08"
+    },
+    {
+      "id": "llm-your-little-black-book-amsterdam-weekend-tips-126-things-to-do",
+      "title": "Amsterdam Weekend Tips: 126 Things to Do",
+      "venue": "Amsterdam",
+      "area": "citywide",
+      "when": "Sat–Sun 10–11 Oct",
+      "category": "out",
+      "freshness": "weekend",
+      "outdoor": false,
+      "kid": true,
+      "price": "free",
+      "blurb": "Curated weekend guide with 126 activities across Amsterdam—restaurants, museums, walks, markets, and seasonal autumn outings.",
+      "why": "Comprehensive weekend planner for all interests",
+      "source": "Your Little Black Book",
+      "link": "https://www.yourlittleblackbook.me/en/",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.yourlittleblackbook.me%2Fwp-content%2Fuploads%2F2026%2F09%2FAmsterdam-Weekend-Guide-tips-overzicht-2026-ylbb.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.175&fpy=0.550&output=jpg&default=https%3A%2F%2Fwww.yourlittleblackbook.me%2Fwp-content%2Fuploads%2F2026%2F09%2FAmsterdam-Weekend-Guide-tips-overzicht-2026-ylbb.jpg",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "verify": true,
+      "imageWhy": "event-page",
+      "imageFocal": [
+        0.175,
+        0.5499999999999999
+      ],
+      "editorScore": 1,
+      "judgeScore": 1,
+      "firstSeen": "2026-09-06"
+    },
+    {
       "id": "llm-i-amsterdam-amsterdam-weekend-guide-9-11-october",
       "title": "Amsterdam Weekend Guide (9-11 October)",
       "venue": "I amsterdam editorial",
@@ -1154,8 +1140,8 @@
       "outdoor": false,
       "kid": false,
       "price": "free",
-      "blurb": "Curated editorial guide to the weekend's best events, culture, and dining across Amsterdam.",
-      "why": "Official weekend recommendations from local editors",
+      "blurb": "Curated editorial picks for the coming weekend—culture, dining, and events across Amsterdam.",
+      "why": "Official weekend guide for these exact dates",
       "source": "I amsterdam",
       "link": "https://www.iamsterdam.com/en/whats-on",
       "weatherFit": [
@@ -1172,13 +1158,46 @@
       "firstSeen": "2026-09-05"
     },
     {
+      "id": "web-iams-40up-upbeat",
+      "title": "40UP UPBEAT",
+      "venue": "P60",
+      "area": "Amstelveen",
+      "when": "Fri 9 – Sat 10 Oct",
+      "category": "drink",
+      "freshness": "weekend",
+      "outdoor": false,
+      "kid": false,
+      "price": "ticketed",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a0aec70fd31667bcf54a037%2Fc8e5238cca675bba9de6e29bfc190de70afbd67b_019e2e52-9010-7b34-b36c-c8401cd1fdd8.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.200&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a0aec70fd31667bcf54a037%2Fc8e5238cca675bba9de6e29bfc190de70afbd67b_019e2e52-9010-7b34-b36c-c8401cd1fdd8.webp",
+      "blurb": "House then and now in P60 40UP Upbeat is an evening full of house at P60 in Amstelveen. Residents Frenk Wiersma and Baxter spin classics from the heyday of house, interspersed with new material from…",
+      "why": "On I amsterdam",
+      "source": "I amsterdam",
+      "link": "https://www.iamsterdam.com/en/whats-on/calendar/nightlife/clubbing/40up-upbeat",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "verify": false,
+      "imageWhy": "organiser",
+      "imageFocal": [
+        0.5,
+        0.19999999999999998
+      ],
+      "editorScore": 1,
+      "judgeScore": 1,
+      "firstSeen": "2026-10-05"
+    },
+    {
       "id": "web-iams-cheeky-monday",
       "title": "Cheeky Monday",
       "venue": "Melkweg",
       "area": "Lijnbaansgracht 234A",
       "when": "Until Tue 27 Oct",
       "category": "drink",
-      "freshness": "always",
+      "freshness": "weekend",
       "outdoor": false,
       "kid": false,
       "price": "ticketed",
@@ -1203,6 +1222,166 @@
       "editorScore": 1,
       "judgeScore": 1,
       "firstSeen": "2026-08-29"
+    },
+    {
+      "id": "web-iams-techno-tuesday",
+      "title": "Techno Tuesday",
+      "venue": "Melkweg",
+      "area": "Lijnbaansgracht 234A",
+      "when": "Until Wed 28 Oct",
+      "category": "drink",
+      "freshness": "weekend",
+      "outdoor": false,
+      "kid": false,
+      "price": "ticketed",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fthumb%2Fe%2Fe8%2FMelkweg_en_Rabozaal.jpg%2F1280px-Melkweg_en_Rabozaal.jpg&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fthumb%2Fe%2Fe8%2FMelkweg_en_Rabozaal.jpg%2F1280px-Melkweg_en_Rabozaal.jpg",
+      "blurb": "Line up If you want to know more, check the Melkweg website .",
+      "why": "On I amsterdam",
+      "source": "I amsterdam",
+      "link": "https://www.iamsterdam.com/en/whats-on/calendar/nightlife/clubbing/techno-tuesday",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "verify": false,
+      "imageWhy": "venue",
+      "imageFocal": [
+        0.5,
+        0.575
+      ],
+      "editorScore": 1,
+      "judgeScore": 1,
+      "firstSeen": "2026-08-29"
+    },
+    {
+      "id": "web-iams-cincity-all-night-long",
+      "title": "Cincity [all night long]",
+      "venue": "Lofi Amsterdam",
+      "area": "Basisweg 63",
+      "when": "Sat 10 – Sun 11 Oct",
+      "category": "drink",
+      "freshness": "weekend",
+      "outdoor": false,
+      "kid": false,
+      "price": "ticketed",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6abe3456a91b3c0128ea4c9d%2F5_GET_CLOSER_14-08-25-181.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.650&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6abe3456a91b3c0128ea4c9d%2F5_GET_CLOSER_14-08-25-181.webp",
+      "blurb": "From secretly watching how, to doing it yourself Music was always present at Cincity's home. On weekends, she would secretly watch how her mother and her friends played records and danced during…",
+      "why": "On I amsterdam",
+      "source": "I amsterdam",
+      "link": "https://www.iamsterdam.com/en/whats-on/calendar/nightlife/clubbing/cincity-all-night-long",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "verify": false,
+      "imageWhy": "organiser",
+      "imageFocal": [
+        0.5,
+        0.65
+      ],
+      "editorScore": 1,
+      "judgeScore": 1,
+      "firstSeen": "2026-10-05"
+    },
+    {
+      "id": "web-iams-scala-productie-delicates",
+      "title": "Scala Productie - Delicates",
+      "venue": "Scala | Foodbar and Theatre",
+      "area": "Van Hallstraat 286",
+      "when": "Fri 2 – Fri 9 Oct",
+      "category": "stage",
+      "freshness": "weekend",
+      "outdoor": false,
+      "kid": false,
+      "price": "ticketed",
+      "blurb": "Scala food bar & theater Scala offers you a unique evening out: combine dining with 20-minute performances. The shows cover various genres, from cabaret to music and from drama to musical, and each…",
+      "why": "On I amsterdam",
+      "source": "I amsterdam",
+      "link": "https://www.iamsterdam.com/en/whats-on/calendar/theatre-and-stage/stage/scala-productie-delicates",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "verify": false,
+      "imageWhy": "none",
+      "editorScore": 1,
+      "judgeScore": 1,
+      "firstSeen": "2026-08-29"
+    },
+    {
+      "id": "web-iams-we-want-the-funk-sunday-dancing",
+      "title": "We Want The Funk - SunDay Dancing",
+      "venue": "Panama",
+      "area": "Oostelijke Handelskade 4",
+      "when": "Until Sun 7 Feb",
+      "category": "drink",
+      "freshness": "always",
+      "outdoor": false,
+      "kid": false,
+      "price": "ticketed",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a68bef7f698026fb19a0113%2FFacebook_Eventbanner.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.175&fpy=0.525&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a68bef7f698026fb19a0113%2FFacebook_Eventbanner.webp",
+      "blurb": "Turn your Sunday into a party On Sunday, September 27, Panama in Amsterdam will be transformed into the ultimate destination for lovers of funky tunes, groovy beats, captivating soul, and swinging…",
+      "why": "On I amsterdam",
+      "source": "I amsterdam",
+      "link": "https://www.iamsterdam.com/en/whats-on/calendar/nightlife/clubbing/we-want-the-funk-sunday-dancing",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "verify": false,
+      "imageWhy": "organiser",
+      "imageFocal": [
+        0.175,
+        0.525
+      ],
+      "editorScore": 1,
+      "judgeScore": 1,
+      "firstSeen": "2026-09-21"
+    },
+    {
+      "id": "web-ra-2525107",
+      "title": "HOTBOX: Gils Promor's Birthday",
+      "venue": "MeWe Amsterdam",
+      "area": "",
+      "when": "Fri 9 Oct · 23:00",
+      "category": "live",
+      "freshness": "weekend",
+      "outdoor": false,
+      "kid": false,
+      "price": "",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fimages.ra.co%2Fdb880cf51fb2d348ccb29e14ed1e19c3b8dcf8b3.png&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.450&output=jpg&default=https%3A%2F%2Fimages.ra.co%2Fdb880cf51fb2d348ccb29e14ed1e19c3b8dcf8b3.png",
+      "blurb": "Gino Da Koda, HOTBOX COLLECTIVE, Gils Promor, Sanne Dammers at MeWe Amsterdam.",
+      "why": "On Resident Advisor",
+      "source": "Resident Advisor",
+      "link": "https://ra.co/events/2525107",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "popularity": 1,
+      "imageWhy": "organiser",
+      "imageFocal": [
+        0.5,
+        0.45
+      ],
+      "editorScore": 1,
+      "judgeScore": 1,
+      "firstSeen": "2026-10-05"
     },
     {
       "id": "web-ra-2542368",
@@ -1293,6 +1472,7 @@
         "COLD_WET",
         "VOLATILE"
       ],
+      "popularity": 2,
       "imageWhy": "organiser",
       "imageFocal": [
         0.5,
@@ -1303,20 +1483,21 @@
       "firstSeen": "2026-10-05"
     },
     {
-      "id": "llm-kidsproof-art-zoo",
-      "title": "Art Zoo",
-      "venue": "Art Zoo Amsterdam",
-      "area": "Amsterdam Centrum",
-      "when": "Sat–Sun 10–11 Oct (ongoing)",
-      "category": "art",
-      "freshness": "always",
+      "id": "web-ra-2556857",
+      "title": "Opening Night: Qori Events",
+      "venue": "Club Up",
+      "area": "",
+      "when": "Fri 9 Oct · 23:00",
+      "category": "live",
+      "freshness": "weekend",
       "outdoor": false,
-      "kid": true,
-      "price": "ticketed",
-      "blurb": "Unique museum in a historic canal palace showcasing spectacular animal art installations.",
-      "why": "Wild, immersive, unexpected for kids",
-      "source": "Kidsproof",
-      "link": "https://www.kidsproof.nl/amsterdam",
+      "kid": false,
+      "price": "",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fimages.ra.co%2Fd56f5a1a9e5e652e7c79f4372de287f59e9bb0b0.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.700&output=jpg&default=https%3A%2F%2Fimages.ra.co%2Fd56f5a1a9e5e652e7c79f4372de287f59e9bb0b0.jpg",
+      "blurb": "Club night at Club Up.",
+      "why": "On Resident Advisor",
+      "source": "Resident Advisor",
+      "link": "https://ra.co/events/2556857",
       "weatherFit": [
         "HOT",
         "WARM",
@@ -1324,37 +1505,14 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "verify": true,
-      "imageWhy": "none",
+      "imageWhy": "organiser",
+      "imageFocal": [
+        0.5,
+        0.7
+      ],
       "editorScore": 1,
       "judgeScore": 1,
-      "firstSeen": "2026-10-05"
-    },
-    {
-      "id": "web-amsterdam-sights-grachtenrace",
-      "title": "Grachtenrace",
-      "venue": "Amsterdam canals",
-      "area": "Citywide",
-      "when": "Sat 10 Oct · Morning",
-      "category": "out",
-      "freshness": "weekend",
-      "outdoor": true,
-      "kid": false,
-      "price": "free to watch",
-      "blurb": "Historic boat race through Amsterdam's iconic canals. Lively community event.",
-      "why": "Saturday morning spectacle",
-      "source": "Amsterdam Sights",
-      "link": "https://www.amsterdamsights.com/events/october.html",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL"
-      ],
-      "verify": true,
-      "imageWhy": "none",
-      "editorScore": 6,
-      "judgeScore": 6,
-      "firstSeen": "2026-10-05"
+      "firstSeen": "2026-10-08"
     },
     {
       "id": "web-iams-kino-pacific",
@@ -1384,37 +1542,6 @@
       "firstSeen": "2026-09-28"
     },
     {
-      "id": "web-iams-music-films-at-de-melkweg",
-      "title": "Music films at de Melkweg",
-      "venue": "Melkweg",
-      "area": "Lijnbaansgracht 234A",
-      "when": "Until Wed 16 Dec",
-      "category": "out",
-      "freshness": "always",
-      "outdoor": true,
-      "kid": false,
-      "price": "ticketed",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F631b15601e38785419669461%2FMelkwegext..webp&w=800&h=1200&fit=cover&a=focal&fpx=0.425&fpy=0.550&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F631b15601e38785419669461%2FMelkwegext..webp",
-      "blurb": "Special music documentaries all year round Whether it's stars from hip-hop, metal, R&B, iconic names like Bowie and The Beatles, or legendary clubs and festivals, Melkweg Cinema always manages to…",
-      "why": "On I amsterdam",
-      "source": "I amsterdam",
-      "link": "https://www.iamsterdam.com/en/whats-on/calendar/festivals/events/music-films-at-de-melkweg",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL"
-      ],
-      "verify": false,
-      "imageWhy": "organiser",
-      "imageFocal": [
-        0.42500000000000004,
-        0.55
-      ],
-      "editorScore": 4,
-      "judgeScore": 4,
-      "firstSeen": "2026-08-29"
-    },
-    {
       "id": "web-iams-kaboom-x-melkweg-cinema",
       "title": "Kaboom X Melkweg Cinema",
       "venue": "Melkweg",
@@ -1425,7 +1552,6 @@
       "outdoor": true,
       "kid": false,
       "price": "ticketed",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F68399174987d4050163719d9%2FKaboom_2025.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.675&fpy=0.500&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F68399174987d4050163719d9%2FKaboom_2025.webp",
       "blurb": "Anime in the Milky Way Kaboom regularly organizes an anime night at the Melkweg Cinema, so you can once again enjoy the best anime on the big screen!",
       "why": "On I amsterdam",
       "source": "I amsterdam",
@@ -1436,10 +1562,10 @@
         "COOL"
       ],
       "verify": false,
-      "imageWhy": "organiser",
+      "imageWhy": "none",
       "imageFocal": [
-        0.675,
-        0.5
+        0.5,
+        0.575
       ],
       "editorScore": 4,
       "judgeScore": 4,
@@ -1472,32 +1598,66 @@
       "firstSeen": "2026-10-04"
     },
     {
-      "id": "web-lbb-salvo-basement",
-      "title": "Salvo Basement",
-      "venue": "Keizersgracht 703",
-      "area": "Amsterdam Centrum",
-      "when": "Wed–Sun · 10:00–17:00",
-      "category": "drink",
+      "id": "web-iams-family-month-at-the-rijksmuseum",
+      "title": "Family month at the Rijksmuseum",
+      "venue": "Rijksmuseum",
+      "area": "Museumstraat 1",
+      "when": "Until Sun 1 Nov",
+      "category": "out",
       "freshness": "always",
-      "outdoor": false,
+      "outdoor": true,
       "kid": false,
-      "price": "",
-      "blurb": "New basement location of Salvo West; weekend vinyl DJs create social vibe at this neighbourhood bar.",
-      "why": "Vinyl records & weekend vibes in canal basement",
-      "source": "Your Little Black Book",
-      "link": "https://duckduckgo.com/?q=Salvo%20Basement%20Keizersgracht%20703%20Amsterdam",
+      "price": "ticketed",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6aba21cc9d31480e738fb821%2Fb93aaf67-d95d-49aa-93c6-3d8e5e379618.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.575&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6aba21cc9d31480e738fb821%2Fb93aaf67-d95d-49aa-93c6-3d8e5e379618.webp",
+      "blurb": "Family month at the Rijksmuseum There’s plenty to do for families this October. During Family month, embark on a secret mission together with the brand-new Family Quest: Story Rescuers.",
+      "why": "On I amsterdam",
+      "source": "I amsterdam",
+      "link": "https://www.iamsterdam.com/en/whats-on/calendar/festivals/events/family-month-at-the-rijksmuseum",
       "weatherFit": [
         "HOT",
         "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
+        "COOL"
       ],
       "verify": false,
-      "imageWhy": "none",
-      "editorScore": 6,
-      "judgeScore": 6,
-      "firstSeen": "2026-10-05"
+      "imageWhy": "organiser",
+      "imageFocal": [
+        0.5,
+        0.575
+      ],
+      "editorScore": 3,
+      "judgeScore": 3,
+      "firstSeen": "2026-10-06"
+    },
+    {
+      "id": "web-iams-galaxy-hockey-cup",
+      "title": "Galaxy Hockey Cup",
+      "venue": "Amsterdam Dynamics",
+      "area": "Darlingstraat 6",
+      "when": "Fri 9 Oct · 17:00",
+      "category": "out",
+      "freshness": "weekend",
+      "outdoor": true,
+      "kid": false,
+      "price": "ticketed",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6abcf55c9d31480e7390a89e%2FScreenshot_2026-09-11_at_12.59.34-cropped.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.600&fpy=0.500&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6abcf55c9d31480e7390a89e%2FScreenshot_2026-09-11_at_12.59.34-cropped.webp",
+      "blurb": "The evening is all about enjoying hockey together and bringing people closer through sport. You don’t need any previous hockey experience to take part—the focus is on having fun, meeting others and…",
+      "why": "On I amsterdam",
+      "source": "I amsterdam",
+      "link": "https://www.iamsterdam.com/en/whats-on/calendar/festivals/events/galaxy-hockey-cup",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL"
+      ],
+      "verify": false,
+      "imageWhy": "organiser",
+      "imageFocal": [
+        0.6,
+        0.5
+      ],
+      "editorScore": 1,
+      "judgeScore": 1,
+      "firstSeen": "2026-10-06"
     },
     {
       "id": "web-scout-zuiver-wijnen",
@@ -1523,25 +1683,25 @@
       ],
       "verify": false,
       "imageWhy": "none",
-      "editorScore": 6,
-      "judgeScore": 6,
+      "editorScore": 7,
+      "judgeScore": 7,
       "firstSeen": "2026-09-03"
     },
     {
-      "id": "web-lbb-fanke",
-      "title": "Fanke",
-      "venue": "Rozengracht 91",
-      "area": "Amsterdam Centrum",
-      "when": "This weekend",
+      "id": "web-scout-de-poldervogel",
+      "title": "De Poldervogel",
+      "venue": "De Poldervogel",
+      "area": "Watergraafsmeer, Oost",
+      "when": "Just opened · dinner",
       "category": "eat",
       "freshness": "always",
       "outdoor": false,
-      "kid": true,
-      "price": "",
-      "blurb": "Sister cafe to Alpha serving freddo cappuccino, Greek phyllo snacks, stuffed peppers and authentic coffee.",
-      "why": "Greek vibes with freddo cappuccino & savoury treats",
-      "source": "Your Little Black Book",
-      "link": "https://duckduckgo.com/?q=Fanke%20Rozengracht%2091%20Amsterdam",
+      "kid": false,
+      "price": "€€",
+      "blurb": "Alumni of De Kas and Vuurtoreneiland open a seasonal neighborhood restaurant — refined comfort food, sharing plates, zero fuss.",
+      "why": "De Kas pedigree, buurt prices",
+      "source": "Fresh find",
+      "link": "https://www.restaurantdepoldervogel.nl/",
       "weatherFit": [
         "HOT",
         "WARM",
@@ -1551,9 +1711,9 @@
       ],
       "verify": false,
       "imageWhy": "none",
-      "editorScore": 5,
-      "judgeScore": 5,
-      "firstSeen": "2026-10-05"
+      "editorScore": 7,
+      "judgeScore": 7,
+      "firstSeen": "2026-09-05"
     },
     {
       "id": "web-scout-bar-copa",
@@ -1579,65 +1739,9 @@
       ],
       "verify": false,
       "imageWhy": "none",
-      "editorScore": 5,
-      "judgeScore": 5,
+      "editorScore": 6,
+      "judgeScore": 6,
       "firstSeen": "2026-09-03"
-    },
-    {
-      "id": "rss-het-parool-ps-bij-het-pianoduo-festival-amsterdam-spelen-steed",
-      "title": "Bij het Pianoduo Festival Amsterdam spelen steeds twee pianisten tegelijkertijd: hoe gaat ",
-      "venue": "Het Parool PS",
-      "area": "",
-      "when": "This weekend",
-      "category": "out",
-      "freshness": "always",
-      "outdoor": false,
-      "kid": false,
-      "price": "",
-      "blurb": "Featured this week by Het Parool PS.",
-      "why": "In this week's Het Parool PS",
-      "source": "Het Parool PS",
-      "link": "https://www.parool.nl/kunst-media/bij-het-pianoduo-festival-amsterdam-spelen-steeds-twee-pianisten-tegelijkertijd-hoe-gaat-dat-in-zijn-werk~be8dd0ee/",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "verify": true,
-      "imageWhy": "none",
-      "editorScore": 5,
-      "judgeScore": 5,
-      "firstSeen": "2026-10-05"
-    },
-    {
-      "id": "web-lbb-hagen",
-      "title": "Hagen",
-      "venue": "Kleine-Gartmanplantsoen 28",
-      "area": "Amsterdam Centrum",
-      "when": "This weekend",
-      "category": "eat",
-      "freshness": "always",
-      "outdoor": false,
-      "kid": true,
-      "price": "",
-      "blurb": "London espresso bar with Danish pastries now in city centre; sibling of Frankendael Park location.",
-      "why": "London espresso & Danish pastries downtown",
-      "source": "Your Little Black Book",
-      "link": "http://thehagenproject.com",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "verify": false,
-      "imageWhy": "none",
-      "editorScore": 4,
-      "judgeScore": 4,
-      "firstSeen": "2026-10-05"
     },
     {
       "id": "web-scout-de-blauwe-parade",
@@ -1663,9 +1767,65 @@
       ],
       "verify": false,
       "imageWhy": "none",
+      "editorScore": 6,
+      "judgeScore": 6,
+      "firstSeen": "2026-09-03"
+    },
+    {
+      "id": "rss-het-parool-ps-neven-foday-23-en-lamar-29-openden-berosu-in-de-",
+      "title": "Neven Foday (23) en Lamar (29) openden Berosu in De Pijp: de een knipt, de ander meet gril",
+      "venue": "Het Parool PS",
+      "area": "",
+      "when": "This weekend",
+      "category": "out",
+      "freshness": "always",
+      "outdoor": false,
+      "kid": false,
+      "price": "",
+      "blurb": "Featured this week by Het Parool PS.",
+      "why": "In this week's Het Parool PS",
+      "source": "Het Parool PS",
+      "link": "https://www.parool.nl/uit-in-amsterdam/neven-foday-23-en-lamar-29-openden-berosu-in-de-pijp-de-een-knipt-de-ander-meet-grills-aan~b4c39d58/",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "verify": true,
+      "imageWhy": "none",
       "editorScore": 4,
       "judgeScore": 4,
-      "firstSeen": "2026-09-03"
+      "firstSeen": "2026-10-08"
+    },
+    {
+      "id": "rss-het-parool-ps-frits-74-en-floor-28-in-de-jaren-tachtig-was-ams",
+      "title": "Frits (74) en Floor (28): ‘In de jaren tachtig was Amsterdam veel enger dan nu’",
+      "venue": "Het Parool PS",
+      "area": "",
+      "when": "This weekend",
+      "category": "out",
+      "freshness": "always",
+      "outdoor": false,
+      "kid": false,
+      "price": "",
+      "blurb": "Featured this week by Het Parool PS.",
+      "why": "In this week's Het Parool PS",
+      "source": "Het Parool PS",
+      "link": "https://www.parool.nl/ps/frits-74-en-floor-28-in-de-jaren-tachtig-was-amsterdam-veel-enger-dan-nu~ba58e6cb/",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "verify": true,
+      "imageWhy": "none",
+      "editorScore": 3,
+      "judgeScore": 3,
+      "firstSeen": "2026-10-08"
     },
     {
       "id": "rss-subbacultcha-you-at-eq",
@@ -1690,14 +1850,13 @@
         "VOLATILE"
       ],
       "verify": true,
-      "imageWhy": "event-page",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fsubbacultcha.nl%2Fwp-content%2Fuploads%2F2026%2F06%2FQiri-up-close-by-Yade-Noe%25CC%2588.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.525&fpy=0.525&output=jpg&default=https%3A%2F%2Fsubbacultcha.nl%2Fwp-content%2Fuploads%2F2026%2F06%2FQiri-up-close-by-Yade-Noe%25CC%2588.jpg",
+      "imageWhy": "none",
       "imageFocal": [
         0.525,
         0.525
       ],
-      "editorScore": 2,
-      "judgeScore": 2,
+      "editorScore": 3,
+      "judgeScore": 3,
       "firstSeen": "2026-08-29"
     },
     {
@@ -1724,9 +1883,37 @@
       ],
       "verify": true,
       "imageWhy": "none",
+      "editorScore": 3,
+      "judgeScore": 3,
+      "firstSeen": "2026-09-02"
+    },
+    {
+      "id": "rss-het-parool-ps-recensie-l-a-v-a-de-vraag-blijft-waar-precies-de",
+      "title": "Recensie L.A.V.A.: De vraag blijft waar precies de wrijving zit",
+      "venue": "Het Parool PS",
+      "area": "",
+      "when": "This weekend",
+      "category": "out",
+      "freshness": "always",
+      "outdoor": false,
+      "kid": false,
+      "price": "",
+      "blurb": "Featured this week by Het Parool PS.",
+      "why": "In this week's Het Parool PS",
+      "source": "Het Parool PS",
+      "link": "https://www.parool.nl/kunst-media/recensie-l-a-v-a-de-vraag-blijft-waar-precies-de-wrijving-zit~b2e79391/",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "verify": true,
+      "imageWhy": "none",
       "editorScore": 2,
       "judgeScore": 2,
-      "firstSeen": "2026-09-02"
+      "firstSeen": "2026-10-08"
     },
     {
       "id": "rss-subbacultcha-looking-back-at-patricia-wolf-sara-mokrani-at-am",
@@ -1762,8 +1949,8 @@
       "firstSeen": "2026-08-30"
     },
     {
-      "id": "rss-subbacultcha-subbacultcha-s-guide-to-gaudeamus-festival-2026",
-      "title": "Subbacultcha’s Guide to Gaudeamus Festival 2026",
+      "id": "rss-subbacultcha-subbacultcha-spring-highlights",
+      "title": "Subbacultcha Spring Highlights",
       "venue": "Subbacultcha",
       "area": "",
       "when": "This weekend",
@@ -1775,7 +1962,7 @@
       "blurb": "Featured this week by Subbacultcha.",
       "why": "In this week's Subbacultcha",
       "source": "Subbacultcha",
-      "link": "https://subbacultcha.nl/2026/08/27/subbacultchas-guide-to-gaudeamus-festival-2026-a-festival-for-curious-ears/",
+      "link": "https://subbacultcha.nl/2026/08/04/subbacultcha-spring-highlights/",
       "weatherFit": [
         "HOT",
         "WARM",
@@ -1785,14 +1972,103 @@
       ],
       "verify": true,
       "imageWhy": "event-page",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fsubbacultcha.nl%2Fwp-content%2Fuploads%2F2026%2F08%2FGaudeamus-2025-Stenensoep-Rogier-Boogaard-0725-WEB.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.550&output=jpg&default=https%3A%2F%2Fsubbacultcha.nl%2Fwp-content%2Fuploads%2F2026%2F08%2FGaudeamus-2025-Stenensoep-Rogier-Boogaard-0725-WEB.jpg",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fsubbacultcha.nl%2Fwp-content%2Fuploads%2F2026%2F08%2F2026.05.28-FIBER-Festival-2026-c-Sabine-van-Nistelrooij-Bapari-23.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.525&fpy=0.575&output=jpg&default=https%3A%2F%2Fsubbacultcha.nl%2Fwp-content%2Fuploads%2F2026%2F08%2F2026.05.28-FIBER-Festival-2026-c-Sabine-van-Nistelrooij-Bapari-23.jpg",
       "imageFocal": [
-        0.5,
-        0.55
+        0.525,
+        0.575
       ],
       "editorScore": 2,
       "judgeScore": 2,
-      "firstSeen": "2026-08-30"
+      "firstSeen": "2026-08-29"
+    },
+    {
+      "id": "rss-het-parool-ps-brigit-65-hoorde-via-de-uitgeverij-van-haar-vade",
+      "title": "Brigit (65) hoorde via de uitgeverij van haar vaders dagboeken dat hij niet haar biologisc",
+      "venue": "Het Parool PS",
+      "area": "",
+      "when": "This weekend",
+      "category": "out",
+      "freshness": "always",
+      "outdoor": false,
+      "kid": false,
+      "price": "",
+      "blurb": "Featured this week by Het Parool PS.",
+      "why": "In this week's Het Parool PS",
+      "source": "Het Parool PS",
+      "link": "https://www.parool.nl/ps/brigit-65-hoorde-via-de-uitgeverij-van-haar-vaders-dagboeken-dat-hij-niet-haar-biologische-vader-was-ik-begreep-opeens-het-verzet-van-mijn-moeder~b3969121/",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "verify": true,
+      "imageWhy": "none",
+      "editorScore": 1,
+      "judgeScore": 1,
+      "firstSeen": "2026-10-08"
+    },
+    {
+      "id": "rss-het-parool-ps-rebecca-34-en-haar-vriend-kochten-een-nog-te-bou",
+      "title": "Rebecca (34) en haar vriend kochten een nog te bouwen appartement in Amsterdam-Noord: ‘Je ",
+      "venue": "Het Parool PS",
+      "area": "",
+      "when": "This weekend",
+      "category": "out",
+      "freshness": "always",
+      "outdoor": false,
+      "kid": false,
+      "price": "",
+      "blurb": "Featured this week by Het Parool PS.",
+      "why": "In this week's Het Parool PS",
+      "source": "Het Parool PS",
+      "link": "https://www.parool.nl/amsterdam/rebecca-34-en-haar-vriend-kochten-een-nog-te-bouwen-appartement-in-amsterdam-noord-je-tekent-voor-lucht~b6d02fc0/",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "verify": true,
+      "imageWhy": "none",
+      "editorScore": 1,
+      "judgeScore": 1,
+      "firstSeen": "2026-10-08"
+    },
+    {
+      "id": "rss-amsterdam-foodie-tapas-more-8-of-the-best-spanish-restaurants-in-",
+      "title": "Tapas & More: 8 of the Best Spanish Restaurants in Amsterdam",
+      "venue": "Amsterdam Foodie",
+      "area": "",
+      "when": "This weekend",
+      "category": "eat",
+      "freshness": "always",
+      "outdoor": false,
+      "kid": false,
+      "price": "",
+      "blurb": "Featured this week by Amsterdam Foodie.",
+      "why": "In this week's Amsterdam Foodie",
+      "source": "Amsterdam Foodie",
+      "link": "https://www.amsterdamfoodie.nl/amsterdam-food-guide/tapas-amsterdam-guide/",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "verify": true,
+      "imageWhy": "event-page",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.amsterdamfoodie.nl%2Fwp-content%2Fuploads%2F2025%2F09%2FTia-Rosa-tapas-in-Amsterdam-scaled.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.300&fpy=0.550&output=jpg&default=https%3A%2F%2Fwww.amsterdamfoodie.nl%2Fwp-content%2Fuploads%2F2025%2F09%2FTia-Rosa-tapas-in-Amsterdam-scaled.jpg",
+      "imageFocal": [
+        0.3,
+        0.55
+      ],
+      "editorScore": 1,
+      "judgeScore": 1,
+      "firstSeen": "2026-10-08"
     },
     {
       "id": "rss-subbacultcha-interview-with-gb",
@@ -1823,104 +2099,20 @@
       "firstSeen": "2026-09-23"
     },
     {
-      "id": "rss-het-parool-ps-zoek-de-verschillen-amstel-in-1860-en-2026",
-      "title": "Zoek de verschillen: Amstel in 1860 en 2026",
-      "venue": "Het Parool PS",
+      "id": "rss-amsterdam-foodie-22-of-the-best-asian-restaurants-in-amsterdam-fr",
+      "title": "22 of the Best Asian Restaurants in Amsterdam, from Sichuan to Sushi",
+      "venue": "Amsterdam Foodie",
       "area": "",
       "when": "This weekend",
-      "category": "out",
+      "category": "eat",
       "freshness": "always",
       "outdoor": false,
       "kid": false,
       "price": "",
-      "blurb": "Featured this week by Het Parool PS.",
-      "why": "In this week's Het Parool PS",
-      "source": "Het Parool PS",
-      "link": "https://www.parool.nl/ps/zoek-de-verschillen-amstel-in-1860-en-2026~b9638e4d/",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "verify": true,
-      "imageWhy": "none",
-      "editorScore": 1,
-      "judgeScore": 1,
-      "firstSeen": "2026-08-31"
-    },
-    {
-      "id": "rss-het-parool-ps-een-dag-voordat-ik-mijn-vader-na-jaren-weer-zou-",
-      "title": "‘Een dag voordat ik mijn vader na jaren weer zou zien, overleed hij’",
-      "venue": "Het Parool PS",
-      "area": "",
-      "when": "This weekend",
-      "category": "out",
-      "freshness": "always",
-      "outdoor": false,
-      "kid": false,
-      "price": "",
-      "blurb": "Featured this week by Het Parool PS.",
-      "why": "In this week's Het Parool PS",
-      "source": "Het Parool PS",
-      "link": "https://www.parool.nl/ps/een-dag-voordat-ik-mijn-vader-na-jaren-weer-zou-zien-overleed-hij~bd03ed141/",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "verify": true,
-      "imageWhy": "none",
-      "editorScore": 1,
-      "judgeScore": 1,
-      "firstSeen": "2026-10-05"
-    },
-    {
-      "id": "rss-het-parool-ps-ik-hoopte-al-dat-ik-het-gouden-kalf-zou-winnen-z",
-      "title": "Ik hoopte al dat ik het Gouden Kalf zou winnen, zodat Super Poison Frog kon gaan speechen",
-      "venue": "Het Parool PS",
-      "area": "",
-      "when": "This weekend",
-      "category": "out",
-      "freshness": "always",
-      "outdoor": false,
-      "kid": false,
-      "price": "",
-      "blurb": "Featured this week by Het Parool PS.",
-      "why": "In this week's Het Parool PS",
-      "source": "Het Parool PS",
-      "link": "https://www.parool.nl/columns-opinie/ik-hoopte-al-dat-ik-het-gouden-kalf-zou-winnen-zodat-super-poison-frog-kon-gaan-speechen~bb7f28de/",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "verify": true,
-      "imageWhy": "none",
-      "editorScore": 1,
-      "judgeScore": 1,
-      "firstSeen": "2026-10-05"
-    },
-    {
-      "id": "rss-subbacultcha-subbacultcha-spring-highlights",
-      "title": "Subbacultcha Spring Highlights",
-      "venue": "Subbacultcha",
-      "area": "",
-      "when": "This weekend",
-      "category": "live",
-      "freshness": "always",
-      "outdoor": false,
-      "kid": false,
-      "price": "",
-      "blurb": "Featured this week by Subbacultcha.",
-      "why": "In this week's Subbacultcha",
-      "source": "Subbacultcha",
-      "link": "https://subbacultcha.nl/2026/08/04/subbacultcha-spring-highlights/",
+      "blurb": "Featured this week by Amsterdam Foodie.",
+      "why": "In this week's Amsterdam Foodie",
+      "source": "Amsterdam Foodie",
+      "link": "https://www.amsterdamfoodie.nl/amsterdam-food-guide/best-asian-restaurants-amsterdam/",
       "weatherFit": [
         "HOT",
         "WARM",
@@ -1930,14 +2122,79 @@
       ],
       "verify": true,
       "imageWhy": "event-page",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fsubbacultcha.nl%2Fwp-content%2Fuploads%2F2026%2F08%2F2026.05.28-FIBER-Festival-2026-c-Sabine-van-Nistelrooij-Bapari-23.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.525&fpy=0.575&output=jpg&default=https%3A%2F%2Fsubbacultcha.nl%2Fwp-content%2Fuploads%2F2026%2F08%2F2026.05.28-FIBER-Festival-2026-c-Sabine-van-Nistelrooij-Bapari-23.jpg",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.amsterdamfoodie.nl%2Fwp-content%2Fuploads%2F2023%2F08%2FSushi-Fanatics.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.525&output=jpg&default=https%3A%2F%2Fwww.amsterdamfoodie.nl%2Fwp-content%2Fuploads%2F2023%2F08%2FSushi-Fanatics.jpg",
       "imageFocal": [
-        0.525,
-        0.575
+        0.5,
+        0.525
       ],
       "editorScore": 1,
       "judgeScore": 1,
-      "firstSeen": "2026-08-29"
+      "firstSeen": "2026-09-18"
+    },
+    {
+      "id": "rss-amsterdam-foodie-8-japanese-restaurants-in-amsterdam-for-every-oc",
+      "title": "8 Japanese Restaurants in Amsterdam for Every Occasion",
+      "venue": "Amsterdam Foodie",
+      "area": "",
+      "when": "This weekend",
+      "category": "eat",
+      "freshness": "always",
+      "outdoor": false,
+      "kid": false,
+      "price": "",
+      "blurb": "Featured this week by Amsterdam Foodie.",
+      "why": "In this week's Amsterdam Foodie",
+      "source": "Amsterdam Foodie",
+      "link": "https://www.amsterdamfoodie.nl/amsterdam-food-guide/japanese-restaurants-in-amsterdam/",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "verify": true,
+      "imageWhy": "none",
+      "imageFocal": [
+        0.5,
+        0.5
+      ],
+      "editorScore": 1,
+      "judgeScore": 1,
+      "firstSeen": "2026-09-16"
+    },
+    {
+      "id": "rss-amsterdam-foodie-a-foodie-s-guide-to-lake-como-restaurants-from-n",
+      "title": "A Foodie’s Guide to Lake Como Restaurants, from Nesso to Bellagio",
+      "venue": "Amsterdam Foodie",
+      "area": "",
+      "when": "This weekend",
+      "category": "eat",
+      "freshness": "always",
+      "outdoor": false,
+      "kid": false,
+      "price": "",
+      "blurb": "Featured this week by Amsterdam Foodie.",
+      "why": "In this week's Amsterdam Foodie",
+      "source": "Amsterdam Foodie",
+      "link": "https://www.amsterdamfoodie.nl/2026/lake-como-restaurants/",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "verify": true,
+      "imageWhy": "event-page",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.amsterdamfoodie.nl%2Fwp-content%2Fuploads%2F2026%2F10%2FLake-Como-restaurants-Pinterest-and-hero-image.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.500&output=jpg&default=https%3A%2F%2Fwww.amsterdamfoodie.nl%2Fwp-content%2Fuploads%2F2026%2F10%2FLake-Como-restaurants-Pinterest-and-hero-image.jpg",
+      "imageFocal": [
+        0.5,
+        0.5
+      ],
+      "editorScore": 1,
+      "judgeScore": 1,
+      "firstSeen": "2026-10-01"
     }
   ]
 }

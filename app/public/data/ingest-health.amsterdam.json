@@ -3,18 +3,6 @@
  "runs": [
   {
    "date": "2026-09-05",
-   "kind": "daily",
-   "sources": {
-    "Het Parool PS": 6,
-    "Subbacultcha": 6,
-    "Amsterdam Foodie": 6,
-    "I amsterdam": 48,
-    "Resident Advisor": 30
-   },
-   "fresh": 9
-  },
-  {
-   "date": "2026-09-05",
    "kind": "weekly",
    "sources": {
     "Your Little Black Book": 15,
@@ -658,6 +646,26 @@
     "Resident Advisor": 30
    },
    "fresh": 12
+  },
+  {
+   "date": "2026-10-08",
+   "kind": "weekly",
+   "sources": {
+    "Resident Advisor · I amsterdam": 1,
+    "I amsterdam · Your Little Black Book": 10,
+    "Your Little Black Book": 41,
+    "I amsterdam · Your Little Black Book · Maps": 1,
+    "Your Little Black Book · I amsterdam": 3,
+    "I amsterdam": 44,
+    "Fresh find": 8,
+    "Resident Advisor": 26,
+    "Eye Filmmuseum": 3,
+    "Amsterdam Foodie": 5,
+    "Subbacultcha": 6,
+    "AllEvents": 1,
+    "Het Parool PS": 5
+   },
+   "fresh": 21
   }
  ],
  "alerts": []
