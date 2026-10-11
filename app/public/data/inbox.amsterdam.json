@@ -1,23 +1,80 @@
 {
- "generatedAt": "2026-10-10T11:17:45.173Z",
- "count": 18,
+ "generatedAt": "2026-10-11T11:31:06.344Z",
+ "count": 17,
  "inbox": [
   {
-   "id": "web-iams-walking-to-a-house-concert-at-the-wolkenkrabber",
-   "title": "Walking to a house concert at the Wolkenkrabber",
-   "venue": "Café Blek",
-   "area": "Waalstraat 48",
-   "when": "Sat 10 Oct · 14:00",
+   "id": "web-iams-play-and-discover-this-autumn-break-at-wopl-1-8-year",
+   "title": "Play & discover this autumn break at WOPL! (1-8 year)",
+   "venue": "WOPL! (World of Play & Learning)",
+   "area": "Stadionplein 300",
+   "when": "Until Sat 17 Oct",
+   "category": "out",
+   "freshness": "weekend",
+   "outdoor": true,
+   "kid": false,
+   "price": "ticketed",
+   "image": "https://app.thefeedfactory.nl/api/assets/6abd1db19d31480e7390aac8/v__63_.webp",
+   "blurb": "You won't be bored here No plans for the autumn break yet? Step into the world of WOPL! and experience a day full of playing and discovering together.",
+   "why": "On I amsterdam",
+   "source": "I amsterdam",
+   "link": "https://www.iamsterdam.com/en/whats-on/calendar/festivals/events/play-and-discover-this-autumn-break-at-wopl-1-8-year",
+   "weatherFit": [
+    "HOT",
+    "WARM",
+    "COOL"
+   ],
+   "verify": false,
+   "_gallery": [
+    "https://app.thefeedfactory.nl/api/assets/6abd206d9d31480e7390aae7/v__67_.webp"
+   ],
+   "firstSeen": "2026-10-11",
+   "inboxScore": 7.7,
+   "scoreWhy": "seen today · on this weekend · taste: world"
+  },
+  {
+   "id": "web-iams-metropolis-1927-wishful-singing-yonga-sun-steven-kamperman-and-jorrit-westerhof",
+   "title": "Metropolis (1927) Wishful Singing, Yonga Sun, Steven Kamperman & Jorrit Westerhof",
+   "venue": "Muziekgebouw aan 't IJ",
+   "area": "Piet Heinkade 1",
+   "when": "Sun 11 Oct · 19:30",
    "category": "live",
    "freshness": "weekend",
    "outdoor": false,
    "kid": false,
    "price": "ticketed",
-   "image": "https://app.thefeedfactory.nl/api/assets/6a8573ee4f65703141ddd3d4/Muze_van_Zuid_huisconcert__c__Foppe_Schut_1800px.webp",
-   "blurb": "Visiting Elizaveta Bokhina Festival Muze van Zuid has been celebrating the musical life of Zuid for 10 years. Would you like to get acquainted?",
+   "image": "https://app.thefeedfactory.nl/api/assets/6a023f6c5ebafd251afe1ec4/aHR0cHM6Ly93d3cubXV6aWVrZ2Vib3V3Lm5sLy9jbXNfZmlsZXMvc3lzdGVtL2ltYWdlcy9pbWc4NTE3NF9vcmlnLmpwZw.webp",
+   "blurb": "An ominous vision of the future for 2026 This immersive, timeless classic raises questions about power, technology and humanity that feel just as urgent today as they did then.",
    "why": "On I amsterdam",
    "source": "I amsterdam",
-   "link": "https://www.iamsterdam.com/en/whats-on/calendar/concerts-and-music/concerts/walking-to-a-house-concert-at-the-wolkenkrabber",
+   "link": "https://www.iamsterdam.com/en/whats-on/calendar/concerts-and-music/concerts/metropolis-1927-wishful-singing-yonga-sun-steven-kamperman-and-jorrit-westerhof",
+   "weatherFit": [
+    "HOT",
+    "WARM",
+    "COOL",
+    "COLD_WET",
+    "VOLATILE"
+   ],
+   "verify": false,
+   "firstSeen": "2026-10-11",
+   "inboxScore": 7.7,
+   "scoreWhy": "seen today · on this weekend · taste: singing"
+  },
+  {
+   "id": "web-iams-family-and-fighters",
+   "title": "Family & fighters",
+   "venue": "Splendor Amsterdam",
+   "area": "Nieuwe Uilenburgerstraat 116",
+   "when": "Sun 11 Oct · 16:00",
+   "category": "live",
+   "freshness": "weekend",
+   "outdoor": false,
+   "kid": false,
+   "price": "ticketed",
+   "image": "https://app.thefeedfactory.nl/api/assets/6abf07c9a91b3c0128ea991a/Nora-Fischer-by-Sarah-Wijzenbeek-SA--e94f.webp",
+   "blurb": "Discover stories with music Nora Fischer and Marion Laville weave a special story together. Splendormuzikant Jonatan Alvarado enriches this with Argentine songs.",
+   "why": "On I amsterdam",
+   "source": "I amsterdam",
+   "link": "https://www.iamsterdam.com/en/whats-on/calendar/concerts-and-music/concerts/family-and-fighters",
    "weatherFit": [
     "HOT",
     "WARM",
@@ -27,85 +84,28 @@
    ],
    "verify": false,
    "_gallery": [
-    "https://app.thefeedfactory.nl/api/assets/6abcf3ca9d31480e7390a883/Elizaveta.Bokhina.fotolandscape.webp"
+    "https://app.thefeedfactory.nl/api/assets/6abf07caa91b3c0128ea991b/PHOTO-2026-10-01-18-50-52-8d8a.webp"
    ],
-   "firstSeen": "2026-10-10",
-   "inboxScore": 8.4,
-   "scoreWhy": "seen today · on this weekend · taste: concert café"
-  },
-  {
-   "id": "web-iams-hartwig-proxy-museum-music-from-ege-sahin",
-   "title": "Hartwig Proxy Museum: Music from Ege Şahin",
-   "venue": "Hartwig Foundation/Proxy",
-   "area": "Parnassusweg 213",
-   "when": "Sat 10 Oct · 11:00",
-   "category": "live",
-   "freshness": "weekend",
-   "outdoor": false,
-   "kid": false,
-   "price": "ticketed",
-   "image": "https://app.thefeedfactory.nl/api/assets/6aa13daf5c8f415856d16ff8/Hartwig_Proxy.webp",
-   "blurb": "Electronic sounds Ege Şahin is a Turkish composer and improvisational musician who lives in The Hague. In his work, he explores how we experience sound and how people can participate with music.",
-   "why": "On I amsterdam",
-   "source": "I amsterdam",
-   "link": "https://www.iamsterdam.com/en/whats-on/calendar/concerts-and-music/concerts/hartwig-proxy-museum-music-from-ege-sahin",
-   "weatherFit": [
-    "HOT",
-    "WARM",
-    "COOL",
-    "COLD_WET",
-    "VOLATILE"
-   ],
-   "verify": false,
-   "_site": "https://hartwigproxy.nl/about",
-   "firstSeen": "2026-10-10",
-   "inboxScore": 7.7,
-   "scoreWhy": "seen today · on this weekend · taste: museum"
-  },
-  {
-   "id": "web-iams-hard-attack",
-   "title": "Hard Attack",
-   "venue": "Melkweg",
-   "area": "Lijnbaansgracht 234A",
-   "when": "Sat 10 Oct · 23:59",
-   "category": "drink",
-   "freshness": "weekend",
-   "outdoor": false,
-   "kid": false,
-   "price": "ticketed",
-   "image": "https://app.thefeedfactory.nl/api/assets/6a7baaf30287261ac3ba9852/hardattack10.10_banner.webp",
-   "blurb": "Hardcore in its purest form This club night – born from a pure love and dedication to hardcore in its purest form – was founded by Amsterdam DJs Akemio Grey (Dreamphase) and Gysèle (Lang Zal Je…",
-   "why": "On I amsterdam",
-   "source": "I amsterdam",
-   "link": "https://www.iamsterdam.com/en/whats-on/calendar/nightlife/clubbing/hard-attack",
-   "weatherFit": [
-    "HOT",
-    "WARM",
-    "COOL",
-    "COLD_WET",
-    "VOLATILE"
-   ],
-   "verify": false,
-   "firstSeen": "2026-10-10",
+   "firstSeen": "2026-10-11",
    "inboxScore": 7,
    "scoreWhy": "seen today · on this weekend"
   },
   {
-   "id": "web-iams-bill-callahan",
-   "title": "Bill Callahan",
-   "venue": "Melkweg",
-   "area": "Lijnbaansgracht 234A",
-   "when": "Sat 10 Oct · 19:00",
+   "id": "web-iams-halve-verhalen-6-de-stilte-and-toeac",
+   "title": "Halve verhalen (6+) De Stilte & TOEAC",
+   "venue": "Muziekgebouw aan 't IJ",
+   "area": "Piet Heinkade 1",
+   "when": "Sun 11 Oct · 13:30",
    "category": "live",
    "freshness": "weekend",
    "outdoor": false,
    "kid": false,
    "price": "ticketed",
-   "image": "https://app.thefeedfactory.nl/api/assets/699cec19b95fcc462651d34a/header-bill-callahan.webp",
-   "blurb": "Shepherd in a Sheepskin Vest During his Smog years, he developed a writing style that was simultaneously dry, sharp, and disarming: lyrics that could evoke an entire world with minimal means.",
+   "image": "https://app.thefeedfactory.nl/api/assets/6a3b1830c0645e68812f33c9/aHR0cHM6Ly93d3cubXV6aWVrZ2Vib3V3Lm5sLy9jbXNfZmlsZXMvc3lzdGVtL2ltYWdlcy9pbWc4MzcwMF9vcmlnLmpwZw.webp",
+   "blurb": "Two accordionists, three dancers & a world in which nothing is what it seems Halve verhalen is a co-production by De Stilte and accordion duo TOEAC.",
    "why": "On I amsterdam",
    "source": "I amsterdam",
-   "link": "https://www.iamsterdam.com/en/whats-on/calendar/concerts-and-music/concerts/bill-callahan",
+   "link": "https://www.iamsterdam.com/en/whats-on/calendar/concerts-and-music/concerts/halve-verhalen-6-de-stilte-and-toeac",
    "weatherFit": [
     "HOT",
     "WARM",
@@ -114,26 +114,26 @@
     "VOLATILE"
    ],
    "verify": false,
-   "firstSeen": "2026-10-10",
+   "firstSeen": "2026-10-11",
    "inboxScore": 7,
    "scoreWhy": "seen today · on this weekend"
   },
   {
-   "id": "web-iams-janna-an-intimate-theatre-tour",
-   "title": "Janna - An intimate theatre tour",
-   "venue": "Griffioen",
-   "area": "De Boelelaan 1111",
-   "when": "Sat 10 Oct · 20:00",
-   "category": "live",
+   "id": "web-iams-black-cat-theatre-butterfly-garden-1-6-jaar",
+   "title": "Black Cat Theatre - Butterfly Garden (1-6 jaar)",
+   "venue": "Black Cat Theatre",
+   "area": "Schakelstraat 2",
+   "when": "Until Sun 29 Nov",
+   "category": "stage",
    "freshness": "weekend",
    "outdoor": false,
    "kid": false,
    "price": "ticketed",
-   "image": "https://app.thefeedfactory.nl/api/assets/6a34fcae09e4a23d166743e7/Janna_-_Intieme_theatertour.webp",
-   "blurb": "A storyteller pur sang Janna accompanies herself on guitar and piano, and draws inspiration from great singer-songwriters from the seventies, among others.",
+   "image": "https://app.thefeedfactory.nl/api/assets/69a8075dfd06e86f5eb90b06/JOA08365-cropped.webp",
+   "blurb": "Slow and graceful They usually fly slowly and gracefully. They fly through rain and through a gentle wind and visibly enjoy magical music. They can hide and spontaneously reappear.",
    "why": "On I amsterdam",
    "source": "I amsterdam",
-   "link": "https://www.iamsterdam.com/en/whats-on/calendar/concerts-and-music/concerts/janna-an-intimate-theatre-tour",
+   "link": "https://www.iamsterdam.com/en/whats-on/calendar/theatre-and-stage/stage/black-cat-theatre-butterfly-garden-1-6-jaar",
    "weatherFit": [
     "HOT",
     "WARM",
@@ -142,26 +142,29 @@
     "VOLATILE"
    ],
    "verify": false,
-   "firstSeen": "2026-10-10",
+   "_gallery": [
+    "https://app.thefeedfactory.nl/api/assets/5f91d429fe8c18316fc0af2c/0.webp"
+   ],
+   "firstSeen": "2026-10-11",
    "inboxScore": 7,
    "scoreWhy": "seen today · on this weekend"
   },
   {
-   "id": "web-iams-afrogrooves-music-without-sheet-music",
-   "title": "Afrogrooves: Music without sheet music",
-   "venue": "Buurthuis Lydia",
-   "area": "Roelof Hartplein 2a",
-   "when": "Sat 10 Oct · 12:00",
+   "id": "web-iams-klassieke-hits-door-het-radio-filharmonisch-orkest",
+   "title": "Klassieke hits door het Radio Filharmonisch Orkest",
+   "venue": "The Royal Concertgebouw Amsterdam",
+   "area": "Concertgebouwplein 10",
+   "when": "Sun 11 Oct · 11:00",
    "category": "live",
    "freshness": "weekend",
    "outdoor": false,
    "kid": false,
    "price": "ticketed",
-   "image": "https://app.thefeedfactory.nl/api/assets/6a9188670a0d133540997998/afrogrooves-2.webp",
-   "blurb": "Percussion workshop 'Sign This' This workshop uses a unique musical sign language: Rhythm and Percussion with Signs.",
+   "image": "https://app.thefeedfactory.nl/api/assets/69fdb5923d38e555d7be48d2/Nationaal-vrouwen-Jeugdkoor-c-Eduardus-Lee.webp",
+   "blurb": "Classic hits In a concert featuring classical hits, Mozart, Bach, and Beethoven—the Great Three of classical music—cannot be missing.",
    "why": "On I amsterdam",
    "source": "I amsterdam",
-   "link": "https://www.iamsterdam.com/en/whats-on/calendar/concerts-and-music/concerts/afrogrooves-music-without-sheet-music",
+   "link": "https://www.iamsterdam.com/en/whats-on/calendar/concerts-and-music/concerts/klassieke-hits-door-het-radio-filharmonisch-orkest",
    "weatherFit": [
     "HOT",
     "WARM",
@@ -170,26 +173,26 @@
     "VOLATILE"
    ],
    "verify": false,
-   "firstSeen": "2026-10-10",
+   "firstSeen": "2026-10-11",
    "inboxScore": 7,
    "scoreWhy": "seen today · on this weekend"
   },
   {
-   "id": "web-iams-lovng-room-at-dutch-courage-with-cherry-sour",
-   "title": "LOVNG ROOM at Dutch Courage with Cherry Sour",
-   "venue": "Dutch Courage Cocktail Bar",
-   "area": "Zeedijk 12",
-   "when": "Sat 10 Oct · 13:30",
+   "id": "web-iams-jan-willem-rozenboom-en-bachs-wohltemperierte-klavier",
+   "title": "Jan-Willem Rozenboom en Bachs Wohltemperierte Klavier",
+   "venue": "The Royal Concertgebouw Amsterdam",
+   "area": "Concertgebouwplein 10",
+   "when": "Sun 11 Oct · 14:15",
    "category": "live",
    "freshness": "weekend",
    "outdoor": false,
    "kid": false,
    "price": "ticketed",
-   "image": "https://app.thefeedfactory.nl/api/assets/6ac519db1ca8877470b993d9/v__50_.webp",
-   "blurb": "The best way to spend your Sunday afternoon A relaxed Sunday afternoon session at Dutch Courage, the cocktail bar on the Zeedijk, with Cherry Sour, mixing smoky jazz, raw soul and catchy pop.",
+   "image": "https://app.thefeedfactory.nl/api/assets/6376d9a5fef42b6b6bae0678/Jan-Willem-Rozenboom-c-Bart-Heemskerk.webp",
+   "blurb": "Movements from Bach's Well-Tempered Clavier 'The Well-Tuned Keyboard' – Bach gave this slightly provocative title to two volumes in which he reviewed all keys, in both minor and major.",
    "why": "On I amsterdam",
    "source": "I amsterdam",
-   "link": "https://www.iamsterdam.com/en/whats-on/calendar/concerts-and-music/concerts/lovng-room-at-dutch-courage-with-cherry-sour",
+   "link": "https://www.iamsterdam.com/en/whats-on/calendar/concerts-and-music/concerts/jan-willem-rozenboom-en-bachs-wohltemperierte-klavier",
    "weatherFit": [
     "HOT",
     "WARM",
@@ -198,35 +201,7 @@
     "VOLATILE"
    ],
    "verify": false,
-   "firstSeen": "2026-10-10",
-   "inboxScore": 7,
-   "scoreWhy": "seen today · on this weekend"
-  },
-  {
-   "id": "web-iams-tim-burtons-universe-by-mystery-ensemble-sint-urbanuskerk",
-   "title": "Tim Burton’s Universe by Mystery Ensemble - Sint-Urbanuskerk",
-   "venue": "Sint-Urbanuskerk",
-   "area": "Amstelveen",
-   "when": "Sat 10 Oct · 20:00",
-   "category": "live",
-   "freshness": "weekend",
-   "outdoor": false,
-   "kid": false,
-   "price": "ticketed",
-   "image": "https://app.thefeedfactory.nl/api/assets/6a9a03389333f368efed9e09/eccfda17274f02b35c3619bbdf27c2e68594b9fd_01a058fa-c22b-72fc-8ca1-7a294fb4903f.webp",
-   "blurb": "Discover the magic of Tim Burton Welcome to the enchanting worlds of Tim Burton! You will embark on a journey through the music that makes these films unforgettable.",
-   "why": "On I amsterdam",
-   "source": "I amsterdam",
-   "link": "https://www.iamsterdam.com/en/whats-on/calendar/concerts-and-music/concerts/tim-burtons-universe-by-mystery-ensemble-sint-urbanuskerk",
-   "weatherFit": [
-    "HOT",
-    "WARM",
-    "COOL",
-    "COLD_WET",
-    "VOLATILE"
-   ],
-   "verify": false,
-   "firstSeen": "2026-10-10",
+   "firstSeen": "2026-10-11",
    "inboxScore": 7,
    "scoreWhy": "seen today · on this weekend"
   },
@@ -255,25 +230,25 @@
    ],
    "verify": false,
    "firstSeen": "2026-10-09",
-   "inboxScore": 6.7,
-   "scoreWhy": "seen 1d ago · on this weekend"
+   "inboxScore": 6.4,
+   "scoreWhy": "seen 2d ago · on this weekend"
   },
   {
-   "id": "web-iams-here-be-dragons-ruth-borg",
-   "title": "Here Be Dragons Ruth Borg",
-   "venue": "Frascati",
-   "area": "Nes 63",
-   "when": "Thu 8 – Sat 10 Oct",
-   "category": "stage",
+   "id": "web-iams-emanuel-ax-en-het-concertgebouworkest-spelen-john-williams",
+   "title": "Emanuel Ax en het Concertgebouworkest spelen John Williams",
+   "venue": "The Royal Concertgebouw Amsterdam",
+   "area": "Concertgebouwplein 10",
+   "when": "Sun 11 Oct · 14:15",
+   "category": "live",
    "freshness": "weekend",
    "outdoor": false,
    "kid": false,
    "price": "ticketed",
-   "image": "https://app.thefeedfactory.nl/api/assets/6ab3103d7e54187d508b292e/aHR0cHM6Ly93d3cuZnJhc2NhdGl0aGVhdGVyLm5sLy9jbXNfZmlsZXMvc3lzdGVtL2ltYWdlcy9pbWcyNDY2M19vcmlnLmpwZw.webp",
-   "blurb": "A journey through the unknown waters of love and change In her first Dutch theatre premiere at Frascati, Ruth Borg invites the audience to enter those unknown waters.",
+   "image": "https://app.thefeedfactory.nl/api/assets/6a22de570112381f62de7444/Petr-Popelka-c-Vojtech-Brtnicky.webp",
+   "blurb": "Emanuel Ax Piano giant Emanuel Ax has frequently been a guest with the Concertgebouw Orchestra and demonstrates his immense versatility time and again.",
    "why": "On I amsterdam",
    "source": "I amsterdam",
-   "link": "https://www.iamsterdam.com/en/whats-on/calendar/theatre-and-stage/stage/here-be-dragons-ruth-borg",
+   "link": "https://www.iamsterdam.com/en/whats-on/calendar/concerts-and-music/concerts/emanuel-ax-en-het-concertgebouworkest-spelen-john-williams",
    "weatherFit": [
     "HOT",
     "WARM",
@@ -283,8 +258,8 @@
    ],
    "verify": false,
    "firstSeen": "2026-10-09",
-   "inboxScore": 6.7,
-   "scoreWhy": "seen 1d ago · on this weekend"
+   "inboxScore": 6.4,
+   "scoreWhy": "seen 2d ago · on this weekend"
   },
   {
    "id": "rss-het-parool-ps-de-stijl-van-georgie-28-mijn-leren-schoenen-draa",
@@ -310,8 +285,8 @@
    ],
    "verify": true,
    "firstSeen": "2026-10-10",
-   "inboxScore": 3.3,
-   "scoreWhy": "seen today · taste: strand"
+   "inboxScore": 3,
+   "scoreWhy": "seen 1d ago · taste: strand"
   },
   {
    "id": "rss-het-parool-ps-willem-de-kooning-was-minder-abstract-dan-gedach",
@@ -337,8 +312,8 @@
    ],
    "verify": true,
    "firstSeen": "2026-10-10",
-   "inboxScore": 3.3,
-   "scoreWhy": "seen today · taste: rijksmuseum"
+   "inboxScore": 3,
+   "scoreWhy": "seen 1d ago · taste: rijksmuseum"
   },
   {
    "id": "rss-het-parool-ps-serie-the-bear-is-er-niks-bij-zo-gaat-het-eraan-",
@@ -364,8 +339,8 @@
    ],
    "verify": true,
    "firstSeen": "2026-10-10",
-   "inboxScore": 3,
-   "scoreWhy": "seen today"
+   "inboxScore": 2.7,
+   "scoreWhy": "seen 1d ago"
   },
   {
    "id": "rss-het-parool-ps-de-betekenis-van-de-dood-kan-ik-maar-niet-vatten",
@@ -391,8 +366,8 @@
    ],
    "verify": true,
    "firstSeen": "2026-10-10",
-   "inboxScore": 3,
-   "scoreWhy": "seen today"
+   "inboxScore": 2.7,
+   "scoreWhy": "seen 1d ago"
   },
   {
    "id": "rss-het-parool-ps-emma-de-thouars-sluit-haar-columnreeks-af-met-de",
@@ -418,8 +393,8 @@
    ],
    "verify": true,
    "firstSeen": "2026-10-10",
-   "inboxScore": 3,
-   "scoreWhy": "seen today"
+   "inboxScore": 2.7,
+   "scoreWhy": "seen 1d ago"
   },
   {
    "id": "rss-het-parool-ps-schaatsen-voor-65-cent-appels-plukken-en-springk",
@@ -445,8 +420,8 @@
    ],
    "verify": true,
    "firstSeen": "2026-10-10",
-   "inboxScore": 3,
-   "scoreWhy": "seen today"
+   "inboxScore": 2.7,
+   "scoreWhy": "seen 1d ago"
   },
   {
    "id": "rss-amsterdam-foodie-taking-home-a-taste-of-amsterdam-personalised-gi",
@@ -472,8 +447,8 @@
    ],
    "verify": true,
    "firstSeen": "2026-10-09",
-   "inboxScore": 2.7,
-   "scoreWhy": "seen 1d ago"
+   "inboxScore": 2.4,
+   "scoreWhy": "seen 2d ago"
   },
   {
    "id": "rss-amsterdam-foodie-a-foodie-s-guide-to-rome-restaurants-and-bars",
@@ -499,8 +474,8 @@
    ],
    "verify": true,
    "firstSeen": "2026-10-09",
-   "inboxScore": 2.7,
-   "scoreWhy": "seen 1d ago"
+   "inboxScore": 2.4,
+   "scoreWhy": "seen 2d ago"
   }
  ]
 }

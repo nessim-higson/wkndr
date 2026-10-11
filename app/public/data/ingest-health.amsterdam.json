@@ -2,27 +2,6 @@
  "v": 1,
  "runs": [
   {
-   "date": "2026-09-06",
-   "kind": "weekly",
-   "sources": {
-    "Your Little Black Book": 18,
-    "Your Little Black Book · I amsterdam · Amsterdam Wine Festival": 1,
-    "I amsterdam · Your Little Black Book": 2,
-    "I amsterdam": 39,
-    "I amsterdam · Maps": 1,
-    "Eye Filmmuseum": 3,
-    "Fresh find · Your Little Black Book": 2,
-    "Fresh find": 5,
-    "Resident Advisor": 1,
-    "I amsterdam · H’ART Museum": 1,
-    "Kidsproof": 3,
-    "Het Parool PS": 5,
-    "Subbacultcha": 6,
-    "Amsterdam Foodie": 3
-   },
-   "fresh": 17
-  },
-  {
    "date": "2026-09-07",
    "kind": "daily",
    "sources": {
@@ -657,6 +636,18 @@
     "Resident Advisor": 30
    },
    "fresh": 15
+  },
+  {
+   "date": "2026-10-11",
+   "kind": "daily",
+   "sources": {
+    "Het Parool PS": 6,
+    "Subbacultcha": 6,
+    "Amsterdam Foodie": 6,
+    "I amsterdam": 53,
+    "Resident Advisor": 30
+   },
+   "fresh": 9
   }
  ],
  "alerts": []
