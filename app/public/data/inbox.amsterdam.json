@@ -1,7 +1,35 @@
 {
- "generatedAt": "2026-10-20T10:15:54.030Z",
- "count": 8,
+ "generatedAt": "2026-10-21T10:25:52.068Z",
+ "count": 10,
  "inbox": [
+  {
+   "id": "web-ra-2470638",
+   "title": "ADE - VBX [sold out]",
+   "venue": "Lofi",
+   "area": "",
+   "when": "Fri 23 Oct · 23:59",
+   "category": "live",
+   "freshness": "weekend",
+   "outdoor": false,
+   "kid": false,
+   "price": "",
+   "image": "https://images.ra.co/42b7e8bcf100aec4883718e6859943e2f54410cc.jpg",
+   "blurb": "Christian AB, Dresden, E.LINA, Francesco Del Garda and more at Lofi.",
+   "why": "810 going on RA",
+   "source": "Resident Advisor",
+   "link": "https://ra.co/events/2470638",
+   "weatherFit": [
+    "HOT",
+    "WARM",
+    "COOL",
+    "COLD_WET",
+    "VOLATILE"
+   ],
+   "popularity": 810,
+   "firstSeen": "2026-10-21",
+   "inboxScore": 9.5,
+   "scoreWhy": "seen today · 810 going · on this weekend"
+  },
   {
    "id": "web-ra-2530840",
    "title": "Currents - Spatial Sound Performances & Experiments ",
@@ -15,7 +43,7 @@
    "price": "",
    "image": "https://images.ra.co/79c75a0bc97cc738418c160ad0986b924389d1b1.png",
    "blurb": "Wata Igarashi, Rrose, Nadia Struiwigh, nthng and more at Loods6.",
-   "why": "93 going on RA",
+   "why": "104 going on RA",
    "source": "Resident Advisor",
    "link": "https://ra.co/events/2530840",
    "weatherFit": [
@@ -25,10 +53,10 @@
     "COLD_WET",
     "VOLATILE"
    ],
-   "popularity": 93,
+   "popularity": 104,
    "firstSeen": "2026-10-19",
-   "inboxScore": 8.7,
-   "scoreWhy": "seen 1d ago · 93 going · on this weekend"
+   "inboxScore": 8.4,
+   "scoreWhy": "seen 2d ago · 104 going · on this weekend"
   },
   {
    "id": "web-ra-2530541",
@@ -43,7 +71,7 @@
    "price": "",
    "image": "https://images.ra.co/ca354c5a24f66784f3c61ac40d740647773d2cc6.png",
    "blurb": "DJ Dextro, Miguel Peres, Myne at John Doe.",
-   "why": "52 going on RA",
+   "why": "54 going on RA",
    "source": "Resident Advisor",
    "link": "https://ra.co/events/2530541",
    "weatherFit": [
@@ -53,14 +81,42 @@
     "COLD_WET",
     "VOLATILE"
    ],
-   "popularity": 52,
+   "popularity": 54,
    "firstSeen": "2026-10-19",
-   "inboxScore": 8.4,
-   "scoreWhy": "seen 1d ago · 52 going · on this weekend"
+   "inboxScore": 8.1,
+   "scoreWhy": "seen 2d ago · 54 going · on this weekend"
   },
   {
-   "id": "rss-het-parool-ps-bij-deze-amsterdamse-boekenclub-draait-het-voora",
-   "title": "Bij deze Amsterdamse boekenclub draait het vooral om nieuwe mensen leren kennen en is het ",
+   "id": "web-iams-dekpunt-jan-beuving",
+   "title": "Dekpunt - Jan Beuving",
+   "venue": "De Kleine Komedie",
+   "area": "Amstel 56-58",
+   "when": "Until Sat 23 Jan",
+   "category": "stage",
+   "freshness": "weekend",
+   "outdoor": false,
+   "kid": false,
+   "price": "ticketed",
+   "image": "https://app.thefeedfactory.nl/api/assets/6a0271236b3f9366c474e42c/image.webp",
+   "blurb": "Mathematics as a storyline in a cabaret show On 2 December 1966, mathematician Bertus Brouwer is crossing the street in Blaricum. He is hit by a car and killed.",
+   "why": "On I amsterdam",
+   "source": "I amsterdam",
+   "link": "https://www.iamsterdam.com/en/whats-on/calendar/theatre-and-stage/stage/dekpunt-jan-beuving",
+   "weatherFit": [
+    "HOT",
+    "WARM",
+    "COOL",
+    "COLD_WET",
+    "VOLATILE"
+   ],
+   "verify": false,
+   "firstSeen": "2026-10-21",
+   "inboxScore": 7,
+   "scoreWhy": "seen today · on this weekend"
+  },
+  {
+   "id": "rss-het-parool-ps-laura-28-en-jim-33-leerden-elkaar-kennen-tijdens",
+   "title": "Laura (28) en Jim (33) leerden elkaar kennen tijdens hun studie: ‘De volgende ochtend wist",
    "venue": "Het Parool PS",
    "area": "",
    "when": "This weekend",
@@ -72,7 +128,7 @@
    "blurb": "Featured this week by Het Parool PS.",
    "why": "In this week's Het Parool PS",
    "source": "Het Parool PS",
-   "link": "https://www.parool.nl/ps/bij-deze-amsterdamse-boekenclub-draait-het-vooral-om-nieuwe-mensen-leren-kennen-en-is-het-boek-de-ijsbreker-de-gedeelde-interesse-in-lezen-helpt~b1beb331/",
+   "link": "https://www.parool.nl/ps/laura-28-en-jim-33-leerden-elkaar-kennen-tijdens-hun-studie-de-volgende-ochtend-wist-iedereen-wat-er-op-die-bank-was-gebeurd~b61d7300/",
    "weatherFit": [
     "HOT",
     "WARM",
@@ -81,52 +137,25 @@
     "VOLATILE"
    ],
    "verify": true,
-   "firstSeen": "2026-10-20",
-   "inboxScore": 3.3,
-   "scoreWhy": "seen today · taste: amsterdamse"
-  },
-  {
-   "id": "rss-het-parool-ps-kunstenaar-boris-acket-38-maakte-een-onmenselijk",
-   "title": "Kunstenaar Boris Acket (38) maakte een onmenselijk groot werk voor ADE: ‘Ik wil iets terug",
-   "venue": "Het Parool PS",
-   "area": "",
-   "when": "This weekend",
-   "category": "out",
-   "freshness": "weekend",
-   "outdoor": false,
-   "kid": false,
-   "price": "",
-   "blurb": "Featured this week by Het Parool PS.",
-   "why": "In this week's Het Parool PS",
-   "source": "Het Parool PS",
-   "link": "https://www.parool.nl/ade/kunstenaar-boris-acket-38-maakte-een-onmenselijk-groot-werk-voor-ade-ik-wil-iets-teruggeven~b57c29142/",
-   "weatherFit": [
-    "HOT",
-    "WARM",
-    "COOL",
-    "COLD_WET",
-    "VOLATILE"
-   ],
-   "verify": true,
-   "firstSeen": "2026-10-20",
+   "firstSeen": "2026-10-21",
    "inboxScore": 3,
    "scoreWhy": "seen today"
   },
   {
-   "id": "rss-het-parool-ps-bij-de-laatste-noten-van-cats-sprint-een-man-weg",
-   "title": "Bij de laatste noten van Cats sprint een man weg uit het publiek: die wil vast snel bij de",
-   "venue": "Het Parool PS",
+   "id": "rss-subbacultcha-murf-murw-2026",
+   "title": "murf/murw 2026",
+   "venue": "Subbacultcha",
    "area": "",
    "when": "This weekend",
-   "category": "out",
+   "category": "live",
    "freshness": "weekend",
    "outdoor": false,
    "kid": false,
    "price": "",
-   "blurb": "Featured this week by Het Parool PS.",
-   "why": "In this week's Het Parool PS",
-   "source": "Het Parool PS",
-   "link": "https://www.parool.nl/schuim/bij-de-laatste-noten-van-cats-sprint-een-man-weg-uit-het-publiek-die-wil-vast-snel-bij-de-jassen-zijn-denk-ik~b9a28377/",
+   "blurb": "Featured this week by Subbacultcha.",
+   "why": "In this week's Subbacultcha",
+   "source": "Subbacultcha",
+   "link": "https://subbacultcha.nl/2026/10/13/murf-murw/",
    "weatherFit": [
     "HOT",
     "WARM",
@@ -135,13 +164,13 @@
     "VOLATILE"
    ],
    "verify": true,
-   "firstSeen": "2026-10-20",
+   "firstSeen": "2026-10-21",
    "inboxScore": 3,
    "scoreWhy": "seen today"
   },
   {
-   "id": "rss-het-parool-ps-fotograaf-roos-aldershoff-legt-de-gelaagdheid-va",
-   "title": "Fotograaf Roos Aldershoff legt de gelaagdheid van het verlaten Walenweeshuis aan de Vijzel",
+   "id": "rss-het-parool-ps-dit-advocatenstel-opent-een-tweede-koffiezaak-nu",
+   "title": "Dit advocatenstel opent een tweede koffiezaak, nu in Oost: ‘Mijn moeder, broer en schoonzu",
    "venue": "Het Parool PS",
    "area": "",
    "when": "This weekend",
@@ -153,7 +182,7 @@
    "blurb": "Featured this week by Het Parool PS.",
    "why": "In this week's Het Parool PS",
    "source": "Het Parool PS",
-   "link": "https://www.parool.nl/ps/fotograaf-roos-aldershoff-legt-de-gelaagdheid-van-het-verlaten-walenweeshuis-aan-de-vijzelgracht-vast~b6a1be3a/",
+   "link": "https://www.parool.nl/uit-in-amsterdam/dit-advocatenstel-opent-een-tweede-koffiezaak-nu-in-oost-mijn-moeder-broer-en-schoonzus-draaien-ook-mee~bbe87e52/",
    "weatherFit": [
     "HOT",
     "WARM",
@@ -162,13 +191,13 @@
     "VOLATILE"
    ],
    "verify": true,
-   "firstSeen": "2026-10-20",
+   "firstSeen": "2026-10-21",
    "inboxScore": 3,
    "scoreWhy": "seen today"
   },
   {
-   "id": "rss-het-parool-ps-gedupeerden-van-het-toeslagenschandaal-worden-bi",
-   "title": "Gedupeerden van het toeslagenschandaal worden bijgestaan door ‘luisterend schrijvers’: ‘Ik",
+   "id": "rss-het-parool-ps-in-dansvoorstelling-room-in-our-house-krijgen-de",
+   "title": "In dansvoorstelling Room in our house krijgen de aarde, de wind en de insecten een bedankj",
    "venue": "Het Parool PS",
    "area": "",
    "when": "This weekend",
@@ -180,7 +209,7 @@
    "blurb": "Featured this week by Het Parool PS.",
    "why": "In this week's Het Parool PS",
    "source": "Het Parool PS",
-   "link": "https://www.parool.nl/ps/gedupeerden-van-het-toeslagenschandaal-worden-bijgestaan-door-luisterend-schrijvers-ik-wil-dat-ze-de-mens-achter-het-bsn-nummertje-zien~bb97b7d4/",
+   "link": "https://www.parool.nl/kunst-media/in-dansvoorstelling-room-in-our-house-krijgen-de-aarde-de-wind-en-de-insecten-een-bedankje~b47b4047/",
    "weatherFit": [
     "HOT",
     "WARM",
@@ -189,13 +218,13 @@
     "VOLATILE"
    ],
    "verify": true,
-   "firstSeen": "2026-10-20",
+   "firstSeen": "2026-10-21",
    "inboxScore": 3,
    "scoreWhy": "seen today"
   },
   {
-   "id": "rss-het-parool-ps-je-kent-ze-wel-de-personages-uit-voorstelling-th",
-   "title": "Je kent ze wel, de personages uit voorstelling The Drama – het zijn die parasieten op een ",
+   "id": "rss-het-parool-ps-thijs-van-de-meeberg-speelt-de-nederlandse-theat",
+   "title": "Thijs van de Meeberg speelt de Nederlandse theatersolo van Netflixserie Baby Reindeer: ‘He",
    "venue": "Het Parool PS",
    "area": "",
    "when": "This weekend",
@@ -207,7 +236,7 @@
    "blurb": "Featured this week by Het Parool PS.",
    "why": "In this week's Het Parool PS",
    "source": "Het Parool PS",
-   "link": "https://www.parool.nl/kunst-media/je-kent-ze-wel-de-personages-uit-voorstelling-the-drama-het-zijn-die-parasieten-op-een-borrel-bij-wie-je-denkt-wanneer-vlucht-ik-naar-het-toilet~becc88a9/",
+   "link": "https://www.parool.nl/ps/thijs-van-de-meeberg-speelt-de-nederlandse-theatersolo-van-netflixserie-baby-reindeer-het-publiek-komt-niet-voor-de-lach~b186b741/",
    "weatherFit": [
     "HOT",
     "WARM",
@@ -216,9 +245,36 @@
     "VOLATILE"
    ],
    "verify": true,
-   "firstSeen": "2026-10-20",
+   "firstSeen": "2026-10-21",
    "inboxScore": 3,
    "scoreWhy": "seen today"
+  },
+  {
+   "id": "rss-het-parool-ps-adam-pendleton-42-liet-het-trappenhuis-van-het-s",
+   "title": "Adam Pendleton (42) liet het trappenhuis van het Stedelijk Museum zwart schilderen: ‘Een g",
+   "venue": "Het Parool PS",
+   "area": "",
+   "when": "This weekend",
+   "category": "out",
+   "freshness": "weekend",
+   "outdoor": false,
+   "kid": false,
+   "price": "",
+   "blurb": "Featured this week by Het Parool PS.",
+   "why": "In this week's Het Parool PS",
+   "source": "Het Parool PS",
+   "link": "https://www.parool.nl/kunst-media/adam-pendleton-42-liet-het-trappenhuis-van-het-stedelijk-museum-zwart-schilderen-een-gelegenheid-om-een-andere-richting-in-te-slaan~be83b0a9/",
+   "weatherFit": [
+    "HOT",
+    "WARM",
+    "COOL",
+    "COLD_WET",
+    "VOLATILE"
+   ],
+   "verify": true,
+   "firstSeen": "2026-10-15",
+   "inboxScore": 1.3,
+   "scoreWhy": "seen 6d ago · taste: museum"
   }
  ]
 }

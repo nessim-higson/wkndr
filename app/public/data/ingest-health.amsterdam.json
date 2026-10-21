@@ -3,18 +3,6 @@
  "runs": [
   {
    "date": "2026-09-17",
-   "kind": "daily",
-   "sources": {
-    "Het Parool PS": 6,
-    "Subbacultcha": 6,
-    "Amsterdam Foodie": 6,
-    "I amsterdam": 42,
-    "Resident Advisor": 30
-   },
-   "fresh": 5
-  },
-  {
-   "date": "2026-09-17",
    "kind": "weekly",
    "sources": {
     "Your Little Black Book · I amsterdam": 2,
@@ -662,6 +650,18 @@
     "Resident Advisor": 30
    },
    "fresh": 6
+  },
+  {
+   "date": "2026-10-21",
+   "kind": "daily",
+   "sources": {
+    "Het Parool PS": 6,
+    "Subbacultcha": 6,
+    "Amsterdam Foodie": 6,
+    "I amsterdam": 50,
+    "Resident Advisor": 30
+   },
+   "fresh": 7
   }
  ],
  "alerts": []
