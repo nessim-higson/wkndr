@@ -1,27 +1,26 @@
 {
   "city": "amsterdam",
   "label": "Amsterdam",
-  "generatedAt": "2026-10-19T17:02:00.836Z",
+  "generatedAt": "2026-10-22T15:09:44.910Z",
   "live": true,
-  "count": 120,
+  "count": 119,
   "topMatches": [],
   "picks": [
     {
-      "id": "web-ra-2452252",
-      "title": "fabric x Loud-Contact: Jeff Mills, FJAAK (Live), Marcel Dettmann, Helena Hauff, Quest, Que",
-      "venue": "WestWeelde",
-      "area": "",
-      "when": "Fri 23 Oct · 22:00",
-      "category": "live",
+      "id": "web-lbb-cats",
+      "title": "Cats",
+      "venue": "Carré",
+      "area": "Amsterdam",
+      "when": "Sat–Sun 24–25 Oct",
+      "category": "stage",
       "freshness": "weekend",
       "outdoor": false,
-      "kid": false,
+      "kid": true,
       "price": "",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fimages.ra.co%2Fd074ebaa613507cd4a29f81d6580f70acd7dce9b.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.400&output=jpg&default=https%3A%2F%2Fimages.ra.co%2Fd074ebaa613507cd4a29f81d6580f70acd7dce9b.jpg",
-      "blurb": "Jeff Mills, Marcel Dettmann, Helena Hauff, FJAAK and more at WestWeelde.",
-      "why": "1758 going on RA",
-      "source": "Resident Advisor",
-      "link": "https://ra.co/events/2452252",
+      "blurb": "Andrew Lloyd Webber's musical reimagined with Amsterdam's Rijksmuseum as backdrop, featuring spectacular dance and live music.",
+      "why": "Classic musical with Amsterdamse twist",
+      "source": "Your Little Black Book · I amsterdam · Ticketmaster",
+      "link": "https://carre.nl/voorstelling/cats",
       "weatherFit": [
         "HOT",
         "WARM",
@@ -29,49 +28,115 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "popularity": 1758,
+      "verify": false,
+      "buzz": 3,
+      "imageWhy": "none",
+      "editorScore": 3,
+      "judgeScore": 3,
+      "firstSeen": "2026-10-22",
+      "servePos": 18
+    },
+    {
+      "id": "web-iams-tentoonstelling-willem-de-kooning-aan-het-werk-in-het-rijksmuseum",
+      "title": "Tentoonstelling Willem de Kooning aan het werk in het Rijksmuseum",
+      "venue": "Rijksmuseum",
+      "area": "Museumstraat 1",
+      "when": "Until Sun 17 Jan",
+      "category": "art",
+      "freshness": "always",
+      "outdoor": false,
+      "kid": false,
+      "price": "ticketed",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6ad6501119db926b773c92e1%2F620ecd64-9c5d-492d-80d6-fed98d24ddf5.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.500&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6ad6501119db926b773c92e1%2F620ecd64-9c5d-492d-80d6-fed98d24ddf5.webp",
+      "blurb": "Comprehensive retrospective of 120 works tracing artist's journey from Rotterdam to major American modern art figure.",
+      "why": "First major Dutch retrospective",
+      "source": "I amsterdam · Your Little Black Book",
+      "link": "https://www.iamsterdam.com/uit/agenda/tentoonstellingen/alle-tentoonstellingen/tentoonstelling-willem-de-kooning-aan-het-werk-in-het-rijksmuseum",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "verify": false,
+      "buzz": 2,
       "imageWhy": "organiser",
       "imageFocal": [
         0.5,
-        0.4
+        0.5
       ],
-      "editorScore": 8,
-      "judgeScore": 8,
-      "firstSeen": "2026-10-19",
-      "servePos": 6
+      "editorScore": 7,
+      "judgeScore": 7,
+      "firstSeen": "2026-10-22",
+      "servePos": 19
     },
     {
-      "id": "web-iams-into-the-woods-ade",
-      "title": "Into the Woods ADE",
-      "venue": "NDSM Producties",
-      "area": "NDSM-Plein 93",
-      "when": "Fri 23 – Sat 24 Oct",
+      "id": "web-lbb-tips-ade-events-by-day-listed",
+      "title": "ADE events by day listed",
+      "venue": "",
+      "area": "",
+      "when": "This weekend",
       "category": "out",
-      "freshness": "weekend",
+      "freshness": "always",
       "outdoor": true,
       "kid": false,
-      "price": "ticketed",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F67acacf750edcc7d3c983aa4%2FScherm_afbeelding_2025-02-12_om_11.54.47.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.550&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F67acacf750edcc7d3c983aa4%2FScherm_afbeelding_2025-02-12_om_11.54.47.webp",
-      "blurb": "Festival spanning two days with eight indoor stages featuring Young Marco, Antal, DJ Boring and diverse electronic sounds.",
-      "why": "Multi-stage ADE festival with cutting-edge electronic music",
-      "source": "I amsterdam · Your Little Black Book · Amsterdam Events Bureau",
-      "link": "https://www.iamsterdam.com/en/whats-on/calendar/festivals/events/into-the-woods-ade",
+      "price": "",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.yourlittleblackbook.me%2Fwp-content%2Fuploads%2F2026%2F10%2Fade-2026-beste-events-overzicht.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.600&fpy=0.500&output=jpg&default=https%3A%2F%2Fwww.yourlittleblackbook.me%2Fwp-content%2Fuploads%2F2026%2F10%2Fade-2026-beste-events-overzicht.jpg",
+      "blurb": "From Into the Woods and Mystic Garden x Dockyard to Patta x Keep Hush and Speedy J presents STOOR Live: there are still plenty of special parties and showcases…",
+      "why": "One of LBB's weekend tips",
+      "source": "Your Little Black Book",
+      "link": "https://www.yourlittleblackbook.me/en/ade-2026-beste-events/",
       "weatherFit": [
         "HOT",
         "WARM",
         "COOL"
       ],
       "verify": false,
-      "buzz": 3,
+      "guide": "LBB weekendtips",
+      "imageWhy": "event-page",
+      "imageFocal": [
+        0.6,
+        0.5
+      ],
+      "editorScore": 2,
+      "judgeScore": 2,
+      "firstSeen": "2026-10-22",
+      "servePos": 95
+    },
+    {
+      "id": "web-iams-pure-markt",
+      "title": "Pure Markt",
+      "venue": "Diverse locaties/various locations",
+      "area": "Dam",
+      "when": "Until Sun 20 Dec",
+      "category": "out",
+      "freshness": "weekend",
+      "outdoor": true,
+      "kid": false,
+      "price": "ticketed",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6307671aa418187479f0726d%2FPureMarkt-1800x1020.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.500&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6307671aa418187479f0726d%2FPureMarkt-1800x1020.webp",
+      "blurb": "Outing for the whole family Get your groceries for home, take a seat on one of the terraces to taste the offer in one of the most beautiful parks in Amsterdam, and enjoy the live music or take a ride…",
+      "why": "On I amsterdam",
+      "source": "I amsterdam · Your Little Black Book · AmsterdamTips · Maps",
+      "link": "https://www.iamsterdam.com/en/whats-on/calendar/festivals/events/pure-markt",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL"
+      ],
+      "verify": false,
+      "buzz": 4,
+      "guide": "I amsterdam weekend guide",
       "imageWhy": "organiser",
       "imageFocal": [
         0.5,
-        0.55
+        0.5
       ],
-      "editorScore": 8,
-      "judgeScore": 8,
-      "firstSeen": "2026-10-19",
-      "servePos": 67
+      "editorScore": 9,
+      "judgeScore": 7,
+      "firstSeen": "2026-08-29",
+      "servePos": 65
     },
     {
       "id": "web-guide-iams-ade-parties",
@@ -104,713 +169,26 @@
         0.5,
         0.75
       ],
-      "editorScore": 3,
-      "judgeScore": 3,
-      "firstSeen": "2026-10-19",
-      "servePos": 21
-    },
-    {
-      "id": "web-iams-dgtl-ade-fuse",
-      "title": "DGTL ADE FUSE",
-      "venue": "NDSM Productions",
-      "area": "NDSM-Plein 85",
-      "when": "Sun 25 Oct · 14:00",
-      "category": "drink",
-      "freshness": "weekend",
-      "outdoor": false,
-      "kid": false,
-      "price": "ticketed",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F68fa0e6462f6631c0f352148%2FDGTL-20102022-4551.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.600&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F68fa0e6462f6631c0f352148%2FDGTL-20102022-4551.webp",
-      "blurb": "Compact two-stage lineup with Benwal, Helena Lauwaert, DJ EZ, and LAMMER b2b Paige Tomlinson.",
-      "why": "Focused DGTL takeover kicking off weekend",
-      "source": "I amsterdam · Your Little Black Book",
-      "link": "https://www.iamsterdam.com/en/whats-on/calendar/nightlife/clubbing/dgtl-ade-fuse",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "verify": false,
-      "buzz": 2,
-      "imageWhy": "organiser",
-      "imageFocal": [
-        0.5,
-        0.6
-      ],
       "editorScore": 7,
       "judgeScore": 7,
       "firstSeen": "2026-10-19",
-      "servePos": 5
+      "servePos": 2
     },
     {
-      "id": "web-iams-paradise-x-loveland",
-      "title": "Paradise x Loveland",
-      "venue": "Diverse locaties / Various locations",
-      "area": "",
-      "when": "Fri 23 – Sat 24 Oct",
-      "category": "drink",
-      "freshness": "weekend",
-      "outdoor": false,
-      "kid": false,
-      "price": "ticketed",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F68fa0f1562f6631c0f352332%2FTD-20151015-LL-ADE-Dynamic-004-9377.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.675&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F68fa0f1562f6631c0f352332%2FTD-20151015-LL-ADE-Dynamic-004-9377.webp",
-      "blurb": "Jamie Jones returns with house lineup including Hot Since 82, Prunk, and Jamie Jones b2b Seth Troxler.",
-      "why": "Major house takeover with international star lineup",
-      "source": "I amsterdam · Your Little Black Book",
-      "link": "https://www.iamsterdam.com/en/whats-on/calendar/nightlife/clubbing/paradise-x-loveland",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "verify": false,
-      "buzz": 2,
-      "imageWhy": "organiser",
-      "imageFocal": [
-        0.5,
-        0.675
-      ],
-      "editorScore": 7,
-      "judgeScore": 7,
-      "firstSeen": "2026-10-19",
-      "servePos": 7
-    },
-    {
-      "id": "web-iams-nacht-van-de-nacht-op-pampus",
-      "title": "Nacht van de Nacht op Pampus",
-      "venue": "Forteiland Pampus",
-      "area": "Muiden",
-      "when": "Sat 24 Oct · 19:00",
-      "category": "out",
-      "freshness": "weekend",
-      "outdoor": true,
-      "kid": true,
-      "price": "ticketed",
-      "blurb": "Night tour of candlelit fort island with guides explaining history and sustainability. Warm soup included. Ferry from Muiden.",
-      "why": "Unique night experience on historical island",
-      "source": "I amsterdam · Your Little Black Book",
-      "link": "https://www.iamsterdam.com/uit/agenda/festivals/events/nacht-van-de-nacht-op-pampus",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL"
-      ],
-      "verify": false,
-      "buzz": 2,
-      "imageWhy": "none",
-      "editorScore": 9,
-      "judgeScore": 9,
-      "firstSeen": "2026-10-19",
-      "servePos": 91
-    },
-    {
-      "id": "web-iams-piv-ade-tower-takeover-shelter",
-      "title": "PIV ADE Tower Takeover | Shelter",
-      "venue": "Shelter",
-      "area": "Overhoeksplein 1",
-      "when": "Thu 22 – Fri 23 Oct",
-      "category": "drink",
-      "freshness": "weekend",
-      "outdoor": false,
-      "kid": false,
-      "price": "ticketed",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F68fa0f3562f6631c0f352384%2FSchermafbeelding-2024-08-30-om-14.12.30_2024-08-30-121346_ujne&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.675&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F68fa0f3562f6631c0f352384%2FSchermafbeelding-2024-08-30-om-14.12.30_2024-08-30-121346_ujne",
-      "blurb": "PIV takes over multiple floors of A DAM tower with house music from morning through night across three venues.",
-      "why": "All-day dance experience spanning sunrise to sunrise",
-      "source": "I amsterdam · Your Little Black Book",
-      "link": "https://www.iamsterdam.com/en/whats-on/calendar/nightlife/clubbing/piv-ade-tower-takeover-shelter",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "verify": false,
-      "buzz": 2,
-      "imageWhy": "organiser",
-      "imageFocal": [
-        0.5,
-        0.675
-      ],
-      "editorScore": 6,
-      "judgeScore": 6,
-      "firstSeen": "2026-10-19",
-      "servePos": 13
-    },
-    {
-      "id": "web-iams-dave-clarke-presents-30-years-of-ade",
-      "title": "Dave Clarke Presents: 30 Years of ADE",
-      "venue": "Melkweg",
-      "area": "Lijnbaansgracht 234A",
-      "when": "Fri 23 Oct · 23:00",
-      "category": "drink",
-      "freshness": "weekend",
-      "outdoor": false,
-      "kid": false,
-      "price": "ticketed",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F69f28efb9ac8917bb0068e71%2FMelkweg_DaveClarke_ADE_26_Website_Banner_1920x1080.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.500&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F69f28efb9ac8917bb0068e71%2FMelkweg_DaveClarke_ADE_26_Website_Banner_1920x1080.webp",
-      "blurb": "Techno celebration of ADE's 30-year history with Daniel Avery and DJ Stingray 313; nostalgia-driven night.",
-      "why": "Commemorative techno night honoring ADE legacy",
-      "source": "I amsterdam · Your Little Black Book",
-      "link": "https://www.iamsterdam.com/en/whats-on/calendar/nightlife/clubbing/dave-clarke-presents-30-years-of-ade",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "verify": false,
-      "buzz": 2,
-      "imageWhy": "organiser",
-      "imageFocal": [
-        0.5,
-        0.5
-      ],
-      "editorScore": 8,
-      "judgeScore": 8,
-      "firstSeen": "2026-10-19",
-      "servePos": 3
-    },
-    {
-      "id": "web-iams-rommelmarkt-bij-qru-zondag-25-oktober",
-      "title": "Rommelmarkt bij QRU – zondag 25 oktober",
-      "venue": "QRU",
-      "area": "Spaklerweg 1",
-      "when": "Sun 25 Oct · 10:00",
-      "category": "shop",
-      "freshness": "weekend",
-      "outdoor": false,
-      "kid": false,
-      "price": "ticketed",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6ad3d5bd19db926b773670db%2Fae645265-5b08-41bb-95c9-4dd055c354f5.JPG&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.575&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6ad3d5bd19db926b773670db%2Fae645265-5b08-41bb-95c9-4dd055c354f5.JPG",
-      "blurb": "Vintage secondhand flea market: clothing, records, books, curiosities, and household items. Browse and hunt for treasures.",
-      "why": "Classic flea market with vintage finds",
-      "source": "I amsterdam · Your Little Black Book",
-      "link": "https://www.iamsterdam.com/uit/agenda/winkelen/markten/rommelmarkt-bij-qru-zondag-25-oktober",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "verify": false,
-      "buzz": 2,
-      "imageWhy": "organiser",
-      "imageFocal": [
-        0.5,
-        0.575
-      ],
-      "editorScore": 5,
-      "judgeScore": 5,
-      "firstSeen": "2026-10-19",
-      "servePos": 15
-    },
-    {
-      "id": "web-iams-ruby-emma-presents-ade-30th-anniversary-showcase",
-      "title": "Ruby Emma Presents: ADE 30th Anniversary Showcase",
-      "venue": "Ruby Emma Hotel & Bar",
-      "area": "Amstelvlietstraat 4",
-      "when": "Sat 24 – Sun 25 Oct",
-      "category": "drink",
-      "freshness": "weekend",
-      "outdoor": false,
-      "kid": false,
-      "price": "ticketed",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a8556c64f65703141ddb190%2Ftickets-header_both-dates-1-1.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.500&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a8556c64f65703141ddb190%2Ftickets-header_both-dates-1-1.webp",
-      "blurb": "ADE celebration with MGUN, Philipp Wolf, Tonic Walter live, and Fritz Kalkbrenner. Electronic music, cocktails, free shuttle bus.",
-      "why": "Electronic music festival showcase",
-      "source": "I amsterdam · Your Little Black Book",
-      "link": "https://www.iamsterdam.com/en/whats-on/calendar/nightlife/clubbing/ruby-emma-presents-ade-30th-anniversary-showcase",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "verify": false,
-      "buzz": 2,
-      "imageWhy": "organiser",
-      "imageFocal": [
-        0.5,
-        0.5
-      ],
-      "editorScore": 5,
-      "judgeScore": 5,
-      "firstSeen": "2026-10-19",
-      "servePos": 17
-    },
-    {
-      "id": "web-iams-50-hertz-club-train-galactica-eat-the-beat-en-meer",
-      "title": "50:HERTZ Club Train – Galactica, Eat The Beat en meer",
-      "venue": "Amsterdam Centraal Station",
-      "area": "Stationsplein 9",
-      "when": "Fri 23 – Sat 24 Oct",
-      "category": "live",
-      "freshness": "weekend",
-      "outdoor": false,
-      "kid": false,
-      "price": "ticketed",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a8edcdf49087946d047662c%2FADE-Website-Banner-V1.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.300&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a8edcdf49087946d047662c%2FADE-Website-Banner-V1.webp",
-      "blurb": "Mobile club train with multiple stages playing house, techno, disco, and hard dance across 16 different runs.",
-      "why": "Unique ADE experience: a literal traveling clubhouse",
-      "source": "I amsterdam · Your Little Black Book",
-      "link": "https://www.iamsterdam.com/uit/agenda/nachtleven/clubbing/50-hertz-club-train-galactica-eat-the-beat-en-meer",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "verify": false,
-      "buzz": 2,
-      "imageWhy": "organiser",
-      "imageFocal": [
-        0.5,
-        0.3
-      ],
-      "editorScore": 8,
-      "judgeScore": 8,
-      "firstSeen": "2026-10-19",
-      "servePos": 12
-    },
-    {
-      "id": "web-iams-dj-bone-presents-further-x-homeless-homies-ade-2026",
-      "title": "DJ Bone presents: FURTHER x Homeless Homies ADE 2026",
-      "venue": "RADION",
-      "area": "Louwesweg 1",
-      "when": "Fri 23 Oct · 11:00",
-      "category": "drink",
-      "freshness": "weekend",
-      "outdoor": false,
-      "kid": false,
-      "price": "ticketed",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a71f5db67daef098639b38e%2FFURTHER-x-Homeless-Homies-2026_4_5-2.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.575&fpy=0.550&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a71f5db67daef098639b38e%2FFURTHER-x-Homeless-Homies-2026_4_5-2.webp",
-      "blurb": "Benefit event with 40+ DJs including Helena Hauff and Kevin Saunderson; proceeds support housing projects.",
-      "why": "Music for good cause with world-class lineup",
-      "source": "I amsterdam · Your Little Black Book",
-      "link": "https://www.iamsterdam.com/en/whats-on/calendar/nightlife/clubbing/dj-bone-presents-further-x-homeless-homies-ade-2026",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "verify": false,
-      "buzz": 2,
-      "imageWhy": "organiser",
-      "imageFocal": [
-        0.575,
-        0.5499999999999999
-      ],
-      "editorScore": 7,
-      "judgeScore": 7,
-      "firstSeen": "2026-10-19",
-      "servePos": 9
-    },
-    {
-      "id": "web-iams-chez-matisse",
-      "title": "Chez Matisse",
-      "venue": "H'ART Museum",
-      "area": "Amstel 51",
-      "when": "Until Sun 14 Feb",
-      "category": "art",
-      "freshness": "always",
-      "outdoor": false,
-      "kid": false,
-      "price": "ticketed",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6ac38e9a17c93d0b8b31d748%2FMatisse_Hero.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.500&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6ac38e9a17c93d0b8b31d748%2FMatisse_Hero.webp",
-      "blurb": "Henri Matisse's vibrant work including rarely-loaned La Blouse roumaine and his influence on modern art.",
-      "why": "See how Matisse inspired Rothko, Picasso, and more",
-      "source": "I amsterdam · Your Little Black Book",
-      "link": "https://www.iamsterdam.com/en/whats-on/calendar/exhibitions/all-exhibitions/chez-matisse",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "verify": false,
-      "buzz": 2,
-      "imageWhy": "organiser",
-      "imageFocal": [
-        0.5,
-        0.5
-      ],
-      "editorScore": 7,
-      "judgeScore": 7,
-      "firstSeen": "2026-09-28",
-      "servePos": 50
-    },
-    {
-      "id": "web-iams-art-is-not-a-crime",
-      "title": "ART IS NOT A CRIME",
-      "venue": "STRAAT Museum – Street art en graffiti in Amsterdam",
-      "area": "NDSM-plein 1",
-      "when": "Until Thu 31 Dec",
-      "category": "art",
-      "freshness": "always",
-      "outdoor": false,
-      "kid": false,
-      "price": "ticketed",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a61cb7cac040b771f5fae15%2Fimage-cropped.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.450&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a61cb7cac040b771f5fae15%2Fimage-cropped.webp",
-      "blurb": "Photographer Henry Chalfant's documentation of graffiti's origins with Dutch street art history included.",
-      "why": "Chronicle of graffiti culture's birth and evolution",
-      "source": "I amsterdam · Your Little Black Book",
-      "link": "https://www.iamsterdam.com/en/whats-on/calendar/exhibitions/all-exhibitions/art-is-not-a-crime",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "verify": false,
-      "buzz": 2,
-      "imageWhy": "organiser",
-      "imageFocal": [
-        0.5,
-        0.45
-      ],
-      "editorScore": 6,
-      "judgeScore": 6,
-      "firstSeen": "2026-10-05",
-      "servePos": 36
-    },
-    {
-      "id": "web-iams-whistler-dandy-en-dwarsdenker",
-      "title": "Whistler. Dandy en dwarsdenker",
-      "venue": "Van Gogh Museum",
-      "area": "Museumplein 6",
-      "when": "Until Sun 10 Jan",
-      "category": "art",
-      "freshness": "always",
-      "outdoor": false,
-      "kid": false,
-      "price": "ticketed",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F69e5f7a57ec95b733e6ee017%2F34.27-S4.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.650&fpy=0.525&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F69e5f7a57ec95b733e6ee017%2F34.27-S4.webp",
-      "blurb": "19th-century innovator's work and his influence on Van Gogh, connected through Japanese art fascination.",
-      "why": "Explores Van Gogh's admiration for Whistler's etches",
-      "source": "I amsterdam · Your Little Black Book",
-      "link": "https://www.iamsterdam.com/uit/agenda/tentoonstellingen/alle-tentoonstellingen/whistler-dandy-en-dwarsdenker",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "verify": false,
-      "buzz": 2,
-      "imageWhy": "organiser",
-      "imageFocal": [
-        0.6499999999999999,
-        0.525
-      ],
-      "editorScore": 6,
-      "judgeScore": 6,
-      "firstSeen": "2026-10-19",
-      "servePos": 27
-    },
-    {
-      "id": "llm-your-little-black-book-sandberg-x-schilo-5-course-pop-up-dinner-inspire",
-      "title": "Sandberg x Schilo: 5-course pop-up dinner inspired by Yayoi Kusama",
-      "venue": "Sandberg",
-      "area": "Amsterdam",
-      "when": "Sat 24 Oct or Sun 25 Oct · time TBA",
-      "category": "eat",
-      "freshness": "weekend",
-      "outdoor": false,
-      "kid": false,
-      "price": "ticketed",
-      "blurb": "Five-course pop-up dinner blending art and cuisine, inspired by artist Yayoi Kusama's immersive vision.",
-      "why": "Art-driven culinary experience, limited run",
-      "source": "Your Little Black Book",
-      "link": "https://www.yourlittleblackbook.me/en/",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "verify": true,
-      "imageWhy": "none",
-      "editorScore": 8,
-      "judgeScore": 8,
-      "firstSeen": "2026-09-10",
-      "servePos": 37
-    },
-    {
-      "id": "web-lbb-motie-at-night-ade-in-de-stopera",
-      "title": "Motie at Night: ADE in de Stopera",
-      "venue": "Stopera / Stadhuis",
-      "area": "Amsterdam-Centrum",
-      "when": "Thu–Sat 22–24 Oct · 19:00–01:00",
-      "category": "live",
-      "freshness": "weekend",
-      "outdoor": false,
-      "kid": false,
-      "price": "ticket required",
-      "blurb": "Electronic music, light art, performances at Amsterdam's city hall. Gourmet food and wine from top vendors. Young Marco and Oceanic Saturday.",
-      "why": "Unique ADE venue with art and cuisine",
-      "source": "Your Little Black Book",
-      "link": "https://www.motieamsterdam.nl/program",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "verify": false,
-      "imageWhy": "none",
-      "editorScore": 7,
-      "judgeScore": 7,
-      "firstSeen": "2026-10-19",
-      "servePos": 30
-    },
-    {
-      "id": "web-lbb-tips-motion-at-night-ade-in-the-stopera",
-      "title": "Motion at Night: ADE in the Stopera",
-      "venue": "",
-      "area": "",
-      "when": "Thu 22 Oct – Sat 24 Oct",
-      "category": "out",
-      "freshness": "weekend",
-      "outdoor": true,
-      "kid": false,
-      "price": "",
-      "blurb": "One of the ADE events I would put on my list this weekend is Motie at Night at the Stopera.",
-      "why": "One of LBB's weekend tips",
-      "source": "Your Little Black Book",
-      "link": "https://www.motieamsterdam.nl/program",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL"
-      ],
-      "verify": false,
-      "guide": "LBB weekendtips",
-      "imageWhy": "none",
-      "editorScore": 7,
-      "judgeScore": 7,
-      "firstSeen": "2026-10-19",
-      "servePos": 87
-    },
-    {
-      "id": "web-lbb-tips-dia-de-muertos-in-the-world-museum",
-      "title": "Día de Muertos in the World Museum",
-      "venue": "",
-      "area": "",
-      "when": "Sat 24 Oct – Sun 25 Oct",
-      "category": "out",
-      "freshness": "weekend",
-      "outdoor": true,
-      "kid": true,
-      "price": "",
-      "blurb": "This weekend is your last chance to participate in the creative workshop at the World Museum Amsterdam centered around Día de Muertos, the Mexican Day of the…",
-      "why": "One of LBB's weekend tips",
-      "source": "Your Little Black Book",
-      "link": "https://amsterdam.wereldmuseum.nl/nl/zien-en-doen/activiteiten/dia-de-muertos",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL"
-      ],
-      "verify": false,
-      "guide": "LBB weekendtips",
-      "imageWhy": "none",
-      "editorScore": 7,
-      "judgeScore": 7,
-      "firstSeen": "2026-10-19",
-      "servePos": 89
-    },
-    {
-      "id": "web-lbb-tips-55-x-restaurants-for-a-pre-party-dinner-during-a",
-      "title": "55 X restaurants for a pre-party dinner during ADE",
+      "id": "web-lbb-tips-bistro-de-fles-on-the-prinsengracht",
+      "title": "Bistro de Fles on the Prinsengracht",
       "venue": "",
       "area": "",
       "when": "This weekend",
-      "category": "out",
-      "freshness": "always",
-      "outdoor": true,
-      "kid": false,
-      "price": "",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.yourlittleblackbook.me%2Fwp-content%2Fuploads%2F2026%2F10%2Frestaurants-ade-locaties-amsterdam.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.250&fpy=0.750&output=jpg&default=https%3A%2F%2Fwww.yourlittleblackbook.me%2Fwp-content%2Fuploads%2F2026%2F10%2Frestaurants-ade-locaties-amsterdam.jpg",
-      "blurb": "Where are you going to eat before hitting the dance floor? We’ve gathered 55 favorite restaurants and bars around ADE locations, conveniently organized by…",
-      "why": "One of LBB's weekend tips",
-      "source": "Your Little Black Book",
-      "link": "https://www.yourlittleblackbook.me/en/restaurants-ade-pre-party/",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL"
-      ],
-      "verify": false,
-      "guide": "LBB weekendtips",
-      "imageWhy": "event-page",
-      "imageFocal": [
-        0.25,
-        0.75
-      ],
-      "editorScore": 2,
-      "judgeScore": 2,
-      "firstSeen": "2026-10-19",
-      "servePos": 95
-    },
-    {
-      "id": "web-lbb-tips-a-great-british-feast-at-over-amstel",
-      "title": "A Great British Feast at Over-Amstel",
-      "venue": "",
-      "area": "",
-      "when": "Fri 23 Oct – Sat 24 Oct",
-      "category": "out",
-      "freshness": "weekend",
-      "outdoor": true,
-      "kid": false,
-      "price": "",
-      "blurb": "This weekend, Over-Amstel Boerderij will be dedicated to British cuisine for two evenings.",
-      "why": "One of LBB's weekend tips",
-      "source": "Your Little Black Book",
-      "link": "https://over-amstel.com/boer-tot-bord/thema-diner/",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL"
-      ],
-      "verify": false,
-      "guide": "LBB weekendtips",
-      "buzz": 1,
-      "imageWhy": "none",
-      "editorScore": 4,
-      "judgeScore": 4,
-      "firstSeen": "2026-10-19",
-      "servePos": 93
-    },
-    {
-      "id": "web-lbb-oogstfeesten-zelfpluk-bij-de-olmenhorst",
-      "title": "Oogstfeesten Zelfpluk bij de Olmenhorst",
-      "venue": "Landgoed de Olmenhorst",
-      "area": "Lisserbroek",
-      "when": "Sat–Sun 24–25 Oct · 10:00–21:00",
-      "category": "daytrip",
-      "freshness": "weekend",
-      "outdoor": true,
-      "kid": true,
-      "price": "free entry, €6 parking",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Folmenhorst.nl%2FFile%2Fimage%2FBjyjXTmlRgsOUa2ZelIl1784891025elhdoJWuqlIPgyjTPciC&w=800&h=1200&fit=cover&a=focal&fpx=0.250&fpy=0.450&output=jpg&default=https%3A%2F%2Folmenhorst.nl%2FFile%2Fimage%2FBjyjXTmlRgsOUa2ZelIl1784891025elhdoJWuqlIPgyjTPciC",
-      "blurb": "Pick apples and pears, live music, local food market, rides, ponies, face painting. Full autumn day out for families.",
-      "why": "Harvest festival with fruit picking",
-      "source": "Your Little Black Book",
-      "link": "https://olmenhorst.nl/activiteiten/oogstfeesten-2026",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL"
-      ],
-      "verify": false,
-      "imageWhy": "event-page",
-      "imageFocal": [
-        0.25,
-        0.45
-      ],
-      "editorScore": 6,
-      "judgeScore": 6,
-      "buzz": 1,
-      "firstSeen": "2026-09-05",
-      "servePos": 88
-    },
-    {
-      "id": "web-lbb-t-wak-rink-side-dining",
-      "title": "'t Wak – Rink-Side Dining",
-      "venue": "'t Wak, Museumplein",
-      "area": "Amsterdam South",
-      "when": "Until Sat 16 Jan",
       "category": "eat",
       "freshness": "always",
-      "outdoor": true,
-      "kid": true,
-      "price": "",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.yourlittleblackbook.me%2Fwp-content%2Fuploads%2F2026%2F09%2Fschaatsbaan-museumplein-2026-IMG_5981-2.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.550&output=jpg&default=https%3A%2F%2Fwww.yourlittleblackbook.me%2Fwp-content%2Fuploads%2F2026%2F09%2Fschaatsbaan-museumplein-2026-IMG_5981-2.jpg",
-      "blurb": "Warm up with hot chocolate, lunch, drinks, or dinner with views of the ice rink and Rijksmuseum.",
-      "why": "Cosy food with rink views",
-      "source": "Your Little Black Book",
-      "link": "https://duckduckgo.com/?q='t%20Wak%20%E2%80%93%20Rink-Side%20Dining%20't%20Wak%2C%20Museumplein%20Amsterdam",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL"
-      ],
-      "verify": false,
-      "imageWhy": "organiser",
-      "imageFocal": [
-        0.5,
-        0.55
-      ],
-      "editorScore": 5,
-      "judgeScore": 5,
-      "firstSeen": "2026-10-19",
-      "servePos": 94
-    },
-    {
-      "id": "web-lbb-schaatsbaan-museumplein",
-      "title": "Schaatsbaan Museumplein",
-      "venue": "Museumplein",
-      "area": "Amsterdam South",
-      "when": "Until Sat 16 Jan",
-      "category": "out",
-      "freshness": "always",
-      "outdoor": true,
-      "kid": true,
-      "price": "",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.yourlittleblackbook.me%2Fwp-content%2Fuploads%2F2026%2F09%2Fschaatsbaan-museumplein-2026-doen-herfst-amsterdam-schaatsbaan-museumplein.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.575&output=jpg&default=https%3A%2F%2Fwww.yourlittleblackbook.me%2Fwp-content%2Fuploads%2F2026%2F09%2Fschaatsbaan-museumplein-2026-doen-herfst-amsterdam-schaatsbaan-museumplein.jpg",
-      "blurb": "Iconic ice rink on Amsterdam's most beautiful square, perfect for families, dates, and friends this winter.",
-      "why": "Winter skating tradition returns",
-      "source": "Your Little Black Book · I amsterdam",
-      "link": "https://duckduckgo.com/?q=Schaatsbaan%20Museumplein%20Museumplein%20Amsterdam",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL"
-      ],
-      "verify": false,
-      "imageWhy": "organiser",
-      "imageFocal": [
-        0.5,
-        0.575
-      ],
-      "editorScore": 5,
-      "judgeScore": 5,
-      "buzz": 2,
-      "firstSeen": "2026-10-19",
-      "servePos": 97
-    },
-    {
-      "id": "web-iams-museum-market",
-      "title": "Museum Market",
-      "venue": "Museumplein",
-      "area": "Museumplein",
-      "when": "Until Sun 13 Dec",
-      "category": "shop",
-      "freshness": "weekend",
       "outdoor": false,
       "kid": false,
-      "price": "ticketed",
-      "blurb": "Every month, you will find the Museum Market on Museumplein. A market featuring art, illustrations, jewelry, ceramics, fashion, design, and delicacies from…",
+      "price": "",
+      "blurb": "New on the Prinsengracht: Bistro de Fles, an atmospheric bistro in the basement with a dark, warm interior and a strong focus on wine and good food.",
       "why": "One of LBB's weekend tips",
-      "source": "I amsterdam · Your Little Black Book · AmsterdamTips.com · AmsterdamTips",
-      "link": "https://www.iamsterdam.com/en/whats-on/calendar/shopping/markets/museum-market",
+      "source": "I amsterdam · Your Little Black Book",
+      "link": "https://bistrodefles.nl/",
       "weatherFit": [
         "HOT",
         "WARM",
@@ -819,83 +197,18 @@
         "VOLATILE"
       ],
       "verify": false,
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fstatic.wixstatic.com%2Fmedia%2F396d30_87ce559441a0450da83090668454043b~mv2.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.700&fpy=0.500&output=jpg&default=https%3A%2F%2Fstatic.wixstatic.com%2Fmedia%2F396d30_87ce559441a0450da83090668454043b~mv2.jpg",
       "guide": "LBB weekendtips",
-      "buzz": 4,
-      "imageWhy": "none",
-      "editorScore": 10,
-      "judgeScore": 8,
-      "firstSeen": "2026-08-29",
-      "servePos": 11
-    },
-    {
-      "id": "web-iams-the-maker-market",
-      "title": "The Maker Market",
-      "venue": "De Hallen Amsterdam",
-      "area": "Hannie Dankbaarpassage 47",
-      "when": "Until Sun 20 Dec",
-      "category": "shop",
-      "freshness": "weekend",
-      "outdoor": false,
-      "kid": false,
-      "price": "ticketed",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F697250f4f8ac733b5bd29b88%2FIMG_3236.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.450&fpy=0.500&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F697250f4f8ac733b5bd29b88%2FIMG_3236.webp",
-      "blurb": "New editions, discover new creators! The Maker Market takes place monthly at De Hallen in Amsterdam-West, a vibrant hub of craftsmanship, design, and inspiration.",
-      "why": "On I amsterdam",
-      "source": "I amsterdam · Your Little Black Book · AmsterdamTips.com · AmsterdamTips",
-      "link": "https://www.iamsterdam.com/en/whats-on/calendar/shopping/markets/the-maker-market",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "verify": false,
-      "buzz": 4,
-      "guide": "LBB weekendtips",
-      "imageWhy": "organiser",
+      "buzz": 2,
+      "imageWhy": "event-page",
       "imageFocal": [
-        0.45,
+        0.7,
         0.5
       ],
-      "editorScore": 10,
-      "judgeScore": 8,
-      "firstSeen": "2026-08-29",
-      "servePos": 1
-    },
-    {
-      "id": "web-iams-pure-markt",
-      "title": "Pure Markt",
-      "venue": "Diverse locaties/various locations",
-      "area": "Dam",
-      "when": "Until Sun 20 Dec",
-      "category": "out",
-      "freshness": "weekend",
-      "outdoor": true,
-      "kid": false,
-      "price": "ticketed",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6307671aa418187479f0726d%2FPureMarkt-1800x1020.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.500&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6307671aa418187479f0726d%2FPureMarkt-1800x1020.webp",
-      "blurb": "Outing for the whole family Get your groceries for home, take a seat on one of the terraces to taste the offer in one of the most beautiful parks in Amsterdam, and enjoy the live music or take a ride…",
-      "why": "On I amsterdam",
-      "source": "I amsterdam · Your Little Black Book · Maps",
-      "link": "https://www.iamsterdam.com/en/whats-on/calendar/festivals/events/pure-markt",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL"
-      ],
-      "verify": false,
-      "buzz": 3,
-      "guide": "I amsterdam weekend guide",
-      "imageWhy": "organiser",
-      "imageFocal": [
-        0.5,
-        0.5
-      ],
-      "editorScore": 8,
-      "judgeScore": 6,
-      "firstSeen": "2026-08-29",
-      "servePos": 85
+      "editorScore": 4,
+      "judgeScore": 4,
+      "firstSeen": "2026-09-17",
+      "servePos": 30
     },
     {
       "id": "web-lbb-tips-sunday-market",
@@ -924,7 +237,177 @@
       "editorScore": 5,
       "judgeScore": 5,
       "firstSeen": "2026-09-17",
-      "servePos": 109
+      "servePos": 108
+    },
+    {
+      "id": "web-iams-museum-market",
+      "title": "Museum Market",
+      "venue": "Museumplein",
+      "area": "Museumplein",
+      "when": "Until Sun 13 Dec",
+      "category": "shop",
+      "freshness": "weekend",
+      "outdoor": false,
+      "kid": false,
+      "price": "ticketed",
+      "blurb": "Every month, you will find the Museum Market on Museumplein. A market featuring art, illustrations, jewelry, ceramics, fashion, design, and delicacies from…",
+      "why": "One of LBB's weekend tips",
+      "source": "I amsterdam · Your Little Black Book",
+      "link": "https://www.iamsterdam.com/en/whats-on/calendar/shopping/markets/museum-market",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "verify": false,
+      "guide": "LBB weekendtips",
+      "buzz": 2,
+      "imageWhy": "none",
+      "editorScore": 9,
+      "judgeScore": 7,
+      "firstSeen": "2026-08-29",
+      "servePos": 22
+    },
+    {
+      "id": "web-iams-the-maker-market",
+      "title": "The Maker Market",
+      "venue": "De Hallen Amsterdam",
+      "area": "Hannie Dankbaarpassage 47",
+      "when": "Until Sun 20 Dec",
+      "category": "shop",
+      "freshness": "weekend",
+      "outdoor": false,
+      "kid": false,
+      "price": "ticketed",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F697250f4f8ac733b5bd29b88%2FIMG_3236.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.450&fpy=0.500&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F697250f4f8ac733b5bd29b88%2FIMG_3236.webp",
+      "blurb": "New editions, discover new creators! The Maker Market takes place monthly at De Hallen in Amsterdam-West, a vibrant hub of craftsmanship, design, and inspiration.",
+      "why": "On I amsterdam",
+      "source": "I amsterdam · Your Little Black Book",
+      "link": "https://www.iamsterdam.com/en/whats-on/calendar/shopping/markets/the-maker-market",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "verify": false,
+      "buzz": 2,
+      "guide": "LBB weekendtips",
+      "imageWhy": "organiser",
+      "imageFocal": [
+        0.45,
+        0.5
+      ],
+      "editorScore": 9,
+      "judgeScore": 7,
+      "firstSeen": "2026-08-29",
+      "servePos": 8
+    },
+    {
+      "id": "web-iams-nacht-van-de-nacht-op-pampus",
+      "title": "Nacht van de Nacht op Pampus",
+      "venue": "Forteiland Pampus",
+      "area": "Muiden",
+      "when": "Sat 24 Oct · 19:00",
+      "category": "out",
+      "freshness": "weekend",
+      "outdoor": true,
+      "kid": true,
+      "price": "ticketed",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.pampus.nl%2Fwp-content%2Fuploads%2F2026%2F09%2Fforteiland-pampus-luchtfoto-sep26-verbeterd.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.500&output=jpg&default=https%3A%2F%2Fwww.pampus.nl%2Fwp-content%2Fuploads%2F2026%2F09%2Fforteiland-pampus-luchtfoto-sep26-verbeterd.webp",
+      "blurb": "Evening adventure on darkened fort island with candlelit walks, historical guides, and warm soup. Boat departure from Muiden.",
+      "why": "Unique darkened fort island experience with history",
+      "source": "I amsterdam · Your Little Black Book",
+      "link": "https://www.iamsterdam.com/uit/agenda/festivals/events/nacht-van-de-nacht-op-pampus",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL"
+      ],
+      "verify": false,
+      "buzz": 2,
+      "imageWhy": "event-page",
+      "imageFocal": [
+        0.5,
+        0.5
+      ],
+      "editorScore": 9,
+      "judgeScore": 9,
+      "firstSeen": "2026-10-19",
+      "servePos": 68
+    },
+    {
+      "id": "web-iams-rommelmarkt-bij-qru-zondag-25-oktober",
+      "title": "Rommelmarkt bij QRU – zondag 25 oktober",
+      "venue": "QRU",
+      "area": "Spaklerweg 1",
+      "when": "Sun 25 Oct · 10:00",
+      "category": "shop",
+      "freshness": "weekend",
+      "outdoor": false,
+      "kid": false,
+      "price": "ticketed",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6ad3d5bd19db926b773670db%2Fae645265-5b08-41bb-95c9-4dd055c354f5.JPG&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.575&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6ad3d5bd19db926b773670db%2Fae645265-5b08-41bb-95c9-4dd055c354f5.JPG",
+      "blurb": "Flea market with vintage items, secondhand clothing, books, records, curiosities, and household goods for browsing.",
+      "why": "Vintage and secondhand finds flea market",
+      "source": "I amsterdam · Your Little Black Book",
+      "link": "https://www.iamsterdam.com/uit/agenda/winkelen/markten/rommelmarkt-bij-qru-zondag-25-oktober",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "verify": false,
+      "buzz": 2,
+      "imageWhy": "organiser",
+      "imageFocal": [
+        0.5,
+        0.575
+      ],
+      "editorScore": 7,
+      "judgeScore": 7,
+      "firstSeen": "2026-10-19",
+      "servePos": 4
+    },
+    {
+      "id": "web-iams-ruby-emma-presents-ade-30th-anniversary-showcase",
+      "title": "Ruby Emma Presents: ADE 30th Anniversary Showcase",
+      "venue": "Ruby Emma Hotel & Bar",
+      "area": "Amstelvlietstraat 4",
+      "when": "Sat 24 – Sun 25 Oct",
+      "category": "drink",
+      "freshness": "weekend",
+      "outdoor": false,
+      "kid": false,
+      "price": "ticketed",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a8556c64f65703141ddb190%2Ftickets-header_both-dates-1-1.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.500&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a8556c64f65703141ddb190%2Ftickets-header_both-dates-1-1.webp",
+      "blurb": "Electronic music showcase featuring MGUN, Philipp Wolf, Tonic Walter live, and Fritz Kalkbrenner celebrating ADE's 30th anniversary.",
+      "why": "ADE anniversary with top electronic acts",
+      "source": "I amsterdam · Your Little Black Book",
+      "link": "https://www.iamsterdam.com/en/whats-on/calendar/nightlife/clubbing/ruby-emma-presents-ade-30th-anniversary-showcase",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "verify": false,
+      "buzz": 2,
+      "imageWhy": "organiser",
+      "imageFocal": [
+        0.5,
+        0.5
+      ],
+      "editorScore": 6,
+      "judgeScore": 6,
+      "firstSeen": "2026-10-19",
+      "servePos": 6
     },
     {
       "id": "web-iams-ligconcert-presents-lying-down-concert-at-the-maritime-museum",
@@ -960,7 +443,7 @@
       "editorScore": 10,
       "judgeScore": 8,
       "firstSeen": "2026-08-29",
-      "servePos": 26
+      "servePos": 15
     },
     {
       "id": "web-lbb-tips-noordermarkt",
@@ -989,7 +472,42 @@
       "editorScore": 6,
       "judgeScore": 6,
       "firstSeen": "2026-09-10",
-      "servePos": 96
+      "servePos": 90
+    },
+    {
+      "id": "web-iams-chez-matisse",
+      "title": "Chez Matisse",
+      "venue": "H'ART Museum",
+      "area": "Amstel 51",
+      "when": "Until Sun 14 Feb",
+      "category": "art",
+      "freshness": "always",
+      "outdoor": false,
+      "kid": false,
+      "price": "ticketed",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6ac38e9a17c93d0b8b31d748%2FMatisse_Hero.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.500&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6ac38e9a17c93d0b8b31d748%2FMatisse_Hero.webp",
+      "blurb": "Colourful Henri Matisse retrospective featuring rarely loaned La Blouse roumaine and his influence on modern art.",
+      "why": "Matisse's rare masterworks",
+      "source": "I amsterdam · Your Little Black Book",
+      "link": "https://www.iamsterdam.com/en/whats-on/calendar/exhibitions/all-exhibitions/chez-matisse",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "verify": false,
+      "buzz": 2,
+      "imageWhy": "organiser",
+      "imageFocal": [
+        0.5,
+        0.5
+      ],
+      "editorScore": 7,
+      "judgeScore": 7,
+      "firstSeen": "2026-09-28",
+      "servePos": 44
     },
     {
       "id": "web-iams-yayoi-kusama",
@@ -1003,8 +521,8 @@
       "kid": true,
       "price": "ticketed",
       "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a9592cffc761f1e3d9c8681%2Fkusama2010-1.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.400&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a9592cffc761f1e3d9c8681%2Fkusama2010-1.webp",
-      "blurb": "Immersive retrospective of the acclaimed Japanese artist's infinity rooms, pumpkin sculptures, and visionary installations.",
-      "why": "Critics' darling, Instagram-worthy, extended run",
+      "blurb": "Immersive infinity rooms and visionary works by Japan's obsessive artist. Running through January at Amsterdam's premier modern-art museum.",
+      "why": "Critically acclaimed; extended run; family-friendly",
       "source": "I amsterdam · Your Little Black Book",
       "link": "https://www.iamsterdam.com/en/whats-on/calendar/exhibitions/all-exhibitions/yayoi-kusama",
       "weatherFit": [
@@ -1024,7 +542,77 @@
       "editorScore": 7,
       "judgeScore": 7,
       "firstSeen": "2026-09-10",
-      "servePos": 52
+      "servePos": 46
+    },
+    {
+      "id": "web-iams-art-is-not-a-crime",
+      "title": "ART IS NOT A CRIME",
+      "venue": "STRAAT Museum – Street art en graffiti in Amsterdam",
+      "area": "NDSM-plein 1",
+      "when": "Until Thu 31 Dec",
+      "category": "art",
+      "freshness": "always",
+      "outdoor": false,
+      "kid": false,
+      "price": "ticketed",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a61cb7cac040b771f5fae15%2Fimage-cropped.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.450&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a61cb7cac040b771f5fae15%2Fimage-cropped.webp",
+      "blurb": "Street art and graffiti history through photographer Henry Chalfant's documentation, including Dutch scene archives.",
+      "why": "Graffiti culture origins explored",
+      "source": "I amsterdam · Your Little Black Book",
+      "link": "https://www.iamsterdam.com/en/whats-on/calendar/exhibitions/all-exhibitions/art-is-not-a-crime",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "verify": false,
+      "buzz": 2,
+      "imageWhy": "organiser",
+      "imageFocal": [
+        0.5,
+        0.45
+      ],
+      "editorScore": 6,
+      "judgeScore": 6,
+      "firstSeen": "2026-10-05",
+      "servePos": 31
+    },
+    {
+      "id": "web-iams-whistler-dandy-en-dwarsdenker",
+      "title": "Whistler. Dandy en dwarsdenker",
+      "venue": "Van Gogh Museum",
+      "area": "Museumplein 6",
+      "when": "Until Sun 10 Jan",
+      "category": "art",
+      "freshness": "always",
+      "outdoor": false,
+      "kid": false,
+      "price": "ticketed",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F69e5f7a57ec95b733e6ee017%2F34.27-S4.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.650&fpy=0.525&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F69e5f7a57ec95b733e6ee017%2F34.27-S4.webp",
+      "blurb": "Pioneering 19th-century artist exhibition exploring Van Gogh's admiration and shared fascination with Japanese art influences.",
+      "why": "Connection between Whistler and Van Gogh",
+      "source": "I amsterdam · Your Little Black Book",
+      "link": "https://www.iamsterdam.com/uit/agenda/tentoonstellingen/alle-tentoonstellingen/whistler-dandy-en-dwarsdenker",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "verify": false,
+      "buzz": 2,
+      "imageWhy": "organiser",
+      "imageFocal": [
+        0.6499999999999999,
+        0.525
+      ],
+      "editorScore": 7,
+      "judgeScore": 7,
+      "firstSeen": "2026-10-19",
+      "servePos": 21
     },
     {
       "id": "web-lbb-tips-must-see-major-yayoi-kusama-exhibition-at-the-st",
@@ -1049,10 +637,10 @@
       "verify": false,
       "guide": "LBB weekendtips",
       "imageWhy": "none",
-      "editorScore": 6,
-      "judgeScore": 6,
+      "editorScore": 1,
+      "judgeScore": 1,
       "firstSeen": "2026-09-17",
-      "servePos": 110
+      "servePos": 113
     },
     {
       "id": "web-lbb-tips-bar-francois",
@@ -1082,7 +670,36 @@
       "editorScore": 3,
       "judgeScore": 3,
       "firstSeen": "2026-09-10",
-      "servePos": 71
+      "servePos": 66
+    },
+    {
+      "id": "web-lbb-motie-at-night-ade-in-de-stopera",
+      "title": "Motie at Night: ADE in de Stopera",
+      "venue": "Stopera / Stadhuis",
+      "area": "Amsterdam-Centrum",
+      "when": "Thu 22 – Sat 24 Oct · 19:00–01:00",
+      "category": "live",
+      "freshness": "weekend",
+      "outdoor": false,
+      "kid": false,
+      "price": "ticket required",
+      "blurb": "Electronic music, light art, performances, and gourmet dining in Amsterdam's city hall. Saturday features Young Marco and Oceanic.",
+      "why": "ADE at unique venue with art and food",
+      "source": "Your Little Black Book",
+      "link": "https://www.motieamsterdam.nl/program",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "verify": false,
+      "imageWhy": "none",
+      "editorScore": 7,
+      "judgeScore": 7,
+      "firstSeen": "2026-10-19",
+      "servePos": 24
     },
     {
       "id": "web-lbb-tips-sea-palace-cafe",
@@ -1109,10 +726,38 @@
       "verify": false,
       "guide": "LBB weekendtips",
       "imageWhy": "none",
-      "editorScore": 3,
-      "judgeScore": 3,
+      "editorScore": 2,
+      "judgeScore": 2,
       "firstSeen": "2026-09-28",
-      "servePos": 73
+      "servePos": 69
+    },
+    {
+      "id": "web-lbb-tips-motion-at-night-ade-in-the-stopera",
+      "title": "Motion at Night: ADE in the Stopera",
+      "venue": "",
+      "area": "",
+      "when": "Thu 22 Oct – Sat 24 Oct",
+      "category": "out",
+      "freshness": "weekend",
+      "outdoor": true,
+      "kid": false,
+      "price": "",
+      "blurb": "One of the ADE events I would put on my list this weekend is Motie at Night at the Stopera.",
+      "why": "One of LBB's weekend tips",
+      "source": "Your Little Black Book",
+      "link": "https://www.motieamsterdam.nl/program",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL"
+      ],
+      "verify": false,
+      "guide": "LBB weekendtips",
+      "imageWhy": "none",
+      "editorScore": 7,
+      "judgeScore": 7,
+      "firstSeen": "2026-10-19",
+      "servePos": 83
     },
     {
       "id": "web-lbb-tips-qru-flea-market",
@@ -1145,7 +790,7 @@
       "editorScore": 4,
       "judgeScore": 4,
       "firstSeen": "2026-10-05",
-      "servePos": 92
+      "servePos": 88
     },
     {
       "id": "web-lbb-tips-vermut-in-oud-west",
@@ -1175,7 +820,7 @@
       "editorScore": 5,
       "judgeScore": 5,
       "firstSeen": "2026-09-10",
-      "servePos": 61
+      "servePos": 59
     },
     {
       "id": "web-lbb-tips-vin-fou-in-oud-west",
@@ -1205,7 +850,7 @@
       "editorScore": 5,
       "judgeScore": 5,
       "firstSeen": "2026-09-28",
-      "servePos": 63
+      "servePos": 61
     },
     {
       "id": "web-lbb-tips-gastropub-t-lemmeke",
@@ -1240,7 +885,7 @@
       "editorScore": 4,
       "judgeScore": 4,
       "firstSeen": "2026-10-05",
-      "servePos": 34
+      "servePos": 32
     },
     {
       "id": "web-lbb-tips-kiseki-sake-bar-food",
@@ -1253,7 +898,7 @@
       "outdoor": false,
       "kid": false,
       "price": "",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fkisekiamsterdam.nl%2Fkka%2Fwp-content%2Fuploads%2F2026%2F06%2FKaraage.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.625&fpy=0.550&output=jpg&default=https%3A%2F%2Fkisekiamsterdam.nl%2Fkka%2Fwp-content%2Fuploads%2F2026%2F06%2FKaraage.webp",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fkisekiamsterdam.nl%2Fkka%2Fwp-content%2Fuploads%2F2026%2F06%2FTerras-Kiseki.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.175&fpy=0.400&output=jpg&default=https%3A%2F%2Fkisekiamsterdam.nl%2Fkka%2Fwp-content%2Fuploads%2F2026%2F06%2FTerras-Kiseki.webp",
       "blurb": "New in the Helmersbuurt: KISEKI Sake Bar & Food, a cozy Japanese sake bar where you can also enjoy a great meal.",
       "why": "One of LBB's weekend tips",
       "source": "Your Little Black Book",
@@ -1269,13 +914,13 @@
       "guide": "LBB weekendtips",
       "imageWhy": "event-page",
       "imageFocal": [
-        0.625,
-        0.55
+        0.175,
+        0.4
       ],
-      "editorScore": 4,
-      "judgeScore": 4,
+      "editorScore": 3,
+      "judgeScore": 3,
       "firstSeen": "2026-09-05",
-      "servePos": 54
+      "servePos": 52
     },
     {
       "id": "web-lbb-tips-the-foodwalk-winter",
@@ -1305,11 +950,11 @@
         0.575,
         0.6499999999999999
       ],
-      "editorScore": 5,
-      "judgeScore": 5,
+      "editorScore": 1,
+      "judgeScore": 1,
       "buzz": 1,
       "firstSeen": "2026-09-25",
-      "servePos": 103
+      "servePos": 107
     },
     {
       "id": "web-lbb-tips-cabinet-festive-edition",
@@ -1337,7 +982,7 @@
       "editorScore": 1,
       "judgeScore": 1,
       "firstSeen": "2026-10-05",
-      "servePos": 119
+      "servePos": 118
     },
     {
       "id": "web-lbb-tips-art-design-vintage-market",
@@ -1370,7 +1015,7 @@
       "editorScore": 5,
       "judgeScore": 5,
       "firstSeen": "2026-10-05",
-      "servePos": 90
+      "servePos": 84
     },
     {
       "id": "web-lbb-tips-javaplein-vintage-market",
@@ -1398,7 +1043,7 @@
       "editorScore": 2,
       "judgeScore": 2,
       "firstSeen": "2026-09-10",
-      "servePos": 120
+      "servePos": 119
     },
     {
       "id": "web-lbb-tips-outdoor-market-noordoogst",
@@ -1423,10 +1068,71 @@
       "verify": false,
       "guide": "LBB weekendtips",
       "imageWhy": "none",
-      "editorScore": 5,
-      "judgeScore": 5,
+      "editorScore": 6,
+      "judgeScore": 6,
       "firstSeen": "2026-10-05",
-      "servePos": 111
+      "servePos": 92
+    },
+    {
+      "id": "web-lbb-tips-dia-de-muertos-in-the-world-museum",
+      "title": "Día de Muertos in the World Museum",
+      "venue": "",
+      "area": "",
+      "when": "Sat 24 Oct – Sun 25 Oct",
+      "category": "out",
+      "freshness": "weekend",
+      "outdoor": true,
+      "kid": true,
+      "price": "",
+      "blurb": "This weekend is your last chance to participate in the creative workshop at the World Museum Amsterdam centered around Día de Muertos, the Mexican Day of the…",
+      "why": "One of LBB's weekend tips",
+      "source": "Your Little Black Book",
+      "link": "https://amsterdam.wereldmuseum.nl/nl/zien-en-doen/activiteiten/dia-de-muertos",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL"
+      ],
+      "verify": false,
+      "guide": "LBB weekendtips",
+      "imageWhy": "none",
+      "editorScore": 7,
+      "judgeScore": 7,
+      "firstSeen": "2026-10-19",
+      "servePos": 85
+    },
+    {
+      "id": "web-lbb-tips-55-x-restaurants-for-a-pre-party-dinner-during-a",
+      "title": "55 X restaurants for a pre-party dinner during ADE",
+      "venue": "",
+      "area": "",
+      "when": "This weekend",
+      "category": "out",
+      "freshness": "always",
+      "outdoor": true,
+      "kid": false,
+      "price": "",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.yourlittleblackbook.me%2Fwp-content%2Fuploads%2F2026%2F10%2Frestaurants-ade-locaties-amsterdam.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.250&fpy=0.750&output=jpg&default=https%3A%2F%2Fwww.yourlittleblackbook.me%2Fwp-content%2Fuploads%2F2026%2F10%2Frestaurants-ade-locaties-amsterdam.jpg",
+      "blurb": "Where are you going to eat before hitting the dance floor? We’ve gathered 55 favorite restaurants and bars around ADE locations, conveniently organized by…",
+      "why": "One of LBB's weekend tips",
+      "source": "Your Little Black Book",
+      "link": "https://www.yourlittleblackbook.me/en/restaurants-ade-pre-party/",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL"
+      ],
+      "verify": false,
+      "guide": "LBB weekendtips",
+      "imageWhy": "event-page",
+      "imageFocal": [
+        0.25,
+        0.75
+      ],
+      "editorScore": 2,
+      "judgeScore": 2,
+      "firstSeen": "2026-10-19",
+      "servePos": 97
     },
     {
       "id": "web-lbb-tips-afternoon-tea-at-mandarin-oriental-conservatory",
@@ -1458,45 +1164,72 @@
         0.5,
         0.5
       ],
-      "editorScore": 3,
-      "judgeScore": 3,
+      "editorScore": 2,
+      "judgeScore": 2,
       "firstSeen": "2026-09-10",
-      "servePos": 56
+      "servePos": 55
     },
     {
-      "id": "web-lbb-tips-bistro-de-fles-on-the-prinsengracht",
-      "title": "Bistro de Fles on the Prinsengracht",
+      "id": "web-lbb-tips-a-great-british-feast-at-over-amstel",
+      "title": "A Great British Feast at Over-Amstel",
       "venue": "",
       "area": "",
-      "when": "This weekend",
-      "category": "eat",
-      "freshness": "always",
-      "outdoor": false,
+      "when": "Fri 23 Oct – Sat 24 Oct",
+      "category": "out",
+      "freshness": "weekend",
+      "outdoor": true,
       "kid": false,
       "price": "",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fstatic.wixstatic.com%2Fmedia%2F396d30_87ce559441a0450da83090668454043b~mv2.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.700&fpy=0.500&output=jpg&default=https%3A%2F%2Fstatic.wixstatic.com%2Fmedia%2F396d30_87ce559441a0450da83090668454043b~mv2.jpg",
-      "blurb": "New on the Prinsengracht: Bistro de Fles, an atmospheric bistro in the basement with a dark, warm interior and a strong focus on wine and good food.",
+      "blurb": "This weekend, Over-Amstel Boerderij will be dedicated to British cuisine for two evenings.",
       "why": "One of LBB's weekend tips",
       "source": "Your Little Black Book",
-      "link": "https://bistrodefles.nl/",
+      "link": "https://over-amstel.com/boer-tot-bord/thema-diner/",
       "weatherFit": [
         "HOT",
         "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
+        "COOL"
       ],
       "verify": false,
       "guide": "LBB weekendtips",
+      "buzz": 1,
+      "imageWhy": "none",
+      "editorScore": 5,
+      "judgeScore": 5,
+      "firstSeen": "2026-10-19",
+      "servePos": 87
+    },
+    {
+      "id": "web-lbb-oogstfeesten-zelfpluk-bij-de-olmenhorst",
+      "title": "Oogstfeesten Zelfpluk bij de Olmenhorst",
+      "venue": "Landgoed de Olmenhorst",
+      "area": "Lisserbroek",
+      "when": "Sat–Sun 24–25 Oct · 10:00–17:00 (plucking); 10:00–21:00 (fes",
+      "category": "daytrip",
+      "freshness": "weekend",
+      "outdoor": true,
+      "kid": true,
+      "price": "free entry; €6 parking",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Folmenhorst.nl%2FFile%2Fimage%2FlOBdmpV2IrLowAqML9sy1784891028ay2LRyi6jWd0mzigvZSv&w=800&h=1200&fit=cover&a=focal&fpx=0.600&fpy=0.550&output=jpg&default=https%3A%2F%2Folmenhorst.nl%2FFile%2Fimage%2FlOBdmpV2IrLowAqML9sy1784891028ay2LRyi6jWd0mzigvZSv",
+      "blurb": "Pick your own apples and pears in organic orchards with live music, food stalls, artisan market, and family activities including Ferris wheel and pony rides.",
+      "why": "Autumn harvest festival with picking and kids activities",
+      "source": "Your Little Black Book",
+      "link": "https://olmenhorst.nl/activiteiten/oogstfeesten-2026",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL"
+      ],
+      "verify": false,
       "imageWhy": "event-page",
       "imageFocal": [
-        0.7,
-        0.5
+        0.6,
+        0.5499999999999999
       ],
-      "editorScore": 3,
-      "judgeScore": 3,
-      "firstSeen": "2026-09-17",
-      "servePos": 58
+      "editorScore": 6,
+      "judgeScore": 6,
+      "buzz": 1,
+      "firstSeen": "2026-09-05",
+      "servePos": 86
     },
     {
       "id": "web-lbb-tips-spin-listening-bar-pool-cafe-in-oud-west",
@@ -1528,10 +1261,10 @@
         0.575,
         0.5
       ],
-      "editorScore": 5,
-      "judgeScore": 5,
+      "editorScore": 4,
+      "judgeScore": 4,
       "firstSeen": "2026-09-17",
-      "servePos": 39
+      "servePos": 48
     },
     {
       "id": "web-lbb-tips-amstel-1-market",
@@ -1560,24 +1293,23 @@
       "editorScore": 3,
       "judgeScore": 3,
       "firstSeen": "2026-09-05",
-      "servePos": 115
+      "servePos": 112
     },
     {
-      "id": "web-lbb-willem-de-kooning-at-work",
-      "title": "Willem de Kooning at work",
-      "venue": "Rijksmuseum",
-      "area": "Amsterdam",
-      "when": "Until Sun 17 Jan",
-      "category": "art",
-      "freshness": "always",
+      "id": "web-iams-brass-rave-unit-manolo",
+      "title": "Brass Rave Unit | Manolo",
+      "venue": "Bimhuis",
+      "area": "Piet Heinkade 3",
+      "when": "Sat 24 Oct · 20:30",
+      "category": "live",
+      "freshness": "weekend",
       "outdoor": false,
       "kid": false,
-      "price": "",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fthumb%2F8%2F80%2FSouth_facade_of_the_Rijksmuseum_Amsterdam_%2528DSCF0528%2529.jpg%2F1280px-South_facade_of_the_Rijksmuseum_Amsterdam_%2528DSCF0528%2529.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.350&output=jpg&default=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fthumb%2F8%2F80%2FSouth_facade_of_the_Rijksmuseum_Amsterdam_%2528DSCF0528%2529.jpg%2F1280px-South_facade_of_the_Rijksmuseum_Amsterdam_%2528DSCF0528%2529.jpg",
-      "blurb": "120 works tracing the Dutch master's journey to American modernism, with rare drawings on display.",
-      "why": "First major retrospective of his drawings in Netherlands",
-      "source": "Your Little Black Book",
-      "link": "https://tiqets.tpo.lv/Do1InTp5",
+      "price": "ticketed",
+      "blurb": "Rave act from Amsterdam underground + keyboardist blending funk, jazz, Caribbean rhythms. 50+ years of jazz tradition.",
+      "why": "Iconic club, bold fusion",
+      "source": "I amsterdam · BIMHUIS",
+      "link": "https://www.iamsterdam.com/uit/agenda/concerten-en-muziek/concerten/brass-rave-unit-manolo",
       "weatherFit": [
         "HOT",
         "WARM",
@@ -1586,15 +1318,347 @@
         "VOLATILE"
       ],
       "verify": false,
-      "imageWhy": "venue",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a7e4fc6d29f4f08a49b4f33%2F241026-Brass-Rave-Unit.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.525&fpy=0.400&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a7e4fc6d29f4f08a49b4f33%2F241026-Brass-Rave-Unit.webp",
+      "buzz": 2,
+      "imageWhy": "organiser",
       "imageFocal": [
-        0.5,
-        0.35
+        0.525,
+        0.4
       ],
       "editorScore": 7,
       "judgeScore": 7,
-      "firstSeen": "2026-10-15",
+      "firstSeen": "2026-10-22",
+      "servePos": 9
+    },
+    {
+      "id": "web-i-amsterdam-cinekid-festival-2026",
+      "title": "Cinekid Festival 2026",
+      "venue": "Pathé Amsterdam Noord",
+      "area": "Amsterdam Noord",
+      "when": "Sat 10 – Sun 25 Oct · various times",
+      "category": "stage",
+      "freshness": "ending",
+      "outdoor": false,
+      "kid": true,
+      "price": "ticketed",
+      "blurb": "40th anniversary children's film festival—Dutch films, workshops, VR experiences, actor meet-and-greets.",
+      "why": "Final weekend; kids' content, autumn school holidays",
+      "source": "I amsterdam",
+      "link": "https://www.iamsterdam.com/en/whats-on/culture-guide",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "verify": true,
+      "imageWhy": "none",
+      "editorScore": 6,
+      "judgeScore": 6,
+      "firstSeen": "2026-10-11",
+      "servePos": 29
+    },
+    {
+      "id": "web-guide-iams-ice-rink-opening-museumplein",
+      "title": "Ice-rink opening Museumplein",
+      "venue": "",
+      "area": "",
+      "when": "This weekend",
+      "category": "out",
+      "freshness": "always",
+      "outdoor": true,
+      "kid": true,
+      "price": "",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fmedia.iamsterdam.com%2Fw_1800%2F62zkie1fc7o4-ice-skating.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.350&output=jpg&default=https%3A%2F%2Fmedia.iamsterdam.com%2Fw_1800%2F62zkie1fc7o4-ice-skating.webp",
+      "blurb": "Winter’s some way off but the ice rink at the Museumplein pays no mind, opening this weekend.",
+      "why": "In I amsterdam's weekend guide",
+      "source": "I amsterdam",
+      "link": "https://www.iamsterdam.com/en/see-and-do/nature-and-active/ice-skating-in-amsterdam",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL"
+      ],
+      "verify": false,
+      "guide": "I amsterdam weekend guide",
+      "imageWhy": "organiser",
+      "imageFocal": [
+        0.5,
+        0.35000000000000003
+      ],
+      "editorScore": 3,
+      "judgeScore": 3,
+      "firstSeen": "2026-10-22",
+      "servePos": 91
+    },
+    {
+      "id": "web-iams-amsterdam-dance-event",
+      "title": "Amsterdam Dance Event",
+      "venue": "Diverse locaties / Various locations",
+      "area": "",
+      "when": "Wed 21 – Mon 26 Oct",
+      "category": "out",
+      "freshness": "weekend",
+      "outdoor": true,
+      "kid": false,
+      "price": "ticketed",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F66d85345fc2d2c1f8a7133eb%2FFelix_Merites.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.500&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F66d85345fc2d2c1f8a7133eb%2FFelix_Merites.webp",
+      "blurb": "ADE in Amsterdam Amsterdam Dance Event never fails to bring in the crowds with world-famous established names on the line-up alongside an enormous list of rising stars.",
+      "why": "On I amsterdam",
+      "source": "I amsterdam",
+      "link": "https://www.iamsterdam.com/en/whats-on/calendar/festivals/events/amsterdam-dance-event",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL"
+      ],
+      "verify": false,
+      "buzz": 1,
+      "imageWhy": "organiser",
+      "imageFocal": [
+        0.5,
+        0.5
+      ],
+      "editorScore": 7,
+      "judgeScore": 7,
+      "firstSeen": "2026-10-19",
+      "servePos": 93
+    },
+    {
+      "id": "web-iams-glass-made-in-antiquity",
+      "title": "Glass, made in antiquity",
+      "venue": "Allard Pierson",
+      "area": "Oude Turfmarkt 127",
+      "when": "Until Sun 1 Nov",
+      "category": "art",
+      "freshness": "weekend",
+      "outdoor": false,
+      "kid": false,
+      "price": "ticketed",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6825d556b269c6438fe5acf3%2FAryballos._50-175_n._Chr.__75-150_n._Chr._Rijnland..webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.550&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6825d556b269c6438fe5acf3%2FAryballos._50-175_n._Chr.__75-150_n._Chr._Rijnland..webp",
+      "blurb": "Craftsmanship from ancient times Equally special is the craftsmanship with which the glass utensils and ornaments are made.",
+      "why": "On I amsterdam",
+      "source": "I amsterdam",
+      "link": "https://www.iamsterdam.com/en/whats-on/calendar/exhibitions/all-exhibitions/glass-made-in-antiquity",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "verify": false,
+      "imageWhy": "organiser",
+      "imageFocal": [
+        0.5,
+        0.55
+      ],
+      "editorScore": 5,
+      "judgeScore": 5,
+      "firstSeen": "2026-08-29",
+      "servePos": 60
+    },
+    {
+      "id": "web-iams-minimal-collective-x-oude-kerk-post-space",
+      "title": "Minimal Collective x Oude Kerk: Post-Space",
+      "venue": "Oude Kerk (Old Church)",
+      "area": "Oudekerksplein 23",
+      "when": "Thu 22 – Sat 24 Oct",
+      "category": "live",
+      "freshness": "weekend",
+      "outdoor": false,
+      "kid": false,
+      "price": "ticketed",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6ac4d48a1ca8877470b8e722%2FMartijnKuyvenhoven-MC-OudeKerk-Brent-87.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.150&fpy=0.800&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6ac4d48a1ca8877470b8e722%2FMartijnKuyvenhoven-MC-OudeKerk-Brent-87.webp",
+      "blurb": "Evening programmes On Friday 23 and Saturday 24 October, 2 separate evening programmes with live performances and DJ sets will take place, including an audiovisual world premiere and various new…",
+      "why": "On I amsterdam",
+      "source": "I amsterdam",
+      "link": "https://www.iamsterdam.com/en/whats-on/calendar/concerts-and-music/concerts/minimal-collective-x-oude-kerk-post-space",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "verify": false,
+      "imageWhy": "organiser",
+      "imageFocal": [
+        0.15,
+        0.8
+      ],
+      "editorScore": 7,
+      "judgeScore": 7,
+      "firstSeen": "2026-10-22",
+      "servePos": 17
+    },
+    {
+      "id": "web-iams-disco-im-coming-out-wereldmuseum-amsterdam",
+      "title": "DISCO I’m coming out - Wereldmuseum Amsterdam",
+      "venue": "Wereldmuseum Amsterdam",
+      "area": "Linnaeusstraat 2",
+      "when": "Fri 23 Oct · 19:00",
+      "category": "drink",
+      "freshness": "weekend",
+      "outdoor": false,
+      "kid": false,
+      "price": "ticketed",
+      "blurb": "Disco exhibition through fashion, photography, objects—freedom, resistance, self-expression in club culture.",
+      "why": "Major autumn exhibition on ADE weekend",
+      "source": "I amsterdam",
+      "link": "https://www.iamsterdam.com/en/whats-on/calendar/nightlife/clubbing/disco-im-coming-out-wereldmuseum-amsterdam",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "verify": false,
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a6dc878f698026fb19b6be6%2Fbillbernsteinparadisegarage_dancefloor_1979.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.600&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a6dc878f698026fb19b6be6%2Fbillbernsteinparadisegarage_dancefloor_1979.webp",
+      "buzz": 1,
+      "imageWhy": "organiser",
+      "imageFocal": [
+        0.5,
+        0.6
+      ],
+      "editorScore": 6,
+      "judgeScore": 6,
+      "firstSeen": "2026-10-22",
+      "servePos": 12
+    },
+    {
+      "id": "web-iams-belgium-booms-en-de-brakke-grond-op-amsterdam-dance-event-2026",
+      "title": "Belgium Booms en de Brakke Grond op Amsterdam Dance Event 2026",
+      "venue": "Vlaams Cultuurhuis de Brakke Grond",
+      "area": "Nes 45",
+      "when": "Thu 22 – Sat 24 Oct",
+      "category": "out",
+      "freshness": "weekend",
+      "outdoor": true,
+      "kid": false,
+      "price": "ticketed",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6acec45d72df72cba01a03e0%2F20251023-belgium-by-night-004-c-alex-heuvink-dd8cc_1440x.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.500&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6acec45d72df72cba01a03e0%2F20251023-belgium-by-night-004-c-alex-heuvink-dd8cc_1440x.webp",
+      "blurb": "Different components under one roof The influence of Belgium on electronic music, both in its pioneering years and today, can hardly be overestimated.",
+      "why": "On I amsterdam",
+      "source": "I amsterdam",
+      "link": "https://www.iamsterdam.com/en/whats-on/calendar/festivals/events/belgium-booms-en-de-brakke-grond-op-amsterdam-dance-event-2026",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL"
+      ],
+      "verify": false,
+      "imageWhy": "organiser",
+      "imageFocal": [
+        0.5,
+        0.5
+      ],
+      "editorScore": 6,
+      "judgeScore": 6,
+      "firstSeen": "2026-10-22",
+      "servePos": 89
+    },
+    {
+      "id": "web-iams-swan-lake",
+      "title": "Swan Lake",
+      "venue": "Dutch National Opera & Ballet",
+      "area": "Amstel 3",
+      "when": "Until Sat 24 Apr",
+      "category": "stage",
+      "freshness": "always",
+      "outdoor": false,
+      "kid": false,
+      "price": "ticketed",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a023eeb5ebafd251afe1d10%2FaHR0cHM6Ly9zaG9wLm9wZXJhYmFsbGV0Lm5sLy9jbXNfZmlsZXMvc3lzdGVtL2ltYWdlcy9pbWcxNzEzX29yaWcuanBn.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.575&fpy=0.500&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a023eeb5ebafd251afe1d10%2FaHR0cHM6Ly9zaG9wLm9wZXJhYmFsbGV0Lm5sLy9jbXNfZmlsZXMvc3lzdGVtL2ltYWdlcy9pbWcxNzEzX29yaWcuanBn.webp",
+      "blurb": "Unfortunately, the performances in October 2026 and November 2026 are sold out. This show will return in April 2027.",
+      "why": "On I amsterdam",
+      "source": "I amsterdam",
+      "link": "https://www.iamsterdam.com/en/whats-on/calendar/theatre-and-stage/stage/swan-lake",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "verify": false,
+      "imageWhy": "organiser",
+      "imageFocal": [
+        0.575,
+        0.5
+      ],
+      "editorScore": 5,
+      "judgeScore": 5,
+      "firstSeen": "2026-10-18",
       "servePos": 33
+    },
+    {
+      "id": "web-iams-martyn3024",
+      "title": "Martyn3024",
+      "venue": "Bimhuis",
+      "area": "Piet Heinkade 3",
+      "when": "Until Wed 2 Dec",
+      "category": "live",
+      "freshness": "always",
+      "outdoor": false,
+      "kid": false,
+      "price": "ticketed",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a878a134f65703141de5b55%2F211026-Martyn-1.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.550&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a878a134f65703141de5b55%2F211026-Martyn-1.webp",
+      "blurb": "A dynamic fusion of jazz and bass music Live, he shapes the music in collaboration with Cees Bruinsma on trumpet and electronics and Misha Porte on drums, who can also be heard on the album.",
+      "why": "On I amsterdam",
+      "source": "I amsterdam",
+      "link": "https://www.iamsterdam.com/en/whats-on/calendar/concerts-and-music/concerts/martyn3024",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "verify": false,
+      "imageWhy": "organiser",
+      "imageFocal": [
+        0.5,
+        0.5499999999999999
+      ],
+      "editorScore": 5,
+      "judgeScore": 5,
+      "firstSeen": "2026-10-22",
+      "servePos": 34
+    },
+    {
+      "id": "web-iams-kaboom-x-melkweg-cinema",
+      "title": "Kaboom X Melkweg Cinema",
+      "venue": "Melkweg",
+      "area": "Lijnbaansgracht 234A",
+      "when": "Until Sat 12 Dec",
+      "category": "out",
+      "freshness": "always",
+      "outdoor": true,
+      "kid": false,
+      "price": "ticketed",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F68399174987d4050163719d9%2FKaboom_2025.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.675&fpy=0.500&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F68399174987d4050163719d9%2FKaboom_2025.webp",
+      "blurb": "Anime in the Milky Way Kaboom regularly organizes an anime night at the Melkweg Cinema, so you can once again enjoy the best anime on the big screen!",
+      "why": "On I amsterdam",
+      "source": "I amsterdam",
+      "link": "https://www.iamsterdam.com/en/whats-on/calendar/festivals/events/kaboom-x-melkweg-cinema",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL"
+      ],
+      "verify": false,
+      "imageWhy": "organiser",
+      "imageFocal": [
+        0.675,
+        0.5
+      ],
+      "editorScore": 5,
+      "judgeScore": 5,
+      "firstSeen": "2026-08-29",
+      "servePos": 109
     },
     {
       "id": "web-guide-iams-play",
@@ -1621,6 +1685,7 @@
       ],
       "verify": false,
       "guide": "I amsterdam weekend guide",
+      "buzz": 1,
       "imageWhy": "organiser",
       "imageFocal": [
         0.5,
@@ -1629,7 +1694,7 @@
       "editorScore": 2,
       "judgeScore": 2,
       "firstSeen": "2026-10-19",
-      "servePos": 29
+      "servePos": 25
     },
     {
       "id": "web-guide-iams-ade-tip-late-night-food-amsterdam",
@@ -1727,10 +1792,10 @@
         0.75,
         0.45
       ],
-      "editorScore": 2,
-      "judgeScore": 2,
+      "editorScore": 1,
+      "judgeScore": 1,
       "firstSeen": "2026-10-05",
-      "servePos": 40
+      "servePos": 50
     },
     {
       "id": "web-guide-iams-newly-opened-081-coffee",
@@ -1755,10 +1820,10 @@
       "verify": false,
       "guide": "I amsterdam weekend guide",
       "imageWhy": "none",
-      "editorScore": 3,
-      "judgeScore": 3,
+      "editorScore": 2,
+      "judgeScore": 2,
       "firstSeen": "2026-09-14",
-      "servePos": 112
+      "servePos": 111
     },
     {
       "id": "web-guide-iams-amsterdam-polish-film-festival",
@@ -1790,8 +1855,10 @@
         0.5,
         0.31
       ],
+      "editorScore": 5,
+      "judgeScore": 5,
       "firstSeen": "2026-10-19",
-      "servePos": 35
+      "servePos": 14
     },
     {
       "id": "web-guide-iams-discover-matisse-with-bloomberg-connects",
@@ -1808,7 +1875,7 @@
       "blurb": "Few artists do colour quite as well as Henri Matisse. His reputation as an artist ever in search of the balance between expression, form and simplicity earned…",
       "why": "In I amsterdam's weekend guide",
       "source": "I amsterdam",
-      "link": "https://www.bloombergconnects.org/",
+      "link": "https://guides.bloombergconnects.org/en-US/guide/HARTMuseum",
       "weatherFit": [
         "HOT",
         "WARM",
@@ -1823,45 +1890,10 @@
         0.55,
         0.6
       ],
-      "editorScore": 2,
-      "judgeScore": 2,
+      "editorScore": 1,
+      "judgeScore": 1,
       "firstSeen": "2026-10-19",
-      "servePos": 31
-    },
-    {
-      "id": "web-iams-rooted-in-culture-uk-sounds-influencing-house-culture",
-      "title": "Rooted in Culture: UK Sounds influencing House culture",
-      "venue": "The Bookshop",
-      "area": "Leidseplein 26",
-      "when": "Sat 24 Oct · 13:00",
-      "category": "stage",
-      "freshness": "weekend",
-      "outdoor": false,
-      "kid": false,
-      "price": "ticketed",
-      "blurb": "ADE cultural programme exploring how British disco, northern soul and Caribbean music shaped house culture.",
-      "why": "Niche music history",
-      "source": "I amsterdam",
-      "link": "https://www.iamsterdam.com/uit/agenda/nachtleven/clubbing/rooted-in-culture-uk-sounds-influencing-house-culture",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "verify": false,
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F68e4ef5a0a64d26bf0bc89d5%2FRooted-in-Culture-22-By-Yohannes-Henriksson-Workshop.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.575&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F68e4ef5a0a64d26bf0bc89d5%2FRooted-in-Culture-22-By-Yohannes-Henriksson-Workshop.webp",
-      "buzz": 1,
-      "imageWhy": "organiser",
-      "imageFocal": [
-        0.5,
-        0.575
-      ],
-      "editorScore": 6,
-      "judgeScore": 6,
-      "firstSeen": "2026-10-19",
-      "servePos": 23
+      "servePos": 27
     },
     {
       "id": "web-iams-the-worlds-longest-back-to-back-dj-set-hosted-by-fosbury-music-studio",
@@ -1895,7 +1927,7 @@
       "editorScore": 5,
       "judgeScore": 5,
       "firstSeen": "2026-10-19",
-      "servePos": 25
+      "servePos": 20
     },
     {
       "id": "web-scout-hailun-ma-hometown",
@@ -1926,10 +1958,10 @@
         0.5,
         0.5
       ],
-      "editorScore": 7,
-      "judgeScore": 7,
+      "editorScore": 8,
+      "judgeScore": 8,
       "firstSeen": "2026-09-14",
-      "servePos": 62
+      "servePos": 56
     },
     {
       "id": "web-iams-oyster-night",
@@ -1961,75 +1993,7 @@
       "editorScore": 5,
       "judgeScore": 5,
       "firstSeen": "2026-09-14",
-      "servePos": 113
-    },
-    {
-      "id": "web-iams-straat-collectie",
-      "title": "STRAAT Collectie",
-      "venue": "STRAAT Museum – Street art en graffiti in Amsterdam",
-      "area": "NDSM-plein 1",
-      "when": "Until Sun 31 Jan",
-      "category": "art",
-      "freshness": "always",
-      "outdoor": false,
-      "kid": false,
-      "price": "ticketed",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F69722aa2f8ac733b5bd29a0d%2Fiamsterdam_5.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.500&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F69722aa2f8ac733b5bd29a0d%2Fiamsterdam_5.webp",
-      "blurb": "Museum for street art and graffiti We focus on curating a collection that truly reflects the international street art movement.",
-      "why": "On I amsterdam",
-      "source": "I amsterdam",
-      "link": "https://www.iamsterdam.com/en/whats-on/calendar/exhibitions/all-exhibitions/straat-collectie",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "verify": false,
-      "imageWhy": "organiser",
-      "imageFocal": [
-        0.5,
-        0.5
-      ],
-      "editorScore": 5,
-      "judgeScore": 3,
-      "firstSeen": "2026-09-03",
-      "servePos": 74
-    },
-    {
-      "id": "web-iams-exhibition-the-essence",
-      "title": "Exhibition: the ESSENCE",
-      "venue": "STRAAT Museum – Street art en graffiti in Amsterdam",
-      "area": "NDSM-plein 1",
-      "when": "Until Wed 30 Dec",
-      "category": "art",
-      "freshness": "always",
-      "outdoor": false,
-      "kid": false,
-      "price": "ticketed",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F69e0a9a8a8ab8e24a45b32c4%2FSTRAAT-theessence27_-_hires__1_-min.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.600&fpy=0.575&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F69e0a9a8a8ab8e24a45b32c4%2FSTRAAT-theessence27_-_hires__1_-min.webp",
-      "blurb": "Core elements of graffiti The exhibition focuses on the core elements of graffiti: names, tags, lines and repetition as the building blocks of a visual system.",
-      "why": "On I amsterdam",
-      "source": "I amsterdam",
-      "link": "https://www.iamsterdam.com/en/whats-on/calendar/exhibitions/all-exhibitions/exhibition-the-essence",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "verify": false,
-      "imageWhy": "organiser",
-      "imageFocal": [
-        0.6,
-        0.575
-      ],
-      "editorScore": 5,
-      "judgeScore": 5,
-      "firstSeen": "2026-08-29",
-      "servePos": 76
+      "servePos": 110
     },
     {
       "id": "web-iams-de-roode-remise-singing-session",
@@ -2063,7 +2027,7 @@
       "editorScore": 9,
       "judgeScore": 7,
       "firstSeen": "2026-08-29",
-      "servePos": 57
+      "servePos": 53
     },
     {
       "id": "web-iams-exhibition-worn-in-the-rijksmuseum",
@@ -2094,27 +2058,27 @@
         0.5,
         0.5
       ],
-      "editorScore": 7,
-      "judgeScore": 5,
+      "editorScore": 8,
+      "judgeScore": 6,
       "firstSeen": "2026-08-29",
-      "servePos": 64
+      "servePos": 58
     },
     {
-      "id": "web-ra-2473364",
-      "title": "Intercell x Mika Heggemann Invites | ADE By Day",
-      "venue": "H7 Warehouse",
+      "id": "web-ra-2452252",
+      "title": "fabric x Loud-Contact: Jeff Mills, FJAAK (Live), Marcel Dettmann, Helena Hauff, Quest, Que",
+      "venue": "WestWeelde",
       "area": "",
-      "when": "Fri 23 Oct · 14:00",
+      "when": "Fri 23 Oct · 22:00",
       "category": "live",
       "freshness": "weekend",
       "outdoor": false,
       "kid": false,
       "price": "",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fimages.ra.co%2Fd79212d0dc7a455fcf8e70f0ff884444b17ab7cc.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.550&fpy=0.450&output=jpg&default=https%3A%2F%2Fimages.ra.co%2Fd79212d0dc7a455fcf8e70f0ff884444b17ab7cc.jpg",
-      "blurb": "Alycia Bezgo, Cleopard2000, Azzurro, Faster Horses and more at H7 Warehouse.",
-      "why": "169 going on RA",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fimages.ra.co%2Fd074ebaa613507cd4a29f81d6580f70acd7dce9b.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.400&output=jpg&default=https%3A%2F%2Fimages.ra.co%2Fd074ebaa613507cd4a29f81d6580f70acd7dce9b.jpg",
+      "blurb": "Jeff Mills, Marcel Dettmann, Helena Hauff, FJAAK and more at WestWeelde.",
+      "why": "1839 going on RA",
       "source": "Resident Advisor",
-      "link": "https://ra.co/events/2473364",
+      "link": "https://ra.co/events/2452252",
       "weatherFit": [
         "HOT",
         "WARM",
@@ -2122,16 +2086,16 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "popularity": 169,
+      "popularity": 1839,
       "imageWhy": "organiser",
       "imageFocal": [
-        0.5499999999999999,
-        0.45
+        0.5,
+        0.4
       ],
-      "editorScore": 5,
-      "judgeScore": 5,
+      "editorScore": 9,
+      "judgeScore": 9,
       "firstSeen": "2026-10-19",
-      "servePos": 22
+      "servePos": 1
     },
     {
       "id": "web-ra-2473366",
@@ -2146,8 +2110,8 @@
       "price": "",
       "image": "https://images.weserv.nl/?url=https%3A%2F%2Fimages.ra.co%2Fa080fa8397820e40044d5a7f5478bbf946fb2c42.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.450&output=jpg&default=https%3A%2F%2Fimages.ra.co%2Fa080fa8397820e40044d5a7f5478bbf946fb2c42.jpg",
       "blurb": "Adriana Lopez, Claudio PRC, Isabel Soto, Laura van Hal and more at Bajes Amsterdam.",
-      "why": "415 going on RA",
-      "source": "Resident Advisor · Your Little Black Book",
+      "why": "429 going on RA",
+      "source": "Resident Advisor",
       "link": "https://ra.co/events/2473366",
       "weatherFit": [
         "HOT",
@@ -2156,119 +2120,16 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "popularity": 415,
+      "popularity": 429,
       "imageWhy": "organiser",
       "imageFocal": [
         0.5,
         0.44999999999999996
       ],
-      "editorScore": 6,
-      "judgeScore": 6,
-      "buzz": 2,
-      "firstSeen": "2026-10-19",
-      "servePos": 2
-    },
-    {
-      "id": "web-ra-2473368",
-      "title": "Intercell x Glitch | ADE By Night",
-      "venue": "H7 Warehouse",
-      "area": "",
-      "when": "Fri 23 Oct · 23:00",
-      "category": "live",
-      "freshness": "weekend",
-      "outdoor": false,
-      "kid": false,
-      "price": "",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fimages.ra.co%2F52dbb4a22ee289fe2b42ad567ddbf3b74f0aa708.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.400&output=jpg&default=https%3A%2F%2Fimages.ra.co%2F52dbb4a22ee289fe2b42ad567ddbf3b74f0aa708.jpg",
-      "blurb": "Bella Claxton, Budg, DJ AYA, STÜM and more at H7 Warehouse.",
-      "why": "449 going on RA",
-      "source": "Resident Advisor",
-      "link": "https://ra.co/events/2473368",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "popularity": 449,
-      "imageWhy": "organiser",
-      "imageFocal": [
-        0.5,
-        0.4
-      ],
-      "editorScore": 6,
-      "judgeScore": 6,
-      "firstSeen": "2026-10-19",
-      "servePos": 14
-    },
-    {
-      "id": "web-ra-2479597",
-      "title": "Obskür presents: The System",
-      "venue": "Shelter Amsterdam",
-      "area": "",
-      "when": "Fri 23 Oct · 14:00",
-      "category": "live",
-      "freshness": "weekend",
-      "outdoor": false,
-      "kid": false,
-      "price": "",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fimages.ra.co%2Ff2e1d9df3b294dd9cd3326341a3280499cb45a5c.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.300&output=jpg&default=https%3A%2F%2Fimages.ra.co%2Ff2e1d9df3b294dd9cd3326341a3280499cb45a5c.jpg",
-      "blurb": "Obskur, Emma 2000, Jamie Fielding, Liam Palmer and more at Shelter Amsterdam.",
-      "why": "497 going on RA",
-      "source": "Resident Advisor",
-      "link": "https://ra.co/events/2479597",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "popularity": 497,
-      "imageWhy": "organiser",
-      "imageFocal": [
-        0.5,
-        0.3
-      ],
       "editorScore": 5,
       "judgeScore": 5,
       "firstSeen": "2026-10-19",
-      "servePos": 18
-    },
-    {
-      "id": "web-ra-2482113",
-      "title": "23 OCT - Friday Day with salute / Diffrent & Bella Claxton",
-      "venue": "Thuishaven",
-      "area": "",
-      "when": "Fri 23 Oct · 16:00",
-      "category": "live",
-      "freshness": "weekend",
-      "outdoor": false,
-      "kid": false,
-      "price": "",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fimages.ra.co%2Fecfbe8de6bbd59ceacd28a1b88d9dff1d46ce04c.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.575&fpy=0.500&output=jpg&default=https%3A%2F%2Fimages.ra.co%2Fecfbe8de6bbd59ceacd28a1b88d9dff1d46ce04c.jpg",
-      "blurb": "Call Super, salute, Special Request, Diffrent and more at Thuishaven.",
-      "why": "144 going on RA",
-      "source": "Resident Advisor",
-      "link": "https://ra.co/events/2482113",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "popularity": 144,
-      "imageWhy": "organiser",
-      "imageFocal": [
-        0.575,
-        0.5
-      ],
-      "editorScore": 5,
-      "judgeScore": 5,
-      "firstSeen": "2026-10-19",
-      "servePos": 24
+      "servePos": 11
     },
     {
       "id": "web-ra-2503161",
@@ -2283,7 +2144,7 @@
       "price": "",
       "image": "https://images.weserv.nl/?url=https%3A%2F%2Fimages.ra.co%2F709f792d3032b6ced2d53dc7bbac0bc98277f230.png&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.250&output=jpg&default=https%3A%2F%2Fimages.ra.co%2F709f792d3032b6ced2d53dc7bbac0bc98277f230.png",
       "blurb": "Loradeniz, Out Of Place Artefacts, Rødhåd, .VRIL and more at De Thomaskerk.",
-      "why": "1409 going on RA",
+      "why": "1727 going on RA",
       "source": "Resident Advisor",
       "link": "https://ra.co/events/2503161",
       "weatherFit": [
@@ -2293,16 +2154,16 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "popularity": 1409,
+      "popularity": 1727,
       "imageWhy": "organiser",
       "imageFocal": [
         0.5,
         0.25
       ],
-      "editorScore": 9,
-      "judgeScore": 9,
+      "editorScore": 8,
+      "judgeScore": 8,
       "firstSeen": "2026-10-19",
-      "servePos": 4
+      "servePos": 3
     },
     {
       "id": "web-ra-2516693",
@@ -2317,7 +2178,7 @@
       "price": "",
       "image": "https://images.weserv.nl/?url=https%3A%2F%2Fimages.ra.co%2Fb2d07e9ef22f1f2c7cd9c30fe8ae58ac83cfd7c6.png&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.450&output=jpg&default=https%3A%2F%2Fimages.ra.co%2Fb2d07e9ef22f1f2c7cd9c30fe8ae58ac83cfd7c6.png",
       "blurb": "Freddy K, Ogazón, Rene Wise at BRET.",
-      "why": "485 going on RA",
+      "why": "530 going on RA",
       "source": "Resident Advisor",
       "link": "https://ra.co/events/2516693",
       "weatherFit": [
@@ -2327,16 +2188,16 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "popularity": 485,
+      "popularity": 530,
       "imageWhy": "organiser",
       "imageFocal": [
         0.5,
         0.45
       ],
-      "editorScore": 7,
-      "judgeScore": 7,
+      "editorScore": 6,
+      "judgeScore": 6,
       "firstSeen": "2026-10-19",
-      "servePos": 10
+      "servePos": 7
     },
     {
       "id": "web-ra-2516700",
@@ -2351,7 +2212,7 @@
       "price": "",
       "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F63cfdda587ca114344bf775b%2F1xyhdofhh6g1-bret.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.650&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F63cfdda587ca114344bf775b%2F1xyhdofhh6g1-bret.webp",
       "blurb": "Anz, SHERELLE, MALLAURY at BRET.",
-      "why": "42 going on RA",
+      "why": "44 going on RA",
       "source": "Resident Advisor",
       "link": "https://ra.co/events/2516700",
       "weatherFit": [
@@ -2361,7 +2222,7 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "popularity": 42,
+      "popularity": 44,
       "imageWhy": "curated",
       "imageFocal": [
         0.5,
@@ -2370,41 +2231,7 @@
       "editorScore": 9,
       "judgeScore": 7,
       "firstSeen": "2026-10-19",
-      "servePos": 8
-    },
-    {
-      "id": "web-ra-2521580",
-      "title": "E1 ADE: DXNBY, Jay de Lys & Joey Daniel",
-      "venue": "Oliva",
-      "area": "",
-      "when": "Fri 23 Oct · 23:00",
-      "category": "live",
-      "freshness": "weekend",
-      "outdoor": false,
-      "kid": false,
-      "price": "",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fimages.ra.co%2Fe6276214abe4bcb45c79ac0eea22bd25d0ec0cec.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.500&output=jpg&default=https%3A%2F%2Fimages.ra.co%2Fe6276214abe4bcb45c79ac0eea22bd25d0ec0cec.jpg",
-      "blurb": "DXNBY, Jay de Lys, Joey Daniel, Roxie Li and more at Oliva.",
-      "why": "661 going on RA",
-      "source": "Resident Advisor",
-      "link": "https://ra.co/events/2521580",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "popularity": 661,
-      "imageWhy": "organiser",
-      "imageFocal": [
-        0.5,
-        0.5
-      ],
-      "editorScore": 5,
-      "judgeScore": 5,
-      "firstSeen": "2026-10-19",
-      "servePos": 20
+      "servePos": 5
     },
     {
       "id": "web-ra-2527297",
@@ -2419,7 +2246,7 @@
       "price": "",
       "image": "https://images.weserv.nl/?url=https%3A%2F%2Fimages.ra.co%2F67f4d58769212b86ca16e456dc788e6e2dc4639c.png&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.550&output=jpg&default=https%3A%2F%2Fimages.ra.co%2F67f4d58769212b86ca16e456dc788e6e2dc4639c.png",
       "blurb": "Nadia Struiwigh, OK EG, State OFFF, Wata Igarashi and more at Loods6.",
-      "why": "100 going on RA",
+      "why": "158 going on RA",
       "source": "Resident Advisor",
       "link": "https://ra.co/events/2527297",
       "weatherFit": [
@@ -2429,32 +2256,65 @@
         "COLD_WET",
         "VOLATILE"
       ],
-      "popularity": 100,
+      "popularity": 158,
       "imageWhy": "organiser",
       "imageFocal": [
         0.5,
         0.55
       ],
-      "editorScore": 6,
-      "judgeScore": 6,
+      "editorScore": 5,
+      "judgeScore": 5,
       "firstSeen": "2026-10-19",
-      "servePos": 16
+      "servePos": 13
     },
     {
-      "id": "web-stadsherstel-amsterdam-kameracademie-der-tod-und-das-m-dchen",
-      "title": "Amsterdam Kameracademie: Der Tod und das Mädchen",
-      "venue": "Amstelkerk",
-      "area": "Grachtengordel",
-      "when": "Sat 24 Oct · 19:00",
-      "category": "live",
-      "freshness": "weekend",
-      "outdoor": false,
-      "kid": false,
+      "id": "llm-kidsproof-kidsclub-lampionnen-maken",
+      "title": "Kidsclub: Lampionnen Maken",
+      "venue": "Amsterdamse Bos",
+      "area": "Amsterdam",
+      "when": "Sat–Sun 24–25 Oct",
+      "category": "out",
+      "freshness": "always",
+      "outdoor": true,
+      "kid": true,
       "price": "ticketed",
-      "blurb": "Chamber orchestra explores melancholy beauty of Adagio by Elisabetta Brusa and Andriessens' Miroir de Peine.",
-      "why": "Intimate classical concert, soprano soloist",
-      "source": "Stadsherstel",
-      "link": "https://stadsherstel.nl/nieuws/tien-cultuurtips-oktober-2026/",
+      "blurb": "Make your own lanterns during this kids' club session in the forest, perfect for autumn evenings.",
+      "why": "Autumn craft activity in nature",
+      "source": "Kidsproof",
+      "link": "https://www.kidsproof.nl/amsterdam",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.kidsproof.nl%2Famsterdam%2Fwp-content%2Fuploads%2F2026%2F08%2FNationale-Natuurwerkdagen-2024-50.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.550&fpy=0.550&output=jpg&default=https%3A%2F%2Fwww.kidsproof.nl%2Famsterdam%2Fwp-content%2Fuploads%2F2026%2F08%2FNationale-Natuurwerkdagen-2024-50.jpg",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL"
+      ],
+      "verify": true,
+      "imageWhy": "event-page",
+      "imageFocal": [
+        0.55,
+        0.55
+      ],
+      "editorScore": 6,
+      "judgeScore": 6,
+      "firstSeen": "2026-09-25",
+      "servePos": 103
+    },
+    {
+      "id": "llm-kidsproof-filmmagie-workshop-eye",
+      "title": "Filmmagie Workshop – Eye",
+      "venue": "Eye",
+      "area": "Amsterdam",
+      "when": "Sat–Sun 24–25 Oct",
+      "category": "stage",
+      "freshness": "always",
+      "outdoor": false,
+      "kid": true,
+      "price": "ticketed",
+      "blurb": "Make your own film in an interactive workshop, then explore one of Amsterdam's coolest architectural buildings.",
+      "why": "Hands-on creativity in a world-class venue",
+      "source": "Kidsproof",
+      "link": "https://www.kidsproof.nl/amsterdam",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.kidsproof.nl%2Famsterdam%2Fwp-content%2Fuploads%2F2026%2F09%2FRijksmuseum-familiespel.png&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.550&output=jpg&default=https%3A%2F%2Fwww.kidsproof.nl%2Famsterdam%2Fwp-content%2Fuploads%2F2026%2F09%2FRijksmuseum-familiespel.png",
       "weatherFit": [
         "HOT",
         "WARM",
@@ -2464,15 +2324,14 @@
       ],
       "verify": true,
       "imageWhy": "event-page",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fstadsherstel.nl%2Fwp-content%2Fuploads%2F2026%2F08%2Fangeda_animatokwartet-scaled.jpeg&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.500&output=jpg&default=https%3A%2F%2Fstadsherstel.nl%2Fwp-content%2Fuploads%2F2026%2F08%2Fangeda_animatokwartet-scaled.jpeg",
       "imageFocal": [
         0.5,
-        0.5
+        0.55
       ],
-      "editorScore": 5,
-      "judgeScore": 5,
-      "firstSeen": "2026-10-19",
-      "servePos": 28
+      "editorScore": 6,
+      "judgeScore": 6,
+      "firstSeen": "2026-10-22",
+      "servePos": 23
     },
     {
       "venue": "Eye Filmmuseum",
@@ -2482,7 +2341,7 @@
       "price": "ticketed",
       "source": "Eye Filmmuseum",
       "link": "https://www.eyefilm.nl/en/permanent-exhibition",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fassets.eyefilm.nl%2Fimages%2Fpermanent-presentation%2F_1586x1112_crop_center-center_none%2F45392%2Fvaste-presentatie-panorama-martin-hogeboom-1.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.175&fpy=0.450&output=jpg&default=https%3A%2F%2Fassets.eyefilm.nl%2Fimages%2Fpermanent-presentation%2F_1586x1112_crop_center-center_none%2F45392%2Fvaste-presentatie-panorama-martin-hogeboom-1.webp",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fassets.eyefilm.nl%2Fimages%2Fpermanent-presentation%2F_2900x1631_crop_center-center_none%2F850077%2FFilm-Catcher-vaste-presentatie.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.500&output=jpg&default=https%3A%2F%2Fassets.eyefilm.nl%2Fimages%2Fpermanent-presentation%2F_2900x1631_crop_center-center_none%2F850077%2FFilm-Catcher-vaste-presentatie.webp",
       "weatherFit": [
         "HOT",
         "WARM",
@@ -2493,56 +2352,20 @@
       "verify": false,
       "category": "art",
       "id": "web-eye-permanent-exhibition",
-      "title": "What is Film?",
+      "title": "The permanent exhibition",
       "when": "Daily",
       "freshness": "always",
-      "blurb": "Various moving image components are highlighted on the ground floor and throughout the building. Browse through Eye's unique collection or make your own flip book or animated film.",
+      "blurb": "On the lower level and throughout Eye we illuminate various aspects of the world of the moving image. Learn about how film developed, from its early beginnings to the present day.",
       "why": "The permanent exhibition at Eye",
-      "imageCredit": "© Martin Hogeboom",
       "imageWhy": "organiser",
       "imageFocal": [
-        0.175,
-        0.45
+        0.5,
+        0.5
       ],
       "editorScore": 3,
       "judgeScore": 1,
-      "firstSeen": "2026-10-02",
-      "servePos": 68
-    },
-    {
-      "venue": "Eye Filmmuseum",
-      "area": "Noord",
-      "outdoor": false,
-      "kid": false,
-      "price": "ticketed",
-      "source": "Eye Filmmuseum",
-      "link": "https://www.eyefilm.nl/en/programme/ulrich-seidl/1633828",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fassets.eyefilm.nl%2Fimages%2Fprogramme-item%2F_1586x1112_crop_center-center_none%2F1606806%2Fcampagnebeeld-Ulrich-Seidl.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.525&fpy=0.550&output=jpg&default=https%3A%2F%2Fassets.eyefilm.nl%2Fimages%2Fprogramme-item%2F_1586x1112_crop_center-center_none%2F1606806%2Fcampagnebeeld-Ulrich-Seidl.webp",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "verify": false,
-      "category": "art",
-      "id": "web-eye-ulrich-seidl",
-      "title": "Ulrich Seidl – Über das Leben, die Liebe und den Tod",
-      "when": "Until Sun 31 Jan",
-      "freshness": "always",
-      "blurb": "Featuring a wealth of early, little-known and newly commissioned (film) works by the Austrian filmmaker, photographer and theatre-maker, the exhibition confronts visitors with the lives of a number of…",
-      "why": "Exhibition at Eye",
-      "imageCredit": "still Im Keller (Ulrich Seidl, AT 2014) © Ulrich Seidl Filmproduktion",
-      "imageWhy": "organiser",
-      "imageFocal": [
-        0.525,
-        0.5499999999999999
-      ],
-      "editorScore": 7,
-      "judgeScore": 5,
-      "firstSeen": "2026-09-10",
-      "servePos": 66
+      "firstSeen": "2026-10-22",
+      "servePos": 51
     },
     {
       "venue": "Eye Filmmuseum",
@@ -2564,8 +2387,8 @@
       "category": "stage",
       "id": "web-eye-yuzo-kawashima",
       "title": "The Elegant Beasts of Yuzo Kawashima",
-      "when": "Opens Thu 22 Oct · until Wed 11 Nov",
-      "freshness": "always",
+      "when": "Until Wed 11 Nov",
+      "freshness": "weekend",
       "blurb": "Yuzo Kawashima is the ‘missing link’ between the classic Japanese cinema of the ’50s and the New Wave of the ’60s. He fought against hypocrisy with a great sense of the absurd.",
       "why": "A film season at Eye",
       "imageWhy": "organiser",
@@ -2576,7 +2399,41 @@
       "editorScore": 8,
       "judgeScore": 6,
       "firstSeen": "2026-10-15",
-      "servePos": 32
+      "servePos": 26
+    },
+    {
+      "venue": "Eye Filmmuseum",
+      "area": "Noord",
+      "outdoor": false,
+      "kid": false,
+      "price": "ticketed",
+      "source": "Eye Filmmuseum",
+      "link": "https://www.eyefilm.nl/en/programme/ulrich-seidl/1633828",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fassets.eyefilm.nl%2Fimages%2Fprogramme-item%2F_2900x1631_crop_center-center_none%2F1606806%2Fcampagnebeeld-Ulrich-Seidl.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.550&fpy=0.600&output=jpg&default=https%3A%2F%2Fassets.eyefilm.nl%2Fimages%2Fprogramme-item%2F_2900x1631_crop_center-center_none%2F1606806%2Fcampagnebeeld-Ulrich-Seidl.webp",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "verify": false,
+      "category": "art",
+      "id": "web-eye-ulrich-seidl",
+      "title": "Ulrich Seidl – Über das Leben, die Liebe und den Tod",
+      "when": "Until Sun 31 Jan",
+      "freshness": "always",
+      "blurb": "Featuring a wealth of work by the Austrian filmmaker, photographer and theatre-maker, the exhibition confronts visitors with the lives of seemingly ordinary individuals.",
+      "why": "Exhibition at Eye",
+      "imageWhy": "organiser",
+      "imageFocal": [
+        0.55,
+        0.6
+      ],
+      "editorScore": 7,
+      "judgeScore": 5,
+      "firstSeen": "2026-09-10",
+      "servePos": 62
     },
     {
       "id": "ams-ev-ij-hallen",
@@ -2611,7 +2468,40 @@
       ],
       "editorScore": 8,
       "firstSeen": "2026-08-29",
-      "servePos": 19
+      "servePos": 10
+    },
+    {
+      "id": "foodhallen",
+      "title": "Foodhallen",
+      "venue": "De Hallen",
+      "area": "West",
+      "when": "Daily · 11:00–23:00",
+      "category": "eat",
+      "freshness": "always",
+      "outdoor": false,
+      "kid": true,
+      "price": "street-food prices",
+      "blurb": "An indoor food hall in a converted tram depot — 20-odd stalls, long tables and two bars under one roof.",
+      "why": "Indoor · grazing for a crowd · weather-proof",
+      "source": "I amsterdam · Your Little Black Book",
+      "link": "https://www.foodhallen.nl/amsterdam/",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "verify": true,
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fthumb%2F3%2F30%2FFoodhallen_in_Oud-West_%2528Amsterdam%252C_The_Netherlands_2017%2529_%252834245643041%2529.jpg%2F1280px-Foodhallen_in_Oud-West_%2528Amsterdam%252C_The_Netherlands_2017%2529_%252834245643041%2529.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.575&output=jpg&default=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fthumb%2F3%2F30%2FFoodhallen_in_Oud-West_%2528Amsterdam%252C_The_Netherlands_2017%2529_%252834245643041%2529.jpg%2F1280px-Foodhallen_in_Oud-West_%2528Amsterdam%252C_The_Netherlands_2017%2529_%252834245643041%2529.jpg",
+      "buzz": 2,
+      "imageFocal": [
+        0.5,
+        0.575
+      ],
+      "editorScore": 8,
+      "firstSeen": "2026-09-03",
+      "servePos": 28
     },
     {
       "id": "ams-ev2-artis-aquarium",
@@ -2644,55 +2534,22 @@
         0.6
       ],
       "firstSeen": "2026-09-10",
-      "servePos": 38
-    },
-    {
-      "id": "ams-b2-huis-marseille",
-      "title": "Huis Marseille",
-      "venue": "Huis Marseille",
-      "area": "Centrum (Keizersgracht)",
-      "when": "Tue–Sun · 11:00–18:00",
-      "category": "art",
-      "freshness": "always",
-      "outdoor": false,
-      "kid": false,
-      "price": "ticketed",
-      "blurb": "The city’s first photography museum, across two canal houses with a hidden garden — beautifully curated, never crowded.",
-      "why": "Photography · with a secret garden",
-      "source": "Your Little Black Book · Maps",
-      "link": "https://www.google.com/maps/search/?api=1&query=Huis%20Marseille%20Amsterdam",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "verify": true,
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6756d5230288895796c46430%2Fzomer-in-huis-marseille-amsterdam_copy_2.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.550&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6756d5230288895796c46430%2Fzomer-in-huis-marseille-amsterdam_copy_2.webp",
-      "tier": "bespoke",
-      "buzz": 2,
-      "imageFocal": [
-        0.5,
-        0.5499999999999999
-      ],
-      "firstSeen": "2026-09-03",
-      "servePos": 70
+      "servePos": 35
     },
     {
       "id": "web-lbb-oktober-tekenmaand",
       "title": "Oktober Tekenmaand",
       "venue": "Koninklijk Paleis Amsterdam",
       "area": "Amsterdam",
-      "when": "Throughout October",
+      "when": "Throughout Oct",
       "category": "art",
       "freshness": "always",
       "outdoor": false,
       "kid": true,
-      "price": "",
+      "price": "Free",
       "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.yourlittleblackbook.me%2Fwp-content%2Fuploads%2F2026%2F09%2Fkids-bucketlist-amsterdam-paleis.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.600&fpy=0.525&output=jpg&default=https%3A%2F%2Fwww.yourlittleblackbook.me%2Fwp-content%2Fuploads%2F2026%2F09%2Fkids-bucketlist-amsterdam-paleis.jpg",
-      "blurb": "Draw Quellinus sculptures during October with free guides and weekend coaching assistance available.",
-      "why": "Meditative drawing experience in stunning royal palace",
+      "blurb": "Drawing month at the Royal Palace where visitors sketch architectural details with guided assistance during weekends and school holidays.",
+      "why": "Hands-on creative palace activity",
       "source": "Your Little Black Book",
       "link": "https://duckduckgo.com/?q=Oktober%20Tekenmaand%20Koninklijk%20Paleis%20Amsterdam%20Amsterdam",
       "weatherFit": [
@@ -2708,10 +2565,10 @@
         0.6,
         0.525
       ],
-      "editorScore": 6,
-      "judgeScore": 6,
+      "editorScore": 5,
+      "judgeScore": 5,
       "firstSeen": "2026-09-28",
-      "servePos": 72
+      "servePos": 67
     },
     {
       "id": "pllek-indoor",
@@ -2741,7 +2598,7 @@
       ],
       "editorScore": 8,
       "firstSeen": "2026-09-03",
-      "servePos": 42
+      "servePos": 36
     },
     {
       "id": "cafe-chris",
@@ -2770,24 +2627,23 @@
       ],
       "editorScore": 8,
       "firstSeen": "2026-09-03",
-      "servePos": 44
+      "servePos": 38
     },
     {
-      "id": "foodhallen",
-      "title": "Foodhallen",
-      "venue": "De Hallen",
-      "area": "West",
-      "when": "Daily · 11:00–23:00",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fthumb%2F3%2F30%2FFoodhallen_in_Oud-West_%2528Amsterdam%252C_The_Netherlands_2017%2529_%252834245643041%2529.jpg%2F1280px-Foodhallen_in_Oud-West_%2528Amsterdam%252C_The_Netherlands_2017%2529_%252834245643041%2529.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.575&output=jpg&default=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fthumb%2F3%2F30%2FFoodhallen_in_Oud-West_%2528Amsterdam%252C_The_Netherlands_2017%2529_%252834245643041%2529.jpg%2F1280px-Foodhallen_in_Oud-West_%2528Amsterdam%252C_The_Netherlands_2017%2529_%252834245643041%2529.jpg",
+      "id": "ams-ev2-bar-staal",
+      "title": "Bar Staal",
+      "venue": "Bar Staal",
+      "area": "Schinkel",
+      "when": "Daily · all day",
       "category": "eat",
       "freshness": "always",
       "outdoor": false,
-      "kid": true,
-      "price": "street-food prices",
-      "blurb": "An indoor food hall in a converted tram depot — 20-odd stalls, long tables and two bars under one roof.",
-      "why": "Indoor · grazing for a crowd · weather-proof",
-      "source": "Your Little Black Book",
-      "link": "https://www.foodhallen.nl/amsterdam/",
+      "kid": false,
+      "price": "€€",
+      "blurb": "All-day Mediterranean-Asian fusion bar in the fast-changing Schinkel quarter — the neighborhood's newcomer worth crossing town for.",
+      "why": "Schinkel is having a moment",
+      "source": "I amsterdam · Ness canon",
+      "link": "https://www.vooges.nl/bar-staal",
       "weatherFit": [
         "HOT",
         "WARM",
@@ -2795,13 +2651,17 @@
         "COLD_WET",
         "VOLATILE"
       ],
+      "verify": true,
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwww.entreemagazine.nl%2Fhs-fs%2Fhubfs%2Fbar-staal-vooges-ovv-kester-den-hartogh-fotografie%2520(2).png%3Fwidth%3D1389%26height%3D779%26name%3Dbar-staal-vooges-ovv-kester-den-hartogh-fotografie%2520(2).png&w=800&h=1200&fit=cover&a=attention&output=jpg&default=https%3A%2F%2Fwww.entreemagazine.nl%2Fhs-fs%2Fhubfs%2Fbar-staal-vooges-ovv-kester-den-hartogh-fotografie%2520(2).png%3Fwidth%3D1389%26height%3D779%26name%3Dbar-staal-vooges-ovv-kester-den-hartogh-fotografie%2520(2).png",
+      "tier": "bespoke",
+      "buzz": 2,
       "imageFocal": [
         0.5,
-        0.575
+        0.5
       ],
       "editorScore": 8,
-      "firstSeen": "2026-09-03",
-      "servePos": 41
+      "firstSeen": "2026-10-22",
+      "servePos": 16
     },
     {
       "id": "sauna-deco",
@@ -2829,7 +2689,7 @@
         0.6
       ],
       "firstSeen": "2026-09-03",
-      "servePos": 75
+      "servePos": 70
     },
     {
       "id": "ams-vondelpark-play",
@@ -2859,7 +2719,70 @@
         0.5
       ],
       "firstSeen": "2026-09-03",
-      "servePos": 114
+      "servePos": 115
+    },
+    {
+      "id": "web-scout-marocaine",
+      "title": "Marocaine",
+      "venue": "Marocaine (former 't Stuivertje)",
+      "area": "Hazenstraat, Jordaan",
+      "when": "Now open · dinner",
+      "category": "eat",
+      "freshness": "always",
+      "outdoor": false,
+      "kid": false,
+      "price": "€€",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fmarocaine.nl%2Fwp-content%2Fuploads%2F2026%2F01%2FWhatsApp-Image-2026-01-26-at-15.01.49-1024x768.jpeg&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.500&output=jpg&default=https%3A%2F%2Fmarocaine.nl%2Fwp-content%2Fuploads%2F2026%2F01%2FWhatsApp-Image-2026-01-26-at-15.01.49-1024x768.jpeg",
+      "blurb": "Chef Rachid El Mouhandiz, who scored a 9- in Het Parool, turns his Jordaan spot into a full ode to Moroccan cooking.",
+      "why": "Parool-9 chef goes full Moroccan",
+      "source": "Fresh find",
+      "link": "https://marocaine.nl/",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "verify": false,
+      "imageWhy": "organiser",
+      "imageFocal": [
+        0.5,
+        0.5
+      ],
+      "editorScore": 7,
+      "judgeScore": 7,
+      "firstSeen": "2026-09-05",
+      "servePos": 63
+    },
+    {
+      "id": "web-scout-de-poldervogel",
+      "title": "De Poldervogel",
+      "venue": "De Poldervogel",
+      "area": "Watergraafsmeer, Oost",
+      "when": "Just opened · dinner",
+      "category": "eat",
+      "freshness": "always",
+      "outdoor": false,
+      "kid": false,
+      "price": "€€",
+      "blurb": "Alumni of De Kas and Vuurtoreneiland open a seasonal neighborhood restaurant — refined comfort food, sharing plates, zero fuss.",
+      "why": "De Kas pedigree, buurt prices",
+      "source": "Fresh find",
+      "link": "https://www.restaurantdepoldervogel.nl/",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "verify": false,
+      "imageWhy": "none",
+      "editorScore": 7,
+      "judgeScore": 7,
+      "firstSeen": "2026-09-05",
+      "servePos": 71
     },
     {
       "id": "the-movies",
@@ -2888,7 +2811,7 @@
         0.5
       ],
       "firstSeen": "2026-09-03",
-      "servePos": 69
+      "servePos": 64
     },
     {
       "id": "web-scout-two-story",
@@ -2922,7 +2845,7 @@
       "editorScore": 9,
       "judgeScore": 7,
       "firstSeen": "2026-09-03",
-      "servePos": 59
+      "servePos": 54
     },
     {
       "id": "east-beach",
@@ -2949,7 +2872,7 @@
         0.55
       ],
       "firstSeen": "2026-09-03",
-      "servePos": 116
+      "servePos": 114
     },
     {
       "id": "foam-talent",
@@ -2977,7 +2900,7 @@
         0.6
       ],
       "firstSeen": "2026-10-05",
-      "servePos": 118
+      "servePos": 117
     },
     {
       "id": "ams-b2-foam",
@@ -3008,7 +2931,7 @@
         0.5
       ],
       "firstSeen": "2026-09-03",
-      "servePos": 79
+      "servePos": 72
     },
     {
       "id": "ams-ev2-droog",
@@ -3040,7 +2963,7 @@
       ],
       "editorScore": 8,
       "firstSeen": "2026-09-03",
-      "servePos": 43
+      "servePos": 37
     },
     {
       "id": "ams-ev2-mendo",
@@ -3072,7 +2995,7 @@
       ],
       "editorScore": 8,
       "firstSeen": "2026-09-03",
-      "servePos": 45
+      "servePos": 39
     },
     {
       "id": "ams-b2-moise",
@@ -3104,7 +3027,7 @@
       ],
       "editorScore": 8,
       "firstSeen": "2026-09-03",
-      "servePos": 47
+      "servePos": 41
     },
     {
       "id": "ams-b2-patta",
@@ -3136,7 +3059,7 @@
       ],
       "editorScore": 8,
       "firstSeen": "2026-09-03",
-      "servePos": 49
+      "servePos": 43
     },
     {
       "id": "ams-b2-x-bank",
@@ -3168,7 +3091,7 @@
       ],
       "editorScore": 8,
       "firstSeen": "2026-09-03",
-      "servePos": 51
+      "servePos": 45
     },
     {
       "id": "ams-ev-melkweg",
@@ -3199,7 +3122,7 @@
         0.575
       ],
       "firstSeen": "2026-09-03",
-      "servePos": 77
+      "servePos": 73
     },
     {
       "id": "ams-b2-mobilia",
@@ -3231,7 +3154,7 @@
       ],
       "editorScore": 8,
       "firstSeen": "2026-09-03",
-      "servePos": 53
+      "servePos": 47
     },
     {
       "id": "ams-ev-utrecht",
@@ -3263,7 +3186,7 @@
       ],
       "editorScore": 8,
       "firstSeen": "2026-09-03",
-      "servePos": 46
+      "servePos": 40
     },
     {
       "id": "ams-b2-vlieger",
@@ -3295,7 +3218,7 @@
       ],
       "editorScore": 8,
       "firstSeen": "2026-09-03",
-      "servePos": 55
+      "servePos": 49
     },
     {
       "id": "ams-efteling",
@@ -3325,7 +3248,7 @@
       ],
       "editorScore": 8,
       "firstSeen": "2026-09-03",
-      "servePos": 98
+      "servePos": 94
     },
     {
       "id": "ams-micropia",
@@ -3356,7 +3279,7 @@
         0.5
       ],
       "firstSeen": "2026-09-03",
-      "servePos": 81
+      "servePos": 74
     },
     {
       "id": "ams-ev-paradiso",
@@ -3387,7 +3310,7 @@
         0.5499999999999999
       ],
       "firstSeen": "2026-09-03",
-      "servePos": 78
+      "servePos": 75
     },
     {
       "id": "ams-lostin-kriterion",
@@ -3418,7 +3341,7 @@
         0.5
       ],
       "firstSeen": "2026-09-03",
-      "servePos": 80
+      "servePos": 76
     },
     {
       "id": "ams-madurodam",
@@ -3448,7 +3371,7 @@
       ],
       "editorScore": 8,
       "firstSeen": "2026-09-03",
-      "servePos": 100
+      "servePos": 96
     },
     {
       "id": "ams-ev2-nxt-museum",
@@ -3480,7 +3403,7 @@
       ],
       "editorScore": 8,
       "firstSeen": "2026-09-03",
-      "servePos": 48
+      "servePos": 42
     },
     {
       "id": "ams-ev-muiderslot",
@@ -3511,7 +3434,7 @@
         0.5
       ],
       "firstSeen": "2026-09-03",
-      "servePos": 82
+      "servePos": 77
     },
     {
       "id": "ams-ev-dappermarkt",
@@ -3540,38 +3463,7 @@
         0.13
       ],
       "firstSeen": "2026-09-03",
-      "servePos": 117
-    },
-    {
-      "id": "ams-lostin-garage-noord",
-      "title": "Garage Noord",
-      "venue": "Garage Noord",
-      "area": "Noord",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fwearebunk.com%2Fwp-content%2Fuploads%2F2022%2F10%2Fgarage-noord-amsterdam-city-guide.jpeg&w=800&h=1200&fit=cover&a=focal&fpx=0.550&fpy=0.300&output=jpg&default=https%3A%2F%2Fwearebunk.com%2Fwp-content%2Fuploads%2F2022%2F10%2Fgarage-noord-amsterdam-city-guide.jpeg",
-      "category": "live",
-      "freshness": "always",
-      "outdoor": false,
-      "kid": false,
-      "price": "ticketed",
-      "blurb": "A club, kitchen and cultural space in a former garage — daytime plates, late-night dancing.",
-      "why": "Kitchen by day · club by night",
-      "source": "Maps",
-      "link": "https://www.google.com/maps/search/?api=1&query=Garage%20Noord%20Amsterdam",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "when": "Eve · check programme",
-      "tier": "bespoke",
-      "imageFocal": [
-        0.55,
-        0.3
-      ],
-      "firstSeen": "2026-10-19",
-      "servePos": 65
+      "servePos": 116
     },
     {
       "id": "ams-b2-rijksmuseum",
@@ -3602,7 +3494,7 @@
         0.35
       ],
       "firstSeen": "2026-09-03",
-      "servePos": 83
+      "servePos": 78
     },
     {
       "id": "ams-ev-bloemenmarkt",
@@ -3632,7 +3524,7 @@
       ],
       "editorScore": 8,
       "firstSeen": "2026-09-03",
-      "servePos": 102
+      "servePos": 98
     },
     {
       "id": "ams-lostin-de-filmhallen",
@@ -3663,7 +3555,7 @@
         0.4
       ],
       "firstSeen": "2026-09-03",
-      "servePos": 84
+      "servePos": 79
     },
     {
       "id": "eye-screening",
@@ -3693,7 +3585,38 @@
         0.6499999999999999
       ],
       "firstSeen": "2026-09-03",
-      "servePos": 86
+      "servePos": 81
+    },
+    {
+      "id": "ams-b2-huis-marseille",
+      "title": "Huis Marseille",
+      "venue": "Huis Marseille",
+      "area": "Centrum (Keizersgracht)",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6756d5230288895796c46430%2Fzomer-in-huis-marseille-amsterdam_copy_2.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.550&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6756d5230288895796c46430%2Fzomer-in-huis-marseille-amsterdam_copy_2.webp",
+      "category": "art",
+      "freshness": "always",
+      "outdoor": false,
+      "kid": false,
+      "price": "ticketed",
+      "blurb": "The city’s first photography museum, across two canal houses with a hidden garden — beautifully curated, never crowded.",
+      "why": "Photography · with a secret garden",
+      "source": "Maps",
+      "link": "https://www.google.com/maps/search/?api=1&query=Huis%20Marseille%20Amsterdam",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "when": "Tue–Sun · 11:00–18:00",
+      "tier": "bespoke",
+      "imageFocal": [
+        0.5,
+        0.5499999999999999
+      ],
+      "firstSeen": "2026-09-03",
+      "servePos": 80
     },
     {
       "id": "ams-ev-marken-volendam",
@@ -3723,7 +3646,7 @@
       ],
       "editorScore": 8,
       "firstSeen": "2026-09-03",
-      "servePos": 104
+      "servePos": 100
     },
     {
       "id": "ams-ev-zandvoort",
@@ -3753,7 +3676,7 @@
       ],
       "editorScore": 8,
       "firstSeen": "2026-09-03",
-      "servePos": 106
+      "servePos": 102
     },
     {
       "id": "ams-ev-albert-cuyp",
@@ -3783,7 +3706,7 @@
       ],
       "editorScore": 8,
       "firstSeen": "2026-09-03",
-      "servePos": 105
+      "servePos": 104
     },
     {
       "id": "ams-ev-kinderdijk",
@@ -3813,7 +3736,7 @@
       ],
       "editorScore": 8,
       "firstSeen": "2026-09-03",
-      "servePos": 108
+      "servePos": 105
     },
     {
       "id": "ams-ev-waterlooplein",
@@ -3843,7 +3766,7 @@
       ],
       "editorScore": 8,
       "firstSeen": "2026-09-03",
-      "servePos": 107
+      "servePos": 106
     },
     {
       "id": "web-iams-nicolas-van-poucke-pianorecital",
@@ -3870,9 +3793,43 @@
       ],
       "verify": false,
       "editorScore": 8,
-      "servePos": 60,
+      "servePos": 57,
       "firstSeen": "2026-09-03",
       "imageWhy": "curated"
+    },
+    {
+      "id": "web-iams-straat-collectie",
+      "title": "STRAAT Collectie",
+      "venue": "STRAAT Museum – Street art en graffiti in Amsterdam",
+      "area": "NDSM-plein 1",
+      "when": "Until Sun 31 Jan",
+      "category": "art",
+      "freshness": "always",
+      "outdoor": false,
+      "kid": false,
+      "price": "ticketed",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F69722aa2f8ac733b5bd29a0d%2Fiamsterdam_5.webp&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.500&output=jpg&default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F69722aa2f8ac733b5bd29a0d%2Fiamsterdam_5.webp",
+      "blurb": "Museum for street art and graffiti We focus on curating a collection that truly reflects the international street art movement.",
+      "why": "On I amsterdam",
+      "source": "I amsterdam",
+      "link": "https://www.iamsterdam.com/en/whats-on/calendar/exhibitions/all-exhibitions/straat-collectie",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "verify": false,
+      "imageWhy": "organiser",
+      "imageFocal": [
+        0.5,
+        0.5
+      ],
+      "editorScore": 3,
+      "judgeScore": 3,
+      "firstSeen": "2026-09-03",
+      "servePos": 82
     }
   ]
 }

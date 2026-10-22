@@ -3,18 +3,6 @@
  "runs": [
   {
    "date": "2026-09-18",
-   "kind": "daily",
-   "sources": {
-    "Het Parool PS": 6,
-    "Subbacultcha": 6,
-    "Amsterdam Foodie": 6,
-    "I amsterdam": 46,
-    "Resident Advisor": 30
-   },
-   "fresh": 11
-  },
-  {
-   "date": "2026-09-18",
    "kind": "weekly",
    "sources": {
     "Your Little Black Book": 39,
@@ -652,6 +640,30 @@
     "Resident Advisor": 30
    },
    "fresh": 10
+  },
+  {
+   "date": "2026-10-22",
+   "kind": "weekly",
+   "sources": {
+    "Your Little Black Book · I amsterdam · Ticketmaster": 1,
+    "I amsterdam · Your Little Black Book": 14,
+    "Your Little Black Book": 29,
+    "I amsterdam · Your Little Black Book · AmsterdamTips · Maps": 1,
+    "Your Little Black Book · I amsterdam": 2,
+    "I amsterdam · BIMHUIS": 1,
+    "I amsterdam": 46,
+    "Fresh find": 9,
+    "Resident Advisor": 28,
+    "Kidsproof": 3,
+    "Eye Filmmuseum": 3,
+    "Eventbrite": 2,
+    "AllEvents / Eventbrite": 1,
+    "I amsterdam · Kidsproof": 1,
+    "Subbacultcha": 5,
+    "Amsterdam Foodie": 4,
+    "Het Parool PS": 4
+   },
+   "fresh": 20
   }
  ],
  "alerts": []
