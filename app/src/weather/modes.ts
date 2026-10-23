@@ -296,17 +296,65 @@ export function rankPicks(picks: Pick[], mode: ModeSpec, taste?: Taste, seed = 0
 }
 
 /**
+ * THE UMBRELLA (2026-10-23). A city festival that is really a hundred events — ADE is five days
+ * and some four hundred nights — reaches the deck as a dozen separate cards, each honest, each
+ * indoors (so weather-fit on a wet October weekend), each with a crowd behind it, and the front of
+ * the deck becomes a wall of one thing. Ness, on the ADE weekend: "it was heavy ADE. Which makes
+ * sense. Can we sprinkle in some other relevant events." diversify already keeps two cards of one
+ * CATEGORY apart; this keeps two cards of one UMBRELLA at least UMBRELLA_GAP cards apart, so the
+ * festival stays the weekend's headline (it still leads, it still recurs every third card) without
+ * being the whole deck. A card belongs to an umbrella when its text names it, or — ADE only — when
+ * it is a Resident Advisor club night dated inside the festival's week: RA's ADE listings rarely
+ * say "ADE" in the title; the venue and the week say it. Pile / ▲ / 👑 are untouched: orderServed
+ * runs after this and deals Ness's calls first regardless. The list is the city's recurring
+ * umbrella festivals; `week` is updated by hand each year for the one that needs it.
+ */
+export const UMBRELLA_GAP = 2
+type Umbrella = { key: string; rx: RegExp; week?: { from: string; to: string; sources: RegExp } }
+const UMBRELLAS: Umbrella[] = [
+  { key: 'ade', rx: /\bADE\b|amsterdam dance event/i, week: { from: '2026-10-21', to: '2026-10-25', sources: /resident advisor/i } },
+  { key: 'idfa', rx: /\bIDFA\b|international documentary film ?festival/i },
+  { key: 'holland-festival', rx: /\bholland festival\b/i },
+  { key: 'pride', rx: /\bpride\b|canal parade/i },
+  { key: 'grachtenfestival', rx: /\bgrachtenfestival\b/i },
+  { key: 'museumnacht', rx: /\bmuseumnacht\b|museum night/i },
+  { key: 'cinekid', rx: /\bcinekid\b/i },
+  { key: 'kingsday', rx: /\bkoningsdag\b|king'?s ?day/i },
+]
+const isoDay = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+/** Which umbrella festival a card belongs to, or null. `now` only anchors the year of a dated `when`. */
+export function umbrellaOf(p: Pick, now = new Date()): string | null {
+  const text = `${p.title} ${p.blurb ?? ''} ${p.why ?? ''}`
+  for (const u of UMBRELLAS) {
+    if (u.rx.test(text)) return u.key
+    if (u.week && p.category === 'live' && u.week.sources.test(p.source ?? '')) {
+      const d = latestDateOf(p.when, now)
+      if (d) { const k = isoDay(d); if (k >= u.week.from && k <= u.week.to) return u.key }
+    }
+  }
+  return null
+}
+
+/**
  * De-cluster by category so the feed never serves a run of the same thing (e.g. five
- * museums in a row). Greedy: always take the highest-ranked pick whose category differs
- * from the one just placed — keeps score order roughly intact while interleaving.
+ * museums in a row), and by umbrella so one festival never serves as a wall (see above).
+ * Greedy: always take the highest-ranked pick whose category differs from the one just placed
+ * AND whose umbrella has not been dealt in the last UMBRELLA_GAP cards — keeps score order
+ * roughly intact while interleaving. When nothing satisfies both, the umbrella rule wins (two
+ * concerts in a row beats two ADE nights in a row); when nothing satisfies either, take the top.
  */
 export function diversify(ranked: Pick[]): Pick[] {
   const out: Pick[] = []
   const pool = [...ranked]
+  const umb = new Map(ranked.map((p) => [p.id, umbrellaOf(p)] as const))
   while (pool.length) {
     const prev = out[out.length - 1]?.category
-    let i = pool.findIndex((p) => p.category !== prev)
-    if (i === -1) i = 0   // only the same category left — take it
+    const near = new Set(out.slice(-UMBRELLA_GAP).map((p) => umb.get(p.id)).filter(Boolean))
+    const clear = (p: Pick) => { const u = umb.get(p.id); return !u || !near.has(u) }
+    let i = pool.findIndex((p) => p.category !== prev && clear(p))
+    if (i === -1) i = pool.findIndex(clear)
+    if (i === -1) i = pool.findIndex((p) => p.category !== prev)
+    if (i === -1) i = 0   // only the same thing left — take it
     out.push(pool.splice(i, 1)[0])
   }
   return out

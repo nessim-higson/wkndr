@@ -2,7 +2,7 @@
 // anti-clustering pass). Encodes the documented invariants: weather-fit beats jitter, corroborated
 // ("most talked about") events lead their tier, evergreen sits below timely, no category waves.
 import { describe, it, expect } from 'bun:test'
-import { rankPicks, diversify } from '../src/weather/modes'
+import { rankPicks, diversify, umbrellaOf, UMBRELLA_GAP } from '../src/weather/modes'
 import type { Pick, Category, Mode } from '../src/types'
 
 const ALL: Mode[] = ['HOT', 'WARM', 'COOL', 'COLD_WET', 'VOLATILE']
@@ -94,6 +94,42 @@ describe('diversify — anti-clustering', () => {
     const out = diversify(input)
     expect(out.length).toBe(input.length)
     expect(new Set(out.map((p) => p.id)).size).toBe(input.length)
+  })
+})
+
+// THE UMBRELLA (2026-10-23) — one festival, a dozen cards, never a wall. Pins the ADE weekend:
+// the front of the 23–25 Oct deck was ADE in 7 of its first 11 slots.
+describe('diversify — the umbrella gap', () => {
+  const ADE = new Date(2026, 9, 23)   // Fri 23 Oct 2026 — inside ADE week
+  const ade = (i: number) => P({ id: `ade${i}`, title: `Night ${i} x ADE`, category: 'live', when: 'Fri 23 Oct · 23:00' })
+  it('keeps two cards of one umbrella at least UMBRELLA_GAP apart while alternatives exist', () => {
+    const others: Category[] = ['art', 'market', 'stage', 'eat', 'out', 'shop', 'drink', 'daytrip', 'art', 'market', 'stage', 'eat']
+    const input = [
+      ...[1, 2, 3, 4, 5, 6].map(ade),      // the whole ADE block outranks everything else
+      ...others.map((c, i) => P({ id: `o${i}`, category: c, when: 'Sat 24 Oct' })),   // 12 — room for every third slot
+    ]
+    const out = diversify(input)
+    const at = out.map((p, i) => [p, i] as const).filter(([p]) => umbrellaOf(p, ADE) === 'ade').map(([, i]) => i)
+    for (let k = 1; k < at.length; k++) expect(at[k] - at[k - 1]).toBeGreaterThan(UMBRELLA_GAP)
+    expect(out[0].id).toBe('ade1')          // the festival still leads — it IS the weekend
+    expect(out.length).toBe(input.length)   // reorders, never truncates
+  })
+  it('an RA club night dated inside ADE week counts as ADE without saying so', () => {
+    const ra = P({ id: 'ra', title: 'fabric x Loud-Contact: Jeff Mills', source: 'Resident Advisor', category: 'live', when: 'Fri 23 Oct · 22:00' })
+    expect(umbrellaOf(ra, ADE)).toBe('ade')
+    const later = P({ id: 'ra2', title: 'Some night', source: 'Resident Advisor', category: 'live', when: 'Sat 31 Oct · 22:00' })
+    expect(umbrellaOf(later, ADE)).toBeNull()
+    const notRa = P({ id: 'x', title: 'Brass Rave Unit', source: 'I amsterdam', category: 'live', when: 'Sat 24 Oct · 20:30' })
+    expect(umbrellaOf(notRa, ADE)).toBeNull()
+  })
+  it('names the other umbrellas by text, and nothing else', () => {
+    expect(umbrellaOf(P({ id: 'a', title: 'IDFA: opening night' }))).toBe('idfa')
+    expect(umbrellaOf(P({ id: 'b', title: 'Cinekid Festival 2026' }))).toBe('cinekid')
+    expect(umbrellaOf(P({ id: 'c', title: 'Yayoi Kusama', blurb: 'A major retrospective.' }))).toBeNull()
+  })
+  it('degrades to forced adjacency when only one umbrella remains', () => {
+    const out = diversify([1, 2, 3].map(ade))
+    expect(out.map((p) => p.id)).toEqual(['ade1', 'ade2', 'ade3'])
   })
 })
 

@@ -30,6 +30,17 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
 > sessions update (today it's on load).
 
 ## Live right now
+- **2026-10-23 — THE UMBRELLA (V.12.1).** Ness, on the ADE weekend: "it was heavy ADE. Which makes sense. Can
+  we sprinkle in some other relevant events." The deck's de-cluster pass (`weather/modes.ts` `diversify`)
+  now keeps cards of one UMBRELLA festival (`umbrellaOf`: ADE, IDFA, Holland Festival, Pride,
+  Grachtenfestival, Museumnacht, Cinekid, Koningsdag; an RA club night dated inside ADE week counts as
+  ADE) at least `UMBRELLA_GAP` = 2 cards apart while alternatives remain, as it already did for
+  categories. ADE still leads the 24–25 Oct deck; the front twelve went 7 ADE → 4. Four hand-read heroes
+  for the weekend (`scripts/heroes.ts`: Beethoven's Fifth, the Nutcracker brass, the Copenhagen Trilogy,
+  Walibi's Fright Nights) were injected into the live feed and restamped. One law learned: NEMO's Game On
+  is on `corpus.eventVeto` ("game on") and the restamp refused it — a hero on the veto list makes the
+  Thursday refresh fail its heroes-missing check, so it was taken back out. The ADE `week` in UMBRELLAS is
+  a by-hand date range; update it each October (2027: 20–24 Oct, unannounced).
 - **2026-10-02 (evening) — THE UNFURL IS "C · THREE ACROSS".** Ness, from the options board: "lets do C please."
   A pasted link now shows the WKNDR line ("Your weekend, one swipe away.") on the weekend's own sky, with
   the deck's first three cards fanned across it, and the title "WKNDR · Your weekend, one swipe away" (was

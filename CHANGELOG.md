@@ -14,6 +14,22 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.12.1 · app] — 2026-10-23 — THE UMBRELLA (one festival, never a wall)
+Ness, on the ADE weekend: "it was heavy ADE. Which makes sense. Can we sprinkle in some other relevant
+events please." The 23–25 Oct deck opened ADE in 7 of its first 11 slots: a dozen honest cards, each
+indoors on a wet weekend, each with a crowd behind it.
+- **THE UMBRELLA GAP** (`weather/modes.ts` `umbrellaOf` / `diversify`) — cards of one umbrella festival
+  (ADE, IDFA, Holland Festival, Pride, Grachtenfestival, Museumnacht, Cinekid, Koningsdag) are dealt at
+  least two cards apart while anything else remains, the same way two cards of one category already were.
+  A Resident Advisor club night dated inside ADE week counts as ADE without saying so. The festival still
+  leads and still recurs every third card; pile / ▲ / 👑 are untouched. Front twelve: 7 ADE → 4.
+- **THE OTHER WEEKEND** (`scripts/heroes.ts`) — four hand-read heroes for 23–25 Oct, off the organisers'
+  own pages with their own photographs: Beethoven's Fifth (Concertgebouw Orchestra, Fri + Sun), the
+  Nutcracker brass Sunday morning, Eline Arbo's Copenhagen Trilogy (ITA, Sun matinee), Walibi's Fright
+  Nights. Found and left out: ARTIS's Nacht van de Nacht (sold out), NEMO's Game On (on Ness's veto list,
+  the restamp refused it), Koos Kneus (closed), the Marathon (the weekend before). Injected into the live
+  feed by hand and restamped; Thursday's crawl re-judges them. Bruno Mars (July) retired from the list.
+
 ## [V.12 · app] — 2026-09-25 — THE GLASS (the weather-glass variation graduates)
 The background is a window now. Ness, 18 Sep, on the branch: "I love these new backgrounds — so please
 make this known." Codex opened it (`codex/weather-glass`, PR #29, brief `docs/variations/001`); the
