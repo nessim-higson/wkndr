@@ -30,6 +30,19 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
 > sessions update (today it's on load).
 
 ## Live right now
+- **2026-10-26 — THE FRIDAY BRIEF HAS A RENDERER.** Ness: "I want to kick start the email feature." The
+  list worker, the send script and the four template comps had been built in July and sat dark; the
+  missing step was the file. `bun run brief` (`app/scripts/brief.ts`, 7 tests) writes template D from
+  the live deck in its own order and the weekend's per-day forecast to `list/out/brief-<saturday>.html`
+  (gitignored): the cover is the deck's first pictured weekend card re-cut from its original, then the
+  forecast line, then Saturday and Sunday chronologically (`assignDays`), titles linked to the
+  organiser, the CTA to the app, `{{unsub}}` in the footer; every `<tr>` is checked to sit in a `<table>`
+  and the size under Gmail's clip. It writes as of THE FEED'S weekend (the Letter's) — a dated card
+  outside the window reads as "both days", so a Monday draft before the rebuild is last weekend's and
+  says so. The loop was proved to the blast: `send.ts` dry run against the live worker answers
+  `audience 0 confirmed`. **Nothing sends until Ness does three things** (list/README.md § Status): a
+  Resend API key as the worker secret, the three DNS records on wkndr.xyz, `LIST_URL` flipped in
+  `landing/index.html`. `poster.ts` `forecast()` now takes the Saturday to read.
 - **2026-10-23 — THE UMBRELLA (V.12.1).** Ness, on the ADE weekend: "it was heavy ADE. Which makes sense. Can
   we sprinkle in some other relevant events." The deck's de-cluster pass (`weather/modes.ts` `diversify`)
   now keeps cards of one UMBRELLA festival (`umbrellaOf`: ADE, IDFA, Holland Festival, Pride,

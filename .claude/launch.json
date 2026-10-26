@@ -51,6 +51,19 @@
       ],
       "port": 8093,
       "autoPort": true
+    },
+    {
+      "name": "wkndr-brief",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "4219",
+        "--directory",
+        "list/out"
+      ],
+      "port": 4219,
+      "autoPort": true
     }
   ]
 }

@@ -8,24 +8,49 @@ gone by itself", and an email list is the opposite of that. Two workers, two hon
 biggest single lever on whether Gmail files the brief in the inbox or the promotions bin. A
 signup is *not* a subscriber until they click the link in the confirm mail.
 
-## Status — 2026-07-29
+## Status — 2026-10-26
 
-**Deployed, dark, and cannot yet send.** `https://wkndr-list.ness-13b.workers.dev`
-(note: `ness-13b`, the same account subdomain as `wkndr-curate` — *not* the relay's
-`nessimhigson` one).
+Ness: "I want to kick start the email feature." Everything below the line was already built in July
+and has sat dark since; today added the one missing step — the file — and proved the loop end to end
+up to the blast (a dry run against the live worker: `audience 0 confirmed · Nobody to send to`).
+
+**What runs today, with nothing from you:**
 
 | | |
 |---|---|
+| ✅ Worker deployed | `https://wkndr-list.ness-13b.workers.dev` — alive (`/stats` answers 401 unauthed, as designed) |
 | ✅ KV namespace `SUBS` | `1701f484b4b3461ea0145fdecdaee646`, in `wrangler.toml` |
-| ✅ `ADMIN_KEY` | set as a Worker secret; local copy in `list/.env` (gitignored) |
-| ✅ Worker deployed | `/stats` answers `{"pending":0,"active":0,"unsub":0}`; unauthed → 404 |
-| ⬜ **`MAIL_API_KEY`** | needs a Resend account — **Ness** |
-| ⬜ **SPF/DKIM on `wkndr.xyz`** | three TXT records Resend prints — **Ness** |
-| ⬜ `LIST_URL` in `landing/index.html` | still `''`, so the form is hidden. Flip last. |
+| ✅ `ADMIN_KEY` | a Worker secret; local copy in `list/.env` (gitignored) |
+| ✅ **`bun run brief`** (NEW, `app/scripts/brief.ts`) | writes template D from the live deck + the weekend forecast → `list/out/brief-<saturday>.html` (+ `brief.html`); checks every `<tr>` sits in a `<table>` and the size stays under Gmail's clip; 7 tests |
+| ✅ `send.ts` dry run | reads the audience off the worker, renders per-recipient unsubscribe links, prints the first email; `--send` to blast |
+| ✅ Templates | four comps + the harness, live at https://wkndr-brief.pages.dev; the renderer builds **D** |
 
-`MAIL_PROVIDER` is `"resend"` with no key, so `/sub` fails loudly rather than silently
-accepting people it can never confirm. That's deliberate — and harmless while the landing
-form is hidden.
+**The three steps that are yours (nothing sends until all three):**
+
+1. **A Resend account** (resend.com, free tier is enough to start) → create an API key → from this
+   folder: `npx wrangler secret put MAIL_API_KEY` and paste it; also add `MAIL_API_KEY=…` to `list/.env`
+   so `send.ts --send` can use it.
+2. **Verify the sending domain** in Resend: add `wkndr.xyz`, and paste the **three DNS records** it
+   prints (SPF, DKIM, and the return-path CNAME) into the `wkndr.xyz` zone in your Cloudflare account.
+   Wait for Resend to show the domain as verified. Until this is done mail goes out from Resend's
+   sandbox domain and deliverability is poor — do it before the first real send, not after.
+3. **Flip the form live:** in `landing/index.html` set `LIST_URL='https://wkndr-list.ness-13b.workers.dev'`
+   (it is `''` today, which hides the block). Commit; the landing deploys on push. Sign yourself and
+   your partner up first and click the confirm mails — that is subscriber one and two.
+
+**The weekly loop from then on** (Monday + Thursday 10:00 UTC the pipeline rebuilds the deck):
+
+```bash
+cd app && bun run brief                    # Friday morning: the draft, from the deck as it stands
+open ../list/out/brief.html                # read it; edit the hero sentence and the forecast line by hand
+cd ../list && bun run scripts/send.ts out/brief.html --subject "…"          # dry run — audience, first email
+cd ../list && bun run scripts/send.ts out/brief.html --subject "…" --send   # the blast
+```
+
+`bun run brief --hero="copenhagen"` pins the cover to a card by title; `--per=3` is picks per day.
+The renderer writes as of **the feed's own weekend** (the Letter names it) — on a Monday before the
+rebuild the draft is last weekend's and says so; a Friday run is the coming weekend with its forecast.
+`list/out/` is gitignored: the brief is a sent thing, not a source file.
 
 ## Deploy (once — done, kept for reference)
 
@@ -119,13 +144,13 @@ reserving an empty band, and styled `alt` text so it degrades to designed type.
 
 ## The weekly loop
 
-Thursday 13:00 UTC the content pipeline runs. You curate against a fresh deck Thursday evening.
-Friday morning you write the brief and send it:
+Thursday 10:00 UTC the content pipeline runs. You curate against a fresh deck Thursday evening.
+Friday morning `bun run brief` (in `app/`) writes the draft to `list/out/brief.html`; you edit it and send it:
 
 ```bash
 cd list
-bun run scripts/send.ts brief.html --subject "Rain Saturday. Here's where to be."   # DRY RUN
-bun run scripts/send.ts brief.html --subject "Rain Saturday. Here's where to be." --send
+bun run scripts/send.ts out/brief.html --subject "Rain Saturday. Here's where to be."   # DRY RUN
+bun run scripts/send.ts out/brief.html --subject "Rain Saturday. Here's where to be." --send
 ```
 
 `--send` is required to actually blast — the default is a dry run that prints the audience count,

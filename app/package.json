@@ -14,7 +14,8 @@
     "poster": "bun run scripts/poster.ts",
     "ingest": "bun run scripts/ingest.ts",
     "letter": "bun run scripts/letter.ts",
-    "check:scripts": "tsc -p tsconfig.scripts.json"
+    "check:scripts": "tsc -p tsconfig.scripts.json",
+    "brief": "bun run scripts/brief.ts"
   },
   "dependencies": {
     "framer-motion": "^11.15.0",
