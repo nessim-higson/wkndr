@@ -54,6 +54,74 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
   is on `corpus.eventVeto` ("game on") and the restamp refused it — a hero on the veto list makes the
   Thursday refresh fail its heroes-missing check, so it was taken back out. The ADE `week` in UMBRELLAS is
   a by-hand date range; update it each October (2027: 20–24 Oct, unannounced).
+- **2026-10-08 — THE BLANK FIRST CARD, AND THE PASS BEHIND IT (#36 + #37 merged, no bump; #38 open).** Ness:
+  "first card on a refresh just now - serves this ...." — the De Hallen market with no photograph. The feed HAD
+  one (a venue borrow, the Foodhallen on Wikimedia): `lib/image.ts originalOf` decoded the wsrv source twice,
+  the file name's own `%28…%29` became literal parentheses, and the card's unquoted CSS `url(…)` was invalid —
+  `background-image: none` on five of the hundred pictured cards (Rijksmuseum and Foodhallen canon among them).
+  **#36:** one decode (matching the pipeline's mirror) and every inline backgroundImage through `cssUrl()`, a
+  quoted url that survives parentheses, apostrophes and spaces (`tests/image-url.test.ts`). **Underneath:** the
+  feed audit "no two live cards wear the same photo" had gone red on that same pair and halted the Thursday
+  refresh before the crawl — the gate runs on the COMMITTED feed, so an unlawful feed blocks the very run that
+  would replace it (open question: should the audit gate the run or only the publish?). **#37:** the
+  no-two-cards-share-a-photo pass in BOTH publishers remembered a photo's FIRST holder; canon goes first, so the
+  one allowed venue-borrow was never recorded and every later borrow at the same place passed too (De Hallen ×2,
+  ARTIS ×2). Law, in `lib/pipeline photoHolderAfter`: **a place's own card keeps its photo; its ONE borrow may
+  share it and from then on holds it; every later live card goes without** — an honest blank the cap routes to
+  the airlock. The committed feed was brought under it once by hand (Denim Days Market, Studio ARTIS → no photo;
+  the letter mirrored), the refresh re-run and green (20:45). Its first run showed the rule biting the wrong
+  card — refresh walked the CRAWL order, so the Foodhallen went to Denim Days at 117 and the Art, Design &
+  Vintage Market opened blank at 6 — hence **#38 (open): `photoPassOrder`**, canon first, then live by a
+  provisional serve stamp, the walk restamp already had.
+- **2026-10-05 → 10-08 — THE NAME, WITH EVIDENCE (`docs/naming-2026-10.md`, on PR #35, draft, research only;
+  not legal advice).** Ness, blocked on the name: he was once told WKNDR may be hard to trademark, with no
+  record of the advice. The memo replaces the worry with the registers — EUIPO, BOIP (via TMview; its own site
+  is behind a bot check), UKIPO, USPTO and WIPO, classes 9 · 35 · 39 · 41 · 42, searched 5 Oct, every row linked
+  to the record. **Finding 1, freedom to use:** nobody holds a live WKNDR in any of the four. But WKND is
+  registered in all four by three owners in exactly this lane — Zamani-Mahforjaki (event-discovery software,
+  EU/UK/US, and he has already opposed another WKND filing at EUIPO and got a withdrawal), Rolling Thunder
+  ("SaaS for planning weekend travel trips", US Reg. 6267728), Mediahuis (WKND, weekend publishing, Benelux) —
+  WEEKENDER word marks sit in 9/39/41 (Dombrowe EU/UK, Disney, Chubbies' THE WEEKENDER, Travelzoo's
+  WEEKENDS.COM in 39 + 41), and two filings are live to watch: SOCA WKNDR (UK, 41, Sep 2026) and WEEKENDR (US,
+  41, 30 Sep 2026). Unregistered namesakes: wkndr.io (Austin weekend tours), wknd.app (US metros, product live
+  since mid-Sep 2026 on a 2018 domain — "find an idea you like and send it to someone"), the WKND APP (App
+  Store), wkndo.com (a US weekend-trip planner, May 2026). **Finding 2, ability to protect:** every office reads a
+  dropped-vowel word as the word. The USPTO refused WEEKNDR twice as "merely describes the intended user" of
+  weekend travel services (2014, 2017) and WKNDR twice as the phonetic equivalent of WEEKENDER (Apr 2024; final,
+  Feb 2026); the EUIPO guidelines on misspellings (BETTR refused 2025) and the UKIPO text-speak rule say the same.
+  So **WKNDR = "weekender" to an examiner**: close to descriptive for a weekend-planning app, registrable at best
+  narrowly, and in a crowd. **The decision rule (memo §2):** KEEP WKNDR through the Amsterdam/Rotterdam tests
+  (no filing, no brand spend, nobody has written); RENAME BEFORE any brand spend, any filing, or the first city
+  outside NL — the US is where WKND is registered for this exact job and a WKNDR tour company trades, so New
+  Orleans fails on its own; RENAME NOW on a letter, a competing Benelux/EU filing in 9/41/42, or money.
+  **The names.** Thirty candidates through the naming-engine lenses (`~/CLAUDE/projects/prototypes/naming-engine`:
+  the Conviction Rubric, gate + eight criteria /100), knocked out on the same five registers, then eight with
+  scores, register conflicts, .com/.xyz/.app/.co and Instagram/TikTok: **Sunshower 80** (sun and rain at once,
+  "zonnebui"; every domain gone; a Dutch Sunshower IP mark in 11/39/42 at home), **Raindate 77** (the backup
+  date if it rains + a date with someone — two of the three ideas in one known word; clean in all four
+  registers; raindate.app/.co free; the memo's pick), **Windsock 77** (the object that reads the wind; clean;
+  the most drawable; cold, says nothing of the weekend or the other person), **Sowieso 75** (Dutch "regardless,
+  anyway": the plan survives the forecast; blocked at home by four Benelux marks incl. 41), **Shall We 72**
+  ("Zullen we?", the invitation itself; clean; no domains), **Zazo 72** (za/zo, the Dutch calendar's weekend;
+  clean in the classes but an app "ZAZO" lives on Instagram), **Bright Spell 71** (the forecaster's phrase;
+  clean; .xyz/.app/.co free), **Weatherglass 70** (the barometer and the glass pane; clean everywhere; long).
+  Killed at the gate, for the record: Samen (English hears "semen"), Weer (descriptive at BOIP), Window / Raam /
+  Deal (the Amsterdam readings), Met (Met Office, The Met), Finde (Spanish for weekend — EUIPO examines in every
+  EU language), Tiebreak / Coat Check / Sunnyside / Likewise (identical marks in 9/41/42). **Ness's verdict: "I'm
+  not into any of the names" — what he likes in WKNDR is that it is simple and clear; he liked WKNDO.** Two more
+  veins, as addenda: THE WKND VEIN — WKNDO is a live namesake (wkndo.com) and wkndo.app is gone; WKN.DO is free
+  but is still "wkndo"; every WKND-formative keeps WKND as its dominant element, so none fixes ownership, and
+  **WKNDIT** ("weekend it") is the cleanest of them (0 marks, every domain and handle free). THE COMPRESSED-ROOT
+  VEIN — the register un-compresses the word, so SNDAY / STRDY / FRIDY / DYTRP / NWCST / TGTHR collide with
+  SUNDAY / STURDY / FRIDAY / DAYTRIP / NOWCAST / TGTHR-in-9-35-42; **WHTHR** (whether / weather) is the one
+  five-letter logotype that survives the twin test — the full words are unowned or descriptive (only Apple's and
+  TWC's WEATHER marks nearby), whthr.com/.app/.xyz/.co all free on 6 Oct; SATSUN also survives (no full word).
+  **Where it stands: undecided.** Posture = keep WKNDR, file nothing, spend nothing, choose the successor before
+  city two; say the finalists down the phone to partner and friends before any attorney. What an attorney must
+  confirm (memo §1.4): a full clearance incl. figurative marks and KvK trade names, confusion against the
+  WKND / WEEKENDER / WEEKENDS.COM marks for the real spec, the non-use windows on the Zamani marks (the EU word
+  mark WKND MGMT and the UK WKND passed five years in 2024; the EU logo reaches it May 2027), and the fate of
+  SOCA WKNDR and WEEKENDR.
 - **2026-10-02 (evening) — THE UNFURL IS "C · THREE ACROSS".** Ness, from the options board: "lets do C please."
   A pasted link now shows the WKNDR line ("Your weekend, one swipe away.") on the weekend's own sky, with
   the deck's first three cards fanned across it, and the title "WKNDR · Your weekend, one swipe away" (was
@@ -696,6 +764,13 @@ organ-concert veto REVERSED (community-authentic wins). The pipeline stamps `top
 GUARANTEES topped/led picks into the feed (pull-back from prePool/canon if the balancer cut them).
 
 ## Open items / next
+0000. **THE NAME (undecided, 2026-10-26).** Evidence and rule in the 2026-10-05 → 10-08 entry above and in
+   `docs/naming-2026-10.md` (PR #35, draft). Keep WKNDR through the city tests, file nothing, spend nothing;
+   the successor is chosen before city two. On the table: Raindate (the memo's pick), Sunshower, Windsock from
+   the shortlist; WHTHR and WKNDIT from the veins Ness actually likes; none accepted yet. Watch SOCA WKNDR (UK)
+   and WEEKENDR (US) in class 41.
+000b. **#38 open — `photoPassOrder`** (the lent photo goes to the card the deck shows first). Merge, then the next
+   refresh gives the De Hallen photo back to the better-ranked card; restamp cannot (it never re-borrows).
 000. **THE "NOW" SKY IS OBSERVED, NOT FORECAST (shipped 2026-10-02 evening).** Ness, under a blue sky: "Why is
    this returning a cloudy sky?", then, rightly: "I just called out that the weather is off and it's still
    off." The header had been reading Open-Meteo `current`, a 15-minute slice of a MODEL (KNMI Harmonie): code
@@ -793,4 +868,5 @@ weather, stickiness, model tasking; advances `curation-surfaces.md` §5 from par
 `pipeline-architecture.md` (north star/roadmap) · `source-map.md` (source
 registry) · `pipeline-redesign.md` (the 5-problem deep-dive) · `moat.md` · `discovery-direction.md` ·
 `content-pipeline.md` · `jtbd-analysis.md` · `market-scan-2026-06.md` · `mom-test-interviews.md` ·
-`validation-log.md`.
+`validation-log.md` · **`naming-2026-10.md`** (the name: register evidence, the decision rule, the
+shortlist and the two veins — on PR #35, draft).
