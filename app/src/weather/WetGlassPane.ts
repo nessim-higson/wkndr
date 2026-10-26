@@ -136,10 +136,11 @@ float rainfall(vec2 p, float t, float cellW, float len, float speed, float slant
   vec2 f = (fract(q / cell) - .5) * cell;
   vec2 c = vec2((h.x - .5) * (cellW - 4.), (h.y - .5) * (cell.y - len));
   float dx = abs(f.x - c.x);
-  float g = (f.y - c.y) / len + .5;                                 // 0 at the head (below), 1 at the tail's end
-  float along = smoothstep(0., .1, g) * (1. - smoothstep(.55, 1., g));   // a soft head, an even body, a tail that thins out
-  float core = 1. - smoothstep(.4, 1.4, dx);
-  return on * core * along * (.55 + .45 * h.x);
+  float l = len * (.45 + .55 * fract(h.x * 7.31));                  // no two streaks the same length
+  float g = (f.y - c.y) / l + .5;                                   // 0 at the head (below), 1 at the tail's end
+  float along = smoothstep(0., .12, g) * (1. - smoothstep(.4, 1., g));   // a soft head, a tail that thins out
+  float core = 1. - smoothstep(.3, 1.1, dx);
+  return on * core * along * (.3 + .7 * fract(h.y * 5.17));        // and no two the same weight
 }
 
 // RUNNERS — drops that let go and run down the pane. Laid out in tall cells of CSS px; a cell may
@@ -234,9 +235,11 @@ void main(){
     vec2 rp = p;                                     // NOT lensed by the beads: a map's slopes are texel-sharp and shatter a 1 px streak into specks (tried 2026-10-26)
     float slant = u_air.x * .5;
     vec2 pp = u_par * vec2(1., .7) * 10.;            // the air sits between you and the sky: less parallax than the plate
-    rain = rainfall(rp - pp * .3, t, 64., 30., 980., slant, .5 * u_rain, 1.) * .24
-         + rainfall(rp - pp * .55, t * .92, 44., 20., 700., slant * .9, .55 * u_rain, 2.) * .17
-         + rainfall(rp - pp * .8, t * .85, 30., 13., 480., slant * .8, .6 * u_rain, 3.) * .12;
+    // PULLED BACK (2026-10-26, Ness: "too often and not believable enough"): a window shows the
+    // occasional streak, not a curtain — a third of the cells, half the weight of the first cut
+    rain = rainfall(rp - pp * .3, t, 72., 30., 980., slant, .3 * u_rain, 1.) * .15
+         + rainfall(rp - pp * .55, t * .92, 52., 20., 700., slant * .9, .3 * u_rain, 2.) * .1
+         + rainfall(rp - pp * .8, t * .85, 36., 13., 480., slant * .8, .25 * u_rain, 3.) * .06;
     rain *= 1. - u_fog * .6;
   }
   // snow, in the air

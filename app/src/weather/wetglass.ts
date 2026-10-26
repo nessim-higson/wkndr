@@ -63,7 +63,8 @@ export interface WetRecipe {
   snow: number
   /** 0..1 — RAIN IN THE AIR (2026-10-26): streaks falling behind the glass, three depths, leaning with
    *  the wind. Until now the only rain was on the pane; the air held nothing but snow. Density, not
-   *  wetness: the storm is the full fall, the passing front a few streaks, and everything else 0. */
+   *  wetness: the storm is the fullest fall, the passing front a few streaks, and everything else 0.
+   *  Pulled back on 2026-10-26 (Ness: "too often and not believable enough"). */
   rain: number
   /** brightness multiplier on the plate — the scene's light, not a CSS filter */
   dim: number
@@ -77,9 +78,9 @@ export const WET_RECIPES: Record<GlassScene, WetRecipe> = {
   sunny:    { plate: openSky, byPhase: CLEAR_BY_PHASE, map: null, wet: 0, mapScale: 700, run: 0,   fog: 0,   snow: 0, rain: 0,   dim: 1,    tint: [.93, .96, 1] },
   overcast: { plate: overcast,     map: null,       wet: 0,   mapScale: 700, run: 0,   fog: .12,  snow: 0, rain: 0,   dim: .96,  tint: [.9, .92, .93] },
   mist:     { plate: fogSky,       map: dropsFine,  wet: .35, mapScale: 620, run: 0,   fog: .9,   snow: 0, rain: 0,   dim: 1.02, tint: [.94, .95, .94] },
-  rain:     { plate: rainSky,      map: dropsRain,  wet: 1,   mapScale: 760, run: .9,  fog: .34,  snow: 0, rain: .6,  dim: .88,  tint: [.78, .84, .9] },
-  storm:    { plate: stormSky,     map: dropsHeavy, wet: 1,   mapScale: 720, run: 1,   fog: .3,   snow: 0, rain: 1,   dim: .86,  tint: [.62, .7, .8] },
-  mixed:    { plate: passingFront, map: dropsFine,  wet: .6,  mapScale: 680, run: .45, fog: .14,  snow: 0, rain: .25, dim: .95,  tint: [.86, .9, .95] },
+  rain:     { plate: rainSky,      map: dropsRain,  wet: 1,   mapScale: 760, run: .9,  fog: .34,  snow: 0, rain: .4,  dim: .88,  tint: [.78, .84, .9] },
+  storm:    { plate: stormSky,     map: dropsHeavy, wet: 1,   mapScale: 720, run: 1,   fog: .3,   snow: 0, rain: .7,  dim: .86,  tint: [.62, .7, .8] },
+  mixed:    { plate: passingFront, map: dropsFine,  wet: .6,  mapScale: 680, run: .45, fog: .14,  snow: 0, rain: .15, dim: .95,  tint: [.86, .9, .95] },
   snow:     { plate: snowSky,      map: dropsFine,  wet: .3,  mapScale: 600, run: .2,  fog: .45,  snow: 1, rain: 0,   dim: 1.02, tint: [.95, .96, .98] },
   evening:  { plate: nightSky,     map: null,       wet: 0,   mapScale: 700, run: 0,   fog: .06,  snow: 0, rain: 0,   dim: .96,  tint: [.5, .55, .7] },
 }

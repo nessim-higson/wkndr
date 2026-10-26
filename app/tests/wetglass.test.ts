@@ -32,7 +32,8 @@ describe('wet glass recipes', () => {
   })
   it('rain in the air falls only where it rains: the storm is the full fall, the front a few streaks, snow is flakes not streaks', () => {
     for (const s of GLASS_SCENES) { expect(WET_RECIPES[s].rain).toBeGreaterThanOrEqual(0); expect(WET_RECIPES[s].rain).toBeLessThanOrEqual(1) }
-    expect(WET_RECIPES.storm.rain).toBe(1)
+    expect(WET_RECIPES.storm.rain).toBeGreaterThan(WET_RECIPES.rain.rain)
+    expect(WET_RECIPES.storm.rain).toBeLessThanOrEqual(1)
     expect(WET_RECIPES.rain.rain).toBeGreaterThan(WET_RECIPES.mixed.rain)
     expect(WET_RECIPES.mixed.rain).toBeGreaterThan(0)
     for (const s of ['sunny', 'overcast', 'mist', 'snow', 'evening'] as const) expect(WET_RECIPES[s].rain).toBe(0)
