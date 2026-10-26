@@ -37,16 +37,19 @@ export interface LookParam {
 
 // ~30fps frame gate for the canvas-2D looks — the ambient layer must never outdraw
 // the swipe deck (same budget as Silk's FieldEngine). Call tick() each RAF; draw
-// only when it returns true.
+// only when it returns true. `budget` is the gate in ms: 33 (30 fps) unless a look asks
+// for less — the wet glass runs 16 (60 fps) while its sky moves (2026-10-26: at 30 the
+// runners stuttered on a 120 Hz phone), and falls back to 33 the moment it can't hold it.
 export class FrameCap {
   private acc = 0
   private last = 0
   private ema = 33.4
+  budget = 33
   tick(now: number): boolean {
     if (!this.last) { this.last = now; return true }
     this.acc += now - this.last
     this.last = now
-    if (this.acc < 33) return false
+    if (this.acc < this.budget) return false
     this.ema = this.ema * 0.9 + this.acc * 0.1
     this.acc = 0
     return true

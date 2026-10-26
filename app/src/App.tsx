@@ -14,7 +14,8 @@ import { GlassField } from './weather/GlassField'
 import { GlassForecast } from './weather/GlassForecast'
 import { GLASS_LABELS, GLASS_SCENES, type GlassScene } from './weather/glass'
 import { PHASES, daylightAt, type Phase } from './weather/daylight'
-import { nowStop } from './weather/hourly'
+import { nowStop, windOf } from './weather/hourly'
+import { airFor } from './weather/air'
 import { deckForHour } from './weather/scrubDeck'
 import { neverTwoGlass } from './weather/glassDeck'
 import { TimeScrub } from './weather/TimeScrub'
@@ -334,7 +335,8 @@ export default function App() {
   const [glassPreview, setGlassPreview] = useState<GlassScene | null>(() => { const scene = new URLSearchParams(location.search).get('scene'); return GLASS_SCENES.find(s => s === scene) ?? null })
   // THE SKY MOVES BY DEFAULT on the glass build (Ness, 2026-09-18: "can we have that background
   // move?") — unless the OS asks for reduced motion, or ?motion=0. Prototype settings keeps the
-  // opt-out. The pane caps itself at 30 fps and stops when the tab is hidden.
+  // opt-out. The pane runs 60 fps while it moves (30 as the fallback, and ?fps=30 to judge that)
+  // and gets no frames when the tab is hidden. Parallax (tilt, pointer) rides the same switch.
   const [glassMoving, setGlassMoving] = useState(() => {
     const m = new URLSearchParams(location.search).get('motion')
     if (m === '0') return false
@@ -392,12 +394,15 @@ export default function App() {
   // the cards associated with that weather come forward"). The sky follows the thumb live (scene + the
   // sun's grade for that timestamp); the deck re-deals for that hour's weather on RELEASE — re-ranking
   // on every tick would shuffle cards under a moving finger. A what-if deck never touches real declines.
-  const hourStops = useHourly(city.lat, city.lon)
+  const { stops: hourStops, wind: windNow } = useHourly(city.lat, city.lon)
   const [scrubIdx, setScrubIdx] = useState<number | null>(null)   // follows the thumb: sky + header
   const [deckIdx, setDeckIdx] = useState<number | null>(null)     // committed on release: the deck
   const [scrubSwiped, setScrubSwiped] = useState<Set<string>>(() => new Set())
   const scrub = scrubIdx != null ? hourStops[scrubIdx] ?? null : null
   const deckStop = deckIdx != null ? hourStops[deckIdx] ?? null : null
+  // THE WIND (2026-10-26, weather/air.ts): the pane's clouds pan and its rain leans with the wind of
+  // the hour — the scrubbed hour's while scrubbing, this hour's otherwise. A still day is still.
+  const air = useMemo(() => airFor(scrub ? windOf(scrub) : windNow), [scrub, windNow])
   function commitScrub(i: number | null) {
     if (i === deckIdx) return
     setDeckIdx(i); setScrubSwiped(new Set()); setDealKey((k) => k + 1)
@@ -1019,7 +1024,7 @@ export default function App() {
     // slides, ctx bars) collapses to a crossfade for prefers-reduced-motion users
     <MotionConfig reducedMotion="user">
       {glassActive
-        ? <GlassField scene={glassWeather} daylight={daylight} moving={glassMoving} />
+        ? <GlassField scene={glassWeather} daylight={daylight} moving={glassMoving} air={air} />
         : <AmbientField mode={mode} look={look} onLookChange={setLook} rerollNonce={fieldReroll} />}
 
       <AnimatePresence>

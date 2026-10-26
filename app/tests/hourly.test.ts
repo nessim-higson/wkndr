@@ -1,6 +1,6 @@
 // THE HOURS OF THE WEEKEND — weather/hourly.ts, the contract the time scrubber reads.
 import { describe, it, expect } from 'bun:test'
-import { decodeHourly, skyForCode, modeForHour, weekendStops, nowStop, WEEKEND_STOPS } from '../src/weather/hourly'
+import { decodeHourly, skyForCode, modeForHour, weekendStops, nowStop, windOf, windAt, WEEKEND_STOPS } from '../src/weather/hourly'
 
 // a synthetic Open-Meteo payload: hourly from Fri 18 Sep 2026 00:00 CEST (UTC+2) for 5 days
 const OFF = 7200
@@ -63,5 +63,24 @@ describe('what a stop paints and how it ranks', () => {
     const s = weekendStops(decodeHourly(payload()), (T0 + 10 * 3600) * 1000)
     expect(s.find((x) => x.clock === 'Sat 20:00')!.mode).toBe('COLD_WET')
     expect(s.find((x) => x.clock === 'Sat 20:00')!.scene).toBe('rain')
+  })
+})
+
+describe('the wind (2026-10-26)', () => {
+  it('is read per hour when the payload carries it, and the hour blowing now is the one the pane gets', () => {
+    const n = 48
+    const p = payload(n) as { hourly: Record<string, unknown[]> }
+    p.hourly.wind_speed_10m = Array.from({ length: n }, (_, i) => 10 + i)
+    p.hourly.wind_direction_10m = Array.from({ length: n }, (_, i) => (i * 10) % 360)
+    const h = decodeHourly(p)
+    expect(h[5].wind).toBe(15); expect(h[5].windDir).toBe(50)
+    expect(windOf(h[5])).toEqual({ speed: 15, dir: 50 })
+    expect(windAt(h, (T0 + 5 * 3600 + 1800) * 1000)).toEqual({ speed: 15, dir: 50 })
+    expect(windAt(h, (T0 - 3600) * 1000)).toBeNull()
+  })
+  it('an hour without a wind has none — the pane stays still rather than guessing', () => {
+    const h = decodeHourly(payload(12))
+    expect(h[0].wind).toBeNull(); expect(windOf(h[0])).toBeNull(); expect(windAt(h, (T0 + 1800) * 1000)).toBeNull()
+    expect(windOf(null)).toBeNull()
   })
 })
