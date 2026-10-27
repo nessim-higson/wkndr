@@ -64,6 +64,19 @@
       ],
       "port": 4219,
       "autoPort": true
+    },
+    {
+      "_comment": "Arena IP + video guideline books (lives in ~/CLAUDE/projects/prototypes/arena-ip, not in this repo).",
+      "name": "arena-ip",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "4241",
+        "--directory",
+        "/Users/nessimhigson/CLAUDE/projects/prototypes/arena-ip"
+      ],
+      "port": 4241
     }
   ]
 }
