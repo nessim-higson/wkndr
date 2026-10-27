@@ -2,18 +2,6 @@
  "v": 1,
  "runs": [
   {
-   "date": "2026-09-23",
-   "kind": "daily",
-   "sources": {
-    "Het Parool PS": 6,
-    "Subbacultcha": 6,
-    "Amsterdam Foodie": 6,
-    "I amsterdam": 33,
-    "Resident Advisor": 30
-   },
-   "fresh": 8
-  },
-  {
    "date": "2026-09-24",
    "kind": "daily",
    "sources": {
@@ -663,6 +651,18 @@
     "Amsterdam Foodie": 6
    },
    "fresh": 47
+  },
+  {
+   "date": "2026-10-27",
+   "kind": "daily",
+   "sources": {
+    "Het Parool PS": 6,
+    "Subbacultcha": 6,
+    "Amsterdam Foodie": 6,
+    "I amsterdam": 53,
+    "Resident Advisor": 30
+   },
+   "fresh": 7
   }
  ],
  "alerts": []
