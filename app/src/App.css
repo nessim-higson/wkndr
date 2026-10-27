@@ -200,6 +200,35 @@
   transition: background 0.14s;
 }
 .sv-open:hover { background: rgba(0, 0, 0, 0.09); }
+/* the saves panel's two shelves (V.12.2): this weekend's plan, and Later */
+.sv-tabs {
+  display: inline-flex; gap: 2px; margin: 0 4px 8px; padding: 3px; border-radius: 999px;
+  background: rgba(0, 0, 0, 0.06); border: 1px solid rgba(0, 0, 0, 0.08);
+}
+.sv-tabs button {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 11px; font-weight: 600; letter-spacing: 0.02em; padding: 6px 11px; border-radius: 999px;
+  color: inherit; opacity: 0.6; transition: all 0.14s;
+}
+.sv-tabs button.on { background: #1c1c1a; color: #faf8f3; opacity: 1; }
+.sv-thumb svg { color: var(--ink-4); }
+/* did you go? — one finished save at a time, two answers, no third option */
+.sv-ask { margin-top: 6px; padding-top: 2px; border-top: 1px solid rgba(0, 0, 0, 0.08); }
+.sv-ask-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 6px 6px 8px; }
+.sv-ask-row .sv-meta { flex: 1; }
+.sv-ask-btns { display: inline-flex; gap: 6px; flex-shrink: 0; }
+.sv-ask-btns button {
+  font-size: 11px; font-weight: 600; padding: 6px 11px; border-radius: 999px;
+  background: rgba(0, 0, 0, 0.05); border: 1px solid rgba(0, 0, 0, 0.12); color: inherit; transition: all 0.14s;
+}
+.sv-ask-btns button:first-child { background: #1c1c1a; color: #faf8f3; border-color: #1c1c1a; }
+.sv-ask-btns button:hover { filter: brightness(1.15); }
+.bar-pill--acct { max-width: 100%; }
+.bar-pill--acct.on { background: rgba(0, 0, 0, 0.05); color: #1c1c1a; border-color: rgba(0, 0, 0, 0.12); }
+.bar-pill--acct.on svg { color: var(--accent); }
+.ctx-bar.later > span { display: inline-flex; align-items: center; gap: 6px; }
+.ctx-bar.later > span b { font-weight: 700; }
+.ctx-bar.later > span svg { flex-shrink: 0; color: var(--accent); }
 .sv-empty { text-align: center; padding: 18px 14px 16px; display: flex; flex-direction: column; align-items: center; gap: 6px; }
 .sv-empty svg { color: var(--ink-4); }
 .sv-empty b { font-size: 14px; font-weight: 700; }

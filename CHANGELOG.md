@@ -14,6 +14,35 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.12.2 · app] — 2026-10-27 — THE ACCOUNT (saves and taste that follow you)
+Ness, 26 Oct: "I want to look at having an account that I can log into and then have saved events and
+things to do for the future." Until today a save lived in one browser's localStorage and the match link
+was the only thing that ever left the phone. Free, no passwords, no Google — a mailed link.
+- **THE WORKER** (`worker/account/`, Cloudflare Worker + KV, `src/index.ts` + `src/lib.ts`) — `POST /login`
+  mints a one-time 15-minute token and mails it through the brief's Resend account (`MAIL_PROVIDER=none`
+  logs it instead); the answer is the same for a known and an unknown address, and the floods are shaped
+  so that nothing leaks (10/IP → 429; 3/address → answered as mailed, and not). `GET /auth/<token>` creates
+  the record on the tap, mints a 90-day bearer session and bounces to the app with a 2-minute exchange
+  code in the URL fragment — the session never rides in a URL. `GET/PUT /state` carries
+  `{saves, declines, taste, later, went}` with a server-owned version: a write on the version you last saw
+  wins; any other is a 409 with the stored document and the client merges. `POST /logout`.
+  Lifecycle + write rule driven end to end in `tests/worker-account.test.ts` (in-memory KV with a clock).
+- **THE APP** (`lib/account.ts`, `lib/useAccount.ts`, `components/AccountSheet.tsx`) — ≡ → Account → the
+  paper sheet: one field, "Send me a link", "Check your mail". Signed in, saved / taste / this week's passes
+  are projected into a local mirror, merged with the account on load and written through 1.5 s after the
+  last change; a 409 merges and retries. `mergeState` (tested): saves union, the earlier moment wins;
+  declines union within the week; taste from the newer document plus what only the other knew — never
+  summed, so merging twice is a no-op; answers deliberate. Signed out = exactly V.12.1.
+- **THE LATER SHELF** — a save for a date after the served weekend, or an "Until …" run outliving it, is a
+  thing for the future, not Saturday's plan: the saves panel grows a second tab, soonest first (a run by
+  its end), rows that outlive the feed (snapshots carry title, when, dates, link). In the week a shelved
+  date arrives, one quiet pill under the header — once, dismissable, yields to undo and more-like.
+- **DID YOU GO?** — a finished save asks once in the panel, Went / Didn't, kept in the account state.
+  The first outcome data WKNDR has ever stored (`docs/moat.md` §6 item 1).
+- `lib/when.ts firstDateOf` — a run's opening day, where `whenStartDate` deliberately answers null.
+- Left for Ness: the Resend key (`worker/account/README.md`). Left out: the Later split in the dev-only
+  Itinerary; email change; account deletion.
+
 ## [V.12.1 · app] — 2026-10-23 — THE UMBRELLA (one festival, never a wall)
 Ness, on the ADE weekend: "it was heavy ADE. Which makes sense. Can we sprinkle in some other relevant
 events please." The 23–25 Oct deck opened ADE in 7 of its first 11 slots: a dozen honest cards, each

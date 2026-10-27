@@ -2,7 +2,7 @@ import { useCurrentWeather } from './components/useCurrentWeather'
 import './components/FaceMaterials.css'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { AnimatePresence, MotionConfig, motion } from 'framer-motion'
-import { Shuffle, Clock, CloudRain, CloudSun, Sun, Cloud, Moon, Snowflake, LayoutGrid, Star, ArrowUpRight, LocateFixed, Info, RotateCw, RotateCcw, X, Heart, Navigation } from 'lucide-react'
+import { Shuffle, Clock, CloudRain, CloudSun, Sun, Cloud, Moon, Snowflake, LayoutGrid, Star, ArrowUpRight, LocateFixed, Info, RotateCw, RotateCcw, X, Heart, Navigation, CalendarClock, User } from 'lucide-react'
 
 // subtle haptic on commit/save (Android/Chrome; iOS Safari ignores navigator.vibrate)
 const haptic = (ms = 10) => { try { navigator.vibrate?.(ms) } catch { /* unsupported */ } }
@@ -30,6 +30,10 @@ import { FanView } from './components/FanView'
 import { CardDetail } from './components/CardDetail'
 import { Intro } from './components/Intro'
 import { InputsSheet } from './components/InputsSheet'
+import { AccountSheet } from './components/AccountSheet'
+import { LaterRows, AskWent } from './components/LaterShelf'
+import { useAccount } from './lib/useAccount'
+import { accountOn } from './lib/account'
 import { FilterSheet } from './components/FilterSheet'
 import { ShareSheet } from './components/ShareSheet'
 import { MatchGame } from './components/MatchGame'
@@ -453,6 +457,17 @@ export default function App() {
     },
     [rawPicks, topMatches],
   )
+  // THE ACCOUNT (V.12.2, lib/useAccount.ts). Projects saved / taste / swiped into a local mirror —
+  // the Later shelf and "did you go?" read that mirror signed OUT too — and, signed in, keeps it in
+  // step with worker/account (merge on load, debounced write-through). `apply` is the one door a
+  // merged document re-enters the app through. Signed out, nothing below changes a thing.
+  const account = useAccount({
+    saved, taste, swiped, picks: cityPicks,
+    apply: ({ saved: s, taste: t, swiped: w }) => { setSaved(s); setTaste(t); if (w) setSwiped(w) },
+  })
+  const [accountOpen, setAccountOpen] = useState(false)
+  const [shelf, setShelf] = useState<'weekend' | 'later'>('weekend')   // the saves panel's tab
+  const pickById = useMemo(() => new Map(cityPicks.map((p) => [p.id, p])), [cityPicks])
   // resolve the share-link tokens (short codes, or legacy full ids) against the ACTIVE pool —
   // everything downstream (filter, save-all, match deck) works in real pick ids
   const sharedPickIds = useMemo(
@@ -772,6 +787,7 @@ export default function App() {
   const savedGroups = useMemo(() => {
     const groups = new Map<string, { label: string; order: number; items: Pick[] }>()
     for (const p of savedPicks) {
+      if (account.laterIds.has(p.id)) continue   // on the Later tab, not in the weekend plan
       const g = whenDayGroup(p.when)
       const order = whenSortKey(p.when)
       const grp = groups.get(g.key) ?? { label: g.label, order, items: [] }
@@ -782,7 +798,8 @@ export default function App() {
     return [...groups.values()]
       .map((grp) => ({ ...grp, items: [...grp.items].sort((a, b) => whenSortKey(a.when) - whenSortKey(b.when)) }))
       .sort((a, b) => a.order - b.order)
-  }, [savedPicks])
+  }, [savedPicks, account.laterIds])
+  const weekendCount = useMemo(() => savedGroups.reduce((n, g) => n + g.items.length, 0), [savedGroups])
 
   // DEAL THE WINGS — once. Returns whether anything new joined the pool. Single-flight; a second
   // call while the fetch is out is a no-op, and once dealt (even to nothing) it never re-fetches.
@@ -1190,6 +1207,22 @@ export default function App() {
                       </div>
                     </div>
 
+                    {accountOn() && (
+                    <div className="bar-group">
+                      <span className="bar-label">Account</span>
+                      <div className="bar-row">
+                        <button className={`bar-pill bar-pill--acct${account.session ? ' on' : ''}`} onClick={() => { setAccountOpen(true); setBarOpen(false) }}>
+                          <User size={14} strokeWidth={2.2} /> {account.session ? account.session.email : 'Sign in'}
+                        </button>
+                      </div>
+                      <span className="bar-sublabel">
+                        {account.session
+                          ? (account.sync === 'syncing' ? 'syncing…' : account.sync === 'offline' ? 'offline · kept here until you’re back' : 'saves + taste follow you · synced')
+                          : 'free · a mailed link, no password · saves + taste on every device'}
+                      </span>
+                    </div>
+                    )}
+
                     {DEVUI && (
                     <div className="bar-group">
                       <span className="bar-label">Taste · dev</span>
@@ -1313,15 +1346,32 @@ export default function App() {
                       <>
                         <div className="sv-head">
                           <div className="sv-head-txt">
-                            <span className="sv-title">Your weekend</span>
-                            <span className="sv-sub">{saved.size} saved</span>
+                            <span className="sv-title">{shelf === 'later' ? 'Later' : 'Your weekend'}</span>
+                            <span className="sv-sub">{shelf === 'later' ? `${account.later.length} for the weeks ahead` : `${weekendCount} saved`}</span>
                           </div>
                           <button className="sv-share" onClick={() => { setShareOpen(true); setSavesOpen(false) }}>
                             Share <ArrowUpRight size={14} strokeWidth={2.2} />
                           </button>
                         </div>
+                        {/* THE LATER SHELF (V.12.2): a save for a date after this weekend, or an open run,
+                            is a thing for the future, not a plan for Saturday — it gets its own tab. */}
+                        {account.later.length > 0 && (
+                          <div className="sv-tabs" role="tablist">
+                            <button role="tab" aria-selected={shelf === 'weekend'} className={shelf === 'weekend' ? 'on' : ''} onClick={() => setShelf('weekend')}>This weekend · {weekendCount}</button>
+                            <button role="tab" aria-selected={shelf === 'later'} className={shelf === 'later' ? 'on' : ''} onClick={() => setShelf('later')}><CalendarClock size={12} strokeWidth={2.4} /> Later · {account.later.length}</button>
+                          </div>
+                        )}
                         <div className="sv-list">
-                          {savedGroups.map((group) => (
+                          {shelf === 'later' && account.later.length > 0 ? (
+                            <LaterRows
+                              entries={account.later}
+                              picks={pickById}
+                              onOpen={(p) => { openDetail(p); setSavesOpen(false) }}
+                              onRemove={(id) => setSaved((s) => { const n = new Set(s); n.delete(id); return n })}
+                            />
+                          ) : savedGroups.length === 0 ? (
+                            <div className="sv-empty"><span>Nothing for this weekend yet — {account.later.length} on the Later shelf.</span></div>
+                          ) : savedGroups.map((group) => (
                             <div className="sv-group" key={group.label}>
                               <div className="sv-group-label">{group.label}</div>
                               {group.items.map((p) => {
@@ -1349,6 +1399,7 @@ export default function App() {
                             </div>
                           ))}
                         </div>
+                        <AskWent entries={account.askAbout} onAnswer={account.answerWent} />
                         {DEVUI && (
                           <button className="sv-open" onClick={() => { setFilter('saved'); setView('list'); setSavesOpen(false) }}>
                             Open as list <ArrowUpRight size={14} strokeWidth={2.2} />
@@ -1393,6 +1444,17 @@ export default function App() {
           <div className="ctx-bar">
             <span>Your weekend · {saved.size} saved</span>
             <button onClick={() => setShareOpen(true)}>Share <ArrowUpRight size={14} strokeWidth={2.2} /></button>
+          </div>
+        )}
+        {/* THE ARRIVAL (V.12.2) — a save you shelved for later whose week has come. Quiet: one pill,
+            once a week, dismissable; it yields to the undo pill and the more-like bar. */}
+        {account.arriving.length > 0 && filter === 'all' && !intro && !moreLike && !(undoable && undoShown) && !barOpen && (
+          <div className="ctx-bar later">
+            <span><CalendarClock size={13} strokeWidth={2.4} /> Saved for this weekend · <b>{account.arriving[0].title}</b>{account.arriving.length > 1 ? ` +${account.arriving.length - 1}` : ''}</span>
+            <button onClick={() => { account.arriving.forEach(account.markSeen); setSavesOpen(true); setShelf('weekend') }}>Open</button>
+            <button className="ctx-x" onClick={() => account.arriving.forEach(account.markSeen)} aria-label="Dismiss">
+              <X size={15} strokeWidth={2.5} />
+            </button>
           </div>
         )}
         {filter === 'shared' && SHARED_IDS && (
@@ -1622,6 +1684,17 @@ export default function App() {
         cityLabel={city.label}
         seed={city.seed}
         feedAt={feedAt}
+      />
+      <AccountSheet
+        open={accountOpen}
+        onClose={() => setAccountOpen(false)}
+        session={account.session}
+        status={account.status}
+        sync={account.sync}
+        syncedAt={account.syncedAt}
+        onSignIn={account.signIn}
+        onSignOut={() => { account.signOut(); flash('Signed out · your saves stay on this device') }}
+        onReset={account.resetStatus}
       />
       <ShareSheet
         open={shareOpen}

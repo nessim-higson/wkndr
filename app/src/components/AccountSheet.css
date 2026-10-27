@@ -1,0 +1,30 @@
+/* The account sheet — the paper sheet (InputsSheet.css) with a one-field form on it. */
+.acct .sheet-sub b { font-weight: 600; color: var(--ink); }
+.acct-form { display: flex; flex-direction: column; gap: 10px; margin-top: 22px; }
+.acct-input {
+  width: 100%;
+  font-size: 16px;              /* ≥16px: iOS Safari won't zoom the page on focus */
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: var(--paper-2);
+  border: 1px solid var(--rule);
+  color: var(--ink);
+  outline: none;
+  transition: border-color 0.14s, background 0.14s;
+}
+.acct-input::placeholder { color: var(--ink-4); }
+.acct-input:focus { border-color: var(--ink-3); background: #fff; }
+.acct-input:disabled { opacity: 0.6; }
+.acct-send { margin-top: 0; }
+.acct-send:disabled { opacity: 0.4; cursor: default; }
+.acct-note { margin-top: 12px; font-size: 13px; line-height: 1.5; color: var(--accent-deep); }
+.acct-note--off { color: var(--ink-3); }
+.acct-mail { display: grid; place-items: center; margin: 26px 0 6px; color: var(--accent); }
+.acct-again {
+  width: 100%; margin-top: 10px;
+  font-size: 13px; font-weight: 600; padding: 10px; border-radius: 999px;
+  color: var(--ink-3); background: transparent; border: 1px solid var(--rule);
+  transition: background 0.14s;
+}
+.acct-again:hover { background: var(--paper-2); }
+.acct-out { display: inline-flex; align-items: center; justify-content: center; gap: 8px; margin-top: 22px; }

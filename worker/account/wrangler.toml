@@ -1,0 +1,25 @@
+# WKNDR account — Cloudflare Worker + KV: magic-link sign-in, and the saves/taste state that
+# follows a person between devices. See README.md for the deploy and the one secret.
+name = "wkndr-account"
+main = "src/index.ts"
+compatibility_date = "2026-07-01"
+
+# The account store. Create once with `npx wrangler kv namespace create ACCOUNT` and paste the id.
+# A namespace id is a routing handle, not a credential — safe in the repo, like the list's.
+[[kv_namespaces]]
+binding = "ACCOUNT"
+id = "0b262e1cc80b4257b6f89d99305195e6"
+
+[vars]
+# 'resend' to actually mail the link · 'none' to log it instead (local proof — no key, no mail leaves)
+MAIL_PROVIDER = "resend"
+MAIL_FROM = "WKNDR <hello@wkndr.xyz>"
+APP_ORIGIN = "https://app.wkndr.xyz"
+
+# SECRETS — never in this file, set with `npx wrangler secret put <NAME>`:
+#   MAIL_API_KEY   the Resend API key — the SAME one the Friday brief needs (list/README.md § Status, step 1).
+#                  Until it is set the worker runs, sessions and state work, and /login answers
+#                  {ok:true, delivery:'off'} — the app says the mail isn't switched on yet.
+
+[observability]
+enabled = true

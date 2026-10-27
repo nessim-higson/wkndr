@@ -334,6 +334,15 @@ html[data-field='glass'] .cal-veil { background: color-mix(in srgb, #f6f8f4 72%,
 .app--glass .saves-panel .sv-open { color: var(--pane-ink); background: color-mix(in srgb, var(--pane-ink) 8%, transparent); border-color: color-mix(in srgb, var(--pane-ink) 18%, transparent); }
 .app--glass .saves-panel .sv-open:hover { background: color-mix(in srgb, var(--pane-ink) 14%, transparent); }
 .app--glass .saves-panel .sv-thumb { background-color: color-mix(in srgb, var(--pane-ink) 12%, transparent); }
+/* the Later tab + did-you-go (V.12.2): ink follows the pane like everything else in the panel */
+.app--glass .saves-panel .sv-tabs { background: color-mix(in srgb, var(--pane-ink) 8%, transparent); border-color: color-mix(in srgb, var(--pane-ink) 14%, transparent); }
+.app--glass .saves-panel .sv-tabs button.on { background: var(--pane-ink); color: color-mix(in srgb, var(--pane) 92%, #fff); }
+.app--glass .saves-panel .sv-ask { border-top-color: color-mix(in srgb, var(--pane-ink) 12%, transparent); }
+.app--glass .saves-panel .sv-ask-btns button { background: color-mix(in srgb, var(--pane-ink) 8%, transparent); border-color: color-mix(in srgb, var(--pane-ink) 18%, transparent); }
+.app--glass .saves-panel .sv-ask-btns button:first-child { background: var(--pane-ink); color: color-mix(in srgb, var(--pane) 92%, #fff); border-color: var(--pane-ink); }
+.app--glass .saves-panel .sv-thumb svg { color: color-mix(in srgb, var(--pane-ink) 55%, transparent); }
+.app--glass .topbar-module .bar-pill--acct.on { color: var(--pane-ink); background: color-mix(in srgb, var(--pane-ink) 8%, transparent); border-color: color-mix(in srgb, var(--pane-ink) 18%, transparent); }
+.app--glass .topbar-module .bar-pill--acct.on svg { color: var(--accent); }
 
 /* ═══ INK ON GLASS (2026-09-19) ═══════════════════════════════════════════════════════════════
    The frost is firmer now (72% on the sheets, 76% / 86% on the panes) and the secondary ink is

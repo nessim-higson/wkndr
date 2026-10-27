@@ -30,6 +30,8 @@ up to the blast (a dry run against the live worker: `audience 0 confirmed · Nob
 1. **A Resend account** (resend.com, free tier is enough to start) → create an API key → from this
    folder: `npx wrangler secret put MAIL_API_KEY` and paste it; also add `MAIL_API_KEY=…` to `list/.env`
    so `send.ts --send` can use it.
+   **The same key also switches on account sign-in** — set it in `worker/account/` too
+   (`worker/account/README.md`); one Resend account, two workers.
 2. **Verify the sending domain** in Resend: add `wkndr.xyz`, and paste the **three DNS records** it
    prints (SPF, DKIM, and the return-path CNAME) into the `wkndr.xyz` zone in your Cloudflare account.
    Wait for Resend to show the domain as verified. Until this is done mail goes out from Resend's

@@ -1,11 +1,11 @@
 # WKNDR — STATE (catch-me-up snapshot)
 
-_Living "where are we right now" doc — a **snapshot, not a history**. **Updated 2026-09-11.** Read this
+_Living "where are we right now" doc — a **snapshot, not a history**. **Updated 2026-10-27.** Read this
 FIRST in a new chat. For strategy + backlog see `docs/backlog.md`; for the pipeline architecture see
 `docs/pipeline-architecture.md` + `docs/source-map.md`; for **who may write to the deck vs to a personal
 profile** (board / Tune / airlock — read before touching either) see `docs/curation-surfaces.md`; for the
 **board roadmap** (auto-compile tracks) see `docs/board-roadmap.md`; for full **version history** see
-`CHANGELOG.md` (current to app **V.11.12** / board V.10) and the **git log / tags**. Onboarding:
+`CHANGELOG.md` (current to app **V.12.2** / board V.10) and the **git log / tags**. Onboarding:
 `CLAUDE.md`; for any coding agent (Codex included) **`AGENTS.md`** is the working manual and
 `docs/variations/` the prototype protocol + the open briefs. App lives in `/app` (Vite + React + TS, run with `bun`); ships to **Cloudflare Pages**
 (`wkndr.xyz` + `app.wkndr.xyz`) **and** GitHub Pages (legacy, keeps old share links alive)._
@@ -30,6 +30,34 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
 > sessions update (today it's on load).
 
 ## Live right now
+- **2026-10-27 — THE ACCOUNT (V.12.2).** Ness, 26 Oct: "I want to look at having an account that I can log
+  into and then have saved events and things to do for the future." Built as the first account layer — FREE,
+  no passwords, no Google: a **magic link** on the person's email, a third tiny worker (`worker/account/`,
+  KV, its own honest story next to the relay's 14-day amnesia and the list's kept address) mailing through
+  the SAME Resend account the brief uses. `POST /login` mints a one-time 15-minute token and answers
+  identically for a known and an unknown address; `GET /auth/<token>` creates the record ON THE TAP, mints
+  a 90-day session and redirects to the app with a 2-minute exchange code in the fragment (the session
+  never rides in a URL); `GET/PUT /state` is last-write-wins ON THE VERSION THE CLIENT SAW — a stale
+  write gets a 409 with the stored document and the APP merges (`lib/account.ts mergeState`: saves union,
+  taste from the newer document plus what only the other knew — never summed — answers deliberate). The
+  app: ≡ → **Account** → the sheet (email → "Check your mail"); signed in, the local `wkndr.saved.v1` /
+  `wkndr.taste.v1` / this week's passes are merged with the account on load and written through,
+  debounced (`lib/useAccount.ts`); signed out is exactly yesterday's app. Two things ride along and work
+  signed out too, from the same local mirror: **THE LATER SHELF** — a save dated after the served
+  weekend, or an "Until …" run outliving it, gets its own tab in the saves panel, soonest first, and
+  comes back as a quiet pill under the header in the week its date arrives, once; and **DID YOU GO?** —
+  a finished save asks once, Went / Didn't, stored in the account state: the first OUTCOME data
+  (moat.md §6 item 1). Saves are snapshotted (title, when, dates, link) so both outlive the weekly feed.
+  26 new tests (the worker lifecycle against an in-memory KV with a clock; the merge, the shelf, the
+  pill, the question). Proved end to end locally in `MAIL_PROVIDER=none` (link logged → followed →
+  signed in → a save → a second device's PUT → merged on reload). Worker deployed to
+  `wkndr-account.ness-13b.workers.dev` (KV `ACCOUNT`). **One thing is Ness's: the Resend key** — the
+  same `MAIL_API_KEY` the brief needs (list/README.md § Status step 1), `npx wrangler secret put
+  MAIL_API_KEY` in `worker/account/`; until then `/login` answers `delivery:'off'` and the sheet says
+  "Sign-in mail isn't switched on yet". The law held: nothing here writes to the deck
+  (curation-surfaces §2); the taste profile stays per person. Not built, on purpose: the Later tab in
+  the dev-only Itinerary list (the saves panel is the surface), an email change, account deletion
+  (a `DELETE /me` is a ten-line follow-up when a stranger asks for it).
 - **2026-10-26 — THE FRIDAY BRIEF HAS A RENDERER.** Ness: "I want to kick start the email feature." The
   list worker, the send script and the four template comps had been built in July and sat dark; the
   missing step was the file. `bun run brief` (`app/scripts/brief.ts`, 7 tests) writes template D from

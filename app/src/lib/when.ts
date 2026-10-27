@@ -180,6 +180,14 @@ export function whenDayGroup(when: string, now: Date = new Date()): { key: strin
   return { key: start.toISOString().slice(0, 10), label }
 }
 
+/** The FIRST concrete date a `when` refers to — a run's opening day included ("Opens Sat 19 Sep ·
+ *  until Sun 31 Jan" → 19 Sep), where whenStartDate deliberately answers null for anything longer
+ *  than a weekend. The Later shelf (lib/account.ts) files a save by this. */
+export function firstDateOf(when: string, now: Date = new Date()): Date | null {
+  const dates = datesIn(when || '', now)
+  return dates.length ? dates[0] : null
+}
+
 /** The LATEST concrete date a `when` refers to, or null if it's undated / evergreen. */
 export function latestDateOf(when: string, now: Date = new Date()): Date | null {
   const dates = datesIn(when || '', now)

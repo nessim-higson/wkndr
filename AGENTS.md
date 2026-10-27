@@ -2,8 +2,9 @@
 
 WKNDR is a weather-aware weekend deck for Amsterdam (`app.wkndr.xyz`). A weekly pipeline crawls
 the city's event sources, image-verifies them, ranks them against the coming weekend's forecast and
-a hand-trained taste engine; you swipe; saves become a shareable link. Amsterdam only, no accounts,
-no backend beyond two tiny Cloudflare workers.
+a hand-trained taste engine; you swipe; saves become a shareable link. Amsterdam only, an optional
+free magic-link account (`worker/account/`, V.12.2) that syncs saves + taste, and no other backend beyond
+three tiny Cloudflare workers (relay, list, account) plus the board's curate worker.
 
 **Read in this order before touching anything:** `STATE.md` (the kept-current snapshot — what's
 live, what's law, what's open) → `CLAUDE.md` (design lineage) → `docs/curation-surfaces.md` (who may
