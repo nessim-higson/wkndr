@@ -89,6 +89,19 @@
         "/Users/nessimhigson/CLAUDE/projects/prototypes/through-glass/out"
       ],
       "port": 4243
+    },
+    {
+      "_comment": "Arena video guidelines motion labs + sweep (lives in ~/CLAUDE/projects/prototypes/arena-video-guidelines/motion).",
+      "name": "arena-motion",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "4242",
+        "--directory",
+        "/Users/nessimhigson/CLAUDE/projects/prototypes/arena-video-guidelines/motion"
+      ],
+      "port": 4242
     }
   ]
 }
