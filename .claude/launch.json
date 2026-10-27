@@ -77,6 +77,18 @@
         "/Users/nessimhigson/CLAUDE/projects/prototypes/arena-ip"
       ],
       "port": 4241
+    },
+    {
+      "name": "through-glass",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "4243",
+        "--directory",
+        "/Users/nessimhigson/CLAUDE/projects/prototypes/through-glass/out"
+      ],
+      "port": 4243
     }
   ]
 }
