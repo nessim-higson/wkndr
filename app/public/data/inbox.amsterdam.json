@@ -1,6 +1,6 @@
 {
- "generatedAt": "2026-10-27T10:46:21.207Z",
- "count": 8,
+ "generatedAt": "2026-10-28T11:29:19.895Z",
+ "count": 11,
  "inbox": [
   {
    "id": "web-iams-the-land-of-sprinkles-het-land-van-hagelslag",
@@ -30,8 +30,119 @@
     "https://app.thefeedfactory.nl/api/assets/6a16892dfd31667bcf5839e6/CATPC4.webp"
    ],
    "firstSeen": "2026-10-27",
-   "inboxScore": 8.4,
-   "scoreWhy": "seen today · on this weekend · taste: land museum"
+   "inboxScore": 8,
+   "scoreWhy": "seen 1d ago · on this weekend · taste: land museum"
+  },
+  {
+   "id": "web-iams-amsterdam-polish-film-festival-andrzej-wajda-past-present-possible",
+   "title": "Amsterdam Polish Film Festival - Andrzej Wajda. Past Present Possible",
+   "venue": "De Balie",
+   "area": "Kleine-Gartmanplantsoen 10",
+   "when": "Fri 30 Oct · 19:00",
+   "category": "out",
+   "freshness": "weekend",
+   "outdoor": true,
+   "kid": false,
+   "price": "ticketed",
+   "image": "https://app.thefeedfactory.nl/api/assets/6ac97a03a189acbf4d5d73fc/APFF26__header.webp",
+   "blurb": "One hundred years after his birth and ten years after his death Under the title Andrzej Wajda. Past. Present.",
+   "why": "On I amsterdam",
+   "source": "I amsterdam",
+   "link": "https://www.iamsterdam.com/en/whats-on/calendar/festivals/events/amsterdam-polish-film-festival-andrzej-wajda-past-present-possible",
+   "weatherFit": [
+    "HOT",
+    "WARM",
+    "COOL"
+   ],
+   "verify": false,
+   "_gallery": [
+    "https://app.thefeedfactory.nl/api/assets/6ac97a21a189acbf4d5d743a/APFF26__header3.webp"
+   ],
+   "firstSeen": "2026-10-28",
+   "inboxScore": 7.7,
+   "scoreWhy": "seen today · on this weekend · taste: festival"
+  },
+  {
+   "id": "web-ra-2571388",
+   "title": "Y2K Halloween",
+   "venue": "Toekomstmuziek",
+   "area": "",
+   "when": "Fri 30 Oct · 21:00",
+   "category": "live",
+   "freshness": "weekend",
+   "outdoor": false,
+   "kid": false,
+   "price": "",
+   "blurb": "Club night at Toekomstmuziek.",
+   "why": "On Resident Advisor",
+   "source": "Resident Advisor",
+   "link": "https://ra.co/events/2571388",
+   "weatherFit": [
+    "HOT",
+    "WARM",
+    "COOL",
+    "COLD_WET",
+    "VOLATILE"
+   ],
+   "firstSeen": "2026-10-28",
+   "inboxScore": 7,
+   "scoreWhy": "seen today · on this weekend"
+  },
+  {
+   "id": "web-iams-we-love-00s-halloween",
+   "title": "We Love 00s Halloween",
+   "venue": "Paradiso",
+   "area": "Weteringschans 6-8",
+   "when": "Fri 30 – Sat 31 Oct",
+   "category": "drink",
+   "freshness": "weekend",
+   "outdoor": false,
+   "kid": false,
+   "price": "ticketed",
+   "image": "https://app.thefeedfactory.nl/api/assets/6aab22b406b79235624d59b3/WeLove00s.webp",
+   "blurb": "Afterparty London Calling This Halloween edition of We Love 00s is also the official afterparty for the Friday of London Calling.",
+   "why": "On I amsterdam",
+   "source": "I amsterdam",
+   "link": "https://www.iamsterdam.com/en/whats-on/calendar/nightlife/clubbing/we-love-00s-halloween",
+   "weatherFit": [
+    "HOT",
+    "WARM",
+    "COOL",
+    "COLD_WET",
+    "VOLATILE"
+   ],
+   "verify": false,
+   "firstSeen": "2026-10-28",
+   "inboxScore": 7,
+   "scoreWhy": "seen today · on this weekend"
+  },
+  {
+   "id": "web-iams-david-linszen-striptease-van-de-dood-reprise",
+   "title": "David Linszen - Striptease Van De Dood (reprise)",
+   "venue": "De Kleine Komedie",
+   "area": "Amstel 56-58",
+   "when": "Until Sat 30 Jan",
+   "category": "stage",
+   "freshness": "weekend",
+   "outdoor": false,
+   "kid": false,
+   "price": "ticketed",
+   "image": "https://app.thefeedfactory.nl/api/assets/6a0e473bfd31667bcf55de41/aHR0cHM6Ly93d3cuZGVrbGVpbmVrb21lZGllLm5sLy9jbXNfZmlsZXMvc3lzdGVtL2ltYWdlcy9pbWcxNzQ1OV9vcmlnLmpwZw.webp",
+   "blurb": "Musical comedy show by a striking new talent David Linszen won every prize at the Leids Cabaret Festival and became a regular at Comedytrain.",
+   "why": "On I amsterdam",
+   "source": "I amsterdam",
+   "link": "https://www.iamsterdam.com/en/whats-on/calendar/theatre-and-stage/stage/david-linszen-striptease-van-de-dood-reprise",
+   "weatherFit": [
+    "HOT",
+    "WARM",
+    "COOL",
+    "COLD_WET",
+    "VOLATILE"
+   ],
+   "verify": false,
+   "firstSeen": "2026-10-28",
+   "inboxScore": 7,
+   "scoreWhy": "seen today · on this weekend"
   },
   {
    "id": "web-ra-2493209",
@@ -57,8 +168,8 @@
     "VOLATILE"
    ],
    "firstSeen": "2026-10-26",
-   "inboxScore": 7.4,
-   "scoreWhy": "seen 1d ago · on this weekend · taste: festival"
+   "inboxScore": 7,
+   "scoreWhy": "seen 2d ago · on this weekend · taste: festival"
   },
   {
    "id": "web-iams-zing-cirkel-concertgebouw",
@@ -85,12 +196,12 @@
    ],
    "verify": false,
    "firstSeen": "2026-10-27",
-   "inboxScore": 7,
-   "scoreWhy": "seen today · on this weekend"
+   "inboxScore": 6.7,
+   "scoreWhy": "seen 1d ago · on this weekend"
   },
   {
-   "id": "rss-het-parool-ps-een-jaar-lang-in-de-leer-bij-een-van-de-beste-or",
-   "title": "Een jaar lang in de leer bij een van de beste orkesten van Nederland",
+   "id": "rss-het-parool-ps-david-33-en-miriam-30-ontmoetten-elkaar-in-club-",
+   "title": "David (33) en Miriam (30) ontmoetten elkaar in Club Raum: ‘Ze liet mij inzien dat ik niet ",
    "venue": "Het Parool PS",
    "area": "",
    "when": "This weekend",
@@ -102,7 +213,7 @@
    "blurb": "Featured this week by Het Parool PS.",
    "why": "In this week's Het Parool PS",
    "source": "Het Parool PS",
-   "link": "https://www.parool.nl/kunst-media/een-jaar-lang-in-de-leer-bij-een-van-de-beste-orkesten-van-nederland~be8ba834/",
+   "link": "https://www.parool.nl/ps/david-33-en-miriam-30-ontmoetten-elkaar-in-club-raum-ze-liet-mij-inzien-dat-ik-niet-zo-debiel-moest-doen-met-mijn-getwijfel~b8534e5b/",
    "weatherFit": [
     "HOT",
     "WARM",
@@ -111,13 +222,13 @@
     "VOLATILE"
    ],
    "verify": true,
-   "firstSeen": "2026-10-27",
+   "firstSeen": "2026-10-28",
    "inboxScore": 3.3,
-   "scoreWhy": "seen today · taste: nederland"
+   "scoreWhy": "seen today · taste: club"
   },
   {
-   "id": "rss-het-parool-ps-met-je-geheime-lover-moet-je-niet-komen-in-caf-r",
-   "title": "Met je geheime lover moet je niet komen in Café-Restaurant Amsterdam, zegt een van de vast",
+   "id": "rss-het-parool-ps-wereldberoemde-schrijver-deborah-levy-in-amsterd",
+   "title": "Wereldberoemde schrijver Deborah Levy in Amsterdam voor Brainwash Festival: ‘Je moet ervan",
    "venue": "Het Parool PS",
    "area": "",
    "when": "This weekend",
@@ -129,7 +240,7 @@
    "blurb": "Featured this week by Het Parool PS.",
    "why": "In this week's Het Parool PS",
    "source": "Het Parool PS",
-   "link": "https://www.parool.nl/schuim/met-je-geheime-lover-moet-je-niet-komen-in-cafe-restaurant-amsterdam-zegt-een-van-de-vaste-gasten~b45bee10/",
+   "link": "https://www.parool.nl/ps/wereldberoemde-schrijver-deborah-levy-in-amsterdam-voor-brainwash-festival-je-moet-ervan-houden-na-te-denken-echt-na-te-denken~bcd1b534/",
    "weatherFit": [
     "HOT",
     "WARM",
@@ -138,13 +249,13 @@
     "VOLATILE"
    ],
    "verify": true,
-   "firstSeen": "2026-10-27",
+   "firstSeen": "2026-10-28",
    "inboxScore": 3.3,
-   "scoreWhy": "seen today · taste: café"
+   "scoreWhy": "seen today · taste: festival"
   },
   {
-   "id": "rss-het-parool-ps-otobong-nkanga-wordt-geroemd-om-de-uitzonderlijk",
-   "title": "Otobong Nkanga wordt geroemd om de uitzonderlijke rol die kleur in haar werk speelt",
+   "id": "rss-het-parool-ps-de-cello-ontleed-van-f-gat-tot-zangbalk-vlak-voo",
+   "title": "De cello ontleed: van f-gat tot zangbalk, vlak voor de Cello Biënnale in Amsterdam",
    "venue": "Het Parool PS",
    "area": "",
    "when": "This weekend",
@@ -156,7 +267,7 @@
    "blurb": "Featured this week by Het Parool PS.",
    "why": "In this week's Het Parool PS",
    "source": "Het Parool PS",
-   "link": "https://www.parool.nl/kunst-media/otobong-nkanga-wordt-geroemd-om-de-uitzonderlijke-rol-die-kleur-in-haar-werk-speelt~b7fcffc5/",
+   "link": "https://www.parool.nl/kunst-media/de-cello-ontleed-van-f-gat-tot-zangbalk-vlak-voor-de-cello-biennale-in-amsterdam~b1cfa988/",
    "weatherFit": [
     "HOT",
     "WARM",
@@ -165,13 +276,13 @@
     "VOLATILE"
    ],
    "verify": true,
-   "firstSeen": "2026-10-27",
+   "firstSeen": "2026-10-28",
    "inboxScore": 3,
    "scoreWhy": "seen today"
   },
   {
-   "id": "rss-het-parool-ps-theatermaker-louise-snouck-hurgronje-30-brengt-t",
-   "title": "Theatermaker Louise Snouck Hurgronje (30) brengt The Flick naar filmtheater De Uitkijk: ‘I",
+   "id": "rss-het-parool-ps-amsterdamprijs-voor-bas-kosters-naaz-en-the-patc",
+   "title": "Amsterdamprijs voor Bas Kosters, Naaz en The Patchwork Family",
    "venue": "Het Parool PS",
    "area": "",
    "when": "This weekend",
@@ -183,7 +294,7 @@
    "blurb": "Featured this week by Het Parool PS.",
    "why": "In this week's Het Parool PS",
    "source": "Het Parool PS",
-   "link": "https://www.parool.nl/ps/theatermaker-louise-snouck-hurgronje-30-brengt-the-flick-naar-filmtheater-de-uitkijk-ik-heb-veel-malle-dingen-bedacht~bf270790/",
+   "link": "https://www.parool.nl/kunst-media/amsterdamprijs-voor-bas-kosters-naaz-en-the-patchwork-family~bf15c2c8/",
    "weatherFit": [
     "HOT",
     "WARM",
@@ -192,34 +303,7 @@
     "VOLATILE"
    ],
    "verify": true,
-   "firstSeen": "2026-10-27",
-   "inboxScore": 3,
-   "scoreWhy": "seen today"
-  },
-  {
-   "id": "rss-het-parool-ps-voor-zijn-film-over-een-hacker-werkte-thijs-meuw",
-   "title": "Voor zijn film over een hacker werkte Thijs Meuwese (39) samen met experts uit de cybersec",
-   "venue": "Het Parool PS",
-   "area": "",
-   "when": "This weekend",
-   "category": "out",
-   "freshness": "weekend",
-   "outdoor": false,
-   "kid": false,
-   "price": "",
-   "blurb": "Featured this week by Het Parool PS.",
-   "why": "In this week's Het Parool PS",
-   "source": "Het Parool PS",
-   "link": "https://www.parool.nl/ps/voor-zijn-film-over-een-hacker-werkte-thijs-meuwese-39-samen-met-experts-uit-de-cybersecurity-alle-hacks-zijn-echt-uitgevoerd~b6b354e67/",
-   "weatherFit": [
-    "HOT",
-    "WARM",
-    "COOL",
-    "COLD_WET",
-    "VOLATILE"
-   ],
-   "verify": true,
-   "firstSeen": "2026-10-27",
+   "firstSeen": "2026-10-28",
    "inboxScore": 3,
    "scoreWhy": "seen today"
   }
