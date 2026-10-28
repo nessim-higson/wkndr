@@ -19,7 +19,7 @@ address is known. The account is **additive**: signed out, the app is exactly wh
 | ✅ App | `app/src/lib/account.ts` (the merge, the shelf, the question) · `lib/useAccount.ts` (the sync loop) · `components/AccountSheet.tsx` · the Later tab + "did you go?" in the saves panel |
 | ✅ Local proof | done 2026-10-27 with `wrangler dev` in `MAIL_PROVIDER=none`: link logged → followed → signed in → a save on one "device" → a second device's write through `PUT /state` → merged on reload (Later · 2, the arrival pill, the question) |
 | ✅ Deployed | `https://wkndr-account.ness-13b.workers.dev` — KV namespace `ACCOUNT` `0b262e1cc80b4257b6f89d99305195e6`, in `wrangler.toml` (2026-10-27) |
-| ⬜ **`MAIL_API_KEY`** | **the one secret that is yours** — the SAME Resend key the Friday brief needs ([list/README.md § Status](../../list/README.md), step 1). Until it is set the worker runs, sessions and state work, and `/login` answers `{ok:true, delivery:'off'}`; the app's sheet says *"Sign-in mail isn't switched on yet"* instead of *"Check your mail"*. Add the key and sign-in is live — no redeploy. |
+| ✅ **`MAIL_API_KEY`** | set 2026-10-28 — a Resend key with *Sending access* restricted to `wkndr.xyz` (shared Resend team with AFF; the domain and key are WKNDR's own). First magic link delivered from `hello@wkndr.xyz` the same afternoon. Without it the worker still runs and `/login` answers `{ok:true, delivery:'off'}`; the sheet then says *"Sign-in mail isn't switched on yet"*. |
 
 `MAIL_FROM` is `WKNDR <hello@wkndr.xyz>` — the same verified domain as the brief (the three DNS
 records in list/README.md step 2 cover both).

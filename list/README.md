@@ -25,20 +25,21 @@ up to the blast (a dry run against the live worker: `audience 0 confirmed · Nob
 | ✅ `send.ts` dry run | reads the audience off the worker, renders per-recipient unsubscribe links, prints the first email; `--send` to blast |
 | ✅ Templates | four comps + the harness, live at https://wkndr-brief.pages.dev; the renderer builds **D** |
 
-**The three steps that are yours (nothing sends until all three):**
+**The three steps that were Ness's — done 2026-10-28 (sign-in mail delivered from `hello@wkndr.xyz` that afternoon):**
 
-1. **A Resend account** (resend.com, free tier is enough to start) → create an API key → from this
-   folder: `npx wrangler secret put MAIL_API_KEY` and paste it; also add `MAIL_API_KEY=…` to `list/.env`
-   so `send.ts --send` can use it.
-   **The same key also switches on account sign-in** — set it in `worker/account/` too
-   (`worker/account/README.md`); one Resend account, two workers.
-2. **Verify the sending domain** in Resend: add `wkndr.xyz`, and paste the **three DNS records** it
-   prints (SPF, DKIM, and the return-path CNAME) into the `wkndr.xyz` zone in your Cloudflare account.
-   Wait for Resend to show the domain as verified. Until this is done mail goes out from Resend's
-   sandbox domain and deliverability is poor — do it before the first real send, not after.
-3. **Flip the form live:** in `landing/index.html` set `LIST_URL='https://wkndr-list.ness-13b.workers.dev'`
-   (it is `''` today, which hides the block). Commit; the landing deploys on push. Sign yourself and
-   your partner up first and click the confirm mails — that is subscriber one and two.
+1. ✅ **Resend key** — WKNDR lives in the existing Resend team (the one that also carries the AFF /
+   Crunchyroll access codes — a second team is a paid feature). Isolation is per domain + per key: the
+   key is *Sending access* restricted to `wkndr.xyz`, named `wkndr-workers`; it is `MAIL_API_KEY` on
+   both `wkndr-list` and `wkndr-account`. What is shared with AFF is the Free plan's 100-mails-a-day
+   cap and account standing — fine at this size; revisit (Pro, $20) once the list passes ~50.
+   `list/.env` also needs `MAIL_API_KEY=…` for `send.ts --send`.
+2. ✅ **`wkndr.xyz` verified** in Resend (Ireland region) via Cloudflare's one-click Domain Connect:
+   DKIM TXT + the `send` / `rsend` CNAMEs, all DNS-only. Still to add by hand in the Cloudflare zone:
+   a `_dmarc` TXT `v=DMARC1; p=none;` (Resend lists it, doesn't add it) and, before the first blast,
+   an Email Routing rule forwarding `friday@` / `hello@` to a read inbox — neither is a mailbox.
+   Click tracking: switch OFF under the domain's Configuration tab (plain organiser links, plain magic link).
+3. ✅ **Form live** — `LIST_URL` in `landing/index.html` points at the worker. Next: Ness + partner sign
+   up on the landing and click the confirm mails — subscriber one and two.
 
 **The weekly loop from then on** (Monday + Thursday 10:00 UTC the pipeline rebuilds the deck):
 
