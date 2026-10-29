@@ -115,6 +115,16 @@
       ],
       "port": 8097,
       "autoPort": true
+    },
+    {
+      "_comment": "Arena mnemonic motion bench: WebGL renderer + frame server (lives in ~/CLAUDE/projects/prototypes/arena-mnemonic/bench).",
+      "name": "arena-bench",
+      "runtimeExecutable": "bun",
+      "runtimeArgs": [
+        "run",
+        "/Users/nessimhigson/CLAUDE/projects/prototypes/arena-mnemonic/bench/serve.ts"
+      ],
+      "port": 4320
     }
   ]
 }
