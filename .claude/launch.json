@@ -102,6 +102,19 @@
         "/Users/nessimhigson/CLAUDE/projects/prototypes/arena-video-guidelines/motion"
       ],
       "port": 4242
+    },
+    {
+      "name": "arena-thursday",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8097",
+        "--directory",
+        "/Users/nessimhigson/CLAUDE/projects/prototypes/arena-mnemonic/thursday"
+      ],
+      "port": 8097,
+      "autoPort": true
     }
   ]
 }
