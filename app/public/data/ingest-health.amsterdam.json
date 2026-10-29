@@ -2,18 +2,6 @@
  "v": 1,
  "runs": [
   {
-   "date": "2026-09-25",
-   "kind": "daily",
-   "sources": {
-    "Het Parool PS": 6,
-    "Subbacultcha": 6,
-    "Amsterdam Foodie": 6,
-    "I amsterdam": 49,
-    "Resident Advisor": 30
-   },
-   "fresh": 2
-  },
-  {
    "date": "2026-09-26",
    "kind": "daily",
    "sources": {
@@ -653,6 +641,28 @@
     "Resident Advisor": 30
    },
    "fresh": 6
+  },
+  {
+   "date": "2026-10-29",
+   "kind": "weekly",
+   "sources": {
+    "I amsterdam · Your Little Black Book": 9,
+    "Your Little Black Book · I amsterdam": 3,
+    "Your Little Black Book": 47,
+    "I amsterdam · BIMHUIS": 2,
+    "I amsterdam": 41,
+    "Fresh find": 6,
+    "Resident Advisor": 27,
+    "Kidsproof": 2,
+    "Johan Cruijff ArenA / SeatPick": 1,
+    "Eye Filmmuseum": 3,
+    "Your Little Black Book · Kidsproof": 1,
+    "WatchPartyRadar": 1,
+    "Het Parool PS": 5,
+    "Amsterdam Foodie": 6,
+    "Subbacultcha": 6
+   },
+   "fresh": 44
   }
  ],
  "alerts": []
