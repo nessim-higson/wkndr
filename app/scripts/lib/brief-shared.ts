@@ -4,7 +4,7 @@
  * the <tr> legality check. `brief.ts` (template D, the hybrid) and `brief-picks.ts` (template E, the
  * picks) both import from here so the two never drift on what "this weekend" or "afternoon" means.
  */
-import { realVenue, MODE_TINT, type Wx, type WxDay } from '../poster'
+import { realVenue, MODE_TINT, assignDays, type Wx, type WxDay } from '../poster'
 import { originalOf } from '../../src/lib/image'
 import { whenMinutes, latestDateOf, upcomingWeekendEnd, whenWeekendDays } from '../../src/lib/when'
 import { endCleanly } from '../../src/lib/blurb'
@@ -124,6 +124,24 @@ export function trsAreLegal(html: string): boolean {
     stack.push(tag)
   }
   return true
+}
+
+/** The weekend's selection, the rule every template shares with E: the deck's order, this weekend
+ *  only, the first pictured card is the cover (or the one pinned by title), the rest split by day
+ *  then sorted by the clock; `more` is what the deck holds beyond the email. */
+export function selectWeekend(picks: Pick[], wx: Wx | null, opts: { hero?: string; per?: number; now?: Date; weekendLabel?: string }) {
+  const now = opts.now ?? new Date()
+  const ordered = deckOrder(picks).filter((p) => thisWeekend(p, now))
+  const pinned = opts.hero ? ordered.find((p) => p.title.toLowerCase().includes(opts.hero!.toLowerCase())) : undefined
+  const hero = pinned ?? ordered.find((p) => p.image) ?? ordered[0]
+  if (!hero) throw new Error('no weekend picks to write a brief from')
+  const rest = ordered.filter((p) => p.id !== hero.id)
+  const { sat, sun } = assignDays(rest, wx?.days, opts.per ?? 4, now)
+  const satSorted = [...sat].sort((x, y) => clock(x) - clock(y)), sunSorted = [...sun].sort((x, y) => clock(x) - clock(y))
+  const more = ordered.length - 1 - sat.length - sun.length
+  const c = claim(wx)
+  const subject = c.strong.replace(/&deg;/g, '°').replace(/&[a-z]+;/g, '')
+  return { now, hero, sat: satSorted, sun: sunSorted, more, c, subject, dSat: wx?.days[0], dSun: wx?.days[1] ?? wx?.days[0], span: wx?.span ?? opts.weekendLabel ?? '' }
 }
 
 export { realVenue, MODE_TINT, type Wx, type WxDay }

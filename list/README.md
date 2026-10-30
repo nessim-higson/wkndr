@@ -21,7 +21,7 @@ up to the blast (a dry run against the live worker: `audience 0 confirmed · Nob
 | ✅ Worker deployed | `https://wkndr-list.ness-13b.workers.dev` — alive (`/stats` answers 401 unauthed, as designed) |
 | ✅ KV namespace `SUBS` | `1701f484b4b3461ea0145fdecdaee646`, in `wrangler.toml` |
 | ✅ `ADMIN_KEY` | a Worker secret; local copy in `list/.env` (gitignored) |
-| ✅ **`bun run brief`** (`app/scripts/brief.ts`) | writes **template E, the picks** (since 2026-10-30; `--template=hybrid` for D, `grid` for the 2-up, `radical` for the five that are different objects, `all` for every one) from the live deck + the weekend forecast → `list/out/brief-<saturday>.html` (+ `brief.html`); checks every `<tr>` sits in a `<table>` and the size stays under Gmail's clip; 24 tests |
+| ✅ **`bun run brief`** (`app/scripts/brief.ts`) | writes **template E, the picks** (since 2026-10-30; `--template=hybrid` for D, `grid` for the 2-up, `radical` for the five that are different objects, `house` for the four in the unfurl's language with a desktop+phone page, `all` for every one) from the live deck + the weekend forecast → `list/out/brief-<saturday>.html` (+ `brief.html`); checks every `<tr>` sits in a `<table>` and the size stays under Gmail's clip; 32 tests |
 | ✅ `send.ts` dry run | reads the audience off the worker, renders per-recipient unsubscribe links, prints the first email; `--send` to blast |
 | ✅ Templates | five comps + the harness, live at https://wkndr-brief.pages.dev; the renderer builds **E** (D on request) |
 
@@ -51,7 +51,7 @@ cd ../list && bun run scripts/send.ts out/brief.html --subject "…" --send   # 
 ```
 
 `bun run brief --hero="copenhagen"` pins the cover to a card by title; `--per=4` is picks per day;
-`--template=picks|grid|index|plates|cover|split|blocks|hybrid|poster|receipt|board|postcard|note|radical|all` picks the design (default `picks`; `radical` = the five that are different objects);
+`--template=picks|grid|index|plates|cover|split|blocks|hybrid|poster|receipt|board|postcard|note|list|sky|deck|panel|radical|house|all` picks the design (default `picks`; `radical` = the five that are different objects, `house` = the four in the unfurl's language, which also writes **`list/out/house.html`** — each at a 680px desktop pane and a 390px phone, side by side);
 `all` also writes **`list/out/variations.html`** — every one side by side at phone width, with a 600px toggle; each layout is inlined as `srcdoc`, so the page renders opened straight from the folder, not only served.
 The renderer writes as of **the feed's own weekend** (the Letter names it) — on a Monday before the
 rebuild the draft is last weekend's and says so; a Friday run is the coming weekend with its forecast.
@@ -132,6 +132,24 @@ of E from the same data, each a different bet, all under `brief-picks.ts` and wr
 All seven keep the rules (tested: every `<tr>` legal, the cover once, `{{unsub}}`, under the clip, the
 trace on every row, the phone rules). The plates are the same markup with the orange replaced by
 `#8a2818` everywhere — the one design-token rule the Hara direction insists on.
+
+**The house round (2026-10-30, "3–4 designs, mobile and desktop, in the design language").** Four
+arrangements of the language the unfurl and the weekend poster set (`app/scripts/poster.ts` og/across
+and og/list): the wordmark with its orange dot, Clash Display 600 for the one display line (linked from
+Fontshare; Apple Mail loads it, the rest fall back to Helvetica bold), the weekend's sky plate as the
+field (served through the image proxy from the repo's own atmosphere file, the flat colour under it),
+photographs as rounded cards wearing the app's date chip and dark footer, orange numbers on cream. In
+`app/scripts/brief-house.ts`; `house.html` shows each at desktop AND phone width:
+
+| layout | the arrangement | on a phone |
+|---|---|---|
+| `list` | the weekend poster as mail — the date big, "13° and cloudy" in orange, a 3px rule, numbered rows with 96px rounded thumbs, thin day markers | thumbs 72px, the date 36px |
+| `sky` | the unfurl as mail — the sky field with "Your weekend, 13° and cloudy.", the front three as cards across with chips, the rest as rows from 4 | the three cards stack full-width at 200px tall |
+| `deck` | the app's own cards — the hero as one 532×400 card numbered 1, the rest two across, every one with its chip and footer and a mono trace under it | two-up stays two-up at 210px tall |
+| `panel` | a 200px brand panel in the sky's colour down the left (the date over two lines, the weather, app.wkndr.xyz), the picks as rows on the right | the panel becomes the header |
+
+The cards are a `<td background>` with the flat colour under it (Outlook sees the colour and the white
+type), the chip a small table pill, the footer an rgba block rather than a gradient so Gmail keeps it.
 
 **The radical round (2026-10-30, "give me some radically different email designs").** The seven
 above are one world in seven arrangements. These five, in `app/scripts/brief-radical.ts`, each take a

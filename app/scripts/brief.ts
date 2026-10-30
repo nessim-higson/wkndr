@@ -6,6 +6,7 @@ import type { Pick, Mode } from '../src/types'
 import { APP, FONT, esc, deg, coverImage, deckOrder, thisWeekend, slot, clock, line, dayWords, claim, band, realVenue, trsAreLegal } from './lib/brief-shared'
 import { picksHtml, PICKS_LAYOUTS, type PicksLayout } from './brief-picks'
 import { radicalHtml, RADICAL_LAYOUTS, type RadicalLayout } from './brief-radical'
+import { houseHtml, HOUSE_LAYOUTS, type HouseLayout } from './brief-house'
 export { trsAreLegal }
 
 const CITY = process.argv.find((a) => a.startsWith('--city='))?.split('=')[1] ?? 'amsterdam'
@@ -219,8 +220,10 @@ if (import.meta.main) {
   // THE TEMPLATE. `picks` (E, rows — the default since 2026-10-30), `grid` (E, 2-up), `hybrid` (D),
   // or `all` to write every one side by side for comparing (brief.html = picks).
   const TEMPLATE = arg('template') ?? 'picks'
-  const want = TEMPLATE === 'all' ? ['picks', ...Object.keys(PICKS_LAYOUTS).filter((l) => l !== 'rows'), 'hybrid', ...Object.keys(RADICAL_LAYOUTS)] : TEMPLATE === 'radical' ? Object.keys(RADICAL_LAYOUTS) : [TEMPLATE]
+  const want = TEMPLATE === 'all' ? [...Object.keys(HOUSE_LAYOUTS), 'picks', ...Object.keys(PICKS_LAYOUTS).filter((l) => l !== 'rows'), 'hybrid', ...Object.keys(RADICAL_LAYOUTS)]
+    : TEMPLATE === 'radical' ? Object.keys(RADICAL_LAYOUTS) : TEMPLATE === 'house' ? Object.keys(HOUSE_LAYOUTS) : [TEMPLATE]
   const isRadical = (t: string): t is RadicalLayout => t in RADICAL_LAYOUTS
+  const isHouse = (t: string): t is HouseLayout => t in HOUSE_LAYOUTS
   const key = satIso ?? 'draft'
   mkdirSync(OUT_DIR, { recursive: true })
   let first: ReturnType<typeof briefHtml> | null = null
@@ -228,20 +231,22 @@ if (import.meta.main) {
     const out = t === 'hybrid'
       ? briefHtml(feed.picks, wx, { hero: arg('hero'), per: Number(arg('per') ?? 3), now, weekendLabel })
       : isRadical(t) ? radicalHtml(feed.picks, wx, { hero: arg('hero'), per: Number(arg('per') ?? 4), now, weekendLabel, layout: t })
+      : isHouse(t) ? houseHtml(feed.picks, wx, { hero: arg('hero'), per: Number(arg('per') ?? 4), now, weekendLabel, layout: t })
       : picksHtml(feed.picks, wx, { hero: arg('hero'), per: Number(arg('per') ?? 4), now, weekendLabel, layout: t === 'picks' ? 'rows' : t as PicksLayout })
     if (!trsAreLegal(out.html)) { console.error(`✖ ${t}: a <tr> sits outside a <table> — the email would silently lose a block`); process.exit(1) }
     const kb = Buffer.byteLength(out.html, 'utf8') / 1024
     if (kb > 100) { console.error(`✖ ${t}: ${kb.toFixed(1)} KB — Gmail clips past 102 KB and hides the unsubscribe link`); process.exit(1) }
     const name = want.length > 1 ? `brief-${t}.html` : `brief-${key}.html`
     writeFileSync(join(OUT_DIR, name), out.html)
-    if (!first) { first = out; writeFileSync(join(OUT_DIR, 'brief.html'), out.html) }
+    // brief.html = the default (rows) whenever it is in the set, else the one template asked for
+    if (t === 'picks' || (want.length === 1 && !first)) { first = out; writeFileSync(join(OUT_DIR, 'brief.html'), out.html) }
     console.log(`✓ brief ${CITY} · ${t} · weekend of ${satIso ?? '?'} · ${wx ? wx.span : 'no forecast'} · ${kb.toFixed(1)} KB · tables legal → list/out/${name}`)
   }
   if (want.length > 1) {
     // THE VARIATIONS PAGE — every template side by side at phone width, captions from the layouts'
     // own bets. list/out/variations.html; open it in the pane and read across.
     const frameOf = (t: string) => {
-      const meta = t === 'hybrid' ? { name: 'The Hybrid (D)', bet: 'one photograph on the cover, then two columns of type' } : isRadical(t) ? RADICAL_LAYOUTS[t] : PICKS_LAYOUTS[t === 'picks' ? 'rows' : t as PicksLayout]
+      const meta = t === 'hybrid' ? { name: 'The Hybrid (D)', bet: 'one photograph on the cover, then two columns of type' } : isRadical(t) ? RADICAL_LAYOUTS[t] : isHouse(t) ? HOUSE_LAYOUTS[t] : PICKS_LAYOUTS[t === 'picks' ? 'rows' : t as PicksLayout]
       const html = readFileSync(join(OUT_DIR, `brief-${t}.html`), 'utf8')
       const kb = (Buffer.byteLength(html) / 1024).toFixed(1)
       // Inlined as srcdoc, not linked by path: the page then renders from file:// too (a relative
@@ -251,8 +256,9 @@ if (import.meta.main) {
     }
     // two rows: the radical five (each a different object — poster, receipt, board, postcard, note)
     // above, the picks family (one world, seven arrangements) below.
-    const radical = want.filter(isRadical), family = want.filter((t) => !isRadical(t))
-    const frames = (radical.length ? `<div class="bar sub"><b>The radical five</b> each a different object: a poster, a receipt, a departures board, a postcard, a plain note</div>\n<div class="row">\n${radical.map(frameOf).join('\n')}\n</div>\n` : '')
+    const radical = want.filter(isRadical), house = want.filter(isHouse), family = want.filter((t) => !isRadical(t) && !isHouse(t))
+    const frames = (house.length ? `<div class="bar sub"><b>The house four</b> WKNDR's own language — the wordmark, the display face, the sky, the cards with their chips (house.html shows each at desktop AND phone width)</div>\n<div class="row">\n${house.map(frameOf).join('\n')}\n</div>\n` : '')
+      + (radical.length ? `<div class="bar sub"><b>The radical five</b> each a different object: a poster, a receipt, a departures board, a postcard, a plain note</div>\n<div class="row">\n${radical.map(frameOf).join('\n')}\n</div>\n` : '')
       + (family.length ? `<div class="bar sub"><b>The picks family</b> one world, ${family.length} arrangements</div>\n<div class="row">\n${family.map(frameOf).join('\n')}\n</div>` : '')
     writeFileSync(join(OUT_DIR, 'variations.html'), `<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>WKNDR — brief variations</title>
 <style>body{margin:0;background:#dcd8cf;font:400 13px/1.45 'Helvetica Neue',Helvetica,Arial,sans-serif;color:#1a1a1a}
@@ -264,6 +270,28 @@ iframe{display:block;width:390px;height:1700px;border:0;border-radius:14px;backg
 ${frames}
 </body>`)
     console.log(`  → list/out/variations.html (all ${want.length}, side by side)`)
+    if (house.length) {
+      // THE HOUSE PAGE — each of the four at DESKTOP width (a 680px mail pane) and PHONE width (390)
+      // side by side, so the two shapes of one design are read together (Ness: "mobile and desktop").
+      const pair = (t: HouseLayout) => {
+        const meta = HOUSE_LAYOUTS[t]
+        const html = readFileSync(join(OUT_DIR, `brief-${t}.html`), 'utf8')
+        const kb = (Buffer.byteLength(html) / 1024).toFixed(1)
+        const doc = html.replaceAll('&', '&amp;').replaceAll('"', '&quot;')
+        const fr = (cls: string) => `<iframe class="${cls}" srcdoc="${doc}" title="${meta.name}" onload="this.style.height=Math.max(900,this.contentDocument.documentElement.scrollHeight)+'px'"></iframe>`
+        return `<section><div class="cap"><b>${t}</b> — ${meta.name}<span>${kb} KB</span><p>${meta.bet}</p></div><div class="pair"><div><i>desktop · 680</i>${fr('d')}</div><div><i>phone · 390</i>${fr('m')}</div></div></section>`
+      }
+      writeFileSync(join(OUT_DIR, 'house.html'), `<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>WKNDR — the house four</title>
+<style>body{margin:0;background:#dcd8cf;font:400 13px/1.45 'Helvetica Neue',Helvetica,Arial,sans-serif;color:#1a1a1a}
+.bar{padding:16px 20px}.bar b{font-size:15px}.bar span{color:#6a655c;margin-left:10px}
+section{padding:10px 20px 34px;border-top:1px solid #cfcabf}.cap{padding:0 2px 12px;max-width:1090px}.cap b{font-size:14px}.cap span{float:right;font:400 11px/1.6 'SF Mono',Menlo,monospace;color:#6a655c}.cap p{margin:4px 0 0;font-size:12px;color:#6a655c}
+.pair{display:flex;gap:20px;align-items:flex-start;overflow-x:auto}.pair i{display:block;font:400 10px/1 'SF Mono',Menlo,monospace;letter-spacing:.08em;text-transform:uppercase;color:#6a655c;margin:0 0 8px 2px}
+iframe{display:block;border:0;border-radius:14px;background:#eceae3;height:900px}iframe.d{width:680px}iframe.m{width:390px}</style>
+<body><div class="bar"><b>WKNDR</b> the Friday brief — the house four, desktop and phone <span>${wx ? wx.span : ''}</span></div>
+${house.map(pair).join('\n')}
+</body>`)
+      console.log(`  → list/out/house.html (the house four, desktop + phone pairs)`)
+    }
   }
   const { hero, sat, sun, subject } = first!
   console.log(`  cover   ${hero.title} (${hero.when})`)

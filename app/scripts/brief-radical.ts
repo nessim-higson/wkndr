@@ -14,10 +14,10 @@
  * under 102 KB, {{unsub}} in the footer, images cut from the original on the focal point. The
  * receipt is the one honest place for monospace at body size: a receipt IS machine output.
  */
-import { assignDays, type Wx, type WxDay } from './poster'
+import type { Wx, WxDay } from './poster'
 import { whenWeekendDays } from '../src/lib/when'
 import type { Pick } from '../src/types'
-import { APP, FONT, MONO, esc, deg, cut, deckOrder, thisWeekend, weekendDays, slot, clock, line, dayWords, claim, band, trace, realVenue as realVenueOf } from './lib/brief-shared'
+import { APP, FONT, MONO, esc, deg, cut, weekendDays, slot, line, dayWords, band, trace, selectWeekend, realVenue as realVenueOf } from './lib/brief-shared'
 
 const realVenue = (p: Pick) => { const v = realVenueOf(p); return v.trim().length < 3 ? '' : v }
 
@@ -48,22 +48,7 @@ const meta = (p: Pick, sep = ' · ') => [realVenue(p), p.price].filter(Boolean).
 const why = (p: Pick) => (p.why && !/weekend (guide|tips)/i.test(p.why) ? p.why : '')
 const stamp = (now: Date) => `${DAYS[now.getDay()]} ${now.getDate()} ${MONTHS[now.getMonth()]} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`
 
-/** The weekend's selection — the same rule as template E: the deck's order, this weekend only, the
- *  first pictured card is the cover, the rest split by day then sorted by the clock. */
-function select(picks: Pick[], wx: Wx | null, opts: RadicalOpts) {
-  const now = opts.now ?? new Date()
-  const ordered = deckOrder(picks).filter((p) => thisWeekend(p, now))
-  const pinned = opts.hero ? ordered.find((p) => p.title.toLowerCase().includes(opts.hero!.toLowerCase())) : undefined
-  const hero = pinned ?? ordered.find((p) => p.image) ?? ordered[0]
-  if (!hero) throw new Error('no weekend picks to write a brief from')
-  const rest = ordered.filter((p) => p.id !== hero.id)
-  const { sat, sun } = assignDays(rest, wx?.days, opts.per ?? 4, now)
-  const satSorted = [...sat].sort((x, y) => clock(x) - clock(y)), sunSorted = [...sun].sort((x, y) => clock(x) - clock(y))
-  const more = ordered.length - 1 - sat.length - sun.length
-  const c = claim(wx)
-  const subject = c.strong.replace(/&deg;/g, '°').replace(/&[a-z]+;/g, '')
-  return { now, hero, sat: satSorted, sun: sunSorted, more, c, subject, dSat: wx?.days[0], dSun: wx?.days[1] ?? wx?.days[0], span: wx?.span ?? opts.weekendLabel ?? '' }
-}
+const select = selectWeekend
 
 /* ───────────────────────────────── the document ───────────────────────────────── */
 

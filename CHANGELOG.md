@@ -14,6 +14,27 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.12.6 · app] — 2026-10-30 — THE HOUSE FOUR (the brief in WKNDR's own language, desktop and phone)
+Ness: "the designs look mobile-first, I'd like to see mobile and desktop … the design language for
+WKNDR is pretty straightforward — the unfurl felt great, you don't need to make this radical. 3–4
+designs, mobile and desktop, in the design language." Four arrangements of the language the unfurl
+(`poster.ts` og/across) and the weekend poster (og/list) set — the wordmark with its orange dot, Clash
+Display for the one display line, the weekend's sky plate as the field, photographs as rounded cards
+with the app's date chip and dark footer, orange numbers on cream — in `app/scripts/brief-house.ts`:
+- **`list`** — the weekend poster as mail: the date big in the display face, "13° and cloudy" in orange,
+  a 3px rule, numbered rows with 96px rounded thumbs, thin day markers, "Swipe. Save. Match."
+- **`sky`** — the unfurl as mail: the sky plate (through the image proxy from the repo's own file, the
+  flat colour under it) with "Your weekend, 13° and cloudy.", the front three as cards across with
+  chips, the rest as rows. The cards stack full-width on a phone.
+- **`deck`** — the app's own cards: the hero as one 532×400 card numbered 1, the rest two across, every
+  one with its chip and footer, a mono trace under each; two-up stays two-up on a phone.
+- **`panel`** — a 200px brand panel in the sky's colour down the left (date over two lines, the
+  weather, app.wkndr.xyz), the picks as rows on the right; the panel becomes the header on a phone.
+`bun run brief --template=house` writes the four plus **`list/out/house.html`** — each design at a
+680px desktop pane AND a 390px phone, side by side. `all` is now 17 and `variations.html` leads with
+these. `brief.html` stays rows whatever the set. The weekend selection moved to
+`lib/brief-shared.ts selectWeekend()` so the three families share one rule. 8 tests.
+
 ## [V.12.5 · app] — 2026-10-30 — THE RADICAL FIVE (five briefs that are different objects)
 Ness: "can you please give me some radically different email designs." The seven variations were
 one world in seven arrangements; these five each take a different OBJECT as the model and build the
