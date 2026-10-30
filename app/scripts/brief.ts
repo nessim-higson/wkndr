@@ -239,8 +239,12 @@ if (import.meta.main) {
     // own bets. list/out/variations.html; open it in the pane and read across.
     const frames = want.map((t) => {
       const meta = t === 'hybrid' ? { name: 'The Hybrid (D)', bet: 'one photograph on the cover, then two columns of type' } : PICKS_LAYOUTS[t === 'picks' ? 'rows' : t as PicksLayout]
-      const kb = (Buffer.byteLength(readFileSync(join(OUT_DIR, `brief-${t}.html`), 'utf8')) / 1024).toFixed(1)
-      return `<div class="v"><div class="cap"><b>${t === 'picks' ? 'rows' : t}</b> — ${meta.name}<span>${kb} KB</span><p>${meta.bet}</p></div><iframe src="brief-${t}.html" title="${meta.name}"></iframe></div>`
+      const html = readFileSync(join(OUT_DIR, `brief-${t}.html`), 'utf8')
+      const kb = (Buffer.byteLength(html) / 1024).toFixed(1)
+      // Inlined as srcdoc, not linked by path: the page then renders from file:// too (a relative
+      // iframe src stays blank when the file is opened straight from the folder, not served).
+      const doc = html.replaceAll('&', '&amp;').replaceAll('"', '&quot;')
+      return `<div class="v"><div class="cap"><b>${t === 'picks' ? 'rows' : t}</b> — ${meta.name}<span>${kb} KB</span><p>${meta.bet}</p></div><iframe srcdoc="${doc}" title="${meta.name}" onload="this.style.height=Math.max(1200,this.contentDocument.documentElement.scrollHeight)+'px'"></iframe></div>`
     }).join('\n')
     writeFileSync(join(OUT_DIR, 'variations.html'), `<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>WKNDR — brief variations</title>
 <style>body{margin:0;background:#dcd8cf;font:400 13px/1.45 'Helvetica Neue',Helvetica,Arial,sans-serif;color:#1a1a1a}
