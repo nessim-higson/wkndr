@@ -1,6 +1,6 @@
 # WKNDR — STATE (catch-me-up snapshot)
 
-_Living "where are we right now" doc — a **snapshot, not a history**. **Updated 2026-10-27.** Read this
+_Living "where are we right now" doc — a **snapshot, not a history**. **Updated 2026-10-30.** Read this
 FIRST in a new chat. For strategy + backlog see `docs/backlog.md`; for the pipeline architecture see
 `docs/pipeline-architecture.md` + `docs/source-map.md`; for **who may write to the deck vs to a personal
 profile** (board / Tune / airlock — read before touching either) see `docs/curation-surfaces.md`; for the
@@ -51,10 +51,13 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
   26 new tests (the worker lifecycle against an in-memory KV with a clock; the merge, the shelf, the
   pill, the question). Proved end to end locally in `MAIL_PROVIDER=none` (link logged → followed →
   signed in → a save → a second device's PUT → merged on reload). Worker deployed to
-  `wkndr-account.ness-13b.workers.dev` (KV `ACCOUNT`). **One thing is Ness's: the Resend key** — the
-  same `MAIL_API_KEY` the brief needs (list/README.md § Status step 1), `npx wrangler secret put
-  MAIL_API_KEY` in `worker/account/`; until then `/login` answers `delivery:'off'` and the sheet says
-  "Sign-in mail isn't switched on yet". The law held: nothing here writes to the deck
+  `wkndr-account.ness-13b.workers.dev` (KV `ACCOUNT`). **Sign-in mail is ON since 28 Oct** — the
+  Resend key (`MAIL_API_KEY`, sending restricted to `wkndr.xyz`, the brief's team) went on both workers
+  and the first magic link landed from `hello@wkndr.xyz` that afternoon; Ness is the only sign-in so
+  far, and a real two-device merge over live mail is still unproved. **The catch-me-up for this layer
+  is `worker/account/STATE.md`** (status, the shape, the rules with numbers, traps, what was left out
+  on purpose, open edges) — read it before touching the worker or `lib/account.ts` /
+  `lib/useAccount.ts`. The law held: nothing here writes to the deck
   (curation-surfaces §2); the taste profile stays per person. Not built, on purpose: the Later tab in
   the dev-only Itinerary list (the saves panel is the surface), an email change, account deletion
   (a `DELETE /me` is a ten-line follow-up when a stranger asks for it).

@@ -11,6 +11,9 @@ link on the person's email**, mailed through the same Resend account the brief u
 privacy posture: nothing exists until the link is tapped, and no endpoint ever says whether an
 address is known. The account is **additive**: signed out, the app is exactly what it was.
 
+> **Catch-me-up / current posture: [`STATE.md`](STATE.md)** (what's live, the shape, the rules,
+> traps, what's left out on purpose). This file is the reference: deploy, API, the state contract.
+
 ## Status — 2026-10-27
 
 | | |
