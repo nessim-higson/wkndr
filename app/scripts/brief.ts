@@ -5,6 +5,7 @@ import { fixWhen, upcomingWeekendEnd, whenWeekendDays } from '../src/lib/when'
 import type { Pick, Mode } from '../src/types'
 import { APP, FONT, esc, deg, coverImage, deckOrder, thisWeekend, slot, clock, line, dayWords, claim, band, realVenue, trsAreLegal } from './lib/brief-shared'
 import { picksHtml, PICKS_LAYOUTS, type PicksLayout } from './brief-picks'
+import { radicalHtml, RADICAL_LAYOUTS, type RadicalLayout } from './brief-radical'
 export { trsAreLegal }
 
 const CITY = process.argv.find((a) => a.startsWith('--city='))?.split('=')[1] ?? 'amsterdam'
@@ -218,13 +219,15 @@ if (import.meta.main) {
   // THE TEMPLATE. `picks` (E, rows — the default since 2026-10-30), `grid` (E, 2-up), `hybrid` (D),
   // or `all` to write every one side by side for comparing (brief.html = picks).
   const TEMPLATE = arg('template') ?? 'picks'
-  const want = TEMPLATE === 'all' ? ['picks', ...Object.keys(PICKS_LAYOUTS).filter((l) => l !== 'rows'), 'hybrid'] : [TEMPLATE]
+  const want = TEMPLATE === 'all' ? ['picks', ...Object.keys(PICKS_LAYOUTS).filter((l) => l !== 'rows'), 'hybrid', ...Object.keys(RADICAL_LAYOUTS)] : TEMPLATE === 'radical' ? Object.keys(RADICAL_LAYOUTS) : [TEMPLATE]
+  const isRadical = (t: string): t is RadicalLayout => t in RADICAL_LAYOUTS
   const key = satIso ?? 'draft'
   mkdirSync(OUT_DIR, { recursive: true })
   let first: ReturnType<typeof briefHtml> | null = null
   for (const t of want) {
     const out = t === 'hybrid'
       ? briefHtml(feed.picks, wx, { hero: arg('hero'), per: Number(arg('per') ?? 3), now, weekendLabel })
+      : isRadical(t) ? radicalHtml(feed.picks, wx, { hero: arg('hero'), per: Number(arg('per') ?? 4), now, weekendLabel, layout: t })
       : picksHtml(feed.picks, wx, { hero: arg('hero'), per: Number(arg('per') ?? 4), now, weekendLabel, layout: t === 'picks' ? 'rows' : t as PicksLayout })
     if (!trsAreLegal(out.html)) { console.error(`✖ ${t}: a <tr> sits outside a <table> — the email would silently lose a block`); process.exit(1) }
     const kb = Buffer.byteLength(out.html, 'utf8') / 1024
@@ -237,25 +240,29 @@ if (import.meta.main) {
   if (want.length > 1) {
     // THE VARIATIONS PAGE — every template side by side at phone width, captions from the layouts'
     // own bets. list/out/variations.html; open it in the pane and read across.
-    const frames = want.map((t) => {
-      const meta = t === 'hybrid' ? { name: 'The Hybrid (D)', bet: 'one photograph on the cover, then two columns of type' } : PICKS_LAYOUTS[t === 'picks' ? 'rows' : t as PicksLayout]
+    const frameOf = (t: string) => {
+      const meta = t === 'hybrid' ? { name: 'The Hybrid (D)', bet: 'one photograph on the cover, then two columns of type' } : isRadical(t) ? RADICAL_LAYOUTS[t] : PICKS_LAYOUTS[t === 'picks' ? 'rows' : t as PicksLayout]
       const html = readFileSync(join(OUT_DIR, `brief-${t}.html`), 'utf8')
       const kb = (Buffer.byteLength(html) / 1024).toFixed(1)
       // Inlined as srcdoc, not linked by path: the page then renders from file:// too (a relative
       // iframe src stays blank when the file is opened straight from the folder, not served).
       const doc = html.replaceAll('&', '&amp;').replaceAll('"', '&quot;')
       return `<div class="v"><div class="cap"><b>${t === 'picks' ? 'rows' : t}</b> — ${meta.name}<span>${kb} KB</span><p>${meta.bet}</p></div><iframe srcdoc="${doc}" title="${meta.name}" onload="this.style.height=Math.max(1200,this.contentDocument.documentElement.scrollHeight)+'px'"></iframe></div>`
-    }).join('\n')
+    }
+    // two rows: the radical five (each a different object — poster, receipt, board, postcard, note)
+    // above, the picks family (one world, seven arrangements) below.
+    const radical = want.filter(isRadical), family = want.filter((t) => !isRadical(t))
+    const frames = (radical.length ? `<div class="bar sub"><b>The radical five</b> each a different object: a poster, a receipt, a departures board, a postcard, a plain note</div>\n<div class="row">\n${radical.map(frameOf).join('\n')}\n</div>\n` : '')
+      + (family.length ? `<div class="bar sub"><b>The picks family</b> one world, ${family.length} arrangements</div>\n<div class="row">\n${family.map(frameOf).join('\n')}\n</div>` : '')
     writeFileSync(join(OUT_DIR, 'variations.html'), `<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>WKNDR — brief variations</title>
 <style>body{margin:0;background:#dcd8cf;font:400 13px/1.45 'Helvetica Neue',Helvetica,Arial,sans-serif;color:#1a1a1a}
-.bar{padding:16px 20px;display:flex;gap:14px;align-items:baseline}.bar b{font-size:15px}.bar label{font-size:12px;color:#6a655c;cursor:pointer}
+.bar{padding:16px 20px;display:flex;gap:14px;align-items:baseline}.bar.sub{padding:6px 20px 12px;font-size:12px;color:#6a655c}.bar.sub b{font-size:13px;color:#1a1a1a}.bar b{font-size:15px}.bar label{font-size:12px;color:#6a655c;cursor:pointer}
 .row{display:flex;gap:18px;padding:0 20px 30px;overflow-x:auto;align-items:flex-start}
 .v{flex:0 0 auto}.cap{width:390px;padding:0 2px 10px}.cap b{font-size:14px}.cap span{float:right;font:400 11px/1.6 'SF Mono',Menlo,monospace;color:#6a655c}.cap p{margin:4px 0 0;font-size:12px;color:#6a655c}
 iframe{display:block;width:390px;height:1700px;border:0;border-radius:14px;background:#eceae3}body.wide iframe,body.wide .cap{width:620px}</style>
 <body><div class="bar"><b>WKNDR</b> the Friday brief — ${want.length} variations · ${wx ? wx.span : ''} <label><input type="checkbox" onchange="document.body.classList.toggle('wide',this.checked)"> 600px (desktop mail)</label></div>
-<div class="row">
 ${frames}
-</div></body>`)
+</body>`)
     console.log(`  → list/out/variations.html (all ${want.length}, side by side)`)
   }
   const { hero, sat, sun, subject } = first!

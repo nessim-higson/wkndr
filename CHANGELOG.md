@@ -14,6 +14,27 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.12.5 · app] — 2026-10-30 — THE RADICAL FIVE (five briefs that are different objects)
+Ness: "can you please give me some radically different email designs." The seven variations were
+one world in seven arrangements; these five each take a different OBJECT as the model and build the
+Friday brief as that object, in `app/scripts/brief-radical.ts`:
+- **`poster`** — a gig poster: black page, the hero full-bleed 4:5, its name at 46px uppercase, the
+  claim as a black-on-orange strip, the rest as a LINEUP in bold uppercase with sizes falling by rank.
+- **`receipt`** — a till receipt: a 360px strip of thermal paper, everything monospace, label/value
+  lines ruled by dashes, the picks as line items with the hour as the amount, totals ("PAID BY THE
+  WEATHER"), a barcode built from table cells. No pictures: the smallest brief we can send.
+- **`board`** — a departures board, the Swiss way: white page, 6px black rule, bold times in red down
+  a column, a 12px square per row in the day's mode tint, not one photograph.
+- **`postcard`** — a postcard on a desk: the hero photograph in a white print border as the front; the
+  back a cream card with a handwritten note (Snell Roundhand → Apple Chancery → Segoe Script) naming
+  the picks as a sentence per day, a stamp with the day's temperature, a postmark, three address rules.
+- **`note`** — a plain email from a friend: white page, the system font at 16px, no mast, no card, no
+  numbers, no pictures — the weekend as prose, a line per pick, the links in it.
+All five keep the house rules (10 tests: legal tables, `{{unsub}}`, under the clip, the hero once, a
+trace, the claim, the phone rule). `--template=radical` writes the five; `all` now writes thirteen,
+and `list/out/variations.html` shows the radical five in a row above the picks family. The page also
+inlines each layout as `srcdoc`, so it renders opened straight from the folder. Rows stays the default.
+
 ## [V.12.4 · app] — 2026-10-30 — THE VARIATIONS (seven ways to set the picks)
 Ness: "can I please see more variations on design." Five more layouts of template E from the same
 weekend's data, each a different bet, next to the two from the morning:

@@ -21,7 +21,7 @@ up to the blast (a dry run against the live worker: `audience 0 confirmed · Nob
 | ✅ Worker deployed | `https://wkndr-list.ness-13b.workers.dev` — alive (`/stats` answers 401 unauthed, as designed) |
 | ✅ KV namespace `SUBS` | `1701f484b4b3461ea0145fdecdaee646`, in `wrangler.toml` |
 | ✅ `ADMIN_KEY` | a Worker secret; local copy in `list/.env` (gitignored) |
-| ✅ **`bun run brief`** (`app/scripts/brief.ts`) | writes **template E, the picks** (since 2026-10-30; `--template=hybrid` for D, `grid` for the 2-up, `all` for every one) from the live deck + the weekend forecast → `list/out/brief-<saturday>.html` (+ `brief.html`); checks every `<tr>` sits in a `<table>` and the size stays under Gmail's clip; 14 tests |
+| ✅ **`bun run brief`** (`app/scripts/brief.ts`) | writes **template E, the picks** (since 2026-10-30; `--template=hybrid` for D, `grid` for the 2-up, `radical` for the five that are different objects, `all` for every one) from the live deck + the weekend forecast → `list/out/brief-<saturday>.html` (+ `brief.html`); checks every `<tr>` sits in a `<table>` and the size stays under Gmail's clip; 24 tests |
 | ✅ `send.ts` dry run | reads the audience off the worker, renders per-recipient unsubscribe links, prints the first email; `--send` to blast |
 | ✅ Templates | five comps + the harness, live at https://wkndr-brief.pages.dev; the renderer builds **E** (D on request) |
 
@@ -51,8 +51,8 @@ cd ../list && bun run scripts/send.ts out/brief.html --subject "…" --send   # 
 ```
 
 `bun run brief --hero="copenhagen"` pins the cover to a card by title; `--per=4` is picks per day;
-`--template=picks|grid|index|plates|cover|split|blocks|hybrid|all` picks the design (default `picks`);
-`all` also writes **`list/out/variations.html`** — every one side by side at phone width, with a 600px toggle.
+`--template=picks|grid|index|plates|cover|split|blocks|hybrid|poster|receipt|board|postcard|note|radical|all` picks the design (default `picks`; `radical` = the five that are different objects);
+`all` also writes **`list/out/variations.html`** — every one side by side at phone width, with a 600px toggle; each layout is inlined as `srcdoc`, so the page renders opened straight from the folder, not only served.
 The renderer writes as of **the feed's own weekend** (the Letter names it) — on a Monday before the
 rebuild the draft is last weekend's and says so; a Friday run is the coming weekend with its forecast.
 `list/out/` is gitignored: the brief is a sent thing, not a source file.
@@ -132,6 +132,24 @@ of E from the same data, each a different bet, all under `brief-picks.ts` and wr
 All seven keep the rules (tested: every `<tr>` legal, the cover once, `{{unsub}}`, under the clip, the
 trace on every row, the phone rules). The plates are the same markup with the orange replaced by
 `#8a2818` everywhere — the one design-token rule the Hara direction insists on.
+
+**The radical round (2026-10-30, "give me some radically different email designs").** The seven
+above are one world in seven arrangements. These five, in `app/scripts/brief-radical.ts`, each take a
+different OBJECT as the model and build the brief as that object — same data, same rules, nothing else
+shared:
+
+| layout | the object | what makes it that object |
+|---|---|---|
+| `poster` | a gig poster | black page, the hero full-bleed 4:5, 46px uppercase name, the claim black-on-orange, the rest a lineup with sizes falling by rank |
+| `receipt` | a till receipt | a 360px thermal-paper strip, all monospace (the one honest place for it at body size), dashed rules, line items with the hour as the amount, totals, a barcode of table cells; no `<img>` |
+| `board` | a departures board | Swiss timetable: white, a 6px black rule, red times down a column, a tinted square per row for the day's mode; no `<img>` |
+| `postcard` | a postcard on a desk | the photo in a white print border as the front; a cream back with a handwritten note (Snell Roundhand → Apple Chancery → Segoe Script → cursive) naming the picks as a sentence per day, a stamp with the temperature, a postmark, address rules |
+| `note` | a plain email from a friend | white page, the system font at 16px, no mast, no card, no numbers, no pictures; prose with the links in it |
+
+Tested the same way (legal tables, `{{unsub}}`, under the clip, the hero once, a trace, the claim, the
+phone rule) plus one pin per object. Sizes 9–24 KB. The receipt and the note are the two cheapest
+emails the list can send; the poster is the one that would look wrong in a light inbox and right on
+a phone at night.
 
 **Two layout bugs found building it, both worth remembering:**
 
