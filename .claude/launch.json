@@ -125,6 +125,16 @@
         "/Users/nessimhigson/CLAUDE/projects/prototypes/arena-mnemonic/bench/serve.ts"
       ],
       "port": 4320
+    },
+    {
+      "_comment": "Arena mnemonic rings bench: the mark's tunnel in black and white, WebGL renderer + frame server (lives in ~/CLAUDE/projects/prototypes/arena-mnemonic/rings).",
+      "name": "arena-rings",
+      "runtimeExecutable": "bun",
+      "runtimeArgs": [
+        "run",
+        "/Users/nessimhigson/CLAUDE/projects/prototypes/arena-mnemonic/rings/serve.ts"
+      ],
+      "port": 4321
     }
   ]
 }
