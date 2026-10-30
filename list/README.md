@@ -51,7 +51,8 @@ cd ../list && bun run scripts/send.ts out/brief.html --subject "…" --send   # 
 ```
 
 `bun run brief --hero="copenhagen"` pins the cover to a card by title; `--per=4` is picks per day;
-`--template=picks|grid|hybrid|all` picks the design (default `picks`).
+`--template=picks|grid|index|plates|cover|split|blocks|hybrid|all` picks the design (default `picks`);
+`all` also writes **`list/out/variations.html`** — every one side by side at phone width, with a 600px toggle.
 The renderer writes as of **the feed's own weekend** (the Letter names it) — on a Monday before the
 rebuild the draft is last weekend's and says so; a Friday run is the coming weekend with its forecast.
 `list/out/` is gitignored: the brief is a sent thing, not a source file.
@@ -113,6 +114,24 @@ hour`) — the first phone screen is the sky, then the cover. The rows hold at 3
 thumb to 104px, never stacking; `--template=grid` is the same data as 2-up 3:2 cards (a contact sheet
 on desktop, long on a phone — kept for comparing, not the default). Dark: the washes go to a dark
 neutral, the tints stay. Images off: the wash square with the title as styled alt text.
+
+**The variations round (2026-10-30, "can I please see more variations on design").** Seven layouts
+of E from the same data, each a different bet, all under `brief-picks.ts` and written together by
+`bun run brief --template=all` into `list/out/variations.html`:
+
+| layout | the bet | lineage |
+|---|---|---|
+| `rows` (default) | thumb + text rows under a sky band; holds on a phone without stacking | the app's list view |
+| `grid` | 2-up 3:2 cards, a contact sheet; stacks on a phone | — |
+| `index` | type only after the cover — hanging numerals, the writing sells it | 03-visual-languages/02-bold-index |
+| `plates` | every pick a quiet full-width photograph with a caption, brick-red accent, no rules, text CTA | 05-cover-hara/03-hara |
+| `cover` | the weekend's weather as a solid field in the wetter day's mode tint, then a dense list with 72px round thumbs | 04-header-directions III |
+| `split` | Saturday \| Sunday as two pictured columns — D's structure, every card pictured | 02-v5-family |
+| `blocks` | each pick its own colour world — a full-width block in the day's wash, picture right, type left | 03-visual-languages/03-scrollytelling |
+
+All seven keep the rules (tested: every `<tr>` legal, the cover once, `{{unsub}}`, under the clip, the
+trace on every row, the phone rules). The plates are the same markup with the orange replaced by
+`#8a2818` everywhere — the one design-token rule the Hara direction insists on.
 
 **Two layout bugs found building it, both worth remembering:**
 

@@ -14,6 +14,21 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.12.4 · app] — 2026-10-30 — THE VARIATIONS (seven ways to set the picks)
+Ness: "can I please see more variations on design." Five more layouts of template E from the same
+weekend's data, each a different bet, next to the two from the morning:
+- **`index`** — type only after the cover, a 36px hanging numeral per pick (Bold Index lineage).
+  **`plates`** — every pick a full-width photograph with a caption, brick-red `#8a2818` instead of the
+  orange, no rules, a text CTA (Hara lineage). **`cover`** — the weekend's weather as a solid field in
+  the wetter day's mode tint, then a dense list with 72px round thumbs (header direction III).
+  **`split`** — Saturday | Sunday as two pictured columns, D's structure with every card pictured.
+  **`blocks`** — each pick its own colour world, a block in the day's wash with the picture right
+  (scrollytelling lineage).
+- `bun run brief --template=all` now writes all seven plus D and **`list/out/variations.html`**: every
+  one side by side at phone width, a 600px toggle, each with its size and its bet.
+- 3 new tests: every layout keeps the rules; the index has no thumbs and the plates no orange; the
+  cover wears the wetter day's tint and the blocks tint by day. 613 green.
+
 ## [V.12.3 · app] — 2026-10-30 — THE PICKS (the Friday brief, pictured)
 Ness: "the design of a picks of the weekend — develop out the email design." Template D put one
 photograph on the cover and then ran the weekend as two columns of type; the app's front is fully

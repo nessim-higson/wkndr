@@ -4,7 +4,7 @@
 // sky band reads the forecast; both layouts keep every <tr> in a <table>, the unsubscribe slot and the
 // size under Gmail's clip; the phone rules are present.
 import { describe, it, expect } from 'bun:test'
-import { picksHtml } from '../scripts/brief-picks'
+import { picksHtml, PICKS_LAYOUTS, type PicksLayout } from '../scripts/brief-picks'
 import { trsAreLegal } from '../scripts/lib/brief-shared'
 import type { Pick, Mode } from '../src/types'
 import type { Wx } from '../scripts/poster'
@@ -85,5 +85,43 @@ describe('template E — the picks', () => {
     const pinned = picksHtml(picks, DRY, { now: NOW, hero: 'matinee', per: 1 })
     expect(pinned.hero.id).toBe('b')
     expect(pinned.html).toContain('3 more, sorted the same way')   // 6 weekend cards − cover − 2 shown
+  })
+})
+
+describe('template E — the other layouts', () => {
+  const LAYOUTS = Object.keys(PICKS_LAYOUTS) as PicksLayout[]
+  it('every layout keeps the rules: <tr>s legal, the cover once, {{unsub}}, under the clip, the trace, the phone rules', () => {
+    for (const layout of LAYOUTS) {
+      const r = picksHtml(picks, DRY, { now: NOW, layout, per: 3 })
+      expect(r.layout).toBe(layout)
+      expect(trsAreLegal(r.html)).toBe(true)
+      expect(r.html).toContain('{{unsub}}')
+      expect(Buffer.byteLength(r.html, 'utf8')).toBeLessThan(100 * 1024)
+      expect(r.html).toContain('@media (max-width:480px)')
+      expect((r.html.match(/>Opening night</g) ?? []).length).toBe(1)   // the cover title once (alt text aside)
+      expect(r.html).toContain('via Resident Advisor')
+      expect(r.html).toContain('Two dry days at 13°')
+    }
+  })
+  it('the index has no thumbs after the cover; the plates wear the brick accent and no pill', () => {
+    const index = picksHtml(picks, DRY, { now: NOW, layout: 'index' })
+    expect(index.html).not.toContain('&amp;w=300&amp;h=300')
+    expect(index.html).toContain('font:400 36px/1')   // the hanging numeral
+    const plates = picksHtml(picks, DRY, { now: NOW, layout: 'plates' })
+    expect(plates.html).not.toContain('#ff4d1f')
+    expect(plates.html).toContain('#8a2818')
+    expect(plates.html).not.toContain('border-radius:100px')
+    expect((plates.html.match(/&amp;w=1064&amp;h=710/g) ?? []).length).toBe(5)   // every pictured pick a plate (a, b, c, f, g)
+  })
+  it('the cover field wears the wetter day\'s tint and the list uses round 72px thumbs; the split and the blocks tint by day', () => {
+    const cover = picksHtml(picks, SPLIT, { now: NOW, layout: 'cover' })
+    expect(cover.html).toContain('bgcolor="#4a6489"')   // Sunday is the wet one (COLD_WET)
+    expect(cover.html).toContain('border-radius:36px')
+    const split = picksHtml(picks, DRY, { now: NOW, layout: 'split' })
+    expect((split.html.match(/class="stack col"/g) ?? []).length).toBe(2)
+    const blocks = picksHtml(picks, SPLIT, { now: NOW, layout: 'blocks' })
+    expect(blocks.html).toContain('bgcolor="#fdf0e2"')   // Saturday WARM wash
+    expect(blocks.html).toContain('bgcolor="#e7ecf3"')   // Sunday COLD_WET wash
+    expect(blocks.html).toContain('class="bkc"')
   })
 })
