@@ -14,6 +14,30 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.12.3 · app] — 2026-10-30 — THE PICKS (the Friday brief, pictured)
+Ness: "the design of a picks of the weekend — develop out the email design." Template D put one
+photograph on the cover and then ran the weekend as two columns of type; the app's front is fully
+pictured, and the brief read as a different product.
+- **TEMPLATE E — THE PICKS** (`app/scripts/brief-picks.ts`, the renderer's default) — the sky opens
+  the email as a band: the claim big ("Two dry days at 13° — the difference is the hour, not the
+  day."), Saturday and Sunday as two cells in their own weather tint, and the forecast's receipt in
+  mono. The cover is pick 01, cut 3:2 from the original on its focal point. Then each day runs
+  chronologically as numbered rows — a square focal-point thumb, the hour as the kicker, title,
+  venue · price, one line of the card's own copy, and a **monospace source trace** (`via LBB ·
+  I amsterdam · 610 going on RA`): the signal-and-link model visible on every row. A card with no
+  honest photo gets its typographic face (the initial on the day's wash). Rows hold at 390px by
+  shrinking the thumb, never stacking; dark mode and images-off both degrade to design.
+  `--template=grid` is the same data as 2-up 3:2 cards (kept for comparing); `--template=hybrid`
+  is D; `--template=all` writes the three side by side. A one- or two-letter venue is dropped as a
+  crawl artefact.
+- **THE SHARED HALF** (`scripts/lib/brief-shared.ts`) — the deck's order, "this weekend", the slot
+  labels, the forecast in words, the washes, the image cuts and the `<tr>` check now live in one
+  file both templates import, so D and E cannot drift on what "afternoon" means.
+- **COMP E** joins the gallery (`list/templates/e-picks.html`, a snapshot of the 31 Oct – 1 Nov
+  render; `compare.html` shows five). 7 new tests (`tests/brief-picks.test.ts`): the cover once,
+  the split and the numbering, the face for a no-photo card, the trace on every row, the sky band,
+  both layouts legal and under the clip.
+
 ## [V.12.2 · app] — 2026-10-27 — THE ACCOUNT (saves and taste that follow you)
 Ness, 26 Oct: "I want to look at having an account that I can log into and then have saved events and
 things to do for the future." Until today a save lived in one browser's localStorage and the match link

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>WKNDR — Friday brief, four comps</title>
+<title>WKNDR — Friday brief, five comps</title>
 <style>
   :root{
     --paper:#faf8f3; --ink:#1a1a1a; --ink3:#8b8a82; --line:#e7e3d8;
@@ -76,7 +76,7 @@
   <div class="hrow">
     <div>
       <div class="wm">WKNDR<i>&nbsp;&bull;</i></div>
-      <div class="sub">Friday brief &mdash; four comps</div>
+      <div class="sub">Friday brief &mdash; five comps</div>
     </div>
     <div class="ctl">
       <button id="w" aria-pressed="false">Mobile 390</button>
@@ -152,6 +152,24 @@
       <div class="frame"><iframe src="d-hybrid.html" title="Comp D — The Hybrid"></iframe></div>
     </div>
 
+    <div class="comp">
+      <div class="cap">
+        <h2><span>E</span>The Picks</h2>
+        <p>The weekend's picks, <em>pictured</em> and numbered (2026-10-30). The sky opens it as a band
+        &mdash; the claim, two tinted day cells, the forecast's receipt &mdash; then the cover is pick 01,
+        then each day runs chronologically as thumb-and-text rows with a monospace source trace. Holds on
+        a phone without stacking. <strong>The renderer's default</strong> (<code>bun run brief</code>);
+        this is a snapshot of the live 31 Oct &ndash; 1 Nov render. <code>--template=grid</code> is the 2-up variant.</p>
+        <div class="meta">
+          <span class="tag" id="sz-e">&mdash;</span>
+          <span class="tag good">Every pick pictured</span>
+          <span class="tag good">Source trace on every row</span>
+          <span class="tag good">No stacking on a phone</span>
+        </div>
+      </div>
+      <div class="frame"><iframe src="e-picks.html" title="Comp E — The Picks"></iframe></div>
+    </div>
+
   </div>
 </main>
 <script>
@@ -182,10 +200,10 @@
     });};
   // Byte sizes matter here: Gmail CLIPS a message over ~102KB and hides the rest behind a
   // "View entire message" link — which is where your unsubscribe lives. Show the real numbers.
-  ['a-poster','b-dispatch','c-forecast','d-hybrid'].forEach((f,n)=>
+  ['a-poster','b-dispatch','c-forecast','d-hybrid','e-picks'].forEach((f,n)=>
     fetch(f+'.html').then(r=>r.text()).then(x=>{
       const kb=(new Blob([x]).size/1024).toFixed(1);
-      const el=document.getElementById('sz-'+'abcd'[n]);
+      const el=document.getElementById('sz-'+'abcde'[n]);
       el.textContent=kb+' KB';
       if(kb>60)el.className='tag warn';
     }));

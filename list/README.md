@@ -21,9 +21,9 @@ up to the blast (a dry run against the live worker: `audience 0 confirmed · Nob
 | ✅ Worker deployed | `https://wkndr-list.ness-13b.workers.dev` — alive (`/stats` answers 401 unauthed, as designed) |
 | ✅ KV namespace `SUBS` | `1701f484b4b3461ea0145fdecdaee646`, in `wrangler.toml` |
 | ✅ `ADMIN_KEY` | a Worker secret; local copy in `list/.env` (gitignored) |
-| ✅ **`bun run brief`** (NEW, `app/scripts/brief.ts`) | writes template D from the live deck + the weekend forecast → `list/out/brief-<saturday>.html` (+ `brief.html`); checks every `<tr>` sits in a `<table>` and the size stays under Gmail's clip; 7 tests |
+| ✅ **`bun run brief`** (`app/scripts/brief.ts`) | writes **template E, the picks** (since 2026-10-30; `--template=hybrid` for D, `grid` for the 2-up, `all` for every one) from the live deck + the weekend forecast → `list/out/brief-<saturday>.html` (+ `brief.html`); checks every `<tr>` sits in a `<table>` and the size stays under Gmail's clip; 14 tests |
 | ✅ `send.ts` dry run | reads the audience off the worker, renders per-recipient unsubscribe links, prints the first email; `--send` to blast |
-| ✅ Templates | four comps + the harness, live at https://wkndr-brief.pages.dev; the renderer builds **D** |
+| ✅ Templates | five comps + the harness, live at https://wkndr-brief.pages.dev; the renderer builds **E** (D on request) |
 
 **The three steps that were Ness's — done 2026-10-28 (sign-in mail delivered from `hello@wkndr.xyz` that afternoon):**
 
@@ -50,7 +50,8 @@ cd ../list && bun run scripts/send.ts out/brief.html --subject "…"          # 
 cd ../list && bun run scripts/send.ts out/brief.html --subject "…" --send   # the blast
 ```
 
-`bun run brief --hero="copenhagen"` pins the cover to a card by title; `--per=3` is picks per day.
+`bun run brief --hero="copenhagen"` pins the cover to a card by title; `--per=4` is picks per day;
+`--template=picks|grid|hybrid|all` picks the design (default `picks`).
 The renderer writes as of **the feed's own weekend** (the Letter names it) — on a Monday before the
 rebuild the draft is last weekend's and says so; a Friday run is the coming weekend with its forecast.
 `list/out/` is gitignored: the brief is a sent thing, not a source file.
@@ -75,7 +76,7 @@ sandbox domain and deliverability will be poor — do this before the first real
 To develop without sending anything, set `MAIL_PROVIDER = "none"` in `wrangler.toml`; the worker
 logs what it *would* have mailed and no key is needed.
 
-## Templates — three comps
+## Templates — five comps
 
 `templates/` holds three designs for the brief, plus a side-by-side harness. Same picks, same
 weekend, and the **real forecast for 1–2 Aug 2026** pulled from Open-Meteo's *hourly* endpoint —
@@ -90,12 +91,28 @@ what the brief *is*:
 | **B** | `b-dispatch.html` | the **writing** sells it — zero images, hanging numerals, signed | 12.5 KB |
 | **C** | `c-forecast.html` | the **structure** sells it — Sat vs Sun columns, each with its own temp | 13.4 KB |
 | **D** | `d-hybrid.html` | **A's cover over C's split** — see below | 17.5 KB |
+| **E** | `e-picks.html` | **the picks, pictured** — the renderer's default since 2026-10-30, see below | 29 KB |
 
 **D, the hybrid**, rests on one rule: *the hero is a pick, not a mood image.* It earns the space by
 being the single best hour of the weekend — named, dated, with a reason — so De Parade appears once,
 as the cover, and never again in the Saturday column. Then a one-line forecast claim explains the
 weekend's shape, and the two columns carry the rest **chronologically down each day** (Saturday:
 1–4pm → early evening → after dark). Reading order becomes doing order.
+
+**E, the picks** (2026-10-30, Ness: "the design of a picks of the weekend — develop out the email
+design") keeps D's rules — the cover is a pick, the forecast line explains the shape, the days run
+chronologically — and changes one thing: after the cover, D was a wall of type, and the app's front is
+fully pictured. So every pick is a numbered row with a **square focal-point thumb** re-cut from the
+original (never the card's portrait crop), the day and hour as the kicker, title, venue · price, one
+line of the card's own copy, and a **monospace source trace** (`via LBB · I amsterdam · 610 going on
+RA`) — the signal-and-link model made visible on every row, and the only place mono is allowed. A card
+with no honest photo gets the typographic face (its initial on the day's wash), never a stand-in. The
+**sky opens it as a band**: the claim big, Saturday and Sunday as two cells in their own weather tint,
+and the forecast's receipt (`forecast Open-Meteo · read Fri 30 Oct 12:00 · ranked by the sky, then the
+hour`) — the first phone screen is the sky, then the cover. The rows hold at 390px by shrinking the
+thumb to 104px, never stacking; `--template=grid` is the same data as 2-up 3:2 cards (a contact sheet
+on desktop, long on a phone — kept for comparing, not the default). Dark: the washes go to a dark
+neutral, the tints stay. Images off: the wash square with the title as styled alt text.
 
 **Two layout bugs found building it, both worth remembering:**
 

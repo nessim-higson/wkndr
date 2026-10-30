@@ -1,122 +1,16 @@
-/**
- * THE FRIDAY BRIEF — a draft of the email, written from the live deck and the forecast.
- *
- * Ness, 2026-10-26: "I want to kick start the email feature." The list worker, the send script and
- * the four template comps had been built since July (list/README.md); what was missing was the step
- * between Thursday's crawl and Friday's send — the file. This writes it: template D (the hybrid, the
- * comp Ness's July notes settled on) filled from `public/data/picks.<city>.json` in the deck's own
- * order and the weekend's per-day forecast, so Friday morning starts from a draft, not a blank page.
- *
- * A DRAFT, on purpose. The send script's premise (list/scripts/send.ts) is that the brief is written
- * by a person after seeing what the pipeline produced. This fills the structure — the one pick on the
- * cover, the forecast line, the two days chronologically — with the cards' own copy; the hero sentence
- * and the forecast line are the two places to put a human voice before sending.
- *
- *   bun run brief                          → list/out/brief-<saturday>.html + list/out/brief.html
- *   bun run brief --hero="copenhagen"      → pin the cover to a pick by title (loose match)
- *   bun run brief --per=3                  → picks per day column (default 3)
- *
- * Then: cd list && bun run scripts/send.ts out/brief.html --subject "…"   (dry run; --send to blast)
- *
- * Email-HTML rules kept from the comps: every <tr> a direct child of a <table>; everything
- * load-bearing inline; no flex/grid/variables; two dark paths; under 102 KB; `{{unsub}}` in the footer.
- */
 import { mkdirSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { forecast, realVenue, assignDays, MODE_TINT, type Wx, type WxDay } from './poster'
-import { originalOf } from '../src/lib/image'
-import { fixWhen, whenMinutes, latestDateOf, upcomingWeekendEnd, whenWeekendDays } from '../src/lib/when'
-import { endCleanly } from '../src/lib/blurb'
+import { forecast, assignDays, type Wx, type WxDay } from './poster'
+import { fixWhen, upcomingWeekendEnd, whenWeekendDays } from '../src/lib/when'
 import type { Pick, Mode } from '../src/types'
+import { APP, FONT, esc, deg, coverImage, deckOrder, thisWeekend, slot, clock, line, dayWords, claim, band, realVenue, trsAreLegal } from './lib/brief-shared'
+import { picksHtml } from './brief-picks'
+export { trsAreLegal }
 
 const CITY = process.argv.find((a) => a.startsWith('--city='))?.split('=')[1] ?? 'amsterdam'
 const arg = (k: string) => process.argv.find((a) => a.startsWith(`--${k}=`))?.split('=')[1]
 const PER = Number(arg('per') ?? 3)
-const APP = 'https://app.wkndr.xyz/?utm_source=brief'
 const OUT_DIR = join(import.meta.dir, '..', '..', 'list', 'out')
-const FONT = `'Helvetica Neue',Helvetica,Arial,sans-serif`
-
-const esc = (s: string) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!))
-const deg = (n: number) => `${Math.round(n)}&deg;`
-
-/** The cover photograph at the email's crop (600 wide, 7:12 → 1200×700), re-cut from the ORIGINAL
- *  so the card's portrait crop is not cropped a second time. The focal point rides along when known. */
-function coverImage(p: Pick): string {
-  const src = originalOf(p.image!)
-  const crop = p.imageFocal ? `a=focal&fpx=${p.imageFocal[0].toFixed(3)}&fpy=${p.imageFocal[1].toFixed(3)}` : 'a=attention'
-  return `https://images.weserv.nl/?url=${encodeURIComponent(src)}&w=1200&h=700&fit=cover&${crop}&output=jpg&default=${encodeURIComponent(src)}`
-}
-
-/** The deck's own order: the hand pile first, then the stamped serve order — the brief never
- *  advertises a different front than the app deals. */
-function deckOrder(picks: Pick[]): Pick[] {
-  return [...picks].sort((a, b) => {
-    const ap = a.pilePos ?? Infinity, bp = b.pilePos ?? Infinity
-    if (ap !== bp) return ap - bp
-    return (a.servePos ?? Infinity) - (b.servePos ?? Infinity)
-  })
-}
-
-/** Dated to this weekend (or running through it) — the brief is about the two days, not the canon. */
-function thisWeekend(p: Pick, now: Date): boolean {
-  const end = upcomingWeekendEnd(now)
-  const sunD = new Date(end.getFullYear(), end.getMonth(), end.getDate())
-  const satD = new Date(sunD.getFullYear(), sunD.getMonth(), sunD.getDate() - 1)
-  const d = whenWeekendDays(p.when, satD, sunD, now)
-  return (d.sat || d.sun) && p.freshness !== 'always'
-}
-
-/** The slot label down a column: the hour if the card has one, else what its dates say. */
-function slot(p: Pick, now: Date): { text: string; accent: boolean } {
-  const end = upcomingWeekendEnd(now)
-  const latest = latestDateOf(p.when, now)
-  const endsSun = !!latest && latest.toDateString() === end.toDateString() && /until|t\/m|through|–|-/i.test(p.when)
-  const m = whenMinutes(p.when)
-  if (m >= 0 && Number.isFinite(m) && m < 24 * 60 && /\d{1,2}[:.]\d{2}/.test(p.when)) {
-    const h = Math.floor(m / 60), mm = String(m % 60).padStart(2, '0')
-    const when = m < 12 * 60 ? 'Morning' : m < 17 * 60 ? 'Afternoon' : m < 20 * 60 ? 'Early evening' : 'After dark'
-    return { text: `${when} &nbsp;·&nbsp; ${h}:${mm}`, accent: false }
-  }
-  if (endsSun) return { text: 'Last day', accent: true }
-  if (/^until|^t\/m|^through/i.test(p.when)) return { text: 'Running', accent: false }
-  return { text: 'All day', accent: false }
-}
-/** Chronological inside a column: timed cards by the clock, then the all-day ones. */
-const clock = (p: Pick) => { const m = whenMinutes(p.when); return /\d{1,2}[:.]\d{2}/.test(p.when) && Number.isFinite(m) ? m : 24 * 60 }
-
-/** One line under a title: the card's own blurb, cut cleanly, or its why. */
-const line = (p: Pick, max = 120) => esc(endCleanly(p.blurb || p.why || '', max, (p.blurb || '').length > max))
-
-/** The day's band: how the forecast reads in a short sentence, in the app's own vocabulary. */
-function dayWords(d: WxDay): string {
-  const pop = d.pop ?? 0, sun = d.sun
-  if (pop >= 70) return 'Rain most of the day. Indoors wins.'
-  if (pop >= 40) return 'Showers around; keep a dry plan in reserve.'
-  if (sun != null && sun >= 0.6) return 'Bright. Go out early and stay out.'
-  if (sun != null && sun >= 0.3) return 'Sun and cloud, dry.'
-  return 'Cloudy but dry.'
-}
-/** The claim between the cover and the split — why the weekend has this shape. A draft line. */
-function claim(wx: Wx | null): { strong: string; soft: string } {
-  if (!wx || wx.days.length < 2) return { strong: 'The weekend, by day.', soft: 'Here is the rest of it, in the order the sky wants.' }
-  const [a, b] = wx.days
-  const same = a.mode === b.mode && Math.abs(a.hi - b.hi) < 4
-  if (same) {
-    const wet = (a.pop ?? 0) >= 60 && (b.pop ?? 0) >= 60
-    const strong = wet ? `Two wet days at ${Math.round(Math.max(a.hi, b.hi))}° — this is an indoors weekend.`
-      : (a.pop ?? 0) < 30 && (b.pop ?? 0) < 30 ? `Two dry days at ${Math.round(Math.max(a.hi, b.hi))}° — the difference is the hour, not the day.`
-      : `Two of the same at ${Math.round(Math.max(a.hi, b.hi))}° — pick by the hour.`
-    return { strong: esc(strong), soft: 'Here is the rest of it, in the order the sky wants.' }
-  }
-  const nicer = (a.pop ?? 0) <= (b.pop ?? 0) ? a : b
-  return { strong: esc(`${nicer.label === 'Sat' ? 'Saturday' : 'Sunday'} is the day to be out; the other is for the museums.`), soft: `Sat ${Math.round(a.hi)}°, Sun ${Math.round(b.hi)}°. The rest, by day.` }
-}
-/** The band colours per mode: a soft wash of the app's weather tint, and the tint itself for type. */
-function band(mode: Mode): { bg: string; ink: string } {
-  const tint = MODE_TINT[mode]
-  const wash: Record<Mode, string> = { HOT: '#fdebe3', WARM: '#fdf0e2', COOL: '#e8f0ee', COLD_WET: '#e7ecf3', VOLATILE: '#efe8f0' }
-  return { bg: wash[mode], ink: tint }
-}
 
 function item(p: Pick, now: Date, first: boolean, last: boolean): string {
   const s = slot(p, now)
@@ -304,21 +198,6 @@ ${cover}
   return { html, hero, sat, sun, subject }
 }
 
-/** Every <tr> must be a direct child of a <table> — a <tr> inside a <td> is silently discarded
- *  by HTML parsers (it cost comp A two blocks). Checked on every write. */
-export function trsAreLegal(html: string): boolean {
-  const stack: string[] = []
-  const re = /<\/?(table|tr|td|th|tbody|thead)\b[^>]*>/gi
-  let m: RegExpExecArray | null
-  while ((m = re.exec(html))) {
-    const close = m[0][1] === '/', tag = m[1].toLowerCase()
-    if (close) { while (stack.length && stack.pop() !== tag) { /* unwind */ } ; continue }
-    if (tag === 'tr' && !['table', 'tbody', 'thead'].includes(stack[stack.length - 1] ?? '')) return false
-    stack.push(tag)
-  }
-  return true
-}
-
 if (import.meta.main) {
   const dataDir = join(import.meta.dir, '..', 'public', 'data')
   const feed = JSON.parse(await Bun.file(join(dataDir, `picks.${CITY}.json`)).text()) as { picks: Pick[] }
@@ -336,19 +215,30 @@ if (import.meta.main) {
   const stale = satDate ? satDate.getTime() < Date.now() - 36 * 3600e3 : false
   const wx = await forecast(satDate ?? undefined)
   if (stale) console.log(`  note:   the feed is for ${satIso} (already past) — the draft reads as of that Friday; no forecast for a past weekend`)
-  const { html, hero, sat, sun, subject } = briefHtml(feed.picks, wx, { hero: arg('hero'), per: PER, now, weekendLabel })
-  if (!trsAreLegal(html)) { console.error('✖ a <tr> sits outside a <table> — the email would silently lose a block'); process.exit(1) }
-  const kb = Buffer.byteLength(html, 'utf8') / 1024
-  if (kb > 100) { console.error(`✖ ${kb.toFixed(1)} KB — Gmail clips past 102 KB and hides the unsubscribe link`); process.exit(1) }
+  // THE TEMPLATE. `picks` (E, rows — the default since 2026-10-30), `grid` (E, 2-up), `hybrid` (D),
+  // or `all` to write every one side by side for comparing (brief.html = picks).
+  const TEMPLATE = arg('template') ?? 'picks'
+  const want = TEMPLATE === 'all' ? ['picks', 'grid', 'hybrid'] : [TEMPLATE]
   const key = satIso ?? 'draft'
   mkdirSync(OUT_DIR, { recursive: true })
-  writeFileSync(join(OUT_DIR, `brief-${key}.html`), html)
-  writeFileSync(join(OUT_DIR, 'brief.html'), html)
-  console.log(`✓ brief ${CITY} · weekend of ${satIso ?? '?'} · ${wx ? wx.span : 'no forecast'} · ${kb.toFixed(1)} KB · tables legal`)
+  let first: ReturnType<typeof briefHtml> | null = null
+  for (const t of want) {
+    const out = t === 'hybrid'
+      ? briefHtml(feed.picks, wx, { hero: arg('hero'), per: Number(arg('per') ?? 3), now, weekendLabel })
+      : picksHtml(feed.picks, wx, { hero: arg('hero'), per: Number(arg('per') ?? 4), now, weekendLabel, layout: t === 'grid' ? 'grid' : 'rows' })
+    if (!trsAreLegal(out.html)) { console.error(`✖ ${t}: a <tr> sits outside a <table> — the email would silently lose a block`); process.exit(1) }
+    const kb = Buffer.byteLength(out.html, 'utf8') / 1024
+    if (kb > 100) { console.error(`✖ ${t}: ${kb.toFixed(1)} KB — Gmail clips past 102 KB and hides the unsubscribe link`); process.exit(1) }
+    const name = want.length > 1 ? `brief-${t}.html` : `brief-${key}.html`
+    writeFileSync(join(OUT_DIR, name), out.html)
+    if (!first) { first = out; writeFileSync(join(OUT_DIR, 'brief.html'), out.html) }
+    console.log(`✓ brief ${CITY} · ${t} · weekend of ${satIso ?? '?'} · ${wx ? wx.span : 'no forecast'} · ${kb.toFixed(1)} KB · tables legal → list/out/${name}`)
+  }
+  const { hero, sat, sun, subject } = first!
   console.log(`  cover   ${hero.title} (${hero.when})`)
   console.log(`  sat     ${sat.map((p) => p.title).join(' · ')}`)
   console.log(`  sun     ${sun.map((p) => p.title).join(' · ')}`)
   console.log(`  subject ${subject}`)
-  console.log(`  → list/out/brief-${key}.html (+ brief.html)`)
+  console.log(`  → list/out/brief.html`)
   console.log(`  next:   cd list && bun run scripts/send.ts out/brief.html --subject "${subject.replace(/"/g, '\\"')}"`)
 }

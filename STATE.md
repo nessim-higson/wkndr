@@ -5,7 +5,7 @@ FIRST in a new chat. For strategy + backlog see `docs/backlog.md`; for the pipel
 `docs/pipeline-architecture.md` + `docs/source-map.md`; for **who may write to the deck vs to a personal
 profile** (board / Tune / airlock — read before touching either) see `docs/curation-surfaces.md`; for the
 **board roadmap** (auto-compile tracks) see `docs/board-roadmap.md`; for full **version history** see
-`CHANGELOG.md` (current to app **V.12.2** / board V.10) and the **git log / tags**. Onboarding:
+`CHANGELOG.md` (current to app **V.12.3** / board V.10) and the **git log / tags**. Onboarding:
 `CLAUDE.md`; for any coding agent (Codex included) **`AGENTS.md`** is the working manual and
 `docs/variations/` the prototype protocol + the open briefs. App lives in `/app` (Vite + React + TS, run with `bun`); ships to **Cloudflare Pages**
 (`wkndr.xyz` + `app.wkndr.xyz`) **and** GitHub Pages (legacy, keeps old share links alive)._
@@ -30,6 +30,20 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
 > sessions update (today it's on load).
 
 ## Live right now
+- **2026-10-30 — THE PICKS (V.12.3): the Friday brief is pictured.** Ness: "the design of a picks of
+  the weekend — develop out the email design." `bun run brief` now writes **template E**
+  (`app/scripts/brief-picks.ts`): the sky as a band (the claim, two tinted day cells, the forecast's
+  mono receipt) → the cover as pick 01 (3:2, focal-point cut from the original) → each day
+  chronologically as numbered rows with a square thumb, the hour, title, venue · price, one line,
+  and a **mono source trace** on every row (`via LBB · I amsterdam · 610 going on RA`). No-photo
+  cards get the typographic face. Holds at 390px without stacking; dark and images-off degrade to
+  design. `--template=grid` (2-up, for comparing) · `hybrid` (D) · `all`. Shared helpers moved to
+  `scripts/lib/brief-shared.ts`; comp E is in the gallery (`list/templates/e-picks.html`,
+  `compare.html` shows five); 7 new tests (610 green). **Not yet sent** — the list has Ness and
+  partner as its first subscribers to confirm (list/README.md step 3); Friday 6 Nov is the first
+  real blast if the design is approved on the phone. Known data edge seen in this render: a pick
+  whose crawl venue is "Am" (dropped in the email, still in the deck) and Friday-dated RA nights
+  landing in the weekend split — pipeline, not template.
 - **2026-10-27 — THE ACCOUNT (V.12.2).** Ness, 26 Oct: "I want to look at having an account that I can log
   into and then have saved events and things to do for the future." Built as the first account layer — FREE,
   no passwords, no Google: a **magic link** on the person's email, a third tiny worker (`worker/account/`,
