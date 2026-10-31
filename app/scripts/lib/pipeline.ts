@@ -1331,6 +1331,18 @@ export function venueMatchImage(
  *  2026-10-08: two guide picks at De Hallen (the Art, Design & Vintage Market and the Denim Days Market)
  *  both wore the Foodhallen's photo because the pass compared each only against the canon holder and
  *  never recorded the first borrow; the feed audit halted the Thursday cron on it. */
+/** THE ORDER THE PHOTO PASS WALKS THE DECK IN: canon first (a place's own card keeps its photo), then the
+ *  live cards in the serve order they would get NOW, so the one lent photo lands on the card the deck
+ *  shows first. 2026-10-08, the first run under the lend-once rule: the pass walked the crawl order, the
+ *  Foodhallen went to the Denim Days Market at 117 and the Art, Design & Vintage Market opened the deck
+ *  blank at 6. restamp.ts already walks by pile and serve position; this is refresh.ts's equivalent, one
+ *  provisional stamp before the real one. */
+export function photoPassOrder(picks: Pick[], isLive: (p: Pick) => boolean, mode: Mode | { sat: Mode; sun: Mode } | null): Pick[] {
+  const live = picks.filter(isLive)
+  const pos = new Map(stampServeOrder(live, mode).map((p) => [p.id, p.servePos ?? 9999]))
+  return [...picks.filter((p) => !isLive(p)), ...live.sort((a, b) => (pos.get(a.id) ?? 9999) - (pos.get(b.id) ?? 9999))]
+}
+
 export function photoHolderAfter(
   holder: 'canon' | 'live' | undefined,
   p: { imageWhy?: string | null },
