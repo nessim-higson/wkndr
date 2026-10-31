@@ -15,6 +15,7 @@
 import { classify } from './modes'
 import type { Mode } from '../types'
 import type { GlassScene } from './glass'
+import type { Wind } from './air'
 
 export interface HourWx {
   /** epoch ms of the start of the hour */
@@ -30,11 +31,15 @@ export interface HourWx {
   /** forecast cloud cover in the low and mid sky, % (null when the payload does not carry it) */
   low?: number | null
   mid?: number | null
+  /** the wind at 10 m: km/h and the direction it blows FROM (null when the payload does not carry it).
+   *  The pane reads it (weather/air.ts): the clouds pan with it, the rain in the air leans with it. */
+  wind?: number | null
+  windDir?: number | null
 }
 export interface HourReading extends HourWx { scene: GlassScene; sky: string; mode: Mode; clock: string }
 
 export function decodeHourly(data: unknown): HourWx[] {
-  const d = data as { utc_offset_seconds?: number; hourly?: { time?: number[]; temperature_2m?: number[]; precipitation_probability?: (number | null)[]; weather_code?: number[]; cloud_cover_low?: (number | null)[]; cloud_cover_mid?: (number | null)[] } } | null
+  const d = data as { utc_offset_seconds?: number; hourly?: { time?: number[]; temperature_2m?: number[]; precipitation_probability?: (number | null)[]; weather_code?: number[]; cloud_cover_low?: (number | null)[]; cloud_cover_mid?: (number | null)[]; wind_speed_10m?: (number | null)[]; wind_direction_10m?: (number | null)[] } } | null
   const h = d?.hourly
   if (!h || !Array.isArray(h.time) || !Array.isArray(h.temperature_2m) || !Array.isArray(h.weather_code)) return []
   const off = typeof d?.utc_offset_seconds === 'number' && Number.isFinite(d.utc_offset_seconds) ? d.utc_offset_seconds : 0
@@ -45,7 +50,7 @@ export function decodeHourly(data: unknown): HourWx[] {
     const local = new Date((t + off) * 1000)   // read with the UTC getters = the city's wall clock
     const pop = h.precipitation_probability?.[i]
     const pct = (v: unknown) => (typeof v === 'number' && Number.isFinite(v) ? v : null)
-    out.push({ time: t * 1000, dow: local.getUTCDay(), hour: local.getUTCHours(), temp, pop: Math.round(typeof pop === 'number' ? pop : 0), code, low: pct(h.cloud_cover_low?.[i]), mid: pct(h.cloud_cover_mid?.[i]) })
+    out.push({ time: t * 1000, dow: local.getUTCDay(), hour: local.getUTCHours(), temp, pop: Math.round(typeof pop === 'number' ? pop : 0), code, low: pct(h.cloud_cover_low?.[i]), mid: pct(h.cloud_cover_mid?.[i]), wind: pct(h.wind_speed_10m?.[i]), windDir: pct(h.wind_direction_10m?.[i]) })
   }
   return out
 }
@@ -101,4 +106,17 @@ export function weekendStops(hours: HourWx[], now: number = Date.now()): HourRea
 /** the stop that contains `now`, or -1 when now is outside the weekend */
 export function nowStop(stops: HourWx[], now: number = Date.now()): number {
   return stops.findIndex((s) => now >= s.time && now < s.time + 3_600_000)
+}
+
+/** The wind of one hour, as the pane reads it; null when the hour does not carry one. */
+export function windOf(h: HourWx | null | undefined): Wind | null {
+  if (!h || h.wind == null || h.windDir == null) return null
+  return { speed: h.wind, dir: h.windDir }
+}
+
+/** The wind blowing NOW, from the whole hourly run (the live reading has no wind of its own: the
+ *  header's reading is an observation of the SKY, and the wind is the forecast's for this hour). */
+export function windAt(hours: HourWx[], now: number = Date.now()): Wind | null {
+  const i = nowStop(hours, now)
+  return i < 0 ? null : windOf(hours[i])
 }
