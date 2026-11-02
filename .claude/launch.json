@@ -135,6 +135,30 @@
         "/Users/nessimhigson/CLAUDE/projects/prototypes/arena-mnemonic/rings/serve.ts"
       ],
       "port": 4321
+    },
+    {
+      "name": "scroll-page",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8765",
+        "-d",
+        "/private/tmp/claude-501/-Users-nessimhigson-Code-wkndr/b03351df-a02f-47c7-af65-eaf6d748bab0/scratchpad/scroll"
+      ],
+      "port": 8765
+    },
+    {
+      "name": "arena-guidelines",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "4200",
+        "--directory",
+        "/Users/nessimhigson/CLAUDE/projects/prototypes/arena-guidelines"
+      ],
+      "port": 4200
     }
   ]
 }
