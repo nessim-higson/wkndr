@@ -159,6 +159,14 @@
         "/Users/nessimhigson/CLAUDE/projects/prototypes/arena-guidelines"
       ],
       "port": 4200
+    },
+    {
+      "name": "selects-shared",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "/Users/nessimhigson/CLAUDE/projects/prototypes/selects/tools/devserver.py"
+      ],
+      "port": 8766
     }
   ]
 }
