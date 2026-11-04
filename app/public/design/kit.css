@@ -13,7 +13,7 @@
 * { box-sizing: border-box; }
 html, body { margin: 0; }
 body.board { background: #e9e6de; color: var(--ink); font: 15px/1.5 var(--body); -webkit-font-smoothing: antialiased; }
-.board a { color: inherit; }
+.board a:not([class]) { color: inherit; }
 
 /* board header */
 .bh { padding: 48px 48px 24px; max-width: 1480px; margin: 0 auto; }
