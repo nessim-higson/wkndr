@@ -29,9 +29,27 @@
 <body class="board">
 <header class="bh">
   <div class="crumb"><a href="./">WKNDR design review · Nov 2026</a> / 04 Thumbnails</div>
-  <h1>The thumbnails<br>aren't broken. They're <i>cut wrong.</i></h1>
-  <p class="lede">We checked every image in the live feed (97 pictured cards, 226 source images). Almost none fail to load. The problem is how thumbnails are made: every small square reuses the large 800×1200 portrait card image and crops it to the centre. For a typical landscape photo that leaves <b>30% of the picture</b>, ignores the focal point we already store, and downloads about 150 KB for a box 76px wide.</p>
+  <h1>Too many cards<br>with <i>no photo.</i></h1>
+  <p class="lede">Section 00 is the main problem: the cards that have no photo at all. Sections 01–03 cover a second problem with the photos we do have. We checked every image in the live feed (97 pictured cards, 226 source images). Almost none fail to load. The problem is how thumbnails are made: every small square reuses the large 800×1200 portrait card image and crops it to the centre. For a typical landscape photo that leaves <b>30% of the picture</b>, ignores the focal point we already store, and downloads about 150 KB for a box 76px wide.</p>
 </header>
+
+<section class="sec">
+  <div class="sec-h"><span class="n">00</span><h2>The real problem: 21 cards with no photo at all</h2><span class="tag rec">Fix this first</span></div>
+  <p class="why">21 of the 118 live cards (18%) have no photo, and 5 of those are in the first 20 cards you swipe. 19 of the 21 come from Little Black Book's weekend tips. The tips page has <b>no photo for any of its 45 tips</b>, so each card depends on the venue's own website, and for small places that have just opened, that's usually nothing usable. The pipeline is right to leave them blank rather than show a logo. It just has nowhere else to look.</p>
+  <div class="rank">
+    <div><span class="n">8 cards</span><b>The venue's website has no usable photo.</b> Its share image is a logo, a banner or missing: Dinamo Pizza, Rondo, Vleck, Sea Palace Café, ITADAKI, CABINET at Centrale Markthal, De Poldervogel, Ajax–AZ. <b>Fix: venue photos from Google Places</b> (below).</div>
+    <div><span class="n">5 cards</span><b>The only link is Instagram.</b> Yusu Bakery, Tjin's Toko, Dime Slice, Bar François, Flour Shop. Instagram can't be read without Meta's business API (already on the list in STATE.md, waiting on the Meta setup). <b>Fix: Google Places now, Instagram once Meta is set up.</b></div>
+    <div><span class="n">4 cards</span><b>The link goes back to Little Black Book itself.</b> Le Petit French Café, Noordermarkt, Vermut, NoordOogst market. Noordermarkt deserves a fixed photo in the canon, and NoordOogst can borrow the photo from its other card (one borrow is allowed). <b>Fix: canon photo or venue borrow, plus Places.</b></div>
+    <div><span class="n">3 cards</span><b>Duplicates that should have been merged.</b> "Must see: Kusama" (a Tiqets link) is the same show as the pictured Stedelijk Kusama card. Museumnacht and Museum Market have pictured I amsterdam records. <b>Fix: widen the duplicate check, so the pictured record wins.</b></div>
+    <div><span class="n">1 card</span><b>A broken link.</b> The Poor Man's Rembrandt links to a DuckDuckGo search, so there's no page to take a photo from. The rink card has the same problem. <b>Fix: the pipeline should reject search-engine links.</b></div>
+  </div>
+  <div class="notes">
+    <div class="note"><b>The big lever · Google Places photos</b>Nearly every venue here is on Google Maps with photos. You give it the name and address, it returns the place, and the place's photos come with credits. That covers about 15 of the 21. The cost is a few cents a week at our volume, well inside the free monthly credit. Two catches: Google's terms don't allow storing copies of the photos (so they're served through a small worker), and each photo has to show its photographer's credit. That fits the "credit the source" rule we already follow.</div>
+    <div class="note"><b>Already designed, still off · SERPER</b>Open-web image search with the vision check on top. It needs a <code>SERPER_API_KEY</code> secret. It's good for events and weaker for a pizza place that opened last week.</div>
+    <div class="note"><b>Deck rule, today</b>Whatever source we add, keep photo-less cards out of the first 3 slots and never put two next to each other. That alone would fix most of the first impression.</div>
+    <div class="note"><b>When there's still nothing · a map plate</b>Every venue has an address, so a blank card could show a tinted street map of where it is (OpenStreetMap, credited) in place of the type tile. It's honest, it's useful, and it never looks broken. A Pexels stock photo of "pizza" is the wrong answer, because it shows a place that isn't the real one.</div>
+  </div>
+</section>
 
 <section class="sec">
   <div class="sec-h"><span class="n">01</span><h2>Today vs. the fix, live</h2></div>
