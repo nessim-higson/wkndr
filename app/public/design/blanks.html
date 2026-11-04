@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WKNDR · Cards without a photo</title>
+<link rel="stylesheet" href="kit.css">
+<style>
+  .scr { font-family: var(--body); color: var(--ink); }
+  .deck { background: linear-gradient(170deg, #9fb1bc, #566e7d 60%, #2c3d4a); height: 100%; position: relative; }
+  .hb { margin: 4px 12px 0; background: rgba(250,248,243,.92); border-radius: 20px; padding: 10px 12px 10px 16px; display: flex; align-items: center; justify-content: space-between; }
+  .hb .cnt { font: 600 14px/1 var(--display); padding: 8px 11px; border-radius: 99px; background: var(--accent); color: #fff; }
+  .card { position: absolute; left: 16px; right: 16px; top: 116px; bottom: 116px; border-radius: 26px; overflow: hidden; box-shadow: 0 20px 40px -20px rgba(0,0,0,.5); }
+  .card.b1 { transform: translateY(9px) scale(.96); opacity: .8; background: #ddd center/cover; }
+  .acts { position: absolute; left: 0; right: 0; bottom: 40px; display: flex; justify-content: center; gap: 18px; }
+  .acts i { width: 58px; height: 58px; border-radius: 50%; background: #fff; display: grid; place-items: center; font-style: normal; font-size: 22px; box-shadow: 0 6px 16px -8px rgba(0,0,0,.4); }
+  .pill { position: absolute; left: 16px; top: 16px; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; background: rgba(250,248,243,.92); color: var(--ink); padding: 6px 10px; border-radius: 99px; z-index: 3; }
+
+  /* ---- A · the openings bundle ---- */
+  .bundle { background: #1a1a1a; color: var(--paper); padding: 56px 22px 22px; display: flex; flex-direction: column; height: 100%; }
+  .bundle .k { font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+  .bundle h2 { font: 600 46px/.92 var(--display); letter-spacing: -.02em; margin: 10px 0 18px; }
+  .bundle h2 em { font-style: normal; color: var(--accent); }
+  .bundle ol { list-style: none; margin: 0; padding: 0; flex: 1; }
+  .bundle li { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; padding: 9px 0; border-top: 1px solid #333; }
+  .bundle li b { font: 600 19px/1.1 var(--display); }
+  .bundle li span { font-size: 12px; color: var(--ink-4); white-space: nowrap; }
+  .bundle .ft { font-size: 12px; color: var(--ink-4); display: flex; justify-content: space-between; }
+  .bundle .ft b { color: var(--paper); }
+
+  .panel { background: var(--paper); height: 100%; overflow: hidden; }
+  .panel .pad { padding: 4px 20px 0; }
+  .panel .k { font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); margin-top: 8px; }
+  .panel h1 { font: 600 32px/1 var(--display); margin: 8px 0 6px; }
+  .panel .s { font-size: 13px; color: var(--ink-3); margin: 0 0 12px; }
+  .op { display: flex; gap: 12px; padding: 12px 0; border-top: 1px solid var(--rule); align-items: flex-start; }
+  .op .th { flex: none; width: 60px; height: 60px; border-radius: 12px; background: center/cover; display: grid; place-items: center; font: 600 22px/1 var(--display); color: #fff; }
+  .op b { display: block; font-size: 15px; } .op p { margin: 2px 0 0; font-size: 13px; color: var(--ink-3); line-height: 1.35; }
+  .op .when { font-size: 11px; font-weight: 700; color: var(--accent); letter-spacing: .04em; text-transform: uppercase; }
+  .op .sv { margin-left: auto; flex: none; width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid var(--rule); display: grid; place-items: center; font-size: 15px; }
+  .op .sv.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+  /* ---- B · the designed blank: three faces ---- */
+  .face { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: space-between; padding: 56px 22px 22px; }
+  .meta { font-size: 13px; line-height: 1.4; }
+  .meta b { display: block; font: 600 13px/1.3 var(--body); }
+  .src { font: 11px/1.3 var(--mono); opacity: .7; margin-top: 8px; }
+  /* B1 the name, huge, in the day's weather */
+  .f1 { background: linear-gradient(165deg, #c9d3d9 0%, #8fa3b0 55%, #566e7d 100%); color: #14202a; }
+  .f1 .nm { font: 600 clamp(58px, 19vw, 76px)/.86 var(--display); letter-spacing: -.035em; margin-top: 10px; }
+  .f1 .nm small { display: block; font: 500 17px/1.25 var(--body); letter-spacing: 0; margin-top: 16px; max-width: 260px; }
+  .f1 .grain { position: absolute; inset: 0; opacity: .18; mix-blend-mode: multiply; background-image: radial-gradient(#000 0.6px, transparent 0.7px); background-size: 3px 3px; pointer-events: none; }
+  /* B2 the quote */
+  .f2 { background: var(--accent); color: #fff; }
+  .f2 .q { font: 600 44px/.98 var(--display); letter-spacing: -.015em; }
+  .f2 .q::before { content: '“'; display: block; font-size: 90px; line-height: .6; margin-bottom: 4px; color: #1a1a1a; }
+  .f2 .by { font-size: 13px; margin-top: 16px; }
+  .f2 .nm2 { font: 600 30px/1 var(--display); color: #1a1a1a; }
+  /* B3 the facts, like a shop sign */
+  .f3 { background: var(--paper); color: var(--ink); }
+  .f3 .sign { border: 3px solid var(--ink); border-radius: 18px; padding: 20px 18px; margin-top: 6px; }
+  .f3 .sign .new { display: inline-block; background: var(--accent); color: #fff; font: 700 11px/1 var(--body); letter-spacing: .1em; text-transform: uppercase; padding: 6px 9px; border-radius: 99px; }
+  .f3 .sign h3 { font: 600 50px/.9 var(--display); letter-spacing: -.02em; margin: 14px 0 16px; }
+  .f3 .sign dl { margin: 0; display: grid; grid-template-columns: 70px 1fr; gap: 7px 10px; font-size: 14px; }
+  .f3 .sign dt { font: 11px/1.6 var(--mono); text-transform: uppercase; color: var(--ink-3); }
+  .f3 .sign dd { margin: 0; font-weight: 700; }
+  .f3 .line { font-size: 15px; color: var(--ink-2); max-width: 300px; }
+
+  /* list thumbs of the same faces */
+  .thumbs { display: flex; gap: 12px; flex-wrap: wrap; margin: 8px 0 4px; }
+  .tb { width: 84px; height: 84px; border-radius: 14px; overflow: hidden; position: relative; display: flex; align-items: flex-end; padding: 8px; font: 600 15px/.92 var(--display); }
+  .tb.t1 { background: linear-gradient(165deg, #c9d3d9, #566e7d); color: #14202a; }
+  .tb.t2 { background: var(--accent); color: #fff; }
+  .tb.t3 { background: var(--paper); border: 2.5px solid var(--ink); }
+  .tb.old { background: var(--paper-3); color: var(--ink-4); font: 500 11px/1.2 var(--body); align-items: center; justify-content: center; text-align: center; }
+  .tbl { font: 11px/1.3 var(--mono); color: var(--ink-3); text-align: center; margin-top: 6px; width: 84px; }
+
+  /* the instagram answer */
+  .ig { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr)); gap: 16px; }
+  .ig .note ol { margin: 0; padding-left: 18px; } .ig .note li + li { margin-top: 5px; }
+  .verdict { background: var(--ink); color: var(--paper); border-radius: 14px; padding: 16px 18px; font-size: 15px; margin-top: 16px; }
+  .verdict b { color: var(--accent); }
+</style>
+</head>
+<body class="board">
+<header class="bh">
+  <div class="crumb"><a href="./">WKNDR design review · Nov 2026</a> / 05 Cards without a photo</div>
+  <h1>When there's no photo,<br><i>design</i> the card.</h1>
+  <p class="lede">Two ideas. First, most of the blank cards are Little Black Book's "just opened" tips, so deal them as one card instead of six. Second, any blank that's left gets a face that looks deliberate, not missing. The content is this week's real tips.</p>
+</header>
+
+<section class="sec">
+  <div class="sec-h"><span class="n">A</span><h2>New this week, as one card</h2><span class="tag rec">Clears most of the blanks</span></div>
+  <p class="why">Little Black Book's tips page is really a list of openings, and we've been splitting it into separate cards with no photo. One card holds the list instead. It sits in the deck like any other card: swipe it away, or tap it to open the list and save the ones you want. Any opening that does have a photo shows it in the list.</p>
+  <div class="swipe-hint">Swipe sideways for each screen →</div>
+  <div class="row">
+    <div class="art"><div class="phone"><div class="scr deck">
+      <div class="statusbar light"><span>9:41</span><div class="isl"></div><span>●●●</span></div>
+      <div class="hb"><div class="wm">WKNDR</div><span class="cnt">★ 3</span></div>
+      <div class="card b1" style="background-image:url(img/sauna.jpg)"></div>
+      <div class="card"><div class="bundle">
+        <div class="k">New this week · Little Black Book</div>
+        <h2>Seven doors<br>that just <em>opened.</em></h2>
+        <ol>
+          <li><b>The Jollof Club</b><span>Sat 7 Nov</span></li>
+          <li><b>Kade Noord</b><span>Noord · from Fri</span></li>
+          <li><b>Dinamo Pizza</b><span>Jordaan</span></li>
+          <li><b>Sea Palace Café</b><span>Centrum</span></li>
+          <li><b>Café Pietertje</b><span>Westerpark · Fri</span></li>
+          <li><b>Bar François</b><span>—</span></li>
+          <li><b>Vermut</b><span>Oud-West</span></li>
+        </ol>
+        <div class="ft"><span>Tap to see them all</span><b>7 →</b></div>
+      </div></div>
+      <div class="acts"><i>✕</i><i>★</i><i>♥</i></div>
+    </div></div><div class="cap"><b>In the deck</b> · type only, on purpose. Seven blank cards become one designed card.</div></div>
+
+    <div class="art"><div class="phone"><div class="scr panel">
+      <div class="statusbar"><span>9:41</span><div class="isl"></div><span>●●●</span></div>
+      <div class="pad"><div class="k">New this week</div><h1>Seven doors that just opened</h1><p class="s">From Little Black Book's weekend tips. Save any one and it goes into your weekend like a normal card.</p>
+        <div class="op"><div class="th" style="background-image:url(img/jollof.jpg)"></div><div><div class="when">Opens Sat 7 Nov</div><b>The Jollof Club</b><p>The West African pop-up gets a permanent home.</p></div><span class="sv on">★</span></div>
+        <div class="op"><div class="th" style="background-image:url(img/kadenoord.jpg)"></div><div><div class="when">Opens Fri 6 Nov</div><b>Kade Noord</b><p>A new waterfront spot in Noord.</p></div><span class="sv">★</span></div>
+        <div class="op"><div class="th" style="background:#ff4d1f">D</div><div><div class="when">Just opened</div><b>Dinamo Pizza</b><p>New York slices, 50cm pies, Elandsgracht. Walk-in only.</p></div><span class="sv">★</span></div>
+        <div class="op"><div class="th" style="background:#566e7d">S</div><div><div class="when">Just opened</div><b>Sea Palace Café</b><p>The floating Chinese palace gets a café.</p></div><span class="sv">★</span></div>
+        <div class="op"><div class="th" style="background:#8a2818">P</div><div><div class="when">Opens Fri 6 Nov</div><b>Café Pietertje</b><p>A neighbourhood café on Van Limburg Stirumplein.</p></div><span class="sv">★</span></div>
+      </div>
+    </div></div><div class="cap"><b>Tapped open</b> · a list, so a missing photo is just a coloured initial and nobody notices</div></div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="sec-h"><span class="n">B</span><h2>A blank card that looks designed</h2></div>
+  <p class="why">For whatever's left after the bundle, today's card shows a plain type tile that reads as "image missing". Here are three faces built from what we always have: the name, Little Black Book's best line, and the facts. Each takes the colour of the weekend's weather or of its category. Pick one as the house style. B1 is my pick: it sits most naturally next to photo cards.</p>
+  <div class="swipe-hint">Swipe sideways for each screen →</div>
+  <div class="row">
+    <div class="art"><div class="phone"><div class="scr deck">
+      <div class="statusbar light"><span>9:41</span><div class="isl"></div><span>●●●</span></div>
+      <div class="hb"><div class="wm">WKNDR</div><span class="cnt">★ 3</span></div>
+      <div class="card b1" style="background-image:url(img/chris.jpg)"></div>
+      <div class="card"><div class="face f1"><div class="grain"></div><span class="pill">Eat · Just opened</span>
+        <div class="nm">Dinamo<br>Pizza<small>New York slices from a 50cm pie, Elandsgracht. Walk in, no bookings.</small></div>
+        <div class="meta"><b>Fri–Sun · 12:00–23:00</b>Elandsgracht 64, Jordaan<div class="src">via Your Little Black Book</div></div></div></div>
+      <div class="acts"><i>✕</i><i>★</i><i>♥</i></div>
+    </div></div><div class="cap"><b>B1 · The name</b> · huge type on Saturday's sky, with grain so it sits among photos. My pick.</div></div>
+
+    <div class="art"><div class="phone"><div class="scr deck">
+      <div class="statusbar light"><span>9:41</span><div class="isl"></div><span>●●●</span></div>
+      <div class="hb"><div class="wm">WKNDR</div><span class="cnt">★ 3</span></div>
+      <div class="card b1" style="background-image:url(img/chris.jpg)"></div>
+      <div class="card"><div class="face f2"><span class="pill">Eat · Just opened</span>
+        <div><div class="q">Pizzas measuring a whopping 50 centimetres.</div><div class="by">— Your Little Black Book</div></div>
+        <div><div class="nm2">Dinamo Pizza</div><div class="meta">Elandsgracht 64 · Fri–Sun, walk-in</div></div></div></div>
+      <div class="acts"><i>✕</i><i>★</i><i>♥</i></div>
+    </div></div><div class="cap"><b>B2 · The quote</b> · the guide's best line as a pull quote. Loud, and it credits the source as it should.</div></div>
+
+    <div class="art"><div class="phone"><div class="scr deck">
+      <div class="statusbar light"><span>9:41</span><div class="isl"></div><span>●●●</span></div>
+      <div class="hb"><div class="wm">WKNDR</div><span class="cnt">★ 3</span></div>
+      <div class="card b1" style="background-image:url(img/chris.jpg)"></div>
+      <div class="card"><div class="face f3">
+        <div class="sign"><span class="new">Just opened</span><h3>Dinamo Pizza</h3>
+          <dl><dt>What</dt><dd>NY slices, 50cm pies</dd><dt>Where</dt><dd>Elandsgracht 64</dd><dt>When</dt><dd>Fri–Sun, from 12:00</dd><dt>Book</dt><dd>No, walk in</dd></dl></div>
+        <div class="line">A new tip for a quick lunch or a casual pizza date in the Jordaan.<div class="src">via Your Little Black Book</div></div></div></div>
+      <div class="acts"><i>✕</i><i>★</i><i>♥</i></div>
+    </div></div><div class="cap"><b>B3 · The sign</b> · the facts as a shop sign. The most useful, the least like a poster.</div></div>
+  </div>
+  <p class="why" style="margin-top:8px"><b>In the list and saves panel</b>, the same faces shrink to thumbnails, so a blank never shows up as a grey box:</p>
+  <div class="thumbs">
+    <div><div class="tb old">no photo</div><div class="tbl">today</div></div>
+    <div><div class="tb t1">Dinamo Pizza</div><div class="tbl">B1</div></div>
+    <div><div class="tb t2">“50 cm.”</div><div class="tbl">B2</div></div>
+    <div><div class="tb t3">Dinamo Pizza</div><div class="tbl">B3</div></div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="sec-h"><span class="n">?</span><h2>Is pulling from Instagram easy?</h2></div>
+  <p class="why">Partly. The board's drop box already does the hard part for a single post: paste a post link and it pulls the full 1080px photo, no login. What it can't do is start from an account. The blank cards link to <i>profiles</i> (instagram.com/jollofclub), and a logged-out profile page contains no posts. That's the complication you remember. The only sanctioned way in is Meta's <code>business_discovery</code> API.</p>
+  <div class="ig">
+    <div class="note"><b>Your side · about 45 minutes, once</b><ol>
+      <li>A WKNDR Instagram account, switched to Business or Creator</li>
+      <li>A Facebook Page for WKNDR, linked to that account. <u>This is the annoying step.</u></li>
+      <li>A Meta developer app, which can stay in development mode since only our pipeline uses it, so no app review</li>
+      <li>A token that doesn't expire (a "system user" in Meta Business Suite). Ordinary tokens die after 60 days.</li></ol></div>
+    <div class="note"><b>My side · about half a day</b><ol>
+      <li>Ingest asks Meta for the venue account's latest posts</li>
+      <li>Vision picks the best photo that shows the place or the food, not a poster or a selfie</li>
+      <li>Store our own copy at ingest. Instagram's image links expire and refuse hotlinking.</li>
+      <li>Credit and link the post, like every other source</li></ol></div>
+    <div class="note"><b>What still won't work</b><ul>
+      <li>Accounts that are personal, not Business or Creator. Most venues are business accounts, but not all.</li>
+      <li>Meta changes this API every year or two. When it breaks, cards go back to blank. They're never wrong.</li>
+      <li>The photos belong to the venue. Crediting and linking is the same posture we use everywhere, but it's greyer than a site's own share image.</li></ul></div>
+  </div>
+  <div class="verdict"><b>My take:</b> build A and B first. They need nothing from Meta and fix the problem this week. Do Instagram afterwards, as an upgrade that gives the bundle's openings real photos. The Facebook Page is the only tedious bit.</div>
+</section>
+</body></html>
