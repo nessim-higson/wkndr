@@ -38,6 +38,8 @@ import { FilterSheet } from './components/FilterSheet'
 import { ShareSheet } from './components/ShareSheet'
 import { MatchGame } from './components/MatchGame'
 import { Calibrate } from './components/Calibrate'
+import { Onboarding } from './components/Onboarding'
+import { KEY_ONBOARDED, KEY_PROFILE, shouldOnboard } from './onboarding'
 import { Triage } from './components/Triage'
 import { CURATE_DOOR } from './curateDoor'
 import { DISTRICTS, resolveGeo, originAt, type District, type Origin } from './lib/geo'
@@ -254,6 +256,13 @@ export default function App() {
   const [dealKey, setDealKey] = useState(0)      // bump → stack re-deals (refresh signal)
   const [matching, setMatching] = useState(false)   // match-mode overlay
   const [calibrating, setCalibrating] = useState(false)   // "Tune WKNDR" micro-deck (dev prototype)
+  // ONBOARDING (phase 1, onboarding.ts): a minute to learn your taste, on the first open only —
+  // after the intro, before the deck. ?onboard=1 forces it (judging on a phone that's been through),
+  // ?onboard=0 suppresses it. Never over a shared round or the curation door.
+  const [onboarding, setOnboarding] = useState(() => shouldOnboard({
+    search: location.search, visits, hasTaste: hasTaste(loadTaste()),
+    onboarded: !!localStorage.getItem(KEY_ONBOARDED), shared: !!SHARED_IDS, curate: !!CURATE_DOOR,
+  }))
   // Airlock triage deck — the board's notebook (dev prototype). Reached from the ?dev=1 menu
   // only: since V.11.12 the curate door opens the letter (/curate/) on every screen width, so
   // this no longer auto-opens on a phone (curateDoor.ts).
@@ -1230,6 +1239,9 @@ export default function App() {
                         <button className="bar-pill" onClick={() => { setCalibrating(true); setBarOpen(false) }}>
                           ✨ Tune WKNDR
                         </button>
+                        <button className="bar-pill" onClick={() => { setOnboarding(true); setBarOpen(false) }}>
+                          👋 Onboarding
+                        </button>
                         {/* Same gesture as Tune, different sink: Tune writes YOUR profile,
                             this writes the board's verdict store. docs/curation-surfaces.md §2 */}
                         <button className="bar-pill" onClick={() => { setTriaging(true); setBarOpen(false) }}>
@@ -1535,7 +1547,7 @@ export default function App() {
                 onSeeList={() => setView('list')}
                 escape={evergreenEscape}
                 /* the deck owns ←/→ only while nothing sits above it */
-                keysActive={!intro && !detail && !shareOpen && !barOpen && !savesOpen && !matching && !inputsOpen && !filterOpen && !whenOpen && !whereOpen && !calibrating && !triaging && !checkpoint && !glassForecastOpen && !glassSettingsOpen}
+                keysActive={!intro && !detail && !shareOpen && !barOpen && !savesOpen && !matching && !inputsOpen && !filterOpen && !whenOpen && !whereOpen && !calibrating && !onboarding && !triaging && !checkpoint && !glassForecastOpen && !glassSettingsOpen}
               />
             </motion.div>
           ) : view === 'fan' ? (
@@ -1618,6 +1630,30 @@ export default function App() {
             </div>
           </div>
         </div>
+      )}
+
+      {onboarding && !intro && (
+        <Onboarding
+          deck={rankedDeck}
+          taste={taste}
+          temp={live ? wx.temp : undefined}
+          skyWord={{ HOT: 'hot', WARM: 'warm', COOL: 'cool', COLD_WET: 'rain', VOLATILE: 'changeable' }[mode] ?? 'today'}
+          account={{ on: accountOn(), session: account.session, status: account.status, signIn: account.signIn }}
+          onDone={(r) => {
+            // committed once, like Tune WKNDR: the taste, the round's saves and declines, then a
+            // fresh deal ranked for it. The answers that aren't weights yet wait in the profile.
+            tasteRef.current = r.taste
+            setTaste(r.taste)
+            if (r.saved.length) setSaved((s) => { const n = new Set(s); r.saved.forEach((id) => n.add(id)); return n })
+            if (r.declined.length) setSwiped((s) => { const n = new Set(s); r.declined.forEach((id) => n.add(id)); return n })
+            localStorage.setItem(KEY_ONBOARDED, r.profile.at)
+            localStorage.setItem(KEY_PROFILE, JSON.stringify(r.profile))
+            setOnboarding(false)
+            setSeed((s) => s + 1)
+            setDealKey((k) => k + 1)
+            track('onboard')
+          }}
+        />
       )}
 
       {calibrating && (
