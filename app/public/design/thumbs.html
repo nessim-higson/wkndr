@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WKNDR · Thumbnails: what's wrong and the fix</title>
+<link rel="stylesheet" href="kit.css">
+<style>
+  table.cmp { border-collapse: collapse; width: 100%; background: var(--paper); border-radius: 18px; overflow: hidden; }
+  .cmp th { text-align: left; font: 11px/1.3 var(--mono); text-transform: uppercase; letter-spacing: .06em; color: var(--ink-3); padding: 14px 16px; border-bottom: 1px solid var(--rule); }
+  .cmp td { padding: 12px 16px; border-bottom: 1px solid var(--paper-3); vertical-align: middle; }
+  .cmp td.t { width: 26%; } .cmp td.t b { display: block; font-size: 14px; } .cmp td.t span { font-size: 12px; color: var(--ink-3); }
+  .th { width: 84px; height: 84px; border-radius: 12px; background: var(--paper-3) center/cover; display: block; object-fit: cover; }
+  .th.pst { position: relative; overflow: hidden; background: #222; }
+  .th.pst i { position: absolute; inset: -10px; background: center/cover; filter: blur(10px) brightness(.7); }
+  .th.pst img { position: relative; z-index: 2; display: block; }
+  .kb { font: 11px/1 var(--mono); color: #2f8f57; margin-top: 6px; } .kb.bad { color: var(--accent); } .kb.dim { color: var(--ink-4); }
+  .orig { height: 84px; border-radius: 8px; display: block; }
+  .rank { counter-reset: r; display: grid; gap: 10px; }
+  .rank > div { background: var(--paper); border-radius: 14px; padding: 14px 18px 14px 56px; position: relative; font-size: 14px; color: var(--ink-2); }
+  .rank > div::before { counter-increment: r; content: counter(r); position: absolute; left: 18px; top: 14px; font: 600 22px/1 var(--display); color: var(--accent); }
+  .rank b { color: var(--ink); } .rank .n { font: 600 12px/1 var(--mono); color: var(--ink-3); float: right; }
+  code { font-size: 12px; }
+</style></head>
+<body class="board">
+<header class="bh">
+  <div class="crumb"><a href="./">WKNDR design review · Nov 2026</a> / 04 Thumbnails</div>
+  <h1>The thumbnails<br>aren't broken. They're <i>cut wrong.</i></h1>
+  <p class="lede">We checked every image in the live feed (97 pictured cards, 226 source images). Almost none fail to load. The problem is how thumbnails are made: every small square reuses the large 800×1200 portrait card image and crops it to the centre. For a typical landscape photo that leaves <b>30% of the picture</b>, ignores the focal point we already store, and downloads about 150 KB for a box 76px wide.</p>
+</header>
+
+<section class="sec">
+  <div class="sec-h"><span class="n">01</span><h2>Today vs. the fix, live</h2></div>
+  <p class="why">These are real feed images, loading live. <b>Today</b> is exactly what the list, saves panel, Later shelf, itinerary and share sheet show. <b>Fixed</b> is cut from the original at thumbnail size, with the stored focal point, as WebP. <b>Posters</b> show the whole flyer on a blurred copy of itself, so the text isn't cut off. Bytes: 1273 KB → 61 KB for these 11.</p>
+  <table class="cmp"><thead><tr><th>Card</th><th>Today</th><th>Fixed · focal, 2×, webp</th><th>Poster mode</th><th>Original</th></tr></thead>
+  <tbody>
+<tr><td class="t"><b>Diwali Festival in Amstelveen</b><span>out · poster / flyer</span></td>
+<td><div class="th" style="background-image:url(&quot;https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a976238fc761f1e3d9cfafd%2Fcarlydonaldsonphotography-701_79822180.webp&amp;w=800&amp;h=1200&amp;fit=cover&amp;a=focal&amp;fpx=0.500&amp;fpy=0.625&amp;output=jpg&amp;default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a976238fc761f1e3d9cfafd%2Fcarlydonaldsonphotography-701_79822180.webp&quot;)"></div><div class="kb bad">202 KB</div></td>
+<td><img class="th" src="https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a976238fc761f1e3d9cfafd%2Fcarlydonaldsonphotography-701_79822180.webp&amp;w=168&amp;h=168&amp;fit=cover&amp;a=focal&amp;fpx=0.5&amp;fpy=0.625&amp;output=webp&amp;q=75" width="84" height="84" loading="lazy" alt=""><div class="kb">8 KB</div></td>
+<td><div class="th pst"><img src="https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a976238fc761f1e3d9cfafd%2Fcarlydonaldsonphotography-701_79822180.webp&amp;w=168&amp;h=168&amp;fit=contain&amp;cbg=00000000&amp;output=webp&amp;q=75" width="84" height="84" loading="lazy" alt=""><i style="background-image:url(&quot;https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a976238fc761f1e3d9cfafd%2Fcarlydonaldsonphotography-701_79822180.webp&amp;w=168&amp;h=168&amp;fit=cover&amp;a=focal&amp;fpx=0.5&amp;fpy=0.625&amp;output=webp&amp;q=75&quot;)"></i></div><div class="kb">contain on blur</div></td>
+<td><a href="https://app.thefeedfactory.nl/api/assets/6a976238fc761f1e3d9cfafd/carlydonaldsonphotography-701_79822180.webp" target="_blank"><img class="orig" src="https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a976238fc761f1e3d9cfafd%2Fcarlydonaldsonphotography-701_79822180.webp&amp;w=360&amp;a=focal&amp;fpx=0.5&amp;fpy=0.625&amp;output=webp&amp;q=75" loading="lazy" alt=""></a></td></tr>
+<tr><td class="t"><b>Club Roto - Halloween [sold out]</b><span>live · poster / flyer</span></td>
+<td><div class="th" style="background-image:url(&quot;https://images.weserv.nl/?url=https%3A%2F%2Fimages.ra.co%2F2384fd86934d1bd509309f73a647dc2abe0faab9.png&amp;w=800&amp;h=1200&amp;fit=cover&amp;a=focal&amp;fpx=0.600&amp;fpy=0.250&amp;output=jpg&amp;default=https%3A%2F%2Fimages.ra.co%2F2384fd86934d1bd509309f73a647dc2abe0faab9.png&quot;)"></div><div class="kb bad">43 KB</div></td>
+<td><img class="th" src="https://images.weserv.nl/?url=https%3A%2F%2Fimages.ra.co%2F2384fd86934d1bd509309f73a647dc2abe0faab9.png&amp;w=168&amp;h=168&amp;fit=cover&amp;a=focal&amp;fpx=0.6&amp;fpy=0.25&amp;output=webp&amp;q=75" width="84" height="84" loading="lazy" alt=""><div class="kb">2 KB</div></td>
+<td><div class="th pst"><img src="https://images.weserv.nl/?url=https%3A%2F%2Fimages.ra.co%2F2384fd86934d1bd509309f73a647dc2abe0faab9.png&amp;w=168&amp;h=168&amp;fit=contain&amp;cbg=00000000&amp;output=webp&amp;q=75" width="84" height="84" loading="lazy" alt=""><i style="background-image:url(&quot;https://images.weserv.nl/?url=https%3A%2F%2Fimages.ra.co%2F2384fd86934d1bd509309f73a647dc2abe0faab9.png&amp;w=168&amp;h=168&amp;fit=cover&amp;a=focal&amp;fpx=0.6&amp;fpy=0.25&amp;output=webp&amp;q=75&quot;)"></i></div><div class="kb">contain on blur</div></td>
+<td><a href="https://images.ra.co/2384fd86934d1bd509309f73a647dc2abe0faab9.png" target="_blank"><img class="orig" src="https://images.weserv.nl/?url=https%3A%2F%2Fimages.ra.co%2F2384fd86934d1bd509309f73a647dc2abe0faab9.png&amp;w=360&amp;a=focal&amp;fpx=0.6&amp;fpy=0.25&amp;output=webp&amp;q=75" loading="lazy" alt=""></a></td></tr>
+<tr><td class="t"><b>Amsterdam Museum Festival</b><span>out</span></td>
+<td><div class="th" style="background-image:url(&quot;https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a8ffac349087946d047e97b%2FBanner.webp&amp;w=800&amp;h=1200&amp;fit=cover&amp;a=focal&amp;fpx=0.500&amp;fpy=0.500&amp;output=jpg&amp;default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a8ffac349087946d047e97b%2FBanner.webp&quot;)"></div><div class="kb bad">180 KB</div></td>
+<td><img class="th" src="https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a8ffac349087946d047e97b%2FBanner.webp&amp;w=168&amp;h=168&amp;fit=cover&amp;a=focal&amp;fpx=0.5&amp;fpy=0.5&amp;output=webp&amp;q=75" width="84" height="84" loading="lazy" alt=""><div class="kb">9 KB</div></td>
+<td><div class="kb dim">not a poster</div></td>
+<td><a href="https://app.thefeedfactory.nl/api/assets/6a8ffac349087946d047e97b/Banner.webp" target="_blank"><img class="orig" src="https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a8ffac349087946d047e97b%2FBanner.webp&amp;w=360&amp;a=focal&amp;fpx=0.5&amp;fpy=0.5&amp;output=webp&amp;q=75" loading="lazy" alt=""></a></td></tr>
+<tr><td class="t"><b>IJ-Hallen Vintage Market</b><span>market</span></td>
+<td><div class="th" style="background-image:url(&quot;https://images.weserv.nl/?url=https%3A%2F%2Fwww.happyrichmillennial.com%2Fwp-content%2Fuploads%2F2020%2F05%2Fijhallen-.jpg%3Fw%3D660&amp;w=800&amp;h=1200&amp;fit=cover&amp;a=attention&amp;output=jpg&amp;default=https%3A%2F%2Fwww.happyrichmillennial.com%2Fwp-content%2Fuploads%2F2020%2F05%2Fijhallen-.jpg%3Fw%3D660&quot;)"></div><div class="kb bad">151 KB</div></td>
+<td><img class="th" src="https://images.weserv.nl/?url=https%3A%2F%2Fwww.happyrichmillennial.com%2Fwp-content%2Fuploads%2F2020%2F05%2Fijhallen-.jpg%3Fw%3D660&amp;w=168&amp;h=168&amp;fit=cover&amp;a=focal&amp;fpx=0.5&amp;fpy=0.55&amp;output=webp&amp;q=75" width="84" height="84" loading="lazy" alt=""><div class="kb">10 KB</div></td>
+<td><div class="kb dim">not a poster</div></td>
+<td><a href="https://www.happyrichmillennial.com/wp-content/uploads/2020/05/ijhallen-.jpg?w=660" target="_blank"><img class="orig" src="https://images.weserv.nl/?url=https%3A%2F%2Fwww.happyrichmillennial.com%2Fwp-content%2Fuploads%2F2020%2F05%2Fijhallen-.jpg%3Fw%3D660&amp;w=360&amp;a=focal&amp;fpx=0.5&amp;fpy=0.55&amp;output=webp&amp;q=75" loading="lazy" alt=""></a></td></tr>
+<tr><td class="t"><b>Halloweenfest – Skatecafe</b><span>live · poster / flyer</span></td>
+<td><div class="th" style="background-image:url(&quot;https://images.weserv.nl/?url=https%3A%2F%2Fwww.yourlittleblackbook.me%2Fwp-content%2Fuploads%2F2026%2F10%2Fhalloween-events-amsterdam-tips-3.jpg&amp;w=800&amp;h=1200&amp;fit=cover&amp;a=focal&amp;fpx=0.500&amp;fpy=0.450&amp;output=jpg&amp;default=https%3A%2F%2Fwww.yourlittleblackbook.me%2Fwp-content%2Fuploads%2F2026%2F10%2Fhalloween-events-amsterdam-tips-3.jpg&quot;)"></div><div class="kb bad">77 KB</div></td>
+<td><img class="th" src="https://images.weserv.nl/?url=https%3A%2F%2Fwww.yourlittleblackbook.me%2Fwp-content%2Fuploads%2F2026%2F10%2Fhalloween-events-amsterdam-tips-3.jpg&amp;w=168&amp;h=168&amp;fit=cover&amp;a=focal&amp;fpx=0.5&amp;fpy=0.45&amp;output=webp&amp;q=75" width="84" height="84" loading="lazy" alt=""><div class="kb">3 KB</div></td>
+<td><div class="th pst"><img src="https://images.weserv.nl/?url=https%3A%2F%2Fwww.yourlittleblackbook.me%2Fwp-content%2Fuploads%2F2026%2F10%2Fhalloween-events-amsterdam-tips-3.jpg&amp;w=168&amp;h=168&amp;fit=contain&amp;cbg=00000000&amp;output=webp&amp;q=75" width="84" height="84" loading="lazy" alt=""><i style="background-image:url(&quot;https://images.weserv.nl/?url=https%3A%2F%2Fwww.yourlittleblackbook.me%2Fwp-content%2Fuploads%2F2026%2F10%2Fhalloween-events-amsterdam-tips-3.jpg&amp;w=168&amp;h=168&amp;fit=cover&amp;a=focal&amp;fpx=0.5&amp;fpy=0.45&amp;output=webp&amp;q=75&quot;)"></i></div><div class="kb">contain on blur</div></td>
+<td><a href="https://www.yourlittleblackbook.me/wp-content/uploads/2026/10/halloween-events-amsterdam-tips-3.jpg" target="_blank"><img class="orig" src="https://images.weserv.nl/?url=https%3A%2F%2Fwww.yourlittleblackbook.me%2Fwp-content%2Fuploads%2F2026%2F10%2Fhalloween-events-amsterdam-tips-3.jpg&amp;w=360&amp;a=focal&amp;fpx=0.5&amp;fpy=0.45&amp;output=webp&amp;q=75" loading="lazy" alt=""></a></td></tr>
+<tr><td class="t"><b>Ulrich Seidl – Über das Leben, die Liebe und den Tod</b><span>art</span></td>
+<td><div class="th" style="background-image:url(&quot;https://images.weserv.nl/?url=https%3A%2F%2Fassets.eyefilm.nl%2Fimages%2Fprogramme-item%2F_1586x1112_crop_center-center_none%2F1606806%2Fcampagnebeeld-Ulrich-Seidl.webp&amp;w=800&amp;h=1200&amp;fit=cover&amp;a=focal&amp;fpx=0.525&amp;fpy=0.550&amp;output=jpg&amp;default=https%3A%2F%2Fassets.eyefilm.nl%2Fimages%2Fprogramme-item%2F_1586x1112_crop_center-center_none%2F1606806%2Fcampagnebeeld-Ulrich-Seidl.webp&quot;)"></div><div class="kb bad">159 KB</div></td>
+<td><img class="th" src="https://images.weserv.nl/?url=https%3A%2F%2Fassets.eyefilm.nl%2Fimages%2Fprogramme-item%2F_1586x1112_crop_center-center_none%2F1606806%2Fcampagnebeeld-Ulrich-Seidl.webp&amp;w=168&amp;h=168&amp;fit=cover&amp;a=focal&amp;fpx=0.525&amp;fpy=0.5499999999999999&amp;output=webp&amp;q=75" width="84" height="84" loading="lazy" alt=""><div class="kb">6 KB</div></td>
+<td><div class="kb dim">not a poster</div></td>
+<td><a href="https://assets.eyefilm.nl/images/programme-item/_1586x1112_crop_center-center_none/1606806/campagnebeeld-Ulrich-Seidl.webp" target="_blank"><img class="orig" src="https://images.weserv.nl/?url=https%3A%2F%2Fassets.eyefilm.nl%2Fimages%2Fprogramme-item%2F_1586x1112_crop_center-center_none%2F1606806%2Fcampagnebeeld-Ulrich-Seidl.webp&amp;w=360&amp;a=focal&amp;fpx=0.525&amp;fpy=0.5499999999999999&amp;output=webp&amp;q=75" loading="lazy" alt=""></a></td></tr>
+<tr><td class="t"><b>Hailun Ma: Hometown</b><span>art</span></td>
+<td><div class="th" style="background-image:url(&quot;https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a4b7fdeccd3f061147dd425%2FHometown_2028_C_Hailun_Ma.webp&amp;w=800&amp;h=1200&amp;fit=cover&amp;a=focal&amp;fpx=0.500&amp;fpy=0.500&amp;output=jpg&amp;default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a4b7fdeccd3f061147dd425%2FHometown_2028_C_Hailun_Ma.webp&quot;)"></div><div class="kb bad">122 KB</div></td>
+<td><img class="th" src="https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a4b7fdeccd3f061147dd425%2FHometown_2028_C_Hailun_Ma.webp&amp;w=168&amp;h=168&amp;fit=cover&amp;a=focal&amp;fpx=0.5&amp;fpy=0.5&amp;output=webp&amp;q=75" width="84" height="84" loading="lazy" alt=""><div class="kb">5 KB</div></td>
+<td><div class="kb dim">not a poster</div></td>
+<td><a href="https://app.thefeedfactory.nl/api/assets/6a4b7fdeccd3f061147dd425/Hometown_2028_C_Hailun_Ma.webp" target="_blank"><img class="orig" src="https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a4b7fdeccd3f061147dd425%2FHometown_2028_C_Hailun_Ma.webp&amp;w=360&amp;a=focal&amp;fpx=0.5&amp;fpy=0.5&amp;output=webp&amp;q=75" loading="lazy" alt=""></a></td></tr>
+<tr><td class="t"><b>Chico Pinheiro Quartet</b><span>live</span></td>
+<td><div class="th" style="background-image:url(&quot;https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F64f29820678e2d7f2aca132b%2F231027_chico_pinheiro.webp&amp;w=800&amp;h=1200&amp;fit=cover&amp;a=focal&amp;fpx=0.500&amp;fpy=0.500&amp;output=jpg&amp;default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F64f29820678e2d7f2aca132b%2F231027_chico_pinheiro.webp&quot;)"></div><div class="kb bad">93 KB</div></td>
+<td><img class="th" src="https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F64f29820678e2d7f2aca132b%2F231027_chico_pinheiro.webp&amp;w=168&amp;h=168&amp;fit=cover&amp;a=focal&amp;fpx=0.5&amp;fpy=0.5&amp;output=webp&amp;q=75" width="84" height="84" loading="lazy" alt=""><div class="kb">3 KB</div></td>
+<td><div class="kb dim">not a poster</div></td>
+<td><a href="https://app.thefeedfactory.nl/api/assets/64f29820678e2d7f2aca132b/231027_chico_pinheiro.webp" target="_blank"><img class="orig" src="https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F64f29820678e2d7f2aca132b%2F231027_chico_pinheiro.webp&amp;w=360&amp;a=focal&amp;fpx=0.5&amp;fpy=0.5&amp;output=webp&amp;q=75" loading="lazy" alt=""></a></td></tr>
+<tr><td class="t"><b>Amsterdam Polish Film Festival - Andrzej Wajda. Past Present Possible</b><span>out · poster / flyer</span></td>
+<td><div class="th" style="background-image:url(&quot;https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6ac97a21a189acbf4d5d743a%2FAPFF26__header3.webp&amp;w=800&amp;h=1200&amp;fit=cover&amp;a=focal&amp;fpx=0.500&amp;fpy=0.600&amp;output=jpg&amp;default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6ac97a21a189acbf4d5d743a%2FAPFF26__header3.webp&quot;)"></div><div class="kb bad">66 KB</div></td>
+<td><img class="th" src="https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6ac97a21a189acbf4d5d743a%2FAPFF26__header3.webp&amp;w=168&amp;h=168&amp;fit=cover&amp;a=focal&amp;fpx=0.5&amp;fpy=0.6&amp;output=webp&amp;q=75" width="84" height="84" loading="lazy" alt=""><div class="kb">5 KB</div></td>
+<td><div class="th pst"><img src="https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6ac97a21a189acbf4d5d743a%2FAPFF26__header3.webp&amp;w=168&amp;h=168&amp;fit=contain&amp;cbg=00000000&amp;output=webp&amp;q=75" width="84" height="84" loading="lazy" alt=""><i style="background-image:url(&quot;https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6ac97a21a189acbf4d5d743a%2FAPFF26__header3.webp&amp;w=168&amp;h=168&amp;fit=cover&amp;a=focal&amp;fpx=0.5&amp;fpy=0.6&amp;output=webp&amp;q=75&quot;)"></i></div><div class="kb">contain on blur</div></td>
+<td><a href="https://app.thefeedfactory.nl/api/assets/6ac97a21a189acbf4d5d743a/APFF26__header3.webp" target="_blank"><img class="orig" src="https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6ac97a21a189acbf4d5d743a%2FAPFF26__header3.webp&amp;w=360&amp;a=focal&amp;fpx=0.5&amp;fpy=0.6&amp;output=webp&amp;q=75" loading="lazy" alt=""></a></td></tr>
+<tr><td class="t"><b>The Maker Market</b><span>shop</span></td>
+<td><div class="th" style="background-image:url(&quot;https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F697250f4f8ac733b5bd29b88%2FIMG_3236.webp&amp;w=800&amp;h=1200&amp;fit=cover&amp;a=focal&amp;fpx=0.450&amp;fpy=0.500&amp;output=jpg&amp;default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F697250f4f8ac733b5bd29b88%2FIMG_3236.webp&quot;)"></div><div class="kb bad">109 KB</div></td>
+<td><img class="th" src="https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F697250f4f8ac733b5bd29b88%2FIMG_3236.webp&amp;w=168&amp;h=168&amp;fit=cover&amp;a=focal&amp;fpx=0.45&amp;fpy=0.5&amp;output=webp&amp;q=75" width="84" height="84" loading="lazy" alt=""><div class="kb">6 KB</div></td>
+<td><div class="kb dim">not a poster</div></td>
+<td><a href="https://app.thefeedfactory.nl/api/assets/697250f4f8ac733b5bd29b88/IMG_3236.webp" target="_blank"><img class="orig" src="https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F697250f4f8ac733b5bd29b88%2FIMG_3236.webp&amp;w=360&amp;a=focal&amp;fpx=0.45&amp;fpy=0.5&amp;output=webp&amp;q=75" loading="lazy" alt=""></a></td></tr>
+<tr><td class="t"><b>Chez Matisse</b><span>art</span></td>
+<td><div class="th" style="background-image:url(&quot;https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6ac38e9a17c93d0b8b31d748%2FMatisse_Hero.webp&amp;w=800&amp;h=1200&amp;fit=cover&amp;a=focal&amp;fpx=0.500&amp;fpy=0.500&amp;output=jpg&amp;default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6ac38e9a17c93d0b8b31d748%2FMatisse_Hero.webp&quot;)"></div><div class="kb bad">70 KB</div></td>
+<td><img class="th" src="https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6ac38e9a17c93d0b8b31d748%2FMatisse_Hero.webp&amp;w=168&amp;h=168&amp;fit=cover&amp;a=focal&amp;fpx=0.5&amp;fpy=0.5&amp;output=webp&amp;q=75" width="84" height="84" loading="lazy" alt=""><div class="kb">2 KB</div></td>
+<td><div class="kb dim">not a poster</div></td>
+<td><a href="https://app.thefeedfactory.nl/api/assets/6ac38e9a17c93d0b8b31d748/Matisse_Hero.webp" target="_blank"><img class="orig" src="https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6ac38e9a17c93d0b8b31d748%2FMatisse_Hero.webp&amp;w=360&amp;a=focal&amp;fpx=0.5&amp;fpy=0.5&amp;output=webp&amp;q=75" loading="lazy" alt=""></a></td></tr>
+  </tbody></table>
+</section>
+
+<section class="sec">
+  <div class="sec-h"><span class="n">02</span><h2>What's going wrong, by how many thumbs</h2></div>
+  <div class="rank">
+    <div><span class="n">~84 of 93</span><b>Over-cropped.</b> 70 of the 97 sources are landscape. wsrv crops them to 2:3 portrait, then CSS crops that to a centred square. The median thumb shows 30% of the photo. <code>imageFocal</code> is ignored, and the list's parallax moves the crop further.</div>
+    <div><span class="n">all 97</span><b>Heavy and slow to appear.</b> About 150 KB each, roughly 14 MB for the list. <code>background-image</code> can't be lazy-loaded and has no <code>srcset</code>, so rows sit as grey boxes. At start-up the app also preloads every 1600px card face (<code>App.tsx:576</code>), which competes with the thumbs.</div>
+    <div><span class="n">21 of 118 · 18%</span><b>No photo at all.</b> These get the category tile. The keyless DuckDuckGo image search is dead and <code>SERPER_API_KEY</code> isn't set (only <code>PEXELS_API_KEY</code> is).</div>
+    <div><span class="n">~9</span><b>Posters with the text cut off.</b> RA and club flyers, Diwali, the Polish Film Festival, Javaplein.</div>
+    <div><span class="n">11 cards · 5 groups</span><b>The same photo on several cards.</b> For example, the Amsterdam Museum image is served from three different URLs, so a URL-based duplicate check (<code>photoHolderAfter</code>) can't catch it. Open PR #38 doesn't either.</div>
+    <div><span class="n">3, plus 2 waiting</span><b>Hard failures.</b> Wikimedia returns 429 errors to wsrv (Foodhallen ×2, Melkweg), which then falls back to a 1280px original. Two canon images return 404 (Mata Hari, Bar Fisk). Nothing detects a failed load, so they'd show as grey boxes.</div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="sec-h"><span class="n">03</span><h2>The fix, in order</h2></div>
+  <div class="notes">
+    <div class="note"><b>Quick wins · about a day</b><ol style="margin:0;padding-left:18px">
+      <li><code>thumbOf(src, focal, px)</code> in <code>lib/image.ts</code>: <code>originalOf</code>, then <code>w=h=px·2, fit=cover, a=focal</code> (or <code>attention</code> when there's no read), <code>output=webp</code>. Use it at all 8 thumbnail sites. The email briefs already do this (<code>brief-shared.ts:26</code>).</li>
+      <li>Thumbs become <code>&lt;img loading=lazy decoding=async width height&gt;</code>, with an <code>onError</code> that swaps in <code>NoPhotoFace</code>. Do the same for the card face and detail header.</li>
+      <li>Preload only the next 3 cards, not all of them.</li>
+      <li>Poster mode for flyers: <code>fit=contain</code> on a blurred copy.</li>
+      <li>Add a <code>SERPER_API_KEY</code> to the repo secrets (Ness).</li></ol></div>
+    <div class="note"><b>Structural · a week</b><ol style="margin:0;padding-left:18px" start="6">
+      <li><b>Store our own copies at ingest.</b> Pre-cut thumb, card and header sizes into R2 or Cloudflare Images. That ends the dependence on wsrv, Wikimedia's 429s, and source images that disappear.</li>
+      <li>Detect duplicate photos by perceptual hash, not URL, and add a feed audit for it. Then land #38.</li>
+      <li>Re-run focal reads for the 21 cards stuck at exactly [0.5, 0.5]. Store <code>null</code> when a read fails, so it falls back to <code>attention</code>.</li></ol></div>
+    <div class="note"><b>Also found</b>The 2 Nov content refresh failed on two LBB parser tests, so the app is still serving the 29 Oct feed, Halloween events included. Separate from images, but it needs fixing before Friday's email.</div>
+  </div>
+</section>
+</body></html>

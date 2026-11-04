@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WKNDR · Sign-in, made visible</title>
+<link rel="stylesheet" href="kit.css">
+<style>
+  .scr { font-family: var(--body); color: var(--ink); }
+  .deck { background: linear-gradient(170deg, #9fb1bc, #566e7d 60%, #2c3d4a); height: 100%; position: relative; }
+  .hb { margin: 4px 12px 0; background: rgba(250,248,243,.92); border-radius: 20px; padding: 10px 12px 10px 16px; display: flex; align-items: center; justify-content: space-between; }
+  .hb .wm { font-size: 18px; }
+  .hb .r { display: flex; align-items: center; gap: 8px; }
+  .hb .cnt { font: 600 14px/1 var(--display); padding: 8px 11px; border-radius: 99px; background: var(--paper-3); }
+  .hb .cnt.on { background: var(--accent); color: #fff; }
+  .hb .menu { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-size: 16px; }
+  .hb .me { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; padding: 6px 12px 6px 6px; border-radius: 99px; background: var(--ink); color: var(--paper); }
+  .hb .me i { width: 22px; height: 22px; border-radius: 50%; background: var(--accent); display: grid; place-items: center; font-style: normal; font-size: 11px; color: #fff; }
+  .hb .av { width: 34px; height: 34px; border-radius: 50%; background: var(--ink); color: var(--paper); display: grid; place-items: center; font: 600 14px/1 var(--display); position: relative; }
+  .hb .av::after { content: ''; position: absolute; right: -1px; bottom: -1px; width: 10px; height: 10px; border-radius: 50%; background: #39b36b; border: 2px solid var(--paper); }
+  .card { position: absolute; left: 16px; right: 16px; top: 128px; bottom: 120px; border-radius: 26px; background: center/cover; overflow: hidden; box-shadow: 0 20px 40px -20px rgba(0,0,0,.5); }
+  .card .sh { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0) 45%, rgba(0,0,0,.75)); }
+  .card .tt { position: absolute; left: 18px; right: 18px; bottom: 18px; color: #fff; }
+  .card .tt h3 { font: 600 28px/1.02 var(--display); margin: 0 0 4px; } .card .tt p { margin: 0; font-size: 13px; color: #e9e6de; }
+  .acts { position: absolute; left: 0; right: 0; bottom: 40px; display: flex; justify-content: center; gap: 18px; }
+  .acts i { width: 58px; height: 58px; border-radius: 50%; background: #fff; display: grid; place-items: center; font-style: normal; font-size: 22px; box-shadow: 0 6px 16px -8px rgba(0,0,0,.4); }
+  .old { position: absolute; right: 18px; top: 112px; background: rgba(250,248,243,.97); border-radius: 18px; padding: 12px; width: 220px; font-size: 13px; box-shadow: 0 10px 30px -10px rgba(0,0,0,.4); z-index: 4; }
+  .old .l { font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-4); margin: 8px 0 4px; }
+  .old .pl { display: inline-block; padding: 5px 9px; border-radius: 99px; background: var(--paper-3); font-size: 12px; margin: 0 3px 3px 0; }
+  .old .pl.hl { outline: 2px dashed var(--accent); outline-offset: 2px; }
+  .ann { position: absolute; z-index: 6; background: var(--accent); color: #fff; font: 700 11px/1.3 var(--body); padding: 6px 9px; border-radius: 8px; max-width: 170px; }
+
+  .toast { position: absolute; left: 14px; right: 14px; bottom: 112px; z-index: 5; background: var(--ink); color: var(--paper); border-radius: 18px; padding: 12px 12px 12px 14px; display: flex; align-items: center; gap: 12px; box-shadow: 0 16px 30px -12px rgba(0,0,0,.6); }
+  .toast .th { width: 42px; height: 42px; border-radius: 10px; background: center/cover; flex: none; }
+  .toast p { margin: 0; font-size: 13px; line-height: 1.35; flex: 1; } .toast p b { display: block; font-size: 14px; }
+  .toast a { flex: none; font-weight: 700; font-size: 13px; color: var(--ink); background: var(--paper); padding: 9px 12px; border-radius: 99px; }
+
+  .veil { position: absolute; inset: 0; z-index: 7; background: rgba(26,26,26,.55); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+  .sheet { position: absolute; left: 0; right: 0; bottom: 0; z-index: 8; background: var(--paper); border-radius: 30px 30px 0 0; padding: 10px 22px 34px; }
+  .sheet .hdl { width: 40px; height: 5px; border-radius: 5px; background: var(--ink-5); margin: 0 auto 18px; }
+  .sheet h2 { font: 600 32px/1 var(--display); margin: 0 0 8px; letter-spacing: -.01em; }
+  .sheet .s { font-size: 15px; color: var(--ink-3); margin: 0 0 16px; }
+  .three { display: flex; gap: 8px; margin-bottom: 16px; }
+  .three div { flex: 1; aspect-ratio: 3/4; border-radius: 14px; background: center/cover; position: relative; overflow: hidden; }
+  .three div::after { content: '★'; position: absolute; right: 7px; top: 7px; width: 22px; height: 22px; border-radius: 50%; background: var(--accent); color: #fff; font-size: 11px; display: grid; place-items: center; }
+  .props { list-style: none; margin: 0 0 18px; padding: 0; }
+  .props li { display: flex; gap: 12px; align-items: flex-start; padding: 10px 0; border-top: 1px solid var(--rule); font-size: 14px; color: var(--ink-3); }
+  .props li b { display: block; color: var(--ink); font-size: 15px; }
+  .props li i { flex: none; width: 30px; height: 30px; border-radius: 10px; background: var(--ink); color: var(--paper); display: grid; place-items: center; font-style: normal; font-size: 14px; }
+  .inp { background: #fff; border: 1.5px solid var(--rule); border-radius: 16px; padding: 16px; font-size: 16px; color: var(--ink-4); margin-bottom: 10px; }
+  .inp.f { border-color: var(--ink); color: var(--ink); }
+  .btn { display: block; text-align: center; font: 600 18px/1 var(--display); padding: 18px; border-radius: 99px; background: var(--accent); color: #fff; }
+  .btn.ink { background: var(--ink); }
+  .fine { text-align: center; font-size: 12px; color: var(--ink-4); margin-top: 12px; }
+  .lat { text-align: center; font-size: 14px; color: var(--ink-3); margin-top: 10px; }
+
+  .panel { background: var(--paper); height: 100%; }
+  .panel .pad { padding: 4px 20px 0; }
+  .panel h1 { font: 600 30px/1 var(--display); margin: 14px 0 12px; }
+  .tabs { display: flex; gap: 6px; margin-bottom: 14px; } .tabs span { padding: 8px 13px; border-radius: 99px; font-size: 13px; font-weight: 700; background: var(--paper-3); } .tabs span.on { background: var(--ink); color: var(--paper); }
+  .warn { background: #fff1eb; border: 1px solid #ffd2c2; border-radius: 18px; padding: 14px 16px; margin-bottom: 14px; display: flex; gap: 12px; align-items: center; }
+  .warn p { margin: 0; font-size: 13px; color: var(--ink-3); flex: 1; } .warn p b { color: var(--ink); font-size: 14px; display: block; }
+  .warn a { flex: none; background: var(--ink); color: var(--paper); font-weight: 700; font-size: 13px; padding: 10px 13px; border-radius: 99px; }
+  .sv { display: flex; gap: 12px; padding: 10px 0; border-top: 1px solid var(--rule); align-items: center; }
+  .sv .th { width: 64px; height: 64px; border-radius: 12px; background: center/cover; flex: none; }
+  .sv b { font-size: 15px; display: block; } .sv span { font-size: 13px; color: var(--ink-3); }
+  .dh { font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); margin: 16px 0 4px; }
+
+  .mail { display: grid; place-items: center; height: 150px; margin: 6px 0 14px; border-radius: 22px; background: var(--paper-2); position: relative; }
+  .mail .env { width: 110px; height: 76px; border-radius: 10px; background: #fff; box-shadow: 0 10px 24px -12px rgba(0,0,0,.35); position: relative; overflow: hidden; }
+  .mail .env::before { content: ''; position: absolute; left: -10px; right: -10px; top: -40px; height: 80px; border-bottom: 2px solid var(--rule); transform: rotate(0); background: linear-gradient(160deg, transparent 49%, var(--rule) 50%, transparent 51%), linear-gradient(200deg, transparent 49%, var(--rule) 50%, transparent 51%); }
+  .mail .env::after { content: 'WKNDR.'; position: absolute; bottom: 10px; left: 0; right: 0; text-align: center; font: 700 12px/1 var(--display); }
+  .apps { display: flex; gap: 8px; margin-bottom: 12px; } .apps span { flex: 1; text-align: center; padding: 13px 0; border-radius: 14px; background: #fff; border: 1.5px solid var(--rule); font-weight: 700; font-size: 14px; }
+
+  .welcome { background: var(--ink); color: var(--paper); height: 100%; }
+  .welcome .pad { padding: 30px 22px 0; }
+  .welcome .ok { width: 56px; height: 56px; border-radius: 50%; background: #39b36b; display: grid; place-items: center; font-size: 26px; margin-top: 40px; }
+  .welcome h1 { font: 600 40px/.98 var(--display); margin: 20px 0 10px; }
+  .welcome p { color: var(--ink-5); font-size: 15px; margin: 0 0 22px; }
+  .welcome .row2 { display: flex; justify-content: space-between; padding: 14px 0; border-top: 1px solid #333; font-size: 14px; }
+  .welcome .row2 span { color: var(--ink-4); }
+  .welcome .row2 b { color: #7fd6a2; font-weight: 700; }
+  .welcome .bottom { position: absolute; left: 22px; right: 22px; bottom: 34px; }
+
+  .ladder { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 8px; }
+  .ladder div { background: var(--paper); border-radius: 14px; padding: 14px 16px; font-size: 13px; color: var(--ink-3); }
+  .ladder div b { display: block; color: var(--ink); font-size: 15px; margin-bottom: 4px; }
+  .ladder div em { font-style: normal; font: 600 12px/1 var(--mono); color: var(--accent); display: block; margin-bottom: 8px; }
+</style>
+</head>
+<body class="board">
+<header class="bh">
+  <div class="crumb"><a href="./">WKNDR design review · Nov 2026</a> / 03 Sign-in</div>
+  <h1>Make signing in<br>worth <i>noticing.</i></h1>
+  <p class="lede">The account works (magic link, free, no password), but you can only reach it through ≡, then a "Sign in" pill under the third heading. Nobody looks there, so nobody learns their saves could follow them. The fix isn't a login wall. It's to offer sign-in at the moments it's worth something, and to keep the signed-in state visible in the header.</p>
+</header>
+
+<section class="sec">
+  <div class="sec-h"><span class="n">01</span><h2>Today vs. proposed header</h2></div>
+  <p class="why">Signed-out readers get a clear "Save &amp; sync" chip next to the saves counter. Signed-in readers get their initial with a green sync dot. Either way, the account has a place you can see.</p>
+  <div class="row">
+    <div class="art"><div class="phone"><div class="scr deck">
+      <div class="statusbar light"><span>9:41</span><div class="isl"></div><span>●●●</span></div>
+      <div class="hb"><div class="wm">WKNDR</div><div class="r"><span class="cnt on">★ 3</span><span class="menu">≡</span></div></div>
+      <div class="old"><div class="l">View</div><span class="pl">Stack</span><span class="pl">List</span><div class="l">Your list</div><span class="pl">Saved</span><div class="l">Account</div><span class="pl hl">Sign in</span><div class="l">Plan together</div><span class="pl">Match round</span><div class="l">City · Weather · Ambient…</div><span class="pl">…</span></div>
+      <div class="ann" style="right:60px;top:290px">Sign-in lives here: under ≡, third group down</div>
+      <div class="card" style="background-image:url(img/rink.jpg)"><div class="sh"></div><div class="tt"><h3>Skate on Museumplein</h3><p>10:00–22:00 · until 16 Jan</p></div></div>
+      <div class="acts"><i>✕</i><i>★</i><i>♥</i></div>
+    </div></div><div class="cap"><b>Today</b> · two taps deep, with no reason given for going there</div></div>
+
+    <div class="art"><div class="phone"><div class="scr deck">
+      <div class="statusbar light"><span>9:41</span><div class="isl"></div><span>●●●</span></div>
+      <div class="hb"><div class="wm">WKNDR</div><div class="r"><span class="cnt on">★ 3</span><span class="me"><i>↑</i>Save &amp; sync</span><span class="menu">≡</span></div></div>
+      <div class="card" style="background-image:url(img/rink.jpg)"><div class="sh"></div><div class="tt"><h3>Skate on Museumplein</h3><p>10:00–22:00 · until 16 Jan</p></div></div>
+      <div class="acts"><i>✕</i><i>★</i><i>♥</i></div>
+    </div></div><div class="cap"><b>Proposed, signed out</b> · the chip appears after the first save, and not before</div></div>
+
+    <div class="art"><div class="phone"><div class="scr deck">
+      <div class="statusbar light"><span>9:41</span><div class="isl"></div><span>●●●</span></div>
+      <div class="hb"><div class="wm">WKNDR</div><div class="r"><span class="cnt on">★ 3</span><span class="av">N</span><span class="menu">≡</span></div></div>
+      <div class="card" style="background-image:url(img/rink.jpg)"><div class="sh"></div><div class="tt"><h3>Skate on Museumplein</h3><p>10:00–22:00 · until 16 Jan</p></div></div>
+      <div class="acts"><i>✕</i><i>★</i><i>♥</i></div>
+    </div></div><div class="cap"><b>Proposed, signed in</b> · your initial and a sync dot. Tap it for your taste and account.</div></div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="sec-h"><span class="n">02</span><h2>Ask when it's worth something</h2></div>
+  <p class="why">Three moments, from gentle to direct. Each happens once, and the app never asks more than once a session. The third save already sets off the "that's a weekend" checkpoint (<code>App.tsx</code>, <code>checkpointKey</code>), so that's the one to turn into the main ask.</p>
+  <div class="row">
+    <div class="art"><div class="phone"><div class="scr deck">
+      <div class="statusbar light"><span>9:41</span><div class="isl"></div><span>●●●</span></div>
+      <div class="hb"><div class="wm">WKNDR</div><div class="r"><span class="cnt on">★ 1</span><span class="menu">≡</span></div></div>
+      <div class="card" style="background-image:url(img/sauna.jpg)"><div class="sh"></div><div class="tt"><h3>Sauna Deco</h3><p>Daily · 12:00–23:00</p></div></div>
+      <div class="toast"><div class="th" style="background-image:url(img/rink.jpg)"></div><p><b>Saved, on this phone only</b>Sign in to keep it everywhere.</p><a>Sign in</a></div>
+      <div class="acts"><i>✕</i><i>★</i><i>♥</i></div>
+    </div></div><div class="cap"><b>Moment 1 · first save</b> · a toast for 4 seconds. Says what's true today ("this phone only").</div></div>
+
+    <div class="art"><div class="phone"><div class="scr deck">
+      <div class="statusbar light"><span>9:41</span><div class="isl"></div><span>●●●</span></div>
+      <div class="hb"><div class="wm">WKNDR</div><div class="r"><span class="cnt on">★ 3</span><span class="menu">≡</span></div></div>
+      <div class="veil"></div>
+      <div class="sheet"><div class="hdl"></div><h2>That's a weekend.</h2><p class="s">Three saves. Keep them, and WKNDR learns from them.</p>
+        <div class="three"><div style="background-image:url(img/rink.jpg)"></div><div style="background-image:url(img/ligconcert.jpg)"></div><div style="background-image:url(img/chris.jpg)"></div></div>
+        <div class="inp">you@example.com</div><a class="btn">Keep my weekend</a>
+        <div class="lat">Not now</div></div>
+    </div></div><div class="cap"><b>Moment 2 · third save</b> · the existing checkpoint, now with an email field. The main ask.</div></div>
+
+    <div class="art"><div class="phone"><div class="scr panel">
+      <div class="statusbar"><span>9:41</span><div class="isl"></div><span>●●●</span></div>
+      <div class="pad"><h1>Your weekend</h1><div class="tabs"><span class="on">This weekend · 3</span><span>Later · 2</span></div>
+        <div class="warn"><p><b>These live only on this phone</b>Clear your browser and they're gone.</p><a>Keep them</a></div>
+        <div class="dh">Saturday</div>
+        <div class="sv"><div class="th" style="background-image:url(img/rink.jpg)"></div><div><b>Skate on Museumplein</b><span>10:00–22:00</span></div></div>
+        <div class="sv"><div class="th" style="background-image:url(img/ligconcert.jpg)"></div><div><b>Ligconcert, Maritime Museum</b><span>Evening</span></div></div>
+        <div class="dh">Sunday</div>
+        <div class="sv"><div class="th" style="background-image:url(img/chris.jpg)"></div><div><b>Café Chris</b><span>Afternoon–late</span></div></div></div>
+    </div></div><div class="cap"><b>Moment 3 · the saves panel</b> · stays there while you're signed out. Calm, factual, and never in the way.</div></div>
+  </div>
+  <div class="ladder">
+    <div><em>also</em><b>After onboarding</b>"Keep this taste" on the reveal card (board 02, screen 7)</div>
+    <div><em>also</em><b>On a Later save</b>"We'll remind you the week it's on, by email" means signing in</div>
+    <div><em>also</em><b>From the email</b>Any one-tap in email C signs you in when you tap it</div>
+    <div><em>never</em><b>A wall</b>The deck, swiping and saving always work signed out</div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="sec-h"><span class="n">03</span><h2>The sheet, then the mail, then welcome back</h2></div>
+  <p class="why">The sign-in sheet starts with what you get from signing in, not with a form. The "check your mail" step has buttons that open the mail apps, so nobody has to go looking for the link. Arriving back in the app shows what came with you.</p>
+  <div class="row">
+    <div class="art"><div class="phone"><div class="scr deck">
+      <div class="statusbar light"><span>9:41</span><div class="isl"></div><span>●●●</span></div>
+      <div class="veil"></div>
+      <div class="sheet"><div class="hdl"></div><h2>Save &amp; sync</h2><p class="s">Free. No password: we email you a link.</p>
+        <ul class="props">
+          <li><i>★</i><div><b>Your saves, on any device</b>Phone, laptop, your partner's phone.</div></li>
+          <li><i>◐</i><div><b>Taste that gets sharper</b>Every swipe counts towards next weekend.</div></li>
+          <li><i>✉</i><div><b>A Friday email tuned to you</b>Your best match, and your Later shelf when it comes up.</div></li>
+        </ul>
+        <div class="inp f">ness@</div><a class="btn">Send me a link</a>
+        <div class="fine">Nothing is created until you tap the link.</div></div>
+    </div></div><div class="cap"><b>Sign-in sheet</b> · three reasons, then the field</div></div>
+
+    <div class="art"><div class="phone"><div class="scr deck">
+      <div class="statusbar light"><span>9:41</span><div class="isl"></div><span>●●●</span></div>
+      <div class="veil"></div>
+      <div class="sheet"><div class="hdl"></div><h2>Check your mail</h2><p class="s">The link went to <b style="color:var(--ink)">ness@…</b>. It works once, for 15 minutes.</p>
+        <div class="mail"><div class="env"></div></div>
+        <div class="apps"><span>Open Gmail</span><span>Open Mail</span></div>
+        <a class="btn ink">I'll tap it later</a><div class="fine">Wrong address? <u>Change it</u></div></div>
+    </div></div><div class="cap"><b>Check your mail</b> · buttons that open the mail apps</div></div>
+
+    <div class="art"><div class="phone"><div class="scr welcome">
+      <div class="statusbar light"><span>9:41</span><div class="isl"></div><span>●●●</span></div>
+      <div class="pad"><div class="ok">✓</div><h1>You're in,<br>Ness.</h1><p>Everything on this phone is now on your account.</p>
+        <div class="row2"><span>Saves</span><b>3 synced</b></div>
+        <div class="row2"><span>Later shelf</span><b>2 synced</b></div>
+        <div class="row2"><span>Taste</span><b>212 swipes</b></div>
+        <div class="row2"><span>Friday email</span><b>Tuned to you</b></div></div>
+      <div class="bottom"><a class="btn">Back to the weekend</a></div>
+    </div></div><div class="cap"><b>Welcome back</b> · confirms what came with you, then gets out of the way</div></div>
+  </div>
+</section>
+</body></html>

@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WKNDR · C · Tuned for you</title>
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=clash-display@600,700&display=swap">
+<style>
+  body { margin: 0; background: #f1efe8; font: 15px/1.5 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #1a1a1a; -webkit-font-smoothing: antialiased; }
+  .w { max-width: 600px; margin: 0 auto; background: #faf8f3; }
+  a { color: inherit; text-decoration: none; }
+  .m { font-family: ui-monospace, 'SF Mono', Menlo, monospace; }
+  .top { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px 0; }
+  .wm { font: 700 18px/1 'Clash Display', sans-serif; letter-spacing: .02em; } .wm b { color: #ff4d1f; }
+  .wx { font-size: 12px; color: #5a5a5a; }
+  .hi { padding: 28px 24px 0; }
+  .hi h1 { font: 600 40px/1 'Clash Display', sans-serif; letter-spacing: -.01em; margin: 0 0 14px; }
+  .taste { display: flex; flex-wrap: wrap; gap: 6px; }
+  .taste span { font-size: 13px; padding: 6px 11px; border-radius: 99px; background: #fff; border: 1px solid #ddd9cf; }
+  .taste span.k { background: #1a1a1a; color: #faf8f3; border-color: #1a1a1a; }
+  .why { font-size: 12px; color: #9a9a96; margin-top: 10px; }
+  .h { padding: 30px 24px 10px; font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #5a5a5a; }
+  .h b { color: #ff4d1f; }
+  /* your match */
+  .match { display: block; margin: 0 12px; border-radius: 20px; overflow: hidden; background: #fff; box-shadow: 0 1px 0 #ddd9cf; }
+  .match .img { aspect-ratio: 16/10; background: center/cover; position: relative; }
+  .match .pct { position: absolute; left: 14px; top: 14px; background: #ff4d1f; color: #fff; font: 600 14px/1 'Clash Display', sans-serif; padding: 8px 11px; border-radius: 99px; }
+  .match .b { padding: 16px 18px 18px; }
+  .match h2 { font: 600 26px/1.05 'Clash Display', sans-serif; margin: 0 0 6px; }
+  .match p { margin: 0; color: #2a2a2a; }
+  .because { margin-top: 10px; font-size: 13px; color: #5a5a5a; } .because b { color: #1a1a1a; }
+  /* because-rows */
+  .pair { display: flex; gap: 10px; padding: 0 12px; }
+  .pc { flex: 1; display: block; background: #fff; border-radius: 16px; overflow: hidden; box-shadow: 0 1px 0 #ddd9cf; }
+  .pc .img { aspect-ratio: 1; background: center/cover; }
+  .pc .b { padding: 10px 12px 12px; }
+  .pc h4 { font: 700 15px/1.2 'Helvetica Neue', sans-serif; margin: 0 0 3px; }
+  .pc p { margin: 0; font-size: 12px; color: #5a5a5a; }
+  /* later shelf */
+  .later { margin: 0 12px; display: flex; gap: 14px; align-items: center; padding: 14px; border-radius: 16px; background: #fff1eb; border: 1px solid #ffd2c2; }
+  .later .th { flex: none; width: 64px; height: 64px; border-radius: 12px; background: center/cover; }
+  .later h4 { margin: 0; font-size: 15px; } .later p { margin: 2px 0 0; font-size: 13px; color: #5a5a5a; }
+  /* this or that */
+  .tot { margin: 0 12px; background: #1a1a1a; color: #faf8f3; border-radius: 20px; padding: 20px 16px 16px; }
+  .tot h3 { font: 600 22px/1.1 'Clash Display', sans-serif; margin: 0 6px 4px; }
+  .tot .s { font-size: 13px; color: #c4c4c0; margin: 0 6px 14px; }
+  .tot .two { display: flex; gap: 10px; }
+  .tot a { flex: 1; border-radius: 14px; overflow: hidden; background: #2a2a2a; }
+  .tot a .img { aspect-ratio: 1; background: center/cover; }
+  .tot a span { display: block; padding: 10px 12px; font-weight: 700; font-size: 14px; }
+  /* did you go */
+  .dyg { margin: 0 12px; padding: 16px 18px; border-radius: 16px; border: 1px solid #ddd9cf; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+  .dyg p { margin: 0; font-size: 14px; } .dyg p b { display: block; }
+  .dyg .btns a { display: inline-block; padding: 9px 13px; border-radius: 99px; border: 1px solid #1a1a1a; font-size: 13px; font-weight: 700; margin-left: 4px; }
+  .dyg .btns a.y { background: #1a1a1a; color: #faf8f3; }
+  .cta { display: block; margin: 28px 12px 0; text-align: center; background: #ff4d1f; color: #fff; font: 600 18px/1 'Clash Display', sans-serif; padding: 20px; border-radius: 99px; }
+  .foot { padding: 26px 24px 34px; font-size: 12px; color: #9a9a96; text-align: center; line-height: 1.6; }
+</style></head>
+<body><div class="w">
+  <div class="top"><div class="wm">WKNDR<b>.</b></div><div class="wx">Sat 7° dry · Sun 9° drizzle</div></div>
+
+  <div class="hi">
+    <h1>Ness, here's your weekend.</h1>
+    <div class="taste"><span class="k">Your taste</span><span>Slow mornings</span><span>Live music</span><span>Brown cafés</span><span>Rain doesn't stop you</span></div>
+    <div class="why">Learned from 212 swipes and 9 saves. <a href="#"><u>Change it</u></a></div>
+  </div>
+
+  <div class="h"><b>●</b> Your best match</div>
+  <a class="match" href="#"><div class="img" style="background-image:url(img/ligconcert.jpg)"><span class="pct">94% you</span></div>
+    <div class="b"><h2>Lie down for a concert at the Maritime Museum</h2><p>Strings under the glass roof and ten thousand small lights. You bring a cushion, they do the rest.</p>
+    <div class="because">Because you saved <b>Bimhuis</b> and swiped right on every seated show.</div></div></a>
+
+  <div class="h">Because you saved Café Chris</div>
+  <div class="pair">
+    <a class="pc" href="#"><div class="img" style="background-image:url(img/spin.jpg)"></div><div class="b"><h4>SPIN.</h4><p>Hi-fi listening bar and pool café, Oud-West.</p></div></a>
+    <a class="pc" href="#"><div class="img" style="background-image:url(img/remise.jpg)"></div><div class="b"><h4>Roode Remise Singing Session</h4><p>Bring your voice. Everyone joins in.</p></div></a>
+  </div>
+
+  <div class="h">Off your Later shelf</div>
+  <a class="later" href="#"><div class="th" style="background-image:url(img/kusama.jpg)"></div><div><h4>Yayoi Kusama is a good call this Saturday</h4><p>You saved it in October. Dry morning, and Museumnacht that evening.</p></div></a>
+
+  <div class="h">Teach WKNDR something · one tap</div>
+  <div class="tot"><h3>Sunday's wet. Which one's you?</h3><p class="s">Tap one. Next Friday's brief changes with it.</p>
+    <div class="two"><a href="#"><div class="img" style="background-image:url(img/sauna.jpg)"></div><span>Warm and quiet</span></a><a href="#"><div class="img" style="background-image:url(img/kiseki.jpg)"></div><span>Out to eat, rain or not</span></a></div></div>
+
+  <div class="h">Last weekend</div>
+  <div class="dyg"><p><b>Did you make it to IJ-Hallen?</b>It helps us learn what you actually do.</p><div class="btns"><a class="y" href="#">Went</a><a href="#">Didn't</a></div></div>
+
+  <a class="cta" href="#">See all 17 for you →</a>
+  <div class="foot">Tuned to your account. Signed out, you'd get the city's brief.<br><a href="#"><u>Unsubscribe</u></a> · <a href="#"><u>See what WKNDR knows about you</u></a></div>
+</div></body></html>

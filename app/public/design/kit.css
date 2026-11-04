@@ -1,0 +1,85 @@
+/* WKNDR design review, Nov 2026 — the board chrome. Tokens mirror app/src/index.css. */
+@import url('https://api.fontshare.com/v2/css?f[]=clash-display@500,600,700&display=swap');
+
+:root {
+  --ink: #1a1a1a; --ink-2: #2a2a2a; --ink-3: #5a5a5a; --ink-4: #9a9a96; --ink-5: #c4c4c0;
+  --paper: #faf8f3; --paper-2: #f1efe8; --paper-3: #e7e4db; --rule: #ddd9cf;
+  --accent: #ff4d1f; --accent-deep: #8a2818;
+  --cool-1: #b9c6cf; --cool-2: #6f8796; --cool-3: #2c3d4a;
+  --display: 'Clash Display', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --body: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body.board { background: #e9e6de; color: var(--ink); font: 15px/1.5 var(--body); -webkit-font-smoothing: antialiased; }
+.board a { color: inherit; }
+
+/* board header */
+.bh { padding: 48px 48px 24px; max-width: 1480px; margin: 0 auto; }
+.bh .crumb { font: 11px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
+.bh .crumb a { text-decoration: none; }
+.bh h1 { font: 600 clamp(40px, 6vw, 76px)/.95 var(--display); letter-spacing: -.02em; margin: 16px 0 16px; }
+.bh h1 i { font-style: normal; color: var(--accent); }
+.bh p.lede { font-size: 18px; max-width: 760px; color: var(--ink-2); margin: 0; }
+
+/* sections */
+.sec { max-width: 1480px; margin: 0 auto; padding: 32px 48px; }
+.sec + .sec { border-top: 1px solid var(--rule); }
+.sec-h { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; margin-bottom: 8px; }
+.sec-h .n { font: 600 14px/1 var(--mono); color: var(--accent); }
+.sec-h h2 { font: 600 34px/1 var(--display); letter-spacing: -.01em; margin: 0; }
+.sec-h .tag { font: 11px/1 var(--mono); text-transform: uppercase; letter-spacing: .08em; padding: 6px 8px; border-radius: 99px; background: var(--ink); color: var(--paper); }
+.sec-h .tag.rec { background: var(--accent); }
+.sec p.why { max-width: 820px; color: var(--ink-2); margin: 8px 0 24px; }
+.notes { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin: 24px 0 8px; }
+.note { background: var(--paper); border-radius: 14px; padding: 16px 18px; font-size: 14px; }
+.note b { display: block; font: 11px/1.2 var(--mono); text-transform: uppercase; letter-spacing: .08em; color: var(--ink-3); margin-bottom: 6px; }
+.note ul { margin: 0; padding-left: 18px; } .note li + li { margin-top: 4px; }
+
+/* rows of artboards */
+.row { display: flex; gap: 32px; overflow-x: auto; padding: 8px 0 24px; align-items: flex-start; scroll-snap-type: x proximity; }
+.art { flex: none; scroll-snap-align: start; }
+.art .cap { font: 11px/1.4 var(--mono); color: var(--ink-3); text-transform: uppercase; letter-spacing: .06em; margin: 12px 4px 0; max-width: 390px; }
+.art .cap b { color: var(--ink); }
+
+/* a phone */
+.phone { width: 390px; height: 844px; border-radius: 48px; background: #111; padding: 12px; box-shadow: 0 30px 60px -30px rgba(0,0,0,.45); position: relative; }
+:where(.phone) > .scr { width: 100%; height: 100%; border-radius: 37px; overflow: hidden; position: relative; background: var(--paper); }
+.phone > .scr > iframe { width: 100%; height: 100%; border: 0; display: block; }
+.phone.tall { height: auto; } .phone.tall > .scr { height: auto; }
+.statusbar { height: 50px; display: flex; justify-content: space-between; align-items: center; padding: 6px 30px 0; font: 600 15px/1 var(--body); position: relative; z-index: 5; }
+.statusbar.light { color: #fff; }
+.statusbar .isl { width: 120px; height: 34px; border-radius: 20px; background: #000; position: absolute; left: 50%; top: 10px; transform: translateX(-50%); }
+
+/* a desktop mail window */
+.mailwin { width: 720px; border-radius: 14px; background: #fff; box-shadow: 0 30px 60px -30px rgba(0,0,0,.35); overflow: hidden; }
+.mailwin .bar { height: 36px; background: #ecebe7; display: flex; align-items: center; gap: 7px; padding: 0 14px; }
+.mailwin .bar i { width: 11px; height: 11px; border-radius: 50%; background: #d4d1ca; }
+.mailwin .hdr { padding: 18px 24px 14px; border-bottom: 1px solid #eee; font-size: 13px; color: #555; }
+.mailwin .hdr .s { font: 600 18px/1.3 var(--body); color: #111; margin-bottom: 6px; }
+.mailwin iframe { width: 100%; border: 0; display: block; }
+
+/* inbox preview */
+.inbox { width: 390px; background: #fff; border-radius: 18px; overflow: hidden; box-shadow: 0 20px 40px -24px rgba(0,0,0,.3); }
+.inbox .it { padding: 14px 18px; border-bottom: 1px solid #f0f0f0; font-size: 14px; line-height: 1.35; }
+.inbox .it .top { display: flex; justify-content: space-between; font-weight: 700; }
+.inbox .it .top span { font-weight: 400; color: #8a8a8a; font-size: 13px; }
+.inbox .it .sub { color: #111; }
+.inbox .it .pre { color: #8a8a8a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.inbox .it.us { background: #fffaf6; }
+.inbox .it.us { position: relative; }
+.inbox .it.us::before { content: ''; position: absolute; left: 5px; top: 19px; width: 8px; height: 8px; border-radius: 50%; background: #2f7cf6; }
+.inbox .it.dim { opacity: .55; }
+
+/* wordmark */
+.wm { font: 700 20px/1 var(--display); letter-spacing: .02em; }
+.wm::after { content: '.'; color: var(--accent); }
+
+/* index cards */
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+.ic { background: var(--paper); border-radius: 18px; padding: 24px; text-decoration: none; display: block; transition: transform .2s; }
+.ic:hover { transform: translateY(-3px); }
+.ic .k { font: 11px/1 var(--mono); color: var(--accent); text-transform: uppercase; letter-spacing: .08em; }
+.ic h3 { font: 600 28px/1.05 var(--display); margin: 12px 0 8px; }
+.ic p { margin: 0; color: var(--ink-3); font-size: 14px; }

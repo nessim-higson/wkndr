@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WKNDR · A · The Friday Brief</title>
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=clash-display@600,700&display=swap">
+<style>
+  body { margin: 0; background: #f1efe8; font: 15px/1.5 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #1a1a1a; -webkit-font-smoothing: antialiased; }
+  .w { max-width: 600px; margin: 0 auto; background: #faf8f3; }
+  .d { font-family: 'Clash Display', 'Helvetica Neue', Helvetica, Arial, sans-serif; }
+  .m { font-family: ui-monospace, 'SF Mono', Menlo, monospace; }
+  a { color: inherit; text-decoration: none; }
+  .top { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; }
+  .wm { font: 700 20px/1 'Clash Display', sans-serif; letter-spacing: .02em; } .wm b { color: #ff4d1f; }
+  .top .ed { font-size: 12px; color: #5a5a5a; }
+  /* the sky */
+  .sky { margin: 0 12px; border-radius: 22px; padding: 28px 24px 20px; color: #fbf7ef; background: linear-gradient(160deg, #8fa3b0 0%, #566e7d 48%, #2c3d4a 100%); position: relative; overflow: hidden; }
+  .sky::after { content: ''; position: absolute; right: -60px; top: -60px; width: 220px; height: 220px; border-radius: 50%; background: radial-gradient(circle, rgba(255,255,255,.35), rgba(255,255,255,0) 70%); }
+  .sky .claim { font: 600 38px/1.02 'Clash Display', sans-serif; letter-spacing: -.01em; margin: 0 0 18px; position: relative; }
+  .days { display: flex; gap: 8px; }
+  .day { flex: 1; background: rgba(255,255,255,.14); border-radius: 14px; padding: 12px 14px; }
+  .day .n { font-size: 12px; opacity: .8; } .day .t { font: 600 26px/1.1 'Clash Display', sans-serif; } .day .c { font-size: 13px; }
+  .sky .rcpt { font-size: 11px; opacity: .7; margin-top: 14px; letter-spacing: .02em; }
+  .lede { padding: 24px 24px 4px; font-size: 17px; line-height: 1.45; }
+  .lede b { font-weight: 700; }
+  /* the cover pick */
+  .cover { margin: 16px 12px 0; display: block; }
+  .cover .img { width: 100%; aspect-ratio: 3/2; border-radius: 18px; background: #e7e4db center/cover; }
+  .cover .meta { padding: 14px 12px 0; }
+  .eyebrow { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #ff4d1f; }
+  .cover h2 { font: 600 28px/1.05 'Clash Display', sans-serif; margin: 6px 0 6px; }
+  .cover p { margin: 0; color: #2a2a2a; }
+  .trace { font-size: 11px; color: #9a9a96; margin-top: 8px; }
+  /* day headers + rows */
+  .dh { display: flex; align-items: baseline; justify-content: space-between; padding: 28px 24px 8px; border-bottom: 1px solid #ddd9cf; margin: 0 0 4px; }
+  .dh h3 { font: 600 22px/1 'Clash Display', sans-serif; margin: 0; }
+  .dh span { font-size: 12px; color: #5a5a5a; }
+  .r { display: flex; gap: 14px; padding: 14px 24px; align-items: flex-start; }
+  .r + .r { border-top: 1px solid #ece9e1; }
+  .r .th { flex: none; width: 84px; height: 84px; border-radius: 12px; background: #e7e4db center/cover; }
+  .r .th.face { display: flex; align-items: flex-end; padding: 8px; background: #1a1a1a; color: #faf8f3; font: 600 13px/1 'Clash Display', sans-serif; }
+  .r .hr { font-size: 12px; font-weight: 700; color: #5a5a5a; }
+  .r h4 { font: 700 16px/1.25 'Helvetica Neue', sans-serif; margin: 2px 0 2px; }
+  .r p { margin: 0; font-size: 14px; color: #2a2a2a; }
+  .chip { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 3px 7px; border-radius: 99px; background: #ff4d1f; color: #fff; vertical-align: 2px; margin-left: 4px; }
+  .chip.ink { background: #1a1a1a; }
+  /* saves strip */
+  .yours { margin: 24px 12px 0; padding: 20px; border-radius: 18px; background: #1a1a1a; color: #faf8f3; }
+  .yours h3 { font: 600 20px/1.1 'Clash Display', sans-serif; margin: 0 0 4px; }
+  .yours p { margin: 0 0 14px; font-size: 14px; opacity: .75; }
+  .yours .strip { display: flex; gap: 8px; }
+  .yours .strip div { flex: 1; aspect-ratio: 1; border-radius: 10px; background: #333 center/cover; }
+  .cta { display: block; margin: 24px 12px 0; text-align: center; background: #ff4d1f; color: #fff; font: 600 18px/1 'Clash Display', sans-serif; padding: 20px; border-radius: 99px; }
+  .foot { padding: 28px 24px 36px; font-size: 12px; color: #9a9a96; text-align: center; line-height: 1.6; }
+  .foot .fb a { display: inline-block; border: 1px solid #ddd9cf; border-radius: 99px; padding: 6px 12px; margin: 0 3px 10px; color: #2a2a2a; font-size: 13px; }
+  @media (max-width: 440px) { .sky .claim { font-size: 32px; } .r .th { width: 72px; height: 72px; } }
+</style></head>
+<body><div class="w">
+  <div class="top"><div class="wm">WKNDR<b>.</b></div><div class="ed">Amsterdam · 7–8 Nov</div></div>
+
+  <div class="sky">
+    <p class="claim">Cold, dry Saturday. Go out after dark.</p>
+    <div class="days">
+      <div class="day"><div class="n">Saturday</div><div class="t">7°</div><div class="c">Grey, dry · 1° tonight</div></div>
+      <div class="day"><div class="n">Sunday</div><div class="t">9°</div><div class="c">Drizzle by afternoon</div></div>
+    </div>
+    <div class="rcpt m">KNMI · Buienradar · rain 8% / 21% · sunset 17:00</div>
+  </div>
+
+  <p class="lede">Good morning. It's <b>Museumnacht</b> on Saturday, the rink is back on Museumplein, and Eye's Kawashima season ends Wednesday. Keep Sunday for warm rooms.</p>
+
+  <a class="cover" href="#">
+    <div class="img" style="background-image:url(img/rink.jpg)"></div>
+    <div class="meta">
+      <div class="eyebrow">01 · Saturday, any time</div>
+      <h2>Skate under the Rijksmuseum</h2>
+      <p>Dry ice and a low sun on Museumplein. Go at 16:00 and stay for the lights coming on.</p>
+      <div class="trace m">via Your Little Black Book · 10:00–22:00 · until 16 Jan</div>
+    </div>
+  </a>
+
+  <div class="dh"><h3>Saturday</h3><span>dry all day</span></div>
+  <a class="r" href="#"><div class="th" style="background-image:url(img/kusama.jpg)"></div><div>
+    <div class="hr">Morning</div><h4>Yayoi Kusama at the Stedelijk</h4>
+    <p>Seventy years of work, mirror rooms included. Book the first slot to beat the queue.</p>
+    <div class="trace m">via I amsterdam · ticketed · until 17 Jan</div></div></a>
+  <a class="r" href="#"><div class="th" style="background-image:url(img/jollof.jpg)"></div><div>
+    <div class="hr">Lunch <span class="chip">Opens today</span></div><h4>The Jollof Club, now with a room of its own</h4>
+    <p>The West African pop-up finally has a permanent address.</p>
+    <div class="trace m">via Your Little Black Book</div></div></a>
+  <a class="r" href="#"><div class="th face">Museum<br>nacht</div><div>
+    <div class="hr">19:00 → 02:00 <span class="chip ink">One night</span></div><h4>Museumnacht</h4>
+    <p>Fifty-odd museums open late on one ticket. Start somewhere small, end at a party.</p>
+    <div class="trace m">via Your Little Black Book</div></div></a>
+
+  <div class="dh"><h3>Sunday</h3><span>drizzle from 14:00</span></div>
+  <a class="r" href="#"><div class="th" style="background-image:url(img/eye.jpg)"></div><div>
+    <div class="hr">Afternoon <span class="chip">Last days</span></div><h4>The Elegant Beasts of Yuzo Kawashima</h4>
+    <p>The missing link between '50s Japanese classics and the New Wave. Ends 11 Nov.</p>
+    <div class="trace m">via Eye Filmmuseum · ticketed</div></div></a>
+  <a class="r" href="#"><div class="th" style="background-image:url(img/sauna.jpg)"></div><div>
+    <div class="hr">When it rains</div><h4>Sauna Deco</h4>
+    <p>A 1920s Art Deco bathhouse, rescued from a Paris department store.</p>
+    <div class="trace m">via I amsterdam · day pass</div></div></a>
+
+  <div class="yours">
+    <h3>You saved 3 for this weekend</h3>
+    <p>Ligconcert, Café Chris and the Maker Market. All three are on.</p>
+    <div class="strip"><div style="background-image:url(img/ligconcert.jpg)"></div><div style="background-image:url(img/chris.jpg)"></div><div style="background-image:url(img/maker.jpg)"></div></div>
+  </div>
+
+  <a class="cta" href="#">Swipe the full weekend →</a>
+
+  <div class="foot">
+    <div class="fb">Was this a good weekend? <br><a href="#">Spot on</a><a href="#">Not for me</a></div>
+    You get this because you signed up at wkndr.xyz. One email, Fridays at 07:30.<br>
+    <a href="#"><u>Unsubscribe</u></a> · <a href="#"><u>Tune what you get</u></a>
+  </div>
+</div></body></html>

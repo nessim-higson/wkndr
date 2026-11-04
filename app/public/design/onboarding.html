@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WKNDR · Onboarding: learning your taste</title>
+<link rel="stylesheet" href="kit.css">
+<style>
+  .scr { font-family: var(--body); color: var(--ink); }
+  .pad { padding: 8px 24px 0; }
+  .prog { display: flex; gap: 4px; padding: 6px 24px 0; }
+  .prog i { flex: 1; height: 3px; border-radius: 3px; background: var(--paper-3); }
+  .prog i.on { background: var(--ink); }
+  .skip { position: absolute; right: 24px; top: 62px; font-size: 13px; color: var(--ink-3); }
+  .q { font: 600 34px/1.02 var(--display); letter-spacing: -.01em; margin: 26px 0 8px; }
+  .qs { font-size: 15px; color: var(--ink-3); margin: 0 0 22px; }
+  .btn { display: block; text-align: center; font: 600 18px/1 var(--display); padding: 19px; border-radius: 99px; background: var(--ink); color: var(--paper); }
+  .btn.or { background: var(--accent); color: #fff; }
+  .btn.gh { background: transparent; color: var(--ink-3); font: 500 15px/1 var(--body); padding: 14px; }
+  .bottom { position: absolute; left: 24px; right: 24px; bottom: 34px; }
+  .eyebrow { font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+
+  /* 1 arrival */
+  .arr { background: linear-gradient(165deg, #9fb1bc 0%, #566e7d 50%, #22313c 100%); color: #fbf7ef; height: 100%; }
+  .arr .orb { position: absolute; width: 340px; height: 340px; border-radius: 50%; right: -120px; top: 90px; background: radial-gradient(circle, rgba(255,214,170,.55), rgba(255,214,170,0) 68%); }
+  .arr .big { font: 600 54px/.92 var(--display); letter-spacing: -.02em; margin: 200px 0 16px; position: relative; }
+  .arr p { font-size: 17px; color: #dfe6ea; margin: 0; max-width: 300px; position: relative; }
+  .arr .btn { background: #fbf7ef; color: var(--ink); }
+  .arr .btn.gh { color: #dfe6ea; background: none; }
+  .arr .wx { position: absolute; top: 66px; left: 24px; font-size: 13px; color: #dfe6ea; }
+
+  /* 2 who */
+  .tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .tile { border-radius: 20px; background: #fff; border: 1.5px solid var(--rule); padding: 16px; height: 132px; display: flex; flex-direction: column; justify-content: space-between; }
+  .tile .gl { font: 600 30px/1 var(--display); color: var(--ink-4); }
+  .tile b { font-size: 16px; } .tile span { font-size: 12px; color: var(--ink-3); display: block; font-weight: 400; }
+  .tile.on { border-color: var(--ink); background: var(--ink); color: var(--paper); }
+  .tile.on .gl { color: var(--accent); } .tile.on span { color: var(--ink-5); }
+
+  /* 3 duel */
+  .duel { display: flex; flex-direction: column; gap: 10px; }
+  .dc { position: relative; height: 262px; border-radius: 22px; background: center/cover; overflow: hidden; }
+  .dc::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0) 50%, rgba(0,0,0,.7)); }
+  .dc .l { position: absolute; left: 16px; bottom: 14px; color: #fff; z-index: 2; font: 600 22px/1.05 var(--display); }
+  .dc .l small { display: block; font: 400 13px/1.3 var(--body); color: #e9e6de; margin-top: 3px; }
+  .dc.pick { outline: 3px solid var(--accent); outline-offset: -3px; }
+  .dc .tick { position: absolute; right: 14px; top: 14px; z-index: 2; width: 34px; height: 34px; border-radius: 50%; background: var(--accent); color: #fff; display: grid; place-items: center; font-weight: 700; }
+  .vs { text-align: center; font: 600 13px/1 var(--display); color: var(--ink-4); margin: -2px 0; }
+  .either { text-align: center; font-size: 13px; color: var(--ink-3); margin-top: 12px; }
+
+  /* 4 swipe */
+  .stack { position: relative; height: 470px; margin-top: 12px; }
+  .stack .c { position: absolute; inset: 0; border-radius: 26px; background: center/cover; box-shadow: 0 20px 40px -20px rgba(0,0,0,.5); overflow: hidden; }
+  .stack .c.b2 { transform: translateY(18px) scale(.92); opacity: .6; }
+  .stack .c.b1 { transform: translateY(9px) scale(.96); opacity: .85; }
+  .stack .c.top { transform: rotate(-6deg) translateX(-26px); }
+  .stack .c .sh { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0) 45%, rgba(0,0,0,.75)); }
+  .stack .c .pill { position: absolute; left: 14px; top: 14px; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; background: rgba(250,248,243,.92); padding: 6px 10px; border-radius: 99px; }
+  .stack .c .tt { position: absolute; left: 18px; right: 18px; bottom: 18px; color: #fff; }
+  .stack .c .tt h3 { font: 600 28px/1.02 var(--display); margin: 0 0 4px; } .stack .c .tt p { margin: 0; font-size: 13px; color: #e9e6de; }
+  .stack .stamp { position: absolute; right: 18px; top: 40px; transform: rotate(14deg); border: 3px solid #39b36b; color: #39b36b; font: 700 22px/1 var(--display); padding: 6px 10px; border-radius: 10px; background: rgba(255,255,255,.85); }
+  .learn { margin-top: 26px; }
+  .learn .h { font-size: 12px; color: var(--ink-3); display: flex; justify-content: space-between; margin-bottom: 8px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chips span { font-size: 13px; padding: 6px 11px; border-radius: 99px; background: #fff; border: 1px solid var(--rule); color: var(--ink-3); }
+  .chips span.up { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+  .chips span.up::after { content: ' ↑'; color: var(--accent); }
+  .chips span.dn { text-decoration: line-through; color: var(--ink-4); }
+  .acts { display: flex; justify-content: center; gap: 18px; margin-top: 18px; }
+  .acts i { width: 58px; height: 58px; border-radius: 50%; background: #fff; box-shadow: 0 6px 16px -8px rgba(0,0,0,.3); display: grid; place-items: center; font-style: normal; font-size: 22px; }
+  .acts i.s { width: 46px; height: 46px; font-size: 17px; margin-top: 6px; }
+
+  /* 5 rain */
+  .rain { margin: 0 -24px; height: 190px; background: linear-gradient(180deg, #4b5d69, #7d8f9a); position: relative; overflow: hidden; }
+  .rain::before { content: ''; position: absolute; inset: -40px; background: repeating-linear-gradient(105deg, rgba(255,255,255,.0) 0 14px, rgba(255,255,255,.35) 14px 15px); }
+  .rain .t { position: absolute; left: 24px; bottom: 18px; color: #fff; font: 600 46px/1 var(--display); }
+  .rain .t small { display: block; font: 400 14px/1.3 var(--body); color: #dfe6ea; }
+  .opts { display: flex; flex-direction: column; gap: 10px; }
+  .opt { border: 1.5px solid var(--rule); background: #fff; border-radius: 18px; padding: 16px 18px; display: flex; justify-content: space-between; align-items: center; }
+  .opt b { display: block; font-size: 16px; } .opt span { font-size: 13px; color: var(--ink-3); }
+  .opt .r { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--ink-5); flex: none; }
+  .opt.on { border-color: var(--ink); } .opt.on .r { border: 7px solid var(--accent); }
+
+  /* 6 where */
+  .map { height: 210px; border-radius: 22px; background: #e9e6dc; position: relative; overflow: hidden; margin-bottom: 14px; }
+  .map svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .nb { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 18px; }
+  .nb span { font-size: 14px; padding: 8px 13px; border-radius: 99px; border: 1.5px solid var(--rule); background: #fff; }
+  .nb span.on { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .lab { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); margin: 0 0 8px; }
+  .seg { display: flex; background: var(--paper-3); border-radius: 14px; padding: 4px; }
+  .seg span { flex: 1; text-align: center; padding: 11px 0; border-radius: 11px; font-weight: 700; font-size: 15px; color: var(--ink-3); }
+  .seg span.on { background: #fff; color: var(--ink); box-shadow: 0 1px 3px rgba(0,0,0,.12); }
+  .tog { display: flex; justify-content: space-between; align-items: center; margin-top: 18px; font-size: 15px; }
+  .tog i { width: 50px; height: 30px; border-radius: 99px; background: #39b36b; position: relative; }
+  .tog i::after { content: ''; position: absolute; right: 3px; top: 3px; width: 24px; height: 24px; border-radius: 50%; background: #fff; }
+
+  /* 7 reveal */
+  .rev { background: var(--ink); color: var(--paper); height: 100%; }
+  .tcard { margin: 16px 20px 0; border-radius: 26px; padding: 22px; background: linear-gradient(150deg, #ff7a4d 0%, #ff4d1f 45%, #8a2818 100%); color: #fff; position: relative; overflow: hidden; }
+  .tcard::after { content: ''; position: absolute; width: 260px; height: 260px; border-radius: 50%; right: -90px; top: -90px; background: radial-gradient(circle, rgba(255,220,180,.6), rgba(255,220,180,0) 70%); }
+  .tcard .k { font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; opacity: .85; }
+  .tcard h2 { font: 600 38px/.95 var(--display); margin: 10px 0 14px; letter-spacing: -.01em; position: relative; }
+  .bars { display: flex; flex-direction: column; gap: 7px; position: relative; }
+  .bars div { display: flex; align-items: center; gap: 10px; font-size: 13px; }
+  .bars div span { width: 92px; flex: none; }
+  .bars div i { height: 6px; border-radius: 6px; background: rgba(255,255,255,.95); }
+  .bars div i.lo { background: rgba(255,255,255,.4); }
+  .tcard .lines { font-size: 13px; margin-top: 14px; line-height: 1.5; position: relative; }
+  .tcard .wm2 { position: absolute; right: 20px; bottom: 18px; font: 700 14px/1 var(--display); }
+  .rev .save { margin: 18px 20px 0; background: #2a2a2a; border-radius: 22px; padding: 18px; }
+  .rev .save b { font: 600 19px/1.15 var(--display); display: block; }
+  .rev .save p { margin: 4px 0 12px; font-size: 13px; color: var(--ink-5); }
+  .field { display: flex; gap: 8px; }
+  .field div { flex: 1; background: #fff; color: var(--ink-4); border-radius: 14px; padding: 14px; font-size: 15px; }
+  .field a { background: var(--accent); color: #fff; border-radius: 14px; padding: 14px 16px; font-weight: 700; font-size: 15px; }
+  .rev .go { margin: 14px 20px 0; display: flex; justify-content: space-between; align-items: center; font-size: 14px; color: var(--ink-5); }
+  .rev .go b { color: var(--paper); font: 600 17px/1 var(--display); }
+
+  /* 8 profile */
+  .prof h1 { font: 600 30px/1 var(--display); margin: 12px 0 4px; }
+  .prof .sub { font-size: 13px; color: var(--ink-3); margin: 0 0 18px; }
+  .dial { background: #fff; border-radius: 18px; padding: 14px 16px; margin-bottom: 10px; border: 1px solid var(--rule); }
+  .dial .top { display: flex; justify-content: space-between; font-size: 14px; font-weight: 700; margin-bottom: 10px; }
+  .dial .top span { font-weight: 400; color: var(--ink-3); font-size: 12px; }
+  .slider { height: 6px; border-radius: 6px; background: var(--paper-3); position: relative; }
+  .slider b { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 6px; background: var(--ink); }
+  .slider u { position: absolute; top: -7px; width: 20px; height: 20px; border-radius: 50%; background: #fff; border: 2px solid var(--ink); margin-left: -10px; }
+  .ends { display: flex; justify-content: space-between; font-size: 11px; color: var(--ink-4); margin-top: 6px; }
+  .src { font-size: 12px; color: var(--ink-3); background: var(--paper-2); border-radius: 14px; padding: 12px 14px; margin-top: 4px; line-height: 1.5; }
+  .src b { color: var(--ink); }
+
+  /* 9 why-this-card */
+  .deckbg { background: linear-gradient(170deg, #9fb1bc, #566e7d 60%, #2c3d4a); height: 100%; }
+  .deckbg .stack { margin: 8px 20px 0; height: 560px; }
+  .whycard { position: absolute; left: 14px; right: 14px; bottom: 96px; z-index: 3; background: rgba(250,248,243,.95); border-radius: 16px; padding: 12px 14px; font-size: 13px; color: var(--ink-2); }
+  .whycard b { display: block; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); margin-bottom: 4px; }
+  .whycard .x { display: flex; gap: 6px; margin-top: 8px; }
+  .whycard .x span { font-size: 12px; padding: 5px 9px; border-radius: 99px; border: 1px solid var(--rule); background: #fff; }
+
+  .flow { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: 13px; margin: 8px 0 4px; }
+  .flow span { background: var(--paper); padding: 7px 12px; border-radius: 99px; }
+  .flow span.k { background: var(--ink); color: var(--paper); }
+  .flow em { font-style: normal; color: var(--ink-4); }
+</style>
+</head>
+<body class="board">
+<header class="bh">
+  <div class="crumb"><a href="./">WKNDR design review · Nov 2026</a> / 02 Onboarding</div>
+  <h1>A minute to learn<br>your <i>taste.</i></h1>
+  <p class="lede">At the moment WKNDR learns taste one swipe at a time, and the only calibration is a dev-only deck of eight archetype cards (Tune WKNDR, <code>?dev=1</code>). This is the flow that would replace it on first open. There are six short steps, each asking for a different kind of signal, and it ends with a taste card you'd want to keep, which is the moment to ask people to sign in.</p>
+</header>
+
+<section class="sec">
+  <div class="sec-h"><span class="n">↘</span><h2>The flow</h2></div>
+  <div class="flow"><span class="k">Arrive</span><em>→</em><span>Who's coming · 1 tap</span><em>→</em><span>This or that · 6 pairs</span><em>→</em><span>Swipe this weekend · 12 cards</span><em>→</em><span>When it rains · 1 tap</span><em>→</em><span>Where &amp; spend · 2 taps</span><em>→</em><span class="k">Your taste card</span><em>→</em><span>Sign in (optional)</span></div>
+  <p class="why">About 60 to 75 seconds and roughly 22 signals. That's fewer than the ~30-card round in <code>discovery-direction.md</code>, but each one says more: a pair is a direct comparison, and the setup questions cover things a swipe can't (who you're with, how you take rain, how far you'll go). It can be skipped at every step. If you skip it, you land on the deck and learning carries on from your swipes, as it does now.</p>
+  <div class="row">
+
+    <!-- 1 -->
+    <div class="art"><div class="phone"><div class="scr arr">
+      <div class="statusbar light"><span>9:41</span><div class="isl"></div><span>●●●</span></div>
+      <div class="orb"></div><div class="wx">Amsterdam · Sat 7° and dry</div>
+      <div class="pad"><div class="wm" style="position:relative">WKNDR</div>
+        <div class="big">Your weekend,<br>one swipe<br>away.</div>
+        <p>First, a minute on what a good weekend looks like to you. We'll rank this one around it, and around the weather.</p></div>
+      <div class="bottom"><a class="btn">Let's go</a><a class="btn gh">Skip, just show me the weekend</a></div>
+    </div></div><div class="cap"><b>1 · Arrive</b> · on the weekend's own sky. A promise and a time limit. You can skip.</div></div>
+
+    <!-- 2 -->
+    <div class="art"><div class="phone"><div class="scr">
+      <div class="statusbar"><span>9:41</span><div class="isl"></div><span>●●●</span></div>
+      <div class="prog"><i class="on"></i><i></i><i></i><i></i><i></i></div><span class="skip">Skip</span>
+      <div class="pad"><div class="q">Who's usually with you?</div><p class="qs">Pick any. It changes what we put first.</p>
+        <div class="tiles">
+          <div class="tile"><div class="gl">1</div><b>Just me<span>Solo plans, easy to book</span></b></div>
+          <div class="tile on"><div class="gl">2</div><b>Partner<span>Dates, dinners, slow days</span></b></div>
+          <div class="tile"><div class="gl">4+</div><b>Friends<span>Groups, nights out</span></b></div>
+          <div class="tile on"><div class="gl">◡</div><b>Kids<span>Turns on the kids lens</span></b></div>
+        </div></div>
+      <div class="bottom"><a class="btn">Next</a></div>
+    </div></div><div class="cap"><b>2 · Company</b> · the kids lens already exists. This step switches it on without anyone having to find it.</div></div>
+
+    <!-- 3 -->
+    <div class="art"><div class="phone"><div class="scr">
+      <div class="statusbar"><span>9:41</span><div class="isl"></div><span>●●●</span></div>
+      <div class="prog"><i class="on"></i><i class="on"></i><i></i><i></i><i></i></div><span class="skip">Skip</span>
+      <div class="pad"><div class="q" style="font-size:28px;margin-top:20px">Saturday, 11:00. You'd rather…</div><p class="qs" style="margin-bottom:14px">3 of 6 · tap one</p>
+        <div class="duel">
+          <div class="dc pick" style="background-image:url(img/kusama.jpg)"><span class="tick">✓</span><div class="l">A big exhibition<small>Stedelijk, Kusama</small></div></div>
+          <div class="vs">or</div>
+          <div class="dc" style="background-image:url(img/ijhallen.jpg)"><div class="l">A flea market crawl<small>IJ-Hallen, NDSM</small></div></div>
+        </div>
+        <div class="either">Both · Neither</div></div>
+    </div></div><div class="cap"><b>3 · This or that</b> · six pairs of real photos from this weekend's deck, each tied to a time of day. It learns energy and time of day as well as category.</div></div>
+
+    <!-- 4 -->
+    <div class="art"><div class="phone"><div class="scr">
+      <div class="statusbar"><span>9:41</span><div class="isl"></div><span>●●●</span></div>
+      <div class="prog"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></div><span class="skip">Skip</span>
+      <div class="pad">
+        <div class="stack">
+          <div class="c b2" style="background-image:url(img/chris.jpg)"></div>
+          <div class="c b1" style="background-image:url(img/sauna.jpg)"></div>
+          <div class="c top" style="background-image:url(img/rink.jpg)"><div class="sh"></div><span class="pill">Perfect Saturday</span><span class="stamp">INTO IT</span><div class="tt"><h3>Skate on Museumplein</h3><p>10:00–22:00 · until 16 Jan</p></div></div>
+        </div>
+        <div class="acts"><i>✕</i><i class="s">↓</i><i class="s">★</i><i>♥</i></div>
+        <div class="learn"><div class="h"><span>Learning you</span><span>9 / 12</span></div>
+          <div class="chips"><span class="up">Outdoors when dry</span><span class="up">Art</span><span>Live music</span><span class="dn">Clubs</span><span>Markets</span></div></div>
+      </div>
+    </div></div><div class="cap"><b>4 · Swipe this weekend</b> · twelve real cards in the app's own deck, so you learn the gesture by using it. The chips update as you swipe.</div></div>
+
+    <!-- 5 -->
+    <div class="art"><div class="phone"><div class="scr">
+      <div class="statusbar"><span>9:41</span><div class="isl"></div><span>●●●</span></div>
+      <div class="prog"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i></div><span class="skip">Skip</span>
+      <div class="pad">
+        <div class="rain" style="margin-top:20px"><div class="t">11°<small>Saturday · heavy rain all day</small></div></div>
+        <div class="q" style="font-size:30px">It's pouring. You…</div>
+        <div class="opts">
+          <div class="opt"><div><b>Stay in somewhere warm</b><span>Saunas, brown cafés, long lunches</span></div><i class="r"></i></div>
+          <div class="opt on"><div><b>Swap to indoors</b><span>Same energy, under a roof</span></div><i class="r"></i></div>
+          <div class="opt"><div><b>Go anyway</b><span>A coat is a coat</span></div><i class="r"></i></div>
+        </div></div>
+    </div></div><div class="cap"><b>5 · When it rains</b> · the weather question only WKNDR asks. It sets how hard the weather re-ranks <i>your</i> deck.</div></div>
+
+    <!-- 6 -->
+    <div class="art"><div class="phone"><div class="scr">
+      <div class="statusbar"><span>9:41</span><div class="isl"></div><span>●●●</span></div>
+      <div class="prog"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></div><span class="skip">Skip</span>
+      <div class="pad"><div class="q" style="font-size:30px;margin-top:20px">Where, and how much?</div>
+        <div class="map"><svg viewBox="0 0 342 210"><path d="M0 70 C80 60 130 90 180 78 S290 40 342 52 L342 0 L0 0Z" fill="#c9d6de"/><path d="M150 210 C160 160 150 120 172 86" stroke="#c9d6de" stroke-width="10" fill="none"/>
+          <g fill="#1a1a1a" opacity=".9"><circle cx="150" cy="118" r="34" opacity=".18"/><circle cx="105" cy="128" r="28" opacity=".18"/><circle cx="215" cy="140" r="30" opacity=".18"/><circle cx="190" cy="40" r="26" opacity=".08"/></g>
+          <g font-family="Helvetica Neue, sans-serif" font-size="11" font-weight="700" fill="#1a1a1a"><text x="136" y="122">Centrum</text><text x="84" y="132">Jordaan</text><text x="203" y="144">Oost</text><text x="178" y="44" fill="#9a9a96">Noord</text><text x="40" y="170" fill="#9a9a96">West</text><text x="140" y="190" fill="#9a9a96">De Pijp</text></g></svg></div>
+        <div class="nb"><span class="on">Centrum</span><span class="on">Jordaan</span><span class="on">Oost</span><span>West</span><span>De Pijp</span><span>Noord</span><span>Zuid</span></div>
+        <div class="lab">A usual weekend spend</div>
+        <div class="seg"><span>Free</span><span>€</span><span class="on">€€</span><span>€€€</span></div>
+        <div class="tog"><span>Happy to take a train out of town</span><i></i></div></div>
+      <div class="bottom"><a class="btn or">Show me my taste</a></div>
+    </div></div><div class="cap"><b>6 · Where &amp; spend</b> · neighbourhood, price and day trips. All three are soft weights, never filters.</div></div>
+
+    <!-- 7 -->
+    <div class="art"><div class="phone"><div class="scr rev">
+      <div class="statusbar light"><span>9:41</span><div class="isl"></div><span>●●●</span></div>
+      <div class="tcard"><div class="k">Your weekend taste</div><h2>Slow mornings,<br>late nights.</h2>
+        <div class="bars"><div><span>Art</span><i style="width:150px"></i></div><div><span>Live music</span><i style="width:118px"></i></div><div><span>Eating out</span><i style="width:96px"></i></div><div><span>Markets</span><i class="lo" style="width:62px"></i></div><div><span>Clubs</span><i class="lo" style="width:22px"></i></div></div>
+        <div class="lines">With your partner, sometimes the kids. Rain moves you indoors. Centrum and Oost, €€.</div><div class="wm2">WKNDR.</div></div>
+      <div class="save"><b>Keep this taste.</b><p>Sign in and it follows you to any phone, sharpens every week, and tunes your Friday email.</p>
+        <div class="field"><div>you@example.com</div><a>Send link</a></div></div>
+      <div class="go"><span>Later</span><b>See your weekend →</b></div>
+    </div></div><div class="cap"><b>7 · The reveal</b> · a card worth screenshotting, built in the og poster's style so it can be shared. Signing in is offered here, at the peak of the flow, and can be skipped.</div></div>
+
+  </div>
+</section>
+
+<section class="sec">
+  <div class="sec-h"><span class="n">+</span><h2>After onboarding: the system shapes itself, in view</h2></div>
+  <p class="why">Taste shouldn't be invisible. Two surfaces let people see what WKNDR has learned and correct it: a reason on every card, and a profile you can adjust. Every correction is a stronger signal than a swipe.</p>
+  <div class="row">
+    <div class="art"><div class="phone"><div class="scr deckbg">
+      <div class="statusbar light"><span>9:41</span><div class="isl"></div><span>●●●</span></div>
+      <div class="stack"><div class="c b1" style="background-image:url(img/maker.jpg)"></div>
+        <div class="c" style="background-image:url(img/ligconcert.jpg)"><div class="sh"></div><span class="pill">94% you</span><div class="tt" style="bottom:190px"><h3>Lie down for a concert</h3><p>Maritime Museum · Sat &amp; Sun</p></div>
+          <div class="whycard"><b>Why this is first</b>You like seated live music, and Saturday is cold. You saved Bimhuis last month.<div class="x"><span>More like this</span><span>Less of this</span><span>Not the reason</span></div></div></div></div>
+    </div></div><div class="cap"><b>8 · Why this card</b> · tap "94% you" to see the reason. The three buttons write straight to taste.</div></div>
+
+    <div class="art"><div class="phone"><div class="scr prof">
+      <div class="statusbar"><span>9:41</span><div class="isl"></div><span>●●●</span></div>
+      <div class="pad"><div class="eyebrow">Account · Taste</div><h1>What WKNDR knows about you</h1><p class="sub">From 212 swipes, 9 saves and 4 "went"s. Drag to correct it.</p>
+        <div class="dial"><div class="top">Energy<span>you set this</span></div><div class="slider"><b style="width:38%"></b><u style="left:38%"></u></div><div class="ends"><span>Quiet</span><span>Loud</span></div></div>
+        <div class="dial"><div class="top">Daytime ↔ Night<span>learned</span></div><div class="slider"><b style="width:62%"></b><u style="left:62%"></u></div><div class="ends"><span>Mornings</span><span>Late</span></div></div>
+        <div class="dial"><div class="top">Rain tolerance<span>learned</span></div><div class="slider"><b style="width:30%"></b><u style="left:30%"></u></div><div class="ends"><span>Stay in</span><span>Go anyway</span></div></div>
+        <div class="dial"><div class="top">How far<span>you set this</span></div><div class="slider"><b style="width:70%"></b><u style="left:70%"></u></div><div class="ends"><span>My area</span><span>Day trips</span></div></div>
+        <div class="src"><b>Never shown:</b> clubs (you passed 14 of 15). <u>Bring back</u></div>
+      </div>
+    </div></div><div class="cap"><b>9 · Your taste</b> · in the Account sheet. It shows what was learned and what you set, and it's editable. It makes the account worth having.</div></div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="sec-h"><span class="n">⚙</span><h2>What it needs underneath</h2></div>
+  <div class="notes">
+    <div class="note"><b>The taste model sees three things today</b><code>taste.ts tokensFor</code> reads category, outdoor and weather fit, nothing else. That's why Tune WKNDR's archetypes only ask about categories. Steps 2, 3, 5 and 6 each need a new token.</div>
+    <div class="note"><b>New tokens</b><ul><li><code>with:</code> solo / partner / friends / kids</li><li><code>energy:</code> calm / loud, inferred once per pick by the judge</li><li><code>time:</code> day / night, from the <code>when</code> field</li><li><code>price:</code> free / € / €€ / €€€</li><li><code>area:</code> one of 7 neighbourhoods</li><li><code>rain:</code> a weight on the weather term for each user</li></ul></div>
+    <div class="note"><b>Build order</b><ol style="margin:0;padding-left:18px"><li>Make Calibrate (steps 1, 4 and 7) the first-run screen, using the tokens it already reads</li><li>Add the pairs and the rain question</li><li>Have the judge tag each pick with energy and time, then add steps 2 and 6</li><li>Profile and "why this card" last</li></ol></div>
+    <div class="note"><b>Keeps the law</b>Everything still writes only to the person's own taste profile, never to the deck (<code>curation-surfaces.md §2</code>). Signed out, it all stays on the device, as now.</div>
+  </div>
+</section>
+</body></html>

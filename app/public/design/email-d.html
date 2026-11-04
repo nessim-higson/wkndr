@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WKNDR · D · The Forecast Plan</title>
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=clash-display@600,700&display=swap">
+<style>
+  body { margin: 0; background: #dfe5e8; font: 15px/1.5 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #14202a; -webkit-font-smoothing: antialiased; }
+  .w { max-width: 600px; margin: 0 auto; background: #f4f6f6; }
+  a { color: inherit; text-decoration: none; }
+  .m { font-family: ui-monospace, 'SF Mono', Menlo, monospace; }
+  .head { padding: 26px 24px 24px; background: linear-gradient(180deg, #2c3d4a, #566e7d); color: #f4f6f6; }
+  .wm { font: 700 18px/1 'Clash Display', sans-serif; letter-spacing: .02em; } .wm b { color: #ff4d1f; }
+  .head h1 { font: 600 44px/.98 'Clash Display', sans-serif; letter-spacing: -.01em; margin: 26px 0 8px; }
+  .head p { margin: 0; color: #c9d3d9; font-size: 15px; }
+  /* the hourly strip */
+  .day { padding: 22px 24px 6px; }
+  .day h2 { font: 600 24px/1 'Clash Display', sans-serif; margin: 0 0 4px; display: flex; justify-content: space-between; align-items: baseline; }
+  .day h2 span { font: 400 13px/1 'Helvetica Neue', sans-serif; color: #566e7d; }
+  .strip { display: flex; margin: 14px 0 6px; border-radius: 12px; overflow: hidden; height: 36px; }
+  .strip div { flex: 1; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #14202a; }
+  .strip .g { background: #c8d2d8; } .strip .g2 { background: #aebcc5; } .strip .n { background: #2c3d4a; color: #c9d3d9; } .strip .r { background: #7d97a8; color: #fff; }
+  .ticks { display: flex; font-size: 10px; color: #7d8f9a; } .ticks span { flex: 1; }
+  /* the plan */
+  .slot { display: flex; gap: 14px; padding: 14px 24px; align-items: stretch; }
+  .slot .t { flex: none; width: 52px; font: 600 15px/1.2 'Clash Display', sans-serif; padding-top: 3px; }
+  .slot .t small { display: block; font: 400 11px/1.3 'Helvetica Neue', sans-serif; color: #7d8f9a; margin-top: 2px; }
+  .card { flex: 1; display: flex; gap: 12px; background: #fff; border-radius: 16px; padding: 10px; box-shadow: 0 1px 0 #d6dde1; }
+  .card .th { flex: none; width: 76px; height: 76px; border-radius: 10px; background: center/cover; }
+  .card h4 { font: 700 15px/1.25 'Helvetica Neue', sans-serif; margin: 2px 0 3px; }
+  .card p { margin: 0; font-size: 13px; color: #44545f; }
+  .fit { font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #ff4d1f; }
+  .sun { margin: 4px 24px 4px 90px; font-size: 12px; color: #a55a1a; display: flex; align-items: center; gap: 8px; }
+  .sun::before { content: ''; flex: none; width: 10px; height: 10px; border-radius: 50%; background: #f0a04b; }
+  .sun::after { content: ''; flex: 1; height: 1px; background: #f0c896; }
+  /* plan b */
+  .ab { margin: 6px 12px 0; border-radius: 20px; overflow: hidden; background: #fff; box-shadow: 0 1px 0 #d6dde1; }
+  .ab .q { padding: 16px 18px 6px; font: 600 20px/1.15 'Clash Display', sans-serif; }
+  .ab .q span { display: block; font: 400 13px/1.4 'Helvetica Neue', sans-serif; color: #566e7d; margin-top: 4px; }
+  .ab .cols { display: flex; }
+  .ab .col { flex: 1; padding: 12px 18px 18px; }
+  .ab .col + .col { border-left: 1px solid #e6ebee; }
+  .ab .lbl { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 8px; }
+  .ab .col .img { aspect-ratio: 4/3; border-radius: 12px; background: center/cover; margin-bottom: 8px; }
+  .ab .col h4 { margin: 0; font-size: 15px; } .ab .col p { margin: 2px 0 0; font-size: 13px; color: #566e7d; }
+  .push { margin: 22px 12px 0; padding: 16px 18px; border-radius: 16px; border: 1px dashed #7d97a8; font-size: 14px; display: flex; gap: 12px; align-items: center; }
+  .push b { display: block; }
+  .push a { flex: none; background: #14202a; color: #fff; padding: 11px 14px; border-radius: 99px; font-weight: 700; font-size: 13px; }
+  .cta { display: block; margin: 22px 12px 0; text-align: center; background: #ff4d1f; color: #fff; font: 600 18px/1 'Clash Display', sans-serif; padding: 20px; border-radius: 99px; }
+  .foot { padding: 26px 24px 34px; font-size: 12px; color: #7d8f9a; text-align: center; line-height: 1.6; }
+  .src { font-size: 11px; color: #7d8f9a; text-align: center; padding-top: 14px; }
+</style></head>
+<body><div class="w">
+  <div class="head"><div class="wm">WKNDR<b>.</b></div>
+    <h1>The plan for<br>a grey weekend.</h1>
+    <p>Dry and cold Saturday, so we've put you outside while it's light and indoors after. Sunday has a Plan B.</p></div>
+
+  <div class="day"><h2>Saturday <span>7° · 1° tonight · dry</span></h2>
+    <div class="strip"><div class="g">6°</div><div class="g">7°</div><div class="g2">7°</div><div class="g2">6°</div><div class="n">4°</div><div class="n">2°</div><div class="n">1°</div></div>
+    <div class="ticks m"><span>10</span><span>12</span><span>14</span><span>16</span><span>18</span><span>20</span><span>22</span></div></div>
+
+  <div class="slot"><div class="t">10:00<small>Morning</small></div><a class="card" href="#"><div class="th" style="background-image:url(img/kusama.jpg)"></div><div><div class="fit">Indoors, beat the queue</div><h4>Yayoi Kusama, Stedelijk</h4><p>First slot. Mirror rooms before the crowds.</p></div></a></div>
+  <div class="slot"><div class="t">14:30<small>Last light</small></div><a class="card" href="#"><div class="th" style="background-image:url(img/rink.jpg)"></div><div><div class="fit">Best while it's dry</div><h4>Skate on Museumplein</h4><p>Next door to the Stedelijk. The ice is at its best before dark.</p></div></a></div>
+  <div class="sun m">Sunset 17:00</div>
+  <div class="slot"><div class="t">19:00<small>Till 02:00</small></div><a class="card" href="#"><div class="th" style="background-image:url(img/ligconcert.jpg)"></div><div><div class="fit">Museumnacht</div><h4>One ticket, every museum open late</h4><p>Start at the Maritime Museum's lying-down concert, then go wherever.</p></div></a></div>
+
+  <div class="day"><h2>Sunday <span>9° · drizzle from 14:00</span></h2>
+    <div class="strip"><div class="g">7°</div><div class="g">8°</div><div class="r">9°</div><div class="r">9°</div><div class="r">8°</div><div class="n">7°</div><div class="n">6°</div></div>
+    <div class="ticks m"><span>10</span><span>12</span><span>14</span><span>16</span><span>18</span><span>20</span><span>22</span></div></div>
+
+  <div class="ab"><div class="q">Sunday afternoon: it depends.<span>Rain chance is 21%. We'll check again Saturday night and tell you which one.</span></div>
+    <div class="cols">
+      <a class="col" href="#"><div class="lbl" style="color:#a55a1a">If it holds</div><div class="img" style="background-image:url(img/maker.jpg)"></div><h4>The Maker Market</h4><p>De Hallen, West. Partly covered.</p></a>
+      <a class="col" href="#"><div class="lbl" style="color:#2c3d4a">If it rains</div><div class="img" style="background-image:url(img/sauna.jpg)"></div><h4>Sauna Deco</h4><p>Jordaan. Stay as long as it pours.</p></a>
+    </div></div>
+
+  <div class="push"><div><b>Want the Sunday call on your phone?</b>One notification, Saturday 21:00, only if the plan changes.</div><a href="#">Turn on</a></div>
+
+  <a class="cta" href="#">Open the full plan →</a>
+  <div class="src m">Forecast: KNMI · Buienradar. Picks: I amsterdam · Little Black Book · Eye</div>
+  <div class="foot">The weekend, planned around the weather. Fridays, 07:30.<br><a href="#"><u>Unsubscribe</u></a> · <a href="#"><u>Tune what you get</u></a></div>
+</div></body></html>
