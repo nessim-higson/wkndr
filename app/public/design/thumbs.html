@@ -18,6 +18,13 @@
   .rank > div::before { counter-increment: r; content: counter(r); position: absolute; left: 18px; top: 14px; font: 600 22px/1 var(--display); color: var(--accent); }
   .rank b { color: var(--ink); } .rank .n { font: 600 12px/1 var(--mono); color: var(--ink-3); float: right; }
   code { font-size: 12px; }
+  .tw { overflow-x: auto; border-radius: 18px; }
+  @media (max-width: 720px) {
+    .cmp th:last-child, .cmp td:last-child { display: none; }
+    .cmp th, .cmp td { padding: 10px 8px; } .cmp td.t { width: auto; } .cmp td.t b { font-size: 13px; }
+    .th, .th.pst img { width: 64px !important; height: 64px !important; } .th.pst img { width: 64px; height: 64px; }
+    .rank > div { padding-left: 46px; } .rank .n { float: none; display: block; margin-bottom: 4px; }
+  }
 </style></head>
 <body class="board">
 <header class="bh">
@@ -29,7 +36,7 @@
 <section class="sec">
   <div class="sec-h"><span class="n">01</span><h2>Today vs. the fix, live</h2></div>
   <p class="why">These are real feed images, loading live. <b>Today</b> is exactly what the list, saves panel, Later shelf, itinerary and share sheet show. <b>Fixed</b> is cut from the original at thumbnail size, with the stored focal point, as WebP. <b>Posters</b> show the whole flyer on a blurred copy of itself, so the text isn't cut off. Bytes: 1273 KB → 61 KB for these 11.</p>
-  <table class="cmp"><thead><tr><th>Card</th><th>Today</th><th>Fixed · focal, 2×, webp</th><th>Poster mode</th><th>Original</th></tr></thead>
+  <div class="tw"><table class="cmp"><thead><tr><th>Card</th><th>Today</th><th>Fixed · focal, 2×, webp</th><th>Poster mode</th><th>Original</th></tr></thead>
   <tbody>
 <tr><td class="t"><b>Diwali Festival in Amstelveen</b><span>out · poster / flyer</span></td>
 <td><div class="th" style="background-image:url(&quot;https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a976238fc761f1e3d9cfafd%2Fcarlydonaldsonphotography-701_79822180.webp&amp;w=800&amp;h=1200&amp;fit=cover&amp;a=focal&amp;fpx=0.500&amp;fpy=0.625&amp;output=jpg&amp;default=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6a976238fc761f1e3d9cfafd%2Fcarlydonaldsonphotography-701_79822180.webp&quot;)"></div><div class="kb bad">202 KB</div></td>
@@ -86,7 +93,7 @@
 <td><img class="th" src="https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6ac38e9a17c93d0b8b31d748%2FMatisse_Hero.webp&amp;w=168&amp;h=168&amp;fit=cover&amp;a=focal&amp;fpx=0.5&amp;fpy=0.5&amp;output=webp&amp;q=75" width="84" height="84" loading="lazy" alt=""><div class="kb">2 KB</div></td>
 <td><div class="kb dim">not a poster</div></td>
 <td><a href="https://app.thefeedfactory.nl/api/assets/6ac38e9a17c93d0b8b31d748/Matisse_Hero.webp" target="_blank"><img class="orig" src="https://images.weserv.nl/?url=https%3A%2F%2Fapp.thefeedfactory.nl%2Fapi%2Fassets%2F6ac38e9a17c93d0b8b31d748%2FMatisse_Hero.webp&amp;w=360&amp;a=focal&amp;fpx=0.5&amp;fpy=0.5&amp;output=webp&amp;q=75" loading="lazy" alt=""></a></td></tr>
-  </tbody></table>
+  </tbody></table></div>
 </section>
 
 <section class="sec">

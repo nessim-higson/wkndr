@@ -83,3 +83,29 @@ body.board { background: #e9e6de; color: var(--ink); font: 15px/1.5 var(--body);
 .ic .k { font: 11px/1 var(--mono); color: var(--accent); text-transform: uppercase; letter-spacing: .08em; }
 .ic h3 { font: 600 28px/1.05 var(--display); margin: 12px 0 8px; }
 .ic p { margin: 0; color: var(--ink-3); font-size: 14px; }
+
+/* ---- phone reading: nothing may be wider than the screen, so the browser never zooms out ---- */
+html, body.board { overflow-x: clip; }
+.cards { grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); }
+.notes { grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); }
+.swipe-hint { display: none; }
+@media (max-width: 720px) {
+  .bh { padding: 28px 18px 12px; }
+  .bh h1 { font-size: 40px; margin: 12px 0; }
+  .bh p.lede { font-size: 16px; }
+  .sec { padding: 24px 18px; }
+  .sec-h h2 { font-size: 26px; }
+  .sec p.why { font-size: 15px; }
+  /* one artboard per swipe, edge to edge */
+  .row { gap: 14px; margin: 0 -18px; padding: 4px 18px 16px; scroll-snap-type: x mandatory; scroll-padding: 0 18px; }
+  .art { width: calc(100vw - 36px); }
+  .art .cap { max-width: none; }
+  /* the phone loses its bezel and becomes the screen itself, at true proportion */
+  .phone { width: calc(100vw - 36px); height: calc((100vw - 36px) * 2.05); padding: 0; border-radius: 30px; background: none; }
+  .phone > .scr { border-radius: 30px; box-shadow: 0 0 0 1px rgba(0,0,0,.08); }
+  .statusbar .isl { display: none; }
+  /* the desktop window is the same email again: skip it on a phone */
+  .art:has(.mailwin) { display: none; }
+  .inbox { width: 100%; }
+  .swipe-hint { display: block; font: 11px/1 var(--mono); text-transform: uppercase; letter-spacing: .08em; color: var(--accent); margin: 0 0 10px; }
+}
