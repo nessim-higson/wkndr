@@ -147,7 +147,7 @@ export function parseIamsGuide(html: string): GuideItem[] {
 // are <li>s. Images are WordPress uploads (a -700x525 suffix names the thumbnail; strip it for the
 // original). Links out are the venue/ticket links; LBB's own affiliate links are last resort.
 const LBB_SKIP = /^(tip:|train city|these |the firm$|amsterdam tips|to do$|accommodation|city trips|travel|read more|what else)/i
-export function parseLbbWeekendTips(html: string): GuideItem[] {
+export function parseLbbWeekendTips(html: string, now = new Date()): GuideItem[] {
   const a = html.search(/<h2[^>]*>\s*(?:<[^>]+>\s*)*AMSTERDAM WEEKEND TIPS/i)
   const b = html.search(/<h2[^>]*>\s*(?:<[^>]+>\s*)*What else is there/i)
   const doc = html.slice(a < 0 ? 0 : a, b < 0 ? undefined : b)
@@ -159,7 +159,7 @@ export function parseLbbWeekendTips(html: string): GuideItem[] {
     const ext = hrefs.find((u) => !/yourlittleblackbook\.me/i.test(u) && !/instagram\.com/i.test(u)) ?? hrefs.find((u) => !/yourlittleblackbook\.me/i.test(u)) ?? hrefs[0]
     const img = block.match(/(?:data-src|src)="(https:\/\/www\.yourlittleblackbook\.me\/wp-content\/uploads\/[^"]+\.(?:jpe?g|png|webp))"/i)
     const body = text(block)
-    const { when, freshness } = whenFromText(body)
+    const { when, freshness } = whenFromText(body, now)
     out.push({ title: title.trim(), section: sec, text: body.slice(0, 420), link: ext ?? LBB_TIPS_URL, image: img ? img[1].replace(/-\d{2,4}x\d{2,4}(?=\.\w+$)/, '') : undefined, category: cat, kid: isKid, when, freshness })
   }
   heads.forEach((m, i) => {

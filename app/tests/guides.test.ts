@@ -38,7 +38,7 @@ describe("I amsterdam's weekend guide", () => {
 })
 
 describe("LBB's weekendtips", () => {
-  const items = parseLbbWeekendTips(lbb)
+  const items = parseLbbWeekendTips(lbb, NOW)
   const by = (rx: RegExp) => items.find((i) => rx.test(i.title))
   it('the opening exhibition is an item, with its run read off the From:/to line', () => {
     const k = by(/Yayoi Kusama/)
