@@ -1,6 +1,6 @@
 {
- "generatedAt": "2026-11-05T13:23:57.455Z",
- "count": 39,
+ "generatedAt": "2026-11-06T13:07:01.100Z",
+ "count": 43,
  "inbox": [
   {
    "id": "web-ra-2548256",
@@ -15,7 +15,7 @@
    "price": "",
    "image": "https://images.ra.co/64026b0491ab538a106e08c2a1b505037feb5bf9.jpg",
    "blurb": "Loukeman, Sandor Dayala, Torus, Macrosoft and more at Garage Noord.",
-   "why": "82 going on RA",
+   "why": "90 going on RA",
    "source": "Resident Advisor",
    "link": "https://ra.co/events/2548256",
    "weatherFit": [
@@ -25,27 +25,27 @@
     "COLD_WET",
     "VOLATILE"
    ],
-   "popularity": 82,
+   "popularity": 90,
    "firstSeen": "2026-11-02",
-   "inboxScore": 8.8,
-   "scoreWhy": "seen 3d ago · 82 going · on this weekend · taste: noord"
+   "inboxScore": 8.5,
+   "scoreWhy": "seen 4d ago · 90 going · on this weekend · taste: noord"
   },
   {
-   "id": "web-ra-2539608",
-   "title": "Benjamin Berg curates",
-   "venue": "Shelter Amsterdam",
-   "area": "",
-   "when": "Fri 6 Nov · 23:00",
+   "id": "web-iams-dome-concerts-presents-einaudi-in-a-time-lapse",
+   "title": "Dome Concerts presents: EINAUDI 'In a Time Lapse'",
+   "venue": "Artis Planetarium",
+   "area": "Plantage Kerklaan 38-40",
+   "when": "Fri 6 Nov · 18:45",
    "category": "live",
    "freshness": "weekend",
    "outdoor": false,
    "kid": false,
-   "price": "",
-   "image": "https://images.ra.co/2723c081054e4e36c5ab4d17d0da9abcdc9a7236.jpg",
-   "blurb": "Benjamin Berg, Katia Curie, XDB, Ranerro at Shelter Amsterdam.",
-   "why": "373 going on RA",
-   "source": "Resident Advisor",
-   "link": "https://ra.co/events/2539608",
+   "price": "ticketed",
+   "image": "https://app.thefeedfactory.nl/api/assets/6a69ac36f698026fb19a4f48/ROBVANDAMFOTO.NL_-1625-cropped.webp",
+   "blurb": "Stars drift silently overhead Experience the music of Ludovico Einaudi as never before. Einaudi – In a Time Lapse is far more than a concert; it is an immersive audiovisual journey where live music…",
+   "why": "On I amsterdam",
+   "source": "I amsterdam",
+   "link": "https://www.iamsterdam.com/en/whats-on/calendar/concerts-and-music/concerts/dome-concerts-presents-einaudi-in-a-time-lapse",
    "weatherFit": [
     "HOT",
     "WARM",
@@ -53,10 +53,13 @@
     "COLD_WET",
     "VOLATILE"
    ],
-   "popularity": 373,
-   "firstSeen": "2026-11-02",
-   "inboxScore": 8.6,
-   "scoreWhy": "seen 3d ago · 373 going · on this weekend"
+   "verify": false,
+   "_gallery": [
+    "https://app.thefeedfactory.nl/api/assets/6a69ac50f698026fb19a4f4b/ROBVANDAMFOTO.NL_-1652-cropped.webp"
+   ],
+   "firstSeen": "2026-11-06",
+   "inboxScore": 8.4,
+   "scoreWhy": "seen today · on this weekend · taste: concerts artis"
   },
   {
    "id": "web-ra-2560040",
@@ -71,7 +74,7 @@
    "price": "",
    "image": "https://images.ra.co/1c8d52af0282e2da012f5364fe60f49e12c0049a.png",
    "blurb": "Stupid Crew, Not Yet (2), Pedro da Mata, AAlva and more at De Sering.",
-   "why": "34 going on RA",
+   "why": "41 going on RA",
    "source": "Resident Advisor",
    "link": "https://ra.co/events/2560040",
    "weatherFit": [
@@ -81,10 +84,38 @@
     "COLD_WET",
     "VOLATILE"
    ],
-   "popularity": 34,
+   "popularity": 41,
    "firstSeen": "2026-11-05",
-   "inboxScore": 8.5,
-   "scoreWhy": "seen today · 34 going · on this weekend"
+   "inboxScore": 8.3,
+   "scoreWhy": "seen 1d ago · 41 going · on this weekend"
+  },
+  {
+   "id": "web-ra-2539608",
+   "title": "Benjamin Berg curates",
+   "venue": "Shelter Amsterdam",
+   "area": "",
+   "when": "Fri 6 Nov · 23:00",
+   "category": "live",
+   "freshness": "weekend",
+   "outdoor": false,
+   "kid": false,
+   "price": "",
+   "image": "https://images.ra.co/2723c081054e4e36c5ab4d17d0da9abcdc9a7236.jpg",
+   "blurb": "Benjamin Berg, Katia Curie, XDB, Ranerro at Shelter Amsterdam.",
+   "why": "390 going on RA",
+   "source": "Resident Advisor",
+   "link": "https://ra.co/events/2539608",
+   "weatherFit": [
+    "HOT",
+    "WARM",
+    "COOL",
+    "COLD_WET",
+    "VOLATILE"
+   ],
+   "popularity": 390,
+   "firstSeen": "2026-11-02",
+   "inboxScore": 8.3,
+   "scoreWhy": "seen 4d ago · 390 going · on this weekend"
   },
   {
    "id": "web-ra-2551396",
@@ -99,7 +130,7 @@
    "price": "",
    "image": "https://images.ra.co/b5814b424bd0f54e4093e68767469302fe31743c.jpg",
    "blurb": "Abstract Division, Alada, AMORAL, Amotik and more at TILLATEC.",
-   "why": "192 going on RA",
+   "why": "206 going on RA",
    "source": "Resident Advisor",
    "link": "https://ra.co/events/2551396",
    "weatherFit": [
@@ -109,27 +140,27 @@
     "COLD_WET",
     "VOLATILE"
    ],
-   "popularity": 192,
+   "popularity": 206,
    "firstSeen": "2026-11-02",
-   "inboxScore": 8.4,
-   "scoreWhy": "seen 3d ago · 192 going · on this weekend"
+   "inboxScore": 8.1,
+   "scoreWhy": "seen 4d ago · 206 going · on this weekend"
   },
   {
-   "id": "web-ra-2564426",
-   "title": "Micky Hurts: Fire Burning Release party",
-   "venue": "Yellow House",
+   "id": "web-ra-2578494",
+   "title": "EASTERN EUROPEAN QUEER NIGHT",
+   "venue": "TBA - Club Annie",
    "area": "",
-   "when": "Fri 6 Nov · 21:00",
+   "when": "Fri 6 Nov · 23:59",
    "category": "live",
    "freshness": "weekend",
    "outdoor": false,
    "kid": false,
    "price": "",
-   "image": "https://images.ra.co/797fe28c4cf2e2665f21c7b0a06800b7db31ee10.jpg",
-   "blurb": "Micky Hurts, Fabian Haneke at Yellow House.",
-   "why": "221 going on RA",
+   "image": "https://images.ra.co/d72f4d1b2941dd68b9765cfe24f3b9670518fd96.png",
+   "blurb": "Club night at TBA - Club Annie.",
+   "why": "On Resident Advisor",
    "source": "Resident Advisor",
-   "link": "https://ra.co/events/2564426",
+   "link": "https://ra.co/events/2578494",
    "weatherFit": [
     "HOT",
     "WARM",
@@ -137,10 +168,42 @@
     "COLD_WET",
     "VOLATILE"
    ],
-   "popularity": 221,
+   "popularity": 1,
    "firstSeen": "2026-11-02",
-   "inboxScore": 8.4,
-   "scoreWhy": "seen 3d ago · 221 going · on this weekend"
+   "inboxScore": 7.9,
+   "scoreWhy": "seen 4d ago · 1 going · on this weekend · taste: queer night club"
+  },
+  {
+   "id": "web-iams-guus-janssen-en-huib-emmer-concert-met-gratis-lunch-vooraf",
+   "title": "Guus Janssen en Huib Emmer - concert met gratis lunch vooraf",
+   "venue": "Orgelpark",
+   "area": "Gerard Brandtstraat 26",
+   "when": "Fri 6 Nov · 13:13",
+   "category": "live",
+   "freshness": "weekend",
+   "outdoor": false,
+   "kid": false,
+   "price": "ticketed",
+   "image": "https://app.thefeedfactory.nl/api/assets/6ad8819d19db926b7741db8a/Grove_Korrel_2.webp",
+   "blurb": "Performers Duo de Grove Korrel: Huib Emmer, electronics Guus Janssen, keyboard instruments Programme Works by Huib Emmer and Guus Janssen Prior to the concert, you are welcome to join us for a free…",
+   "why": "On I amsterdam",
+   "source": "I amsterdam",
+   "link": "https://www.iamsterdam.com/en/whats-on/calendar/concerts-and-music/concerts/guus-janssen-en-huib-emmer-concert-met-gratis-lunch-vooraf",
+   "weatherFit": [
+    "HOT",
+    "WARM",
+    "COOL",
+    "COLD_WET",
+    "VOLATILE"
+   ],
+   "verify": false,
+   "_gallery": [
+    "https://app.thefeedfactory.nl/api/assets/6a707dd367daef0986397052/IMG_3075.webp"
+   ],
+   "_site": "https://www.orgelpark.nl/en/agenda/guus-janssen-en-huib-emmer-",
+   "firstSeen": "2026-11-06",
+   "inboxScore": 7.7,
+   "scoreWhy": "seen today · on this weekend · taste: concert"
   },
   {
    "id": "web-ra-2564225",
@@ -166,8 +229,8 @@
    ],
    "popularity": 12,
    "firstSeen": "2026-11-02",
-   "inboxScore": 7.9,
-   "scoreWhy": "seen 3d ago · 12 going · on this weekend · taste: club"
+   "inboxScore": 7.6,
+   "scoreWhy": "seen 4d ago · 12 going · on this weekend · taste: club"
   },
   {
    "id": "web-ra-2545771",
@@ -194,8 +257,8 @@
    ],
    "popularity": 6,
    "firstSeen": "2026-11-02",
-   "inboxScore": 7.6,
-   "scoreWhy": "seen 3d ago · 6 going · on this weekend · taste: club"
+   "inboxScore": 7.3,
+   "scoreWhy": "seen 4d ago · 6 going · on this weekend · taste: club"
   },
   {
    "id": "web-ra-2577649",
@@ -222,8 +285,120 @@
    ],
    "popularity": 2,
    "firstSeen": "2026-11-05",
-   "inboxScore": 7.5,
-   "scoreWhy": "seen today · 2 going · on this weekend"
+   "inboxScore": 7.2,
+   "scoreWhy": "seen 1d ago · 2 going · on this weekend"
+  },
+  {
+   "id": "web-ra-2490662",
+   "title": "Garage Nation",
+   "venue": "Melkweg",
+   "area": "",
+   "when": "Fri 6 Nov · 23:30",
+   "category": "live",
+   "freshness": "weekend",
+   "outdoor": false,
+   "kid": false,
+   "price": "",
+   "image": "https://images.ra.co/b28b425e03483aff956d1e4a8311d929b1a43307.jpg",
+   "blurb": "Artful Dodger, DJ Cartier, MC Kie at Melkweg.",
+   "why": "On Resident Advisor",
+   "source": "Resident Advisor",
+   "link": "https://ra.co/events/2490662",
+   "weatherFit": [
+    "HOT",
+    "WARM",
+    "COOL",
+    "COLD_WET",
+    "VOLATILE"
+   ],
+   "popularity": 19,
+   "firstSeen": "2026-11-02",
+   "inboxScore": 7.1,
+   "scoreWhy": "seen 4d ago · 19 going · on this weekend"
+  },
+  {
+   "id": "web-ra-2490669",
+   "title": "Skeler Nightfall World Tour",
+   "venue": "Melkweg",
+   "area": "",
+   "when": "Fri 6 Nov · 19:30",
+   "category": "live",
+   "freshness": "weekend",
+   "outdoor": false,
+   "kid": false,
+   "price": "",
+   "image": "https://images.ra.co/3bce53baa479d0ba54329bf8cca282b711574ce6.jpg",
+   "blurb": "Club night at Melkweg.",
+   "why": "On Resident Advisor",
+   "source": "Resident Advisor",
+   "link": "https://ra.co/events/2490669",
+   "weatherFit": [
+    "HOT",
+    "WARM",
+    "COOL",
+    "COLD_WET",
+    "VOLATILE"
+   ],
+   "popularity": 4,
+   "firstSeen": "2026-11-02",
+   "inboxScore": 7.1,
+   "scoreWhy": "seen 4d ago · 4 going · on this weekend · taste: world"
+  },
+  {
+   "id": "web-iams-east-of-the-sun",
+   "title": "East of the Sun",
+   "venue": "Muziekgebouw aan 't IJ",
+   "area": "Piet Heinkade 1",
+   "when": "Fri 6 Nov · 14:00",
+   "category": "live",
+   "freshness": "weekend",
+   "outdoor": false,
+   "kid": false,
+   "price": "ticketed",
+   "image": "https://app.thefeedfactory.nl/api/assets/6a023f9f5ebafd251afe1fb9/aHR0cHM6Ly93d3cubXV6aWVrZ2Vib3V3Lm5sLy9jbXNfZmlsZXMvc3lzdGVtL2ltYWdlcy9pbWc4NDA5MV9vcmlnLkpQRw.webp",
+   "blurb": "Cello Octet Amsterdam as a bridge between musical cultures The Cello Octet Amsterdam is central to a programme that connects Western classical music with Indian and Iranian traditions.",
+   "why": "On I amsterdam",
+   "source": "I amsterdam",
+   "link": "https://www.iamsterdam.com/en/whats-on/calendar/concerts-and-music/concerts/east-of-the-sun",
+   "weatherFit": [
+    "HOT",
+    "WARM",
+    "COOL",
+    "COLD_WET",
+    "VOLATILE"
+   ],
+   "verify": false,
+   "firstSeen": "2026-11-06",
+   "inboxScore": 7,
+   "scoreWhy": "seen today · on this weekend"
+  },
+  {
+   "id": "web-iams-three-winners-cello-biennale-amsterdam",
+   "title": "Three winners - Cello Biënnale Amsterdam",
+   "venue": "Muziekgebouw aan 't IJ",
+   "area": "Piet Heinkade 1",
+   "when": "Fri 6 Nov · 17:00",
+   "category": "live",
+   "freshness": "weekend",
+   "outdoor": false,
+   "kid": false,
+   "price": "ticketed",
+   "image": "https://app.thefeedfactory.nl/api/assets/6a023fa05ebafd251afe1fbe/aHR0cHM6Ly93d3cubXV6aWVrZ2Vib3V3Lm5sLy9jbXNfZmlsZXMvc3lzdGVtL2ltYWdlcy9pbWc4MzMwMl9vcmlnLkpQRw.webp",
+   "blurb": "New compositions by young cello talents Thomas Prechal and Ori Ron stood out during the final of the Nationaal Cello Concours 2024 by playing their own compositions.",
+   "why": "On I amsterdam",
+   "source": "I amsterdam",
+   "link": "https://www.iamsterdam.com/en/whats-on/calendar/concerts-and-music/concerts/three-winners-cello-biennale-amsterdam",
+   "weatherFit": [
+    "HOT",
+    "WARM",
+    "COOL",
+    "COLD_WET",
+    "VOLATILE"
+   ],
+   "verify": false,
+   "firstSeen": "2026-11-06",
+   "inboxScore": 7,
+   "scoreWhy": "seen today · on this weekend"
   },
   {
    "id": "web-ra-2576945",
@@ -249,8 +424,8 @@
     "VOLATILE"
    ],
    "firstSeen": "2026-11-04",
-   "inboxScore": 7.4,
-   "scoreWhy": "seen 1d ago · on this weekend · taste: night"
+   "inboxScore": 7,
+   "scoreWhy": "seen 2d ago · on this weekend · taste: night"
   },
   {
    "id": "web-iams-latin-nights",
@@ -278,25 +453,25 @@
    "verify": false,
    "_site": "https://www.extremos.nl/events/latin-nights/",
    "firstSeen": "2026-11-04",
-   "inboxScore": 7.4,
-   "scoreWhy": "seen 1d ago · on this weekend · taste: café"
+   "inboxScore": 7,
+   "scoreWhy": "seen 2d ago · on this weekend · taste: café"
   },
   {
-   "id": "web-ra-2490662",
-   "title": "Garage Nation",
-   "venue": "Melkweg",
+   "id": "web-ra-2551822",
+   "title": "GET TO IT X JANGALA",
+   "venue": "Skatecafe",
    "area": "",
-   "when": "Fri 6 Nov · 23:30",
+   "when": "Fri 6 Nov · 22:00",
    "category": "live",
    "freshness": "weekend",
    "outdoor": false,
    "kid": false,
    "price": "",
-   "image": "https://images.ra.co/b28b425e03483aff956d1e4a8311d929b1a43307.jpg",
-   "blurb": "Artful Dodger, DJ Cartier, MC Kie at Melkweg.",
+   "image": "https://images.ra.co/75e3c3a414c94eba098f5b8855499ead6bf82d35.jpg",
+   "blurb": "Becking, Chrissy, Liv (1), MC Stretch at Skatecafe.",
    "why": "On Resident Advisor",
    "source": "Resident Advisor",
-   "link": "https://ra.co/events/2490662",
+   "link": "https://ra.co/events/2551822",
    "weatherFit": [
     "HOT",
     "WARM",
@@ -304,38 +479,10 @@
     "COLD_WET",
     "VOLATILE"
    ],
-   "popularity": 19,
+   "popularity": 14,
    "firstSeen": "2026-11-02",
-   "inboxScore": 7.4,
-   "scoreWhy": "seen 3d ago · 19 going · on this weekend"
-  },
-  {
-   "id": "web-ra-2490669",
-   "title": "Skeler Nightfall World Tour",
-   "venue": "Melkweg",
-   "area": "",
-   "when": "Fri 6 Nov · 19:30",
-   "category": "live",
-   "freshness": "weekend",
-   "outdoor": false,
-   "kid": false,
-   "price": "",
-   "image": "https://images.ra.co/3bce53baa479d0ba54329bf8cca282b711574ce6.jpg",
-   "blurb": "Club night at Melkweg.",
-   "why": "On Resident Advisor",
-   "source": "Resident Advisor",
-   "link": "https://ra.co/events/2490669",
-   "weatherFit": [
-    "HOT",
-    "WARM",
-    "COOL",
-    "COLD_WET",
-    "VOLATILE"
-   ],
-   "popularity": 3,
-   "firstSeen": "2026-11-02",
-   "inboxScore": 7.4,
-   "scoreWhy": "seen 3d ago · 3 going · on this weekend · taste: world"
+   "inboxScore": 7,
+   "scoreWhy": "seen 4d ago · 14 going · on this weekend"
   },
   {
    "id": "web-iams-eastern-european-queer-night",
@@ -362,36 +509,8 @@
    ],
    "verify": false,
    "firstSeen": "2026-11-02",
-   "inboxScore": 7.3,
-   "scoreWhy": "seen 3d ago · on this weekend · taste: queer night"
-  },
-  {
-   "id": "web-ra-2551822",
-   "title": "GET TO IT X JANGALA",
-   "venue": "Skatecafe",
-   "area": "",
-   "when": "Fri 6 Nov · 22:00",
-   "category": "live",
-   "freshness": "weekend",
-   "outdoor": false,
-   "kid": false,
-   "price": "",
-   "image": "https://images.ra.co/75e3c3a414c94eba098f5b8855499ead6bf82d35.jpg",
-   "blurb": "Becking, Chrissy, Liv (1), MC Stretch at Skatecafe.",
-   "why": "On Resident Advisor",
-   "source": "Resident Advisor",
-   "link": "https://ra.co/events/2551822",
-   "weatherFit": [
-    "HOT",
-    "WARM",
-    "COOL",
-    "COLD_WET",
-    "VOLATILE"
-   ],
-   "popularity": 12,
-   "firstSeen": "2026-11-02",
-   "inboxScore": 7.2,
-   "scoreWhy": "seen 3d ago · 12 going · on this weekend"
+   "inboxScore": 7,
+   "scoreWhy": "seen 4d ago · on this weekend · taste: queer night"
   },
   {
    "id": "web-ra-2553288",
@@ -418,36 +537,8 @@
    ],
    "popularity": 2,
    "firstSeen": "2026-11-02",
-   "inboxScore": 7.2,
-   "scoreWhy": "seen 3d ago · 2 going · on this weekend · taste: club"
-  },
-  {
-   "id": "web-ra-2525454",
-   "title": "SYNTHETIC REALITY",
-   "venue": "OT301",
-   "area": "",
-   "when": "Fri 6 Nov · 21:00",
-   "category": "live",
-   "freshness": "weekend",
-   "outdoor": false,
-   "kid": false,
-   "price": "",
-   "image": "https://images.ra.co/bb787732eeaa3482c61a2c9aea6a83a496bd3d8b.jpg",
-   "blurb": "MAX DURANTE, Feryne, Feralia Planitia at OT301.",
-   "why": "On Resident Advisor",
-   "source": "Resident Advisor",
-   "link": "https://ra.co/events/2525454",
-   "weatherFit": [
-    "HOT",
-    "WARM",
-    "COOL",
-    "COLD_WET",
-    "VOLATILE"
-   ],
-   "popularity": 8,
-   "firstSeen": "2026-11-02",
-   "inboxScore": 7.1,
-   "scoreWhy": "seen 3d ago · 8 going · on this weekend"
+   "inboxScore": 6.9,
+   "scoreWhy": "seen 4d ago · 2 going · on this weekend · taste: club"
   },
   {
    "id": "web-ra-2572723",
@@ -472,10 +563,38 @@
     "COLD_WET",
     "VOLATILE"
    ],
-   "popularity": 7,
+   "popularity": 12,
    "firstSeen": "2026-11-02",
-   "inboxScore": 7,
-   "scoreWhy": "seen 3d ago · 7 going · on this weekend"
+   "inboxScore": 6.9,
+   "scoreWhy": "seen 4d ago · 12 going · on this weekend"
+  },
+  {
+   "id": "web-ra-2525454",
+   "title": "SYNTHETIC REALITY",
+   "venue": "OT301",
+   "area": "",
+   "when": "Fri 6 Nov · 21:00",
+   "category": "live",
+   "freshness": "weekend",
+   "outdoor": false,
+   "kid": false,
+   "price": "",
+   "image": "https://images.ra.co/bb787732eeaa3482c61a2c9aea6a83a496bd3d8b.jpg",
+   "blurb": "MAX DURANTE, Feryne, Feralia Planitia at OT301.",
+   "why": "On Resident Advisor",
+   "source": "Resident Advisor",
+   "link": "https://ra.co/events/2525454",
+   "weatherFit": [
+    "HOT",
+    "WARM",
+    "COOL",
+    "COLD_WET",
+    "VOLATILE"
+   ],
+   "popularity": 9,
+   "firstSeen": "2026-11-02",
+   "inboxScore": 6.8,
+   "scoreWhy": "seen 4d ago · 9 going · on this weekend"
   },
   {
    "id": "web-ra-2490656",
@@ -502,8 +621,8 @@
    ],
    "popularity": 5,
    "firstSeen": "2026-11-02",
-   "inboxScore": 6.9,
-   "scoreWhy": "seen 3d ago · 5 going · on this weekend"
+   "inboxScore": 6.6,
+   "scoreWhy": "seen 4d ago · 5 going · on this weekend"
   },
   {
    "id": "web-ra-2573467",
@@ -528,64 +647,10 @@
     "COLD_WET",
     "VOLATILE"
    ],
-   "popularity": 4,
+   "popularity": 5,
    "firstSeen": "2026-11-02",
-   "inboxScore": 6.8,
-   "scoreWhy": "seen 3d ago · 4 going · on this weekend"
-  },
-  {
-   "id": "web-ra-2576944",
-   "title": "thursti w/ unaniem & bibtiana",
-   "venue": "nachbar",
-   "area": "",
-   "when": "Thu 5 Nov · 22:00",
-   "category": "live",
-   "freshness": "weekend",
-   "outdoor": false,
-   "kid": false,
-   "price": "",
-   "image": "https://images.ra.co/d78cb4b9862c50545ddcf7549c59bf759a079439.jpg",
-   "blurb": "Bibtiana at nachbar.",
-   "why": "On Resident Advisor",
-   "source": "Resident Advisor",
-   "link": "https://ra.co/events/2576944",
-   "weatherFit": [
-    "HOT",
-    "WARM",
-    "COOL",
-    "COLD_WET",
-    "VOLATILE"
-   ],
-   "firstSeen": "2026-11-04",
-   "inboxScore": 6.7,
-   "scoreWhy": "seen 1d ago · on this weekend"
-  },
-  {
-   "id": "web-ra-2577072",
-   "title": "Zwarte Liefde x WestWeelde",
-   "venue": "WestWeelde",
-   "area": "",
-   "when": "Fri 6 Nov · 22:00",
-   "category": "live",
-   "freshness": "weekend",
-   "outdoor": false,
-   "kid": false,
-   "price": "",
-   "image": "https://images.ra.co/d32c74d61e30656d126847785d0b8b598903738a.png",
-   "blurb": "Club night at WestWeelde.",
-   "why": "On Resident Advisor",
-   "source": "Resident Advisor",
-   "link": "https://ra.co/events/2577072",
-   "weatherFit": [
-    "HOT",
-    "WARM",
-    "COOL",
-    "COLD_WET",
-    "VOLATILE"
-   ],
-   "firstSeen": "2026-11-04",
-   "inboxScore": 6.7,
-   "scoreWhy": "seen 1d ago · on this weekend"
+   "inboxScore": 6.6,
+   "scoreWhy": "seen 4d ago · 5 going · on this weekend"
   },
   {
    "id": "web-iams-het-gerestaureerde-topstuk-de-kruisafneming-ca-1530",
@@ -615,8 +680,8 @@
     "https://app.thefeedfactory.nl/api/assets/6a9814c0fc761f1e3d9d57e7/DSC00411.webp"
    ],
    "firstSeen": "2026-11-02",
-   "inboxScore": 6.7,
-   "scoreWhy": "seen 3d ago · on this weekend · taste: museum"
+   "inboxScore": 6.4,
+   "scoreWhy": "seen 4d ago · on this weekend · taste: museum"
   },
   {
    "id": "web-ra-2571811",
@@ -643,8 +708,8 @@
    ],
    "popularity": 2,
    "firstSeen": "2026-11-02",
-   "inboxScore": 6.6,
-   "scoreWhy": "seen 3d ago · 2 going · on this weekend"
+   "inboxScore": 6.3,
+   "scoreWhy": "seen 4d ago · 2 going · on this weekend"
   },
   {
    "id": "web-iams-only-10s",
@@ -671,8 +736,8 @@
    ],
    "verify": false,
    "firstSeen": "2026-11-03",
-   "inboxScore": 6.4,
-   "scoreWhy": "seen 2d ago · on this weekend"
+   "inboxScore": 6.1,
+   "scoreWhy": "seen 3d ago · on this weekend"
   },
   {
    "id": "web-ra-2560335",
@@ -699,8 +764,8 @@
    ],
    "popularity": 1,
    "firstSeen": "2026-11-02",
-   "inboxScore": 6.4,
-   "scoreWhy": "seen 3d ago · 1 going · on this weekend"
+   "inboxScore": 6.1,
+   "scoreWhy": "seen 4d ago · 1 going · on this weekend"
   },
   {
    "id": "web-ra-2555796",
@@ -726,8 +791,8 @@
     "VOLATILE"
    ],
    "firstSeen": "2026-11-02",
-   "inboxScore": 6.1,
-   "scoreWhy": "seen 3d ago · on this weekend"
+   "inboxScore": 5.8,
+   "scoreWhy": "seen 4d ago · on this weekend"
   },
   {
    "id": "web-iams-trees-for-amsterdam",
@@ -755,8 +820,8 @@
     "https://app.thefeedfactory.nl/api/assets/6abe68bca91b3c0128ea4ead/TvN-Bomen2025-13.webp"
    ],
    "firstSeen": "2026-11-02",
-   "inboxScore": 6.1,
-   "scoreWhy": "seen 3d ago · on this weekend"
+   "inboxScore": 5.8,
+   "scoreWhy": "seen 4d ago · on this weekend"
   },
   {
    "id": "web-iams-proefjes-met-snoepjes-7-14-jaar-science-in-het-hemlab",
@@ -781,8 +846,8 @@
    ],
    "verify": false,
    "firstSeen": "2026-11-02",
-   "inboxScore": 6.1,
-   "scoreWhy": "seen 3d ago · on this weekend"
+   "inboxScore": 5.8,
+   "scoreWhy": "seen 4d ago · on this weekend"
   },
   {
    "id": "web-iams-amsterdam-bar-magic-show",
@@ -809,8 +874,8 @@
    ],
    "verify": false,
    "firstSeen": "2026-11-01",
-   "inboxScore": 5.8,
-   "scoreWhy": "seen 4d ago · on this weekend"
+   "inboxScore": 5.5,
+   "scoreWhy": "seen 5d ago · on this weekend"
   },
   {
    "id": "web-iams-eyra-een-reis-van-licht-en-muziek",
@@ -837,12 +902,12 @@
    ],
    "verify": false,
    "firstSeen": "2026-10-31",
-   "inboxScore": 5.5,
-   "scoreWhy": "seen 5d ago · on this weekend"
+   "inboxScore": 5.2,
+   "scoreWhy": "seen 6d ago · on this weekend"
   },
   {
-   "id": "rss-het-parool-ps-maaike-60-en-hanna-26-hoge-cijfers-halen-was-min",
-   "title": "Maaike (60) en Hanna (26): ‘Hoge cijfers halen was minder belangrijk dan een vriendelijk, ",
+   "id": "rss-het-parool-ps-restaurant-the-jollof-club-van-chef-kok-nicolas-",
+   "title": "Restaurant The Jollof Club van chef-kok Nicolas Aquaa (27) heeft nu een vaste locatie in d",
    "venue": "Het Parool PS",
    "area": "",
    "when": "This weekend",
@@ -854,7 +919,7 @@
    "blurb": "Featured this week by Het Parool PS.",
    "why": "In this week's Het Parool PS",
    "source": "Het Parool PS",
-   "link": "https://www.parool.nl/ps/maaike-60-en-hanna-26-hoge-cijfers-halen-was-minder-belangrijk-dan-een-vriendelijk-leuk-en-geinteresseerd-mens-zijn~b6549ae53/",
+   "link": "https://www.parool.nl/ps/restaurant-the-jollof-club-van-chef-kok-nicolas-aquaa-27-heeft-nu-een-vaste-locatie-in-de-bijlmer-je-ziet-het-al-om-je-heen-hier-zit-mijn-community~b92e91b3/",
    "weatherFit": [
     "HOT",
     "WARM",
@@ -863,25 +928,52 @@
     "VOLATILE"
    ],
    "verify": true,
-   "firstSeen": "2026-11-05",
+   "firstSeen": "2026-11-06",
+   "inboxScore": 3.9,
+   "scoreWhy": "seen today · taste: jollof club chef"
+  },
+  {
+   "id": "rss-het-parool-ps-theatermaker-nicole-beutler-57-geeft-twee-veelbe",
+   "title": "Theatermaker Nicole Beutler (57) geeft twee veelbelovende makers een podium in Future Voic",
+   "venue": "Het Parool PS",
+   "area": "",
+   "when": "This weekend",
+   "category": "out",
+   "freshness": "weekend",
+   "outdoor": false,
+   "kid": false,
+   "price": "",
+   "blurb": "Featured this week by Het Parool PS.",
+   "why": "In this week's Het Parool PS",
+   "source": "Het Parool PS",
+   "link": "https://www.parool.nl/ps/theatermaker-nicole-beutler-57-geeft-twee-veelbelovende-makers-een-podium-in-future-voices-we-moeten-zorgen-voor-een-goede-humuslaag~b3eb8f72/",
+   "weatherFit": [
+    "HOT",
+    "WARM",
+    "COOL",
+    "COLD_WET",
+    "VOLATILE"
+   ],
+   "verify": true,
+   "firstSeen": "2026-11-06",
    "inboxScore": 3.3,
-   "scoreWhy": "seen today · taste: hoge"
+   "scoreWhy": "seen today · taste: podium"
   },
   {
-   "id": "rss-het-parool-ps-lee-chang-dong-maakte-met-possible-love-een-gera",
-   "title": "Lee Chang-dong maakte met Possible Love een geraffineerde film over arm en rijk in Zuid-Ko",
-   "venue": "Het Parool PS",
+   "id": "rss-subbacultcha-a-day-in-the-tour-life-of-carla-dal-forno",
+   "title": "A day in the tour life of Carla dal Forno",
+   "venue": "Subbacultcha",
    "area": "",
    "when": "This weekend",
-   "category": "out",
+   "category": "live",
    "freshness": "weekend",
    "outdoor": false,
    "kid": false,
    "price": "",
-   "blurb": "Featured this week by Het Parool PS.",
-   "why": "In this week's Het Parool PS",
-   "source": "Het Parool PS",
-   "link": "https://www.parool.nl/kunst-media/lee-chang-dong-maakte-met-possible-love-een-geraffineerde-film-over-arm-en-rijk-in-zuid-korea~b62a9982/",
+   "blurb": "Featured this week by Subbacultcha.",
+   "why": "In this week's Subbacultcha",
+   "source": "Subbacultcha",
+   "link": "https://subbacultcha.nl/2026/10/09/a-day-in-the-tour-life-of-carla-dal-forno/",
    "weatherFit": [
     "HOT",
     "WARM",
@@ -890,13 +982,13 @@
     "VOLATILE"
    ],
    "verify": true,
-   "firstSeen": "2026-11-05",
+   "firstSeen": "2026-11-06",
    "inboxScore": 3.3,
-   "scoreWhy": "seen today · taste: zuid"
+   "scoreWhy": "seen today · taste: life"
   },
   {
-   "id": "rss-het-parool-ps-coco-31-kocht-in-een-uur-een-studio-onder-de-vra",
-   "title": "Coco (31) kocht in een uur een studio onder de vraagprijs: ‘Die verbouwing had ik wel onde",
+   "id": "rss-het-parool-ps-van-een-geheim-kaasrestaurant-tot-een-stel-pizza",
+   "title": "Van een geheim kaasrestaurant tot een stel pizzabakkers: bij foodhal Kade Noord zitten all",
    "venue": "Het Parool PS",
    "area": "",
    "when": "This weekend",
@@ -908,7 +1000,7 @@
    "blurb": "Featured this week by Het Parool PS.",
    "why": "In this week's Het Parool PS",
    "source": "Het Parool PS",
-   "link": "https://www.parool.nl/ps/coco-31-kocht-in-een-uur-een-studio-onder-de-vraagprijs-die-verbouwing-had-ik-wel-onderschat~b2dbaa4d/",
+   "link": "https://www.parool.nl/uit-in-amsterdam/van-een-geheim-kaasrestaurant-tot-een-stel-pizzabakkers-bij-foodhal-kade-noord-zitten-allemaal-creatieve-cowboys-onder-een-dak~b1709e8f/",
    "weatherFit": [
     "HOT",
     "WARM",
@@ -917,7 +1009,115 @@
     "VOLATILE"
    ],
    "verify": true,
-   "firstSeen": "2026-11-05",
+   "firstSeen": "2026-11-06",
+   "inboxScore": 3.3,
+   "scoreWhy": "seen today · taste: noord"
+  },
+  {
+   "id": "rss-het-parool-ps-zangeres-bente-26-in-de-week-voor-pinkpop-lag-ik",
+   "title": "Zangeres Bente (26): ‘In de week voor Pinkpop lag ik er echt af. Ik kon eigenlijk alleen m",
+   "venue": "Het Parool PS",
+   "area": "",
+   "when": "This weekend",
+   "category": "out",
+   "freshness": "weekend",
+   "outdoor": false,
+   "kid": false,
+   "price": "",
+   "blurb": "Featured this week by Het Parool PS.",
+   "why": "In this week's Het Parool PS",
+   "source": "Het Parool PS",
+   "link": "https://www.parool.nl/ps/zangeres-bente-26-in-de-week-voor-pinkpop-lag-ik-er-echt-af-ik-kon-eigenlijk-alleen-maar-huilen~b9492033/",
+   "weatherFit": [
+    "HOT",
+    "WARM",
+    "COOL",
+    "COLD_WET",
+    "VOLATILE"
+   ],
+   "verify": true,
+   "firstSeen": "2026-11-06",
+   "inboxScore": 3,
+   "scoreWhy": "seen today"
+  },
+  {
+   "id": "rss-amsterdam-foodie-a-meat-eater-s-guide-to-amsterdam-steakhouses-bu",
+   "title": "A Meat Eater’s Guide to Amsterdam: Steakhouses & Burger Bars",
+   "venue": "Amsterdam Foodie",
+   "area": "",
+   "when": "This weekend",
+   "category": "eat",
+   "freshness": "weekend",
+   "outdoor": false,
+   "kid": false,
+   "price": "",
+   "blurb": "Featured this week by Amsterdam Foodie.",
+   "why": "In this week's Amsterdam Foodie",
+   "source": "Amsterdam Foodie",
+   "link": "https://www.amsterdamfoodie.nl/amsterdam-food-guide/steakhouse-amsterdam-burger-bar-bbq/",
+   "weatherFit": [
+    "HOT",
+    "WARM",
+    "COOL",
+    "COLD_WET",
+    "VOLATILE"
+   ],
+   "verify": true,
+   "firstSeen": "2026-11-06",
+   "inboxScore": 3,
+   "scoreWhy": "seen today"
+  },
+  {
+   "id": "rss-het-parool-ps-recensie-draagkracht-dansvoorstelling-cheroney-p",
+   "title": "Recensie Draagkracht: dansvoorstelling Cheroney Pelupessyzet stille levens in het licht",
+   "venue": "Het Parool PS",
+   "area": "",
+   "when": "This weekend",
+   "category": "out",
+   "freshness": "weekend",
+   "outdoor": false,
+   "kid": false,
+   "price": "",
+   "blurb": "Featured this week by Het Parool PS.",
+   "why": "In this week's Het Parool PS",
+   "source": "Het Parool PS",
+   "link": "https://www.parool.nl/kunst-media/recensie-draagkracht-dansvoorstelling-cheroney-pelupessyzet-stille-levens-in-het-licht~bb525d54/",
+   "weatherFit": [
+    "HOT",
+    "WARM",
+    "COOL",
+    "COLD_WET",
+    "VOLATILE"
+   ],
+   "verify": true,
+   "firstSeen": "2026-11-06",
+   "inboxScore": 3,
+   "scoreWhy": "seen today"
+  },
+  {
+   "id": "rss-het-parool-ps-kookboekenschrijver-en-influencer-emma-de-thouar",
+   "title": "Kookboekenschrijver en influencer Emma de Thouars (37): ‘Het lijkt me logisch dat je je ui",
+   "venue": "Het Parool PS",
+   "area": "",
+   "when": "This weekend",
+   "category": "out",
+   "freshness": "weekend",
+   "outdoor": false,
+   "kid": false,
+   "price": "",
+   "blurb": "Featured this week by Het Parool PS.",
+   "why": "In this week's Het Parool PS",
+   "source": "Het Parool PS",
+   "link": "https://www.parool.nl/ps/kookboekenschrijver-en-influencer-emma-de-thouars-37-het-lijkt-me-logisch-dat-je-je-uitspreekt-tegen-vreselijke-dingen-zoals-een-genocide~b21fa7dc/",
+   "weatherFit": [
+    "HOT",
+    "WARM",
+    "COOL",
+    "COLD_WET",
+    "VOLATILE"
+   ],
+   "verify": true,
+   "firstSeen": "2026-11-06",
    "inboxScore": 3,
    "scoreWhy": "seen today"
   },
@@ -945,89 +1145,8 @@
    ],
    "verify": true,
    "firstSeen": "2026-11-05",
-   "inboxScore": 3,
-   "scoreWhy": "seen today"
-  },
-  {
-   "id": "rss-het-parool-ps-de-grote-hit-van-zangeres-bente-26-staat-niet-op",
-   "title": "De grote hit van zangeres Bente (26) staat niet op haar nieuwe album: ‘Ik vond het een lek",
-   "venue": "Het Parool PS",
-   "area": "",
-   "when": "This weekend",
-   "category": "out",
-   "freshness": "weekend",
-   "outdoor": false,
-   "kid": false,
-   "price": "",
-   "blurb": "Featured this week by Het Parool PS.",
-   "why": "In this week's Het Parool PS",
-   "source": "Het Parool PS",
-   "link": "https://www.parool.nl/ps/de-grote-hit-van-zangeres-bente-26-staat-niet-op-haar-nieuwe-album-ik-vond-het-een-lekker-dwarse-keuze~b9492033/",
-   "weatherFit": [
-    "HOT",
-    "WARM",
-    "COOL",
-    "COLD_WET",
-    "VOLATILE"
-   ],
-   "verify": true,
-   "firstSeen": "2026-11-05",
-   "inboxScore": 3,
-   "scoreWhy": "seen today"
-  },
-  {
-   "id": "rss-het-parool-ps-jeugdvoorstelling-dope-is-actueel-maar-rijmen-ov",
-   "title": "Jeugdvoorstelling ‘Dope’ is actueel, maar rijmen over drugscriminaliteit is wat makkelijk",
-   "venue": "Het Parool PS",
-   "area": "",
-   "when": "This weekend",
-   "category": "out",
-   "freshness": "weekend",
-   "outdoor": false,
-   "kid": false,
-   "price": "",
-   "blurb": "Featured this week by Het Parool PS.",
-   "why": "In this week's Het Parool PS",
-   "source": "Het Parool PS",
-   "link": "https://www.parool.nl/kunst-media/recensie-jeugdvoorstelling-dope-is-actueel-maar-rijmen-over-drugscriminaliteit-is-wat-makkelijk~b8898fbc/",
-   "weatherFit": [
-    "HOT",
-    "WARM",
-    "COOL",
-    "COLD_WET",
-    "VOLATILE"
-   ],
-   "verify": true,
-   "firstSeen": "2026-11-05",
-   "inboxScore": 3,
-   "scoreWhy": "seen today"
-  },
-  {
-   "id": "rss-het-parool-ps-koos-breukel-fotografeert-dichter-en-dj-anne-mar",
-   "title": "Koos Breukel fotografeert dichter en dj Anne Marijn Voorhorst",
-   "venue": "Het Parool PS",
-   "area": "",
-   "when": "This weekend",
-   "category": "out",
-   "freshness": "weekend",
-   "outdoor": false,
-   "kid": false,
-   "price": "",
-   "blurb": "Featured this week by Het Parool PS.",
-   "why": "In this week's Het Parool PS",
-   "source": "Het Parool PS",
-   "link": "https://www.parool.nl/ps/koos-breukel-fotografeert-dichter-en-dj-anne-marijn-voorhorst~be0ef2db/",
-   "weatherFit": [
-    "HOT",
-    "WARM",
-    "COOL",
-    "COLD_WET",
-    "VOLATILE"
-   ],
-   "verify": true,
-   "firstSeen": "2026-11-05",
-   "inboxScore": 3,
-   "scoreWhy": "seen today"
+   "inboxScore": 2.7,
+   "scoreWhy": "seen 1d ago"
   },
   {
    "id": "rss-amsterdam-foodie-an-eastsider-s-guide-where-to-stay-and-eat-in-am",
@@ -1053,8 +1172,8 @@
    ],
    "verify": true,
    "firstSeen": "2026-11-04",
-   "inboxScore": 2.7,
-   "scoreWhy": "seen 1d ago"
+   "inboxScore": 2.4,
+   "scoreWhy": "seen 2d ago"
   },
   {
    "id": "rss-amsterdam-foodie-where-to-eat-peruvian-food-in-amsterdam",
@@ -1080,8 +1199,8 @@
    ],
    "verify": true,
    "firstSeen": "2026-11-03",
-   "inboxScore": 2.4,
-   "scoreWhy": "seen 2d ago"
+   "inboxScore": 2.1,
+   "scoreWhy": "seen 3d ago"
   }
  ]
 }
