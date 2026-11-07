@@ -71,3 +71,6 @@
 .glass-field[data-pane='gl'] .wet-glass { position: absolute; inset: 0; width: 100%; height: 100%; }
 .glass-field[data-pane='gl'] .glass-haze { opacity: .55; }
 html[data-field='glass'][data-glass-scene='mist'] .glass-field[data-pane='gl'] .glass-haze { opacity: .35; }
+
+/* ?hud=1 — the pane's numbers, for judging the motion on a phone (2026-10-26) */
+.glass-hud { position: fixed; left: 8px; bottom: 8px; z-index: 400; padding: 3px 6px; border-radius: 4px; background: #0008; color: #fff; font: 10px/1.4 'JetBrains Mono', ui-monospace, monospace; pointer-events: none; white-space: nowrap; }
