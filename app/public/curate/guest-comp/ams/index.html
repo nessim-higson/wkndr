@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#e9eeee">
+<title>Curators · WKNDR</title>
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=clash-display@600,700&display=swap">
+<link rel="stylesheet" href="../comp.css">
+<link rel="stylesheet" href="page.css">
+</head>
+<body>
+<p class="strip"><span>Comp. Sample curators, real picks.</span> <a href="../index.html">All screens</a></p>
+<div class="wrap wrap--page roster">
+  <header class="mast">
+    <a class="brand" href="../../../" aria-label="WKNDR, Amsterdam"><b>WKNDR</b><span>Amsterdam</span></a>
+    <a class="mast-link" href="../../../">Open the deck</a>
+  </header>
+  <main class="layout">
+    <section class="lead">
+      <p class="label">Amsterdam, week by week</p>
+      <h1 class="display">Curators</h1>
+      <div class="lede lines">
+        <p>Each week one local picks the weekend.</p>
+        <p>Their name is on it.</p>
+        <p>Their week stays here when it is over.</p>
+      </div>
+    </section>
+    <div class="col" id="roster"></div>
+  </main>
+</div>
+<script src="../data.js"></script>
+<script src="../comp.js"></script>
+<script>
+(() => {
+  const C = window.COMP, U = window.CU, esc = U.esc
+  const pos = (n) => n + (/s$/i.test(n) ? "'" : "'s")
+  const card = (c, kind) => {
+    const own = c.picks.filter((p) => p.own).length
+    const count = c.picks.length ? c.picks.length + ' picks' + (own ? ', ' + own + ' own finds' : '') : ''
+    const inner = '<span class="mono" aria-hidden="true">' + esc(c.name.slice(0, 1)) + '</span><span>'
+      + '<span class="name">' + esc(kind === 'next' ? c.name : pos(c.name) + ' week') + '</span>'
+      + (c.line ? '<span class="cline" style="display:block">' + esc(c.line) + '</span>' : '')
+      + '<span class="cwhen" style="display:block">' + esc(c.week.long) + (count ? ' · ' + count : '') + '</span>'
+      + (kind === 'next' ? '' : '<span class="go">' + (kind === 'now' ? 'See the week' : 'Read the week') + U.icon('out') + '</span>')
+      + '</span>'
+    return kind === 'next' ? '<div class="cur cur--next">' + inner + '</div>' : '<a class="cur cur--' + kind + '" href="' + esc(c.slug) + '/index.html">' + inner + '</a>'
+  }
+  const now = C.curators.filter((c) => c.status === 'now'), next = C.curators.filter((c) => c.status === 'next'), past = C.curators.filter((c) => c.status === 'past')
+  document.getElementById('roster').innerHTML =
+    '<h2 class="label">This week</h2>' + now.map((c) => card(c, 'now')).join('')
+    + (next.length ? '<h2 class="label">Next</h2>' + next.map((c) => card(c, 'next')).join('') : '')
+    + '<h2 class="label">Past weeks</h2>' + past.map((c) => card(c, 'past')).join('')
+    + '<section class="pane house lines"><p>The house deck is ranked by the weather every week.</p><p>A guest week sits on top of it.</p><a class="btn btn--ink btn--tall" href="../../../">Open WKNDR</a></section>'
+})()
+</script>
+</body>
+</html>
