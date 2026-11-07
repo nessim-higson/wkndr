@@ -19,7 +19,7 @@
  */
 import { CITIES, type City } from '../src/data/cities'
 import type { Pick } from '../src/types'
-import { dedupe, balanceByCategory, isGoodImage, isPortraitImage, imageBroken, urlLooksNonPhoto, imageIsCardworthy, fetchEventImage, toPortrait, wikiImage, webImageCandidates, verifyImageForEvent, venueMatchImage, venueBook, imageFocalPoint, focalFailures, originalOf, NO_PHOTO_CAP, whenBeforeWeekend, upcomingWeekend, weekendMode, weekendModes, stampServeOrder, publishCheck, crownsActive, JUDGE_FLOOR, STAR_BOOST, linkOk, mapLimit, rxOf, titleKey, titleLooseMatch, tokKey, approvalCheck, pickByTitle, markThisWeekend, type TasteCorpus, type WeeklySlate, imagePassBroken, fetchEventImages, bestRendition, ADAPTER_PICK, OWN_RECORD, OWN_IMAGE, untrustedWebPick, extrasOf, iamsLanguageTwins, unionCredits, isOwnPage, crossSourceTwins, imageSearchHealth, suspectTwins, photoHolderAfter } from './lib/pipeline'
+import { dedupe, balanceByCategory, isGoodImage, isPortraitImage, imageBroken, urlLooksNonPhoto, imageIsCardworthy, fetchEventImage, toPortrait, wikiImage, webImageCandidates, verifyImageForEvent, venueMatchImage, venueBook, imageFocalPoint, focalFailures, originalOf, NO_PHOTO_CAP, whenBeforeWeekend, upcomingWeekend, weekendMode, weekendModes, stampServeOrder, publishCheck, crownsActive, JUDGE_FLOOR, STAR_BOOST, linkOk, mapLimit, rxOf, titleKey, titleLooseMatch, tokKey, approvalCheck, pickByTitle, markThisWeekend, type TasteCorpus, type WeeklySlate, imagePassBroken, fetchEventImages, bestRendition, ADAPTER_PICK, OWN_RECORD, OWN_IMAGE, untrustedWebPick, extrasOf, iamsLanguageTwins, unionCredits, isOwnPage, crossSourceTwins, imageSearchHealth, suspectTwins, photoHolderAfter, photoPassOrder } from './lib/pipeline'
 import { fixWhen, latestDateOf, whenActiveBy, whenIsPast, whenLooksBroken } from '../src/lib/when'
 import { effectiveFreshness, NEW_DAYS } from '../src/lib/freshness'
 import { mergeSightings, pruneRegistry, appendRun, type SeenRegistry, type HealthFile } from './lib/ingest'
@@ -527,7 +527,9 @@ async function buildCity(city: City) {
       const owner = new Map<string, Pick>()
       let dupes = 0
       const folded = new Set<Pick>()
-      for (const p of [...picks.filter((p) => !isLive(p)), ...picks.filter(isLive)]) {
+      // walk canon first, then live by a provisional serve order (photoPassOrder): the lent photo goes to
+      // the card the deck shows first, not to whichever the crawl listed first
+      for (const p of photoPassOrder(picks, isLive, (await weekendModes()) ?? null)) {
         if (!p.image) continue
         const o = owner.get(p.image)
         if (!o) { owner.set(p.image, p); continue }
