@@ -160,8 +160,11 @@ describe('the live feed — coverage and the pool shape', () => {
     // venues — and that dip blocked the cron, because this suite gates the content run. So the bar
     // is a COLLAPSE line (half), not a quality bar: a refresh may move coverage; a collapse means
     // the gazetteer has drifted from the feed's venue names and needs a look. Day-trips resolve to
-    // 'train' by design and are excluded from the ratio.
-    const inTown = picks.filter((p) => resolveGeo(p).kind !== 'train')
+    // 'train' by design and are excluded from the ratio. So is a pick with NO venue and no area
+    // (a Little Black Book tip — the place lives in its title): nothing the gazetteer knows can
+    // pin it, so it says nothing about drift. 32 of 115 on 2026-11-13 tipped the raw ratio to
+    // 0.496 and the gate went red for a weekend over a line the gazetteer never crossed.
+    const inTown = picks.filter((p) => resolveGeo(p).kind !== 'train' && (p.venue || p.area))
     expect(pinned / inTown.length).toBeGreaterThan(0.5)
   })
   test('every resolved district is one we actually offer', () => {
