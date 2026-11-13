@@ -1,23 +1,27 @@
-import { CalendarClock, X } from 'lucide-react'
+import { CalendarClock, Plus, X } from 'lucide-react'
 import type { Pick } from '../types'
 import type { SaveEntry } from '../lib/account'
 import { cssUrl } from '../lib/image'
 
-/** THE LATER SHELF's rows (V.12.2) — the saves panel's second tab. A save for a date after this
- *  weekend, or an open run, sorted soonest first. A row whose card has rotated out of the feed
- *  still shows (the snapshot carries its title and date) and opens the organiser's page instead. */
+/** THE LIBRARY's rows (the Later shelf of V.12.2, now the second of THE TWO PILES) — the saves
+ *  panel's second tab. A save for a date after this weekend, or an open run, sorted soonest first.
+ *  A row whose card has rotated out of the feed still shows (the snapshot carries its title and
+ *  date) and opens the organiser's page instead — it can't be pulled into the plan, so no pill. */
 export function LaterRows({
-  entries, picks, onOpen, onRemove,
+  entries, picks, arrives, onOpen, onMove, onRemove,
 }: {
   entries: SaveEntry[]
   picks: Map<string, Pick>
+  arrives?: (e: SaveEntry) => string | null   // "Next weekend" on the one that comes round next
   onOpen: (p: Pick) => void
+  onMove?: (e: SaveEntry) => void             // + Weekend: into this weekend's plan
   onRemove: (id: string) => void
 }) {
   return (
     <>
       {entries.map((e) => {
         const p = picks.get(e.id)
+        const soon = arrives?.(e)
         return (
           <div className="sv-row" key={e.id}>
             <button
@@ -28,10 +32,15 @@ export function LaterRows({
                 {!p?.image && <CalendarClock size={16} strokeWidth={2} />}
               </span>
               <span className="sv-meta">
-                <span className="sv-when">{e.when}</span>
+                <span className="sv-when">{soon ?? (e.start ? e.when : 'Any week')}</span>
                 <span className="sv-name">{e.title}</span>
               </span>
             </button>
+            {p && onMove && (
+              <button className="sv-pill sv-pill--in" aria-label={`Add ${e.title} to this weekend`} onClick={() => onMove(e)}>
+                <Plus size={11} strokeWidth={2.8} /> Weekend
+              </button>
+            )}
             <button className="sv-remove" aria-label={`Remove ${e.title}`} onClick={() => onRemove(e.id)}>
               <X size={15} strokeWidth={2.4} />
             </button>

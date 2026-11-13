@@ -2,7 +2,7 @@ import { useCurrentWeather } from './components/useCurrentWeather'
 import './components/FaceMaterials.css'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { AnimatePresence, MotionConfig, motion } from 'framer-motion'
-import { Shuffle, Clock, CloudRain, CloudSun, Sun, Cloud, Moon, Snowflake, LayoutGrid, Star, ArrowUpRight, LocateFixed, Info, RotateCw, RotateCcw, X, Heart, Navigation, CalendarClock, User } from 'lucide-react'
+import { Shuffle, Clock, CloudRain, CloudSun, Sun, Cloud, Moon, Snowflake, LayoutGrid, Star, ArrowUpRight, LocateFixed, Info, RotateCw, RotateCcw, X, Heart, Navigation, CalendarClock, User, ArrowRight } from 'lucide-react'
 
 // subtle haptic on commit/save (Android/Chrome; iOS Safari ignores navigator.vibrate)
 const haptic = (ms = 10) => { try { navigator.vibrate?.(ms) } catch { /* unsupported */ } }
@@ -32,6 +32,8 @@ import { Intro } from './components/Intro'
 import { InputsSheet } from './components/InputsSheet'
 import { AccountSheet } from './components/AccountSheet'
 import { LaterRows, AskWent } from './components/LaterShelf'
+import type { SaveEntry } from './lib/account'
+import { type Pile, arrivesLabel, libraryShelf, loadPlan, movePile, persistPlan } from './lib/plan'
 import { useAccount } from './lib/useAccount'
 import { accountOn } from './lib/account'
 import { FilterSheet } from './components/FilterSheet'
@@ -466,7 +468,19 @@ export default function App() {
     apply: ({ saved: s, taste: t, swiped: w }) => { setSaved(s); setTaste(t); if (w) setSwiped(w) },
   })
   const [accountOpen, setAccountOpen] = useState(false)
-  const [shelf, setShelf] = useState<'weekend' | 'later'>('weekend')   // the saves panel's tab
+  // THE TWO PILES (proto/two-piles, lib/plan.ts): the saves split into THIS WEEKEND (the plan —
+  // what a share sends) and the LIBRARY (later dates, open runs, evergreens). Dates decide by
+  // default (the Later-shelf rule); the pills move a save across for this weekend only.
+  const [plan, setPlan] = useState(() => loadPlan())
+  useEffect(() => { persistPlan(plan) }, [plan])
+  const entryById = useMemo(() => new Map(account.saves.map((e) => [e.id, e])), [account.saves])
+  const library = useMemo(() => libraryShelf(account.saves, plan), [account.saves, plan])
+  const libraryIds = useMemo(() => new Set(library.map((e) => e.id)), [library])
+  const moveToPile = (e: SaveEntry, to: Pile) => {
+    setPlan((p) => movePile(p, e, to))
+    flash(to === 'weekend' ? 'In this weekend’s plan' : 'Moved to the Library')
+  }
+  const [shelf, setShelf] = useState<Pile>('weekend')   // the saves panel's tab
   const pickById = useMemo(() => new Map(cityPicks.map((p) => [p.id, p])), [cityPicks])
   // resolve the share-link tokens (short codes, or legacy full ids) against the ACTIVE pool —
   // everything downstream (filter, save-all, match deck) works in real pick ids
@@ -787,7 +801,7 @@ export default function App() {
   const savedGroups = useMemo(() => {
     const groups = new Map<string, { label: string; order: number; items: Pick[] }>()
     for (const p of savedPicks) {
-      if (account.laterIds.has(p.id)) continue   // on the Later tab, not in the weekend plan
+      if (libraryIds.has(p.id)) continue   // in the Library, not in the weekend plan
       const g = whenDayGroup(p.when)
       const order = whenSortKey(p.when)
       const grp = groups.get(g.key) ?? { label: g.label, order, items: [] }
@@ -798,7 +812,7 @@ export default function App() {
     return [...groups.values()]
       .map((grp) => ({ ...grp, items: [...grp.items].sort((a, b) => whenSortKey(a.when) - whenSortKey(b.when)) }))
       .sort((a, b) => a.order - b.order)
-  }, [savedPicks, account.laterIds])
+  }, [savedPicks, libraryIds])
   const weekendCount = useMemo(() => savedGroups.reduce((n, g) => n + g.items.length, 0), [savedGroups])
 
   // DEAL THE WINGS — once. Returns whether anything new joined the pool. Single-flight; a second
@@ -1346,31 +1360,34 @@ export default function App() {
                       <>
                         <div className="sv-head">
                           <div className="sv-head-txt">
-                            <span className="sv-title">{shelf === 'later' ? 'Later' : 'Your weekend'}</span>
-                            <span className="sv-sub">{shelf === 'later' ? `${account.later.length} for the weeks ahead` : `${weekendCount} saved`}</span>
+                            <span className="sv-title">{shelf === 'library' ? 'Library' : 'Your weekend'}</span>
+                            <span className="sv-sub">{shelf === 'library' ? `${library.length} for another week` : `${weekendCount} in the plan`}</span>
                           </div>
                           <button className="sv-share" onClick={() => { setShareOpen(true); setSavesOpen(false) }}>
                             Share <ArrowUpRight size={14} strokeWidth={2.2} />
                           </button>
                         </div>
-                        {/* THE LATER SHELF (V.12.2): a save for a date after this weekend, or an open run,
-                            is a thing for the future, not a plan for Saturday — it gets its own tab. */}
-                        {account.later.length > 0 && (
+                        {/* THE TWO PILES (proto/two-piles; was the Later shelf, V.12.2): a save for a date
+                            after this weekend, or an open run, is a thing for another week, not a plan for
+                            Saturday — it sits in the Library until a pill pulls it in. */}
+                        {library.length > 0 && (
                           <div className="sv-tabs" role="tablist">
                             <button role="tab" aria-selected={shelf === 'weekend'} className={shelf === 'weekend' ? 'on' : ''} onClick={() => setShelf('weekend')}>This weekend · {weekendCount}</button>
-                            <button role="tab" aria-selected={shelf === 'later'} className={shelf === 'later' ? 'on' : ''} onClick={() => setShelf('later')}><CalendarClock size={12} strokeWidth={2.4} /> Later · {account.later.length}</button>
+                            <button role="tab" aria-selected={shelf === 'library'} className={shelf === 'library' ? 'on' : ''} onClick={() => setShelf('library')}><CalendarClock size={12} strokeWidth={2.4} /> Library · {library.length}</button>
                           </div>
                         )}
                         <div className="sv-list">
-                          {shelf === 'later' && account.later.length > 0 ? (
+                          {shelf === 'library' && library.length > 0 ? (
                             <LaterRows
-                              entries={account.later}
+                              entries={library}
                               picks={pickById}
+                              arrives={arrivesLabel}
                               onOpen={(p) => { openDetail(p); setSavesOpen(false) }}
+                              onMove={(e) => moveToPile(e, 'weekend')}
                               onRemove={(id) => setSaved((s) => { const n = new Set(s); n.delete(id); return n })}
                             />
                           ) : savedGroups.length === 0 ? (
-                            <div className="sv-empty"><span>Nothing for this weekend yet — {account.later.length} on the Later shelf.</span></div>
+                            <div className="sv-empty"><span>Nothing for this weekend yet — {library.length} in the Library.</span></div>
                           ) : savedGroups.map((group) => (
                             <div className="sv-group" key={group.label}>
                               <div className="sv-group-label">{group.label}</div>
@@ -1390,6 +1407,11 @@ export default function App() {
                                         </span>
                                       </span>
                                     </button>
+                                    {entryById.has(p.id) && (
+                                      <button className="sv-pill" aria-label={`Move ${p.title} to the Library`} onClick={() => moveToPile(entryById.get(p.id)!, 'library')}>
+                                        <ArrowRight size={11} strokeWidth={2.6} /> Library
+                                      </button>
+                                    )}
                                     <button className="sv-remove" aria-label={`Remove ${p.title}`} onClick={() => toggleSave(p)}>
                                       <X size={15} strokeWidth={2.4} />
                                     </button>
@@ -1699,8 +1721,12 @@ export default function App() {
       <ShareSheet
         open={shareOpen}
         onClose={() => setShareOpen(false)}
-        picks={rankedAll.filter((p) => saved.has(p.id))}
-        mode={mode}
+        weekend={savedGroups.flatMap((g) => g.items)}
+        library={library}
+        entries={entryById}
+        pickById={pickById}
+        arrives={arrivesLabel}
+        onMove={moveToPile}
         city={wx.city}
       />
       <FilterSheet
