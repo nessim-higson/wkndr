@@ -140,17 +140,21 @@ import { orderServed } from '../src/weather/modes'
 
 describe('orderServed — the pile order, with the TOP weekend gate', () => {
   const END = new Date(2026, 6, 12, 23, 59, 59)   // Sun 12 Jul 2026 — end of the served weekend
+  // PINNED CLOCK — the fixtures are bare "8 Jul" dates that resolve their year against `now`. Read
+  // on the real clock, "Opens 8 Jul" (an open run) rolled to NEXT July once 8 Jul was >120 days gone
+  // (5 Nov 2026) and the gate went red for four refreshes running (2026-11-05 → 11-12).
+  const NOW = new Date(2026, 6, 8, 9, 0, 0)      // Wed 8 Jul 2026 — the week this deck was served
 
   it('a TOP active this weekend opens the deck', () => {
     const top = P({ id: 'lemmeke', when: 'Opens 8 Jul', top: true })
     const mid = P({ id: 'mid' })
-    expect(orderServed([mid, top], END)[0].id).toBe('lemmeke')
+    expect(orderServed([mid, top], END, NOW)[0].id).toBe('lemmeke')
   })
 
   it('an undated / recurring TOP always opens the deck (ARTIS "Daily")', () => {
     const top = P({ id: 'artis', when: 'Daily · 9:00–18:00', top: true })
     const mid = P({ id: 'mid' })
-    expect(orderServed([mid, top], END)[0].id).toBe('artis')
+    expect(orderServed([mid, top], END, NOW)[0].id).toBe('artis')
   })
 
   it('a future-dated TOP waits for its own weekend — heads the horizon at the back', () => {
@@ -158,7 +162,7 @@ describe('orderServed — the pile order, with the TOP weekend gate', () => {
     const lead = P({ id: 'lead', lead: true })
     const mid = P({ id: 'mid' })
     const later = P({ id: 'later', later: true })
-    const out = orderServed([milkshake, later, mid, lead], END)
+    const out = orderServed([milkshake, later, mid, lead], END, NOW)
     expect(out[0].id).toBe('lead')                          // LEAD takes over the open
     expect(out.map((p) => p.id)).toEqual(['lead', 'mid', 'later', 'milkshake'])
     expect(out.find((p) => p.id === 'milkshake')?.top).toBe(true)   // pill/status intact
@@ -169,19 +173,19 @@ describe('orderServed — the pile order, with the TOP weekend gate', () => {
     const dekmantel = P({ id: 'dekmantel', when: 'Thu 30 Jul – Sun 2 Aug', top: true })
     const mid = P({ id: 'mid' })
     const later = P({ id: 'later', later: true })
-    const out = orderServed([pride, later, dekmantel, mid], END)
+    const out = orderServed([pride, later, dekmantel, mid], END, NOW)
     expect(out.map((p) => p.id)).toEqual(['mid', 'later', 'dekmantel', 'pride'])
   })
 
   it('…and DOES lead once the served weekend reaches it', () => {
     const milkshake = P({ id: 'milkshake', when: 'Sat 25 – Sun 26 Jul', top: true })
     const ownWeekend = new Date(2026, 6, 26, 23, 59, 59)    // Sun 26 Jul
-    expect(orderServed([P({ id: 'mid' }), milkshake], ownWeekend)[0].id).toBe('milkshake')
+    expect(orderServed([P({ id: 'mid' }), milkshake], ownWeekend, NOW)[0].id).toBe('milkshake')
   })
 
   it('an already-running "Until …" TOP leads (end-anchored = underway)', () => {
     const expo = P({ id: 'expo', when: 'Until Sun 27 Sep', top: true })
-    expect(orderServed([P({ id: 'mid' }), expo], END)[0].id).toBe('expo')
+    expect(orderServed([P({ id: 'mid' }), expo], END, NOW)[0].id).toBe('expo')
   })
 
   it('a hand-dragged pile order (pilePos) deals first, in exact order, above every tier', () => {
@@ -189,7 +193,7 @@ describe('orderServed — the pile order, with the TOP weekend gate', () => {
     const second = P({ id: 'second', when: 'Sat 25 – Sun 26 Jul', pilePos: 2 })  // even a future pick — human override
     const top = P({ id: 'top', when: 'Daily', top: true })
     const lead = P({ id: 'lead', lead: true })
-    const out = orderServed([lead, top, second, first], END)
+    const out = orderServed([lead, top, second, first], END, NOW)
     expect(out.map((p) => p.id)).toEqual(['first', 'second', 'top', 'lead'])
   })
 })

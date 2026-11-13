@@ -50,9 +50,9 @@ function dayOf(p: Pick, now: Date): 'Saturday' | 'Sunday' | 'Both days' {
 }
 const hourOf = (p: Pick, now: Date) => { const s = slot(p, now); return /·/.test(s.text) ? s.text.split('·').pop()!.replace(/&nbsp;/g, '').trim() : '' }
 /** The app's chip text: "Sat 31 Oct · 12:00". */
-const chipText = (p: Pick) => esc(fixWhen(p.when || '').split(' · ').slice(0, 2).join(' · '))
+const chipText = (p: Pick, now: Date) => esc(fixWhen(p.when || '', now).split(' · ').slice(0, 2).join(' · '))
 /** The meta line under a title: "Handelsplein · Sat 31 Oct · 12:00". */
-const metaLine = (p: Pick) => [realVenue(p), fixWhen(p.when || '')].filter(Boolean).map(esc).join(' &nbsp;·&nbsp; ')
+const metaLine = (p: Pick, now: Date) => [realVenue(p), fixWhen(p.when || '', now)].filter(Boolean).map(esc).join(' &nbsp;·&nbsp; ')
 /** "13° and cloudy" — the unfurl's line. A line per day when the two days differ. */
 function skyLine(wx: Wx | null): string {
   if (!wx?.days.length) return ''
@@ -71,7 +71,7 @@ function card(p: Pick, w: number, h: number, now: Date, opts: { title: number; r
   const r = opts.radius ?? 20
   const b = band((dayOf(p, now) === 'Sunday' ? 'COOL' : 'WARM'))
   const bg = p.image ? `background="${esc(cut(p, w * 2, h * 2))}" style="background:${INK} url('${esc(cut(p, w * 2, h * 2))}') center/cover no-repeat;` : `style="background:${b.bg};`
-  const chip = `<table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding:5px 9px;border-radius:8px;background:rgba(28,42,51,.82);font:400 11px/1.2 ${FONT};color:#ffffff;white-space:nowrap;">${chipText(p)}</td></tr></table>`
+  const chip = `<table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding:5px 9px;border-radius:8px;background:rgba(28,42,51,.82);font:400 11px/1.2 ${FONT};color:#ffffff;white-space:nowrap;">${chipText(p, now)}</td></tr></table>`
   const num = opts.n != null ? `<span style="color:${ACCENT};">${opts.n}</span>&nbsp; ` : ''
   return `
             <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" class="${opts.cls ?? ''}" style="border-radius:${r}px;overflow:hidden;">
@@ -104,7 +104,7 @@ function row(p: Pick, n: number, now: Date, size: number, titlePx: number, last:
             <td class="thc" width="${size}" valign="middle" style="width:${size}px;padding:14px 16px 14px 0;">${thumb}</td>
             <td valign="middle" style="padding:14px 0;">
               <div class="ink" style="font:600 ${titlePx}px/1.12 ${DISPLAY};letter-spacing:-.02em;color:${INK};"><a href="${esc(p.link)}" class="ink lnk" style="color:${INK};">${esc(p.title)}</a></div>
-              <div class="ink3" style="margin-top:5px;font:400 12.5px/1.4 ${FONT};color:${INK3};">${metaLine(p)}</div>
+              <div class="ink3" style="margin-top:5px;font:400 12.5px/1.4 ${FONT};color:${INK3};">${metaLine(p, now)}</div>
               ${trace(p) ? `<div class="ink3" style="margin-top:5px;font:400 10px/1.4 ${MONO};color:${INK3};">${esc(trace(p))}</div>` : ''}
             </td>
           </tr>

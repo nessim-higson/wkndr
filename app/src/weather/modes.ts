@@ -398,13 +398,15 @@ export function moreLikeOrder(ranked: Pick[], ref: Pick, mode: Mode): Pick[] {
  * the endless deck and the list for the ticket-buyers, but the front is all THIS weekend.
  * Future TOPs head the horizon, so they surface first as their weekend approaches.
  */
-export function orderServed(arr: Pick[], end: Date = upcomingWeekendEnd()): Pick[] {
+export function orderServed(arr: Pick[], end: Date = upcomingWeekendEnd(), now: Date = new Date()): Pick[] {
   // THE HUMAN OVERRIDE — a hand-dragged pile order (board ⠿ → weekly `pile` → pilePos) deals
   // first, in exactly that order, above every tier. Time gates don't apply to it: if Ness put a
   // card there on purpose, it opens the deck. Expires weekly with the slate.
   const hand = arr.filter((p) => p.pilePos != null).sort((a, b) => a.pilePos! - b.pilePos!)
   const rest = arr.filter((p) => p.pilePos == null)
-  const active = (p: Pick) => whenActiveBy(p.when, end)
+  // `now` is the clock bare dates resolve against (the year of "Opens 8 Jul"); production leaves it
+  // on the real clock, tests pin it so a fixture can't drift into next year as the months pass.
+  const active = (p: Pick) => whenActiveBy(p.when, end, now)
   const opens = (p: Pick) => !!p.top && active(p)
   const mid = (p: Pick) => !opens(p) && active(p)
   return holdBackImageless([
