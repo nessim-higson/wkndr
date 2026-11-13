@@ -14,6 +14,30 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.12.7 · app] — 2026-11-13 — THE TWO PILES + ONBOARDING (two proto branches graduate)
+Ness, 13 Nov: "if I have 17 saved items, I don't want to send my partner 17 items … I want to be very
+selective … and if there's evergreen things in there, I can also select that." And: "I'd love to play
+around more with the onboarding flow." Two `proto/**` branches, judged on their previews, land together.
+- **The two piles** (`proto/two-piles`, option C of the share prototype). The Later shelf becomes the
+  **Library** (later dates, open runs, the evergreens); **This weekend** is the plan and the ONLY thing a
+  share sends. Dates decide the split by default (the V.12.2 shelf rule); two pills move a save across
+  for this weekend only — **→ Library** / **+ Weekend** — and the override (`lib/plan.ts`,
+  `wkndr.plan.v1`) is keyed by the served weekend's end date, so next week every save sits where its
+  date puts it again. The share sheet drops the weekend-card preview for the same two tabs and pills;
+  the button reads **Share this weekend · N** and the link is built from the plan. A Library row that
+  comes round next names it ("Next weekend"); an evergreen pushed out reads "Any week". The plan is
+  on-device for now — carrying it in the account contract so two phones agree is the next step.
+- **Onboarding, phase 1** (`proto/onboarding`, 4 Nov): "a minute to learn your taste" on first open —
+  arrive → who's with you → six this-or-that pairs on real cards → twelve swipes → how you take rain →
+  the taste card (+ optional sign-in). Every answer writes into the same on-device Taste the swipes
+  write, in the vocabulary the model already reads (`onboarding.ts`, tested), so the weather still leads.
+  First run only, never over a shared round or the curation door; `?onboard=1` forces it, `?onboard=0`
+  never shows it; a phone that already has a taste is never asked to start over. Also reachable from the
+  `?dev=1` menu (👋 Onboarding).
+- `tests/geo.test.ts`: venue-less picks (Little Black Book tips carry the place in the title) sit outside
+  the pin-coverage ratio — 32/115 on the 13 Nov feed had tipped it to 0.496 and would have turned
+  Monday's refresh gate red, the same gate that served the 29 Oct feed into November.
+
 ## [V.12.6 · app] — 2026-10-30 — THE HOUSE FOUR (the brief in WKNDR's own language, desktop and phone)
 Ness: "the designs look mobile-first, I'd like to see mobile and desktop … the design language for
 WKNDR is pretty straightforward — the unfurl felt great, you don't need to make this radical. 3–4

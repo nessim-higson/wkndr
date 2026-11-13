@@ -5,7 +5,7 @@ FIRST in a new chat. For strategy + backlog see `docs/backlog.md`; for the pipel
 `docs/pipeline-architecture.md` + `docs/source-map.md`; for **who may write to the deck vs to a personal
 profile** (board / Tune / airlock — read before touching either) see `docs/curation-surfaces.md`; for the
 **board roadmap** (auto-compile tracks) see `docs/board-roadmap.md`; for full **version history** see
-`CHANGELOG.md` (current to app **V.12.6** / board V.10) and the **git log / tags**. Onboarding:
+`CHANGELOG.md` (current to app **V.12.7** — the two piles + first-run onboarding, 2026-11-13 / board V.10) and the **git log / tags**. Onboarding:
 `CLAUDE.md`; for any coding agent (Codex included) **`AGENTS.md`** is the working manual and
 `docs/variations/` the prototype protocol + the open briefs. App lives in `/app` (Vite + React + TS, run with `bun`); ships to **Cloudflare Pages**
 (`wkndr.xyz` + `app.wkndr.xyz`) **and** GitHub Pages (legacy, keeps old share links alive)._
