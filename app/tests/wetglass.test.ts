@@ -30,6 +30,14 @@ describe('wet glass recipes', () => {
     expect(WET_RECIPES.storm.map).not.toBe(WET_RECIPES.rain.map)   // heavier water, not the same photo darker
     expect(WET_RECIPES.storm.dim).toBeLessThan(WET_RECIPES.rain.dim)
   })
+  it('rain in the air falls only where it rains: the storm is the full fall, the front a few streaks, snow is flakes not streaks', () => {
+    for (const s of GLASS_SCENES) { expect(WET_RECIPES[s].rain).toBeGreaterThanOrEqual(0); expect(WET_RECIPES[s].rain).toBeLessThanOrEqual(1) }
+    expect(WET_RECIPES.storm.rain).toBeGreaterThan(WET_RECIPES.rain.rain)
+    expect(WET_RECIPES.storm.rain).toBeLessThanOrEqual(1)
+    expect(WET_RECIPES.rain.rain).toBeGreaterThan(WET_RECIPES.mixed.rain)
+    expect(WET_RECIPES.mixed.rain).toBeGreaterThan(0)
+    for (const s of ['sunny', 'overcast', 'mist', 'snow', 'evening'] as const) expect(WET_RECIPES[s].rain).toBe(0)
+  })
   it('fog is condensation with only fine water; snow is flakes in the air, not on the pane', () => {
     expect(WET_RECIPES.mist.fog).toBeGreaterThan(.7)
     expect(WET_RECIPES.mist.wet).toBeLessThan(.5)
