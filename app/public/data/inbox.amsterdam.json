@@ -1,23 +1,49 @@
 {
- "generatedAt": "2026-11-14T12:23:25.588Z",
- "count": 7,
+ "generatedAt": "2026-11-15T12:53:23.401Z",
+ "count": 10,
  "inbox": [
   {
-   "id": "web-iams-handels-agrippina-met-magdalena-kozena-and-julia-lezhneva",
-   "title": "Händels Agrippina met Magdalena Kožená & Julia Lezhneva",
+   "id": "web-iams-ud-festival-oum",
+   "title": "UD Festival: Oum",
    "venue": "The Royal Concertgebouw Amsterdam",
    "area": "Concertgebouwplein 10",
-   "when": "Sat 14 Nov · 13:00",
+   "when": "Sun 15 Nov · 20:15",
+   "category": "out",
+   "freshness": "weekend",
+   "outdoor": true,
+   "kid": false,
+   "price": "ticketed",
+   "image": "https://app.thefeedfactory.nl/api/assets/6a35cf6309e4a23d16678505/Ud-fesival.webp",
+   "blurb": "Darija, poetry and contemporary influences Moroccan singer, songwriter, and composer Oum was originally trained as an architect, but at the beginning of this century, she chose music.",
+   "why": "On I amsterdam",
+   "source": "I amsterdam",
+   "link": "https://www.iamsterdam.com/en/whats-on/calendar/festivals/events/ud-festival-oum",
+   "weatherFit": [
+    "HOT",
+    "WARM",
+    "COOL"
+   ],
+   "verify": false,
+   "firstSeen": "2026-11-15",
+   "inboxScore": 7.7,
+   "scoreWhy": "seen today · on this weekend · taste: festival"
+  },
+  {
+   "id": "web-iams-kleutersinfonietta-stuiterstokken-4-en-5-jaar",
+   "title": "KleuterSinfonietta: StuiterStokken (4 en 5 jaar)",
+   "venue": "The Royal Concertgebouw Amsterdam",
+   "area": "Concertgebouwplein 10",
+   "when": "Until Sun 18 Apr",
    "category": "live",
    "freshness": "weekend",
    "outdoor": false,
    "kid": false,
    "price": "ticketed",
-   "image": "https://app.thefeedfactory.nl/api/assets/69fdb5c43d38e555d7be4942/NTRZM-2026-11-14-Magdalena-Kozena_2269-c-Julia-Wesely-web.webp",
-   "blurb": "First major triumph 'To rule, deceit is legitimate.' That is the lesson conveyed by librettist Vincenzo Grimani and composer Georg Friedrich Handel in their opera Agrippina .",
+   "image": "https://app.thefeedfactory.nl/api/assets/6a0736887948d62e8015a119/Stuiterstokken-c-Caroline-Ellerbeck-illustratie.webp",
+   "blurb": "Discover Bouncing Sticks with KleuterSinfonietta KleuterSinfonietta invites you and your children (aged 4 and 5) to an unforgettable musical performance.",
    "why": "On I amsterdam",
    "source": "I amsterdam",
-   "link": "https://www.iamsterdam.com/en/whats-on/calendar/concerts-and-music/concerts/handels-agrippina-met-magdalena-kozena-and-julia-lezhneva",
+   "link": "https://www.iamsterdam.com/en/whats-on/calendar/concerts-and-music/concerts/kleutersinfonietta-stuiterstokken-4-en-5-jaar",
    "weatherFit": [
     "HOT",
     "WARM",
@@ -26,12 +52,92 @@
     "VOLATILE"
    ],
    "verify": false,
-   "_gallery": [
-    "https://app.thefeedfactory.nl/api/assets/69fdb5c53d38e555d7be4943/NTRZM-2026-11-14-Les-Accents-c-Amandine-Lauriol-web.webp"
-   ],
-   "firstSeen": "2026-11-14",
+   "firstSeen": "2026-11-15",
    "inboxScore": 7,
    "scoreWhy": "seen today · on this weekend"
+  },
+  {
+   "id": "web-iams-joshua-bell-en-peter-dugan-spelen-beethoven-saint-saens-en-bach",
+   "title": "Joshua Bell en Peter Dugan spelen Beethoven, Saint-Saëns en Bach",
+   "venue": "The Royal Concertgebouw Amsterdam",
+   "area": "Concertgebouwplein 10",
+   "when": "Sun 15 Nov · 14:15",
+   "category": "live",
+   "freshness": "weekend",
+   "outdoor": false,
+   "kid": false,
+   "price": "ticketed",
+   "image": "https://app.thefeedfactory.nl/api/assets/65f8e469aebe570d1ee612b6/Joshua-Bell-c-Phill-Knott.webp",
+   "blurb": "Joshua Bell and Peter Dugan Violinist Joshua Bell once said of classical music: 'We tell the stories over and over again, but they are relevant and very personal stories.' And Bell always tells his…",
+   "why": "On I amsterdam",
+   "source": "I amsterdam",
+   "link": "https://www.iamsterdam.com/en/whats-on/calendar/concerts-and-music/concerts/joshua-bell-en-peter-dugan-spelen-beethoven-saint-saens-en-bach",
+   "weatherFit": [
+    "HOT",
+    "WARM",
+    "COOL",
+    "COLD_WET",
+    "VOLATILE"
+   ],
+   "verify": false,
+   "firstSeen": "2026-11-15",
+   "inboxScore": 7,
+   "scoreWhy": "seen today · on this weekend"
+  },
+  {
+   "id": "web-iams-pianist-alice-sara-ott-speelt-beethoven-met-nederlands-philharmonisch",
+   "title": "Pianist Alice Sara Ott speelt Beethoven met Nederlands Philharmonisch",
+   "venue": "The Royal Concertgebouw Amsterdam",
+   "area": "Concertgebouwplein 10",
+   "when": "Sun 15 Nov · 14:15",
+   "category": "live",
+   "freshness": "weekend",
+   "outdoor": false,
+   "kid": false,
+   "price": "ticketed",
+   "image": "https://app.thefeedfactory.nl/api/assets/69fdb5cb3d38e555d7be494f/26C46S-Alice-Sara-Ott-Julian-Baumann-web.webp",
+   "blurb": "Alice Sara Ott with Beethoven's Piano Concerto No. 4 Barefoot on the pedals, Alice Sara Ott conquered the world's stages with her breathtaking piano playing.",
+   "why": "On I amsterdam",
+   "source": "I amsterdam",
+   "link": "https://www.iamsterdam.com/en/whats-on/calendar/concerts-and-music/concerts/pianist-alice-sara-ott-speelt-beethoven-met-nederlands-philharmonisch",
+   "weatherFit": [
+    "HOT",
+    "WARM",
+    "COOL",
+    "COLD_WET",
+    "VOLATILE"
+   ],
+   "verify": false,
+   "firstSeen": "2026-11-15",
+   "inboxScore": 7,
+   "scoreWhy": "seen today · on this weekend"
+  },
+  {
+   "id": "rss-het-parool-ps-hoe-kan-je-op-je-dertiende-al-z-cool-zijn",
+   "title": "‘Hoe kan je op je dertiende al zó cool zijn?’",
+   "venue": "Het Parool PS",
+   "area": "",
+   "when": "This weekend",
+   "category": "out",
+   "freshness": "weekend",
+   "outdoor": false,
+   "kid": false,
+   "price": "",
+   "blurb": "Featured this week by Het Parool PS.",
+   "why": "In this week's Het Parool PS",
+   "source": "Het Parool PS",
+   "link": "https://www.parool.nl/ps/hoe-kan-je-op-je-dertiende-al-zo-cool-zijn~ba9dd391/",
+   "weatherFit": [
+    "HOT",
+    "WARM",
+    "COOL",
+    "COLD_WET",
+    "VOLATILE"
+   ],
+   "verify": true,
+   "firstSeen": "2026-11-15",
+   "inboxScore": 3,
+   "scoreWhy": "seen today"
   },
   {
    "id": "rss-het-parool-ps-de-stijl-van-sanne-36-mensen-denken-vaak-dat-ik-",
@@ -57,8 +163,8 @@
    ],
    "verify": true,
    "firstSeen": "2026-11-14",
-   "inboxScore": 3.3,
-   "scoreWhy": "seen today · taste: concert"
+   "inboxScore": 3,
+   "scoreWhy": "seen 1d ago · taste: concert"
   },
   {
    "id": "rss-het-parool-ps-in-24-europese-landen-wordt-mijn-medicijn-w-l-ve",
@@ -84,8 +190,8 @@
    ],
    "verify": true,
    "firstSeen": "2026-11-14",
-   "inboxScore": 3.3,
-   "scoreWhy": "seen today · taste: land"
+   "inboxScore": 3,
+   "scoreWhy": "seen 1d ago · taste: land"
   },
   {
    "id": "rss-het-parool-ps-als-een-scootmobiel-in-de-stad-kapotgaat-komt-se",
@@ -111,8 +217,8 @@
    ],
    "verify": true,
    "firstSeen": "2026-11-14",
-   "inboxScore": 3,
-   "scoreWhy": "seen today"
+   "inboxScore": 2.7,
+   "scoreWhy": "seen 1d ago"
   },
   {
    "id": "rss-het-parool-ps-ook-in-the-year-of-the-ghost-richt-louis-hothoth",
@@ -138,8 +244,8 @@
    ],
    "verify": true,
    "firstSeen": "2026-11-14",
-   "inboxScore": 3,
-   "scoreWhy": "seen today"
+   "inboxScore": 2.7,
+   "scoreWhy": "seen 1d ago"
   },
   {
    "id": "rss-het-parool-ps-relaties-komen-en-gaan-maar-konijn-flappie-12-wa",
@@ -165,35 +271,8 @@
    ],
    "verify": true,
    "firstSeen": "2026-11-14",
-   "inboxScore": 3,
-   "scoreWhy": "seen today"
-  },
-  {
-   "id": "rss-het-parool-ps-vintage-is-hot-en-daar-profiteren-deze-handelare",
-   "title": "Vintage is hot en daar profiteren deze handelaren van: ‘Door The Odyssey zien we nu een in",
-   "venue": "Het Parool PS",
-   "area": "",
-   "when": "This weekend",
-   "category": "out",
-   "freshness": "weekend",
-   "outdoor": false,
-   "kid": false,
-   "price": "",
-   "blurb": "Featured this week by Het Parool PS.",
-   "why": "In this week's Het Parool PS",
-   "source": "Het Parool PS",
-   "link": "https://www.parool.nl/ps/vintage-is-hot-en-daar-profiteren-deze-handelaren-van-door-the-odyssey-zien-we-nu-een-interesse-in-klassieke-borstbeelden~ba74bf9f/",
-   "weatherFit": [
-    "HOT",
-    "WARM",
-    "COOL",
-    "COLD_WET",
-    "VOLATILE"
-   ],
-   "verify": true,
-   "firstSeen": "2026-11-14",
-   "inboxScore": 3,
-   "scoreWhy": "seen today"
+   "inboxScore": 2.7,
+   "scoreWhy": "seen 1d ago"
   }
  ]
 }
