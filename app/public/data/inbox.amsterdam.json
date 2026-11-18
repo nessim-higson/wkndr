@@ -1,6 +1,6 @@
 {
- "generatedAt": "2026-11-17T14:45:38.107Z",
- "count": 6,
+ "generatedAt": "2026-11-18T14:25:08.739Z",
+ "count": 8,
  "inbox": [
   {
    "id": "web-iams-science-and-cocktails-fungal-networks-and-the-wave-nature-of-life",
@@ -27,12 +27,43 @@
    ],
    "verify": false,
    "firstSeen": "2026-11-17",
-   "inboxScore": 7.7,
-   "scoreWhy": "seen today · on this weekend · taste: life"
+   "inboxScore": 7.4,
+   "scoreWhy": "seen 1d ago · on this weekend · taste: life"
   },
   {
-   "id": "rss-het-parool-ps-de-beste-amsterdamse-restaurants-die-open-zijn-m",
-   "title": "De beste Amsterdamse restaurants die open zijn met kerst (en die nu nog plek hebben)",
+   "id": "web-iams-herman-kruyder-in-singer-laren",
+   "title": "Herman Kruyder in Singer Laren",
+   "venue": "Singer Laren",
+   "area": "Laren nh",
+   "when": "Until Sun 14 Feb",
+   "category": "art",
+   "freshness": "weekend",
+   "outdoor": false,
+   "kid": false,
+   "price": "ticketed",
+   "image": "https://app.thefeedfactory.nl/api/assets/6aa950c306b79235624cea62/00783.webp",
+   "blurb": "Discover the expressionist Herman Kruyder Herman Kruyder (1881–1935) was an important Expressionist artist. Singer Laren is currently exhibiting his work.",
+   "why": "On I amsterdam",
+   "source": "I amsterdam",
+   "link": "https://www.iamsterdam.com/en/whats-on/calendar/exhibitions/all-exhibitions/herman-kruyder-in-singer-laren",
+   "weatherFit": [
+    "HOT",
+    "WARM",
+    "COOL",
+    "COLD_WET",
+    "VOLATILE"
+   ],
+   "verify": false,
+   "_gallery": [
+    "https://app.thefeedfactory.nl/api/assets/6aa953d306b79235624cea74/beelddrager_klein.webp"
+   ],
+   "firstSeen": "2026-11-18",
+   "inboxScore": 7,
+   "scoreWhy": "seen today · on this weekend"
+  },
+  {
+   "id": "rss-het-parool-ps-charlotte-30-en-darius-29-ik-dacht-wie-is-die-le",
+   "title": "Charlotte (30) en Darius (29): ‘Ik dacht: wie is die leuke flierefluiter die de hele groep",
    "venue": "Het Parool PS",
    "area": "",
    "when": "This weekend",
@@ -44,7 +75,7 @@
    "blurb": "Featured this week by Het Parool PS.",
    "why": "In this week's Het Parool PS",
    "source": "Het Parool PS",
-   "link": "https://www.parool.nl/uit-in-amsterdam/de-beste-amsterdamse-restaurants-die-open-zijn-met-kerst-en-die-nu-nog-plek-hebben~bae28024/",
+   "link": "https://www.parool.nl/ps/charlotte-30-en-darius-29-ik-dacht-wie-is-die-leuke-flierefluiter-die-de-hele-groep-aan-het-lachen-maakt~b45d011e/",
    "weatherFit": [
     "HOT",
     "WARM",
@@ -53,67 +84,13 @@
     "VOLATILE"
    ],
    "verify": true,
-   "firstSeen": "2026-11-17",
-   "inboxScore": 3.6,
-   "scoreWhy": "seen today · taste: amsterdamse open"
-  },
-  {
-   "id": "rss-het-parool-ps-de-west-vlaamse-chef-wim-ballieu-43-weet-hoe-ver",
-   "title": "De West-Vlaamse chef Wim Ballieu (43) weet hoe verschillend Nederlandse en Belgische gerec",
-   "venue": "Het Parool PS",
-   "area": "",
-   "when": "This weekend",
-   "category": "out",
-   "freshness": "weekend",
-   "outdoor": false,
-   "kid": false,
-   "price": "",
-   "blurb": "Featured this week by Het Parool PS.",
-   "why": "In this week's Het Parool PS",
-   "source": "Het Parool PS",
-   "link": "https://www.parool.nl/ps/de-west-vlaamse-chef-wim-ballieu-43-weet-hoe-verschillend-nederlandse-en-belgische-gerechten-zijn-wat-maakt-speculaas-en-friet-typisch-belgisch-of-juist-nederlands~b866dce10/",
-   "weatherFit": [
-    "HOT",
-    "WARM",
-    "COOL",
-    "COLD_WET",
-    "VOLATILE"
-   ],
-   "verify": true,
-   "firstSeen": "2026-11-17",
-   "inboxScore": 3.3,
-   "scoreWhy": "seen today · taste: chef"
-  },
-  {
-   "id": "rss-het-parool-ps-cirkels-in-de-stad",
-   "title": "Cirkels in de stad",
-   "venue": "Het Parool PS",
-   "area": "",
-   "when": "This weekend",
-   "category": "out",
-   "freshness": "weekend",
-   "outdoor": false,
-   "kid": false,
-   "price": "",
-   "blurb": "Featured this week by Het Parool PS.",
-   "why": "In this week's Het Parool PS",
-   "source": "Het Parool PS",
-   "link": "https://www.parool.nl/ps/cirkels-in-de-stad~bf782d1c/",
-   "weatherFit": [
-    "HOT",
-    "WARM",
-    "COOL",
-    "COLD_WET",
-    "VOLATILE"
-   ],
-   "verify": true,
-   "firstSeen": "2026-11-17",
+   "firstSeen": "2026-11-18",
    "inboxScore": 3,
    "scoreWhy": "seen today"
   },
   {
-   "id": "rss-het-parool-ps-door-te-tekenen-kon-ex-gedetineerde-genge-51-ont",
-   "title": "Door te tekenen kon ex-gedetineerde Genge (51) ‘ontsnappen’ aan zijn cel: ‘Potloden scherp",
+   "id": "rss-het-parool-ps-joost-oomen-36-en-thomas-verbogt-73-schrijven-sa",
+   "title": "Joost Oomen (36) en Thomas Verbogt (73) schrijven samen over het alledaagse: ‘We maken nik",
    "venue": "Het Parool PS",
    "area": "",
    "when": "This weekend",
@@ -125,7 +102,7 @@
    "blurb": "Featured this week by Het Parool PS.",
    "why": "In this week's Het Parool PS",
    "source": "Het Parool PS",
-   "link": "https://www.parool.nl/ps/door-te-tekenen-kon-ex-gedetineerde-genge-51-ontsnappen-aan-zijn-cel-potloden-scherpte-ik-achter-de-wc-pot-zodat-niemand-het-zag~bb358cdc/",
+   "link": "https://www.parool.nl/ps/joost-oomen-36-en-thomas-verbogt-73-schrijven-samen-over-het-alledaagse-we-maken-niks-mooier-dan-het-is~b833128f/",
    "weatherFit": [
     "HOT",
     "WARM",
@@ -134,13 +111,13 @@
     "VOLATILE"
    ],
    "verify": true,
-   "firstSeen": "2026-11-17",
+   "firstSeen": "2026-11-18",
    "inboxScore": 3,
    "scoreWhy": "seen today"
   },
   {
-   "id": "rss-het-parool-ps-nai-aan-de-de-ruijterkade-wil-een-nederlandse-sa",
-   "title": "Nai!! aan de De Ruijterkade wil een Nederlandse sakecultuur introduceren: ‘Fokking goede s",
+   "id": "rss-het-parool-ps-recensie-flamingo-over-elkaar-buitelende-vormen-",
+   "title": "Recensie Flamingo: over elkaar buitelende vormen, beelden en muzikale keuzes",
    "venue": "Het Parool PS",
    "area": "",
    "when": "This weekend",
@@ -152,7 +129,7 @@
    "blurb": "Featured this week by Het Parool PS.",
    "why": "In this week's Het Parool PS",
    "source": "Het Parool PS",
-   "link": "https://www.parool.nl/uit-in-amsterdam/nai-aan-de-de-ruijterkade-wil-een-nederlandse-sakecultuur-introduceren-fokking-goede-sake-zonder-verplicht-japans-diner~ba7dc319/",
+   "link": "https://www.parool.nl/kunst-media/recensie-flamingo-over-elkaar-buitelende-vormen-beelden-en-muzikale-keuzes~b6dd19e4/",
    "weatherFit": [
     "HOT",
     "WARM",
@@ -161,7 +138,88 @@
     "VOLATILE"
    ],
    "verify": true,
-   "firstSeen": "2026-11-17",
+   "firstSeen": "2026-11-18",
+   "inboxScore": 3,
+   "scoreWhy": "seen today"
+  },
+  {
+   "id": "rss-het-parool-ps-solodebuut-elise-van-staveren-26-tijdens-amsterd",
+   "title": "Solodebuut Elise van Staveren (26) tijdens Amsterdam Art Week: ‘Hoe tijdelijker iets is, h",
+   "venue": "Het Parool PS",
+   "area": "",
+   "when": "This weekend",
+   "category": "out",
+   "freshness": "weekend",
+   "outdoor": false,
+   "kid": false,
+   "price": "",
+   "blurb": "Featured this week by Het Parool PS.",
+   "why": "In this week's Het Parool PS",
+   "source": "Het Parool PS",
+   "link": "https://www.parool.nl/ps/solodebuut-elise-van-staveren-26-tijdens-amsterdam-art-week-hoe-tijdelijker-iets-is-hoe-groter-de-noodzaak-voor-mij-om-het-te-vereeuwigen-in-zilver~bae32cb8/",
+   "weatherFit": [
+    "HOT",
+    "WARM",
+    "COOL",
+    "COLD_WET",
+    "VOLATILE"
+   ],
+   "verify": true,
+   "firstSeen": "2026-11-18",
+   "inboxScore": 3,
+   "scoreWhy": "seen today"
+  },
+  {
+   "id": "rss-het-parool-ps-tatiana-huezo-is-eregast-tijdens-idfa-2026-sommi",
+   "title": "Tatiana Huezo is eregast tijdens Idfa 2026: ‘Sommige verhalen kloppen letterlijk op mijn d",
+   "venue": "Het Parool PS",
+   "area": "",
+   "when": "This weekend",
+   "category": "out",
+   "freshness": "weekend",
+   "outdoor": false,
+   "kid": false,
+   "price": "",
+   "blurb": "Featured this week by Het Parool PS.",
+   "why": "In this week's Het Parool PS",
+   "source": "Het Parool PS",
+   "link": "https://www.parool.nl/kunst-media/tatiana-huezo-is-eregast-tijdens-idfa-2026-sommige-verhalen-kloppen-letterlijk-op-mijn-deur~b84d19ac/",
+   "weatherFit": [
+    "HOT",
+    "WARM",
+    "COOL",
+    "COLD_WET",
+    "VOLATILE"
+   ],
+   "verify": true,
+   "firstSeen": "2026-11-18",
+   "inboxScore": 3,
+   "scoreWhy": "seen today"
+  },
+  {
+   "id": "rss-het-parool-ps-we-willen-dat-het-grof-ongemakkelijk-en-een-beet",
+   "title": "‘We willen dat het grof, ongemakkelijk en een beetje geil is’: Floor van der Jeugd (27) en",
+   "venue": "Het Parool PS",
+   "area": "",
+   "when": "This weekend",
+   "category": "out",
+   "freshness": "weekend",
+   "outdoor": false,
+   "kid": false,
+   "price": "",
+   "blurb": "Featured this week by Het Parool PS.",
+   "why": "In this week's Het Parool PS",
+   "source": "Het Parool PS",
+   "link": "https://www.parool.nl/kunst-media/we-willen-dat-het-grof-ongemakkelijk-en-een-beetje-geil-is-floor-van-der-jeugd-27-en-aska-hayakawa-26-over-queer-liefdesverhaal-omelas~b2219c29/",
+   "weatherFit": [
+    "HOT",
+    "WARM",
+    "COOL",
+    "COLD_WET",
+    "VOLATILE"
+   ],
+   "verify": true,
+   "firstSeen": "2026-11-18",
    "inboxScore": 3,
    "scoreWhy": "seen today"
   }
