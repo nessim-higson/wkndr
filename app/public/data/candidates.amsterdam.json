@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-11-16T20:17:43.294Z",
-  "count": 10,
+  "generatedAt": "2026-11-19T19:06:48.884Z",
+  "count": 11,
   "candidates": [
     {
       "id": "web-lbb-tips-qru-flea-market",
@@ -14,6 +14,7 @@
       "blurb": "For old-fashioned browsing through second-hand items, you can head to the QRU Flea Market on Spaklerweg. Expect a mix of vintage, clothing, curiosities, books, ",
       "source": "Your Little Black Book",
       "link": "https://qru.amsterdam/",
+      "buzz": 1,
       "weatherFit": [
         "HOT",
         "WARM",
@@ -24,7 +25,56 @@
       "kid": false,
       "price": "",
       "why": "One of LBB's weekend tips",
-      "editorScore": 4
+      "editorScore": 5
+    },
+    {
+      "id": "web-lbb-tips-whether-you-want-to-do-it-with-friends-on-a-date",
+      "title": "Whether you want to do it with friends, on a date, or just solo: Le Foodwalk Winter",
+      "venue": "",
+      "area": "",
+      "when": "Every Friday & Saturday",
+      "category": "out",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Flefoodwalk.nl%2Fassets%2Fstempelkaart.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.575&fpy=0.650&output=jpg&default=https%3A%2F%2Flefoodwalk.nl%2Fassets%2Fstempelkaart.jpg",
+      "imageWhy": "event-page",
+      "blurb": "Every Friday and Saturday, walk past the most beautiful lights in the city incl. 5 bites at restaurants along the way. Le Foodwalk Winter is back in Amsterdam. ",
+      "source": "Your Little Black Book",
+      "link": "https://www.yourlittleblackbook.me/en/LeFoodwalk-Winter-home",
+      "buzz": 1,
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL"
+      ],
+      "freshness": "always",
+      "outdoor": true,
+      "kid": false,
+      "price": "",
+      "why": "One of LBB's weekend tips",
+      "editorScore": 2
+    },
+    {
+      "id": "web-lbb-tips-art-design-vintage-market",
+      "title": "Art, Design & Vintage Market",
+      "venue": "De Hallen Amsterdam, Hannie Dankbaarpassage 47, Amsterdam-We",
+      "area": "",
+      "when": "This weekend",
+      "category": "market",
+      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fthumb%2F3%2F30%2FFoodhallen_in_Oud-West_%2528Amsterdam%252C_The_Netherlands_2017%2529_%252834245643041%2529.jpg%2F1280px-Foodhallen_in_Oud-West_%2528Amsterdam%252C_The_Netherlands_2017%2529_%252834245643041%2529.jpg&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.575&output=jpg&default=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fthumb%2F3%2F30%2FFoodhallen_in_Oud-West_%2528Amsterdam%252C_The_Netherlands_2017%2529_%252834245643041%2529.jpg%2F1280px-Foodhallen_in_Oud-West_%2528Amsterdam%252C_The_Netherlands_2017%2529_%252834245643041%2529.jpg",
+      "imageWhy": "venue",
+      "blurb": "The Art, Design & Vintage Market will return to the Passage of De Hallen several times in the coming months. The stalls are filled with vintage design, art, cer",
+      "source": "Your Little Black Book",
+      "link": "https://www.dehallen-amsterdam.nl/agenda",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL"
+      ],
+      "freshness": "weekend",
+      "outdoor": true,
+      "kid": false,
+      "price": "",
+      "why": "One of LBB's weekend tips",
+      "editorScore": 6
     },
     {
       "id": "web-ra-2573385",
@@ -49,116 +99,18 @@
       "outdoor": false,
       "kid": false,
       "price": "",
-      "why": "299 going on RA",
+      "why": "303 going on RA",
       "editorScore": 1
     },
     {
-      "id": "web-scout-marocaine",
-      "title": "Marocaine",
-      "venue": "Marocaine (former 't Stuivertje)",
-      "area": "Hazenstraat, Jordaan",
-      "when": "Now open · dinner",
-      "category": "eat",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fmarocaine.nl%2Fwp-content%2Fuploads%2F2026%2F01%2FWhatsApp-Image-2026-01-26-at-15.01.49-1024x768.jpeg&w=800&h=1200&fit=cover&a=focal&fpx=0.500&fpy=0.500&output=jpg&default=https%3A%2F%2Fmarocaine.nl%2Fwp-content%2Fuploads%2F2026%2F01%2FWhatsApp-Image-2026-01-26-at-15.01.49-1024x768.jpeg",
-      "imageWhy": "organiser",
-      "blurb": "Chef Rachid El Mouhandiz, who scored a 9- in Het Parool, turns his Jordaan spot into a full ode to Moroccan cooking.",
-      "source": "Fresh find",
-      "link": "https://marocaine.nl/",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "freshness": "new",
-      "outdoor": false,
-      "kid": false,
-      "price": "€€",
-      "why": "Parool-9 chef goes full Moroccan"
-    },
-    {
-      "id": "web-scout-zuiver-wijnen",
-      "title": "Zuiver Wijnen",
-      "venue": "Zuiver Wijnen",
-      "area": "De Ruyterkade 143, Centrum",
-      "when": "Now open",
-      "category": "drink",
-      "image": "https://images.weserv.nl/?url=https%3A%2F%2Fzuiverwijnen.nl%2Fcdn%2Fshop%2Ffiles%2F000226440009.jpg%3Fv%3D1790693677%26width%3D2000&w=800&h=1200&fit=cover&a=focal&fpx=0.600&fpy=0.500&output=jpg&default=https%3A%2F%2Fzuiverwijnen.nl%2Fcdn%2Fshop%2Ffiles%2F000226440009.jpg%3Fv%3D1790693677%26width%3D2000",
-      "imageWhy": "event-page",
-      "blurb": "Natural wine bar and bottle shop on the IJ-side quay behind Central — low-intervention bottles without the ceremony.",
-      "source": "Fresh find",
-      "link": "https://www.zuiverwijnen.nl/",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "freshness": "new",
-      "outdoor": false,
-      "kid": false,
-      "price": "€€",
-      "why": "Natural wine on the quay"
-    },
-    {
-      "id": "web-lbb-coyote-vs-acme",
-      "title": "Coyote vs. Acme",
-      "venue": "Multiple cinemas (Pathé, Filmhallen, Kriterion, Vue)",
-      "area": "Amsterdam",
-      "when": "Now showing",
-      "category": "stage",
-      "imageWhy": "none",
-      "blurb": "Wile E. Coyote sues ACME for repeatedly failed traps in this animated-live-action comedy with clever courtroom antics.",
-      "source": "Your Little Black Book",
-      "link": "https://duckduckgo.com/?q=Coyote%20vs.%20Acme%20Multiple%20cinemas%20(Path%C3%A9%2C%20Filmhallen%2C%20Kriterion%2C%20Vue)%20Amsterdam",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "freshness": "weekend",
-      "outdoor": false,
-      "kid": true,
-      "price": "",
-      "why": "Clever animated-live-action family comedy"
-    },
-    {
-      "id": "web-lbb-de-grote-sinterklaasfilm-en-de-vliegende-pieten",
-      "title": "De Grote Sinterklaasfilm en de Vliegende Pieten",
-      "venue": "Pathé Bioscopen",
-      "area": "Amsterdam",
-      "when": "Now showing",
-      "category": "stage",
-      "imageWhy": "none",
-      "blurb": "Pieten face blizzard chaos on Package Eve; must save gift delivery with inventions, superpowers, and K3's help.",
-      "source": "Your Little Black Book",
-      "link": "https://duckduckgo.com/?q=De%20Grote%20Sinterklaasfilm%20en%20de%20Vliegende%20Pieten%20Path%C3%A9%20Bioscopen%20Amsterdam",
-      "weatherFit": [
-        "HOT",
-        "WARM",
-        "COOL",
-        "COLD_WET",
-        "VOLATILE"
-      ],
-      "freshness": "weekend",
-      "outdoor": false,
-      "kid": true,
-      "price": "",
-      "why": "Family-friendly Sint tradition with Pieten mischief"
-    },
-    {
-      "id": "web-lbb-tips-the-amsterdam-winter-terrace-opens-this-weekend-",
-      "title": "The Amsterdam Winter Terrace opens this weekend at the NDSM.",
+      "id": "web-lbb-tips-the-amsterdam-winter-terrace-at-the-ndsm",
+      "title": "The Amsterdam Winter Terrace at the NDSM",
       "venue": "",
       "area": "",
-      "when": "Until Sun 29 Nov",
+      "when": "Every weekend",
       "category": "out",
       "imageWhy": "none",
-      "blurb": "The Amsterdam Winter Terrace is back and is moving to Amsterdam-Noord for the first time this year! From Friday, November 13 to Sunday, November 29, the NDSM Lo",
+      "blurb": "The Amsterdam Winter Terrace is open again and can be found in Amsterdam-Noord this year! Until Sunday, November 29, the NDSM Loods transforms into a large, hea",
       "source": "Your Little Black Book",
       "link": "https://hetamsterdamsewinterterras.nl/",
       "weatherFit": [
@@ -166,16 +118,42 @@
         "WARM",
         "COOL"
       ],
-      "freshness": "weekend",
+      "freshness": "always",
       "outdoor": true,
       "kid": false,
       "price": "",
       "why": "One of LBB's weekend tips",
-      "editorScore": 6
+      "editorScore": 2
     },
     {
-      "id": "rss-het-parool-ps-tussen-de-rotterdamse-gesamtkunstwerken-van-mich",
-      "title": "Tussen de Rotterdamse gesamtkunstwerken van Michiel van Nieuwkerk en Berend Strik hangt oo",
+      "id": "web-iams-het-zwanenmeer",
+      "title": "Het Zwanenmeer",
+      "venue": "Nationale Opera & Ballet",
+      "area": "Amstel 3",
+      "when": "Until Sat 24 Apr",
+      "category": "stage",
+      "imageWhy": "none",
+      "blurb": "Rudi van Dantzig's iconic ballet featuring Prince Siegfried and Princess Odette set to Tchaikovsky's masterpiece with stunning costumes.",
+      "source": "I amsterdam · Your Little Black Book",
+      "link": "https://www.iamsterdam.com/uit/agenda/voorstellingen/theater-en-podiumkunsten/het-zwanenmeer",
+      "buzz": 2,
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "freshness": "always",
+      "outdoor": false,
+      "kid": true,
+      "price": "ticketed",
+      "why": "World's most famous ballet production",
+      "editorScore": 7
+    },
+    {
+      "id": "rss-het-parool-ps-idfa-s-doclab-met-je-smartphone-in-de-hand-virtu",
+      "title": "Idfa’s DocLab: met je smartphone in de hand virtueel terug naar het roemrijke protestverle",
       "venue": "Het Parool PS",
       "area": "",
       "when": "This weekend",
@@ -183,7 +161,56 @@
       "imageWhy": "none",
       "blurb": "Featured this week by Het Parool PS.",
       "source": "Het Parool PS",
-      "link": "https://www.parool.nl/ps/tussen-de-rotterdamse-gesamtkunstwerken-van-michiel-van-nieuwkerk-en-berend-strik-hangt-ook-een-portret-van-halsema~b9335d74/",
+      "link": "https://www.parool.nl/kunst-media/idfa-s-doclab-met-je-smartphone-in-de-hand-virtueel-terug-naar-het-roemrijke-protestverleden-van-de-spuistraat~bacffb01/",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "freshness": "weekend",
+      "outdoor": false,
+      "kid": false,
+      "price": "",
+      "why": "In this week's Het Parool PS",
+      "editorScore": 7
+    },
+    {
+      "id": "rss-het-parool-ps-duizend-bezichtigingen-maar-monique-58-kon-het-a",
+      "title": "Duizend bezichtigingen, maar Monique (58) kon het appartement op de Keizersgracht kopen: ‘",
+      "venue": "Het Parool PS",
+      "area": "",
+      "when": "This weekend",
+      "category": "out",
+      "imageWhy": "none",
+      "blurb": "Featured this week by Het Parool PS.",
+      "source": "Het Parool PS",
+      "link": "https://www.parool.nl/amsterdam/duizend-bezichtigingen-maar-monique-58-kon-het-appartement-op-de-keizersgracht-kopen-ik-schreef-een-brief-vanuit-mijn-hart~bd2ecbec/",
+      "weatherFit": [
+        "HOT",
+        "WARM",
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
+      ],
+      "freshness": "weekend",
+      "outdoor": false,
+      "kid": false,
+      "price": "",
+      "why": "In this week's Het Parool PS"
+    },
+    {
+      "id": "rss-het-parool-ps-stand-upcomedian-esther-van-der-voort-52-het-moe",
+      "title": "Stand-upcomedian Esther van der Voort (52): ‘Het moederschap is geweldig, maar óók een kut",
+      "venue": "Het Parool PS",
+      "area": "",
+      "when": "This weekend",
+      "category": "out",
+      "imageWhy": "none",
+      "blurb": "Featured this week by Het Parool PS.",
+      "source": "Het Parool PS",
+      "link": "https://www.parool.nl/kunst-media/stand-upcomedian-esther-van-der-voort-52-het-moederschap-is-geweldig-maar-ook-een-kutbaan~b73b85c6/",
       "weatherFit": [
         "HOT",
         "WARM",
@@ -222,26 +249,28 @@
       "why": "Village inn energy in West"
     },
     {
-      "id": "web-scout-flight-golf",
-      "title": "Flight Golf",
-      "venue": "Flight Golf",
-      "area": "NDSM-werf, Noord",
-      "when": "Now open",
-      "category": "out",
+      "id": "web-scout-de-poldervogel",
+      "title": "De Poldervogel",
+      "venue": "De Poldervogel",
+      "area": "Watergraafsmeer, Oost",
+      "when": "Just opened · dinner",
+      "category": "eat",
       "imageWhy": "none",
-      "blurb": "A golf clubhouse for people who don't own polos — simulators, cocktails and design-led interiors on the NDSM wharf.",
+      "blurb": "Alumni of De Kas and Vuurtoreneiland open a seasonal neighborhood restaurant — refined comfort food, sharing plates, zero fuss.",
       "source": "Fresh find",
-      "link": "https://www.flightgolf.nl/",
+      "link": "https://www.restaurantdepoldervogel.nl/",
       "weatherFit": [
         "HOT",
         "WARM",
-        "COOL"
+        "COOL",
+        "COLD_WET",
+        "VOLATILE"
       ],
       "freshness": "new",
-      "outdoor": true,
+      "outdoor": false,
       "kid": false,
       "price": "€€",
-      "why": "Golf, redesigned for non-golfers"
+      "why": "De Kas pedigree, buurt prices"
     }
   ]
 }
