@@ -1,7 +1,67 @@
 {
- "generatedAt": "2026-11-18T14:25:08.739Z",
- "count": 8,
+ "generatedAt": "2026-11-19T14:37:03.718Z",
+ "count": 9,
  "inbox": [
+  {
+   "id": "web-iams-four-seasons-1-5-years",
+   "title": "Four Seasons (1-5 years)",
+   "venue": "Black Cat Theatre",
+   "area": "Schakelstraat 2",
+   "when": "Until Sun 6 Dec",
+   "category": "stage",
+   "freshness": "weekend",
+   "outdoor": false,
+   "kid": false,
+   "price": "ticketed",
+   "image": "https://app.thefeedfactory.nl/api/assets/6671ea3d7a8a6741a55ffa91/VIERSEIZOENEN.webp",
+   "blurb": "About Black Cat Theatre Black Cat Theatre is a theatre for children from 1 year to 6 years old. We let the children enjoy, amaze and laugh by appealing to their imagination and creativity.",
+   "why": "On I amsterdam",
+   "source": "I amsterdam",
+   "link": "https://www.iamsterdam.com/en/whats-on/calendar/theatre-and-stage/stage/four-seasons-1-5-years",
+   "weatherFit": [
+    "HOT",
+    "WARM",
+    "COOL",
+    "COLD_WET",
+    "VOLATILE"
+   ],
+   "verify": false,
+   "_gallery": [
+    "https://app.thefeedfactory.nl/api/assets/6671ea9f7a8a6741a55ffa93/black_cat_theatre_theater-voorstelling-peuters-kleuters_vier-seizoenen_1.webp"
+   ],
+   "firstSeen": "2026-11-19",
+   "inboxScore": 7,
+   "scoreWhy": "seen today · on this weekend"
+  },
+  {
+   "id": "web-iams-the-comedy-underground",
+   "title": "The Comedy Underground",
+   "venue": "Theatre The Richel",
+   "area": "Nieuwezijds Voorburgwal 282",
+   "when": "Until Wed 9 Dec",
+   "category": "stage",
+   "freshness": "weekend",
+   "outdoor": false,
+   "kid": false,
+   "price": "ticketed",
+   "image": "https://app.thefeedfactory.nl/api/assets/6aadd32bf900a65001477d98/unnamed-1024x683.webp",
+   "blurb": "What to expect? This show is a staple of Amsterdam's international comedy scene, showcasing a wide variety of talent every week.",
+   "why": "On I amsterdam",
+   "source": "I amsterdam",
+   "link": "https://www.iamsterdam.com/en/whats-on/calendar/theatre-and-stage/stage/the-comedy-underground",
+   "weatherFit": [
+    "HOT",
+    "WARM",
+    "COOL",
+    "COLD_WET",
+    "VOLATILE"
+   ],
+   "verify": false,
+   "_site": "https://theaterderichel.nl/evenementen/the-comedy-underground-35/",
+   "firstSeen": "2026-11-19",
+   "inboxScore": 7,
+   "scoreWhy": "seen today · on this weekend"
+  },
   {
    "id": "web-iams-science-and-cocktails-fungal-networks-and-the-wave-nature-of-life",
    "title": "Science & Cocktails: Fungal networks and the wave nature of life",
@@ -27,8 +87,8 @@
    ],
    "verify": false,
    "firstSeen": "2026-11-17",
-   "inboxScore": 7.4,
-   "scoreWhy": "seen 1d ago · on this weekend · taste: life"
+   "inboxScore": 7,
+   "scoreWhy": "seen 2d ago · on this weekend · taste: life"
   },
   {
    "id": "web-iams-herman-kruyder-in-singer-laren",
@@ -58,12 +118,12 @@
     "https://app.thefeedfactory.nl/api/assets/6aa953d306b79235624cea74/beelddrager_klein.webp"
    ],
    "firstSeen": "2026-11-18",
-   "inboxScore": 7,
-   "scoreWhy": "seen today · on this weekend"
+   "inboxScore": 6.7,
+   "scoreWhy": "seen 1d ago · on this weekend"
   },
   {
-   "id": "rss-het-parool-ps-charlotte-30-en-darius-29-ik-dacht-wie-is-die-le",
-   "title": "Charlotte (30) en Darius (29): ‘Ik dacht: wie is die leuke flierefluiter die de hele groep",
+   "id": "rss-het-parool-ps-dit-is-de-nieuwe-directeur-van-het-stedelijk-mus",
+   "title": "Dit is de nieuwe directeur van het Stedelijk Museum",
    "venue": "Het Parool PS",
    "area": "",
    "when": "This weekend",
@@ -75,7 +135,7 @@
    "blurb": "Featured this week by Het Parool PS.",
    "why": "In this week's Het Parool PS",
    "source": "Het Parool PS",
-   "link": "https://www.parool.nl/ps/charlotte-30-en-darius-29-ik-dacht-wie-is-die-leuke-flierefluiter-die-de-hele-groep-aan-het-lachen-maakt~b45d011e/",
+   "link": "https://www.parool.nl/amsterdam/krist-gruijthuijsen-volgt-rein-wolfs-op-als-directeur-stedelijk-museum~b0b85b28/",
    "weatherFit": [
     "HOT",
     "WARM",
@@ -84,13 +144,40 @@
     "VOLATILE"
    ],
    "verify": true,
-   "firstSeen": "2026-11-18",
+   "firstSeen": "2026-11-19",
+   "inboxScore": 3.3,
+   "scoreWhy": "seen today · taste: museum"
+  },
+  {
+   "id": "rss-het-parool-ps-idfa-s-doclab-met-je-smartphone-in-de-hand-virtu",
+   "title": "Idfa’s DocLab: met je smartphone in de hand virtueel terug naar het roemrijke protestverle",
+   "venue": "Het Parool PS",
+   "area": "",
+   "when": "This weekend",
+   "category": "out",
+   "freshness": "weekend",
+   "outdoor": false,
+   "kid": false,
+   "price": "",
+   "blurb": "Featured this week by Het Parool PS.",
+   "why": "In this week's Het Parool PS",
+   "source": "Het Parool PS",
+   "link": "https://www.parool.nl/kunst-media/idfa-s-doclab-met-je-smartphone-in-de-hand-virtueel-terug-naar-het-roemrijke-protestverleden-van-de-spuistraat~bacffb01/",
+   "weatherFit": [
+    "HOT",
+    "WARM",
+    "COOL",
+    "COLD_WET",
+    "VOLATILE"
+   ],
+   "verify": true,
+   "firstSeen": "2026-11-19",
    "inboxScore": 3,
    "scoreWhy": "seen today"
   },
   {
-   "id": "rss-het-parool-ps-joost-oomen-36-en-thomas-verbogt-73-schrijven-sa",
-   "title": "Joost Oomen (36) en Thomas Verbogt (73) schrijven samen over het alledaagse: ‘We maken nik",
+   "id": "rss-het-parool-ps-bij-haute-frituur-le-niche-staan-ze-in-de-rij-vo",
+   "title": "Bij ‘haute frituur’ Le Niche staan ze in de rij voor steak fries: ‘Dit is geen hype, maar ",
    "venue": "Het Parool PS",
    "area": "",
    "when": "This weekend",
@@ -102,7 +189,7 @@
    "blurb": "Featured this week by Het Parool PS.",
    "why": "In this week's Het Parool PS",
    "source": "Het Parool PS",
-   "link": "https://www.parool.nl/ps/joost-oomen-36-en-thomas-verbogt-73-schrijven-samen-over-het-alledaagse-we-maken-niks-mooier-dan-het-is~b833128f/",
+   "link": "https://www.parool.nl/uit-in-amsterdam/bij-haute-frituur-le-niche-staan-ze-in-de-rij-voor-steak-fries-dit-is-geen-hype-maar-een-michelinwaardig-gerecht~b36157aa/",
    "weatherFit": [
     "HOT",
     "WARM",
@@ -111,13 +198,13 @@
     "VOLATILE"
    ],
    "verify": true,
-   "firstSeen": "2026-11-18",
+   "firstSeen": "2026-11-19",
    "inboxScore": 3,
    "scoreWhy": "seen today"
   },
   {
-   "id": "rss-het-parool-ps-recensie-flamingo-over-elkaar-buitelende-vormen-",
-   "title": "Recensie Flamingo: over elkaar buitelende vormen, beelden en muzikale keuzes",
+   "id": "rss-het-parool-ps-duizend-bezichtigingen-maar-monique-58-kon-het-a",
+   "title": "Duizend bezichtigingen, maar Monique (58) kon het appartement op de Keizersgracht kopen: ‘",
    "venue": "Het Parool PS",
    "area": "",
    "when": "This weekend",
@@ -129,7 +216,7 @@
    "blurb": "Featured this week by Het Parool PS.",
    "why": "In this week's Het Parool PS",
    "source": "Het Parool PS",
-   "link": "https://www.parool.nl/kunst-media/recensie-flamingo-over-elkaar-buitelende-vormen-beelden-en-muzikale-keuzes~b6dd19e4/",
+   "link": "https://www.parool.nl/amsterdam/duizend-bezichtigingen-maar-monique-58-kon-het-appartement-op-de-keizersgracht-kopen-ik-schreef-een-brief-vanuit-mijn-hart~bd2ecbec/",
    "weatherFit": [
     "HOT",
     "WARM",
@@ -138,13 +225,13 @@
     "VOLATILE"
    ],
    "verify": true,
-   "firstSeen": "2026-11-18",
+   "firstSeen": "2026-11-19",
    "inboxScore": 3,
    "scoreWhy": "seen today"
   },
   {
-   "id": "rss-het-parool-ps-solodebuut-elise-van-staveren-26-tijdens-amsterd",
-   "title": "Solodebuut Elise van Staveren (26) tijdens Amsterdam Art Week: ‘Hoe tijdelijker iets is, h",
+   "id": "rss-het-parool-ps-stand-upcomedian-esther-van-der-voort-52-het-moe",
+   "title": "Stand-upcomedian Esther van der Voort (52): ‘Het moederschap is geweldig, maar óók een kut",
    "venue": "Het Parool PS",
    "area": "",
    "when": "This weekend",
@@ -156,7 +243,7 @@
    "blurb": "Featured this week by Het Parool PS.",
    "why": "In this week's Het Parool PS",
    "source": "Het Parool PS",
-   "link": "https://www.parool.nl/ps/solodebuut-elise-van-staveren-26-tijdens-amsterdam-art-week-hoe-tijdelijker-iets-is-hoe-groter-de-noodzaak-voor-mij-om-het-te-vereeuwigen-in-zilver~bae32cb8/",
+   "link": "https://www.parool.nl/kunst-media/stand-upcomedian-esther-van-der-voort-52-het-moederschap-is-geweldig-maar-ook-een-kutbaan~b73b85c6/",
    "weatherFit": [
     "HOT",
     "WARM",
@@ -165,61 +252,7 @@
     "VOLATILE"
    ],
    "verify": true,
-   "firstSeen": "2026-11-18",
-   "inboxScore": 3,
-   "scoreWhy": "seen today"
-  },
-  {
-   "id": "rss-het-parool-ps-tatiana-huezo-is-eregast-tijdens-idfa-2026-sommi",
-   "title": "Tatiana Huezo is eregast tijdens Idfa 2026: ‘Sommige verhalen kloppen letterlijk op mijn d",
-   "venue": "Het Parool PS",
-   "area": "",
-   "when": "This weekend",
-   "category": "out",
-   "freshness": "weekend",
-   "outdoor": false,
-   "kid": false,
-   "price": "",
-   "blurb": "Featured this week by Het Parool PS.",
-   "why": "In this week's Het Parool PS",
-   "source": "Het Parool PS",
-   "link": "https://www.parool.nl/kunst-media/tatiana-huezo-is-eregast-tijdens-idfa-2026-sommige-verhalen-kloppen-letterlijk-op-mijn-deur~b84d19ac/",
-   "weatherFit": [
-    "HOT",
-    "WARM",
-    "COOL",
-    "COLD_WET",
-    "VOLATILE"
-   ],
-   "verify": true,
-   "firstSeen": "2026-11-18",
-   "inboxScore": 3,
-   "scoreWhy": "seen today"
-  },
-  {
-   "id": "rss-het-parool-ps-we-willen-dat-het-grof-ongemakkelijk-en-een-beet",
-   "title": "‘We willen dat het grof, ongemakkelijk en een beetje geil is’: Floor van der Jeugd (27) en",
-   "venue": "Het Parool PS",
-   "area": "",
-   "when": "This weekend",
-   "category": "out",
-   "freshness": "weekend",
-   "outdoor": false,
-   "kid": false,
-   "price": "",
-   "blurb": "Featured this week by Het Parool PS.",
-   "why": "In this week's Het Parool PS",
-   "source": "Het Parool PS",
-   "link": "https://www.parool.nl/kunst-media/we-willen-dat-het-grof-ongemakkelijk-en-een-beetje-geil-is-floor-van-der-jeugd-27-en-aska-hayakawa-26-over-queer-liefdesverhaal-omelas~b2219c29/",
-   "weatherFit": [
-    "HOT",
-    "WARM",
-    "COOL",
-    "COLD_WET",
-    "VOLATILE"
-   ],
-   "verify": true,
-   "firstSeen": "2026-11-18",
+   "firstSeen": "2026-11-19",
    "inboxScore": 3,
    "scoreWhy": "seen today"
   }
