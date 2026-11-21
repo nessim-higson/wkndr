@@ -1,10 +1,120 @@
 {
- "generatedAt": "2026-11-20T14:14:18.377Z",
- "count": 5,
+ "generatedAt": "2026-11-21T13:38:16.251Z",
+ "count": 9,
  "inbox": [
   {
-   "id": "rss-het-parool-ps-schrijver-geert-mak-79-stoort-zich-aan-stuntidee",
-   "title": "Schrijver Geert Mak (79) stoort zich aan stuntideeën van politici: ‘Die tien nieuwe steden",
+   "id": "web-iams-het-pakhuis-open",
+   "title": "Het Pakhuis Open",
+   "venue": "Pakhuis De Zwijger",
+   "area": "Piet Heinkade 179-181",
+   "when": "Until Fri 4 Dec",
+   "category": "out",
+   "freshness": "weekend",
+   "outdoor": true,
+   "kid": false,
+   "price": "ticketed",
+   "image": "https://app.thefeedfactory.nl/api/assets/6ac58ea61ca8877470ba7c58/poster-schaaktoernooi-2-768x432-1-1-1.webp",
+   "blurb": "Discover the challenge For many people, chess is a way to sharpen the mind. You think, make plans, and learn from every move.",
+   "why": "On I amsterdam",
+   "source": "I amsterdam",
+   "link": "https://www.iamsterdam.com/en/whats-on/calendar/festivals/events/het-pakhuis-open",
+   "weatherFit": [
+    "HOT",
+    "WARM",
+    "COOL"
+   ],
+   "verify": false,
+   "firstSeen": "2026-11-21",
+   "inboxScore": 7.7,
+   "scoreWhy": "seen today · on this weekend · taste: open"
+  },
+  {
+   "id": "web-iams-raad-van-de-raaf-6",
+   "title": "Raad van de Raaf (6+)",
+   "venue": "Wereldmuseum Amsterdam",
+   "area": "Linnaeusstraat 2",
+   "when": "Until Sat 24 Jul",
+   "category": "art",
+   "freshness": "weekend",
+   "outdoor": false,
+   "kid": false,
+   "price": "ticketed",
+   "image": "https://app.thefeedfactory.nl/api/assets/678e2f8984f8c0471c2584b6/Wereldmuseum_Amsterdam_-_Raad_van_de_Raaf_web.webp",
+   "blurb": "Children's exhibition on climate change In Raad van de Raaf you will meet the Dutch Raymi and the Greenlandic Ivalu.",
+   "why": "On I amsterdam",
+   "source": "I amsterdam",
+   "link": "https://www.iamsterdam.com/en/whats-on/calendar/exhibitions/all-exhibitions/raad-van-de-raaf-6",
+   "weatherFit": [
+    "HOT",
+    "WARM",
+    "COOL",
+    "COLD_WET",
+    "VOLATILE"
+   ],
+   "verify": false,
+   "firstSeen": "2026-11-21",
+   "inboxScore": 7,
+   "scoreWhy": "seen today · on this weekend"
+  },
+  {
+   "id": "web-iams-fausto-een-vergeten-opera",
+   "title": "Fausto, een vergeten opera",
+   "venue": "The Royal Concertgebouw Amsterdam",
+   "area": "Concertgebouwplein 10",
+   "when": "Sat 21 Nov · 13:30",
+   "category": "live",
+   "freshness": "weekend",
+   "outdoor": false,
+   "kid": false,
+   "price": "ticketed",
+   "image": "https://app.thefeedfactory.nl/api/assets/69fdb5d83d38e555d7be4964/NTRZM-2026-11-21-Raffaella-Lupinacci_2-c-Simon-Van-Rompay-web.webp",
+   "blurb": "An Italian Faust Faust remains a fascinating character in opera, as was evident again last season with Gounod's opera.",
+   "why": "On I amsterdam",
+   "source": "I amsterdam",
+   "link": "https://www.iamsterdam.com/en/whats-on/calendar/concerts-and-music/concerts/fausto-een-vergeten-opera",
+   "weatherFit": [
+    "HOT",
+    "WARM",
+    "COOL",
+    "COLD_WET",
+    "VOLATILE"
+   ],
+   "verify": false,
+   "firstSeen": "2026-11-21",
+   "inboxScore": 7,
+   "scoreWhy": "seen today · on this weekend"
+  },
+  {
+   "id": "web-iams-finale-ud-concours-internationale-jonge-ud-talenten",
+   "title": "Finale Ud Concours Internationale jonge ud-talenten",
+   "venue": "Muziekgebouw aan 't IJ",
+   "area": "Piet Heinkade 1",
+   "when": "Sat 21 Nov · 14:00",
+   "category": "live",
+   "freshness": "weekend",
+   "outdoor": false,
+   "kid": false,
+   "price": "ticketed",
+   "image": "https://app.thefeedfactory.nl/api/assets/6a026e1e6b3f9366c474ce91/aHR0cHM6Ly93d3cubXV6aWVrZ2Vib3V3Lm5sLy9jbXNfZmlsZXMvc3lzdGVtL2ltYWdlcy9pbWc4NDE5NF9vcmlnLmpwZw.webp",
+   "blurb": "Who will win the Saïd Chraibi Prijs? The participants will be judged by a professional jury of renowned oud masters.",
+   "why": "On I amsterdam",
+   "source": "I amsterdam",
+   "link": "https://www.iamsterdam.com/en/whats-on/calendar/concerts-and-music/concerts/finale-ud-concours-internationale-jonge-ud-talenten",
+   "weatherFit": [
+    "HOT",
+    "WARM",
+    "COOL",
+    "COLD_WET",
+    "VOLATILE"
+   ],
+   "verify": false,
+   "firstSeen": "2026-11-21",
+   "inboxScore": 7,
+   "scoreWhy": "seen today · on this weekend"
+  },
+  {
+   "id": "rss-het-parool-ps-chihuahua-lola-13-steekt-altijd-haar-tong-uit-ni",
+   "title": "Chihuahua Lola (13) steekt altijd haar tong uit: ‘Niet één tand was te redden’",
    "venue": "Het Parool PS",
    "area": "",
    "when": "This weekend",
@@ -16,7 +126,7 @@
    "blurb": "Featured this week by Het Parool PS.",
    "why": "In this week's Het Parool PS",
    "source": "Het Parool PS",
-   "link": "https://www.parool.nl/ps/schrijver-geert-mak-79-stoort-zich-aan-stuntideeen-van-politici-die-tien-nieuwe-steden-van-d66-dat-is-geen-visie~bd801922/",
+   "link": "https://www.parool.nl/ps/chihuahua-lola-13-steekt-altijd-haar-tong-uit-niet-een-tand-was-te-redden~be20cebb/",
    "weatherFit": [
     "HOT",
     "WARM",
@@ -25,13 +135,13 @@
     "VOLATILE"
    ],
    "verify": true,
-   "firstSeen": "2026-11-20",
+   "firstSeen": "2026-11-21",
    "inboxScore": 3,
    "scoreWhy": "seen today"
   },
   {
-   "id": "rss-het-parool-ps-derde-generatie-neemt-de-hemkade-in-zaandam-over",
-   "title": "Derde generatie neemt de Hemkade in Zaandam over: ‘Voor we het wisten stonden Máxima en Al",
+   "id": "rss-het-parool-ps-de-stijl-van-doris-28-mijn-opa-leen-inspireert-m",
+   "title": "De stijl van Doris (28): ‘Mijn opa Leen inspireert me, hij heeft een echte zeemansstijl’",
    "venue": "Het Parool PS",
    "area": "",
    "when": "This weekend",
@@ -43,7 +153,7 @@
    "blurb": "Featured this week by Het Parool PS.",
    "why": "In this week's Het Parool PS",
    "source": "Het Parool PS",
-   "link": "https://www.parool.nl/ps/derde-generatie-neemt-de-hemkade-in-zaandam-over-voor-we-het-wisten-stonden-maxima-en-alexia-in-de-dj-booth~b96d78e8/",
+   "link": "https://www.parool.nl/ps/de-stijl-van-doris-28-mijn-opa-leen-inspireert-me-hij-heeft-een-echte-zeemansstijl~b7cb0d56/",
    "weatherFit": [
     "HOT",
     "WARM",
@@ -52,13 +162,13 @@
     "VOLATILE"
    ],
    "verify": true,
-   "firstSeen": "2026-11-20",
+   "firstSeen": "2026-11-21",
    "inboxScore": 3,
    "scoreWhy": "seen today"
   },
   {
-   "id": "rss-het-parool-ps-in-jeugdtheatervoorstelling-time-machine-ontspoo",
-   "title": "In jeugdtheatervoorstelling Time Machine ontspoort een energiek schoolfeest met een boodsc",
+   "id": "rss-het-parool-ps-isabel-araya-perez-73-vluchtte-uit-chili-en-woon",
+   "title": "Isabel Araya Perez (73) vluchtte uit Chili en woont al bijna vijftig jaar in Zuidoost, maa",
    "venue": "Het Parool PS",
    "area": "",
    "when": "This weekend",
@@ -70,7 +180,7 @@
    "blurb": "Featured this week by Het Parool PS.",
    "why": "In this week's Het Parool PS",
    "source": "Het Parool PS",
-   "link": "https://www.parool.nl/recensie/in-jeugdtheatervoorstelling-time-machine-ontspoort-een-energiek-schoolfeest-met-een-boodschap-volledig~bd574b32/",
+   "link": "https://www.parool.nl/ps/isabel-araya-perez-73-vluchtte-uit-chili-en-woont-al-bijna-vijftig-jaar-in-zuidoost-maar-mist-geld-om-haar-nieuwe-seniorenwoning-in-te-richten~b267083d/",
    "weatherFit": [
     "HOT",
     "WARM",
@@ -79,13 +189,13 @@
     "VOLATILE"
    ],
    "verify": true,
-   "firstSeen": "2026-11-20",
+   "firstSeen": "2026-11-21",
    "inboxScore": 3,
    "scoreWhy": "seen today"
   },
   {
-   "id": "rss-het-parool-ps-in-zijn-tuin-en-kas-aan-de-osdorperweg-teelt-thi",
-   "title": "In zijn tuin en kas aan de Osdorperweg teelt Thijmen Böekling (35) onbekende en bijzondere",
+   "id": "rss-het-parool-ps-het-amsterdam-van-zangeres-en-violist-norah-noor",
+   "title": "Het Amsterdam van zangeres en violist Norah ‘Noor’ Hendriks: ‘Dat optreden in het Concertg",
    "venue": "Het Parool PS",
    "area": "",
    "when": "This weekend",
@@ -97,7 +207,7 @@
    "blurb": "Featured this week by Het Parool PS.",
    "why": "In this week's Het Parool PS",
    "source": "Het Parool PS",
-   "link": "https://www.parool.nl/ps/in-zijn-tuin-en-kas-aan-de-osdorperweg-teelt-thijmen-boekling-35-onbekende-en-bijzondere-groenten-ik-beweeg-als-een-buffel-met-een-lage-hartslag~b7a317d6/",
+   "link": "https://www.parool.nl/ps/het-amsterdam-van-zangeres-en-violist-norah-noor-hendriks-dat-optreden-in-het-concertgebouw-voelde-als-de-finale-van-mijn-tienerjaren~b7c86cb3/",
    "weatherFit": [
     "HOT",
     "WARM",
@@ -106,13 +216,13 @@
     "VOLATILE"
    ],
    "verify": true,
-   "firstSeen": "2026-11-20",
+   "firstSeen": "2026-11-21",
    "inboxScore": 3,
    "scoreWhy": "seen today"
   },
   {
-   "id": "rss-het-parool-ps-kooigevechten-en-boekverbrandingen-zembla-toont-",
-   "title": "Kooigevechten en boekverbrandingen: Zembla toont het ware gezicht van extreemrechts",
+   "id": "rss-het-parool-ps-ik-stelde-me-voor-dat-n-guerrillakunstenaar-s-na",
+   "title": "Ik stelde me voor dat één guerrillakunstenaar ’s nachts de stad doorkruiste met zijn houte",
    "venue": "Het Parool PS",
    "area": "",
    "when": "This weekend",
@@ -124,7 +234,7 @@
    "blurb": "Featured this week by Het Parool PS.",
    "why": "In this week's Het Parool PS",
    "source": "Het Parool PS",
-   "link": "https://www.parool.nl/ps/kooigevechten-en-boekverbrandingen-zembla-toont-het-ware-gezicht-van-extreemrechts~b35117df/",
+   "link": "https://www.parool.nl/ps/ik-stelde-me-voor-dat-een-guerrillakunstenaar-s-nachts-de-stad-doorkruiste-met-zijn-houten-creaties~b232b253/",
    "weatherFit": [
     "HOT",
     "WARM",
@@ -133,7 +243,7 @@
     "VOLATILE"
    ],
    "verify": true,
-   "firstSeen": "2026-11-20",
+   "firstSeen": "2026-11-21",
    "inboxScore": 3,
    "scoreWhy": "seen today"
   }
