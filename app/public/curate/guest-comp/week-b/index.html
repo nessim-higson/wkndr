@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#e9eeee">
+<title>Your week, swipe first · WKNDR</title>
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=clash-display@600,700&display=swap">
+<link rel="stylesheet" href="../comp.css">
+<style>
+/* DIRECTION B: SWIPE FIRST, THEN ORDER (comp). The machine's ten are dealt as cards, the app's own
+   gesture: right keeps, left cuts. What you kept then opens in the list tool (direction A) to be
+   put in order and added to. Same rules as A: a cut is "not in my week", never a veto. */
+.wrap--deck { padding-bottom: var(--sp-8); }
+.hello { padding: var(--sp-2) var(--sp-1) 0; text-align: center; }
+.hello h1 { font-size: clamp(24px, 6.8vw, 30px); margin: 4px 0 6px; text-wrap: balance; }
+.hello .when { font-size: var(--fs-sm); color: var(--muted); }
+.hello .lines { font-size: var(--fs-base); color: var(--ink-2); margin-top: var(--sp-2); }
+
+.stage { position: relative; width: min(100%, 340px); margin: var(--sp-3) auto 0; aspect-ratio: 3 / 4; max-height: 46vh; touch-action: pan-y; }
+@media (min-height: 860px) { .stage { max-height: 54vh; } }
+.card { position: absolute; inset: 0; border-radius: 24px; overflow: hidden; background: #1a2430; box-shadow: 0 18px 40px -12px #20364259; transition: transform .38s var(--ease), opacity .3s; transform-origin: 50% 110%; user-select: none; -webkit-user-select: none; }
+.card .ph, .card .ph img { width: 100%; height: 100%; border-radius: 0; }
+.card .ph--type { background: linear-gradient(150deg, #f6f8f4, #e4e9e8); align-items: flex-start; }
+.card .ph--type span { padding: 96px 24px 0; font-size: 40px; line-height: .98; -webkit-line-clamp: 5; }
+.card .scrim { position: absolute; inset: 0; background: linear-gradient(180deg, #0002, transparent 25%, transparent 48%, #0005 72%, #000c); pointer-events: none; }
+.card .ph--type ~ .scrim { background: none; }
+.card .top { position: absolute; top: 14px; left: 14px; right: 14px; display: flex; justify-content: space-between; align-items: flex-start; gap: var(--sp-2); }
+.card .foot { position: absolute; left: 0; right: 0; bottom: 0; padding: var(--sp-4) var(--sp-4) var(--sp-6); color: #fff; }
+.card .ph--type ~ .foot { color: var(--ink); }
+.card .title { font-size: var(--fs-2xl); font-weight: 500; letter-spacing: -.025em; line-height: 1.08; }
+.card .meta { font-size: var(--fs-sm); margin-top: 4px; opacity: .92; }
+.card .verdict { position: absolute; top: 56px; padding: 8px 14px; border-radius: 10px; border: 2px solid; font-size: var(--fs-md); font-weight: 700; letter-spacing: .08em; text-transform: uppercase; opacity: 0; transform: rotate(-8deg); transition: opacity .12s; }
+.card .verdict.keep { left: 18px; color: #7ddc9a; border-color: #7ddc9a; }
+.card .verdict.cut { right: 18px; color: #ff8a73; border-color: #ff8a73; transform: rotate(8deg); }
+.card.dragging { transition: none; cursor: grabbing; }
+.card.under { transform: scale(.955) translateY(12px); }
+.card.under2 { transform: scale(.91) translateY(24px); opacity: .85; }
+.card.gone { pointer-events: none; }
+.card:focus-visible { outline: 2px solid #fff; outline-offset: -6px; }
+
+.acts { display: flex; align-items: center; justify-content: center; gap: var(--sp-12); margin-top: var(--sp-4); }
+.act { display: flex; flex-direction: column; align-items: center; gap: 6px; background: none; }
+.act > span:first-child { width: 60px; height: 60px; border-radius: 50%; display: grid; place-items: center; background: #f3f8f78c; -webkit-backdrop-filter: blur(14px) saturate(1.1); backdrop-filter: blur(14px) saturate(1.1); box-shadow: 0 5px 16px #12283b18; color: #253844; transition: transform .15s var(--ease); }
+.act:active > span:first-child { transform: scale(.94); }
+.act svg { width: 26px; height: 26px; }
+.act small { font-size: var(--fs-xs); font-weight: 400; }
+.counter { font-size: var(--fs-sm); color: var(--muted); min-width: 60px; text-align: center; }
+.undo { display: flex; justify-content: center; margin-top: var(--sp-4); }
+
+.result { margin: var(--sp-6) auto 0; width: min(100%, 420px); text-align: center; padding: var(--sp-6) var(--sp-4); }
+.result h2 { font-size: var(--fs-3xl); }
+.result .lines { margin-top: var(--sp-2); font-size: var(--fs-md); }
+.result .btn { margin-top: var(--sp-6); }
+.result .cutlist { margin-top: var(--sp-4); font-size: var(--fs-sm); color: var(--muted); }
+
+@media (min-width: 720px) {
+  .wrap--deck { max-width: 1040px; }
+  .layout { display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: var(--sp-8); align-items: start; }
+  .hello { text-align: left; position: sticky; top: var(--sp-6); }
+  .stage { margin-top: 0; max-height: 72vh; }
+}
+</style>
+</head>
+<body>
+<p class="strip"><span>Comp B. Swipe first, then order.</span> <a href="../index.html">All screens</a></p>
+<div class="wrap wrap--deck">
+  <header class="mast">
+    <a class="brand" href="../../../" aria-label="WKNDR, Amsterdam"><b>WKNDR</b><span>Amsterdam</span></a>
+    <p class="mast-note">Guest curator<br><span id="weekShort"></span></p>
+  </header>
+  <main class="layout">
+    <section class="hello">
+      <p class="label">Your week</p>
+      <h1 class="display" id="hello"></h1>
+      <p class="when" id="when"></p>
+      <div class="lines">
+        <p>Keep what you would go to.</p>
+        <p>Cut the rest.</p>
+        <p>Then put what you kept in your order.</p>
+      </div>
+    </section>
+    <div>
+      <div class="stage" id="stage" aria-live="polite"></div>
+      <div class="acts" id="acts">
+        <button class="act" type="button" id="cutBtn"><span id="cutIcon"></span><small>Cut</small></button>
+        <span class="counter" id="counter"></span>
+        <button class="act" type="button" id="keepBtn"><span id="keepIcon"></span><small>Keep</small></button>
+      </div>
+      <div class="undo" id="undoRow" hidden><button class="btn btn--quiet" type="button" id="undo">Undo the last one</button></div>
+      <section class="result pane" id="result" hidden>
+        <h2 class="display" id="resultH"></h2>
+        <div class="lines" id="resultLines"></div>
+        <a class="btn btn--accent btn--tall" id="toOrder" href="../week/index.html">Put them in my order</a>
+        <p class="cutlist" id="cutlist"></p>
+      </section>
+    </div>
+  </main>
+</div>
+<p class="sr" id="live" aria-live="assertive"></p>
+<script src="../data.js"></script>
+<script src="../comp.js"></script>
+<script src="deck.js"></script>
+</body>
+</html>
