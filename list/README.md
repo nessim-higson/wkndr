@@ -52,6 +52,24 @@ me … start to send some notifications to my partner Katya as well."
   `brief-spot-on` / `brief-not-for-me`); they do not yet write to anyone's taste.
   `rows` and the other 16 layouts still render (`--template=picks|list|…|all`).
 
+### The sender's picture (22 Nov — Ness: "have the profile pic be a W from WKNDR")
+
+`list/avatar-w.png` (1024², the app icon's W and orange dot, re-centred so a round crop keeps both at
+32px). An email cannot carry its own avatar: each mail app looks the SENDER ADDRESS up. Nothing is set
+yet, and on 22 Nov `wkndr.xyz` had no MX, no `_dmarc` and no BIMI record, so `friday@wkndr.xyz` cannot
+even receive the verification mail the first step needs. All of it is Ness's (accounts and DNS):
+
+1. **Cloudflare → wkndr.xyz → Email → Email Routing:** forward `friday@` and `hello@` to a read inbox
+   (adds the MX records; also what makes a reply to the brief land somewhere).
+2. **Gmail readers (free):** create a Google Account for the exact address `friday@wkndr.xyz` ("use my
+   current email address"), confirm it from the forwarded mail, set `avatar-w.png` as its picture,
+   visible to anyone. Gmail then shows it beside the brief; it can take a day and old threads keep
+   their cached initial.
+3. **Later, for a verified logo:** `_dmarc` at `p=quarantine` or `reject`, the W as an SVG Tiny PS file,
+   a `default._bimi` TXT record, and for Gmail a paid mark certificate (VMC needs a registered trade
+   mark; a CMC does not). Apple Mail has its own route (Branded Mail in Apple Business Connect) with the
+   same DMARC bar. Not worth it before the name is settled.
+
 ## Status — 2026-10-26
 
 Ness: "I want to kick start the email feature." Everything below the line was already built in July
