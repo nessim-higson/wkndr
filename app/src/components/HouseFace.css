@@ -1,0 +1,104 @@
+/* ═══ THE HOUSE FACE ═══ (proto/type-cards) — the no-photo card as type: paper, ink, one brick-red
+   point, Helvetica Neue Light / Medium, facts in small capitals, a 20px inset, the title at 104px
+   under the chrome. One composition MOVE per card (lib/house-face.ts deals it). The sizes are the
+   board's own (46 / 30 / 10.5 / 12), not the app scale tokens: the face was approved at these.
+   Opaque on purpose: this card is its own ground, so it never needs a photograph beneath it. */
+.card--house { background: #f6f3ec; color: #1a1a1a; }
+.card--house .card-grain { opacity: .14; mix-blend-mode: multiply; }
+.card--house .card-expand { color: #1a1a1a; background: rgba(0, 0, 0, .06); border-color: rgba(0, 0, 0, .28); backdrop-filter: none; -webkit-backdrop-filter: none; }
+
+.hf {
+  --hf-paper: #f6f3ec; --hf-ink: #1a1a1a; --hf-deep: #8a2818;
+  --hf-mu: color-mix(in srgb, var(--hf-ink) 58%, var(--hf-paper));
+  --hf-ln: color-mix(in srgb, var(--hf-ink) 28%, var(--hf-paper));
+  --hf-fit: 1;          /* the fit pass steps this down when a real title outgrows the move */
+  --hf-w: 8;            /* the title's longest unbreakable run, in characters */
+  /* the measure a run must fit, and what one character of it costs at 1em */
+  --hf-measure: calc(100cqw - 40px);
+  position: absolute; inset: 0; z-index: 1;
+  font-family: var(--font-body); color: var(--hf-ink); text-align: left;
+}
+.hf-title { margin: 0; font-weight: 500; text-wrap: pretty; overflow-wrap: break-word; hyphens: manual; -webkit-hyphens: manual; }
+.hf-word.hf-hy { hyphens: auto; -webkit-hyphens: auto; }
+.hf-b { font-weight: 700; letter-spacing: -.035em; }
+/* Light for a short title, Medium for a long one. Each is the board's size, capped by the size at
+   which the longest word still fits the measure, times the fit step. */
+.hf-light { font-weight: 300; line-height: 1.02; letter-spacing: -.025em;
+  font-size: calc(clamp(24px, min(13cqw, var(--hf-measure) / (var(--hf-w) * .52)), 46px) * var(--hf-fit)); }
+.hf[data-len='long'] .hf-light { font-size: calc(clamp(22px, min(11cqw, var(--hf-measure) / (var(--hf-w) * .52)), 38px) * var(--hf-fit)); }
+.hf-med { font-weight: 500; line-height: 1.08; letter-spacing: -.028em;
+  font-size: calc(clamp(20px, min(8.8cqw, var(--hf-measure) / (var(--hf-w) * .56)), 30px) * var(--hf-fit)); }
+.hf[data-len='long'] .hf-med { font-size: calc(clamp(18px, min(7.6cqw, var(--hf-measure) / (var(--hf-w) * .56)), 25px) * var(--hf-fit)); }
+.hf-caps { font-size: 10.5px; font-weight: 500; line-height: 1.6; letter-spacing: .12em; text-transform: uppercase; }
+.hf-facts { font-size: 12px; font-weight: 400; line-height: 1.4; color: var(--hf-mu); }
+.hf-facts b { font-weight: 500; color: var(--hf-ink); }
+/* venue left, date right — and when the two don't fit one line (a 288px card, "Centrale Markthal" beside
+   "Sat · Markets & one-offs") the date drops to its own line rather than crushing the venue */
+.hf-foot { position: absolute; left: 20px; right: 20px; bottom: 20px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 2px 12px; }
+.hf-foot > span { min-width: 0; max-width: 100%; overflow-wrap: break-word; }
+.hf-foot > span:last-child { margin-left: auto; text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hf-foot.hf-caps { color: var(--hf-mu); }
+.hf-point { width: 8px; height: 8px; border-radius: 50%; background: var(--hf-deep); }
+.hf[data-tight] .hf-opt { display: none; }
+
+/* M1 RULE — a dateline over a heavy rule, the title in Bold beneath it. The one place Bold leads. */
+.hm-rule { padding: 100px 20px 20px; display: flex; flex-direction: column; }
+.hm-rule .hf-meta { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; padding-bottom: 8px; border-bottom: 2.5px solid var(--hf-ink); }
+.hm-rule .hf-meta > span:last-child { flex-shrink: 0; }
+.hm-rule .hf-title { margin-top: 14px; font-weight: 700; line-height: 1; letter-spacing: -.035em;
+  font-size: calc(clamp(22px, min(10.4cqw, var(--hf-measure) / (var(--hf-w) * .6)), 36px) * var(--hf-fit)); }
+.hm-rule[data-len='long'] .hf-title { font-size: calc(clamp(20px, min(9.4cqw, var(--hf-measure) / (var(--hf-w) * .6)), 32px) * var(--hf-fit)); }
+.hm-rule .hf-end { margin-top: auto; padding-top: 12px; display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: end; }
+
+/* M2 LIGHT — the title in Light at size, the venue in spaced capitals at the foot. */
+.hm-light > .hf-title { position: absolute; left: 22px; right: 22px; top: 106px; }
+.hm-light { --hf-measure: calc(100cqw - 44px); }
+.hm-light > .hf-venue { position: absolute; left: 22px; bottom: 22px; max-width: 60%; }
+.hm-light > .hf-price { position: absolute; right: 22px; bottom: 22px; max-width: 34%; text-align: right; font-size: 11px; font-weight: 300; line-height: 1.6; letter-spacing: .04em; color: var(--hf-mu); }
+
+/* M3 LEDGER — a modest title, then the facts as rows with hairlines. */
+.hm-ledger > .hf-title { position: absolute; left: 20px; right: 20px; top: 104px; }
+.hf-rows { position: absolute; left: 20px; right: 20px; bottom: 16px; margin: 0; }
+.hf-rows > div { display: grid; grid-template-columns: 62px 1fr; gap: 12px; padding: 8px 0; border-top: 1px solid var(--hf-ln); font-size: 12px; line-height: 1.35; }
+.hf-rows dt { color: var(--hf-mu); font-size: 9.5px; letter-spacing: .12em; text-transform: uppercase; padding-top: 3px; }
+.hf-rows dd { margin: 0; min-width: 0; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+
+/* M4 MARGIN — the facts small in the top margin, one red point, the title along the foot. */
+.hm-margin > .hf-side { position: absolute; left: 20px; top: 104px; max-width: 70%; color: var(--hf-mu); }
+.hm-margin > .hf-point { position: absolute; right: 22px; top: 108px; }
+.hm-margin > .hf-title { position: absolute; left: 20px; right: 20px; bottom: 54px; max-width: 88%; }
+.hm-margin { --hf-measure: calc(88cqw - 40px); }
+.hm-margin > .hf-venue { position: absolute; left: 20px; right: 20px; bottom: 22px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* M5 NUMERAL — the day in Thin behind the title in Medium. Dated picks only. */
+.hm-num > .hf-big { position: absolute; right: -4px; top: 54px; font-size: min(232px, 68cqw); font-weight: 200; line-height: .8; letter-spacing: -.08em; color: color-mix(in srgb, var(--hf-ink) 12%, transparent); pointer-events: none; font-variant-numeric: lining-nums; }
+.hm-num > .hf-title { position: absolute; left: 20px; right: 20px; bottom: 62px; }
+
+/* M6 REFLECTED — the title with its own inverted, fading reflection. The wet pavement. */
+.hm-refl { display: flex; flex-direction: column; justify-content: center; padding: 96px 20px 56px; }
+.hm-refl .hf-ghost { transform: scaleY(-1); opacity: .22; margin-top: 2px; -webkit-mask-image: linear-gradient(180deg, transparent, #000 90%); mask-image: linear-gradient(180deg, transparent, #000 90%); }
+
+/* M7 STRIP — the title in a narrow column at the far right, ragged left; two thirds of the card empty. */
+.hm-strip { --hf-measure: calc(44cqw - 20px); }
+.hm-strip > .hf-title { position: absolute; right: 20px; top: 104px; width: 44%; text-align: right; line-height: 1.2; letter-spacing: -.02em;
+  font-size: calc(clamp(14px, min(5.8cqw, var(--hf-measure) / (var(--hf-w) * .58)), 19px) * var(--hf-fit)); }
+.hm-strip > .hf-point { position: absolute; left: 20px; top: 108px; }
+.hm-strip > .hf-end { position: absolute; left: 20px; bottom: 20px; width: 42%; color: var(--hf-mu); }
+
+/* M8 UP — the title in Light turned to read up the right edge. Short titles only. */
+.hm-up { --hf-measure: calc(100cqh - 90px); }
+.hm-up > .hf-title { position: absolute; right: 10px; top: 70px; bottom: 16px; max-width: 58%; writing-mode: vertical-rl; transform: rotate(180deg); font-weight: 300; line-height: .92; letter-spacing: -.025em;
+  font-size: calc(clamp(30px, min(19cqw, var(--hf-measure) / (var(--hf-w) * .56)), 68px) * var(--hf-fit)); }
+.hm-up > .hf-side { position: absolute; left: 20px; top: 104px; width: 34%; color: var(--hf-mu); }
+.hm-up > .hf-side b { display: block; margin-bottom: 8px; font-weight: 500; color: var(--hf-ink); }
+
+/* M9 BARS — Bold lines two words long, each underlined by a bar that runs off the right edge. */
+.hm-bars > .hf-lines { position: absolute; left: 20px; right: 0; top: 100px; }
+.hm-bars .hf-line { display: block; padding: .26em 20px .23em 0; border-bottom: 3px solid var(--hf-ink); white-space: nowrap; overflow: hidden;
+  font-weight: 700; line-height: 1; letter-spacing: -.035em;
+  font-size: calc(clamp(18px, min(9cqw, var(--hf-measure) / (var(--hf-w) * .62)), 31px) * var(--hf-fit)); }
+
+/* M10 EMPHASIS — the title in Light with its subject in Bold, the facts under a hairline. */
+.hm-emph > .hf-title { position: absolute; left: 20px; right: 20px; top: 104px; font-weight: 300; line-height: 1.04; letter-spacing: -.03em;
+  font-size: calc(clamp(22px, min(10.8cqw, var(--hf-measure) / (var(--hf-w) * .54)), 37px) * var(--hf-fit)); }
+.hm-emph > .hf-foot { padding-top: 10px; border-top: 1px solid var(--hf-ln); }

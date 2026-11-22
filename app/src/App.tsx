@@ -17,6 +17,8 @@ import { PHASES, daylightAt, type Phase } from './weather/daylight'
 import { nowStop } from './weather/hourly'
 import { deckForHour } from './weather/scrubDeck'
 import { neverTwoGlass } from './weather/glassDeck'
+import { FACE_DEFAULT_KEY, dealHouseMoves, forcedMove, resolveFace, type HouseMove } from './lib/house-face'
+import { FaceContext } from './lib/face-context'
 import { TimeScrub } from './weather/TimeScrub'
 import { useHourly } from './components/useHourly'
 import { useDaylight } from './components/useDaylight'
@@ -88,6 +90,8 @@ else if (SHARED_IDS) track('link-open')
 // the ambient-look switcher, the city picker) for working sessions. Full version frozen
 // at /wkndr/versions/v4-10/.
 const DEVUI = new URLSearchParams(window.location.search).has('dev')
+// house-face study: `?move=ledger` sets every no-photo card in one move (lib/house-face.ts)
+const FORCED_MOVE = forcedMove(new URLSearchParams(window.location.search).get('move'))
 // Current ISO-ish week index. Drives the evergreen rotation so the deep library
 // (~84 always-good picks) surfaces a DIFFERENT slice each week automatically — without
 // it, the same dozen always led and the feed felt identical week over week.
@@ -345,7 +349,16 @@ export default function App() {
   })
   const { reading: currentReading } = useCurrentWeather()
   const [glassShell,setGlassShell] = useState(()=>new URLSearchParams(location.search).get('shell') === 'floating' ? 'floating' : 'open')
-  const [glassFace,setGlassFace] = useState('glass-opal')
+  // THE NO-PHOTO FACE STUDY. Glass-opal stays the default; `?face=house` wears the house face for
+  // this load, `?house=1` makes it this device's default (so `?cards=glass` alone opens into it) and
+  // `?house=0` forgets that (lib/house-face.ts resolveFace).
+  const [glassFace,setGlassFace] = useState(() => {
+    const q = new URLSearchParams(location.search)
+    const r = resolveFace({ face: q.get('face'), house: q.get('house'), stored: localStorage.getItem(FACE_DEFAULT_KEY) })
+    if (r.remember) localStorage.setItem(FACE_DEFAULT_KEY, r.remember)
+    else if (r.remember === null) localStorage.removeItem(FACE_DEFAULT_KEY)
+    return r.face
+  })
   const [glassFinish,setGlassFinish] = useState('auto')
   const [glassMenu,setGlassMenu] = useState(()=>new URLSearchParams(location.search).get('menu') ?? 'frosted')
   const [glassOnly,setGlassOnly] = useState(() => new URLSearchParams(location.search).get('cards') === 'glass')
@@ -799,6 +812,9 @@ export default function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [shown, deckStop, glassActive, glassOnly, dealKey, relay])
   const deck = useMemo(() => dealt.filter((p) => !activeSwiped.has(p.id)), [dealt, activeSwiped])
+  // the house face's moves are dealt over the LAID order, for the same reason the order is laid once:
+  // a card's composition must not change because the card before it left
+  const faceCtx = useMemo(() => ({ face: glassFace, moves: glassFace === 'house' ? dealHouseMoves(dealt, FORCED_MOVE) : new Map<string, HouseMove>() }), [glassFace, dealt])
   // saved picks in rank order — fuels the saves-dock peek
   // THE EVERGREEN ESCAPE (V.11) — the specific dead-end this release could otherwise create.
   // Where × a dated When empties nearly every district (Noord has 1 dated pick and 6 evergreen
@@ -1568,6 +1584,7 @@ export default function App() {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
             >
+              <FaceContext.Provider value={faceCtx}>
               <SwipeStack
                 /* remount when the intro lifts so the deck deals in while it's actually visible
                    (mounting behind the intro would burn the fly-in before the app is revealed) */
@@ -1591,6 +1608,7 @@ export default function App() {
                 /* the deck owns ←/→ only while nothing sits above it */
                 keysActive={!intro && !detail && !shareOpen && !barOpen && !savesOpen && !matching && !inputsOpen && !filterOpen && !whenOpen && !whereOpen && !calibrating && !onboarding && !triaging && !checkpoint && !glassForecastOpen && !glassSettingsOpen}
               />
+              </FaceContext.Provider>
             </motion.div>
           ) : view === 'fan' ? (
             <motion.div
