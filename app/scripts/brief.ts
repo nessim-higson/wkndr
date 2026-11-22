@@ -299,5 +299,11 @@ ${house.map(pair).join('\n')}
   console.log(`  sun     ${sun.map((p) => p.title).join(' · ')}`)
   console.log(`  subject ${subject}`)
   console.log(`  → list/out/brief.html`)
+  // THE RECEIPT the Friday send reads (list/scripts/friday.ts): which weekend this draft is for, its
+  // subject, and whether the feed it was written from is already past — the send refuses a stale one.
+  writeFileSync(join(OUT_DIR, 'brief.json'), JSON.stringify({
+    saturday: satIso, subject, stale, template: want.includes('picks') ? 'picks' : want[0], forecast: !!wx,
+    cover: hero.title, picks: 1 + sat.length + sun.length, writtenAt: new Date().toISOString(),
+  }, null, 1) + '\n')
   console.log(`  next:   cd list && bun run scripts/send.ts out/brief.html --subject "${subject.replace(/"/g, '\\"')}"`)
 }

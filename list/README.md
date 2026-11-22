@@ -26,7 +26,23 @@ me … start to send some notifications to my partner Katya as well."
 - `list/.env` still has no `MAIL_API_KEY`, so `send.ts --send` (the blast) cannot run from here yet.
 - A weekend in progress keeps its weather line (`poster.ts forecast()` asks for `past_days=2`), so a
   Saturday or Sunday render is a fair test.
-- **Not built: the automatic Friday send.** The loop below is still a script someone runs.
+- **The automatic Friday send is built** (same day, on Ness's "Yes, set it up"):
+  `.github/workflows/friday.yml` — Fridays, cron 05:15 UTC (aiming at ~07:30 Amsterdam after GitHub's
+  start delay) — runs `bun run brief`, then `list/scripts/friday.ts`, which hands the draft to the
+  worker's `POST /blast`. The mail key stays on the worker; the workflow needs only the repo secret
+  `LIST_ADMIN_KEY` (the `ADMIN_KEY` in `list/.env`). **THAT SECRET IS NOT SET YET** — it is Ness's to
+  add (`gh secret set LIST_ADMIN_KEY`, paste the key); until then the run renders, then stops with
+  "ADMIN_KEY not set" and sends nothing. **One send a weekend** (the worker marks `sent:<saturday>` and
+  answers 409 to a second); **confirmed subscribers only**; an empty list is a quiet success. It
+  **refuses and fails the run** (which mails Ness) on a stale feed, a thin or clipped draft, or a
+  weekend that is not this one. The design is the repo variable `BRIEF_TEMPLATE` (unset = `picks`, the
+  rows): `gh variable set BRIEF_TEMPLATE --body list`. A manual run from the Actions tab is a DRY RUN
+  unless the box is unticked. Each run keeps the draft it rendered as the `friday-brief` artifact.
+- **The design is not settled.** The 4 Nov review (`proto/design-review-nov`, never merged;
+  https://proto-design-review-nov.wkndr-app.pages.dev/design/email) records "Decided: A, made stronger
+  as A+, goes out Friday 6 Nov" — A+ exists only as a static comp (`app/public/design/email-a2.html` on
+  that branch) and is NOT a renderer template, so the Friday run sends rows until A+ is built into
+  `brief-*.ts` and `BRIEF_TEMPLATE` points at it.
 
 ## Status — 2026-10-26
 

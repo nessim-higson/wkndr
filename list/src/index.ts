@@ -20,6 +20,8 @@ const CONFIRM_TTL_S = 7 * 86_400   // an unclicked confirm link expires; the pen
 const MAX_BODY = 2048
 const TEST_MAX_BODY = 400_000     // a rendered brief is ~30–100 KB; Gmail clips at 102 KB anyway
 const TEST_MAX_TO = 3
+const BLAST_BATCH = 100            // Resend's batch endpoint cap
+const BLAST_KEEP_S = 400 * 86400   // how long a weekend's "sent" mark is kept — past any rerun of the same week
 const EXPORT_PAGE = 1000           // KV list page size — the list is small; this is headroom, not a cap
 
 export type SubStatus = 'pending' | 'active' | 'unsub'
@@ -135,6 +137,75 @@ async function sendMail(
   })
   if (!res.ok) console.error(`[mail] send failed ${res.status}: ${await res.text().catch(() => '')}`)
   return res.ok
+}
+
+/** One brief, rendered for one subscriber: `{{unsub}}` becomes their own one-click link; a brief
+ *  that forgot the placeholder gets the footer appended. (The same rule scripts/send.ts applies.) */
+export function renderFor(html: string, unsubLink: string): string {
+  return html.includes('{{unsub}}')
+    ? html.replaceAll('{{unsub}}', unsubLink)
+    : html + `\n<div style="margin-top:40px;padding-top:20px;border-top:1px solid #e7e3d8;font:400 12px/1.6 -apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;color:#8b8a82">
+  You're getting this because you asked for the WKNDR Friday brief.
+  <a href="${unsubLink}" style="color:#8b8a82">Unsubscribe</a> — one click, no questions.
+</div>`
+}
+
+/** The blast's idempotency key is the weekend it is for: its Saturday, as YYYY-MM-DD. */
+export function blastKey(raw: unknown): string | null {
+  return typeof raw === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(raw) ? raw : null
+}
+
+interface ActiveSub { email: string; unsubToken: string; src: string }
+
+/** Every record on the list, counted by status, with the confirmed ones spelled out. */
+async function readList(env: Env): Promise<{ subs: ActiveSub[]; counts: Record<SubStatus, number> }> {
+  const subs: ActiveSub[] = []
+  const counts = { pending: 0, active: 0, unsub: 0 }
+  let cursor: string | undefined
+  do {
+    const listed = await env.SUBS.list({ prefix: 'e:', limit: EXPORT_PAGE, cursor })
+    for (const k of listed.keys) {
+      const rec = (await env.SUBS.get(k.name, 'json')) as SubRecord | null
+      if (!rec) continue
+      counts[rec.status]++
+      if (rec.status === 'active') subs.push({ email: rec.email, unsubToken: rec.unsubToken, src: rec.src })
+    }
+    cursor = listed.list_complete ? undefined : listed.cursor
+  } while (cursor)
+  return { subs, counts }
+}
+
+/** The blast itself: Resend's batch endpoint, a hundred a call, each mail carrying its own
+ *  unsubscribe link and the List-Unsubscribe headers (what makes Gmail show a native unsubscribe
+ *  button instead of offering "report spam"). Returns how many were accepted. */
+async function sendBlast(env: Env, origin: string, subs: ActiveSub[], subject: string, html: string): Promise<{ sent: number; failed: number }> {
+  const provider = env.MAIL_PROVIDER || 'resend'
+  if (provider === 'none') {
+    for (const s of subs) console.log(`[mail:none] would blast to ${s.email} — ${subject}`)
+    return { sent: subs.length, failed: 0 }
+  }
+  if (!env.MAIL_API_KEY || !env.MAIL_FROM) {
+    console.error('[mail] MAIL_API_KEY / MAIL_FROM not set — cannot blast')
+    return { sent: 0, failed: subs.length }
+  }
+  let sent = 0, failed = 0
+  for (let i = 0; i < subs.length; i += BLAST_BATCH) {
+    const chunk = subs.slice(i, i + BLAST_BATCH)
+    const res = await fetch('https://api.resend.com/emails/batch', {
+      method: 'POST',
+      headers: { authorization: `Bearer ${env.MAIL_API_KEY}`, 'content-type': 'application/json' },
+      body: JSON.stringify(chunk.map((s) => {
+        const link = `${origin}/unsub/${s.unsubToken}`
+        return {
+          from: env.MAIL_FROM, to: s.email, subject, html: renderFor(html, link),
+          headers: { 'List-Unsubscribe': `<${link}>`, 'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click' },
+        }
+      })),
+    })
+    if (res.ok) sent += chunk.length
+    else { failed += chunk.length; console.error(`[mail] batch failed ${res.status}: ${await res.text().catch(() => '')}`) }
+  }
+  return { sent, failed }
 }
 
 /* ─────────────────────────────────── copy + chrome ─────────────────────────────────── */
@@ -298,24 +369,45 @@ export default {
       return json({ ok: sent.every(Boolean), sent: sent.filter(Boolean).length, of: to.length })
     }
 
+    /* ── POST /blast (admin) — THE FRIDAY SEND, to every confirmed subscriber ──
+       Called by .github/workflows/friday.yml (Ness, 22 Nov 2026: "I'd like to begin receiving email
+       blasts on what's happening every weekend"). The mail key stays here; the caller brings the
+       rendered brief, its subject and the weekend it is for.
+       ONE BLAST A WEEKEND: `key` is that weekend's Saturday, and a second call with the same key is
+       refused (409) — a re-run workflow, a retry, a second session must not mail the list twice.
+       The mark is written BEFORE the send (a claim), and taken back only if nothing went out.
+       `dry: true` answers with the audience and sends nothing. `force: true` sends again on purpose. */
+    if (request.method === 'POST' && path === '/blast') {
+      const auth = request.headers.get('authorization') || ''
+      if (!env.ADMIN_KEY || auth !== `Bearer ${env.ADMIN_KEY}`) return json({ error: 'unauthorized' }, 401)
+      const raw = await request.text()
+      if (raw.length > TEST_MAX_BODY) return json({ error: 'too big' }, 413)
+      let body: Record<string, unknown>
+      try { body = JSON.parse(raw) } catch { return json({ error: 'bad json' }, 400) }
+      const key = blastKey(body.key)
+      const subject = typeof body.subject === 'string' ? body.subject.slice(0, 200) : ''
+      const html = typeof body.html === 'string' ? body.html : ''
+      if (!key || !subject || !html) return json({ error: 'need key (the Saturday, YYYY-MM-DD), subject, html' }, 400)
+
+      const prior = (await env.SUBS.get(`sent:${key}`, 'json')) as { at: number; sent: number } | null
+      const { subs } = await readList(env)
+      if (body.dry === true) return json({ ok: true, dry: true, audience: subs.length, already: prior })
+      if (prior && body.force !== true) return json({ error: 'already sent for this weekend', already: prior }, 409)
+      if (!subs.length) return json({ ok: true, sent: 0, failed: 0, audience: 0 })   // nobody yet: nothing to mark
+
+      await env.SUBS.put(`sent:${key}`, JSON.stringify({ at: Date.now(), sent: 0, subject }), { expirationTtl: BLAST_KEEP_S })
+      const out = await sendBlast(env, url.origin, subs, subject, html)
+      if (out.sent === 0) await env.SUBS.delete(`sent:${key}`)   // nothing left the building — let a retry through
+      else await env.SUBS.put(`sent:${key}`, JSON.stringify({ at: Date.now(), ...out, subject }), { expirationTtl: BLAST_KEEP_S })
+      return json({ ok: out.failed === 0, ...out, audience: subs.length }, out.sent === 0 ? 502 : 200)
+    }
+
     /* ── GET /export + /stats (admin) ── */
     if (request.method === 'GET' && (path === '/export' || path === '/stats')) {
       const auth = request.headers.get('authorization') || ''
       if (!env.ADMIN_KEY || auth !== `Bearer ${env.ADMIN_KEY}`) return json({ error: 'unauthorized' }, 401)
 
-      const subs: { email: string; unsubToken: string; src: string }[] = []
-      const counts = { pending: 0, active: 0, unsub: 0 }
-      let cursor: string | undefined
-      do {
-        const listed = await env.SUBS.list({ prefix: 'e:', limit: EXPORT_PAGE, cursor })
-        for (const k of listed.keys) {
-          const rec = (await env.SUBS.get(k.name, 'json')) as SubRecord | null
-          if (!rec) continue
-          counts[rec.status]++
-          if (rec.status === 'active') subs.push({ email: rec.email, unsubToken: rec.unsubToken, src: rec.src })
-        }
-        cursor = listed.list_complete ? undefined : listed.cursor
-      } while (cursor)
+      const { subs, counts } = await readList(env)
 
       return json(path === '/stats' ? counts : { count: subs.length, subs })
     }

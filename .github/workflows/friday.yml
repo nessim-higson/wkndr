@@ -1,0 +1,64 @@
+name: Friday brief
+
+# THE FRIDAY EMAIL, unattended (Ness, 22 Nov 2026: "I'd like to begin receiving email blasts on what's
+# happening every weekend"). Renders the brief from the deck Thursday's refresh published and the
+# weekend's forecast, then hands it to the list worker, which mails every CONFIRMED subscriber.
+#
+#   · The mail key never leaves the worker (POST /blast). This workflow holds only LIST_ADMIN_KEY.
+#   · ONE SEND A WEEKEND — the worker refuses a second blast for the same Saturday, so a re-run is safe.
+#   · It REFUSES rather than send something wrong (list/scripts/friday.ts): a stale feed (the refresh
+#     gate went red), a thin draft, a brief over Gmail's clip. A refusal fails the run, which mails Ness.
+#   · An empty list is a quiet success: nothing to send yet.
+#
+# THE DESIGN is the repo variable BRIEF_TEMPLATE (Settings → Variables; `gh variable set BRIEF_TEMPLATE
+# --body list`). Unset = `picks` (the rows). Any name `bun run brief --template=` takes.
+#
+# TIMING: the target is ~07:30 Amsterdam (late enough for a reliable forecast, early enough to book).
+# GitHub starts scheduled runs late — 75–130 min was measured on refresh.yml's 10:00 UTC slot — so the
+# cron sits at 05:15 UTC: 06:15 CET / 07:15 CEST before the delay.
+on:
+  schedule:
+    - cron: '15 5 * * 5'
+  workflow_dispatch:
+    inputs:
+      dry:
+        description: 'Dry run — render, check, ask the worker for the audience, send NOTHING'
+        type: boolean
+        default: true
+      template:
+        description: 'Design for this run only (blank = BRIEF_TEMPLATE, else picks)'
+        type: string
+        default: ''
+
+permissions:
+  contents: read
+
+concurrency:
+  group: friday-brief
+  cancel-in-progress: false
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - name: Install deps
+        run: cd app && bun install --frozen-lockfile
+      - name: Render the brief
+        run: cd app && bun run brief --template=${{ inputs.template || vars.BRIEF_TEMPLATE || 'picks' }}
+      - name: Send (or dry-run)
+        env:
+          ADMIN_KEY: ${{ secrets.LIST_ADMIN_KEY }}
+        # a scheduled run has no inputs: it SENDS. A manual run is dry unless the box is unticked.
+        run: cd list && bun run scripts/friday.ts ${{ (github.event_name == 'workflow_dispatch' && inputs.dry) && '--dry' || '' }}
+      - name: Keep the draft that went out
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: friday-brief
+          path: |
+            list/out/brief.html
+            list/out/brief.json
+          retention-days: 60
+          if-no-files-found: ignore

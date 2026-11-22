@@ -1,4 +1,9 @@
-// WKNDR — the Friday send. Deliberately a SCRIPT you run, not a cron that fires.
+// WKNDR — the Friday send, BY HAND. (Since 22 Nov 2026 the unattended one is scripts/friday.ts, run by
+// .github/workflows/friday.yml through the worker's POST /blast; this script is still the door for a
+// brief you want to read, edit and send yourself — the worker's once-a-weekend mark does not see a
+// send made from here, so do not also let Friday's run go out for the same weekend.)
+//
+// Originally: deliberately a SCRIPT you run, not a cron that fires.
 //
 // The whole premise of the Friday brief is that it's hand-crafted after you've seen what
 // Thursday's pipeline run actually produced. Automating the send would quietly turn it back

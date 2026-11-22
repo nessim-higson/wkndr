@@ -30,6 +30,22 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
 > sessions update (today it's on load).
 
 ## Live right now
+- **2026-11-22 (later) — THE FRIDAY EMAIL RUNS ITSELF (no app bump).** Ness: "I'd like to begin receiving
+  email blasts on what's happening every weekend" → "Yes, set it up". `.github/workflows/friday.yml`
+  (Fridays 05:15 UTC ≈ 07:30 Amsterdam after GitHub's delay) renders `bun run brief` and calls
+  `list/scripts/friday.ts` → the list worker's new `POST /blast`: confirmed subscribers only, ONE send a
+  weekend (KV `sent:<saturday>`, 409 on a second), per-recipient unsubscribe + List-Unsubscribe headers,
+  the mail key never leaves the worker. It refuses, and fails the run, on a stale feed / thin draft /
+  wrong weekend. `POST /test` + `send.ts --test <addr>` sends a rendered brief to a named address.
+  **TWO THINGS ARE NESS'S before anything goes out: (1) the repo secret `LIST_ADMIN_KEY` (= `ADMIN_KEY`
+  in `list/.env`) is NOT set — a session's attempt to set it was declined, so he adds it; (2) the list
+  is EMPTY (0 confirmed on 22 Nov) — he and Katya sign up at wkndr.xyz and click the confirm mail.**
+  Design = repo variable `BRIEF_TEMPLATE` (unset → rows). **OPEN: the 4 Nov design review chose A+**
+  (`proto/design-review-nov`, an unmerged branch of review boards at
+  proto-design-review-nov.wkndr-app.pages.dev/design/ — email ×4 + A+, onboarding v2, sign-in,
+  thumbnails, blanks); A+ is a static comp, not a renderer template. Of that review, only onboarding
+  steps 1–5 + the reveal are in the app (V.12.7); "Where & spend", "Why this card" and the editable
+  taste profile are not built.
 - **2026-11-22 — A WRITTEN YEAR IS THE YEAR · EVERY SAVE HAS A PLACE (V.12.8).** Ness: "FOAM Talent is
   GONE. How do we prevent this" + "I only see a few things in the [saved] list". **Dates:** a hand-written
   pick's bare date ("Opens Fri 5 Jun") was read as NEXT year's once 120 days past; Foam Talent had been
