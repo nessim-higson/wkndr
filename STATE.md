@@ -5,7 +5,7 @@ FIRST in a new chat. For strategy + backlog see `docs/backlog.md`; for the pipel
 `docs/pipeline-architecture.md` + `docs/source-map.md`; for **who may write to the deck vs to a personal
 profile** (board / Tune / airlock — read before touching either) see `docs/curation-surfaces.md`; for the
 **board roadmap** (auto-compile tracks) see `docs/board-roadmap.md`; for full **version history** see
-`CHANGELOG.md` (current to app **V.12.8** — a written year is the year + every save has a place, 2026-11-22 / board V.10) and the **git log / tags**. Onboarding:
+`CHANGELOG.md` (current to app **V.12.9** — the Friday email runs itself, as A+, 2026-11-22 / board V.10) and the **git log / tags**. Onboarding:
 `CLAUDE.md`; for any coding agent (Codex included) **`AGENTS.md`** is the working manual and
 `docs/variations/` the prototype protocol + the open briefs. App lives in `/app` (Vite + React + TS, run with `bun`); ships to **Cloudflare Pages**
 (`wkndr.xyz` + `app.wkndr.xyz`) **and** GitHub Pages (legacy, keeps old share links alive)._
@@ -40,10 +40,12 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
   **TWO THINGS ARE NESS'S before anything goes out: (1) the repo secret `LIST_ADMIN_KEY` (= `ADMIN_KEY`
   in `list/.env`) is NOT set — a session's attempt to set it was declined, so he adds it; (2) the list
   is EMPTY (0 confirmed on 22 Nov) — he and Katya sign up at wkndr.xyz and click the confirm mail.**
-  Design = repo variable `BRIEF_TEMPLATE` (unset → rows). **OPEN: the 4 Nov design review chose A+**
+  **Design = A+** (`app/scripts/brief-aplus.ts`, built the same day on "Yes, build A+"; V.12.9), the
+  renderer's default and the workflow's; `BRIEF_TEMPLATE` (repo variable) overrides. **The 4 Nov design review**
   (`proto/design-review-nov`, an unmerged branch of review boards at
   proto-design-review-nov.wkndr-app.pages.dev/design/ — email ×4 + A+, onboarding v2, sign-in,
-  thumbnails, blanks); A+ is a static comp, not a renderer template. Of that review, only onboarding
+  thumbnails, blanks) is where A+ was chosen; its comp is `email-a2.html` there. A+ v1 leaves out the
+  "your saves" line and "Tune what you get". Of that review, only A+ and onboarding
   steps 1–5 + the reveal are in the app (V.12.7); "Where & spend", "Why this card" and the editable
   taste profile are not built.
 - **2026-11-22 — A WRITTEN YEAR IS THE YEAR · EVERY SAVE HAS A PLACE (V.12.8).** Ness: "FOAM Talent is

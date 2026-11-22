@@ -10,8 +10,9 @@ name: Friday brief
 #     gate went red), a thin draft, a brief over Gmail's clip. A refusal fails the run, which mails Ness.
 #   · An empty list is a quiet success: nothing to send yet.
 #
-# THE DESIGN is the repo variable BRIEF_TEMPLATE (Settings → Variables; `gh variable set BRIEF_TEMPLATE
-# --body list`). Unset = `picks` (the rows). Any name `bun run brief --template=` takes.
+# THE DESIGN is A+ (`aplus`, app/scripts/brief-aplus.ts) — the one chosen in the 4 Nov 2026 review. The
+# repo variable BRIEF_TEMPLATE overrides it (Settings → Variables; `gh variable set BRIEF_TEMPLATE
+# --body picks`); any name `bun run brief --template=` takes.
 #
 # TIMING: the target is ~07:30 Amsterdam (late enough for a reliable forecast, early enough to book).
 # GitHub starts scheduled runs late — 75–130 min was measured on refresh.yml's 10:00 UTC slot — so the
@@ -26,7 +27,7 @@ on:
         type: boolean
         default: true
       template:
-        description: 'Design for this run only (blank = BRIEF_TEMPLATE, else picks)'
+        description: 'Design for this run only (blank = BRIEF_TEMPLATE, else aplus)'
         type: string
         default: ''
 
@@ -46,7 +47,7 @@ jobs:
       - name: Install deps
         run: cd app && bun install --frozen-lockfile
       - name: Render the brief
-        run: cd app && bun run brief --template=${{ inputs.template || vars.BRIEF_TEMPLATE || 'picks' }}
+        run: cd app && bun run brief --template=${{ inputs.template || vars.BRIEF_TEMPLATE || 'aplus' }}
       - name: Send (or dry-run)
         env:
           ADMIN_KEY: ${{ secrets.LIST_ADMIN_KEY }}

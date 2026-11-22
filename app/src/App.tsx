@@ -70,6 +70,17 @@ const SHARED_ROUND = (() => {
 // FUNNEL — module scope so each fires exactly once per page load. 'return-leg' is the metric
 // that matters (a completed boomerang); 'link-open' is its top-of-funnel.
 initMetrics()
+// THE FRIDAY BRIEF'S "Was this a good weekend?" (scripts/brief-aplus.ts): each answer is a link here
+// with ?fb=up|down — counted, then taken off the URL so a reload or a share never counts twice. It is a
+// tally for now; writing the answer into the reader's taste waits for the signed-in brief.
+{
+  const q = new URLSearchParams(location.search), fb = q.get('fb')
+  if (fb === 'up' || fb === 'down') {
+    track(fb === 'up' ? 'brief-spot-on' : 'brief-not-for-me')
+    q.delete('fb'); q.delete('wk')
+    history.replaceState(null, '', location.pathname + (q.toString() ? `?${q}` : '') + location.hash)
+  }
+}
 if (SHARED_CONFIRM) track('return-leg')
 else if (SHARED_IDS) track('link-open')
 // MVP surface gate (V.5): the trimmed product is the default — one view (Stack), one

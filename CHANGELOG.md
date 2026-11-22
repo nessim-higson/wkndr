@@ -14,6 +14,25 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.12.9 · app] — 2026-11-22 — THE FRIDAY EMAIL RUNS ITSELF, AS A+
+Ness: "I'd like to begin receiving email blasts on what's happening every weekend" → "Yes, set it up" →
+"Yes, build A+".
+- **The send.** `.github/workflows/friday.yml` (Fridays 05:15 UTC, ≈07:30 Amsterdam after GitHub's delay)
+  renders the brief and runs `list/scripts/friday.ts`, which hands it to the list worker's new
+  `POST /blast`: confirmed subscribers only, ONE send a weekend (`sent:<saturday>` in KV, 409 on a
+  second), each mail with its own unsubscribe link and List-Unsubscribe headers. The mail key never
+  leaves the worker. The run refuses, and fails, on a stale feed, a thin or clipped draft, or the wrong
+  weekend. `POST /test` + `send.ts --test <address>` put a rendered brief in a named inbox.
+- **A+** (`scripts/brief-aplus.ts`, the renderer's default): the design the 4 Nov review chose, built
+  from its comp as mail — the weather headline on a 4:5 cover, three weather chips with the sunset, a
+  short lede, each day as one large pick and two smaller, Saturday night as a dark type block after the
+  sunset line, "If it holds / If it rains" on a day the forecast splits. Subject = the weather, preheader
+  = the picks, the cover + at most seven. `forecast()` now reads the sunset, and a weekend in progress.
+- **The app** counts the brief's "Spot on / Not for me" links (`?fb=up|down&wk=`) and takes them off the
+  URL. A tally, not yet a taste signal.
+- **Still Ness's:** the repo secret `LIST_ADMIN_KEY`, and the first sign-ups (the list is empty).
+- Tests: 694 (A+ 14, the blast door 6, the send's guards 5).
+
 ## [V.12.8 · app] — 2026-11-22 — A WRITTEN YEAR IS THE YEAR · EVERY SAVE HAS A PLACE
 Ness, 22 Nov: "I'm STILL seeing OLD posts … FOAM Talent is GONE. How do we prevent this from happening" and
 "I only see a few things in the list — how do I access the longer list of saved items?"

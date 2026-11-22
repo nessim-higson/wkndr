@@ -35,14 +35,22 @@ me … start to send some notifications to my partner Katya as well."
   "ADMIN_KEY not set" and sends nothing. **One send a weekend** (the worker marks `sent:<saturday>` and
   answers 409 to a second); **confirmed subscribers only**; an empty list is a quiet success. It
   **refuses and fails the run** (which mails Ness) on a stale feed, a thin or clipped draft, or a
-  weekend that is not this one. The design is the repo variable `BRIEF_TEMPLATE` (unset = `picks`, the
-  rows): `gh variable set BRIEF_TEMPLATE --body list`. A manual run from the Actions tab is a DRY RUN
+  weekend that is not this one. The design is A+ unless the repo variable `BRIEF_TEMPLATE` says otherwise
+  (`gh variable set BRIEF_TEMPLATE --body picks`). A manual run from the Actions tab is a DRY RUN
   unless the box is unticked. Each run keeps the draft it rendered as the `friday-brief` artifact.
-- **The design is not settled.** The 4 Nov review (`proto/design-review-nov`, never merged;
-  https://proto-design-review-nov.wkndr-app.pages.dev/design/email) records "Decided: A, made stronger
-  as A+, goes out Friday 6 Nov" — A+ exists only as a static comp (`app/public/design/email-a2.html` on
-  that branch) and is NOT a renderer template, so the Friday run sends rows until A+ is built into
-  `brief-*.ts` and `BRIEF_TEMPLATE` points at it.
+- **The design is A+** (`app/scripts/brief-aplus.ts`, `--template=aplus`, the renderer's default since
+  22 Nov on Ness's "Yes, build A+"). It is the 4 Nov review's decision — "A, sent as A+" — built from the
+  comp `app/public/design/email-a2.html` on the unmerged `proto/design-review-nov` branch
+  (https://proto-design-review-nov.wkndr-app.pages.dev/design/email-a2): the weather headline on a 4:5
+  cover, three weather chips (Sat, Sun, sunset), a two-sentence lede, each day as ONE large pick and TWO
+  smaller, Saturday night as its own dark type block after a sunset line, "If it holds / If it rains"
+  tags only on a day the forecast splits, the orange door, and "Was this a good weekend?". The subject
+  is the weather (`headline()`), the preheader the picks. At most the cover + seven. 14 tests pin the
+  review's rules. **Left out of v1:** "your 3 saves are on this weekend" (the blast is one document for
+  everyone; saves are per person in the account worker) and "Tune what you get" (no such page). "Spot
+  on / Not for me" are links the app counts (`?fb=up|down&wk=<saturday>` → GoatCounter events
+  `brief-spot-on` / `brief-not-for-me`); they do not yet write to anyone's taste.
+  `rows` and the other 16 layouts still render (`--template=picks|list|…|all`).
 
 ## Status — 2026-10-26
 
