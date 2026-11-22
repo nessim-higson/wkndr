@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-21T13:38:16.251Z",
+ "generatedAt": "2026-11-22T13:30:17.846Z",
  "count": 9,
  "inbox": [
   {
@@ -25,8 +25,36 @@
    ],
    "verify": false,
    "firstSeen": "2026-11-21",
-   "inboxScore": 7.7,
-   "scoreWhy": "seen today · on this weekend · taste: open"
+   "inboxScore": 7.4,
+   "scoreWhy": "seen 1d ago · on this weekend · taste: open"
+  },
+  {
+   "id": "web-iams-philips-symfonie-orkest-en-akari-bastiaens-met-het-pianoconcert-van-grieg",
+   "title": "Philips Symfonie Orkest en Akari Bastiaens met het Pianoconcert van Grieg",
+   "venue": "The Royal Concertgebouw Amsterdam",
+   "area": "Concertgebouwplein 10",
+   "when": "Sun 22 Nov · 14:30",
+   "category": "live",
+   "freshness": "weekend",
+   "outdoor": false,
+   "kid": false,
+   "price": "ticketed",
+   "image": "https://app.thefeedfactory.nl/api/assets/6a8396bd48659d33b80950b1/PSO.webp",
+   "blurb": "On a musical adventure This afternoon, the Philips Symphony Orchestra takes you on a musical adventure with, among others, young piano talent Akari Bastiaens (14).",
+   "why": "On I amsterdam",
+   "source": "I amsterdam",
+   "link": "https://www.iamsterdam.com/en/whats-on/calendar/concerts-and-music/concerts/philips-symfonie-orkest-en-akari-bastiaens-met-het-pianoconcert-van-grieg",
+   "weatherFit": [
+    "HOT",
+    "WARM",
+    "COOL",
+    "COLD_WET",
+    "VOLATILE"
+   ],
+   "verify": false,
+   "firstSeen": "2026-11-22",
+   "inboxScore": 7,
+   "scoreWhy": "seen today · on this weekend"
   },
   {
    "id": "web-iams-raad-van-de-raaf-6",
@@ -53,25 +81,25 @@
    ],
    "verify": false,
    "firstSeen": "2026-11-21",
-   "inboxScore": 7,
-   "scoreWhy": "seen today · on this weekend"
+   "inboxScore": 6.7,
+   "scoreWhy": "seen 1d ago · on this weekend"
   },
   {
-   "id": "web-iams-fausto-een-vergeten-opera",
-   "title": "Fausto, een vergeten opera",
+   "id": "web-iams-kleutersinfonietta-stuiterstokken-4-en-5-jaar",
+   "title": "KleuterSinfonietta: StuiterStokken (4 en 5 jaar)",
    "venue": "The Royal Concertgebouw Amsterdam",
    "area": "Concertgebouwplein 10",
-   "when": "Sat 21 Nov · 13:30",
+   "when": "Until Sun 18 Apr",
    "category": "live",
    "freshness": "weekend",
    "outdoor": false,
    "kid": false,
    "price": "ticketed",
-   "image": "https://app.thefeedfactory.nl/api/assets/69fdb5d83d38e555d7be4964/NTRZM-2026-11-21-Raffaella-Lupinacci_2-c-Simon-Van-Rompay-web.webp",
-   "blurb": "An Italian Faust Faust remains a fascinating character in opera, as was evident again last season with Gounod's opera.",
+   "image": "https://app.thefeedfactory.nl/api/assets/6a0736887948d62e8015a119/Stuiterstokken-c-Caroline-Ellerbeck-illustratie.webp",
+   "blurb": "Discover Bouncing Sticks with KleuterSinfonietta KleuterSinfonietta invites you and your children (aged 4 and 5) to an unforgettable musical performance.",
    "why": "On I amsterdam",
    "source": "I amsterdam",
-   "link": "https://www.iamsterdam.com/en/whats-on/calendar/concerts-and-music/concerts/fausto-een-vergeten-opera",
+   "link": "https://www.iamsterdam.com/en/whats-on/calendar/concerts-and-music/concerts/kleutersinfonietta-stuiterstokken-4-en-5-jaar",
    "weatherFit": [
     "HOT",
     "WARM",
@@ -80,26 +108,25 @@
     "VOLATILE"
    ],
    "verify": false,
-   "firstSeen": "2026-11-21",
-   "inboxScore": 7,
-   "scoreWhy": "seen today · on this weekend"
+   "firstSeen": "2026-11-15",
+   "inboxScore": 4.9,
+   "scoreWhy": "seen 7d ago · on this weekend"
   },
   {
-   "id": "web-iams-finale-ud-concours-internationale-jonge-ud-talenten",
-   "title": "Finale Ud Concours Internationale jonge ud-talenten",
-   "venue": "Muziekgebouw aan 't IJ",
-   "area": "Piet Heinkade 1",
-   "when": "Sat 21 Nov · 14:00",
-   "category": "live",
+   "id": "rss-het-parool-ps-vroeger-dacht-ik-waarom-ben-ik-eigenlijk-zo-raar",
+   "title": "‘Vroeger dacht ik: waarom ben ik eigenlijk zo raar?’",
+   "venue": "Het Parool PS",
+   "area": "",
+   "when": "This weekend",
+   "category": "out",
    "freshness": "weekend",
    "outdoor": false,
    "kid": false,
-   "price": "ticketed",
-   "image": "https://app.thefeedfactory.nl/api/assets/6a026e1e6b3f9366c474ce91/aHR0cHM6Ly93d3cubXV6aWVrZ2Vib3V3Lm5sLy9jbXNfZmlsZXMvc3lzdGVtL2ltYWdlcy9pbWc4NDE5NF9vcmlnLmpwZw.webp",
-   "blurb": "Who will win the Saïd Chraibi Prijs? The participants will be judged by a professional jury of renowned oud masters.",
-   "why": "On I amsterdam",
-   "source": "I amsterdam",
-   "link": "https://www.iamsterdam.com/en/whats-on/calendar/concerts-and-music/concerts/finale-ud-concours-internationale-jonge-ud-talenten",
+   "price": "",
+   "blurb": "Featured this week by Het Parool PS.",
+   "why": "In this week's Het Parool PS",
+   "source": "Het Parool PS",
+   "link": "https://www.parool.nl/ps/vroeger-dacht-ik-waarom-ben-ik-eigenlijk-zo-raar~bf5bf140/",
    "weatherFit": [
     "HOT",
     "WARM",
@@ -107,10 +134,10 @@
     "COLD_WET",
     "VOLATILE"
    ],
-   "verify": false,
-   "firstSeen": "2026-11-21",
-   "inboxScore": 7,
-   "scoreWhy": "seen today · on this weekend"
+   "verify": true,
+   "firstSeen": "2026-11-22",
+   "inboxScore": 3,
+   "scoreWhy": "seen today"
   },
   {
    "id": "rss-het-parool-ps-chihuahua-lola-13-steekt-altijd-haar-tong-uit-ni",
@@ -136,8 +163,8 @@
    ],
    "verify": true,
    "firstSeen": "2026-11-21",
-   "inboxScore": 3,
-   "scoreWhy": "seen today"
+   "inboxScore": 2.7,
+   "scoreWhy": "seen 1d ago"
   },
   {
    "id": "rss-het-parool-ps-de-stijl-van-doris-28-mijn-opa-leen-inspireert-m",
@@ -163,8 +190,8 @@
    ],
    "verify": true,
    "firstSeen": "2026-11-21",
-   "inboxScore": 3,
-   "scoreWhy": "seen today"
+   "inboxScore": 2.7,
+   "scoreWhy": "seen 1d ago"
   },
   {
    "id": "rss-het-parool-ps-isabel-araya-perez-73-vluchtte-uit-chili-en-woon",
@@ -190,35 +217,8 @@
    ],
    "verify": true,
    "firstSeen": "2026-11-21",
-   "inboxScore": 3,
-   "scoreWhy": "seen today"
-  },
-  {
-   "id": "rss-het-parool-ps-het-amsterdam-van-zangeres-en-violist-norah-noor",
-   "title": "Het Amsterdam van zangeres en violist Norah ‘Noor’ Hendriks: ‘Dat optreden in het Concertg",
-   "venue": "Het Parool PS",
-   "area": "",
-   "when": "This weekend",
-   "category": "out",
-   "freshness": "weekend",
-   "outdoor": false,
-   "kid": false,
-   "price": "",
-   "blurb": "Featured this week by Het Parool PS.",
-   "why": "In this week's Het Parool PS",
-   "source": "Het Parool PS",
-   "link": "https://www.parool.nl/ps/het-amsterdam-van-zangeres-en-violist-norah-noor-hendriks-dat-optreden-in-het-concertgebouw-voelde-als-de-finale-van-mijn-tienerjaren~b7c86cb3/",
-   "weatherFit": [
-    "HOT",
-    "WARM",
-    "COOL",
-    "COLD_WET",
-    "VOLATILE"
-   ],
-   "verify": true,
-   "firstSeen": "2026-11-21",
-   "inboxScore": 3,
-   "scoreWhy": "seen today"
+   "inboxScore": 2.7,
+   "scoreWhy": "seen 1d ago"
   },
   {
    "id": "rss-het-parool-ps-ik-stelde-me-voor-dat-n-guerrillakunstenaar-s-na",
@@ -244,8 +244,8 @@
    ],
    "verify": true,
    "firstSeen": "2026-11-21",
-   "inboxScore": 3,
-   "scoreWhy": "seen today"
+   "inboxScore": 2.7,
+   "scoreWhy": "seen 1d ago"
   }
  ]
 }
