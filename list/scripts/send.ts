@@ -6,6 +6,11 @@
 //
 //   bun run list/scripts/send.ts brief.html --subject "Rain Saturday. Here's where to be."
 //   bun run list/scripts/send.ts brief.html --subject "…" --send      # actually sends
+//   bun run list/scripts/send.ts brief.html --subject "…" --test you@example.com   # a TEST, to that address only
+//
+// --test goes through the worker's POST /test, which holds the mail key — so a test needs only
+// ADMIN_KEY here, never reads the list, and lands from the real sender. Up to three addresses,
+// comma-separated.
 //
 // Without --send it's a DRY RUN: prints the recipient count, the subject, and the first
 // rendered email to stdout. Default-dry is on purpose — an accidental blast is unrecoverable.
@@ -50,6 +55,19 @@ async function main() {
   if (!ADMIN_KEY) { console.error('ADMIN_KEY not set'); process.exit(1) }
 
   const html = await Bun.file(file).text()
+
+  const test = arg('--test')
+  if (test) {
+    const to = test.split(',').map((s) => s.trim()).filter(Boolean)
+    const r = await fetch(`${LIST_URL}/test`, {
+      method: 'POST',
+      headers: { authorization: `Bearer ${ADMIN_KEY}`, 'content-type': 'application/json' },
+      body: JSON.stringify({ to, subject, html }),
+    })
+    const out = await r.json().catch(() => ({}))
+    console.log(`\n  WKNDR test · ${subject}\n  file      ${file} (${html.length} bytes)\n  to        ${to.length} address${to.length === 1 ? '' : 'es'}\n  result    ${r.status} ${JSON.stringify(out)}\n`)
+    process.exit(r.ok && (out as { ok?: boolean }).ok ? 0 : 1)
+  }
 
   const res = await fetch(`${LIST_URL}/export`, { headers: { authorization: `Bearer ${ADMIN_KEY}` } })
   if (!res.ok) { console.error(`export failed: ${res.status}`); process.exit(1) }

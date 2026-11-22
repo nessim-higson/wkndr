@@ -61,7 +61,7 @@ export interface Wx { label: string; days: WxDay[]
  *  forecast window (a weekend already past) returns null — the brief for a stale feed says so. */
 export async function forecast(satArg?: Date): Promise<Wx | null> {
   try {
-    const r = await fetch('https://api.open-meteo.com/v1/forecast?latitude=52.37&longitude=4.9&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,weather_code,sunshine_duration,daylight_duration&timezone=Europe%2FAmsterdam&forecast_days=7')
+    const r = await fetch('https://api.open-meteo.com/v1/forecast?latitude=52.37&longitude=4.9&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,weather_code,sunshine_duration,daylight_duration&timezone=Europe%2FAmsterdam&forecast_days=7&past_days=2')   // past_days: on a Saturday or Sunday the weekend in progress still has its sky (a Sunday test render had none)
     const j = await r.json() as { daily: { time: string[]; temperature_2m_max: number[]; temperature_2m_min: number[]; precipitation_probability_max: number[]; weather_code?: number[]; sunshine_duration?: number[]; daylight_duration?: number[] } }
     const sat = satArg ?? upcomingWeekend().sat
     const iso = `${sat.getFullYear()}-${String(sat.getMonth() + 1).padStart(2, '0')}-${String(sat.getDate()).padStart(2, '0')}`

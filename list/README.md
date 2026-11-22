@@ -8,6 +8,25 @@ gone by itself", and an email list is the opposite of that. Two workers, two hon
 biggest single lever on whether Gmail files the brief in the inbox or the promotions bin. A
 signup is *not* a subscriber until they click the link in the confirm mail.
 
+## Status — 2026-11-22
+
+Ness: "I'd like to begin receiving email blasts on what's happening every weekend … send some tests to
+me … start to send some notifications to my partner Katya as well."
+
+- **The list is empty: 0 pending, 0 active** (`/stats`, 22 Nov). Step 3 below never happened — nobody has
+  signed up on the landing. Nothing can be blasted until Ness and Katya each sign up at wkndr.xyz and
+  click the confirm mail (double opt-in, each person's own click; nobody is added by hand).
+- **Tests no longer need the mail key on the laptop.** `POST /test` on the worker (admin-gated, at most
+  three addresses a call, never reads the list) sends a rendered brief through the worker's own
+  `MAIL_API_KEY`: `bun run scripts/send.ts out/brief-list.html --subject "…" --test you@example.com`.
+  Five went to Ness on 22 Nov (the house four + rows), all accepted by Resend; the rows one was seen in
+  his inbox, the four house designs were not in searchable mail a few minutes later — look in Spam /
+  Promotions before choosing one of them (they link a web font and a background plate; rows does not).
+- `list/.env` still has no `MAIL_API_KEY`, so `send.ts --send` (the blast) cannot run from here yet.
+- A weekend in progress keeps its weather line (`poster.ts forecast()` asks for `past_days=2`), so a
+  Saturday or Sunday render is a fair test.
+- **Not built: the automatic Friday send.** The loop below is still a script someone runs.
+
 ## Status — 2026-10-26
 
 Ness: "I want to kick start the email feature." Everything below the line was already built in July

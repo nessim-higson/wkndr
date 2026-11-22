@@ -18,6 +18,8 @@
 
 const CONFIRM_TTL_S = 7 * 86_400   // an unclicked confirm link expires; the pending record is swept with it
 const MAX_BODY = 2048
+const TEST_MAX_BODY = 400_000     // a rendered brief is ~30–100 KB; Gmail clips at 102 KB anyway
+const TEST_MAX_TO = 3
 const EXPORT_PAGE = 1000           // KV list page size — the list is small; this is headroom, not a cap
 
 export type SubStatus = 'pending' | 'active' | 'unsub'
@@ -271,6 +273,29 @@ export default {
       // Always the same page — an invalid token must not reveal that it's invalid.
       return page('Unsubscribed', `<h1 style="font-size:26px;font-weight:600;line-height:1.25;margin:0 0 14px">Done — no more Friday briefs.</h1>
         <p style="font-size:15px;line-height:1.6;color:${INK3};margin:0">No hard feelings. The app is always there when a weekend needs a plan.</p>`, origin)
+    }
+
+    /* ── POST /test (admin) — a brief to a named address or two, through the worker's own mail key ──
+       The Friday send needs the Resend key on the laptop (scripts/send.ts); a TEST should not: the
+       key lives here, as a secret, and this door lets `send.ts --test you@…` put a rendered brief in
+       a real inbox from the real sender. Admin-gated like /export, capped at a few addresses a
+       call, and it never reads the list — a test goes only where the caller names. `{{unsub}}` is
+       pointed at the site: a test has no subscription to end. */
+    if (request.method === 'POST' && path === '/test') {
+      const auth = request.headers.get('authorization') || ''
+      if (!env.ADMIN_KEY || auth !== `Bearer ${env.ADMIN_KEY}`) return json({ error: 'unauthorized' }, 401)
+      const raw = await request.text()
+      if (raw.length > TEST_MAX_BODY) return json({ error: 'too big' }, 413)
+      let body: Record<string, unknown>
+      try { body = JSON.parse(raw) } catch { return json({ error: 'bad json' }, 400) }
+      const to = (Array.isArray(body.to) ? body.to : [body.to]).map(normalizeEmail).filter((e): e is string => !!e)
+      const subject = typeof body.subject === 'string' ? body.subject.slice(0, 200) : ''
+      const html = typeof body.html === 'string' ? body.html : ''
+      if (!to.length || to.length > TEST_MAX_TO || !subject || !html) return json({ error: 'need to (1–' + TEST_MAX_TO + '), subject, html' }, 400)
+      const out = html.replaceAll('{{unsub}}', origin)
+      const sent: boolean[] = []
+      for (const addr of to) sent.push(await sendMail(env, addr, subject, out, 'This is a test of the WKNDR Friday brief. Open it in a mail app that shows HTML.'))
+      return json({ ok: sent.every(Boolean), sent: sent.filter(Boolean).length, of: to.length })
     }
 
     /* ── GET /export + /stats (admin) ── */
