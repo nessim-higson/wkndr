@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ArrowRight, CalendarClock, Plus, X } from 'lucide-react'
 import type { Pick } from '../types'
-import type { SaveEntry } from '../lib/account'
+import { type SaveEntry, titleOf } from '../lib/account'
 import type { Pile } from '../lib/plan'
 import { shareLink } from '../lib/share'
 import { newRoundId, relayOn, rememberSentRound } from '../lib/relay'
@@ -127,12 +127,12 @@ export function ShareSheet({
                           {!p?.image && <CalendarClock size={16} strokeWidth={2} />}
                         </span>
                         <span className="share-meta">
-                          <span className="share-title">{e.title}</span>
+                          <span className="share-title">{titleOf(e)}</span>
                           <span className="share-when">{soon ? <b>{soon}</b> : e.start ? e.when : 'Any week'}</span>
                         </span>
                         {/* a save whose card has rotated out of the feed can't be shared — it stays a library row */}
                         {p && (
-                          <button className="share-pill share-pill--in" onClick={() => onMove(e, 'weekend')} aria-label={`Add ${e.title} to this weekend`}>
+                          <button className="share-pill share-pill--in" onClick={() => onMove(e, 'weekend')} aria-label={`Add ${titleOf(e)} to this weekend`}>
                             <Plus size={12} strokeWidth={2.8} /> Weekend
                           </button>
                         )}

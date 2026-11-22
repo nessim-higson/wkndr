@@ -15,7 +15,7 @@ import type { Pick } from '../types'
 export const PICKS: Pick[] = [
   // ═════════ THIS WEEKEND — LIVE & FESTIVALS (Songkick + venues + festival calendars) ═════════
   {
-    id: 'fka-twigs', title: 'FKA twigs + Yves Tumor', venue: 'Ziggo Dome', area: 'Zuidoost', when: 'Sat 6 Jun · doors 18:00',
+    id: 'fka-twigs', title: 'FKA twigs + Yves Tumor', venue: 'Ziggo Dome', area: 'Zuidoost', when: 'Sat 6 Jun 2026 · doors 18:00',
     category: 'live', freshness: 'weekend', outdoor: false, kid: false, price: 'from ~€50',
     image: 'https://images.sk-static.com/images/media/profile_images/artists/7413669/huge_avatar',
     blurb: 'FKA twigs brings the Body High arena tour, with Yves Tumor opening, to the 17k-cap Ziggo Dome.',
@@ -24,7 +24,7 @@ export const PICKS: Pick[] = [
     weatherFit: ['HOT', 'WARM', 'COOL', 'COLD_WET', 'VOLATILE'], status: 'selling-fast',
   },
   {
-    id: 'red-light-jazz', title: 'Red Light Jazz Festival', venue: 'Around De Wallen', area: 'Centrum', when: 'Fri–Sun 5–7 Jun',
+    id: 'red-light-jazz', title: 'Red Light Jazz Festival', venue: 'Around De Wallen', area: 'Centrum', when: 'Fri–Sun 5–7 Jun 2026',
     image: 'https://redlightjazz.com/wp-content/uploads/2025/05/sabrina-starke-at-red-light-jazz-uitgelicht.webp',
     category: 'live', freshness: 'weekend', outdoor: false, kid: false, price: 'mostly free',
     blurb: 'Mostly-free jazz across intimate Red Light District cafés, churches and hidden rooms — 13th edition.',
@@ -33,7 +33,7 @@ export const PICKS: Pick[] = [
     weatherFit: ['WARM', 'COOL', 'COLD_WET', 'VOLATILE'], status: 'free',
   },
   {
-    id: 'amsterdam-open-air', title: 'Amsterdam Open Air', venue: 'Gaasperpark', area: 'Zuidoost', when: 'Sat–Sun 6–7 Jun',
+    id: 'amsterdam-open-air', title: 'Amsterdam Open Air', venue: 'Gaasperpark', area: 'Zuidoost', when: 'Sat–Sun 6–7 Jun 2026',
     category: 'live', freshness: 'weekend', outdoor: true, kid: false, price: 'day / weekend tickets',
     image: "https://images.unsplash.com/photo-1761926826313-a1787661b7b6?w=1200&q=80",
     blurb: 'Ten-stage open-air electronic, house and techno weekender in the park — fashion and art across the site.',
@@ -42,7 +42,7 @@ export const PICKS: Pick[] = [
     weatherFit: ['HOT', 'WARM'], verify: true,
   },
   {
-    id: '909-festival', title: '909 Festival', venue: 'Het Amsterdamse Bos', area: 'Amstelveen', when: 'Sat–Sun 6–7 Jun',
+    id: '909-festival', title: '909 Festival', venue: 'Het Amsterdamse Bos', area: 'Amstelveen', when: 'Sat–Sun 6–7 Jun 2026',
     image: 'https://framerusercontent.com/assets/zKisd6fZKSwFKx4QHS96VbG1XI.jpg',
     category: 'live', freshness: 'weekend', outdoor: true, kid: false, price: 'from €45',
     blurb: 'Outdoor techno festival in the forest with international DJs across the first weekend of June.',
@@ -51,7 +51,7 @@ export const PICKS: Pick[] = [
     weatherFit: ['HOT', 'WARM'], verify: true,
   },
   {
-    id: 'jungle-by-night', title: 'Jungle by Night', venue: 'Vondelpark Openluchttheater', area: 'Zuid', when: 'Sun 7 Jun',
+    id: 'jungle-by-night', title: 'Jungle by Night', venue: 'Vondelpark Openluchttheater', area: 'Zuid', when: 'Sun 7 Jun 2026',
     image: 'https://upload.wikimedia.org/wikipedia/commons/c/c2/Jungle_by_Night.jpg',
     category: 'live', freshness: 'weekend', outdoor: true, kid: true, price: 'free (open-air)',
     blurb: 'Amsterdam’s own brass-heavy instrumental collective plays the free open-air Vondelpark stage.',
@@ -60,7 +60,7 @@ export const PICKS: Pick[] = [
     weatherFit: ['HOT', 'WARM', 'COOL'], status: 'free',
   },
   {
-    id: 'samora-pinderhughes', title: 'Samora Pinderhughes', venue: 'Bimhuis', area: 'Oosterdok', when: 'Sat 6 Jun',
+    id: 'samora-pinderhughes', title: 'Samora Pinderhughes', venue: 'Bimhuis', area: 'Oosterdok', when: 'Sat 6 Jun 2026',
     category: 'live', freshness: 'weekend', outdoor: false, kid: false, price: 'ticketed',
     image: 'https://images.sk-static.com/images/media/profile_images/artists/8574519/huge_avatar',
     blurb: 'Pianist-composer’s cinematic jazz and spoken-word project lands in the canalside Bimhuis.',
@@ -69,7 +69,7 @@ export const PICKS: Pick[] = [
     weatherFit: ['COOL', 'COLD_WET', 'VOLATILE'],
   },
   {
-    id: 'humbe', title: 'Humbe', venue: 'Tolhuistuin', area: 'Noord', when: 'Sat 6 Jun · doors 19:00',
+    id: 'humbe', title: 'Humbe', venue: 'Tolhuistuin', area: 'Noord', when: 'Sat 6 Jun 2026 · doors 19:00',
     category: 'live', freshness: 'weekend', outdoor: false, kid: false, price: 'from €28.70',
     image: 'https://images.sk-static.com/images/media/profile_images/artists/10166255/huge_avatar',
     blurb: 'Mexican singer-songwriter Humbe plays his first Amsterdam show at the waterfront Noord venue.',
@@ -78,7 +78,7 @@ export const PICKS: Pick[] = [
     weatherFit: ['WARM', 'COOL', 'COLD_WET', 'VOLATILE'],
   },
   {
-    id: 'jordana', title: 'Jordana + Tōth', venue: 'Paradiso', area: 'Leidseplein', when: 'Sun 7 Jun',
+    id: 'jordana', title: 'Jordana + Tōth', venue: 'Paradiso', area: 'Leidseplein', when: 'Sun 7 Jun 2026',
     category: 'live', freshness: 'weekend', outdoor: false, kid: false, price: 'ticketed',
     image: 'https://images.sk-static.com/images/media/profile_images/artists/566524/huge_avatar',
     blurb: 'Bedroom-pop songwriter Jordana makes her Amsterdam debut at Paradiso, with Tōth supporting.',
@@ -86,7 +86,7 @@ export const PICKS: Pick[] = [
     weatherFit: ['WARM', 'COOL', 'COLD_WET', 'VOLATILE'],
   },
   {
-    id: 'ella-zirina', title: 'Ella Zirina Trio', venue: 'Bimhuis', area: 'Oosterdok', when: 'Sun 7 Jun',
+    id: 'ella-zirina', title: 'Ella Zirina Trio', venue: 'Bimhuis', area: 'Oosterdok', when: 'Sun 7 Jun 2026',
     category: 'live', freshness: 'weekend', outdoor: false, kid: false, price: 'ticketed',
     image: 'https://images.sk-static.com/images/media/profile_images/artists/10213531/huge_avatar',
     blurb: 'Latvian guitarist Ella Zirina leads her contemporary jazz trio at the Bimhuis.',
@@ -94,7 +94,7 @@ export const PICKS: Pick[] = [
     weatherFit: ['COOL', 'COLD_WET', 'VOLATILE'],
   },
   {
-    id: 'motor-city-drum', title: 'Motor City Drum Ensemble', venue: 'NDSM', area: 'Noord', when: 'Sat 6 Jun',
+    id: 'motor-city-drum', title: 'Motor City Drum Ensemble', venue: 'NDSM', area: 'Noord', when: 'Sat 6 Jun 2026',
     image: 'https://www.attackmagazine.com/wp-content/uploads/2012/09/6_MCDE_by_Stefan_Braunbarth.png',
     category: 'live', freshness: 'weekend', outdoor: false, kid: false, price: 'ticketed',
     blurb: 'Deep-house selector MCDE headlines a DJ session at the industrial NDSM wharf.',
@@ -104,7 +104,7 @@ export const PICKS: Pick[] = [
 
   // ═════════ STAGE & SCREEN — Holland Festival weekend program (verified images) ═════════
   {
-    id: 'hf-tagaq', title: 'Arctic Futurisms with Tanya Tagaq', venue: 'De Nieuwe Liefde', area: 'West', when: 'Fri 5 Jun',
+    id: 'hf-tagaq', title: 'Arctic Futurisms with Tanya Tagaq', venue: 'De Nieuwe Liefde', area: 'West', when: 'Fri 5 Jun 2026',
     category: 'stage', freshness: 'weekend', outdoor: false, kid: false, price: 'Holland Festival ticket',
     image: 'https://d329d2usvpfxbn.cloudfront.net/a1PSZ000005MEpR2AW_1660x989.jpg',
     blurb: 'Inuit throat-singer Tanya Tagaq headlines an evening of Arctic futurism — Friday only.',
@@ -113,7 +113,7 @@ export const PICKS: Pick[] = [
     weatherFit: ['WARM', 'COOL', 'COLD_WET', 'VOLATILE'],
   },
   {
-    id: 'hf-atomic', title: 'Atomic Joy', venue: 'Frascati', area: 'Nes · Centrum', when: 'Fri–Sun 5–7 Jun',
+    id: 'hf-atomic', title: 'Atomic Joy', venue: 'Frascati', area: 'Nes · Centrum', when: 'Fri–Sun 5–7 Jun 2026',
     category: 'stage', freshness: 'weekend', outdoor: false, kid: false, price: 'Holland Festival ticket',
     image: 'https://d329d2usvpfxbn.cloudfront.net/a1PSZ00000527c42AA_1660x989.jpg',
     blurb: 'A Holland Festival theatre piece playing across the full weekend at intimate Frascati.',
@@ -122,7 +122,7 @@ export const PICKS: Pick[] = [
     weatherFit: ['WARM', 'COOL', 'COLD_WET', 'VOLATILE'],
   },
   {
-    id: 'hf-split', title: 'Split Tooth: Saputjiji', venue: 'Muziekgebouw aan ’t IJ', area: 'Oosterdok', when: 'Sun 7 Jun',
+    id: 'hf-split', title: 'Split Tooth: Saputjiji', venue: 'Muziekgebouw aan ’t IJ', area: 'Oosterdok', when: 'Sun 7 Jun 2026',
     category: 'stage', freshness: 'weekend', outdoor: false, kid: false, price: 'Holland Festival ticket',
     image: 'https://d329d2usvpfxbn.cloudfront.net/a1PSZ000005B0TF2A0_1660x989.jpg',
     blurb: 'Sunday-night music-theatre adaptation of Tanya Tagaq’s novel Split Tooth.',
@@ -145,8 +145,12 @@ export const PICKS: Pick[] = [
   // a hand-authored pick with a concrete end date rots in place, and the year-inference that kept
   // them alive is exactly the bug resolveDate's stale-zone rule now guards. Closing-soon picks
   // belong to the weekly crawl, which drops them the week they finish.)
+  // THE LAW SINCE 22 NOV 2026: a date typed in this file carries its YEAR ("Until 6 Sep 2026"). A bare
+  // "Opens Fri 5 Jun" is read as next year's once it is 120 days gone — Foam Talent, below, went back on
+  // the deck that way. The pipeline now drops a bundled pick whose date has no year (lib/when.ts
+  // hasYearlessDate) rather than guess one; every dated entry here is stamped and so stays past.
   {
-    id: 'carel-visser', title: 'Carel Visser — sculpture in the gardens', venue: 'Rijksmuseum Gardens', area: 'Museumplein', when: 'Opens Fri 5 Jun · until 25 Oct',
+    id: 'carel-visser', title: 'Carel Visser — sculpture in the gardens', venue: 'Rijksmuseum Gardens', area: 'Museumplein', when: 'Opens Fri 5 Jun 2026 · until 25 Oct 2026',
     category: 'art', freshness: 'new', outdoor: true, kid: true, price: 'free',
     image: 'https://www.rijksmuseum.nl/assets/bb8638d7-30fa-42c1-9bc5-2ca3c0d7bbfd?w=1200&h=630&fx=2896&fy=3894&c=16cc347f140afe0fd01cc3a22403b0e1f3e8ee7f20f0ee8c2cb719980e386242',
     blurb: 'Free outdoor sculpture show — the first artist solo in the Rijksmuseum gardens, opening this weekend.',
@@ -155,7 +159,7 @@ export const PICKS: Pick[] = [
     weatherFit: ['HOT', 'WARM', 'COOL'], status: 'free',
   },
   {
-    id: 'foam-talent', title: 'Foam Talent 2026', venue: 'Foam', area: 'Keizersgracht', when: 'Opens Fri 5 Jun',
+    id: 'foam-talent', title: 'Foam Talent 2026', venue: 'Foam', area: 'Keizersgracht', when: 'Opens Fri 5 Jun 2026',
     image: 'https://www.meer.com/attachments/f6cf99a262109375f24294abae18a69d7f318767/store/fill/860/645/49711ed03e3aed01bca0482dfee80cf5bfe7ff76363addaf5f7d88934208/Sean-Cham-301-Chinese-boy-on-duty-detail-Courtesy-of-Foam.jpg',
     category: 'art', freshness: 'new', outdoor: false, kid: false, price: '~€16',
     blurb: 'Fifteen emerging photographers from 107 countries — fresh on its launch weekend.',
@@ -164,7 +168,7 @@ export const PICKS: Pick[] = [
     weatherFit: ['COOL', 'COLD_WET', 'VOLATILE'],
   },
   {
-    id: 'wisa', title: 'Women in Street Art Weekend', venue: 'STRAAT Museum', area: 'NDSM · Noord', when: 'Fri–Sun 5–7 Jun',
+    id: 'wisa', title: 'Women in Street Art Weekend', venue: 'STRAAT Museum', area: 'NDSM · Noord', when: 'Fri–Sun 5–7 Jun 2026',
     image: 'https://www.coolesuggesties.nl/wp-content/uploads/2026/05/Buuf-Buur-aan-het-werk-in-STRAAT-foto-Janneke-Nooij.webp',
     category: 'art', freshness: 'weekend', outdoor: false, kid: true, price: '~€19',
     blurb: 'The street-art museum’s weekend spotlighting women artists, on the NDSM wharf.',
@@ -173,7 +177,7 @@ export const PICKS: Pick[] = [
     weatherFit: ['COOL', 'COLD_WET', 'VOLATILE'],
   },
   {
-    id: 'american-identities', title: 'American Identities', venue: 'H’ART Museum', area: 'Amstel', when: 'Until 6 Sep',
+    id: 'american-identities', title: 'American Identities', venue: 'H’ART Museum', area: 'Amstel', when: 'Until 6 Sep 2026',
     category: 'art', freshness: 'always', outdoor: false, kid: false, price: '~€19.50',
     image: 'https://www.hartmuseum.nl/wp-content/uploads/2025/10/4911-HM-Levinthal-digitaal-en-socials-11Ju_website.jpg',
     blurb: 'Levinthal’s staged photos and ChicanX prints pick apart the myths and power plays of American identity.',
@@ -182,7 +186,7 @@ export const PICKS: Pick[] = [
     weatherFit: ['COOL', 'COLD_WET', 'VOLATILE'],
   },
   {
-    id: 'eye-open', title: 'Eye(s) Open', venue: 'Eye Filmmuseum', area: 'Noord', when: 'Until 6 Sep',
+    id: 'eye-open', title: 'Eye(s) Open', venue: 'Eye Filmmuseum', area: 'Noord', when: 'Until 6 Sep 2026',
     category: 'art', freshness: 'always', outdoor: false, kid: false, price: '~€12.50',
     image: 'https://assets.eyefilm.nl/images/programme-item/_1200x630_crop_center-center_none/campagnebeeld-Eyes-Open.jpg',
     blurb: 'Eleven artists confront Eye’s 2,000 colonial-era films from Indonesia and Suriname with new works.',
@@ -191,7 +195,7 @@ export const PICKS: Pick[] = [
     weatherFit: ['COOL', 'COLD_WET', 'VOLATILE'],
   },
   {
-    id: 'danh-vo', title: 'Danh Vo at the Stedelijk', venue: 'Stedelijk Museum', area: 'Museumplein', when: 'Until 2 Aug',
+    id: 'danh-vo', title: 'Danh Vo at the Stedelijk', venue: 'Stedelijk Museum', area: 'Museumplein', when: 'Until 2 Aug 2026',
     image: 'https://artdaily.cc/imagenes/2026/02/14/danh-2.jpg',
     category: 'art', freshness: 'always', outdoor: false, kid: false, price: '€22.50',
     blurb: 'Danh Vo weaves objects, images and text into a quiet meditation on identity and human ties.',
@@ -220,7 +224,7 @@ export const PICKS: Pick[] = [
     weatherFit: ['WARM', 'COOL', 'COLD_WET', 'VOLATILE'],
   },
   {
-    id: 'oatly-bike-thru', title: 'Oatly Bike Thru', venue: 'Papaverhoek 24', area: 'Noord', when: 'Final weekend · until Sun 7 Jun',
+    id: 'oatly-bike-thru', title: 'Oatly Bike Thru', venue: 'Papaverhoek 24', area: 'Noord', when: 'Final weekend · until Sun 7 Jun 2026',
     image: 'https://a.storyblok.com/f/107921/960x540/8ebbcdc9e7/wow_no_cow.webp',
     category: 'drink', freshness: 'ending', outdoor: true, kid: true, price: '€',
     blurb: 'A bike-through pop-up serving iced oat lattes and matcha — its final days before it closes.',
@@ -231,7 +235,7 @@ export const PICKS: Pick[] = [
 
   // ═════════ MARKETS & OUT (publisher og:images) ═════════
   {
-    id: 'sunday-market-westergas', title: 'Sunday Market — Westergas', venue: 'Cultuurpark Westergasfabriek', area: 'West', when: 'Sun 7 Jun · 12:00–18:00',
+    id: 'sunday-market-westergas', title: 'Sunday Market — Westergas', venue: 'Cultuurpark Westergasfabriek', area: 'West', when: 'Sun 7 Jun 2026 · 12:00–18:00',
     category: 'market', freshness: 'weekend', outdoor: true, kid: true, price: 'free entry',
     image: 'https://app.thefeedfactory.nl/api/assets/60913a7a5e56be4386f24851/sunday%20market%20westergas.webp',
     blurb: 'The roaming design / food / vintage market returns to Westergas — June edition lands this Sunday.',
@@ -240,7 +244,7 @@ export const PICKS: Pick[] = [
     weatherFit: ['HOT', 'WARM', 'COOL'],
   },
   {
-    id: 'noordermarkt', title: 'Noordermarkt (Saturday)', venue: 'Noordermarkt square', area: 'Jordaan', when: 'Sat 6 Jun · 09:00–16:00',
+    id: 'noordermarkt', title: 'Noordermarkt (Saturday)', venue: 'Noordermarkt square', area: 'Jordaan', when: 'Sat 6 Jun 2026 · 09:00–16:00',
     category: 'market', freshness: 'weekend', outdoor: true, kid: false, price: 'free entry',
     image: 'https://app.thefeedfactory.nl/api/assets/66791e9931e55c556280c599/1800x1020.jpg',
     blurb: 'Weekly Saturday antiques, vintage, books and organic-food market in the Jordaan, by the Noorderkerk.',
@@ -249,7 +253,7 @@ export const PICKS: Pick[] = [
     weatherFit: ['HOT', 'WARM', 'COOL'],
   },
   {
-    id: 'amsterdam-sevens', title: 'Amsterdam Sevens Rugby', venue: 'Sportpark de Eendracht', area: 'West', when: 'Sat–Sun 6–7 Jun',
+    id: 'amsterdam-sevens', title: 'Amsterdam Sevens Rugby', venue: 'Sportpark de Eendracht', area: 'West', when: 'Sat–Sun 6–7 Jun 2026',
     image: "https://media.iamsterdam.com/w_1080/69yh4j7g2d4u-rtxp.jpg",
     category: 'out', freshness: 'weekend', outdoor: true, kid: true, price: 'ticketed',
     blurb: 'The 53rd-edition international rugby sevens — 120+ teams, fast games, a full-day atmosphere.',

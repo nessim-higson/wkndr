@@ -6,7 +6,7 @@
 //   3. The pill shows once per week, only for a save made in an EARLIER week.
 //   4. The question is asked for a finished save within three weeks, once.
 import { describe, it, expect } from 'bun:test'
-import { snapshotSaves, shelfOf, laterShelf, arriving, lookBack, mergeState, fingerprint, emptyState, weekOf } from '../src/lib/account'
+import { snapshotSaves, titleOf, shelfOf, laterShelf, arriving, lookBack, mergeState, fingerprint, emptyState, weekOf } from '../src/lib/account'
 import type { AccountState, SaveEntry } from '../src/lib/account'
 import { firstDateOf } from '../src/lib/when'
 import type { Pick } from '../src/types'
@@ -31,11 +31,21 @@ describe('snapshotSaves', () => {
     const later = snapshotSaves(first, new Set(['a', 'b', 'c']), picks, new Date(NOW.getTime() + 864e5))
     expect(later).toEqual(first)                                        // `at` is the save moment, not the render
   })
-  it('drops an unsaved id, keeps a saved one whose card rotated out, skips one with nothing to show', () => {
+  it('drops an unsaved id, keeps a saved one whose card rotated out, and never loses one with nothing to show', () => {
     const prev = [entry('gone', 'Sat 7 Nov', '2026-11-07', '2026-11-07')]
-    const out = snapshotSaves(prev, new Set(['gone', 'ghost']), [pick('x', 'Sat 31 Oct')], NOW)
-    expect(out).toEqual(prev)                                           // 'gone' kept from its snapshot; 'ghost' has neither
+    const out = snapshotSaves(prev, new Set(['gone', 'web-iams-the-maker-market']), [pick('x', 'Sat 31 Oct')], NOW)
+    // 'gone' kept from its snapshot. The other has neither a snapshot nor a card in the pool: it stays,
+    // bare. Skipping it was a delete — the next sync adopted the mirror as the saved set (22 Nov 2026).
+    expect(out).toEqual([...prev, { id: 'web-iams-the-maker-market', title: '', when: '', at: NOW.getTime() }])
+    expect(titleOf(out[1])).toBe('The maker market')
+    expect(titleOf(out[0])).toBe('gone')
     expect(snapshotSaves(prev, new Set(), [], NOW)).toEqual([])
+  })
+  it('a bare save fills in the week its card is back in the pool, keeping its save moment', () => {
+    const bare = snapshotSaves([], new Set(['a']), [], NOW)                // the feed has not loaded yet
+    expect(bare).toEqual([{ id: 'a', title: '', when: '', at: NOW.getTime() }])
+    const filled = snapshotSaves(bare, new Set(['a']), [pick('a', 'Sat 31 Oct · 20:00')], new Date(NOW.getTime() + 5000))
+    expect(filled[0]).toMatchObject({ id: 'a', title: 'a', when: 'Sat 31 Oct · 20:00', start: '2026-10-31', at: NOW.getTime() })
   })
   it('an "Opens … until …" run files by its opening day (firstDateOf), not null', () => {
     expect(firstDateOf('Opens Sat 14 Nov · until Sun 31 Jan', NOW)?.getDate()).toBe(14)

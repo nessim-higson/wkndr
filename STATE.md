@@ -1,11 +1,11 @@
 # WKNDR — STATE (catch-me-up snapshot)
 
-_Living "where are we right now" doc — a **snapshot, not a history**. **Updated 2026-10-30.** Read this
+_Living "where are we right now" doc — a **snapshot, not a history**. **Updated 2026-11-22.** Read this
 FIRST in a new chat. For strategy + backlog see `docs/backlog.md`; for the pipeline architecture see
 `docs/pipeline-architecture.md` + `docs/source-map.md`; for **who may write to the deck vs to a personal
 profile** (board / Tune / airlock — read before touching either) see `docs/curation-surfaces.md`; for the
 **board roadmap** (auto-compile tracks) see `docs/board-roadmap.md`; for full **version history** see
-`CHANGELOG.md` (current to app **V.12.7** — the two piles + first-run onboarding, 2026-11-13 / board V.10) and the **git log / tags**. Onboarding:
+`CHANGELOG.md` (current to app **V.12.8** — a written year is the year + every save has a place, 2026-11-22 / board V.10) and the **git log / tags**. Onboarding:
 `CLAUDE.md`; for any coding agent (Codex included) **`AGENTS.md`** is the working manual and
 `docs/variations/` the prototype protocol + the open briefs. App lives in `/app` (Vite + React + TS, run with `bun`); ships to **Cloudflare Pages**
 (`wkndr.xyz` + `app.wkndr.xyz`) **and** GitHub Pages (legacy, keeps old share links alive)._
@@ -30,6 +30,20 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
 > sessions update (today it's on load).
 
 ## Live right now
+- **2026-11-22 — A WRITTEN YEAR IS THE YEAR · EVERY SAVE HAS A PLACE (V.12.8).** Ness: "FOAM Talent is
+  GONE. How do we prevent this" + "I only see a few things in the [saved] list". **Dates:** a hand-written
+  pick's bare date ("Opens Fri 5 Jun") was read as NEXT year's once 120 days past; Foam Talent had been
+  back on the deck since 5 Oct and 37 more were queued. **THE LAW: every date typed by hand — `src/data/*`,
+  `scripts/heroes.ts`, `scripts/taste/scouted.json` — carries its year ("Until 12 Aug 2026"). One without
+  is DROPPED and named in the log (`yearless:` / `heroes:` / `scouted:`), never resolved** (`lib/when.ts`
+  `hasYearlessDate`, `rotsInPlace`; enforced in refresh, restamp, heroPicks, scoutedExtract and the app).
+  Crawled picks keep the year inference: the source spoke this week. **Saves:** the Library tab now holds
+  every save the plan tab cannot show (cards out of this week's pool, finished days under "Been and
+  gone"), so the two tabs add up to the star; and a save with no snapshot and no card in the pool is kept
+  bare instead of being skipped, because the skip became a delete on the next sync (`account.ts
+  snapshotSaves`, `titleOf`; `plan.ts libraryShelf`, `isOver`). Ness's account holds five saves; anything
+  lost before today is not recoverable. Still open on saves: the plan override (`wkndr.plan.v1`) is not
+  in the account contract, and finished saves are never pruned.
 - **2026-10-30 (late) — THE HOUSE FOUR (V.12.6).** "3–4 designs, mobile and desktop, in the design
   language." Four briefs in the unfurl's own language (wordmark + dot, Clash Display, the sky plate,
   cards with chips): `list` (the weekend poster as mail) · `sky` (the unfurl as mail) · `deck` (the

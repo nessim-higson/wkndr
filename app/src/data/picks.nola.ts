@@ -14,7 +14,7 @@ import type { Pick } from '../types'
 export const PICKS_NOLA: Pick[] = [
   // ── Live music — the city's heartbeat, almost all indoor ──
   {
-    id: 'nola-preservation-hall', title: 'Preservation Hall', venue: 'Preservation Hall', area: 'French Quarter', when: 'Fri–Sun 5–7 Jun · sets nightly',
+    id: 'nola-preservation-hall', title: 'Preservation Hall', venue: 'Preservation Hall', area: 'French Quarter', when: 'Fri–Sun 5–7 Jun 2026 · sets nightly',
     image: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Preservation_Hall_Interior_Oct_2015.jpg/1280px-Preservation_Hall_Interior_Oct_2015.jpg",
     category: 'live', freshness: 'always', outdoor: false, kid: true, price: 'from $25',
     blurb: 'Acoustic traditional jazz in a candle-lit 18th-century room — no bar, no mics, three short sets a night.',
@@ -23,7 +23,7 @@ export const PICKS_NOLA: Pick[] = [
     weatherFit: ['HOT', 'WARM', 'COOL', 'COLD_WET', 'VOLATILE'],
   },
   {
-    id: 'nola-tipitinas', title: 'Tipitina’s — Uptown show', venue: 'Tipitina’s', area: 'Uptown', when: 'Sat 6 Jun · doors 21:00',
+    id: 'nola-tipitinas', title: 'Tipitina’s — Uptown show', venue: 'Tipitina’s', area: 'Uptown', when: 'Sat 6 Jun 2026 · doors 21:00',
     image: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/Tipitinas_Daytime_New_Orleans_June_2018.jpg/1280px-Tipitinas_Daytime_New_Orleans_June_2018.jpg",
     category: 'live', freshness: 'weekend', outdoor: false, kid: false, price: 'ticketed',
     blurb: 'The fabled Napoleon Ave music hall — funk, brass and bounce under the banana-tree banner.',
@@ -41,7 +41,7 @@ export const PICKS_NOLA: Pick[] = [
     weatherFit: ['HOT', 'WARM', 'COOL', 'COLD_WET', 'VOLATILE'],
   },
   {
-    id: 'nola-dba', title: 'd.b.a. — Frenchmen Street', venue: 'd.b.a.', area: 'Marigny', when: 'Fri 5 Jun · 22:00',
+    id: 'nola-dba', title: 'd.b.a. — Frenchmen Street', venue: 'd.b.a.', area: 'Marigny', when: 'Fri 5 Jun 2026 · 22:00',
     image: "https://static1.squarespace.com/static/659490e7976465783a380b2b/t/660e2c1e8218546a9eefeedd/1712204830201/dba-socialsharing.jpg?format=1500w",
     category: 'live', freshness: 'weekend', outdoor: false, kid: false, price: 'small cover',
     blurb: 'A craft-beer bar with one of the best live rooms in the city — brass, blues and the odd legend dropping in.',
@@ -50,7 +50,7 @@ export const PICKS_NOLA: Pick[] = [
     weatherFit: ['HOT', 'WARM', 'COOL', 'COLD_WET', 'VOLATILE'],
   },
   {
-    id: 'nola-maple-leaf', title: 'Maple Leaf Bar — Uptown brass', venue: 'Maple Leaf Bar', area: 'Carrollton', when: 'Sat 6 Jun · 22:30',
+    id: 'nola-maple-leaf', title: 'Maple Leaf Bar — Uptown brass', venue: 'Maple Leaf Bar', area: 'Carrollton', when: 'Sat 6 Jun 2026 · 22:30',
     image: "https://images.unsplash.com/photo-1700949765531-ad21c71f1594?w=1200&q=80",
     category: 'live', freshness: 'weekend', outdoor: false, kid: false, price: 'cover',
     blurb: 'A pressed-tin Oak Street room that’s hosted Uptown funk and brass nights for half a century.',
@@ -61,7 +61,7 @@ export const PICKS_NOLA: Pick[] = [
 
   // ── Art & museums — the city's best rainy-day move ──
   {
-    id: 'nola-noma', title: 'New Orleans Museum of Art', venue: 'NOMA', area: 'City Park', when: 'Sat–Sun 6–7 Jun · 10:00–17:00',
+    id: 'nola-noma', title: 'New Orleans Museum of Art', venue: 'NOMA', area: 'City Park', when: 'Sat–Sun 6–7 Jun 2026 · 10:00–17:00',
     image: "https://noma.org/wp-content/uploads/2020/06/Besthoff-hero-box-.jpg",
     category: 'art', freshness: 'always', outdoor: false, kid: true, price: 'admission',
     blurb: 'A Beaux-Arts museum in City Park with a strong modern collection and the free Besthoff Sculpture Garden next door.',
@@ -70,7 +70,7 @@ export const PICKS_NOLA: Pick[] = [
     weatherFit: ['HOT', 'WARM', 'COOL', 'COLD_WET', 'VOLATILE'],
   },
   {
-    id: 'nola-ogden', title: 'Ogden Museum of Southern Art', venue: 'Ogden Museum', area: 'Warehouse District', when: 'Sat–Sun 6–7 Jun',
+    id: 'nola-ogden', title: 'Ogden Museum of Southern Art', venue: 'Ogden Museum', area: 'Warehouse District', when: 'Sat–Sun 6–7 Jun 2026',
     image: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Ogden_Museum_of_Southern_Art.jpg/1280px-Ogden_Museum_of_Southern_Art.jpg",
     category: 'art', freshness: 'always', outdoor: false, kid: false, price: 'admission',
     blurb: 'The South’s art under one roof — folk, self-taught and contemporary — plus a long-running Thursday music night.',
@@ -90,7 +90,7 @@ export const PICKS_NOLA: Pick[] = [
 
   // ── Stage & screen ──
   {
-    id: 'nola-saenger', title: 'Saenger Theatre — touring show', venue: 'Saenger Theatre', area: 'Canal Street', when: 'Sat 6 Jun · 20:00',
+    id: 'nola-saenger', title: 'Saenger Theatre — touring show', venue: 'Saenger Theatre', area: 'Canal Street', when: 'Sat 6 Jun 2026 · 20:00',
     image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Saenger_Theatre%2C_Canal_%26_Rampart%2C_New_Orleans_16_April_2025_-_3.jpg/1280px-Saenger_Theatre%2C_Canal_%26_Rampart%2C_New_Orleans_16_April_2025_-_3.jpg",
     category: 'stage', freshness: 'weekend', outdoor: false, kid: false, price: 'ticketed',
     blurb: 'A restored 1927 atmospheric movie palace — faux-Italian courtyard, ceiling “stars” — now Broadway tours and concerts.',
@@ -148,7 +148,7 @@ export const PICKS_NOLA: Pick[] = [
 
   // ── Out & markets — the fair-weather options (correctly NOT tagged for rain) ──
   {
-    id: 'nola-crescent-market', title: 'Crescent City Farmers Market', venue: 'Crescent City Market', area: 'CBD', when: 'Sat 6 Jun · 08:00–12:00',
+    id: 'nola-crescent-market', title: 'Crescent City Farmers Market', venue: 'Crescent City Market', area: 'CBD', when: 'Sat 6 Jun 2026 · 08:00–12:00',
     image: "https://images.unsplash.com/photo-1567306295427-94503f8300d7?w=1200&q=80",
     category: 'market', freshness: 'weekend', outdoor: true, kid: true, price: 'free entry',
     blurb: 'Saturday-morning Gulf shrimp, Creole tomatoes and prepared-food stalls — the city’s flagship farmers market.',

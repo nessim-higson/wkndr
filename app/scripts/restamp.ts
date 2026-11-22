@@ -28,7 +28,7 @@ import weekly from './taste/weekly.json'
 import { rxOf, titleLooseMatch, tokKey, upcomingWeekend, crownsActive, publishCheck, STAR_BOOST, NO_PHOTO_CAP, weekendModes, stampServeOrder, toPortrait, originalOf, approvalCheck, pickByTitle, markThisWeekend, photoHolderAfter, type TasteCorpus, type WeeklySlate } from './lib/pipeline'
 import { curatedImage } from './curated'
 import { heroPicks } from './heroes'
-import { fixWhen, whenIsPast, whenLooksBroken } from '../src/lib/when'
+import { fixWhen, rotsInPlace, whenIsPast, whenLooksBroken } from '../src/lib/when'
 import { effectiveFreshness } from '../src/lib/freshness'
 import { emitLetter } from './lib/letter'
 import { realVenue } from './poster'
@@ -50,7 +50,7 @@ const vetoRx = (corpus.eventVeto as string[]).map(rxOf)
 const restedRx = (corpus.rested as { match: string; until: string }[])
   .filter((r) => r.until >= today).map((r) => rxOf(r.match))
 const tasteOk = (p: Pick) =>
-  !vetoRx.some((rx) => rx.test(p.title)) && !restedRx.some((rx) => rx.test(p.title)) && !whenIsPast(p.when) && !whenLooksBroken(p.when)
+  !vetoRx.some((rx) => rx.test(p.title)) && !restedRx.some((rx) => rx.test(p.title)) && !rotsInPlace(p) && !whenIsPast(p.when) && !whenLooksBroken(p.when)
 
 let picks = feed.picks.filter(tasteOk)
 

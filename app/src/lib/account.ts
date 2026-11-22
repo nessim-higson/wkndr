@@ -64,7 +64,12 @@ const fromIso = (s: string) => { const [y, m, d] = s.split('-').map(Number); ret
 /** Keep the mirror's saves in step with the app's saved set. An id still saved keeps its
  *  snapshot (its `at` is the save moment, never re-stamped); a newly saved id gets one from the
  *  pick if the pick is in the pool; an id with neither a snapshot nor a pick (a save from before
- *  this feature whose card has rotated out) is skipped — there is nothing honest to show for it. */
+ *  this feature whose card has rotated out, or any save read before the feed has loaded) is KEPT
+ *  as a bare entry — id and save moment only. It used to be skipped, and the skip was a delete:
+ *  the next sync adopted the mirror as the saved set, so every save the mirror had not managed to
+ *  snapshot left the phone for good (Ness, 22 Nov: "I only see a few things in the list"). A bare
+ *  entry fills in from the pick the week its card is back in the pool; until then the row reads
+ *  its name off the id (`titleOf`). A save is only ever removed by the person. */
 export function snapshotSaves(prev: SaveEntry[], saved: Set<string>, picks: Pick[], now: Date = new Date()): SaveEntry[] {
   const have = new Map(prev.map((e) => [e.id, e]))
   const byId = new Map(picks.map((p) => [p.id, p]))
@@ -83,9 +88,22 @@ export function snapshotSaves(prev: SaveEntry[], saved: Set<string>, picks: Pick
       if (end) e.end = end
       if (p.link) e.link = p.link
       out.push(e)
+    } else {
+      out.push({ id, title: '', when: '', at: now.getTime() })
     }
   }
   return out
+}
+
+/** What a save's row is called. The snapshot's title; for a bare entry (see snapshotSaves) the
+ *  name its id carries — `web-iams-the-maker-market` reads "The maker market". */
+export function titleOf(e: SaveEntry): string {
+  if (e.title) return e.title
+  const slug = e.id
+    .replace(/^(?:web|llm|rss)-(?:lbb-tips|i-amsterdam|[a-z0-9]+)-/, '')
+    .replace(/^ams-[a-z0-9]+-/, '')
+    .replace(/-/g, ' ').trim()
+  return slug ? slug[0].toUpperCase() + slug.slice(1) : 'A saved card'
 }
 
 const OPEN_RUN = /\b(until|through|thru|till|t\/m)\b/i

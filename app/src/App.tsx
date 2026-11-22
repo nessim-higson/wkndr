@@ -33,7 +33,7 @@ import { InputsSheet } from './components/InputsSheet'
 import { AccountSheet } from './components/AccountSheet'
 import { LaterRows, AskWent } from './components/LaterShelf'
 import type { SaveEntry } from './lib/account'
-import { type Pile, arrivesLabel, libraryShelf, loadPlan, movePile, persistPlan } from './lib/plan'
+import { type Pile, arrivesLabel, isOver, libraryShelf, loadPlan, movePile, persistPlan } from './lib/plan'
 import { useAccount } from './lib/useAccount'
 import { accountOn } from './lib/account'
 import { FilterSheet } from './components/FilterSheet'
@@ -97,7 +97,7 @@ const TINT_PRESETS = [
   { label: 'Strong', x: 2.4 },
 ]
 import { CATEGORY_LABEL, type Category } from './types'
-import { fixWhen, whenDayGroup, whenSortKey, whenTime, whenIsPast, whenLooksBroken, upcomingWeekendEnd } from './lib/when'
+import { rotsInPlace, fixWhen, whenDayGroup, whenSortKey, whenTime, whenIsPast, whenLooksBroken, upcomingWeekendEnd } from './lib/when'
 import { effectiveFreshness } from './lib/freshness'
 import { confirmLink, inShared } from './lib/share'
 import { fetchRound, relayOn, resolveSentRound, roundReady, sentRounds } from './lib/relay'
@@ -461,6 +461,9 @@ export default function App() {
         // longer freezes "New this week" — the bucket empties on its own and the pill disappears.
         .map((p) => ({ ...p, freshness: effectiveFreshness(p) }))
         .map((p) => (p.top || topRx.some((rx) => rx.test(p.title)) ? { ...p, top: true } : p))
+        // a hand-written pick with a year-less date is never year-guessed (lib/when.ts rotsInPlace) —
+        // checked BEFORE fixWhen, on the text as the feed carries it (Foam Talent, 22 Nov 2026)
+        .filter((p) => !rotsInPlace(p) && !whenIsPast(p.when))
         .map((p) => (p.when ? { ...p, when: fixWhen(p.when) } : p))
         .filter((p) => !whenIsPast(p.when))
         // a range the date brain can't trust ("Sun 28 – Sun 12 Jul") is dropped, not displayed wrong
@@ -483,8 +486,13 @@ export default function App() {
   const [plan, setPlan] = useState(() => loadPlan())
   useEffect(() => { persistPlan(plan) }, [plan])
   const entryById = useMemo(() => new Map(account.saves.map((e) => [e.id, e])), [account.saves])
-  const library = useMemo(() => libraryShelf(account.saves, plan), [account.saves, plan])
+  // The Library is every save outside this weekend's plan — later dates, runs, evergreens, and (22 Nov)
+  // the saves whose card is not in this week's pool: a finished day, a place the feed rotated out. Those
+  // used to sit in neither tab while the star counted them.
+  const liveIds = useMemo(() => new Set(cityPicks.map((p) => p.id)), [cityPicks])
+  const library = useMemo(() => libraryShelf(account.saves, plan, new Date(), liveIds), [account.saves, plan, liveIds])
   const libraryIds = useMemo(() => new Set(library.map((e) => e.id)), [library])
+  const libraryOver = useMemo(() => library.filter((e) => isOver(e)).length, [library])
   const moveToPile = (e: SaveEntry, to: Pile) => {
     setPlan((p) => movePile(p, e, to))
     flash(to === 'weekend' ? 'In this weekend’s plan' : 'Moved to the Library')
@@ -1373,7 +1381,7 @@ export default function App() {
                         <div className="sv-head">
                           <div className="sv-head-txt">
                             <span className="sv-title">{shelf === 'library' ? 'Library' : 'Your weekend'}</span>
-                            <span className="sv-sub">{shelf === 'library' ? `${library.length} for another week` : `${weekendCount} in the plan`}</span>
+                            <span className="sv-sub">{shelf === 'library' ? `${library.length - libraryOver} for another week${libraryOver ? ` · ${libraryOver} been and gone` : ''}` : `${weekendCount} in the plan`}</span>
                           </div>
                           <button className="sv-share" onClick={() => { setShareOpen(true); setSavesOpen(false) }}>
                             Share <ArrowUpRight size={14} strokeWidth={2.2} />
@@ -1394,6 +1402,7 @@ export default function App() {
                               entries={library}
                               picks={pickById}
                               arrives={arrivesLabel}
+                              over={(e) => isOver(e)}
                               onOpen={(p) => { openDetail(p); setSavesOpen(false) }}
                               onMove={(e) => moveToPile(e, 'weekend')}
                               onRemove={(id) => setSaved((s) => { const n = new Set(s); n.delete(id); return n })}

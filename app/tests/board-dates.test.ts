@@ -58,6 +58,13 @@ const ADVERSARIAL = [
   'Thu 30 Jul – Sun 2 Aug',     // cross-month range
   'Sat 25 – Sun 26 Jul',        // the Milkshake shape
   'Fri–Sun 24–26 Jul · ongoing',
+  'Opens Fri 5 Jun 2026',       // a hand-written date carries its year (Foam Talent, 22 Nov 2026) — past for good
+  'Until 12 Aug 2026',
+  'Until Sun 3 Jan 2027',       // …and a yeared run is not re-read as the year after once it is over
+  'Opens Fri 5 Jun 2026 · until 25 Oct 2026',
+  'Opens Fri 5 Jun · until 25 Oct 2026',
+  'Wed 30 Dec – Sat 2 Jan 2027',
+  'Fri–Sun 5–7 Jun 2026',
   'Until 30 Aug', 'All summer · evenings', 'Opens 8 Sep',
   'Daily', 'Mon–Sat 09:00–18:00', '14:00–23:00', '',
 ]

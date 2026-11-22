@@ -1,10 +1,12 @@
 import type { Pick, Category, Mode } from '../src/types'
+import { hasYearlessDate } from '../src/lib/when'
 
 // HERO EVENTS — confirmed must-see events for the coming weekend, GUARANTEED into the feed every refresh
 // regardless of the non-deterministic web-search adapters. (A flagship like Bruno Mars at the ArenA was
 // surfaced one run and silently gone the next — a curated image can't help an event that isn't there.)
 //
 // Each hero is injected as a pick, EXEMPT from the per-category cap, carrying a hand-verified portrait image.
+// WRITE THE YEAR IN `when` ("Sat 4 Jul 2026 · 20:00") — a hero without one is left out (see heroPicks).
 // They flow through the normal date filters, so a hero whose weekend has passed auto-drops — keep this list
 // current to the coming weekend; stale entries fall off on their own (no harm if left a week). id prefix
 // `web-hero-` so the app + pipeline treat them as LIVE (they lead the deck and get editor-scored).
@@ -28,7 +30,7 @@ const HEROES: Record<string, Hero[]> = {
     // retired from this list the same day.
     {
       slug: 'beethoven-fifth-concertgebouw', title: "Beethoven's Fifth with the Concertgebouw Orchestra",
-      venue: 'Het Concertgebouw', area: 'Museumplein, Zuid', when: 'Fri 23 Oct · 21:00 / Sun 25 Oct · 14:15',
+      venue: 'Het Concertgebouw', area: 'Museumplein, Zuid', when: 'Fri 23 Oct 2026 · 21:00 / Sun 25 Oct 2026 · 14:15',
       category: 'live', price: 'from €20', outdoor: false,
       blurb: 'The orchestra plays the Fifth twice: a 75-minute Essentials night under Riccardo Minasi on Friday, and Sunday afternoon with Mao Fujita in Mozart’s 25th piano concerto. Sunday is on its last tickets.',
       why: 'The other Amsterdam sound this weekend', source: 'Het Concertgebouw',
@@ -37,7 +39,7 @@ const HEROES: Record<string, Hero[]> = {
     },
     {
       slug: 'nutcracker-brass-concertgebouw', title: "Tchaikovsky's Nutcracker: Concertgebouw Orchestra Brass",
-      venue: 'Het Concertgebouw', area: 'Museumplein, Zuid', when: 'Sun 25 Oct · 11:00',
+      venue: 'Het Concertgebouw', area: 'Museumplein, Zuid', when: 'Sun 25 Oct 2026 · 11:00',
       category: 'live', price: 'from €21 · last tickets', outdoor: false, kid: true,
       blurb: 'The orchestra’s brass section plays the Nutcracker Suite in a one-hour Sunday-morning concert in the Main Hall, with Lotti’s Crucifixus to open. Done by noon.',
       why: 'A Sunday morning indoors, done by noon', source: 'Het Concertgebouw',
@@ -46,7 +48,7 @@ const HEROES: Record<string, Hero[]> = {
     },
     {
       slug: 'copenhagen-trilogy-ita', title: 'The Copenhagen Trilogy: ITA / Eline Arbo',
-      venue: 'Internationaal Theater Amsterdam', area: 'Leidseplein, Centrum', when: 'Sun 25 Oct · 15:00',
+      venue: 'Internationaal Theater Amsterdam', area: 'Leidseplein, Centrum', when: 'Sun 25 Oct 2026 · 15:00',
       category: 'stage', price: '€14.50–49 · last tickets', outdoor: false,
       blurb: 'Eline Arbo folds Tove Ditlevsen’s three memoirs (Childhood, Youth, Dependency) into one three-and-a-half-hour afternoon in the Grote Zaal: poverty, fame, addiction. In Dutch; the surtitled shows come later in the run.',
       why: 'Arbo’s big one, a Sunday matinee', source: 'ITA',
@@ -55,7 +57,7 @@ const HEROES: Record<string, Hero[]> = {
     },
     {
       slug: 'fright-nights-walibi', title: 'Halloween Fright Nights at Walibi Holland',
-      venue: 'Walibi Holland', area: 'Biddinghuizen · ~1h by car', when: 'Sat–Sun 24–25 Oct · 10:00–23:00',
+      venue: 'Walibi Holland', area: 'Biddinghuizen · ~1h by car', when: 'Sat–Sun 24–25 Oct 2026 · 10:00–23:00',
       category: 'daytrip', price: 'park ticket + packages from €9.50', outdoor: true,
       blurb: 'The park runs till 23:00 with the haunted houses open from 13:00 and the scare zones after dark; the last weekend before Halloween itself. Not one for small kids, and bring a raincoat.',
       why: 'The Halloween weekend, if you can take the rain', source: 'Walibi Holland',
@@ -72,7 +74,13 @@ const ALL: Mode[] = ['HOT', 'WARM', 'COOL', 'COLD_WET', 'VOLATILE']
 
 /** Hero events for a city as Pick[] (RAW images — the caller wsrv-wraps). id `web-hero-*` → treated as live. */
 export function heroPicks(cityKey: string): Pick[] {
-  return (HEROES[cityKey] ?? []).map((h) => ({
+  // A HAND-WRITTEN DATE CARRIES ITS YEAR (lib/when.ts hasYearlessDate) — write "Sun 25 Oct 2026 · 11:00".
+  // A hero with a bare "Sun 25 Oct" is left out and named here: next autumn the date reader would take
+  // it for the coming October and this list would put last year's concert back at the top of the deck.
+  const all = HEROES[cityKey] ?? []
+  const bare = all.filter((h) => hasYearlessDate(h.when))
+  if (bare.length) console.warn(`  heroes:   ${bare.length} left out, date has no year — add it in scripts/heroes.ts (${bare.map((h) => h.slug).join(', ')})`)
+  return all.filter((h) => !hasYearlessDate(h.when)).map((h) => ({
     id: `web-hero-${h.slug}`,
     title: h.title,
     venue: h.venue,

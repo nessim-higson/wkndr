@@ -37,12 +37,28 @@ export function movePile(plan: Plan, e: SaveEntry, to: Pile, now: Date = new Dat
   return to === 'weekend' ? { ...plan, add: [...add, e.id], drop } : { ...plan, add, drop: [...drop, e.id] }
 }
 
-/** The library, soonest first: a dated save by its date, a run by its end (the deadline), the
- *  undated ones (evergreens pushed out of the plan) last, oldest save first. */
-export function libraryShelf(saves: SaveEntry[], plan: Plan, now: Date = new Date()): SaveEntry[] {
+/** A save whose day has gone: its last date (a run's end, a day's own date) is before today. */
+export function isOver(e: SaveEntry, now: Date = new Date()): boolean {
+  const last = e.end ?? e.start
+  return !!last && last < iso(now)
+}
+
+/** The library: EVERY save that is not in this weekend's plan, so the two tabs always add up to
+ *  what the star counts. Three kinds, in this order —
+ *    · to come, soonest first: a dated save by its date, a run by its end (the deadline);
+ *    · any week: the undated ones (evergreens pushed out of the plan, and cards that have left
+ *      this week's feed), oldest save first;
+ *    · been and gone, most recent first.
+ *  `live` is the ids in this weekend's pool. The plan tab is drawn from the pool's cards, so a
+ *  save whose card is not in it cannot be in the plan whatever its date says — before this rule
+ *  those saves (a finished Saturday, an evergreen the feed rotated out) sat in NEITHER tab while
+ *  the star still counted them. Omit `live` and only the date + pill rule applies. */
+export function libraryShelf(saves: SaveEntry[], plan: Plan, now: Date = new Date(), live?: Set<string>): SaveEntry[] {
   const key = (e: SaveEntry) => (e.start && !OPEN_RUN.test(e.when) ? e.start : (e.end ?? e.start ?? '9999'))
-  return saves.filter((e) => pileOf(e, plan, now) === 'library')
-    .sort((a, b) => (key(a) < key(b) ? -1 : key(a) > key(b) ? 1 : a.at - b.at))
+  const lib = saves.filter((e) => pileOf(e, plan, now) === 'library' || (live ? !live.has(e.id) : false) || isOver(e, now))
+  const ahead = lib.filter((e) => !isOver(e, now)).sort((a, b) => (key(a) < key(b) ? -1 : key(a) > key(b) ? 1 : a.at - b.at))
+  const over = lib.filter((e) => isOver(e, now)).sort((a, b) => (key(a) > key(b) ? -1 : key(a) < key(b) ? 1 : b.at - a.at))
+  return [...ahead, ...over]
 }
 
 /** What a library row says about when it comes round: "Next weekend" when its first day falls in

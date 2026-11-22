@@ -21,7 +21,7 @@ const ROWS: Row[] = [
     img: 'https://strandvanoost.nl/wp-content/uploads/2026/05/DSC3884-scaled.jpg',
     blurb: 'A beach on a roof in Oost: sand-and-sunset bar on top of Orchid House that makes the city briefly disappear.', why: 'Beach feeling without leaving Oost',
     link: 'https://www.strandvanoost.nl/' },
-  { slug: 'wils-at-the-farm', title: 'Wils at the Farm', venue: 'Restaurant Wils × Boerderij Lindenhoff', area: 'Baambrugge (25 min from Amsterdam)', category: 'daytrip', tier: 'bespoke', stars: 4, price: '€€€€', when: 'Until Sat 25 Jul · Thu–Sat dinners', outdoor: true,
+  { slug: 'wils-at-the-farm', title: 'Wils at the Farm', venue: 'Restaurant Wils × Boerderij Lindenhoff', area: 'Baambrugge (25 min from Amsterdam)', category: 'daytrip', tier: 'bespoke', stars: 4, price: '€€€€', when: 'Until Sat 25 Jul 2026 · Thu–Sat dinners', outdoor: true,
     img: 'https://enfait.nl/wp-content/uploads/2026/06/RWAMS_Facilities_Restaurant_Eeuwen_Terrace_2-copy-scaled.jpeg',
     blurb: 'Joris Bijdendijk and Thomas Val cook open-fire dinners at the farm that grows their ingredients — long tables, meadow views.', why: 'Star kitchen relocated to its farm',
     link: 'https://www.restaurantwils.nl/wils-at-the-farm-en' },
@@ -131,7 +131,7 @@ const ROWS: Row[] = [
   // ——— R5 +CANON (issues #8/#9, late-compiled 2026-07-12) — the ONE dated entry in this file: an
   //     exhibition, not a place. Honest end date; whenIsPast retires it from serving after 12 Aug
   //     (cleanup candidate then). Image: the New Brighton 'Last Resort' photograph, checked by eye. ———
-  { slug: 'martin-parr-foam', title: 'Martin Parr: Very Modern and Rather Ugly', venue: 'Foam Photography Museum', area: 'Keizersgracht, Centrum', category: 'art', tier: 'bespoke', stars: 4, price: '€€', when: 'Until 12 Aug', outdoor: false,
+  { slug: 'martin-parr-foam', title: 'Martin Parr: Very Modern and Rather Ugly', venue: 'Foam Photography Museum', area: 'Keizersgracht, Centrum', category: 'art', tier: 'bespoke', stars: 4, price: '€€', when: 'Until 12 Aug 2026', outdoor: false,
     img: 'https://loeildelaphotographie.com/wp-content/uploads/2026/04/new-brighton-england-great-britain-1985-c-martin-parr.jpg',
     blurb: 'Retrospective of the British photographer’s satirical, affectionate eye on modern life and consumer culture — chip queues, deck chairs and all.', why: 'Closes 12 Aug; celebrated photographer',
     link: 'https://www.foam.org/exhibitions' },

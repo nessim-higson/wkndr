@@ -1,6 +1,7 @@
+import { Fragment } from 'react'
 import { CalendarClock, Plus, X } from 'lucide-react'
 import type { Pick } from '../types'
-import type { SaveEntry } from '../lib/account'
+import { type SaveEntry, titleOf } from '../lib/account'
 import { cssUrl } from '../lib/image'
 
 /** THE LIBRARY's rows (the Later shelf of V.12.2, now the second of THE TWO PILES) — the saves
@@ -8,43 +9,49 @@ import { cssUrl } from '../lib/image'
  *  A row whose card has rotated out of the feed still shows (the snapshot carries its title and
  *  date) and opens the organiser's page instead — it can't be pulled into the plan, so no pill. */
 export function LaterRows({
-  entries, picks, arrives, onOpen, onMove, onRemove,
+  entries, picks, arrives, over, onOpen, onMove, onRemove,
 }: {
   entries: SaveEntry[]
   picks: Map<string, Pick>
   arrives?: (e: SaveEntry) => string | null   // "Next weekend" on the one that comes round next
+  over?: (e: SaveEntry) => boolean            // its day has gone — these close the list under their own label
   onOpen: (p: Pick) => void
   onMove?: (e: SaveEntry) => void             // + Weekend: into this weekend's plan
   onRemove: (id: string) => void
 }) {
   return (
     <>
-      {entries.map((e) => {
+      {entries.map((e, i) => {
         const p = picks.get(e.id)
-        const soon = arrives?.(e)
+        const gone = !!over?.(e)
+        const soon = gone ? null : arrives?.(e)
+        const title = titleOf(e)
         return (
-          <div className="sv-row" key={e.id}>
-            <button
-              className="sv-rowmain"
-              onClick={() => { if (p) onOpen(p); else if (e.link) window.open(e.link, '_blank', 'noopener') }}
-            >
-              <span className="sv-thumb" style={p?.image ? { backgroundImage: cssUrl(p.image) } : undefined}>
-                {!p?.image && <CalendarClock size={16} strokeWidth={2} />}
-              </span>
-              <span className="sv-meta">
-                <span className="sv-when">{soon ?? (e.start ? e.when : 'Any week')}</span>
-                <span className="sv-name">{e.title}</span>
-              </span>
-            </button>
-            {p && onMove && (
-              <button className="sv-pill sv-pill--in" aria-label={`Add ${e.title} to this weekend`} onClick={() => onMove(e)}>
-                <Plus size={11} strokeWidth={2.8} /> Weekend
+          <Fragment key={e.id}>
+            {gone && (i === 0 || !over?.(entries[i - 1])) && <div className="sv-group-label">Been and gone</div>}
+            <div className="sv-row">
+              <button
+                className="sv-rowmain"
+                onClick={() => { if (p) onOpen(p); else if (e.link) window.open(e.link, '_blank', 'noopener') }}
+              >
+                <span className="sv-thumb" style={p?.image ? { backgroundImage: cssUrl(p.image) } : undefined}>
+                  {!p?.image && <CalendarClock size={16} strokeWidth={2} />}
+                </span>
+                <span className="sv-meta">
+                  <span className="sv-when">{soon ?? (e.start ? e.when : 'Any week')}</span>
+                  <span className="sv-name">{title}</span>
+                </span>
               </button>
-            )}
-            <button className="sv-remove" aria-label={`Remove ${e.title}`} onClick={() => onRemove(e.id)}>
-              <X size={15} strokeWidth={2.4} />
-            </button>
-          </div>
+              {p && onMove && !gone && (
+                <button className="sv-pill sv-pill--in" aria-label={`Add ${title} to this weekend`} onClick={() => onMove(e)}>
+                  <Plus size={11} strokeWidth={2.8} /> Weekend
+                </button>
+              )}
+              <button className="sv-remove" aria-label={`Remove ${title}`} onClick={() => onRemove(e.id)}>
+                <X size={15} strokeWidth={2.4} />
+              </button>
+            </div>
+          </Fragment>
         )
       })}
     </>
@@ -61,7 +68,7 @@ export function AskWent({ entries, onAnswer }: { entries: SaveEntry[]; onAnswer:
       {entries.slice(0, 3).map((e) => (
         <div className="sv-ask-row" key={e.id}>
           <span className="sv-meta">
-            <span className="sv-name">{e.title}</span>
+            <span className="sv-name">{titleOf(e)}</span>
             <span className="sv-when">{e.when}</span>
           </span>
           <span className="sv-ask-btns">

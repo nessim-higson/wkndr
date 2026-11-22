@@ -7,6 +7,7 @@
 // id prefix web-scout- (live; images trusted-but-screened like iams/lbb). Never throws.
 import type { Pick, Category, Mode } from '../../src/types'
 import scouted from '../taste/scouted.json'
+import { hasYearlessDate } from '../../src/lib/when'
 
 const ALL: Mode[] = ['HOT', 'WARM', 'COOL', 'COLD_WET', 'VOLATILE']
 const FAIR: Mode[] = ['HOT', 'WARM', 'COOL']
@@ -16,6 +17,10 @@ export function scoutedExtract(cityKey: string): Pick[] {
   if (cityKey !== 'amsterdam') return []
   return (scouted as Record<string, string | null>[]).flatMap((f): Pick[] => {
     if (!f || typeof f.title !== 'string') return []
+    // A HAND-WRITTEN DATE CARRIES ITS YEAR (lib/when.ts hasYearlessDate) — "Opens 8 Jul 2026". A find
+    // with a bare date is left out and named: this list is read on every run, for as long as the entry
+    // sits here, and "Opens 8 Jul" typed in June read as NEXT July from November on ('t Lemmeke).
+    if (hasYearlessDate(String(f.when ?? ''))) { console.warn(`  scouted:  "${f.title}" left out, date has no year — add it in scripts/taste/scouted.json`); return [] }
     const category = (f.category ?? 'out') as Category
     const outdoor = category === 'out' || /rooftop|beach|terras|strand|open.?air|openlucht/i.test(String(f.title) + String(f.blurb ?? ''))
     return [{

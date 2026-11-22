@@ -40,6 +40,14 @@ function resolveDate(day: number, mon: number, now: Date, openRun = false): Date
   return (openRun && longGone) || next.getTime() - now.getTime() < 60 * 864e5 ? next : d
 }
 
+// A YEAR WRITTEN IN THE TEXT IS THE YEAR. "Sat 6 Jun 2026", "Until Sun 3 Jan 2027": nothing is
+// guessed. (Before 22 Nov 2026 no reader took the year: every bare day+month went through
+// resolveDate, and the month-first reader below read "Jan 2027" as the 20th of January.)
+const YEAR = `(?:,?\\s+(20\\d{2})(?!\\d))?`
+function dateOf(day: number, mon: number, year: string | undefined, now: Date, openRun = false): Date {
+  return year ? new Date(+year, mon, day, 12, 0, 0) : resolveDate(day, mon, now, openRun)
+}
+
 /** Correct the weekday(s) in a freeform `when` string to match the actual date. Idempotent. */
 export function fixWhen(when: string, now: Date = new Date()): string {
   if (!when) return when
@@ -55,6 +63,9 @@ export function fixWhen(when: string, now: Date = new Date()): string {
     const [, d1, m1, y1, d2, m2, y2] = run
     const start = y1 ? new Date(+y1, MON[m1.toLowerCase()], +d1, 12) : resolveDate(+d1, MON[m1.toLowerCase()], now)
     const end = y2 ? new Date(+y2, MON[m2.toLowerCase()], +d2, 12) : resolveDate(+d2, MON[m2.toLowerCase()], now, true)
+    // a run that is OVER keeps its text, years and all: rewriting it to "Until Sun 9 Aug" would hand
+    // the next reader a bare date to guess a year for — and four months on it guesses the wrong one
+    if (end.getTime() < now.getTime() - 864e5) return when
     if (end.getTime() - start.getTime() > 9 * 864e5) {   // a run, not a long weekend
       const cap = (m: string) => m[0].toUpperCase() + m.slice(1, 3).toLowerCase()
       const until = `${WD[end.getDay()]} ${+d2} ${cap(m2)}`
@@ -81,10 +92,10 @@ export function fixWhen(when: string, now: Date = new Date()): string {
   const openRun = OPEN_RUN.test(when)
   // range first: "Sat–Sun 13–14 Jun" → recompute both ends from the two day numbers
   let s = when.replace(
-    new RegExp(`\\b(?:${WDAY})\\s*[–—-]\\s*(?:${WDAY})\\s+(\\d{1,2})\\s*[–—-]\\s*(\\d{1,2})\\s+(${MONS})(\\w*)`, 'gi'),
-    (_full, d1: string, d2: string, mon: string, tail: string) => {
+    new RegExp(`\\b(?:${WDAY})\\s*[–—-]\\s*(?:${WDAY})\\s+(\\d{1,2})\\s*[–—-]\\s*(\\d{1,2})\\s+(${MONS})(\\w*)(?=${YEAR})`, 'gi'),
+    (_full, d1: string, d2: string, mon: string, tail: string, yr?: string) => {
       const mi = MON[mon.toLowerCase()]
-      const a = resolveDate(+d1, mi, now, openRun), b = resolveDate(+d2, mi, now, openRun)
+      const a = dateOf(+d1, mi, yr, now, openRun), b = dateOf(+d2, mi, yr, now, openRun)
       return `${WD[a.getDay()]}–${WD[b.getDay()]} ${d1}–${d2} ${mon}${tail}`
     },
   )
@@ -93,19 +104,26 @@ export function fixWhen(when: string, now: Date = new Date()): string {
   // Without this pass only the dash's RIGHT side got corrected (it reads as a single day
   // below), so a source's wrong weekday on the START of a range shipped as written.
   s = s.replace(
-    new RegExp(`\\b(?:${WDAY})\\.?\\s+(\\d{1,2})(?:\\s+(${MONS})(\\w*))?\\s*([–—-])\\s*(?:${WDAY})\\.?\\s+(\\d{1,2})\\s+(${MONS})(\\w*)`, 'gi'),
-    (_full, d1: string, mon1: string | undefined, tail1: string | undefined, dash: string, d2: string, mon2: string, tail2: string) => {
+    new RegExp(`\\b(?:${WDAY})\\.?\\s+(\\d{1,2})(?:\\s+(${MONS})(\\w*))?\\s*([–—-])\\s*(?:${WDAY})\\.?\\s+(\\d{1,2})\\s+(${MONS})(\\w*)(?=${YEAR})`, 'gi'),
+    (_full, d1: string, mon1: string | undefined, tail1: string | undefined, dash: string, d2: string, mon2: string, tail2: string, yr?: string) => {
       const mi2 = MON[mon2.toLowerCase()]
       const mi1 = mon1 ? MON[mon1.toLowerCase()] : mi2
-      const a = resolveDate(+d1, mi1, now, openRun), b = resolveDate(+d2, mi2, now, openRun)
+      // the year sits on the END of a range; a start in a later month ("30 Dec – 2 Jan 2027") is the year before
+      const yr1 = yr && mi1 > mi2 ? String(+yr - 1) : yr
+      const a = dateOf(+d1, mi1, yr1, now, openRun), b = dateOf(+d2, mi2, yr, now, openRun)
       return `${WD[a.getDay()]} ${d1}${mon1 ? ` ${mon1}${tail1 ?? ''}` : ''} ${dash} ${WD[b.getDay()]} ${d2} ${mon2}${tail2}`
     },
   )
   // single: "Sun 8 Jun" → "Mon 8 Jun"
   s = s.replace(
-    new RegExp(`\\b(?:${WDAY})\\.?\\s+(\\d{1,2})\\s+(${MONS})(\\w*)`, 'gi'),
-    (_full, d: string, mon: string, tail: string) => {
-      const dt = resolveDate(+d, MON[mon.toLowerCase()], now, openRun)
+    new RegExp(`\\b(?:${WDAY})\\.?\\s+(\\d{1,2})\\s+(${MONS})(\\w*)(?=${YEAR})`, 'gi'),
+    (full: string, d: string, mon: string, tail: string, yr: string | undefined, offset: number, whole: string) => {
+      const mi = MON[mon.toLowerCase()]
+      // no year of its own → the one a later date in the string carries (the readDates rule), so the
+      // start of "Wed 30 Dec – Sat 2 Jan 2027" is read in 2026 here as it is there
+      const later = yr ? null : whole.slice(offset + full.length).match(new RegExp(`(${MONS})\\w*,?\\s+(20\\d{2})(?!\\d)`, 'i'))
+      const year = yr ?? (later ? String(+later[2] - (mi > MON[later[1].toLowerCase()] ? 1 : 0)) : undefined)
+      const dt = dateOf(+d, mi, year, now, openRun)
       return `${WD[dt.getDay()]} ${d} ${mon}${tail}`
     },
   )
@@ -132,16 +150,58 @@ export function whenMinutes(when: string): number {
  *  only matched its SECOND day, so a range was dated by its END day. Cross-month ranges
  *  ("Thu 30 Jul – Sun 2 Aug") need nothing special: each side carries its own month. */
 function datesIn(s: string, now: Date): Date[] {
-  const out: Date[] = []
+  return readDates(s, now).map((d) => d.date).sort((a, b) => a.getTime() - b.getTime())
+}
+
+/** Every day+month in the text, in reading order, with whether the text itself gave the year.
+ *  A date with no year of its own that is followed by one with a year takes that year ("Opens
+ *  Fri 5 Jun · until 25 Oct 2026" is all 2026; "20 Dec – 4 Jan 2027" starts in 2026). */
+function readDates(s: string, now: Date): { date: Date; yeared: boolean }[] {
   const openRun = OPEN_RUN.test(s)
-  for (const m of s.matchAll(new RegExp(`(\\d{1,2})\\s*(?:[–—-]\\s*(?:${WDAY})\\.?)?\\s*[–—-]?\\s*(\\d{1,2})?\\s*(${MONS})`, 'gi'))) {
+  const found: { at: number; day: number; mon: number; year?: string }[] = []
+  for (const m of s.matchAll(new RegExp(`(\\d{1,2})\\s*(?:[–—-]\\s*(?:${WDAY})\\.?)?\\s*[–—-]?\\s*(\\d{1,2})?\\s*(${MONS})(?:[a-z]*\\.?${YEAR})`, 'gi'))) {
     const mi = MON[m[3].slice(0, 3).toLowerCase()]
-    out.push(resolveDate(+m[1], mi, now, openRun))
-    if (m[2]) out.push(resolveDate(+m[2], mi, now, openRun))
+    found.push({ at: m.index ?? 0, day: +m[1], mon: mi, year: m[4] })
+    if (m[2]) found.push({ at: (m.index ?? 0) + 0.5, day: +m[2], mon: mi, year: m[4] })
   }
-  for (const m of s.matchAll(new RegExp(`(${MONS})\\s*(\\d{1,2})`, 'gi')))
-    out.push(resolveDate(+m[2], MON[m[1].slice(0, 3).toLowerCase()], now, openRun))
-  return out.sort((a, b) => a.getTime() - b.getTime())
+  // month-first ("Nov 13"). The day must END there: "Jan 2027" is a year, "Nov 18:30" is a time.
+  for (const m of s.matchAll(new RegExp(`(${MONS})\\s*(\\d{1,2})(?![\\d:])${YEAR}`, 'gi')))
+    found.push({ at: m.index ?? 0, day: +m[2], mon: MON[m[1].slice(0, 3).toLowerCase()], year: m[3] })
+  found.sort((a, b) => a.at - b.at)
+  let ahead: { year: string; mon: number } | undefined
+  const out: { date: Date; yeared: boolean }[] = []
+  for (let i = found.length - 1; i >= 0; i--) {
+    const f = found[i]
+    if (f.year) ahead = { year: f.year, mon: f.mon }
+    const year = f.year ?? (ahead ? String(+ahead.year - (f.mon > ahead.mon ? 1 : 0)) : undefined)
+    out.unshift({ date: dateOf(f.day, f.mon, year, now, openRun), yeared: !!year })
+  }
+  return out
+}
+
+/** Does this `when` name a calendar date WITHOUT its year — "Sat 6 Jun", "Until 12 Aug"?
+ *
+ *  From a crawl that is fine: a source said it this week, so the year is the one coming. From a
+ *  HAND-WRITTEN pick (src/data/*, scripts/heroes.ts) it is a time bomb, because the text never
+ *  changes while the calendar does: resolveDate keeps a past date in this year for 120 days, then
+ *  reads an open run as NEXT year's — "Opens Fri 5 Jun", typed in May 2026, came back to the deck
+ *  on 5 Oct 2026 as a show opening in June 2027 (Foam Talent; Ness, 22 Nov: "FOAM Talent is
+ *  GONE"), and every plain "Sat 6 Jun" in the seed pool was due back the following April. The
+ *  pipeline therefore refuses a hand-written pick whose date carries no year (refresh.ts,
+ *  heroes.ts) instead of guessing one. Recurring and undated whens ("Daily", "Saturdays") are not
+ *  dates and pass. */
+export function hasYearlessDate(when: string, now: Date = new Date()): boolean {
+  return readDates(when || '', now).some((d) => !d.yeared)
+}
+
+/** A HAND-WRITTEN pick (the bundled pools and the scouted list — not a crawl's web-/llm-/rss-/sk-
+ *  record) whose date carries no year.
+ *  Refused wherever a feed is read — the crawl's intake, the restamp, and the app itself, so a feed
+ *  published before the rule (or a cached one) is cleaned on the phone without waiting for a refresh. */
+export function rotsInPlace(p: { id: string; when?: string }): boolean {
+  // web-scout- is the scouted list (scripts/taste/scouted.json): typed by hand, ingested every run
+  const handWritten = !/^(web|llm|rss|sk)-/.test(p.id) || p.id.startsWith('web-scout-')
+  return handWritten && hasYearlessDate(p.when ?? '')
 }
 
 /** Is this pick "anytime" rather than a specific-day plan? True for open-ended/recurring runs

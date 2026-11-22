@@ -14,6 +14,35 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.12.8 · app] — 2026-11-22 — A WRITTEN YEAR IS THE YEAR · EVERY SAVE HAS A PLACE
+Ness, 22 Nov: "I'm STILL seeing OLD posts … FOAM Talent is GONE. How do we prevent this from happening" and
+"I only see a few things in the list — how do I access the longer list of saved items?"
+- **Foam Talent, and why it came back.** `foam-talent` is a hand-written pick from the June seed pool:
+  `when: 'Opens Fri 5 Jun'`. The date reader keeps a past date in this year for 120 days, then reads an
+  OPEN RUN as next year's (right for a crawl: "Until 15 Jan" seen in July means January). Typed text never
+  changes, so on 5 Oct the pick turned into a show opening in June 2027 and went back on the deck. 37 more
+  bare dates were queued behind it (Wils at the Farm tomorrow, Danh Vo on 30 Nov, Martin Parr at Foam on
+  10 Dec, the whole 5–7 June weekend in April) and the scouted list had the same fault ('t Lemmeke,
+  "Opens 8 Jul").
+- **The rule: a hand-written date carries its year, and nobody guesses one.** `lib/when.ts`: every reader
+  takes a year written in the text as the year (`readDates`; "Until Sun 3 Jan 2027" was being read as the
+  20th of January by the month-first reader, and "Nov 18:30" as the 18th); `hasYearlessDate` /
+  `rotsInPlace` name a hand-written pick whose date has none. It is refused at the crawl's intake
+  (`refresh.ts`, logged as `yearless:`), in `heroPicks()`, in `scoutedExtract()`, in the restamp and in the
+  app itself, so a cached feed is cleaned on the phone. The 37 bundled dates, the four heroes and the
+  eleven scouted dates are stamped (`2026`; Hailun Ma `2027`). A finished run keeps its years through
+  `fixWhen`. The legacy board's inline mirror reads years the same way (parity test extended).
+- **The feed, today.** Restamped: Foam Talent out, with Friday's and Saturday's finished events (126 → 113).
+- **The saves: the two tabs add up to the star.** The plan tab is drawn from this week's cards, so a save
+  whose card was not in the pool (a finished Saturday, a place the feed rotated out) sat in NEITHER tab
+  while the star counted it. The Library now holds every save outside the plan: to come, any week, then
+  **Been and gone** (`plan.ts libraryShelf(…, live)`, `isOver`).
+- **A sync can no longer delete a save.** `snapshotSaves` skipped an id with neither a snapshot nor a card
+  in the pool, and the next sync adopted the mirror as the saved set: every such save left the phone for
+  good. It is now kept as a bare entry (id + save moment), named off its id (`titleOf`) until its card is
+  back. Saves already lost this way are not recoverable: the account holds five.
+- Tests: 669 green now and at +45 / +120 / +200 / +300 / +420 days (fixed clocks in the new cases).
+
 ## [V.12.7 · app] — 2026-11-13 — THE TWO PILES + ONBOARDING (two proto branches graduate)
 Ness, 13 Nov: "if I have 17 saved items, I don't want to send my partner 17 items … I want to be very
 selective … and if there's evergreen things in there, I can also select that." And: "I'd love to play

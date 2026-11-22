@@ -20,7 +20,7 @@
 import { CITIES, type City } from '../src/data/cities'
 import type { Pick } from '../src/types'
 import { dedupe, balanceByCategory, isGoodImage, isPortraitImage, imageBroken, urlLooksNonPhoto, imageIsCardworthy, fetchEventImage, toPortrait, wikiImage, webImageCandidates, verifyImageForEvent, venueMatchImage, venueBook, imageFocalPoint, focalFailures, originalOf, NO_PHOTO_CAP, whenBeforeWeekend, upcomingWeekend, weekendMode, weekendModes, stampServeOrder, publishCheck, crownsActive, JUDGE_FLOOR, STAR_BOOST, linkOk, mapLimit, rxOf, titleKey, titleLooseMatch, tokKey, approvalCheck, pickByTitle, markThisWeekend, type TasteCorpus, type WeeklySlate, imagePassBroken, fetchEventImages, bestRendition, ADAPTER_PICK, OWN_RECORD, OWN_IMAGE, untrustedWebPick, extrasOf, iamsLanguageTwins, unionCredits, isOwnPage, crossSourceTwins, imageSearchHealth, suspectTwins, photoHolderAfter } from './lib/pipeline'
-import { fixWhen, latestDateOf, whenActiveBy, whenIsPast, whenLooksBroken } from '../src/lib/when'
+import { fixWhen, hasYearlessDate, latestDateOf, whenActiveBy, whenIsPast, whenLooksBroken } from '../src/lib/when'
 import { effectiveFreshness, NEW_DAYS } from '../src/lib/freshness'
 import { mergeSightings, pruneRegistry, appendRun, type SeenRegistry, type HealthFile } from './lib/ingest'
 import { tidyBlurb } from '../src/lib/blurb'
@@ -103,7 +103,17 @@ async function buildCity(city: City) {
   } catch { /* no registry yet — the daily poll hasn't run */ }
 
   // FETCH + NORMALIZE — every adapter emits Pick[] in our shape.
-  const canon = city.picks                                          // hand-authored floor (always)
+  // A BUNDLED PICK'S YEAR IS NEVER GUESSED. The hand-written pool's text does not change while the
+  // calendar does, and the date reader's year inference is built for a source that spoke THIS week:
+  // "Opens Fri 5 Jun", typed in May 2026, sat past for 120 days and then read as June 2027 — Foam Talent
+  // came back to the deck on 5 Oct, four months after it closed, and stayed until Ness saw it (22 Nov).
+  // Thirty-odd more bare dates in the pool were due back the same way (Danh Vo on 30 Nov, Martin Parr on
+  // 10 Dec, the whole June seed weekend the following April). So: a bundled date must carry its year
+  // ("Until 12 Aug 2026"), which the readers now take as written; one that does not is dropped here and
+  // named in the log, never resolved. Undated and recurring whens ("Daily", "Saturdays") are untouched.
+  const yearless = city.picks.filter((p) => hasYearlessDate(p.when ?? ''))
+  const canon = city.picks.filter((p) => !yearless.includes(p))      // hand-authored floor (always)
+  if (yearless.length) console.log(`  yearless: ${yearless.length} bundled picks dropped, date has no year — add it in src/data (${yearless.slice(0, 8).map((p) => p.id).join(', ')})`)
   const fromRoster: Pick[] = []
 
   // keyless RSS sources (the always-on floor) + LLM sources (the interesting/diverse pull)

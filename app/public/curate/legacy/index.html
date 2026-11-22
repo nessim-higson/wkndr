@@ -616,10 +616,17 @@ Promise.all([
     if(d.getTime()>=now.getTime()-45*864e5)return d;
     const nx=new Date(now.getFullYear()+1,mi,day,12);
     return ((openRun&&d.getTime()<now.getTime()-120*864e5)||nx.getTime()-now.getTime()<60*864e5)?nx:d};
-  const datesOf=w=>{const now=new Date(),ts=[],openRun=OPENRUN.test(w||'');
-    for(const m of (w||'').matchAll(/(\d{1,2})\s*(?:[–—-]\s*(?:mon|tue|wed|thu|fri|sat|sun)[a-z]*\.?)?\s*[–—-]?\s*(\d{1,2})?\s*(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)/gi)){
+  // A YEAR WRITTEN IN THE TEXT IS THE YEAR (mirrors when.ts readDates, 22 Nov 2026): "Until 12 Aug 2026"
+  // is never resolved against today, and a date before a yeared one takes its year ("Opens 5 Jun ·
+  // until 25 Oct 2026"; "30 Dec – 2 Jan 2027" starts in 2026). Hand-written picks now carry theirs.
+  const datesOf=w=>{const now=new Date(),fs=[],ts=[],openRun=OPENRUN.test(w||'');
+    for(const m of (w||'').matchAll(/(\d{1,2})\s*(?:[–—-]\s*(?:mon|tue|wed|thu|fri|sat|sun)[a-z]*\.?)?\s*[–—-]?\s*(\d{1,2})?\s*(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)(?:[a-z]*\.?(?:,?\s+(20\d{2})(?!\d))?)/gi)){
       const mi=MONi[m[3].slice(0,3).toLowerCase()];
-      for(const d of[m[1],m[2]]){if(!d)continue;ts.push(resolveD(+d,mi,now,openRun).getTime())}}
+      for(const d of[m[1],m[2]]){if(!d)continue;fs.push({d:+d,mi,y:m[4]})}}
+    let ah=null;
+    for(let i=fs.length-1;i>=0;i--){const f=fs[i];if(f.y)ah=f;
+      const y=f.y||(ah?String(+ah.y-(f.mi>ah.mi?1:0)):null);
+      ts.push((y?new Date(+y,f.mi,f.d,12):resolveD(f.d,f.mi,now,openRun)).getTime())}
     return ts.sort((a,b)=>a-b)};
   const activeBy=w=>{if(/\b(until|through|thru|till|t\/m)\b/i.test(w||''))return true;
     const ts=datesOf(w);return !ts.length||ts[0]<=WKEND};

@@ -2,7 +2,7 @@
 // user is shown (weekday correction) and what is HIDDEN (the past-event filter), and they broke subtly
 // twice during the pipeline era. All tests pin `now` to Wed 1 Jul 2026 (weekend = Sat 4 / Sun 5 Jul).
 import { describe, it, expect } from 'bun:test'
-import { fixWhen, whenIsPast, latestDateOf, whenSortKey, whenDayGroup, whenLooksBroken } from '../src/lib/when'
+import { fixWhen, whenIsPast, latestDateOf, firstDateOf, hasYearlessDate, rotsInPlace, whenSortKey, whenDayGroup, whenLooksBroken } from '../src/lib/when'
 
 const NOW = new Date(2026, 6, 1, 12, 0, 0)   // Wed 1 Jul 2026
 
@@ -229,5 +229,85 @@ describe('a run written as a range with years', () => {
     for (const w of ['Fri 3 – Sun 5 Jul', 'Until Sun 31 Jan', 'Sat–Sun 19–20 Sep', 'Sat 26 Sep · 13:30 & 16:00', 'Opens Fri 18 Sep · Sat–Sun 19–20 Sep'])
       expect(fixWhen(w, now)).toBe(fixWhen(fixWhen(w, now), now))
     expect(fixWhen('Fri 18 – Sun 20 Sep', now)).toBe('Fri 18 – Sun 20 Sep')
+  })
+})
+
+// FOAM TALENT (22 Nov 2026) — "Opens Fri 5 Jun", hand-typed in May 2026 for a show that closed that
+// summer, came back to the deck on 5 Oct as a show opening in June 2027: 120 days past, an open run is
+// read as next year's. Right for a crawl (the source said it this week), wrong for text nobody will ever
+// edit. The fix is in two halves, both pinned here with fixed clocks (never the real one):
+//   1. a year written in the text IS the year — nothing is guessed, on any day of any year;
+//   2. hasYearlessDate names a date that carries none, so the pipeline can refuse a hand-written one.
+describe('a written year is the year', () => {
+  const CLOCKS = [new Date(2026, 5, 1, 12), new Date(2026, 9, 5, 12), new Date(2026, 10, 22, 12), new Date(2027, 3, 10, 12), new Date(2027, 5, 1, 12), new Date(2028, 0, 15, 12)]
+  it('the bare date is the bug: past all summer, then alive again from October', () => {
+    expect(whenIsPast('Opens Fri 5 Jun', new Date(2026, 8, 1, 12))).toBe(true)
+    expect(whenIsPast('Opens Fri 5 Jun', new Date(2026, 10, 22, 12))).toBe(false)   // ← what Ness saw
+    expect(fixWhen('Opens Fri 5 Jun', new Date(2026, 10, 22, 12))).toBe('Opens Sat 5 Jun')
+  })
+  it('with its year it is past from the day after, on every clock, for good', () => {
+    for (const now of CLOCKS.slice(1)) {
+      expect(whenIsPast('Opens Fri 5 Jun 2026', now)).toBe(true)
+      expect(whenIsPast('Until 12 Aug 2026', now)).toBe(now > new Date(2026, 7, 13))
+      expect(whenIsPast('Sat 6 Jun 2026 · doors 18:00', now)).toBe(true)
+      expect(whenIsPast('Fri–Sun 5–7 Jun 2026', now)).toBe(true)
+      expect(whenIsPast('Opens Fri 5 Jun 2026 · until 25 Oct 2026', now)).toBe(now > new Date(2026, 9, 26))
+    }
+    expect(whenIsPast('Opens Fri 5 Jun 2026', CLOCKS[0])).toBe(false)               // before it opened
+  })
+  it('the weekday is computed in the written year, and the text is left as written', () => {
+    for (const now of CLOCKS) {
+      expect(fixWhen('Opens Sat 5 Jun 2026', now)).toBe('Opens Fri 5 Jun 2026')     // 5 Jun 2026 is a Friday
+      expect(fixWhen('Mon–Tue 5–7 Jun 2026', now)).toBe('Fri–Sun 5–7 Jun 2026')
+      // …while it is still to come; once over, the text is left exactly as it stands (see below)
+      if (now < new Date(2027, 0, 2)) expect(fixWhen('Mon 30 Dec – Mon 2 Jan 2027', now)).toBe('Wed 30 Dec – Sat 2 Jan 2027')
+      else expect(whenIsPast(fixWhen('Mon 30 Dec – Mon 2 Jan 2027', now), now)).toBe(true)
+    }
+  })
+  it('a year on the end of a range covers its start', () => {
+    const now = new Date(2027, 3, 10, 12)
+    expect(firstDateOf('Opens Fri 5 Jun · until 25 Oct 2026', now)?.getFullYear()).toBe(2026)
+    expect(firstDateOf('Wed 30 Dec – Sat 2 Jan 2027', now)?.toDateString()).toBe('Wed Dec 30 2026')
+    expect(latestDateOf('Wed 30 Dec – Sat 2 Jan 2027', now)?.toDateString()).toBe('Sat Jan 02 2027')
+  })
+  it('"Jan 2027" is a year, not the 20th of January; "Nov 18:30" is a time, not the 18th', () => {
+    const now = new Date(2026, 10, 22, 12)
+    expect(latestDateOf('Until Sun 3 Jan 2027', now)?.toDateString()).toBe('Sun Jan 03 2027')
+    expect(latestDateOf('Sat 21 Nov 18:30', now)?.toDateString()).toBe('Sat Nov 21 2026')
+  })
+})
+
+describe('hasYearlessDate — what the pipeline refuses from a hand-written pick', () => {
+  it('names a calendar date with no year', () => {
+    for (const w of ['Opens Fri 5 Jun', 'Until 6 Sep', 'Sat 6 Jun · doors 18:00', 'Fri–Sun 5–7 Jun', 'Final weekend · until Sun 7 Jun', 'Sat 12 Dec – Sun 13 Dec'])
+      expect(hasYearlessDate(w)).toBe(true)
+  })
+  it('passes a date that carries its year', () => {
+    for (const w of ['Opens Fri 5 Jun 2026', 'Until 6 Sep 2026', 'Sat 6 Jun 2026 · doors 18:00', 'Fri–Sun 5–7 Jun 2026', 'Opens Fri 5 Jun 2026 · until 25 Oct 2026', 'Wed 30 Dec – Sat 2 Jan 2027', 'Fri 23 Oct 2026 · 21:00 / Sun 25 Oct 2026 · 14:15'])
+      expect(hasYearlessDate(w)).toBe(false)
+  })
+  it('passes what is not a date at all', () => {
+    for (const w of ['Daily', 'Daily · 10:00–18:00', 'Daily · Sat market', 'Saturdays · 09:00–16:00', 'This weekend', 'Thu–Sat dinners', ''])
+      expect(hasYearlessDate(w)).toBe(false)
+  })
+})
+
+describe('rotsInPlace — only a hand-written pick is refused', () => {
+  it('a bundled id with a bare date rots; the same date from a crawl is this year’s news', () => {
+    expect(rotsInPlace({ id: 'foam-talent', when: 'Opens Sat 5 Jun' })).toBe(true)
+    expect(rotsInPlace({ id: 'ams-b2-foam', when: 'Daily · 10:00–18:00' })).toBe(false)
+    expect(rotsInPlace({ id: 'foam-talent', when: 'Opens Fri 5 Jun 2026' })).toBe(false)   // dated: whenIsPast takes it
+    expect(rotsInPlace({ id: 'web-iams-yayoi-kusama', when: 'Until Sun 31 Jan' })).toBe(false)
+    expect(rotsInPlace({ id: 'llm-kidsproof-sint-op-solder', when: 'Sat–Sun 21–22 Nov' })).toBe(false)
+    expect(rotsInPlace({ id: 'web-hero-nutcracker', when: 'Sun 25 Oct · 11:00' })).toBe(false)   // heroes: heroPicks() guards
+    expect(rotsInPlace({ id: 'zaanse-schans' })).toBe(false)
+    expect(rotsInPlace({ id: 'web-scout-t-lemmeke', when: 'Opens 8 Jul' })).toBe(true)          // the scouted list is typed by hand
+    expect(rotsInPlace({ id: 'web-scout-hailun-ma-hometown', when: 'Until Wed 20 Jan 2027 · 10:00–18:00' })).toBe(false)
+  })
+  it('a finished run keeps its years through fixWhen, so nothing downstream guesses again', () => {
+    const now = new Date(2026, 10, 22, 12)
+    expect(fixWhen('Fri 24 Jul 2026 – Sun 9 Aug 2026', now)).toBe('Fri 24 Jul 2026 – Sun 9 Aug 2026')
+    expect(whenIsPast(fixWhen('Fri 24 Jul 2026 – Sun 9 Aug 2026', now), now)).toBe(true)
+    expect(fixWhen('Sat 19 Sep 2026 (opening) — 31 Jan 2027', now)).toBe('Until Sun 31 Jan')    // a live run still reads in house format
   })
 })
