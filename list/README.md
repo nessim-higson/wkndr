@@ -19,9 +19,10 @@ me … start to send some notifications to my partner Katya as well."
 - **Tests no longer need the mail key on the laptop.** `POST /test` on the worker (admin-gated, at most
   three addresses a call, never reads the list) sends a rendered brief through the worker's own
   `MAIL_API_KEY`: `bun run scripts/send.ts out/brief-list.html --subject "…" --test you@example.com`.
-  Five went to Ness on 22 Nov (the house four + rows), all accepted by Resend; the rows one was seen in
-  his inbox, the four house designs were not in searchable mail a few minutes later — look in Spam /
-  Promotions before choosing one of them (they link a web font and a background plate; rows does not).
+  Six went to Ness on 22 Nov (the house four, rows, and The List once more without its web-font link):
+  all six landed in his inbox from `friday@wkndr.xyz`, marked Important, five under Primary and the
+  first under Promotions. Gmail folds them into ONE conversation (same sender, minutes apart), so a
+  search shows one thread with six messages, not six rows.
 - `list/.env` still has no `MAIL_API_KEY`, so `send.ts --send` (the blast) cannot run from here yet.
 - A weekend in progress keeps its weather line (`poster.ts forecast()` asks for `past_days=2`), so a
   Saturday or Sunday render is a fair test.
