@@ -30,6 +30,19 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
 > sessions update (today it's on load).
 
 ## Live right now
+- **2026-11-22 — THE NAME, TWO MORE ROUNDS (`docs/naming-2026-11.md`; research, not legal advice).** Still
+  undecided, and Ness's stated blocker on launching wider. wkndo.com: registered 24 May 2026, live by
+  ~June, a US weekend-trip planner, no WKNDO marks filed anywhere; .com and .app gone. Round one (names
+  like WKNDO + coinages: WKNDUO, ZAZODO…) — "I'm not happy with any of the names." Round two, eight new
+  veins, NO VERDICT YET: OUTRO · UNWEEK · WEDID · ONFOR lead (plain speech as a logotype). Benelux is
+  unchecked for every name. **Ask him first:** must it say "weekend"; is a run-together phrase fine; must
+  it start with W.
+- **2026-11-22 — WHAT IS WAITING ON NESS** (all in `list/README.md`): (1) repo secret `LIST_ADMIN_KEY`,
+  without which Friday's run renders and stops; (2) he and Katya sign up at wkndr.xyz and confirm — the
+  list is empty; (3) the sender's W picture (`list/avatar-w.png`): Cloudflare Email Routing for
+  `friday@`, then a Google Account on that address with the W as its photo; (4) type cards, draft PR #41
+  (`proto/type-cards`, preview proto-type-cards.wkndr-app.pages.dev/?cards=glass&face=house&intro=0&onboard=0)
+  — the ten moves still have no Keep/Drop.
 - **2026-11-22 (later) — THE FRIDAY EMAIL RUNS ITSELF (no app bump).** Ness: "I'd like to begin receiving
   email blasts on what's happening every weekend" → "Yes, set it up". `.github/workflows/friday.yml`
   (Fridays 05:15 UTC ≈ 07:30 Amsterdam after GitHub's delay) renders `bun run brief` and calls
