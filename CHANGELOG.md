@@ -14,6 +14,18 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.12.10 · app] — 2026-11-23 — THE HOUR IS A CHIP
+Ness: "the slider that's right underneath [the filters], I felt for some time it's overexposed … when I
+click it, it exposes itself, and then the cards readjust accordingly, and then it can collapse back in."
+- The weekend's hour scrubber no longer sits open in a row of its own. It is the **fourth filter chip,
+  "Now"**: tap it and the slider opens under the strip and the deck moves down; let go and the deck
+  re-deals for that hour and the slider closes itself 1.6s later. A held hour reads on the chip in orange
+  ("Sat 15:00"); tap it to change the hour, or "Now" in the slider to go back. The header already names
+  the hour's weather, so nothing is lost with the row closed.
+- Three studies were judged on `proto/scrub-collapse` (the chip, an icon-only chip, a hairline); the chip
+  won and the other two are not in the code. `App.tsx` (`scrubOpen`, `.ft-hour`), `GlassShell.css`.
+- Four chips fit a 375px phone with the widest label (13px to spare each side).
+
 ## [V.12.9 · app] — 2026-11-22 — THE FRIDAY EMAIL RUNS ITSELF, AS A+
 Ness: "I'd like to begin receiving email blasts on what's happening every weekend" → "Yes, set it up" →
 "Yes, build A+".

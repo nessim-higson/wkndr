@@ -428,6 +428,15 @@ export default function App() {
     if (i === deckIdx) return
     setDeckIdx(i); setScrubSwiped(new Set()); setDealKey((k) => k + 1)
   }
+  // THE SCRUBBER, PUT AWAY (V.12.10, 23 Nov 2026 — Ness: "I felt for some time it's overexposed … when
+  // I click it, it exposes itself, the cards readjust, and then it can collapse back in"). The control
+  // is the fourth filter chip ("Now"); the slider row opens under the strip on a tap and closes itself
+  // 1.6s after the hour is let go. Three studies were judged on proto/scrub-collapse; the chip won.
+  const [scrubOpen, setScrubOpen] = useState(false)
+  const scrubAvail = glassActive && filter === 'all' && !intro && !moreLike && view === 'stack'
+  const scrubTimer = useRef<number | null>(null)
+  const holdScrub = () => { if (scrubTimer.current) { window.clearTimeout(scrubTimer.current); scrubTimer.current = null } }
+  const closeScrubSoon = () => { holdScrub(); scrubTimer.current = window.setTimeout(() => setScrubOpen(false), 1600) }
   const glassWeather: GlassScene = glassPreview ?? scrub?.scene ?? liveScene
   useEffect(() => { document.documentElement.dataset.glassScene = glassWeather; return () => { delete document.documentElement.dataset.glassScene } }, [glassWeather])
   const liveDaylight = useDaylight(city.lat, city.lon, sunPreview, clockAt)
@@ -1488,11 +1497,31 @@ export default function App() {
             <button className={`filter-trigger${wheres.length > 0 || nearMe ? ' on' : ''}`} aria-haspopup="dialog" onClick={() => setWhereOpen(true)}>
               <Navigation className="ft-icon" size={13} strokeWidth={2.2} /> {whereSummary}
             </button>
+            {/* THE HOUR, AS THE FOURTH CHIP (V.12.10). The weekend's scrubber used to sit open in a row of
+                its own under these; now it is "Now" until it is wanted — tap, the slider opens below and
+                the deck moves down; let go, the deck re-deals for that hour and the slider closes itself.
+                A held hour reads here in orange ("Sat 15:00"); tap again to change it or go back to Now. */}
+            {scrubAvail && hourStops.length >= 12 && (
+              <button className={`filter-trigger ft-hour${deckStop ? ' on' : ''}${scrubOpen ? ' open' : ''}`} aria-expanded={scrubOpen}
+                aria-label={deckStop ? `Forecast hour: ${deckStop.clock}. Change it` : 'Scrub the weekend’s forecast'}
+                onClick={(e) => { e.stopPropagation(); holdScrub(); setScrubOpen((o) => !o) }}>
+                {deckStop ? deckStop.clock : 'Now'}
+              </button>
+            )}
           </div>
         )}
-        {glassActive && filter === 'all' && !intro && !moreLike && view === 'stack' && (
-          <TimeScrub stops={hourStops} idx={scrubIdx} nowIdx={nowStop(hourStops)} onIdx={setScrubIdx} onCommit={commitScrub} />
-        )}
+        <AnimatePresence initial={false}>
+          {scrubAvail && scrubOpen && (
+            <motion.div className="scrub-panel" key="scrub-panel"
+              initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.26, ease: [0.22, 1, 0.36, 1] }}
+              onPointerDown={holdScrub}>
+              <TimeScrub stops={hourStops} idx={scrubIdx} nowIdx={nowStop(hourStops)}
+                onIdx={(i) => { holdScrub(); setScrubIdx(i) }}
+                onCommit={(i) => { commitScrub(i); closeScrubSoon() }} />
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {filter === 'saved' && saved.size > 0 && (
           <div className="ctx-bar">
