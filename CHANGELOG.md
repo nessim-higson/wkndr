@@ -14,6 +14,15 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.12.11 · app] — 2026-11-23 — THE DECK FILLS ITS SPACE
+Ness, with a screenshot of a tall desktop window: "fix the gap … make the cards fit and be a bit more
+elongated in the space."
+- The glass deck was capped at 620px tall and anchored to the BOTTOM of its area, so any window taller
+  than about 960px put the spare height between the filters and the card. The cap is 760px and the deck
+  hangs from the top (`GlassShell.css`): the card starts 8–16px under the filters and runs down to the
+  buttons. On a 1000×1080 window the card went 423×620 → 423×670; phones are unchanged in position and
+  a tall phone (430×932) now gets 382×616.
+
 ## [V.12.10 · app] — 2026-11-23 — THE HOUR IS A CHIP
 Ness: "the slider that's right underneath [the filters], I felt for some time it's overexposed … when I
 click it, it exposes itself, and then the cards readjust accordingly, and then it can collapse back in."

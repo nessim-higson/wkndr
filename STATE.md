@@ -5,7 +5,7 @@ FIRST in a new chat. For strategy + backlog see `docs/backlog.md`; for the pipel
 `docs/pipeline-architecture.md` + `docs/source-map.md`; for **who may write to the deck vs to a personal
 profile** (board / Tune / airlock — read before touching either) see `docs/curation-surfaces.md`; for the
 **board roadmap** (auto-compile tracks) see `docs/board-roadmap.md`; for full **version history** see
-`CHANGELOG.md` (current to app **V.12.10** — the hour is a chip, 2026-11-23 / board V.10) and the **git log / tags**. Onboarding:
+`CHANGELOG.md` (current to app **V.12.11** — the deck fills its space, 2026-11-23 / board V.10) and the **git log / tags**. Onboarding:
 `CLAUDE.md`; for any coding agent (Codex included) **`AGENTS.md`** is the working manual and
 `docs/variations/` the prototype protocol + the open briefs. App lives in `/app` (Vite + React + TS, run with `bun`); ships to **Cloudflare Pages**
 (`wkndr.xyz` + `app.wkndr.xyz`) **and** GitHub Pages (legacy, keeps old share links alive)._
@@ -30,6 +30,9 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
 > sessions update (today it's on load).
 
 ## Live right now
+- **2026-11-23 — THE DECK FILLS ITS SPACE (V.12.11).** On tall windows the card sat low with a gap under
+  the filters (deck capped at 620px, bottom-anchored). Now capped at 760px and hung from the top: the
+  card starts just under the filters and is taller. `GlassShell.css`, last block.
 - **2026-11-23 — THE HOUR IS A CHIP (V.12.10).** The scrubber under the filter strip was "overexposed"
   (Ness). It is now the fourth chip, "Now": tap → the slider opens under the strip and the deck moves
   down → let go → the deck re-deals and the slider closes itself; a held hour reads on the chip in

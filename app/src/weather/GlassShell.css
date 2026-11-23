@@ -417,3 +417,11 @@ html[data-field='glass'] :is(.swipe-card, .act, .stack-more, .topbar-row, .glass
 .filterstrip:has(.ft-hour.on) .filter-trigger { padding: 7px 6px; }   /* "Sat 15:00" is the widest it gets: four chips still fit 375px */
 .app--glass .filterstrip .ft-hour.on { color: var(--accent); font-weight: 600; }
 .app--glass .filterstrip .ft-hour.open::after { transform: rotate(-135deg); margin-top: 3px; }
+
+/* ── THE DECK FILLS ITS SPACE (V.12.11, 23 Nov 2026 — Ness, on a tall desktop window: "fix the gap …
+   make the cards fit and be a bit more elongated in the space"). The deck was capped at 620px and
+   anchored to the BOTTOM of its area, so on any window taller than ~960px the spare height became a
+   gap between the filters and the card. The cap goes up (the card runs down to the buttons) and the
+   deck hangs from the TOP: whatever is still spare on a very tall window sits under the buttons. */
+.app--glass .stack-wrap { justify-content: flex-start; }
+.app--glass .stack-deck { max-height: 760px; }
