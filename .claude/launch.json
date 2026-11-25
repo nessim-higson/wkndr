@@ -178,6 +178,16 @@
         "/Users/nessimhigson/CLAUDE/projects/prototypes/selects/tools/devserver.py"
       ],
       "port": 8766
+    },
+    {
+      "_comment": "Nessim's portfolio page (lives in ~/CLAUDE/projects/prototypes/nh-portfolio, not in this repo). Range server so the films seek.",
+      "name": "nh-portfolio",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "/Users/nessimhigson/CLAUDE/projects/prototypes/nh-portfolio/serve.py",
+        "4253"
+      ],
+      "port": 4253
     }
   ]
 }
