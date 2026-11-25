@@ -161,6 +161,17 @@
       "port": 4200
     },
     {
+      "_comment": "Sequence's staged site (lives in ~/CLAUDE/projects/sequence): /mj/ is Sequence inside Midjourney, three comps. Range server so the Kill Current clips seek.",
+      "name": "sequence-site",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "/Users/nessimhigson/CLAUDE/projects/sequence/scripts/rangeserver.py",
+        "/Users/nessimhigson/CLAUDE/projects/sequence/site",
+        "8797"
+      ],
+      "port": 8797
+    },
+    {
       "name": "selects-shared",
       "runtimeExecutable": "python3",
       "runtimeArgs": [
