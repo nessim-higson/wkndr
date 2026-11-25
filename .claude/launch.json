@@ -180,6 +180,15 @@
       "port": 8766
     },
     {
+      "_comment": "The Lab root: the hub page behind the real gate worker, with test keys (lives in ~/CLAUDE/projects/prototypes/aff26-runofshow; see dev-root.sh there).",
+      "name": "lab-root",
+      "runtimeExecutable": "/Users/nessimhigson/CLAUDE/projects/prototypes/aff26-runofshow/dev-root.sh",
+      "runtimeArgs": [
+        "4263"
+      ],
+      "port": 4263
+    },
+    {
       "_comment": "Nessim's portfolio page (lives in ~/CLAUDE/projects/prototypes/nh-portfolio, not in this repo). Range server so the films seek.",
       "name": "nh-portfolio",
       "runtimeExecutable": "python3",
