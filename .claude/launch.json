@@ -197,6 +197,17 @@
         "4253"
       ],
       "port": 4253
+    },
+    {
+      "name": "moms-library-ask",
+      "runtimeExecutable": "bun",
+      "runtimeArgs": [
+        "run",
+        "--cwd",
+        "/Users/nessimhigson/Code/moms-library/_ask",
+        "serve"
+      ],
+      "port": 4230
     }
   ]
 }
