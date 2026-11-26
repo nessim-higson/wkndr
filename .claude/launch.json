@@ -206,6 +206,20 @@
       "port": 4253
     },
     {
+      "name": "moms-library-lab",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "4233",
+        "--bind",
+        "127.0.0.1",
+        "--directory",
+        "/Users/nessimhigson/Code/moms-library/_ask/lab"
+      ],
+      "port": 4233
+    },
+    {
       "name": "moms-library-ask",
       "runtimeExecutable": "bun",
       "runtimeArgs": [
