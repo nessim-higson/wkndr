@@ -172,6 +172,13 @@
       "port": 8797
     },
     {
+      "_comment": "Selects as a plain static site (lives in ~/CLAUDE/projects/prototypes/selects): /roster-nike.html is the tool, /studies/ the landing studies.",
+      "name": "selects",
+      "runtimeExecutable": "/Users/nessimhigson/CLAUDE/projects/prototypes/selects/tools/serve.sh",
+      "runtimeArgs": [],
+      "port": 8765
+    },
+    {
       "name": "selects-shared",
       "runtimeExecutable": "python3",
       "runtimeArgs": [
