@@ -262,6 +262,20 @@
         "design"
       ],
       "port": 4232
+    },
+    {
+      "name": "moms-library-push",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "4234",
+        "--bind",
+        "127.0.0.1",
+        "--directory",
+        "/Users/nessimhigson/Code/moms-library/_design/push"
+      ],
+      "port": 4234
     }
   ]
 }
