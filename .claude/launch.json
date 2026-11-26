@@ -208,6 +208,28 @@
         "serve"
       ],
       "port": 4230
+    },
+    {
+      "name": "moms-library-api",
+      "runtimeExecutable": "bun",
+      "runtimeArgs": [
+        "run",
+        "--cwd",
+        "/Users/nessimhigson/Code/moms-library/_server",
+        "dev"
+      ],
+      "port": 8787
+    },
+    {
+      "name": "moms-library-lab",
+      "runtimeExecutable": "bun",
+      "runtimeArgs": [
+        "run",
+        "--cwd",
+        "/Users/nessimhigson/Code/moms-library/_ask",
+        "serve:lab"
+      ],
+      "port": 4231
     }
   ]
 }
