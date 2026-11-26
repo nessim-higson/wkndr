@@ -230,6 +230,17 @@
         "serve:lab"
       ],
       "port": 4231
+    },
+    {
+      "name": "moms-library-design",
+      "runtimeExecutable": "bun",
+      "runtimeArgs": [
+        "run",
+        "--cwd",
+        "/Users/nessimhigson/Code/moms-library/_ask",
+        "design"
+      ],
+      "port": 4232
     }
   ]
 }
