@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-25T15:53:45.401Z",
+ "generatedAt": "2026-11-26T15:33:58.299Z",
  "count": 8,
  "inbox": [
   {
@@ -27,25 +27,25 @@
    ],
    "popularity": 17,
    "firstSeen": "2026-11-25",
-   "inboxScore": 9.1,
-   "scoreWhy": "seen today · 17 going · on this weekend · taste: club"
+   "inboxScore": 8.8,
+   "scoreWhy": "seen 1d ago · 17 going · on this weekend · taste: club"
   },
   {
-   "id": "web-ra-2559205",
-   "title": "ZWART LICHT CLUB NIGHT ",
-   "venue": "Skatecafe",
+   "id": "web-ra-2590563",
+   "title": "Ahed curates at GOT.DRIP",
+   "venue": "GOT.Drip Streetwear & Records",
    "area": "",
-   "when": "Fri 27 Nov · 23:00",
+   "when": "Fri 27 Nov · 16:30",
    "category": "live",
    "freshness": "weekend",
    "outdoor": false,
    "kid": false,
    "price": "",
-   "image": "https://images.ra.co/0713afb107e2c335d3cd2ca6378056c7d8072cf0.png",
-   "blurb": "Abstract (US), Itz3bby, WaxFiend, Zed Bias at Skatecafe.",
+   "image": "https://images.ra.co/63dfa59ff5762c22dca7c88dd33011f815a6830d.png",
+   "blurb": "Ahed, Herra, Julien Simmons at GOT.Drip Streetwear & Records.",
    "why": "On Resident Advisor",
    "source": "Resident Advisor",
-   "link": "https://ra.co/events/2559205",
+   "link": "https://ra.co/events/2590563",
    "weatherFit": [
     "HOT",
     "WARM",
@@ -53,10 +53,38 @@
     "COLD_WET",
     "VOLATILE"
    ],
-   "popularity": 1,
-   "firstSeen": "2026-11-23",
-   "inboxScore": 8,
-   "scoreWhy": "seen 2d ago · 1 going · on this weekend · taste: club night"
+   "popularity": 2,
+   "firstSeen": "2026-11-26",
+   "inboxScore": 8.2,
+   "scoreWhy": "seen today · 2 going · on this weekend · taste: records"
+  },
+  {
+   "id": "web-iams-def-and-brittneysgat",
+   "title": "Def & brittneySGAT",
+   "venue": "Melkweg",
+   "area": "Lijnbaansgracht 234A",
+   "when": "Thu 26 – Sun 29 Nov",
+   "category": "live",
+   "freshness": "weekend",
+   "outdoor": false,
+   "kid": false,
+   "price": "ticketed",
+   "image": "https://app.thefeedfactory.nl/api/assets/6adbebacede7e1827fd7199d/_Hey-Dj_---Horisontal-Pressphoto-10-_1_-_1_.webp",
+   "blurb": "Def grew from a young drummer from Hoorn into one of the most striking new names in Dutch hip hop. With raw lyrics, humour and a unique style, his music regularly goes viral and he effortlessly sells…",
+   "why": "On I amsterdam",
+   "source": "I amsterdam",
+   "link": "https://www.iamsterdam.com/en/whats-on/calendar/concerts-and-music/concerts/def-and-brittneysgat",
+   "weatherFit": [
+    "HOT",
+    "WARM",
+    "COOL",
+    "COLD_WET",
+    "VOLATILE"
+   ],
+   "verify": false,
+   "firstSeen": "2026-11-26",
+   "inboxScore": 7,
+   "scoreWhy": "seen today · on this weekend"
   },
   {
    "id": "web-iams-oliver-sullivan-and-friends",
@@ -83,8 +111,8 @@
    ],
    "verify": false,
    "firstSeen": "2026-11-25",
-   "inboxScore": 7,
-   "scoreWhy": "seen today · on this weekend"
+   "inboxScore": 6.7,
+   "scoreWhy": "seen 1d ago · on this weekend"
   },
   {
    "id": "web-ra-2576967",
@@ -111,12 +139,12 @@
    ],
    "popularity": 2,
    "firstSeen": "2026-11-23",
-   "inboxScore": 6.9,
-   "scoreWhy": "seen 2d ago · 2 going · on this weekend"
+   "inboxScore": 6.6,
+   "scoreWhy": "seen 3d ago · 2 going · on this weekend"
   },
   {
-   "id": "rss-het-parool-ps-deze-zes-kunstwerken-mag-je-niet-missen-tijdens-",
-   "title": "Deze zes kunstwerken mag je niet missen tijdens het Amsterdam Light Festival",
+   "id": "rss-het-parool-ps-het-cabaret-van-remko-vrijdag-heeft-meer-lagen-d",
+   "title": "Het cabaret van Remko Vrijdag heeft meer lagen dan een lasagne",
    "venue": "Het Parool PS",
    "area": "",
    "when": "This weekend",
@@ -128,7 +156,7 @@
    "blurb": "Featured this week by Het Parool PS.",
    "why": "In this week's Het Parool PS",
    "source": "Het Parool PS",
-   "link": "https://www.parool.nl/ps/deze-zes-kunstwerken-mag-je-niet-missen-tijdens-het-amsterdam-light-festival~b3908b85/",
+   "link": "https://www.parool.nl/kunst-media/het-cabaret-van-remko-vrijdag-heeft-meer-lagen-dan-een-lasagne~b43f8618/",
    "weatherFit": [
     "HOT",
     "WARM",
@@ -137,40 +165,13 @@
     "VOLATILE"
    ],
    "verify": true,
-   "firstSeen": "2026-11-25",
-   "inboxScore": 3.6,
-   "scoreWhy": "seen today · taste: light festival"
-  },
-  {
-   "id": "rss-het-parool-ps-de-start-van-de-relatie-tussen-brecht-32-en-bobb",
-   "title": "De start van de relatie tussen Brecht (32) en Bobbie (30) was rommelig: ‘Misschien moest h",
-   "venue": "Het Parool PS",
-   "area": "",
-   "when": "This weekend",
-   "category": "out",
-   "freshness": "weekend",
-   "outdoor": false,
-   "kid": false,
-   "price": "",
-   "blurb": "Featured this week by Het Parool PS.",
-   "why": "In this week's Het Parool PS",
-   "source": "Het Parool PS",
-   "link": "https://www.parool.nl/ps/de-start-van-de-relatie-tussen-brecht-32-en-bobbie-30-was-rommelig-misschien-moest-het-wel-op-deze-manier-gaan~b8cea0c8/",
-   "weatherFit": [
-    "HOT",
-    "WARM",
-    "COOL",
-    "COLD_WET",
-    "VOLATILE"
-   ],
-   "verify": true,
-   "firstSeen": "2026-11-25",
+   "firstSeen": "2026-11-26",
    "inboxScore": 3,
    "scoreWhy": "seen today"
   },
   {
-   "id": "rss-het-parool-ps-marijke-van-oostrum-maakt-stadsgezichten-van-stu",
-   "title": "Marijke van Oostrum maakt stadsgezichten van stukjes stof: ‘Als ik door Buitenveldert loop",
+   "id": "rss-het-parool-ps-in-zeven-jaar-tijd-moest-de-britse-will-32-al-ac",
+   "title": "In zeven jaar tijd moest de Britse Will (32) al acht keer verhuizen binnen Amsterdam: ‘Als",
    "venue": "Het Parool PS",
    "area": "",
    "when": "This weekend",
@@ -182,7 +183,7 @@
    "blurb": "Featured this week by Het Parool PS.",
    "why": "In this week's Het Parool PS",
    "source": "Het Parool PS",
-   "link": "https://www.parool.nl/ps/marijke-van-oostrum-maakt-stadsgezichten-van-stukjes-stof-als-ik-door-buitenveldert-loop-kan-ik-ontzettend-genieten-van-een-scheve-lantaarnpaal~bd7d6404/",
+   "link": "https://www.parool.nl/amsterdam/in-zeven-jaar-tijd-moest-de-britse-will-32-al-acht-keer-verhuizen-binnen-amsterdam-als-alleenstaande-is-het-bijna-niet-te-doen~b7e6be06/",
    "weatherFit": [
     "HOT",
     "WARM",
@@ -191,7 +192,7 @@
     "VOLATILE"
    ],
    "verify": true,
-   "firstSeen": "2026-11-25",
+   "firstSeen": "2026-11-26",
    "inboxScore": 3,
    "scoreWhy": "seen today"
   },
@@ -219,8 +220,8 @@
    ],
    "verify": true,
    "firstSeen": "2026-11-25",
-   "inboxScore": 3,
-   "scoreWhy": "seen today"
+   "inboxScore": 2.7,
+   "scoreWhy": "seen 1d ago"
   }
  ]
 }
