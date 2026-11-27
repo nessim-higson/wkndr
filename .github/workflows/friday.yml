@@ -17,9 +17,13 @@ name: Friday brief
 # TIMING: the target is ~07:30 Amsterdam (late enough for a reliable forecast, early enough to book).
 # GitHub starts scheduled runs late — 75–130 min was measured on refresh.yml's 10:00 UTC slot — so the
 # cron sits at 05:15 UTC: 06:15 CET / 07:15 CEST before the delay.
+# A SECOND SLOT (27 Nov 2026): GitHub dropped the first scheduled Friday outright (no run at all by
+# 12:18 UTC). The worker sends once a weekend, so the 08:15 UTC slot is a free retry: if 05:15 went
+# out it gets a 409 and stops; if 05:15 never ran, this one sends.
 on:
   schedule:
     - cron: '15 5 * * 5'
+    - cron: '15 8 * * 5'
   workflow_dispatch:
     inputs:
       dry:

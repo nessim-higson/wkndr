@@ -5,7 +5,7 @@ FIRST in a new chat. For strategy + backlog see `docs/backlog.md`; for the pipel
 `docs/pipeline-architecture.md` + `docs/source-map.md`; for **who may write to the deck vs to a personal
 profile** (board / Tune / airlock — read before touching either) see `docs/curation-surfaces.md`; for the
 **board roadmap** (auto-compile tracks) see `docs/board-roadmap.md`; for full **version history** see
-`CHANGELOG.md` (current to app **V.12.13** — the type card is a pane, the saves frost, 2026-11-27 / board V.10) and the **git log / tags**. Onboarding:
+`CHANGELOG.md` (current to app **V.12.14** — bold sparse cards, the email arrives, 2026-11-27 / board V.10) and the **git log / tags**. Onboarding:
 `CLAUDE.md`; for any coding agent (Codex included) **`AGENTS.md`** is the working manual and
 `docs/variations/` the prototype protocol + the open briefs. App lives in `/app` (Vite + React + TS, run with `bun`); ships to **Cloudflare Pages**
 (`wkndr.xyz` + `app.wkndr.xyz`) **and** GitHub Pages (legacy, keeps old share links alive)._
@@ -30,6 +30,16 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
 > sessions update (today it's on load).
 
 ## Live right now
+- **2026-11-27 (eve) — BOLD WHERE THERE IS LITTLE · THE EMAIL ARRIVES · THE NAME (V.12.14).** Sparse
+  no-photo cards (no venue, no price) get only Rule / Bars / Numeral, set larger. **The Friday email:**
+  this weekend's went to Ness by hand; he is subscribed but must click the confirm mail; **the repo
+  secret `LIST_ADMIN_KEY` is still not set, so next Friday's automatic run will fail until he runs the
+  `gh secret set` line in `list/README.md`**; `friday.yml` now has a backup 08:15 UTC slot (GitHub dropped
+  today's 05:15 run). Others join by signing up at wkndr.xyz, or Ness hands over addresses and each gets
+  a confirm mail (double opt-in; never add anyone as active). **The name:** Weekender assessed in
+  `docs/naming-2026-11.md` — weaker than WKNDR, not a fix; recommendation is ship as WKNDR, decide
+  before the first spend a rename would waste, and put the money into a Benelux attorney hour on a
+  WKNDR combined mark instead of weekender.com. No verdict from Ness yet.
 - **2026-11-27 (later) — THE TYPE CARD IS A PANE · NO REFLECTION · THE SAVES FROST (V.12.13).** Ness on
   the first hours of the type cards: Reflected is dropped (nine moves: rule, light, ledger, margin,
   numeral, strip, up, bars, emphasis); the card's ground is translucent, paper at 56% over an 18px frost

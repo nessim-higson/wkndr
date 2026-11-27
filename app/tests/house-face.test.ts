@@ -1,13 +1,14 @@
 import { describe, expect, it } from 'bun:test'
 import {
-  HOUSE_MOVES, barLines, dealHouseMoves, emphasisIndex, forcedMove, houseDateLine, houseDay, houseHash, houseMove,
+  BOLD_MOVES, HOUSE_MOVES, barLines, isSparse, dealHouseMoves, emphasisIndex, forcedMove, houseDateLine, houseDay, houseHash, houseMove,
   isLongTitle, longestRun, moveFits, resolveFace, shortPlace, titleTokens, type HouseMove,
 } from '../src/lib/house-face'
 
 // Fixed inputs only: ids, titles and `when` strings written here. No clock, no feed file.
 const SHORT = 'Museum Market'                                              // 13 characters
 const LONG = 'Proper Sunday Roast at Café Iep in the Zeeheldenbuurt'       // 53
-const card = (id: string, title = SHORT, when = 'Sat 21 Nov · 10:00', image?: string) => ({ id, title, when, image })
+// a venue by default: a card with no venue and no price is SPARSE and is dealt only the bold moves
+const card = (id: string, title = SHORT, when = 'Sat 21 Nov · 10:00', image?: string, venue = 'Paradiso') => ({ id, title, when, image, venue })
 /** the first id of the form `<prefix>-<n>` whose own hash lands on `move` */
 function idFor(move: HouseMove, prefix = 'card'): string {
   for (let n = 0; n < 5000; n++) if (HOUSE_MOVES[houseHash(`${prefix}-${n}`) % HOUSE_MOVES.length] === move) return `${prefix}-${n}`
@@ -144,6 +145,26 @@ describe('the text rules', () => {
     expect(shortPlace('Centrale Markthal, Jan van Galenstraat 4, Amsterdam-West <st')).toBe('Centrale Markthal')
     expect(shortPlace('Tolhuistuin')).toBe('Tolhuistuin')
     expect(shortPlace('')).toBe('')
+  })
+})
+
+describe('a sparse card gets the bold moves', () => {
+  it('no venue and no price → only Rule, Bars or Numeral', () => {
+    expect(isSparse({ venue: '', price: '' })).toBe(true)
+    expect(isSparse({ venue: 'Paradiso' })).toBe(false)
+    expect(isSparse({ price: '€12' })).toBe(false)
+    const deck = Array.from({ length: 200 }, (_, n) => card(`sparse-${n}`, SHORT, 'Sat 21 Nov · 10:00', undefined, ''))
+    const moves = [...dealHouseMoves(deck).values()]
+    expect(new Set(moves)).toEqual(new Set(BOLD_MOVES))
+    for (let i = 1; i < moves.length; i++) expect(moves[i]).not.toBe(moves[i - 1])
+  })
+  it('an undated sparse card alternates Rule and Bars', () => {
+    const deck = Array.from({ length: 50 }, (_, n) => card(`undated-${n}`, SHORT, 'This weekend', undefined, ''))
+    expect(new Set(dealHouseMoves(deck).values())).toEqual(new Set(['rule', 'bars']))
+  })
+  it('a card with a venue still reaches every move', () => {
+    const seen = new Set(Array.from({ length: 300 }, (_, n) => houseMove(card(`full-${n}`))))
+    expect([...seen].sort()).toEqual([...HOUSE_MOVES].sort())
   })
 })
 

@@ -14,6 +14,22 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.12.14 · app] — 2026-11-27 — BOLD WHERE THERE IS LITTLE · THE EMAIL ARRIVES
+Ness: "type pages where there's barely any information … go with the bolder type layouts" and "Where
+the fuck are my email blasts? … I need an email blast in my email … I'd also like to blast other people."
+- **Sparse type cards are bold** (`lib/house-face.ts` `BOLD_MOVES`, `isSparse`; `HouseFace.css`). A
+  no-photo card with no venue and no price (15 of this week's 26) is dealt only Rule, Bars or Numeral,
+  and its title is set larger (Rule to 58px, Bars to 50px, Numeral's title in Bold to 50px; the fit
+  pass still steps it down). Cards with facts keep all nine moves.
+- **Why no email came:** the list was empty (nobody had confirmed), the repo secret `LIST_ADMIN_KEY`
+  was never set, and GitHub dropped this morning's scheduled run outright. Today: this weekend's brief
+  went to Ness by hand (`send.ts --test`), he is signed up (confirm mail sent), and `friday.yml` has a
+  second slot at 08:15 UTC as a free retry (the worker's once-a-weekend lock makes it safe).
+- The feed was restamped (`restamp.yml`) so the run-fatigue order reaches the stamped serve order: the
+  Maker Market is out of this weekend's email.
+- The email footer has "Forwarded to you? Get it every Friday" → wkndr.xyz, so a forward can sign up.
+- Naming: the Weekender assessment and a way through are in `docs/naming-2026-11.md`.
+
 ## [V.12.13 · app] — 2026-11-27 — THE TYPE CARD IS A PANE · NO REFLECTION · THE SAVES FROST
 Ness, with three screenshots: "kill the reflection card look please" · "Type cards should be on a
 translucent background" · "Some weirdness when I click the favroites button".

@@ -31,7 +31,7 @@ me … start to send some notifications to my partner Katya as well."
   start delay) — runs `bun run brief`, then `list/scripts/friday.ts`, which hands the draft to the
   worker's `POST /blast`. The mail key stays on the worker; the workflow needs only the repo secret
   `LIST_ADMIN_KEY` (the `ADMIN_KEY` in `list/.env`). **THAT SECRET IS NOT SET YET** — it is Ness's to
-  add (`gh secret set LIST_ADMIN_KEY`, paste the key); until then the run renders, then stops with
+  add — one line from the repo root, it reads the key from `list/.env` without printing it: `gh secret set LIST_ADMIN_KEY --body "$(grep '^ADMIN_KEY=' list/.env | cut -d= -f2-)"`; until then the run renders, then stops with
   "ADMIN_KEY not set" and sends nothing. **One send a weekend** (the worker marks `sent:<saturday>` and
   answers 409 to a second); **confirmed subscribers only**; an empty list is a quiet success. It
   **refuses and fails the run** (which mails Ness) on a stale feed, a thin or clipped draft, or a

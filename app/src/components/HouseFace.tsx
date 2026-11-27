@@ -5,7 +5,7 @@ import { placeOf } from '../lib/place'
 import { resolveGeo } from '../lib/geo'
 import {
   barLines, emphasisIndex, houseDateLine, houseDay, isLongTitle, longestRun, shortPlace, titleTokens,
-  type HouseMove,
+  isSparse, type HouseMove,
 } from '../lib/house-face'
 import './HouseFace.css'
 
@@ -137,7 +137,7 @@ export function HouseFace({ pick, move }: { pick: Pick; move: HouseMove }) {
     </>; break
   }
 
-  return <div ref={ref} className={`hf hm-${move}`} data-move={move} data-len={long ? 'long' : 'short'}
+  return <div ref={ref} className={`hf hm-${move}`} data-move={move} data-len={long ? 'long' : 'short'} data-sparse={isSparse(pick) || undefined}
     style={{ '--hf-w': move === 'bars' ? longestRun(lines) : longestRun(title) } as CSSProperties}>
     {body}
   </div>

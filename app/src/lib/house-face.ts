@@ -51,7 +51,15 @@ export function houseDateLine(when: string): string {
 }
 
 // ── the dealer ────────────────────────────────────────────────────────────────────────────────
-export interface HouseCard { id: string; title: string; when?: string }
+export interface HouseCard { id: string; title: string; when?: string; venue?: string; price?: string }
+
+// THE BOLD MOVES (V.12.14). Ness, 27 Nov: "type pages where there's barely any information … we need
+// to go with the bolder type layouts." A card with no venue and no price has only its title to show,
+// and the quiet moves (Light, Ledger, Margin, Strip, Up, Emphasis) left it a small title in an empty
+// pane. Such a card is dealt only the moves set in Bold or at scale, and the face sets its title larger.
+export const BOLD_MOVES: readonly HouseMove[] = ['rule', 'bars', 'num']
+/** Barely any information: no venue and no price, so the face has the title, the date and nothing else. */
+export const isSparse = (card: Pick<HouseCard, 'venue' | 'price'>): boolean => !(card.venue ?? '').trim() && !(card.price ?? '').trim()
 
 /** A move a card may not take: a long title skips Up (it would run off the card's edge), and a pick
  *  with no start day skips Numeral (see houseDay). Every other move takes every card. */
@@ -61,14 +69,15 @@ export function moveFits(move: HouseMove, card: HouseCard): boolean {
   return true
 }
 
-/** A card's move is `hash(id) mod 10`. It steps on to the next move when its own would repeat the
+/** A card's move is `hash(id)` modulo its pool (every move, or the bold ones for a sparse card). It steps on to the next move when its own would repeat the
  *  no-photo card before it (`prev`), or when the card can't carry it. */
 export function houseMove(card: HouseCard, prev: HouseMove | null = null): HouseMove {
-  let m = houseHash(card.id) % HOUSE_MOVES.length
-  for (let tries = 0; tries < HOUSE_MOVES.length && (HOUSE_MOVES[m] === prev || !moveFits(HOUSE_MOVES[m], card)); tries++) {
-    m = (m + 1) % HOUSE_MOVES.length
+  const pool = isSparse(card) ? BOLD_MOVES : HOUSE_MOVES
+  let m = houseHash(card.id) % pool.length
+  for (let tries = 0; tries < pool.length && (pool[m] === prev || !moveFits(pool[m], card)); tries++) {
+    m = (m + 1) % pool.length
   }
-  return HOUSE_MOVES[m]
+  return pool[m]
 }
 
 /** Deal a laid deck: every card without a photograph gets its move, and no two no-photo cards IN A

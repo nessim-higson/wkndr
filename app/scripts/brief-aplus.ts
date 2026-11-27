@@ -330,8 +330,8 @@ ${rows}
           <a href="${APP}&amp;fb=up&amp;wk=${satIso}" class="fbb" style="display:inline-block;margin:8px 3px 0;padding:8px 14px;border:1px solid ${HAIR};border-radius:99px;font:700 13px/1 ${FONT};color:${INK};">Spot on</a><a href="${APP}&amp;fb=down&amp;wk=${satIso}" class="fbb" style="display:inline-block;margin:8px 3px 0;padding:8px 14px;border:1px solid ${HAIR};border-radius:99px;font:700 13px/1 ${FONT};color:${INK};">Not for me</a>
         </td></tr>
         <tr><td align="center" class="ink3" style="padding:18px ${TEXT}px 34px;font:400 12px/1.6 ${FONT};color:${INK3};">
-          Fridays at 07:30. You signed up at wkndr.xyz. Every pick links to its organiser.<br>
-          <a href="{{unsub}}" style="color:${INK3};text-decoration:underline;">Unsubscribe</a>
+          Fridays at 07:30. Every pick links to its organiser.<br>
+          Forwarded to you? <a href="https://wkndr.xyz/?utm_source=brief-forward" style="color:${INK};text-decoration:underline;">Get it every Friday</a> · <a href="{{unsub}}" style="color:${INK3};text-decoration:underline;">Unsubscribe</a>
         </td></tr>
       </table>
     </td></tr>

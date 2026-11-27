@@ -113,3 +113,14 @@
 .hm-emph > .hf-title { position: absolute; left: 20px; right: 20px; top: 104px; font-weight: 300; line-height: 1.04; letter-spacing: -.03em;
   font-size: calc(clamp(22px, min(10.8cqw, var(--hf-measure) / (var(--hf-w) * .54)), 37px) * var(--hf-fit)); }
 .hm-emph > .hf-foot { padding-top: 10px; border-top: 1px solid var(--hf-ln); }
+
+/* THE BOLD MOVES, SET LARGE (V.12.14). A sparse card (no venue, no price) is dealt only Rule, Bars and
+   Numeral (lib/house-face.ts BOLD_MOVES) and its title is set larger: the title is all it has, so it
+   fills the pane instead of sitting small in it. The fit pass still steps it down when it outgrows. */
+.hf[data-sparse].hm-rule .hf-title { font-size: calc(clamp(28px, min(14cqw, var(--hf-measure) / (var(--hf-w) * .6)), 58px) * var(--hf-fit)); line-height: .96; }
+.hf[data-sparse][data-len='long'].hm-rule .hf-title { font-size: calc(clamp(24px, min(11.5cqw, var(--hf-measure) / (var(--hf-w) * .6)), 44px) * var(--hf-fit)); }
+.hf[data-sparse].hm-bars .hf-line { font-size: calc(clamp(22px, min(12.5cqw, var(--hf-measure) / (var(--hf-w) * .62)), 50px) * var(--hf-fit)); }
+.hf[data-sparse][data-len='long'].hm-bars .hf-line { font-size: calc(clamp(20px, min(10cqw, var(--hf-measure) / (var(--hf-w) * .62)), 40px) * var(--hf-fit)); }
+.hf[data-sparse].hm-num > .hf-title.hf-med { font-weight: 700; letter-spacing: -.035em; line-height: 1;
+  font-size: calc(clamp(24px, min(12cqw, var(--hf-measure) / (var(--hf-w) * .6)), 50px) * var(--hf-fit)); }
+.hf[data-sparse][data-len='long'].hm-num > .hf-title.hf-med { font-size: calc(clamp(22px, min(9.5cqw, var(--hf-measure) / (var(--hf-w) * .6)), 38px) * var(--hf-fit)); }
