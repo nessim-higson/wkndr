@@ -276,6 +276,18 @@
         "/Users/nessimhigson/Code/moms-library/_design/push"
       ],
       "port": 4234
+    },
+    {
+      "name": "library-kit-ness",
+      "runtimeExecutable": "bun",
+      "runtimeArgs": [
+        "run",
+        "--cwd",
+        "/Users/nessimhigson/Code/library-kit",
+        "kit/preview.ts",
+        "/Users/nessimhigson/CLAUDE/projects/iaah-library"
+      ],
+      "port": 4240
     }
   ]
 }
