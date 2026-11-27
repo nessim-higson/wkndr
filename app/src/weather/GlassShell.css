@@ -448,3 +448,28 @@ html[data-field='glass'] .app--glass .swipe-card:focus-visible::after {
 }
 html[data-field='glass'][data-shell='floating'] .app--glass .swipe-card:focus-visible::after { border-radius: 36px; }
 @media (prefers-reduced-motion: reduce) { .app--glass .tb-menu { transition: none; } }
+
+/* ── THE PANE FROSTS WHAT IS BEHIND IT (V.12.13) ──────────────────────────────────────────────────
+   Ness, 27 Nov, on the saves: "Some weirdness when I click the favorites button." Two things.
+   1 · The card and the filter strip showed through the saves panel as legible ghosts. The opened
+       module carried a backdrop-filter, and an element that has one becomes the backdrop for
+       everything inside it: the saves panel and the menu, which hang BELOW the module's own box,
+       were blurring nothing, and only their tint hid the deck. The module's glass is now drawn by
+       a ::before (a sibling of the panels, not their ancestor), so each panel frosts the page.
+   2 · The day labels ("FRIDAY, NOV 27") sat on near-opaque bands: sticky headers painted in the
+       pane's colour at 88% on a pane that is itself 76%. They scroll with their rows now, unpainted. */
+.app--glass .topbar-module { isolation: isolate; }
+.app--glass .topbar-module::before {
+  content: ''; position: absolute; inset: -1px; z-index: -1; pointer-events: none;
+  border-radius: inherit; opacity: 0; visibility: hidden;
+  background: color-mix(in srgb, var(--pane) calc(var(--pane-a) * 100%), transparent);
+  transition: opacity .38s cubic-bezier(.22,1,.36,1), visibility 0s .38s;
+}
+/* html[data-field] in front: the floating shell paints its own module with a longer selector */
+html[data-field='glass'] .app--glass .topbar-module:is(.open,.peeking) { background: transparent; -webkit-backdrop-filter: none; backdrop-filter: none; }
+.app--glass .topbar-module:is(.open,.peeking)::before {
+  opacity: 1; visibility: visible; transition-delay: 0s;
+  -webkit-backdrop-filter: blur(var(--pane-blur)) saturate(1.2); backdrop-filter: blur(var(--pane-blur)) saturate(1.2);
+}
+.app--glass .saves-panel .sv-group-label { position: static; background: none; }
+@media (prefers-reduced-motion: reduce) { .app--glass .topbar-module::before { transition: none; } }

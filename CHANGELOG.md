@@ -14,6 +14,21 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.12.13 · app] — 2026-11-27 — THE TYPE CARD IS A PANE · NO REFLECTION · THE SAVES FROST
+Ness, with three screenshots: "kill the reflection card look please" · "Type cards should be on a
+translucent background" · "Some weirdness when I click the favroites button".
+- **Reflected is gone** (`lib/house-face.ts`, `HouseFace.tsx/.css`). Nine moves now; cards are dealt by
+  `hash(id) mod 9`, so most no-photo cards change move with this release.
+- **The type card's ground is a frosted pane** (`HouseFace.css`): the paper at 56% over an 18px blur of
+  what is behind it, the same frost the glass face rests at. Ink unchanged; the muted and hairline
+  tones are ink at an alpha instead of ink mixed with paper. Opaque paper where backdrop-filter is missing.
+- **The saves panel and the menu frost the page** (`GlassShell.css` last block). The opened header
+  carried a backdrop-filter, which made it the backdrop for the panels hanging below it: they blurred
+  nothing, and the card and the filter strip read through as ghosts. The header's glass is now a
+  ::before, so each panel blurs the page itself. The day labels in the saves no longer sit on
+  near-opaque bands (they were sticky headers painted at 88%); they scroll with their rows.
+- 715 tests.
+
 ## [V.12.12 · app] — 2026-11-27 — CENTRED · THE RUN WEARS OUT · THE TYPE CARDS ARE IN
 Ness, with four screenshots: "Things arent centered properly in the UI" · "I KEEP seeing makers market
 EVERY weekened!" · "Where are the typecards we designed? Im not seeing them implemented."

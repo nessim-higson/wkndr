@@ -2,9 +2,24 @@
    point, Helvetica Neue Light / Medium, facts in small capitals, a 20px inset, the title at 104px
    under the chrome. One composition MOVE per card (lib/house-face.ts deals it). The sizes are the
    board's own (46 / 30 / 10.5 / 12), not the app scale tokens: the face was approved at these.
-   Opaque on purpose: this card is its own ground, so it never needs a photograph beneath it. */
+   THE GROUND IS A PANE (V.12.13). Ness, 27 Nov: "Type cards should be on a translucent background."
+   The paper is laid at 56% over an 18px frost of whatever is behind it — the sky, the next card —
+   the same frost the glass face rests at, so the next card's title reads as tone, not as words.
+   The ink stays ink. Where backdrop-filter is missing the paper is opaque, as it was. */
 .card--house { background: #f6f3ec; color: #1a1a1a; }
 .card--house .card-grain { opacity: .14; mix-blend-mode: multiply; }
+@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .card--house {
+    background: color-mix(in srgb, #f6f3ec 56%, transparent);
+    -webkit-backdrop-filter: blur(18px) saturate(1.1); backdrop-filter: blur(18px) saturate(1.1);
+  }
+  /* a frosted pane has no paper tooth, and what was mixed with paper is now ink at an alpha */
+  .card--house .card-grain { opacity: .05; }
+  .card--house .hf {
+    --hf-mu: color-mix(in srgb, var(--hf-ink) 66%, transparent);
+    --hf-ln: color-mix(in srgb, var(--hf-ink) 30%, transparent);
+  }
+}
 .card--house .card-expand { color: #1a1a1a; background: rgba(0, 0, 0, .06); border-color: rgba(0, 0, 0, .28); backdrop-filter: none; -webkit-backdrop-filter: none; }
 
 .hf {
@@ -73,10 +88,6 @@
 /* M5 NUMERAL — the day in Thin behind the title in Medium. Dated picks only. */
 .hm-num > .hf-big { position: absolute; right: -4px; top: 54px; font-size: min(232px, 68cqw); font-weight: 200; line-height: .8; letter-spacing: -.08em; color: color-mix(in srgb, var(--hf-ink) 12%, transparent); pointer-events: none; font-variant-numeric: lining-nums; }
 .hm-num > .hf-title { position: absolute; left: 20px; right: 20px; bottom: 62px; }
-
-/* M6 REFLECTED — the title with its own inverted, fading reflection. The wet pavement. */
-.hm-refl { display: flex; flex-direction: column; justify-content: center; padding: 96px 20px 56px; }
-.hm-refl .hf-ghost { transform: scaleY(-1); opacity: .22; margin-top: 2px; -webkit-mask-image: linear-gradient(180deg, transparent, #000 90%); mask-image: linear-gradient(180deg, transparent, #000 90%); }
 
 /* M7 STRIP — the title in a narrow column at the far right, ragged left; two thirds of the card empty. */
 .hm-strip { --hf-measure: calc(44cqw - 20px); }

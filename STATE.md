@@ -5,7 +5,7 @@ FIRST in a new chat. For strategy + backlog see `docs/backlog.md`; for the pipel
 `docs/pipeline-architecture.md` + `docs/source-map.md`; for **who may write to the deck vs to a personal
 profile** (board / Tune / airlock — read before touching either) see `docs/curation-surfaces.md`; for the
 **board roadmap** (auto-compile tracks) see `docs/board-roadmap.md`; for full **version history** see
-`CHANGELOG.md` (current to app **V.12.12** — centred, run fatigue, the type cards, 2026-11-27 / board V.10) and the **git log / tags**. Onboarding:
+`CHANGELOG.md` (current to app **V.12.13** — the type card is a pane, the saves frost, 2026-11-27 / board V.10) and the **git log / tags**. Onboarding:
 `CLAUDE.md`; for any coding agent (Codex included) **`AGENTS.md`** is the working manual and
 `docs/variations/` the prototype protocol + the open briefs. App lives in `/app` (Vite + React + TS, run with `bun`); ships to **Cloudflare Pages**
 (`wkndr.xyz` + `app.wkndr.xyz`) **and** GitHub Pages (legacy, keeps old share links alive)._
@@ -30,6 +30,13 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
 > sessions update (today it's on load).
 
 ## Live right now
+- **2026-11-27 (later) — THE TYPE CARD IS A PANE · NO REFLECTION · THE SAVES FROST (V.12.13).** Ness on
+  the first hours of the type cards: Reflected is dropped (nine moves: rule, light, ledger, margin,
+  numeral, strip, up, bars, emphasis); the card's ground is translucent, paper at 56% over an 18px frost
+  (`HouseFace.css`, the two numbers to tune if he wants it clearer or denser); and the saves panel and the
+  menu now blur the page behind them (the opened header's backdrop-filter was swallowing theirs; its glass
+  is a `::before` now) with no bands behind the day labels. Not checked on a real phone, and the panel's
+  open animation cannot be watched in the headless preview.
 - **2026-11-27 — CENTRED · THE RUN WEARS OUT · THE TYPE CARDS ARE IN (V.12.12).** Three asks in one
   message. **Centred:** masthead ink 14px from both card edges, the cards behind square under the top
   one, the focus ring concentric (`GlassShell.css` last block, `SwipeStack` `square`). **Run fatigue:** a
@@ -38,8 +45,7 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
   `runFatigue`); the Maker Market went 8th → 108th. This is ranking, not a rest: nothing was added to
   `corpus.rested`. **Type cards:** `proto/type-cards` (PR #41) is merged and the house face is the
   default no-photo card on the stack; glass is `?face=glass-opal` / `?house=0`. **Ness, 27 Nov: "Keep all
-  ten"** — the moves (rule, light, ledger, margin, numeral, reflected, strip, up, bars, emphasis) are
-  settled; `HOUSE_MOVES` stays as it is. Round two of the three "more" directions (Scatter, Corner,
+  ten"**, then the same afternoon "kill the reflection card look" — nine moves remain (see the entry above). Round two of the three "more" directions (Scatter, Corner,
   Figures) is not built. Not checked on a real phone.
 - **2026-11-23 — THE DECK FILLS ITS SPACE (V.12.11).** On tall windows the card sat low with a gap under
   the filters (deck capped at 620px, bottom-anchored). Now capped at 760px and hung from the top: the

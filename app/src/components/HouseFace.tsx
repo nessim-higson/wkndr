@@ -11,8 +11,8 @@ import './HouseFace.css'
 
 /** A title as words: each word is its own span so the fit pass can find the one that had to break
  *  (and only that one is then hyphenated — a Dutch compound never splits while it fits a line). */
-function Title({ text, cls = '', bold = -1, ghost = false }: { text: string; cls?: string; bold?: number; ghost?: boolean }) {
-  return <h2 className={`hf-title ${cls}`} lang="nl" aria-hidden={ghost || undefined}>
+function Title({ text, cls = '', bold = -1 }: { text: string; cls?: string; bold?: number }) {
+  return <h2 className={`hf-title ${cls}`} lang="nl">
     {titleTokens(text).map((w, i) => <Fragment key={i}>{i > 0 && ' '}<span className={`hf-word${i === bold ? ' hf-b' : ''}`}>{w}</span></Fragment>)}
   </h2>
 }
@@ -83,7 +83,6 @@ export function HouseFace({ pick, move }: { pick: Pick; move: HouseMove }) {
   const day = houseDay(pick.when)
   const price = (pick.price ?? '').trim()
   const long = isLongTitle(title)
-  const sized = long ? 'hf-med' : 'hf-light'
   const lines = move === 'bars' ? barLines(title) : []
 
   let body: ReactNode
@@ -118,10 +117,6 @@ export function HouseFace({ pick, move }: { pick: Pick; move: HouseMove }) {
       <span className="hf-big" aria-hidden>{day?.day}</span>
       <Title text={title} cls="hf-fit hf-med" />
       <div className="hf-foot hf-caps hf-keep"><span>{place}</span><span>{day ? `${day.dow} · ` : ''}{cat}</span></div>
-    </>; break
-    case 'refl': body = <>
-      <div className="hf-pair hf-fit"><Title text={title} cls={sized} /><Title text={title} cls={`${sized} hf-ghost`} ghost /></div>
-      <div className="hf-foot hf-caps hf-keep"><span>{place}</span><span>{date}</span></div>
     </>; break
     case 'strip': body = <>
       <span className="hf-point" aria-hidden />
