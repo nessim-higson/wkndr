@@ -36,10 +36,11 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
   secret `LIST_ADMIN_KEY` is still not set, so next Friday's automatic run will fail until he runs the
   `gh secret set` line in `list/README.md`**; `friday.yml` now has a backup 08:15 UTC slot (GitHub dropped
   today's 05:15 run). Others join by signing up at wkndr.xyz, or Ness hands over addresses and each gets
-  a confirm mail (double opt-in; never add anyone as active). **The name:** Weekender assessed in
-  `docs/naming-2026-11.md` — weaker than WKNDR, not a fix; recommendation is ship as WKNDR, decide
-  before the first spend a rename would waste, and put the money into a Benelux attorney hour on a
-  WKNDR combined mark instead of weekender.com. No verdict from Ness yet.
+  a confirm mail (double opt-in; never add anyone as active). **The name:** Ness wants **WKNDR**
+  (and can buy wkndr.com for $5,000). `docs/naming-2026-11.md`: keep shipping as WKNDR; one Benelux
+  attorney clearance hour on WKNDR (word and combined mark, 9/41/42, against the WKND marks) decides it;
+  low/moderate risk → file, buy wkndr.com, roll out in Europe; high → rename once. Never the US under
+  WKNDR. No attorney booked yet.
 - **2026-11-27 (later) — THE TYPE CARD IS A PANE · NO REFLECTION · THE SAVES FROST (V.12.13).** Ness on
   the first hours of the type cards: Reflected is dropped (nine moves: rule, light, ledger, margin,
   numeral, strip, up, bars, emphasis); the card's ground is translucent, paper at 56% over an 18px frost

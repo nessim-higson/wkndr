@@ -28,7 +28,7 @@ the fuck are my email blasts? … I need an email blast in my email … I'd also
 - The feed was restamped (`restamp.yml`) so the run-fatigue order reaches the stamped serve order: the
   Maker Market is out of this weekend's email.
 - The email footer has "Forwarded to you? Get it every Friday" → wkndr.xyz, so a forward can sign up.
-- Naming: the Weekender assessment and a way through are in `docs/naming-2026-11.md`.
+- Naming: the WKNDR / wkndr.com assessment and a way through are in `docs/naming-2026-11.md`.
 
 ## [V.12.13 · app] — 2026-11-27 — THE TYPE CARD IS A PANE · NO REFLECTION · THE SAVES FROST
 Ness, with three screenshots: "kill the reflection card look please" · "Type cards should be on a
