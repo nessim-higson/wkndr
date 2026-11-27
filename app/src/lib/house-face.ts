@@ -5,15 +5,16 @@
 // (Swiss, Light, Ledger, Margin, Emphasis, Numeral, Up, Bleed, Stair, Turned, Reflected, Strip, Bars)
 // were distilled into one face: paper, ink, one brick-red point, Helvetica Neue Light / Medium, facts
 // in small capitals — and composition MOVES, one per card. Ten at first; Reflected (the title over
-// its own upside-down ghost) was dropped on 27 Nov 2026: "kill the reflection card look please".
+// its own upside-down ghost) was dropped on 27 Nov 2026: "kill the reflection card look please", and
+// Strip (the title in a narrow 19px column) the same evening: "too small … make sure we have larger type".
 // This file is the dealer and the text
 // rules; HouseFace.tsx / HouseFace.css draw them. Nothing here reads the clock or the feed.
 
-export const HOUSE_MOVES = ['rule', 'light', 'ledger', 'margin', 'num', 'strip', 'up', 'bars', 'emph'] as const
+export const HOUSE_MOVES = ['rule', 'light', 'ledger', 'margin', 'num', 'up', 'bars', 'emph'] as const
 export type HouseMove = typeof HOUSE_MOVES[number]
 export const HOUSE_MOVE_LABEL: Record<HouseMove, string> = {
   rule: 'Rule', light: 'Light', ledger: 'Ledger', margin: 'Margin', num: 'Numeral',
-  strip: 'Strip', up: 'Up', bars: 'Bars', emph: 'Emphasis',
+  up: 'Up', bars: 'Bars', emph: 'Emphasis',
 }
 
 /** Up to 24 characters a title is SHORT (Light 46); over it, LONG (Medium 30). The board's line. */
@@ -55,7 +56,7 @@ export interface HouseCard { id: string; title: string; when?: string; venue?: s
 
 // THE BOLD MOVES (V.12.14). Ness, 27 Nov: "type pages where there's barely any information … we need
 // to go with the bolder type layouts." A card with no venue and no price has only its title to show,
-// and the quiet moves (Light, Ledger, Margin, Strip, Up, Emphasis) left it a small title in an empty
+// and the quiet moves (Light, Ledger, Margin, Up, Emphasis) left it a small title in an empty
 // pane. Such a card is dealt only the moves set in Bold or at scale, and the face sets its title larger.
 export const BOLD_MOVES: readonly HouseMove[] = ['rule', 'bars', 'num']
 /** Barely any information: no venue and no price, so the face has the title, the date and nothing else. */

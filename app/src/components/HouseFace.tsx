@@ -118,11 +118,6 @@ export function HouseFace({ pick, move }: { pick: Pick; move: HouseMove }) {
       <Title text={title} cls="hf-fit hf-med" />
       <div className="hf-foot hf-caps hf-keep"><span>{place}</span><span>{day ? `${day.dow} · ` : ''}{cat}</span></div>
     </>; break
-    case 'strip': body = <>
-      <span className="hf-point" aria-hidden />
-      <Title text={title} cls="hf-fit" />
-      <div className="hf-end hf-caps hf-keep">{place}<br />{date}{price && <><br />{price}</>}</div>
-    </>; break
     case 'up': body = <>
       <div className="hf-side hf-caps hf-keep"><b>{place}</b>{date}<br />{cat}</div>
       <Title text={title} cls="hf-fit" />

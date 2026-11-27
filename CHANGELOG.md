@@ -14,6 +14,13 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.12.15 · app] — 2026-11-27 — LARGER TYPE ON EVERY TYPE CARD
+Ness, with a Strip card (a two-line title in a narrow 19px column, top right): "this is the type card
+that is too small. Lets avoid this moving forward and make sure that we have larger type."
+- Strip is dropped; eight moves remain (rule, light, ledger, margin, numeral, up, bars, emphasis).
+- Every title ceiling is raised (`HouseFace.css`): Light 46→58 (long 38→46), Medium 30→40 (25→34), Rule
+  36→50 (32→40), Bars 31→44, Emphasis 37→50. The fit pass still steps a title down when it would collide.
+
 ## [V.12.14 · app] — 2026-11-27 — BOLD WHERE THERE IS LITTLE · THE EMAIL ARRIVES
 Ness: "type pages where there's barely any information … go with the bolder type layouts" and "Where
 the fuck are my email blasts? … I need an email blast in my email … I'd also like to blast other people."

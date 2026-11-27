@@ -17,7 +17,8 @@ function idFor(move: HouseMove, prefix = 'card'): string {
 
 describe('the move dealer', () => {
   it('is the hash of the id, modulo the number of moves: the same card gets the same move every time', () => {
-    expect(HOUSE_MOVES.length).toBe(9)
+    expect(HOUSE_MOVES.length).toBe(8)
+    expect(HOUSE_MOVES as readonly string[]).not.toContain('strip')   // dropped: too small, 27 Nov 2026
     expect(HOUSE_MOVES as readonly string[]).not.toContain('refl')   // Reflected was dropped, 27 Nov 2026
     expect(houseHash('web-lbb-tips-noordermarkt')).toBe(houseHash('web-lbb-tips-noordermarkt'))
     for (let n = 0; n < 200; n++) {
@@ -90,7 +91,7 @@ describe('the move dealer', () => {
     expect(houseMove(card(id, SHORT, 'Sun 22 Nov · 12:00-22:30'))).toBe('num')
     for (const when of ['This weekend', 'Every Saturday', 'Until Sun 13 Dec', 'Now open · aperitivo hours', '']) {
       expect(moveFits('num', card(id, SHORT, when))).toBe(false)
-      expect(houseMove(card(id, SHORT, when))).toBe('strip')   // the move after Numeral
+      expect(houseMove(card(id, SHORT, when))).toBe('up')   // the move after Numeral
     }
   })
 })
