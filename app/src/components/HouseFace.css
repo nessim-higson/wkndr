@@ -1,9 +1,7 @@
 /* ═══ THE HOUSE FACE ═══ (proto/type-cards) — the no-photo card as type: paper, ink, one brick-red
    point, Helvetica Neue Light / Medium, facts in small capitals, a 20px inset, the title at 104px
    under the chrome. One composition MOVE per card (lib/house-face.ts deals it). The sizes are the
-   board's own facts sizes (10.5 / 12); the TITLES were raised on 27 Nov 2026 (V.12.15, Ness: "the type
-   card … is too small … make sure that we have larger type"): Light to 58, Medium to 40, Rule and
-   Emphasis to 50, Bars to 44. Strip, the narrow 19px column, was dropped the same day.
+   board's own (46 / 30 / 10.5 / 12), not the app scale tokens: the face was approved at these.
    THE GROUND IS A PANE (V.12.13). Ness, 27 Nov: "Type cards should be on a translucent background."
    The paper is laid at 56% over an 18px frost of whatever is behind it — the sky, the next card —
    the same frost the glass face rests at, so the next card's title reads as tone, not as words.
@@ -41,11 +39,11 @@
 /* Light for a short title, Medium for a long one. Each is the board's size, capped by the size at
    which the longest word still fits the measure, times the fit step. */
 .hf-light { font-weight: 300; line-height: 1.02; letter-spacing: -.025em;
-  font-size: calc(clamp(28px, min(15cqw, var(--hf-measure) / (var(--hf-w) * .52)), 58px) * var(--hf-fit)); }
-.hf[data-len='long'] .hf-light { font-size: calc(clamp(24px, min(12.5cqw, var(--hf-measure) / (var(--hf-w) * .52)), 46px) * var(--hf-fit)); }
+  font-size: calc(clamp(24px, min(13cqw, var(--hf-measure) / (var(--hf-w) * .52)), 46px) * var(--hf-fit)); }
+.hf[data-len='long'] .hf-light { font-size: calc(clamp(22px, min(11cqw, var(--hf-measure) / (var(--hf-w) * .52)), 38px) * var(--hf-fit)); }
 .hf-med { font-weight: 500; line-height: 1.08; letter-spacing: -.028em;
-  font-size: calc(clamp(24px, min(11cqw, var(--hf-measure) / (var(--hf-w) * .56)), 40px) * var(--hf-fit)); }
-.hf[data-len='long'] .hf-med { font-size: calc(clamp(22px, min(9.5cqw, var(--hf-measure) / (var(--hf-w) * .56)), 34px) * var(--hf-fit)); }
+  font-size: calc(clamp(20px, min(8.8cqw, var(--hf-measure) / (var(--hf-w) * .56)), 30px) * var(--hf-fit)); }
+.hf[data-len='long'] .hf-med { font-size: calc(clamp(18px, min(7.6cqw, var(--hf-measure) / (var(--hf-w) * .56)), 25px) * var(--hf-fit)); }
 .hf-caps { font-size: 10.5px; font-weight: 500; line-height: 1.6; letter-spacing: .12em; text-transform: uppercase; }
 .hf-facts { font-size: 12px; font-weight: 400; line-height: 1.4; color: var(--hf-mu); }
 .hf-facts b { font-weight: 500; color: var(--hf-ink); }
@@ -63,8 +61,8 @@
 .hm-rule .hf-meta { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; padding-bottom: 8px; border-bottom: 2.5px solid var(--hf-ink); }
 .hm-rule .hf-meta > span:last-child { flex-shrink: 0; }
 .hm-rule .hf-title { margin-top: 14px; font-weight: 700; line-height: 1; letter-spacing: -.035em;
-  font-size: calc(clamp(26px, min(13cqw, var(--hf-measure) / (var(--hf-w) * .6)), 50px) * var(--hf-fit)); }
-.hm-rule[data-len='long'] .hf-title { font-size: calc(clamp(22px, min(11cqw, var(--hf-measure) / (var(--hf-w) * .6)), 40px) * var(--hf-fit)); }
+  font-size: calc(clamp(22px, min(10.4cqw, var(--hf-measure) / (var(--hf-w) * .6)), 36px) * var(--hf-fit)); }
+.hm-rule[data-len='long'] .hf-title { font-size: calc(clamp(20px, min(9.4cqw, var(--hf-measure) / (var(--hf-w) * .6)), 32px) * var(--hf-fit)); }
 .hm-rule .hf-end { margin-top: auto; padding-top: 12px; display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: end; }
 
 /* M2 LIGHT — the title in Light at size, the venue in spaced capitals at the foot. */
@@ -91,6 +89,13 @@
 .hm-num > .hf-big { position: absolute; right: -4px; top: 54px; font-size: min(232px, 68cqw); font-weight: 200; line-height: .8; letter-spacing: -.08em; color: color-mix(in srgb, var(--hf-ink) 12%, transparent); pointer-events: none; font-variant-numeric: lining-nums; }
 .hm-num > .hf-title { position: absolute; left: 20px; right: 20px; bottom: 62px; }
 
+/* M7 STRIP — the title in a narrow column at the far right, ragged left; two thirds of the card empty. */
+.hm-strip { --hf-measure: calc(44cqw - 20px); }
+.hm-strip > .hf-title { position: absolute; right: 20px; top: 104px; width: 44%; text-align: right; line-height: 1.2; letter-spacing: -.02em;
+  font-size: calc(clamp(14px, min(5.8cqw, var(--hf-measure) / (var(--hf-w) * .58)), 19px) * var(--hf-fit)); }
+.hm-strip > .hf-point { position: absolute; left: 20px; top: 108px; }
+.hm-strip > .hf-end { position: absolute; left: 20px; bottom: 20px; width: 42%; color: var(--hf-mu); }
+
 /* M8 UP — the title in Light turned to read up the right edge. Short titles only. */
 .hm-up { --hf-measure: calc(100cqh - 90px); }
 .hm-up > .hf-title { position: absolute; right: 10px; top: 70px; bottom: 16px; max-width: 58%; writing-mode: vertical-rl; transform: rotate(180deg); font-weight: 300; line-height: .92; letter-spacing: -.025em;
@@ -102,11 +107,11 @@
 .hm-bars > .hf-lines { position: absolute; left: 20px; right: 0; top: 100px; }
 .hm-bars .hf-line { display: block; padding: .26em 20px .23em 0; border-bottom: 3px solid var(--hf-ink); white-space: nowrap; overflow: hidden;
   font-weight: 700; line-height: 1; letter-spacing: -.035em;
-  font-size: calc(clamp(22px, min(11cqw, var(--hf-measure) / (var(--hf-w) * .62)), 44px) * var(--hf-fit)); }
+  font-size: calc(clamp(18px, min(9cqw, var(--hf-measure) / (var(--hf-w) * .62)), 31px) * var(--hf-fit)); }
 
 /* M10 EMPHASIS — the title in Light with its subject in Bold, the facts under a hairline. */
 .hm-emph > .hf-title { position: absolute; left: 20px; right: 20px; top: 104px; font-weight: 300; line-height: 1.04; letter-spacing: -.03em;
-  font-size: calc(clamp(26px, min(13.5cqw, var(--hf-measure) / (var(--hf-w) * .54)), 50px) * var(--hf-fit)); }
+  font-size: calc(clamp(22px, min(10.8cqw, var(--hf-measure) / (var(--hf-w) * .54)), 37px) * var(--hf-fit)); }
 .hm-emph > .hf-foot { padding-top: 10px; border-top: 1px solid var(--hf-ln); }
 
 /* THE BOLD MOVES, SET LARGE (V.12.14). A sparse card (no venue, no price) is dealt only Rule, Bars and
@@ -119,3 +124,7 @@
 .hf[data-sparse].hm-num > .hf-title.hf-med { font-weight: 700; letter-spacing: -.035em; line-height: 1;
   font-size: calc(clamp(24px, min(12cqw, var(--hf-measure) / (var(--hf-w) * .6)), 50px) * var(--hf-fit)); }
 .hf[data-sparse][data-len='long'].hm-num > .hf-title.hf-med { font-size: calc(clamp(22px, min(9.5cqw, var(--hf-measure) / (var(--hf-w) * .6)), 38px) * var(--hf-fit)); }
+/* LITTLE COPY, LARGE (V.12.16): a short-titled card can also be dealt Light, set larger here. Up is
+   already large by design (68). Only `data-sparse` cards: the rest keep the board's sizes. */
+.hf[data-sparse] .hf-light { font-size: calc(clamp(28px, min(15cqw, var(--hf-measure) / (var(--hf-w) * .52)), 58px) * var(--hf-fit)); }
+.hf[data-sparse][data-len='long'] .hf-light { font-size: calc(clamp(26px, min(13cqw, var(--hf-measure) / (var(--hf-w) * .52)), 48px) * var(--hf-fit)); }

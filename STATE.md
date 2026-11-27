@@ -5,7 +5,7 @@ FIRST in a new chat. For strategy + backlog see `docs/backlog.md`; for the pipel
 `docs/pipeline-architecture.md` + `docs/source-map.md`; for **who may write to the deck vs to a personal
 profile** (board / Tune / airlock — read before touching either) see `docs/curation-surfaces.md`; for the
 **board roadmap** (auto-compile tracks) see `docs/board-roadmap.md`; for full **version history** see
-`CHANGELOG.md` (current to app **V.12.15** — larger type on every type card, 2026-11-27 / board V.10) and the **git log / tags**. Onboarding:
+`CHANGELOG.md` (current to app **V.12.16** — large type only for little copy, 2026-11-27 / board V.10) and the **git log / tags**. Onboarding:
 `CLAUDE.md`; for any coding agent (Codex included) **`AGENTS.md`** is the working manual and
 `docs/variations/` the prototype protocol + the open briefs. App lives in `/app` (Vite + React + TS, run with `bun`); ships to **Cloudflare Pages**
 (`wkndr.xyz` + `app.wkndr.xyz`) **and** GitHub Pages (legacy, keeps old share links alive)._
@@ -30,9 +30,11 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
 > sessions update (today it's on load).
 
 ## Live right now
-- **2026-11-27 (night) — LARGER TYPE (V.12.15).** "Make sure that we have larger type": Strip dropped
-  (eight moves), every type-card title ceiling raised (Light 58, Medium 40, Rule/Emphasis 50, Bars 44).
-  The standing rule for this face: no small titles; a new move earns its place only at these sizes.
+- **2026-11-27 (night) — LARGE TYPE ONLY FOR LITTLE COPY (V.12.16; V.12.15 rolled back).** V.12.15
+  enlarged every type card; Ness: "NO … it was for just that card … for cards that have very little copy,
+  use designs that have larger copy." Sizes and Strip are back; `copyTier` deals bare cards (no venue, no
+  price) Rule/Bars/Numeral and short titles (≤40 characters) Rule/Bars/Numeral/Light/Up, set larger. Full
+  cards are as the board drew them. The rule: change only the cards he points at.
 - **2026-11-27 (eve) — BOLD WHERE THERE IS LITTLE · THE EMAIL ARRIVES · THE NAME (V.12.14).** Sparse
   no-photo cards (no venue, no price) get only Rule / Bars / Numeral, set larger. **The Friday email:**
   this weekend's went to Ness by hand; he is subscribed but must click the confirm mail; **the repo

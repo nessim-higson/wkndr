@@ -14,6 +14,16 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.12.16 · app] — 2026-11-27 — LARGE TYPE ONLY WHERE THERE IS LITTLE COPY
+Ness, on V.12.15: "NO — I wasn't asking for you to make ALL cards have larger type. PLEASE roll that back
+— it was for just that card … for cards that have very little copy, use designs that have larger copy."
+- V.12.15 is rolled back: the board's title sizes are back on every card, and Strip is back (nine moves).
+- **Little copy** (`lib/house-face.ts` `copyTier`): a card is `bare` (no venue, no price → Rule, Bars,
+  Numeral, as in V.12.14), `short` (a title of 40 characters or fewer → the large moves only: Rule, Bars,
+  Numeral, Light, Up) or `full` (every move, the board's sizes). The Danielle • Interstellar Funk card
+  (28 characters, venue Radio Radio) was `full` under V.12.14's rule and landed on Strip; it is `short`
+  now. Bare and short cards set their titles larger (`HouseFace.css` `data-sparse`, Light to 58).
+
 ## [V.12.15 · app] — 2026-11-27 — LARGER TYPE ON EVERY TYPE CARD
 Ness, with a Strip card (a two-line title in a narrow 19px column, top right): "this is the type card
 that is too small. Lets avoid this moving forward and make sure that we have larger type."

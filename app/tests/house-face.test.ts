@@ -1,36 +1,39 @@
 import { describe, expect, it } from 'bun:test'
 import {
-  BOLD_MOVES, HOUSE_MOVES, barLines, isSparse, dealHouseMoves, emphasisIndex, forcedMove, houseDateLine, houseDay, houseHash, houseMove,
+  BOLD_MOVES, HOUSE_MOVES, LARGE_MOVES, barLines, copyTier, isSparse, dealHouseMoves, emphasisIndex, forcedMove, houseDateLine, houseDay, houseHash, houseMove,
   isLongTitle, longestRun, moveFits, resolveFace, shortPlace, titleTokens, type HouseMove,
 } from '../src/lib/house-face'
 
 // Fixed inputs only: ids, titles and `when` strings written here. No clock, no feed file.
 const SHORT = 'Museum Market'                                              // 13 characters
 const LONG = 'Proper Sunday Roast at Café Iep in the Zeeheldenbuurt'       // 53
-// a venue by default: a card with no venue and no price is SPARSE and is dealt only the bold moves
-const card = (id: string, title = SHORT, when = 'Sat 21 Nov · 10:00', image?: string, venue = 'Paradiso') => ({ id, title, when, image, venue })
-/** the first id of the form `<prefix>-<n>` whose own hash lands on `move` */
-function idFor(move: HouseMove, prefix = 'card'): string {
-  for (let n = 0; n < 5000; n++) if (HOUSE_MOVES[houseHash(`${prefix}-${n}`) % HOUSE_MOVES.length] === move) return `${prefix}-${n}`
+// A FULL card by default (a venue and a title over 40 characters): it is dealt every move. A shorter
+// title is little copy (the large moves only); no venue and no price is bare (the bold three).
+const FULL = 'Proper Sunday Roast at Café Iep in the Zeeheldenbuurt'       // 53
+const card = (id: string, title = FULL, when = 'Sat 21 Nov · 10:00', image?: string, venue = 'Paradiso') => ({ id, title, when, image, venue })
+/** the first id of the form `<prefix>-<n>` whose own hash lands on `move` within `pool` */
+function idFor(move: HouseMove, prefix = 'card', pool: readonly HouseMove[] = HOUSE_MOVES): string {
+  for (let n = 0; n < 5000; n++) if (pool[houseHash(`${prefix}-${n}`) % pool.length] === move) return `${prefix}-${n}`
   throw new Error(`no id for ${move}`)
 }
+const FULL_REACH = HOUSE_MOVES.filter((m) => m !== 'up')   // a title over 40 is long, and long titles skip Up
 
 describe('the move dealer', () => {
-  it('is the hash of the id, modulo the number of moves: the same card gets the same move every time', () => {
-    expect(HOUSE_MOVES.length).toBe(8)
-    expect(HOUSE_MOVES as readonly string[]).not.toContain('strip')   // dropped: too small, 27 Nov 2026
+  it('is the hash of the id, modulo the pool: the same card gets the same move every time', () => {
+    expect(HOUSE_MOVES.length).toBe(9)
     expect(HOUSE_MOVES as readonly string[]).not.toContain('refl')   // Reflected was dropped, 27 Nov 2026
     expect(houseHash('web-lbb-tips-noordermarkt')).toBe(houseHash('web-lbb-tips-noordermarkt'))
     for (let n = 0; n < 200; n++) {
       const c = card(`event-${n}`)
       expect(houseMove(c)).toBe(houseMove(c))
-      expect(houseMove(c)).toBe(HOUSE_MOVES[houseHash(c.id) % HOUSE_MOVES.length])   // a short, dated card takes its own move
     }
+    const id = idFor('ledger')
+    expect(houseMove(card(id))).toBe('ledger')
   })
 
-  it('reaches every move', () => {
-    const seen = new Set(Array.from({ length: 200 }, (_, n) => houseMove(card(`event-${n}`))))
-    expect([...seen].sort()).toEqual([...HOUSE_MOVES].sort())
+  it('a full card reaches every move a long title can carry', () => {
+    const seen = new Set(Array.from({ length: 300 }, (_, n) => houseMove(card(`event-${n}`))))
+    expect([...seen].sort()).toEqual([...FULL_REACH].sort())
   })
 
   it('never repeats the move of the no-photo card before it', () => {
@@ -49,7 +52,7 @@ describe('the move dealer', () => {
 
   it('counts a repeat across the photographs between two no-photo cards, and deals none to a photograph', () => {
     const a = idFor('rule', 'a'), b = idFor('rule', 'b')
-    const dealt = dealHouseMoves([card(a), card('photo-1', SHORT, 'Sat 21 Nov', 'https://x/y.jpg'), card(b)])
+    const dealt = dealHouseMoves([card(a), card('photo-1', FULL, 'Sat 21 Nov', 'https://x/y.jpg'), card(b)])
     expect(dealt.has('photo-1')).toBe(false)
     expect(dealt.get(a)).toBe('rule')
     expect(dealt.get(b)).toBe('light')
@@ -65,34 +68,53 @@ describe('the move dealer', () => {
     expect(forcedMove('Numeral')).toBe('num')
     expect(forcedMove('nonsense')).toBeNull()
     expect(forcedMove(null)).toBeNull()
-    const deck = [card('a'), card('b', LONG), card('c')]
+    const deck = [card('a', SHORT), card('b'), card('c', SHORT)]
     expect([...dealHouseMoves(deck, 'ledger').values()]).toEqual(['ledger', 'ledger', 'ledger'])
     const up = dealHouseMoves(deck, 'up')
     expect(up.get('a')).toBe('up')
     expect(up.get('c')).toBe('up')
-    expect(up.get('b')).toBe(houseMove(card('b', LONG)))   // its own move, which is never Up
+    expect(up.get('b')).toBe(houseMove(card('b')))   // its own move, which is never Up
   })
 
   it('a long title skips Up', () => {
     expect(isLongTitle(SHORT)).toBe(false)
     expect(isLongTitle('x'.repeat(24))).toBe(false)
     expect(isLongTitle('x'.repeat(25))).toBe(true)
-    const id = idFor('up')
+    const id = idFor('up', 'card', LARGE_MOVES)
     expect(houseMove(card(id, SHORT))).toBe('up')
-    expect(houseMove(card(id, LONG))).toBe('bars')   // the move after Up
+    expect(houseMove(card(id, 'Danielle • Interstellar Funk'))).toBe('rule')   // 28: little copy, but long — the move after Up, wrapping
     for (let n = 0; n < 300; n++) expect(houseMove(card(`event-${n}`, LONG))).not.toBe('up')
-    const moves = [...dealHouseMoves(Array.from({ length: 300 }, (_, n) => card(`event-${n}`, LONG))).values()]
-    expect(moves).not.toContain('up')
-    for (let i = 1; i < moves.length; i++) expect(moves[i]).not.toBe(moves[i - 1])
   })
 
   it('a pick with no start day skips Numeral', () => {
     const id = idFor('num')
-    expect(houseMove(card(id, SHORT, 'Sun 22 Nov · 12:00-22:30'))).toBe('num')
+    expect(houseMove(card(id, FULL, 'Sun 22 Nov · 12:00-22:30'))).toBe('num')
     for (const when of ['This weekend', 'Every Saturday', 'Until Sun 13 Dec', 'Now open · aperitivo hours', '']) {
-      expect(moveFits('num', card(id, SHORT, when))).toBe(false)
-      expect(houseMove(card(id, SHORT, when))).toBe('up')   // the move after Numeral
+      expect(moveFits('num', card(id, FULL, when))).toBe(false)
+      expect(houseMove(card(id, FULL, when))).toBe('strip')   // the move after Numeral
     }
+  })
+})
+
+describe('little copy gets the large moves (27 Nov 2026)', () => {
+  it('sorts a card by how much it has to say', () => {
+    expect(copyTier({ title: 'Danielle • Interstellar Funk', venue: 'Radio Radio' })).toBe('short')
+    expect(copyTier({ title: FULL, venue: 'Paradiso' })).toBe('full')
+    expect(copyTier({ title: FULL, venue: '', price: '' })).toBe('bare')
+    expect(copyTier({ title: 'x'.repeat(40), venue: 'V' })).toBe('short')
+    expect(copyTier({ title: 'x'.repeat(41), venue: 'V' })).toBe('full')
+    expect(isSparse({ title: SHORT, venue: 'Paradiso' })).toBe(true)
+    expect(isSparse({ title: FULL, venue: 'Paradiso' })).toBe(false)
+  })
+  it('a short title is never dealt Ledger, Margin, Strip or Emphasis', () => {
+    for (const title of [SHORT, 'Danielle • Interstellar Funk']) {
+      const moves = [...dealHouseMoves(Array.from({ length: 300 }, (_, n) => card(`short-${n}`, title))).values()]
+      for (const m of moves) expect(LARGE_MOVES).toContain(m)
+      for (let i = 1; i < moves.length; i++) expect(moves[i]).not.toBe(moves[i - 1])
+    }
+  })
+  it('the Danielle card no longer lands on Strip', () => {
+    expect(houseMove(card('web-ra-danielle-interstellar-funk', 'Danielle • Interstellar Funk', 'Fri 27 Nov · 23:00', undefined, 'Radio Radio'))).not.toBe('strip')
   })
 })
 
@@ -151,9 +173,9 @@ describe('the text rules', () => {
 
 describe('a sparse card gets the bold moves', () => {
   it('no venue and no price → only Rule, Bars or Numeral', () => {
-    expect(isSparse({ venue: '', price: '' })).toBe(true)
-    expect(isSparse({ venue: 'Paradiso' })).toBe(false)
-    expect(isSparse({ price: '€12' })).toBe(false)
+    expect(isSparse({ title: FULL, venue: '', price: '' })).toBe(true)
+    expect(isSparse({ title: FULL, venue: 'Paradiso' })).toBe(false)
+    expect(isSparse({ title: FULL, price: '€12' })).toBe(false)
     const deck = Array.from({ length: 200 }, (_, n) => card(`sparse-${n}`, SHORT, 'Sat 21 Nov · 10:00', undefined, ''))
     const moves = [...dealHouseMoves(deck).values()]
     expect(new Set(moves)).toEqual(new Set(BOLD_MOVES))
@@ -163,9 +185,9 @@ describe('a sparse card gets the bold moves', () => {
     const deck = Array.from({ length: 50 }, (_, n) => card(`undated-${n}`, SHORT, 'This weekend', undefined, ''))
     expect(new Set(dealHouseMoves(deck).values())).toEqual(new Set(['rule', 'bars']))
   })
-  it('a card with a venue still reaches every move', () => {
+  it('a card with a venue and a long title still reaches every move it can carry', () => {
     const seen = new Set(Array.from({ length: 300 }, (_, n) => houseMove(card(`full-${n}`))))
-    expect([...seen].sort()).toEqual([...HOUSE_MOVES].sort())
+    expect([...seen].sort()).toEqual([...FULL_REACH].sort())
   })
 })
 
