@@ -49,7 +49,7 @@ export function GlassForecast({ glassOnly, onGlassOnly, settings = false, sun = 
         </select>
         <p className="glass-forecast-note">The sun grades every sky by its real altitude over the city: rain at night is dark rain, still raining. A clear sky changes plate with the hour — golden hour, dusk, a moon.</p>
         <label className="glass-motion"><input type="checkbox" checked={moving} onChange={e => onMoving(e.target.checked)} />The sky moves</label>
-        <p className="glass-forecast-note">Clouds drift, the light breathes, and a few drops let go and run. Off when Reduce Motion is on, or with ?motion=0.</p>
+        <p className="glass-forecast-note">Clouds drift with the wind, the light breathes, rain falls behind the glass and a few drops let go and run; tilt the phone and the sky answers. Off when Reduce Motion is on, or with ?motion=0.</p>
       </div>}
     </div>
   </div>
