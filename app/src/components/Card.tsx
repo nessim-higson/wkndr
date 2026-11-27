@@ -1,4 +1,4 @@
-import type { CSSProperties } from 'react'
+import { useContext, type CSSProperties } from 'react'
 import { placeOf } from '../lib/place'
 import { glassSignature } from '../lib/card-material'
 import { Maximize2, Clock } from 'lucide-react'
@@ -7,6 +7,9 @@ import { cardSignal } from '../types'
 import { cardImageOf, cssUrl, focalPosition } from '../lib/image'
 import './Card.css'
 import { NoPhotoFace } from './NoPhotoFace'
+import { HouseFace } from './HouseFace'
+import { FaceContext } from '../lib/face-context'
+import { houseMove } from '../lib/house-face'
 
 /** The stack card FRONT — image-led and deliberately quiet: the WHEN stamp (day/time +
  *  forecast temp on outdoor picks), AT MOST one signal pill (cardSignal: live weather peak
@@ -22,17 +25,23 @@ export function Card({ pick, temp, mode }: { pick: Pick; temp?: number; mode?: M
   // card — the board carries that receipt (imageWhy).
   const nophoto = !pick.image
   const glass = glassSignature(pick.id)
+  // THE HOUSE FACE (proto/type-cards): when the study face is 'house', the no-photo card is the
+  // typographic face on its own paper ground — no frost, no pressed mark. The move comes from the
+  // deal (App lays it once per deal, so no two in a row repeat); a card met outside a dealt deck
+  // falls back to its own hash.
+  const { face, moves } = useContext(FaceContext)
+  const house = nophoto && face === 'house'
   return (
     <article
-      className={`card${nophoto ? ' card--nophoto' : ''}`}
-      data-glass-mark={nophoto ? glass.pattern : undefined}
+      className={`card${nophoto ? ' card--nophoto' : ''}${house ? ' card--house' : ''}`}
+      data-glass-mark={nophoto && !house ? glass.pattern : undefined}
       // THE CROP (V.11.10): the uncropped source, ONE `cover` crop done here, positioned on the focal
       // point — so the wide desktop card and the tall phone card both keep the subject (the portrait
       // render painted into a near-square box was a crop of a crop: the Fringe dancer became a red blob)
       style={pick.image ? { backgroundImage: cssUrl(cardImageOf(pick.image)), backgroundPosition: focalPosition(pick) } : { '--glass-angle': `${glass.angle}deg`, '--glass-offset': `${glass.offset}%` } as CSSProperties}
     >
-      {nophoto && <div className="np-ground" aria-hidden />}
-      {nophoto && <div className="np-material-mark" aria-hidden />}
+      {nophoto && !house && <div className="np-ground" aria-hidden />}
+      {nophoto && !house && <div className="np-material-mark" aria-hidden />}
       {pick.image && <div className="card-grade" aria-hidden />}
       {pick.image && <div className="card-tint" aria-hidden />}
       <div className="card-grain" aria-hidden />
@@ -51,7 +60,9 @@ export function Card({ pick, temp, mode }: { pick: Pick; temp?: number; mode?: M
       {/* expand affordance — Maximize2, not a + (a plus read as “add/save” next to the real save) */}
       <span className="card-expand" aria-hidden><Maximize2 size={14} strokeWidth={2.6} /></span>
 
-      {nophoto ? (
+      {house ? (
+        <HouseFace pick={pick} move={moves.get(pick.id) ?? houseMove(pick)} />
+      ) : nophoto ? (
         <NoPhotoFace pick={pick} />
       ) : (
         <div className="card-body">

@@ -228,6 +228,25 @@ const WALLPAPER_PENALTY = 1.5
 const ONEOFF_BOOST = 1.5
 const NEW_DAYS = 7
 const WALLPAPER_DAYS = 21
+// RUN FATIGUE (V.12.12). Ness, 2026-11-27: "I KEEP seeing makers market EVERY weekend!" The Maker
+// Market is monthly, but its listing reads "Until Sun 20 Dec", so it counted as a this-weekend card
+// every weekend from 29 Aug, and with a 9 from the editor, three sources and a guide mention it was
+// dealt in the first dozen of every feed for three months (as were the Ligconcert and the Museum
+// Market). The flat −1.5 above was never going to move that. So for a WEEKEND card whose run merely
+// spans the weekend: after the three weeks' grace the penalty grows by 1.5 a week to a cap, and the
+// guide's mention stops counting (a guide that names it every week is not saying anything about
+// this one). It comes back on its own for its last weekend, when it is a one-off again. Evergreen
+// (`always`) runs keep the flat penalty: a long exhibition is any-time material, not a weekend claim.
+const RUN_FATIGUE_CAP = 7.5
+/** How worn a live pick is: 0 inside the grace, then the penalty to take off its score. Exported for
+ *  the test; `oneOff` = its last date falls inside the weekend being served. */
+export function runFatigue(p: Pick, oneOff: boolean, nowMs = Date.now()): number {
+  if (!p.firstSeen || oneOff || !isLiveId(p.id)) return 0
+  const age = (nowMs - Date.parse(p.firstSeen)) / 864e5
+  if (!Number.isFinite(age) || age <= WALLPAPER_DAYS) return 0
+  if (p.freshness !== 'weekend' || !latestDateOf(p.when)) return WALLPAPER_PENALTY
+  return Math.min(RUN_FATIGUE_CAP, WALLPAPER_PENALTY * Math.ceil((age - WALLPAPER_DAYS) / 7))
+}
 const isLiveId = (id: string) => /^(web|llm|rss|sk)-/.test(id)
 export function rankPicks(picks: Pick[], mode: ModeSpec, taste?: Taste, seed = 0, near?: Origin | null): Pick[] {
   const end = upcomingWeekendEnd()
@@ -275,14 +294,15 @@ export function rankPicks(picks: Pick[], mode: ModeSpec, taste?: Taste, seed = 0
     if (!Number.isFinite(age)) return 0
     if (age <= NEW_DAYS) return NEW_BOOST
     if (age <= NEW_DAYS * 2) return NEW_BOOST / 2
-    if (age > WALLPAPER_DAYS && isLiveId(p.id) && !oneOff(p)) return -WALLPAPER_PENALTY
-    return 0
+    return -runFatigue(p, oneOff(p), nowMs)
   }
+  // a run past its grace has used its guide mention up (see RUN FATIGUE)
+  const guideBoost = (p: Pick) => (p.guide && runFatigue(p, oneOff(p), nowMs) <= WALLPAPER_PENALTY ? GUIDE_BOOST : 0)
   const score = (p: Pick) =>
     (modesFor(p).some((m) => p.weatherFit.includes(m)) ? 10 : 0) + freshBoost(p) + buzzBoost(p) + popBoost(p) + sunBonus(p)
     + (p.editorScore ?? 0) * EDITOR_W
     - (p.image ? 0 : NO_PHOTO_PENALTY)
-    + (p.guide ? GUIDE_BOOST : 0) + novelty(p) + (oneOff(p) ? ONEOFF_BOOST : 0)
+    + guideBoost(p) + novelty(p) + (oneOff(p) ? ONEOFF_BOOST : 0)
     + (taste ? tasteScore(p, taste) : 0) + (seed ? jitter(p.id, seed) * 3.5 : 0)
     // NEAR ME (V.11): only when the user has asked for it AND we know where they are. A weight,
     // never a filter — see lib/geo.ts nearScore. Capped under the +10 weather term so weather

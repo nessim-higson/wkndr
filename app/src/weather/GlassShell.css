@@ -425,3 +425,26 @@ html[data-field='glass'] :is(.swipe-card, .act, .stack-more, .topbar-row, .glass
    deck hangs from the TOP: whatever is still spare on a very tall window sits under the buttons. */
 .app--glass .stack-wrap { justify-content: flex-start; }
 .app--glass .stack-deck { max-height: 760px; }
+
+/* ── THINGS SIT ON THEIR CENTRES (V.12.12) ────────────────────────────────────────────────────────
+   Ness, 27 Nov: "things aren't centered properly". Three measured on his screenshots.
+   1 · The header's ink was inset 9px from the card's left edge and 19px from its right (the menu's
+       two lines are a 20px glyph in a 40px target), so the masthead read as pushed left of the
+       filters and the card. Now both sides are 14px: the wordmark starts where the card's chips
+       start, the menu's lines end where the expand cue ends. The opened menu keeps its own padding.
+   2 · The focus ring was an outline, and its corners did not follow the card's: tight to the sides,
+       wide at the corners. It is now a ring drawn 6px outside the card with the card's radius + 6.
+   3 · The cards behind sat tilted and nudged sideways (SwipeStack `square`); they are square now. */
+.app--glass .topbar-row { padding-inline: 13px; }   /* + the module's 1px border */
+.app--glass .tb-menu { margin-right: -10px; transition: margin-right .46s cubic-bezier(.22,1,.36,1); }
+.app--glass .topbar-module:is(.open,.peeking) .tb-menu,
+html[data-shell='floating'] .app--glass .tb-menu { margin-right: 0; }
+/* .app--glass in the selector: the shell's general focus rule above carries an :is(… input:not()) and outranks a plain one */
+html[data-field='glass'] .app--glass .swipe-card:focus-visible { outline: none; position: relative; }
+html[data-field='glass'] .app--glass .swipe-card:focus-visible::after {
+  content: ''; position: absolute; inset: -6px; pointer-events: none;
+  border: 1.5px solid color-mix(in srgb, var(--glass-ink) 50%, transparent);
+  border-radius: 30px;   /* the card's 24 + the 6 it stands off */
+}
+html[data-field='glass'][data-shell='floating'] .app--glass .swipe-card:focus-visible::after { border-radius: 36px; }
+@media (prefers-reduced-motion: reduce) { .app--glass .tb-menu { transition: none; } }

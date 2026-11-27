@@ -14,6 +14,29 @@ shown in the app's "What's feeding this" sheet matches the latest tag here.
 > `v5.0`, `v6.2`). The per-ship granular history is the **git log** — entries below group it by major
 > version. (Entries 0.1.0–0.7.0 are the earlier semver phase, kept for the record.)
 
+## [V.12.12 · app] — 2026-11-27 — CENTRED · THE RUN WEARS OUT · THE TYPE CARDS ARE IN
+Ness, with four screenshots: "Things arent centered properly in the UI" · "I KEEP seeing makers market
+EVERY weekened!" · "Where are the typecards we designed? Im not seeing them implemented."
+- **Centred** (`GlassShell.css` last block, measured on his screenshots). The masthead's ink was 9px in
+  from the card's left edge and 19px from its right; both are 14px now, so the wordmark starts where the
+  card's chips start and the menu's lines end where the expand cue ends. The cards behind the top one sat
+  tilted up to 2.8° and nudged up to 7px sideways; in the glass shell they are square and centred
+  (`SwipeStack` `square`). The keyboard focus ring did not follow the card's corners; it is drawn 6px
+  outside the card with the card's radius + 6.
+- **Run fatigue** (`weather/modes.ts` `runFatigue`). The Maker Market is monthly but listed as "Until Sun
+  20 Dec", so it was a this-weekend card every weekend from 29 Aug and was dealt in the first dozen of
+  every feed since (the Ligconcert, the Museum Market and the Roode Remise sessions the same). A weekend
+  card whose run merely spans the weekend now gets three weeks, then loses 1.5 a week to a cap of 7.5,
+  and its guide mention stops counting. It returns by itself for its last weekend. On this week's feed
+  the Maker Market goes from 8th to 108th of 136. Evergreen runs (long exhibitions) keep the flat −1.5.
+  The stamped `servePos` in the feed files catches up on the next refresh; the deck ranks live.
+- **The house face is the no-photo card** (graduates `proto/type-cards`, PR #41). Paper, ink, Helvetica
+  Neue, ten moves dealt by the card's id. `?face=glass-opal` shows the glass for one load, `?house=0`
+  keeps a device on glass, `?house=1` forgets that. All ten moves ship: Keep/Drop is still Ness's, and a
+  dropped move leaves `HOUSE_MOVES`. Stack only; the fan, list and detail are unchanged. Fixed on the
+  way in: Bars printed "€3" as "3".
+- 715 tests (`runFatigue` ×2, the face switch, the price).
+
 ## [V.12.11 · app] — 2026-11-23 — THE DECK FILLS ITS SPACE
 Ness, with a screenshot of a tall desktop window: "fix the gap … make the cards fit and be a bit more
 elongated in the space."

@@ -1,11 +1,11 @@
 # WKNDR — STATE (catch-me-up snapshot)
 
-_Living "where are we right now" doc — a **snapshot, not a history**. **Updated 2026-11-22.** Read this
+_Living "where are we right now" doc — a **snapshot, not a history**. **Updated 2026-11-27.** Read this
 FIRST in a new chat. For strategy + backlog see `docs/backlog.md`; for the pipeline architecture see
 `docs/pipeline-architecture.md` + `docs/source-map.md`; for **who may write to the deck vs to a personal
 profile** (board / Tune / airlock — read before touching either) see `docs/curation-surfaces.md`; for the
 **board roadmap** (auto-compile tracks) see `docs/board-roadmap.md`; for full **version history** see
-`CHANGELOG.md` (current to app **V.12.11** — the deck fills its space, 2026-11-23 / board V.10) and the **git log / tags**. Onboarding:
+`CHANGELOG.md` (current to app **V.12.12** — centred, run fatigue, the type cards, 2026-11-27 / board V.10) and the **git log / tags**. Onboarding:
 `CLAUDE.md`; for any coding agent (Codex included) **`AGENTS.md`** is the working manual and
 `docs/variations/` the prototype protocol + the open briefs. App lives in `/app` (Vite + React + TS, run with `bun`); ships to **Cloudflare Pages**
 (`wkndr.xyz` + `app.wkndr.xyz`) **and** GitHub Pages (legacy, keeps old share links alive)._
@@ -30,6 +30,16 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
 > sessions update (today it's on load).
 
 ## Live right now
+- **2026-11-27 — CENTRED · THE RUN WEARS OUT · THE TYPE CARDS ARE IN (V.12.12).** Three asks in one
+  message. **Centred:** masthead ink 14px from both card edges, the cards behind square under the top
+  one, the focus ring concentric (`GlassShell.css` last block, `SwipeStack` `square`). **Run fatigue:** a
+  weekend card whose run merely spans the weekend ("Until Sun 20 Dec") gets three weeks at full score,
+  then sinks 1.5 a week to −7.5 and loses its guide boost, back for its last weekend (`modes.ts`
+  `runFatigue`); the Maker Market went 8th → 108th. This is ranking, not a rest: nothing was added to
+  `corpus.rested`. **Type cards:** `proto/type-cards` (PR #41) is merged and the house face is the
+  default no-photo card on the stack; glass is `?face=glass-opal` / `?house=0`. **Still Ness's:** Keep/Drop
+  on the ten moves (rule, light, ledger, margin, numeral, reflected, strip, up, bars, emphasis), and round
+  two of the three "more" directions (Scatter, Corner, Figures) is not built. Not checked on a real phone.
 - **2026-11-23 — THE DECK FILLS ITS SPACE (V.12.11).** On tall windows the card sat low with a gap under
   the filters (deck capped at 620px, bottom-anchored). Now capped at 760px and hung from the top: the
   card starts just under the filters and is taller. `GlassShell.css`, last block.
@@ -47,9 +57,8 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
 - **2026-11-22 — WHAT IS WAITING ON NESS** (all in `list/README.md`): (1) repo secret `LIST_ADMIN_KEY`,
   without which Friday's run renders and stops; (2) he and Katya sign up at wkndr.xyz and confirm — the
   list is empty; (3) the sender's W picture (`list/avatar-w.png`): Cloudflare Email Routing for
-  `friday@`, then a Google Account on that address with the W as its photo; (4) type cards, draft PR #41
-  (`proto/type-cards`, preview proto-type-cards.wkndr-app.pages.dev/?cards=glass&face=house&intro=0&onboard=0)
-  — the ten moves still have no Keep/Drop.
+  `friday@`, then a Google Account on that address with the W as its photo; (4) type cards: shipped in V.12.12
+  (27 Nov), all ten moves; Keep/Drop on the moves is still open.
 - **2026-11-22 (later) — THE FRIDAY EMAIL RUNS ITSELF (no app bump).** Ness: "I'd like to begin receiving
   email blasts on what's happening every weekend" → "Yes, set it up". `.github/workflows/friday.yml`
   (Fridays 05:15 UTC ≈ 07:30 Amsterdam after GitHub's delay) renders `bun run brief` and calls

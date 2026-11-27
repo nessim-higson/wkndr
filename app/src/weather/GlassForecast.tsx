@@ -24,7 +24,7 @@ export function GlassForecast({ glassOnly, onGlassOnly, settings = false, sun = 
         <label>Menu material<select value={menu} onChange={e=>onMenu(e.target.value)}><option value="clear">Clear glass</option><option value="frosted">Frosted glass</option><option value="smoked">Smoked glass</option></select></label>
         <label className="glass-motion"><input type="checkbox" checked={glassOnly} onChange={e => onGlassOnly(e.target.checked)} />Show only cards without photos</label>
         <p className="glass-forecast-note">Compare the glass using real events that have no photograph. Turn off to return to the full deck.</p>
-        <label>No-photo material<select value={face} onChange={e=>onFace(e.target.value)}><option value="glass-opal">Opal glass</option><option value="glass-smoked">Smoked glass</option><option value="glass-frosted">Frosted glass</option><option value="emboss-ivory">Blind emboss</option></select></label>
+        <label>No-photo material<select value={face} onChange={e=>onFace(e.target.value)}><option value="glass-opal">Opal glass</option><option value="glass-smoked">Smoked glass</option><option value="glass-frosted">Frosted glass</option><option value="emboss-ivory">Blind emboss</option><option value="house">House face (type)</option></select></label>
         {face.startsWith('glass') && <label>Glass finish<select value={finish} onChange={e=>onFinish(e.target.value)}><option value="auto">Varies by card</option>{GLASS_PATTERNS.map(p=><option key={p} value={p}>{p}</option>)}</select></label>}
       </div>}
       {!settings && <>

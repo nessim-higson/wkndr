@@ -6,7 +6,7 @@ import { parseIamsGuide, parseLbbWeekendTips, whenFromText, decode, titleVariant
 import { parseEventPage } from '../scripts/adapters/iamsterdam'
 import type { RecordExtras } from '../scripts/lib/pipeline'
 import { titlesAgree, titleLooseMatch, approvalCheck, dedupe, type TasteCorpus, type WeeklySlate } from '../scripts/lib/pipeline'
-import { rankPicks } from '../src/weather/modes'
+import { runFatigue, rankPicks } from '../src/weather/modes'
 import type { Pick } from '../src/types'
 
 const iams = readFileSync(`${import.meta.dir}/fixtures/iams-weekend-guide-2026-09-11.html`, 'utf8')
@@ -140,6 +140,30 @@ describe('a guide feature is an approval, survives dedupe, and leads the deck', 
     expect(rankPicks([P({ id: 'web-b', title: 'B' }), P({ id: 'web-a', title: 'A', guide: 'x' })], 'WARM')[0].id).toBe('web-a')
     expect(rankPicks([P({ id: 'web-old', title: 'O', firstSeen: old }), P({ id: 'web-new', title: 'N', firstSeen: today })], 'WARM')[0].id).toBe('web-new')
     expect(rankPicks([P({ id: 'web-old', title: 'O', firstSeen: old }), P({ id: 'web-none', title: 'X' })], 'WARM')[0].id).toBe('web-none')   // wallpaper below unstamped
+  })
+  // RUN FATIGUE (V.12.12): "I KEEP seeing makers market EVERY weekend". Fixed clock, fixed dates.
+  it('runFatigue: a weekend run that merely spans the weekend wears out; its last weekend does not', () => {
+    const NOW = Date.parse('2026-11-27T10:00:00Z')
+    const seen = (days: number) => new Date(NOW - days * 864e5).toISOString().slice(0, 10)
+    const run = (days: number, o: Partial<Pick> = {}) => P({ id: 'web-iams-the-maker-market', title: 'The Maker Market', when: 'Until Sun 20 Dec 2026', firstSeen: seen(days), ...o })
+    expect(runFatigue(run(10), false, NOW)).toBe(0)                        // inside the three weeks' grace
+    expect(runFatigue(run(22), false, NOW)).toBe(1.5)                      // the first week past it
+    expect(runFatigue(run(36), false, NOW)).toBe(4.5)                      // grows 1.5 a week
+    expect(runFatigue(run(90), false, NOW)).toBe(7.5)                      // to the cap
+    expect(runFatigue(run(90), true, NOW)).toBe(0)                         // its last weekend: a one-off again
+    expect(runFatigue(run(90, { freshness: 'always' }), false, NOW)).toBe(1.5)   // a long exhibition keeps the flat penalty
+    expect(runFatigue(run(90, { when: 'Monthly · one weekend' }), false, NOW)).toBe(1.5)   // no end date to read: flat
+    expect(runFatigue(run(90, { id: 'ams-foodhallen' }), false, NOW)).toBe(0)    // the library is not a live run
+  })
+  it('rankPicks: a three-month run with a 9, three sources and a guide mention goes behind a plain new one-off', () => {
+    const today = new Date().toISOString().slice(0, 10)
+    const longAgo = new Date(Date.now() - 90 * 864e5).toISOString().slice(0, 10)
+    const far = new Date(Date.now() + 40 * 864e5)
+    const until = `Until ${far.toLocaleDateString('en-GB', { weekday: 'short' })} ${far.getDate()} ${far.toLocaleDateString('en-GB', { month: 'short' })} ${far.getFullYear()}`
+    const worn = P({ id: 'web-iams-the-maker-market', title: 'The Maker Market', when: until, firstSeen: longAgo, editorScore: 9, buzz: 3, guide: 'LBB weekendtips' })
+    const fresh = P({ id: 'web-fresh', title: 'A Saturday thing', firstSeen: today, editorScore: 5 })
+    expect(rankPicks([worn, fresh], 'WARM')[0].id).toBe('web-fresh')
+    expect(rankPicks([{ ...worn, firstSeen: today }, fresh], 'WARM')[0].id).toBe('web-iams-the-maker-market')   // the same card, new: it leads
   })
 })
 

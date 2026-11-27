@@ -41,6 +41,8 @@ interface CardHandle {
 interface SwipeCardProps {
   pick: Pick
   tidy?: boolean
+  /** the cards behind sit square and centred under the top one — no resting tilt, no sideways nudge */
+  square?: boolean
   interactive: boolean
   depth: number // 0 = top
   dealIn: boolean // true → fly onto the deck (initial build); false → just fade (a card cycling in)
@@ -62,14 +64,14 @@ function hashUnit(s: string): number {
 }
 
 const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
-  { pick, tidy, interactive, depth, dealIn, progress, temp, mode, onSwipe, onOpen, onCycle }, ref,
+  { pick, tidy, square, interactive, depth, dealIn, progress, temp, mode, onSwipe, onOpen, onCycle }, ref,
 ) {
   // the glass face reveals the deck beneath it WHILE it moves (FaceMaterials.css .is-dragging):
   // at rest the pane is frosted enough that the next title never reads through this one
   const [dragging, setDragging] = useState(false)
   // a touch of deterministic imperfection per card — the stack looks hand-laid, not machined
-  const skew = useMemo(() => tidy ? 0 : hashUnit(pick.id) * 2.8, [pick.id, tidy])        // ±2.8° resting tilt
-  const restX = useMemo(() => tidy ? 0 : hashUnit(`${pick.id}x`) * 7, [pick.id, tidy])   // ±7px resting nudge
+  const skew = useMemo(() => tidy || square ? 0 : hashUnit(pick.id) * 2.8, [pick.id, tidy, square])        // ±2.8° resting tilt
+  const restX = useMemo(() => tidy || square ? 0 : hashUnit(`${pick.id}x`) * 7, [pick.id, tidy, square])   // ±7px resting nudge
 
   const x = useMotionValue(0)
   const y = useMotionValue(0)
@@ -311,7 +313,7 @@ const SwipeCard = forwardRef<CardHandle, SwipeCardProps>(function SwipeCard(
 })
 
 export function SwipeStack({
-  picks, temp, tempOf, mode, onSwipe, onOpen, onRefresh, onStartOver, total, filterLabel, onClearFilter, onSeeList, nudge, keysActive, escape, weatherBrief,
+  picks, temp, tempOf, mode, onSwipe, onOpen, onRefresh, onStartOver, total, filterLabel, onClearFilter, onSeeList, nudge, keysActive, escape, weatherBrief, square,
 }: {
   picks: Pick[]
   temp?: number
@@ -332,6 +334,8 @@ export function SwipeStack({
   escape?: { label: string; note: string; onTake: () => void }
   nudge?: boolean   // arm the one-time first-run swipe hint (fires once per device, ever)
   weatherBrief?: ReactNode
+  /** square the stack: the cards behind sit centred under the top one (the glass shell) */
+  square?: boolean
   keysActive?: boolean  // App says when the deck owns the keyboard (no overlay/menu open)
 }) {
   const topRef = useRef<CardHandle>(null)
@@ -424,6 +428,7 @@ export function SwipeStack({
             ref={i === 0 ? topRef : undefined}
             pick={p}
             tidy={!!weatherBrief}
+            square={square}
             depth={i}
             dealIn={firstDeal.current}
             interactive={i === 0}
