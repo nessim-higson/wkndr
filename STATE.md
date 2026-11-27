@@ -37,9 +37,10 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
   then sinks 1.5 a week to −7.5 and loses its guide boost, back for its last weekend (`modes.ts`
   `runFatigue`); the Maker Market went 8th → 108th. This is ranking, not a rest: nothing was added to
   `corpus.rested`. **Type cards:** `proto/type-cards` (PR #41) is merged and the house face is the
-  default no-photo card on the stack; glass is `?face=glass-opal` / `?house=0`. **Still Ness's:** Keep/Drop
-  on the ten moves (rule, light, ledger, margin, numeral, reflected, strip, up, bars, emphasis), and round
-  two of the three "more" directions (Scatter, Corner, Figures) is not built. Not checked on a real phone.
+  default no-photo card on the stack; glass is `?face=glass-opal` / `?house=0`. **Ness, 27 Nov: "Keep all
+  ten"** — the moves (rule, light, ledger, margin, numeral, reflected, strip, up, bars, emphasis) are
+  settled; `HOUSE_MOVES` stays as it is. Round two of the three "more" directions (Scatter, Corner,
+  Figures) is not built. Not checked on a real phone.
 - **2026-11-23 — THE DECK FILLS ITS SPACE (V.12.11).** On tall windows the card sat low with a gap under
   the filters (deck capped at 620px, bottom-anchored). Now capped at 760px and hung from the top: the
   card starts just under the filters and is taller. `GlassShell.css`, last block.
@@ -58,7 +59,7 @@ profile** (board / Tune / airlock — read before touching either) see `docs/cur
   without which Friday's run renders and stops; (2) he and Katya sign up at wkndr.xyz and confirm — the
   list is empty; (3) the sender's W picture (`list/avatar-w.png`): Cloudflare Email Routing for
   `friday@`, then a Google Account on that address with the W as its photo; (4) type cards: shipped in V.12.12
-  (27 Nov), all ten moves; Keep/Drop on the moves is still open.
+  (27 Nov), and all ten moves are kept (his call, same day) — nothing waiting.
 - **2026-11-22 (later) — THE FRIDAY EMAIL RUNS ITSELF (no app bump).** Ness: "I'd like to begin receiving
   email blasts on what's happening every weekend" → "Yes, set it up". `.github/workflows/friday.yml`
   (Fridays 05:15 UTC ≈ 07:30 Amsterdam after GitHub's delay) renders `bun run brief` and calls

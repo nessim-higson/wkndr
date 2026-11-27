@@ -32,8 +32,8 @@ EVERY weekened!" · "Where are the typecards we designed? Im not seeing them imp
   The stamped `servePos` in the feed files catches up on the next refresh; the deck ranks live.
 - **The house face is the no-photo card** (graduates `proto/type-cards`, PR #41). Paper, ink, Helvetica
   Neue, ten moves dealt by the card's id. `?face=glass-opal` shows the glass for one load, `?house=0`
-  keeps a device on glass, `?house=1` forgets that. All ten moves ship: Keep/Drop is still Ness's, and a
-  dropped move leaves `HOUSE_MOVES`. Stack only; the fan, list and detail are unchanged. Fixed on the
+  keeps a device on glass, `?house=1` forgets that. All ten moves ship, and stay: "Keep all ten" (Ness, the
+  same day). Stack only; the fan, list and detail are unchanged. Fixed on the
   way in: Bars printed "€3" as "3".
 - 715 tests (`runFatigue` ×2, the face switch, the price).
 
