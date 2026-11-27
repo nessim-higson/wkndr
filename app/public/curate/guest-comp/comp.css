@@ -1,0 +1,139 @@
+/* GUEST-CURATOR COMPS: the shared look. Static, no build step.
+   The materials are the app's own, read off src/weather/GlassShell.css and src/index.css on
+   2026-10-05: the overcast sky plate behind everything, frosted panes (--pane at 72 to 76%),
+   the glass ink, one orange accent. Helvetica Neue for all small type; Clash Display only where
+   the app uses it (sheet titles and hero lines). No monospaced type anywhere. */
+:root {
+  --ink: #172a35;            /* --glass-ink, the daytime scenes */
+  --ink-2: #2a3f4a;
+  --muted: #304752;          /* --glass-muted */
+  --quiet: color-mix(in srgb, var(--ink) 70%, transparent);
+  --line: color-mix(in srgb, var(--ink) 12%, transparent);
+  --accent: #ff4d1f;
+  --pane: #f5f7f3;
+  --sheet: color-mix(in srgb, #f6f8f4 72%, transparent);
+  --row: color-mix(in srgb, #f6f8f4 66%, transparent);
+  --font-display: 'Clash Display', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-body: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  /* the app's type and spacing steps (src/index.css) */
+  --fs-cap: 10px; --fs-xs: 11px; --fs-sm: 13px; --fs-base: 14px; --fs-md: 16px;
+  --fs-lg: 18px; --fs-xl: 20px; --fs-2xl: 22px; --fs-3xl: 27px;
+  --sp-1: 4px; --sp-2: 8px; --sp-3: 12px; --sp-4: 16px; --sp-6: 24px; --sp-8: 32px; --sp-12: 48px;
+  --ease: cubic-bezier(.22, 1, .36, 1);
+  color-scheme: light;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+html { background: #e9eeee; }
+body {
+  font-family: var(--font-body); color: var(--ink); font-size: var(--fs-base); line-height: 1.45;
+  font-feature-settings: 'kern', 'liga', 'tnum'; min-height: 100vh; min-height: 100dvh;
+  -webkit-text-size-adjust: 100%;
+}
+/* THE SKY: the app's overcast plate, fixed behind the page, under the same haze the app lays
+   over it (GlassShell.css, .glass-haze for the overcast scene). */
+body::before {
+  content: ''; position: fixed; z-index: -2; top: 0; left: 0; right: 0; height: 100vh; height: 100lvh;
+  background: #e9eeee url('sky-overcast.webp') center / cover no-repeat;
+}
+body::after {
+  content: ''; position: fixed; z-index: -1; top: 0; left: 0; right: 0; height: 100vh; height: 100lvh; pointer-events: none;
+  background: linear-gradient(#f2f6f3b3, transparent 33%, transparent 65%, #edf3f2b3);
+}
+a { color: inherit; }
+button, input, textarea, select { font: inherit; color: inherit; }
+button { cursor: pointer; border: 0; background: none; }
+img { display: block; max-width: 100%; }
+:focus { outline: none; }
+:is(a, button, input, textarea, [tabindex]):focus-visible { outline: 2px solid color-mix(in srgb, var(--ink) 60%, transparent); outline-offset: 3px; border-radius: 8px; }
+::selection { background: var(--accent); color: #fff; }
+.sr { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+[hidden] { display: none !important; }
+
+/* the page column */
+.wrap { width: 100%; max-width: 480px; margin: 0 auto; padding: 0 var(--sp-4) var(--sp-12); }
+
+/* comp chrome: one quiet strip that says what this is, and leads back to the list of screens */
+.strip { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 2px var(--sp-3); padding: var(--sp-2) var(--sp-4); font-size: var(--fs-xs); color: var(--muted); background: color-mix(in srgb, var(--pane) 55%, transparent); border-bottom: 1px solid var(--line); text-align: center; }
+.strip a { min-height: 28px; display: inline-flex; align-items: center; font-weight: 600; text-underline-offset: 3px; }
+.strip .seg { display: inline-flex; border-radius: 999px; background: color-mix(in srgb, var(--ink) 8%, transparent); padding: 2px; }
+.strip .seg a { padding: 0 10px; border-radius: 999px; text-decoration: none; font-weight: 500; }
+.strip .seg a[aria-current='true'] { background: var(--ink); color: #f6f8f4; }
+
+/* the masthead: the app's own. Wordmark, the dot, the city under it. */
+.mast { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3); padding: var(--sp-4) 0 var(--sp-3); }
+.brand { display: inline-flex; flex-direction: column; align-items: flex-start; gap: 2px; text-decoration: none; min-height: 44px; justify-content: center; }
+.brand b { display: inline-flex; align-items: flex-start; gap: 5px; font-size: var(--fs-xl); font-weight: 700; letter-spacing: -.055em; line-height: 1; }
+.brand b::after { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+.brand span { font-size: var(--fs-sm); }
+.mast-link { font-size: var(--fs-sm); min-height: 44px; display: inline-flex; align-items: center; padding: 0 var(--sp-2); text-decoration: none; border-radius: 12px; }
+.mast-link:hover { background: #ffffff40; }
+.mast-note { font-size: var(--fs-xs); color: var(--muted); text-align: right; line-height: 1.3; }
+
+/* type */
+.label { font-size: var(--fs-cap); font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--quiet); }
+.display { font-family: var(--font-display); font-weight: 600; letter-spacing: -.02em; word-spacing: .08em; line-height: 1.02; }
+.h-sheet { font-family: var(--font-display); font-size: var(--fs-2xl); font-weight: 700; letter-spacing: -.02em; word-spacing: .06em; line-height: 1.1; }
+.lines p + p { margin-top: 2px; }   /* one idea per line */
+.muted { color: var(--muted); }
+
+/* glass */
+.pane { background: var(--sheet); border-radius: 24px; box-shadow: 0 18px 50px -24px #0a1a2a66, inset 0 0 0 1px #ffffff80; padding: var(--sp-4); }
+
+/* buttons: the app's pills, at a thumb's height */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: var(--sp-2); min-height: 44px; padding: 0 var(--sp-4); border-radius: 999px; font-size: var(--fs-sm); font-weight: 500; text-decoration: none; white-space: nowrap;
+  color: var(--ink); background: color-mix(in srgb, var(--ink) 8%, transparent); border: 1px solid color-mix(in srgb, var(--ink) 18%, transparent); transition: background .2s, transform .15s var(--ease); }
+.btn:hover { background: color-mix(in srgb, var(--ink) 14%, transparent); }
+.btn:active { transform: scale(.98); }
+.btn svg { width: 18px; height: 18px; flex: none; }
+.btn--accent { background: var(--accent); color: #fff; border-color: transparent; font-weight: 700; font-size: 15px; box-shadow: 0 10px 26px -10px #ff4d1f8c; }
+.btn--accent:hover { background: #f2441a; }
+.btn--ink { background: var(--ink); color: #f6f8f4; border-color: transparent; font-weight: 600; }
+.btn--ink:hover { background: #223a47; }
+.btn--quiet { background: transparent; border-color: transparent; text-decoration: underline; text-underline-offset: 4px; text-decoration-color: color-mix(in srgb, var(--ink) 35%, transparent); padding: 0 var(--sp-2); }
+.btn--quiet:hover { background: color-mix(in srgb, var(--ink) 8%, transparent); }
+.btn[disabled], .btn[aria-disabled='true'] { opacity: .45; cursor: default; box-shadow: none; }
+.btn[disabled]:active { transform: none; }
+.btn--block { width: 100%; }
+.btn--tall { min-height: 48px; }
+
+/* photographs, and the type face a pick wears when it has none (the app's no-photo card) */
+.ph { position: relative; overflow: hidden; border-radius: 12px; background: color-mix(in srgb, var(--ink) 10%, transparent); flex: none; }
+.ph img { width: 100%; height: 100%; object-fit: cover; }
+.ph--type { background: linear-gradient(150deg, #ffffffb8, #ffffff4d); box-shadow: inset 0 0 0 1px #ffffffa8; display: flex; align-items: flex-start; }
+.ph--type span { font-family: var(--font-display); font-weight: 600; letter-spacing: -.04em; line-height: .98; color: var(--ink); overflow: hidden; overflow-wrap: anywhere; hyphens: auto; display: -webkit-box; -webkit-box-orient: vertical; }
+
+/* the signal pill: the app's one orange pill */
+.signal { display: inline-flex; align-items: center; font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: #fff; background: var(--accent); border-radius: 999px; padding: 5px 10px; line-height: 1; }
+.stamp { display: inline-flex; align-items: center; font-size: var(--fs-xs); color: #fff; background: #141416b3; border: 1px solid #ffffff29; border-radius: 8px; padding: 5px 9px; line-height: 1.1; }
+
+/* the toast: dark glass, as in the app */
+.toast { position: fixed; z-index: 60; left: 50%; bottom: calc(132px + env(safe-area-inset-bottom)); transform: translate(-50%, 12px); opacity: 0; pointer-events: none; width: max-content; max-width: calc(100vw - 32px);
+  display: flex; align-items: center; gap: var(--sp-3); padding: 6px 6px 6px var(--sp-4); border-radius: 999px; font-size: var(--fs-sm); color: #f4f7f9;
+  background: color-mix(in srgb, #0d1722 82%, transparent); -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px); transition: opacity .2s, transform .3s var(--ease); }
+.toast.on { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
+.toast span { padding: 8px 0; }
+.toast button { min-height: 36px; padding: 0 14px; border-radius: 999px; background: #ffffff24; font-weight: 600; font-size: var(--fs-sm); color: #fff; }
+.toast:not(:has(button:not([hidden]))) { padding-right: var(--sp-4); }
+
+/* sheets and their scrim */
+.scrim { position: fixed; inset: 0; z-index: 40; background: #0b1d3840; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); opacity: 0; pointer-events: none; transition: opacity .25s; }
+.scrim.on { opacity: 1; pointer-events: auto; }
+.sheet { background: color-mix(in srgb, #f6f8f4 86%, transparent); -webkit-backdrop-filter: blur(26px) saturate(1.2); backdrop-filter: blur(26px) saturate(1.2); box-shadow: 0 30px 80px -24px #0a1a2a73; }
+
+/* form fields */
+.field { display: block; }
+.field + .field { margin-top: var(--sp-4); }
+.field > .label { display: flex; justify-content: space-between; gap: var(--sp-2); margin-bottom: 6px; }
+.field > .label i { font-style: normal; font-weight: 500; letter-spacing: 0; text-transform: none; font-size: var(--fs-xs); }
+.input { width: 100%; min-height: 48px; padding: 12px 14px; border-radius: 14px; border: 1px solid color-mix(in srgb, var(--ink) 22%, transparent); background: #ffffffd9; font-size: var(--fs-md); line-height: 1.35; color: var(--ink); }
+.input::placeholder { color: color-mix(in srgb, var(--ink) 48%, transparent); }
+.input:focus { outline: none; border-color: var(--ink); box-shadow: 0 0 0 3px color-mix(in srgb, var(--ink) 14%, transparent); }
+textarea.input { resize: none; min-height: 84px; }
+.input[aria-invalid='true'] { border-color: #b3261e; box-shadow: 0 0 0 3px #b3261e24; }
+.help { font-size: var(--fs-sm); color: var(--muted); margin-top: 6px; }
+.help--bad { color: #9c1c15; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { min-height: 40px; padding: 0 14px; border-radius: 999px; font-size: var(--fs-sm); font-weight: 500; background: #ffffffb3; border: 1px solid color-mix(in srgb, var(--ink) 20%, transparent); }
+.chip[aria-pressed='true'] { background: var(--ink); color: #f6f8f4; border-color: var(--ink); }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; scroll-behavior: auto !important; } }
